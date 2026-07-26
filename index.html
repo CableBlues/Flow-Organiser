@@ -2,7 +2,7 @@
 <html lang="en" class="h-full bg-[#0a0a0f] text-[#f4f4f5]">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" class="width=device-width, initial-scale=1.0" />
   <title>Flow – Day & Task Planner</title>
 
   <!-- Tailwind CSS CDN -->
@@ -320,32 +320,35 @@
     </div>
   </div>
 
-  <!-- ADHD HELPER MODAL -->
-  <div id="adhd-modal" class="hidden fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+  <!-- ADHD WAS NUN? MODAL -->
+  <div id="adhd-pick-modal" class="hidden fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
     <div class="w-full max-w-lg bg-[#111116] border border-amber-500/40 p-6 rounded-2xl shadow-2xl text-white relative">
       <button onclick="closeAdhdModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer">✕</button>
 
-      <!-- Tabs -->
-      <div class="flex border-b border-white/10 mb-4 pb-2 gap-4 text-sm font-bold font-display">
-        <button id="adhd-tab-pick" onclick="switchAdhdTab('pick')" class="text-amber-400 border-b-2 border-amber-400 pb-1 cursor-pointer" data-i18n="whatnow">Was nun?</button>
-        <button id="adhd-tab-steps" onclick="switchAdhdTab('steps')" class="text-gray-400 hover:text-white pb-1 cursor-pointer" data-i18n="steps_tab">Steps</button>
-      </div>
+      <h3 class="text-amber-400 font-bold text-sm font-display mb-4 pb-2 border-b border-white/10" data-i18n="whatnow">Was nun?</h3>
 
-      <!-- Tab: Was nun? -->
-      <div id="adhd-content-pick" class="space-y-4">
+      <div class="space-y-4">
         <p class="text-xs text-gray-300 leading-relaxed" data-i18n="pick_desc">
           Überfordert von zu vielen Aufgaben? Lass dir eine passende Aufgabe basierend auf deiner Tagespriorität vorschlagen:
         </p>
         <div id="adhd-pick-box" class="p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl text-center font-bold text-base text-amber-300 min-h-[60px] flex items-center justify-center">
-          <!-- Populated dynamically via pickRandomTask() -->
+          <!-- Wird dynamisch befüllt -->
         </div>
         <button onclick="pickRandomTask()" class="w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-400 transition cursor-pointer flex items-center justify-center gap-1.5">
           <span data-i18n="next_suggestion">🎲 Nächster Vorschlag</span>
         </button>
       </div>
+    </div>
+  </div>
 
-      <!-- Tab: Steps -->
-      <div id="adhd-content-steps" class="hidden space-y-3.5">
+  <!-- ADHD STEPS MODAL -->
+  <div id="adhd-steps-modal" class="hidden fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+    <div class="w-full max-w-lg bg-[#111116] border border-purple-500/40 p-6 rounded-2xl shadow-2xl text-white relative">
+      <button onclick="closeAdhdModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer">✕</button>
+
+      <h3 class="text-purple-300 font-bold text-sm font-display mb-4 pb-2 border-b border-white/10" data-i18n="steps_tab">Steps</h3>
+
+      <div class="space-y-3.5">
         <div class="flex items-center justify-between gap-2">
           <p class="text-xs text-gray-300 leading-relaxed flex-1" data-i18n="steps_desc">
             Wähle eine Aufgabe aus, um die Schritt-für-Schritt-Anleitung anzuzeigen:
@@ -356,16 +359,14 @@
           </button>
         </div>
         
-        <!-- Dropdown for predefined / active tasks -->
         <select id="adhd-task-select" onchange="onAdhdSelectTask()" class="w-full p-2.5 bg-black/50 border border-white/15 rounded-xl text-xs text-amber-300 font-semibold outline-none focus:border-[var(--accent)] cursor-pointer">
           <option value="" data-i18n="dropdown_placeholder">-- Aufgabe aus deinem Plan auswählen --</option>
         </select>
 
         <div id="adhd-steps-result" class="space-y-2 text-xs max-h-[360px] overflow-y-auto pr-1">
-          <!-- Step items -->
+          <!-- Wird dynamisch befüllt -->
         </div>
       </div>
-
     </div>
   </div>
 
