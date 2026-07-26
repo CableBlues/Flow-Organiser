@@ -4,15 +4,15 @@ const HISTORY_KEY = 'flowPlannerV3History';
 
 // 4-LANGUAGE DEFAULT LIST DICTIONARY
 const DEFAULT_TASKS_BY_LANG = {
-  de: {
-    daily: ['Medis', 'Zähne morgens', 'Bett machen', 'Durchlüften', 'Kochen', 'Zähne abends', 'Duschen', 'Aufräumen'],
-    weekly: ['Staub wischen', 'Staubsaugen', 'Boden wischen', 'Geschirr spülen', 'Wäsche waschen', 'Wäsche aufhängen', 'Waschbecken & Spiegelschrank putzen', 'Fliesen & Badewanne', 'Klo putzen', 'Müll wegbringen', 'Pfandflaschen wegbringen'],
-    occasionally: ['Haare waschen', 'Haare schneiden', 'Bettwäsche tauschen', 'Nägel schneiden', 'Türe/Fenster putzen', 'Herd & Kühlschrank putzen']
-  },
   en: {
     daily: ['Meds', 'Brush teeth (morning)', 'Make bed', 'Air out room', 'Cook a meal', 'Brush teeth (evening)', 'Take a shower', 'Tidy up'],
     weekly: ['Dusting', 'Vacuuming', 'Mopping', 'Washing dishes', 'Washing laundry', 'Hanging up laundry', 'Cleaning sink & mirror cabinet', 'Tiles & bathtub', 'Cleaning the toilet', 'Taking out the trash', 'Returning deposit bottles'],
     occasionally: ['Washing hair', 'Cutting hair', 'Changing bedsheets', 'Clipping nails', 'Cleaning doors & windows', 'Cleaning stove & fridge']
+  },
+  de: {
+    daily: ['Medis', 'Zähne morgens', 'Bett machen', 'Durchlüften', 'Kochen', 'Zähne abends', 'Duschen', 'Aufräumen'],
+    weekly: ['Staub wischen', 'Staubsaugen', 'Boden wischen', 'Geschirr spülen', 'Wäsche waschen', 'Wäsche aufhängen', 'Waschbecken & Spiegelschrank putzen', 'Fliesen & Badewanne', 'Klo putzen', 'Müll wegbringen', 'Pfandflaschen wegbringen'],
+    occasionally: ['Haare waschen', 'Haare schneiden', 'Bettwäsche tauschen', 'Nägel schneiden', 'Türe/Fenster putzen', 'Herd & Kühlschrank putzen']
   },
   es: {
     daily: ['Medicación', 'Cepillarse los dientes (mañana)', 'Hacer la cama', 'Ventilar', 'Cocinar', 'Cepillarse los dientes (noche)', 'Ducharse', 'Ordenar'],
@@ -28,6 +28,7 @@ const DEFAULT_TASKS_BY_LANG = {
 
 // HUMANE STEP-BY-STEP TRANSLATED PRESET DATABASE (Mapped internally to German key standard)
 const TASK_STEPS_DATABASE = {
+  // DAILY TASKS
   'Medis': {
     de: [
       '1. Glas frisches Wasser einschenken',
@@ -54,12 +55,12 @@ const TASK_STEPS_DATABASE = {
       '6. Tomar conciencia de la toma / marcarlo en la aplicación'
     ],
     el: [
-      '1. Γεμίστε ένα ποτήρι με φρέσκο νερό',
-      '2. Πάρτε το κουτί των φαρμάκων ή την καρτέλα',
-      '3. Αφαιρέστε τη σωστή ημερήσια δόση',
-      '4. Καταπιείτε με μια γουλιά νερό',
-      '5. Τοποθετήστε τη συσκευασία πίσω στη θέση της',
-      '6. Επιβεβαιώστε τη λήψη στον εαυτό σας / σημειώστε το στην εφαρμογή'
+      '1. Γέμισε ένα ποτήρι με φρέσκο νερό',
+      '2. Πάρε το κουτί των φαρμάκων ή την καρτέλα',
+      '3. Βγάλε τη σωστή ημερήσια δόση',
+      '4. Πιες το με μια γουλιά νερό',
+      '5. Τοποθέτησε τη συσκευασία πίσω στη θέση της',
+      '6. Επιβεβαίωσε τη λήψη στον εαυτό σου / σημείωσε το στην εφαρμογή'
     ]
   },
   'Zähne morgens': {
@@ -88,12 +89,12 @@ const TASK_STEPS_DATABASE = {
       '6. Refrescarse la cara con agua fría y secarse con una toalla'
     ],
     el: [
-      '1. Πηγαίνετε στο μπάνιο και ανάψτε το φως',
-      '2. Πάρτε την οδοντόβουρτσα και την οδοντόκρεμα',
-      '3. Βάλτε μια ποσότητα οδοντόκρεμας μεγέθους μπιζελιού',
-      '4. Βουρτρίστε σχολαστικά όλα τα δόντια για 2 λεπτά',
-      '5. Ξεπλύνετε καλά το στόμα και την οδοντόβουρτσα',
-      '6. Φρεσκάρετε το πρόσκοπό σας με κρύο νερό και σκουπιστείτε'
+      '1. Πήγαινε στο μπάνιο και άναψε το φως',
+      '2. Πάρε την οδοντόβουρτσα και την οδοντόκρεμα',
+      '3. Βάλε μια ποσότητα οδοντόκρεμας μεγέθους μπιζελιού',
+      '4. Βούρτσισε σχολαστικά όλα τα δόντια για 2 λεπτά',
+      '5. Ξέπλυνε καλά το στόμα και την οδοντόβουρτσα',
+      '6. Φρέσκαρε το πρόσωπό σου με κρύο νερό και σκουπίσου'
     ]
   },
   'Bett machen': {
@@ -119,11 +120,11 @@ const TASK_STEPS_DATABASE = {
       '5. Disfrutar un breve momento contemplando la cama ordenada'
     ],
     el: [
-      '1. Τινάξτε καλά το πάπλωμα ή την κουβέρτα',
-      '2. Χτυπήστε ελαφρά τα μαξιλάρια και βάλτε τα στο κεφαλάρι',
-      '3. Στρώστε το πάπλωμα ομοιόμορφα πάνω στο στρώμα',
-      '4. Τοποθετήστε όμορφα διακοσμητικά μαξιλάρια ή κουβέρτες',
-      '5. Απολαύστε για μια στιγμή το τακτοποιημένο σας κρεβάτι'
+      '1. Τίναξε καλά το πάπλωμα ή την κουβέρτα',
+      '2. Χτύπησε ελαφρά τα μαξιλάρια και βάλ\' τα στο κεφαλάρι',
+      '3. Στρώσε το πάπλωμα ομοιόμορφα πάνω στο στρώμα',
+      '4. Τοποθέτησε όμορφα διακοσμητικά μαξιλάρια ή κουβέρτες',
+      '5. Απόλαυσε για μια στιγμή το τακτοποιημένο σου κρεβάτι'
     ]
   },
   'Durchlüften': {
@@ -149,11 +150,11 @@ const TASK_STEPS_DATABASE = {
       '5. Al terminar, cerrar bien todas las ventanas'
     ],
     el: [
-      '1. Ανοίξτε διάπλατα το παράθυρο στο πρώτο δωμάτιο',
-      '2. Ανοίξτε τις εσωτερικές πόρτες για να δημιουργηθεί ρεύμα',
-      '3. Ανοίξτε τα παράθυρα στα υπόλοιπα δωμάτια',
-      '4. Ρυθμίστε το χρονόμετρο για 5 έως 10 λεπτά',
-      '5. Μόλις τελειώσει ο χρόνος, κλείστε καλά όλα τα παράθυρα'
+      '1. Άνοιξε διάπλατα το παράθυρο στο πρώτο δωμάτιο',
+      '2. Άνοιξε τις εσωτερικές πόρτες για να δημιουργηθεί ρεύμα',
+      '3. Άνοιξε τα παράθυρα στα υπόλοιπα δωμάτια',
+      '4. Ρύθμισε το χρονόμετρο για 5 έως 10 λεπτά',
+      '5. Κλείσε καλά όλα τα παράθυρα'
     ]
   },
   'Kochen': {
@@ -188,14 +189,14 @@ const TASK_STEPS_DATABASE = {
       '8. Apagar el fuego y mover la olla a una zona fría de la cocina'
     ],
     el: [
-      '1. Επιλέξτε μια συνταγή ή ένα γεύμα',
-      '2. Συγκεντρώστε τα υλικά από τα ντουλάπια και το ψυγείο',
-      '3. Προετοιμάστε την επιφάνεια κοπής, το μαχαίρι και τις κατσαρόλες',
-      '4. Πλύνετε, καθαρίστε και κόψτε τα υλικά',
-      '5. Ανάψτε την εστία/φούρνο και ξεκινήστε το μαγείρεμα',
-      '6. Δοκιμάστε και προσθέστε μπαχαρικά κατά προτίμηση',
-      '7. Σερβίρετε το φαγητό στο πιάτο',
-      '8. Σβήστε την εστία και μετακινήστε το σκεύος σε κρύο μάτι'
+      '1. Επίλεξε μια συνταγή ή ένα γεύμα',
+      '2. Συγκέντρωσε τα υλικά από τα ντουλάπια και το ψυγείο',
+      '3. Προετοίμασε την επιφάνεια κοπής, το μαχαίρι και τις κατσαρόλες',
+      '4. Πλύνε, καθάρισε και κόψε τα υλικά',
+      '5. Άναψε την εστία/φούρνο και ξεκίνα το μαγείρεμα',
+      '6. Δοκίμασε και πρόσθεσε μπαχαρικά κατά προτίμηση',
+      '7. Σερβίρισε το φαγητό στο πιάτο',
+      '8. Σβήσε την εστία και μετακίνησε το σκεύος σε κρύο μάτι'
     ]
   },
   'Zähne abends': {
@@ -224,12 +225,12 @@ const TASK_STEPS_DATABASE = {
       '6. Enjuagar el vaso de dientes y colgar la toalla'
     ],
     el: [
-      '1. Πηγαίνετε στο μπάνιο',
-      '2. Χρησιμοποιήστε πρώτα οδοντικό νήμα ή μεσοδόντιο βουρτσάκι',
-      '3. Βάλτε οδοντόκρεμα στην οδοντόβουρτσα',
-      '4. Βουρτσίστε απαλά με κυκλικές κινήσεις για 2 λεπτά',
-      '5. Ξεπλύνετε το στόμα και καθαρίστε απαλά τη γλώσσα',
-      '6. Ξεπλύνετε το ποτήρι και κρεμάστε την πετσέτα'
+      '1. Πήγαινε στο μπάνιο',
+      '2. Χρησιμοποίησε πρώτα οδοντικό νήμα ή μεσοδόντιο βουρτσάκι',
+      '3. Βάλε οδοντόκρεμα στην οδοντόβουρτσα',
+      '4. Βούρτσισε απαλά με κυκλικές κινήσεις για 2 λεπτά',
+      '5. Ξέπλυνε το στόμα και καθάρισε απαλά τη γλώσσα',
+      '6. Ξέπλυνε το ποτήρι και κρέμασε την πετσέτα'
     ]
   },
   'Duschen': {
@@ -254,20 +255,20 @@ const TASK_STEPS_DATABASE = {
     es: [
       '1. Preparar una toalla limpia y ropa limpia para después',
       '2. Encender la ducha y verificar la temperatura del agua',
-      '3. Entrar y mojarse bien el cuerpo y el cabello',
+      '3. Entrar y mojarse bien el cuerpo und el cabello',
       '4. Masajear el champú en el cabello y aclararlo por completo',
       '5. Enjabonar el cuerpo con gel y aclararse con la alcachofa',
-      '6. Cerrar el grifo y secarse con cuidado antes de salir',
-      '7. Ponerse la ropa limpia y secar la mampara con la escobilla'
+      '6. Cerrar el grifo und secarse con cuidado antes de salir',
+      '7. Ponerse la ropa limpia und secar la mampara con la escobilla'
     ],
     el: [
-      '1. Ετοιμάστε μια καθαρή πετσέτα και καθαρά ρούχα',
-      '2. Ανοίξτε το ντους και ελέγξτε τη θερμοκρασία του νερού',
-      '3. Μπείτε στο ντους και βρέξτε το σώμα και τα μαλλιά σας',
-      '4. Κάντε μασάζ με σαμπουάν στα μαλλιά και ξεπλύνετε καλά',
-      '5. Σαπουνίστε το σώμα με αφρόλουτρο και ξεπλυθείτε',
-      '6. Κλείστε το νερό και σκουπιστείτε προσεκτικά',
-      '7. Φορέστε καθαρά ρούχα και περάστε γρήγορα το τζάμι του ντους'
+      '1. Ετοίμασε μια καθαρή πετσέτα και καθαρά ρούχα',
+      '2. Άνοιξε το ντους και έλεγξε τη θερμοκρασία του νερού',
+      '3. Μπες στο ντους και βρέξε το σώμα και τα μαλλιά σου',
+      '4. Κάνε μασάζ με σαμπουάν στα μαλλιά και ξέπλυνε καλά',
+      '5. Σαπούνισε το σώμα με αφρόλουτρο και ξεπλύσου',
+      '6. Κλείσε το νερό και σκουπίσου προσεκτικά',
+      '7. Φόρεσε καθαρά ρούχα και πέρασε γρήγορα το τζάμι του ντους'
     ]
   },
   'Aufräumen': {
@@ -296,24 +297,463 @@ const TASK_STEPS_DATABASE = {
       '6. Respirar hondo: ¡la habitación vuelve a respirar!'
     ],
     el: [
-      '1. Τοποθετήστε το καλάθι απλύτων και μια σακούλα σκουπιδιών στο κέντρο',
-      '2. Μαζέψτε αμέσως τα εμφανή σκουπίδια και πετάξτε τα',
-      '3. Ρίξτε τα διάσπαρτα ρούχα στο καλάθι απλύτων',
-      '4. Μεταφέρετε τα πιάτα και τα ποτήρια στην κουζίνα',
-      '5. Τοποθετήστε τα υπόλοιπα αντικείμενα στις θέσεις τους',
-      '6. Πάρτε μια βαθιά ανάσα: ο χώρος είναι πλέον ελεύθερος!'
+      '1. Τοποθέτησε το καλάθι απλύτων και μια σακούλα σκουπιδιών στο κέντρο',
+      '2. Μάζεψε αμέσως τα εμφανή σκουπίδια και πέταξέ τα',
+      '3. Ρίξε τα διάσπαρτα ρούχα στο καλάθι απλύτων',
+      '4. Μετάφερε τα πιάτα και τα ποτήρια στην κουζίνα',
+      '5. Τοποθέτησε τα υπόλοιπα αντικείμενα στις θέσεις τους',
+      '6. Πάρε μια βαθιά ανάσα: ο χώρος είναι πλέον ελεύθερος!'
+    ]
+  },
+
+  // WEEKLY TASKS
+  'Staub wischen': {
+    de: [
+      '1. Staubtuch oder Staubwedel bereitlegen',
+      '2. Alle freien Oberflächen abwischen',
+      '3. Dekorationsgegenstände anheben und darunter wischen',
+      '4. Staubwedel draußen ausklopfen oder Tuch waschen'
+    ],
+    en: [
+      '1. Get a dust cloth or feather duster ready',
+      '2. Wipe down all accessible surfaces',
+      '3. Lift up decorations and dust underneath them',
+      '4. Shake out the duster outside or wash the cloth'
+    ],
+    es: [
+      '1. Preparar un plumero o paño para el polvo',
+      '2. Limpiar todas las superficies accesibles',
+      '3. Levantar los adornos y limpiar debajo de ellos',
+      '4. Sacudir el plumero fuera o lavar el paño'
+    ],
+    el: [
+      '1. Πάρε ένα ξεσκονόπανο',
+      '2. Σκούπισε όλες τις ελεύθερες επιφάνειες',
+      '3. Σήκωσε τα διακοσμητικά και σκούπισε από κάτω',
+      '4. Τίναξε το πανί έξω'
+    ]
+  },
+  'Staubsaugen': {
+    de: [
+      '1. Staubsauger holen und Kabel abrollen',
+      '2. Den Staubsauger an das Stromnetz anschließen',
+      '3. Alle Räume systematisch saugen',
+      '4. Den Filter leeren oder Staubbeutel prüfen'
+    ],
+    en: [
+      '1. Get the vacuum cleaner and unroll the cord',
+      '2. Plug the vacuum into the electrical outlet',
+      '3. Vacuum all rooms systematically',
+      '4. Empty the canister or check the dust bag'
+    ],
+    es: [
+      '1. Traer la aspiradora y desenrollar el cable',
+      '2. Enchufar la aspiradora a la corriente',
+      '3. Aspirar todas las habitaciones de forma sistemática',
+      '4. Vaciar el depósito o revisar la bolsa de polvo'
+    ],
+    el: [
+      '1. Φέρε την ηλεκτρική σκούπα και ξετύλιξε το καλώδιο',
+      '2. Βάλ\' την στην πρίζα',
+      '3. Σκούπισε όλα τα δωμάτια συστηματικά',
+      '4. Άδειασε το φίλτρο ή έλεγξε τη σακούλα'
+    ]
+  },
+  'Boden wischen': {
+    de: [
+      '1. Einen Eimer mit warmem Wasser füllen',
+      '2. Einen Schuss Bodenreiniger hinzugeben',
+      '3. Den Wischmop nass machen und gut auswringen',
+      '4. Die Böden feucht wischen und trocknen lassen'
+    ],
+    en: [
+      '1. Fill a bucket with warm water',
+      '2. Add a splash of floor cleaner',
+      '3. Wet the mop and wring it out thoroughly',
+      '4. Mop the floors and let them dry completely'
+    ],
+    es: [
+      '1. Llenar un cubo con agua templada',
+      '2. Añadir un chorro de limpiador de suelos',
+      '3. Mojar la fregona y escurrirla muy bien',
+      '4. Fregar los suelos y dejar secar por completo'
+    ],
+    el: [
+      '1. Γέμισε έναν κουβά με ζεστό νερό',
+      '2. Πρόσθεσε λίγο καθαριστικό πατώματος',
+      '3. Βρέξε τη σφουγγαρίστρα και στύψε τη καλά',
+      '4. Σφουγγάρισε τα πατώματα και άφησέ τα να στεγνώσουν'
+    ]
+  },
+  'Geschirr spülen': {
+    de: [
+      '1. Spülbecken mit heißem Wasser und Spülmittel füllen',
+      '2. Geschirr von grobem Schmutz befreien',
+      '3. Geschirr gründlich mit dem Schwamm abwaschen',
+      '4. Klarspülen, abtrocknen und in den Schrank einsortieren'
+    ],
+    en: [
+      '1. Fill the sink with hot water and dish soap',
+      '2. Scrap food residue off the dishes',
+      '3. Scrub the dishes thoroughly with a sponge',
+      '4. Rinse, dry, and put them away in the cupboards'
+    ],
+    es: [
+      '1. Llenar el fregadero con agua caliente y lavavajillas',
+      '2. Quitar los restos gruesos de comida de la vajilla',
+      '3. Fregar los platos a fondo con una esponja',
+      '4. Aclarar con agua, secar y colocar en los armarios'
+    ],
+    el: [
+      '1. Γέμισε τον νεροχύτη με ζεστό νερό και υγρό πιάτων',
+      '2. Καθάρισε τα υπολείμματα φαγητού από τα πιάτα',
+      '3. Τρίψε τα πιάτα σχολαστικά με ένα σφουγγάρι',
+      '4. Ξέπλυνε, στέγνωσε και βάλε τα στη θέση τους'
+    ]
+  },
+  'Wäsche waschen': {
+    de: [
+      '1. Schmutzwäsche nach Farben und Temperatur sortieren',
+      '2. Die Wäschetrommel befüllen und Tür schließen',
+      '3. Waschmittel und Weichspüler einfüllen',
+      '4. Das passende Waschprogramm auswählen und starten'
+    ],
+    en: [
+      '1. Sort dirty laundry by colors and temperature',
+      '2. Fill the washing machine drum and close the door',
+      '3. Add laundry detergent and fabric softener',
+      '4. Select the correct wash cycle and start the program'
+    ],
+    es: [
+      '1. Clasificar la ropa sucia por colores y temperatura',
+      '2. Llenar el tambor de la lavadora y cerrar la puerta',
+      '3. Añadir detergente y suavizante',
+      '4. Seleccionar el programa adecuado e iniciar la colada'
+    ],
+    el: [
+      '1. Ξεχώρισε τα ρούχα ανάλογα με τα χρώματα και τη θερμοκρασία',
+      '2. Γέμισε τον κάδο του πλυντηρίου και κλείσε την πόρτα',
+      '3. Πρόσθεσε απορρυπαντικό και μαλακτικό',
+      '4. Επίλεξε το κατάλληλο πρόγραμμα και ξεκίνα την πλύση'
+    ]
+  },
+  'Wäsche aufhängen': {
+    de: [
+      '1. Den Wäscheständer an einem gut belüfteten Ort aufstellen',
+      '2. Kleidungsstücke kräftig ausschütteln, um Falten zu mindern',
+      '3. Kleidung ordentlich aufhängen und bei Bedarf Klammern nutzen',
+      '4. Vollständig trocknen lassen, bevor sie abgehängt wird'
+    ],
+    en: [
+      '1. Set up the drying rack in a well-ventilated spot',
+      '2. Shake out each clothing item to reduce wrinkles',
+      '3. Hang clothes neatly and use clothespins if needed',
+      '4. Let dry completely before taking them down'
+    ],
+    es: [
+      '1. Colocar el tendedero en un lugar bien ventilado',
+      '2. Sacudir bien cada prenda para reducir las arrugas',
+      '3. Colgar la ropa de forma ordenada usando pinzas si hace falta',
+      '4. Dejar secar por completo antes de recogerla'
+    ],
+    el: [
+      '1. Στήσε την απλώστρα σε ένα μέρος που αερίζεται καλά',
+      '2. Τίναξε καλά κάθε ρούχο για να μειώσεις τις ζάρες',
+      '3. Άπλωσε τα ρούχα και χρησιμοποίησε μανταλάκια αν χρειάζεται',
+      '4. Άφησέ τα να στεγνώσουν τελείως πριν τα μαζέψεις'
+    ]
+  },
+  'Waschbecken & Spiegelschrank putzen': {
+    de: [
+      '1. Spiegelflächen mit Glasreiniger einsprühen und trockenreiben',
+      '2. Das Waschbecken mit Badreiniger einsprühen',
+      '3. Becken und Armaturen mit einem Schwamm sauber schrubben',
+      '4. Mit Wasser nachspülen und alles glänzend polieren'
+    ],
+    en: [
+      '1. Spray mirror surfaces with glass cleaner and wipe dry',
+      '2. Spray the sink with bathroom cleaner',
+      '3. Scrub the sink basin and faucets clean with a sponge',
+      '4. Rinse with water and buff dry for a sparkling shine'
+    ],
+    es: [
+      '1. Rociar los espejos con limpiacristales y secar bien',
+      '2. Rociar el lavabo con limpiador de baños',
+      '3. Fregar el lavabo y los grifos con una esponja',
+      '4. Aclarar con agua y secar con un paño para dar brillo'
+    ],
+    el: [
+      '1. Ψέκασε τον καθρέφτη με καθαριστικό τζαμιών και σκούπισέ τον',
+      '2. Ψέκασε τον νιπτήρα με καθαριστικό μπάνιου',
+      '3. Τρίψε τον νιπτήρα και τις μπαταρίες με ένα σφουγγάρι',
+      '4. Ξέπλυνε με νερό και γυάλισε με ένα πανί'
+    ]
+  },
+  'Fliesen & Badewanne': {
+    de: [
+      '1. Badewanne und Fliesen mit Antikalk-Reiniger einsprühen',
+      '2. Kurz einwirken lassen, um Seifenreste zu lösen',
+      '3. Oberflächen mit einem Reinigungsschwamm gründlich schrubben',
+      '4. Mit klarem, kaltem Wasser abspülen und abziehen'
+    ],
+    en: [
+      '1. Spray bathtub and tiles with limescale cleaner',
+      '2. Let it sit briefly to dissolve soap scum',
+      '3. Scrub all surfaces thoroughly with a sponge',
+      '4. Rinse with clean, cold water and wipe dry'
+    ],
+    es: [
+      '1. Rociar la bañera y los azulejos con limpiador antical',
+      '2. Dejar actuar brevemente para disolver los restos de jabón',
+      '3. Fregar bien todas las superficies con una esponja',
+      '4. Aclarar con agua fría limpia y secar'
+    ],
+    el: [
+      '1. Ψέκασε την μπανιέρα και τα πλακάκια με καθαριστικό για άλατα',
+      '2. Άφησέ το να δράσει για λίγο για να λιώσουν τα υπολείμματα σαπουνιού',
+      '3. Τρίψε όλες τις επιφάνειες σχολαστικά με ένα σφουγγάρι',
+      '4. Ξέπλυνε με καθαρό, κρύο νερό και σκούπισε'
+    ]
+  },
+  'Klo putzen': {
+    de: [
+      '1. WC-Reiniger unter den Rand der Toilette verteilen',
+      '2. Mit der Toilettenbürste die Schüssel gründlich schrubben',
+      '3. WC-Sitz, Deckel und Außenflächen desinfizieren',
+      '4. Außen trocken nachwischen und einmal abspülen'
+    ],
+    en: [
+      '1. Apply toilet cleaner under the rim of the bowl',
+      '2. Scrub the inside of the bowl thoroughly with the brush',
+      '3. Disinfect the seat, lid, and outside surfaces',
+      '4. Wipe the exterior dry and flush the toilet'
+    ],
+    es: [
+      '1. Aplicar limpiador de inodoros bajo el borde de la taza',
+      '2. Fregar bien el interior de la taza con la escobilla',
+      '3. Desinfectar el asiento, la tapa y las superficies exteriores',
+      '4. Secar el exterior con papel o paño y tirar de la cadena'
+    ],
+    el: [
+      '1. Βάλε καθαριστικό λεκάνης κάτω από το χείλος',
+      '2. Τρίψε καλά το εσωτερικό της λεκάνης με το βουρτσάκι',
+      '3. Απολύμανε το κάθισμα, το καπάκι και τις εξωτερικές επιφάνειες',
+      '4. Σκούπισε το εξωτερικό για να στεγνώσει και τράβηξε το καζανάκι'
+    ]
+  },
+  'Müll wegbringen': {
+    de: [
+      '1. Volle Müllbeutel fest zuknoten',
+      '2. Die Beutel zu den entsprechenden Abfalltonnen draußen bringen',
+      '3. Den leeren Mülleimer bei Bedarf kurz auswischen',
+      '4. Eine frische Mülltüte in den Eimer einsetzen'
+    ],
+    en: [
+      '1. Tie up the full trash bags tightly',
+      '2. Carry the bags outside to the appropriate garbage bins',
+      '3. Quickly wipe down the inside of the empty bin if needed',
+      '4. Place a fresh, clean liner into the bin'
+    ],
+    es: [
+      '1. Atar fuerte las bolsas de basura llenas',
+      '2. Llevar las bolsas fuera a los contenedores correspondientes',
+      '3. Limpiar brevemente el interior del cubo vacío si es necesario',
+      '4. Colocar una bolsa de basura limpia en el cubo'
+    ],
+    el: [
+      '1. Δέσε καλά τις γεμάτες σακούλες σκουπιδιών',
+      '2. Μετάφερε τις σακούλες έξω στους κατάλληλους κάδους',
+      '3. Σκούπισε γρήγορα το εσωτερικό του άδειου κάδου αν χρειάζεται',
+      '4. Τοποθέτησε μια νέα, καθαρή σακούλα στον κάδο'
+    ]
+  },
+  'Pfandflaschen wegbringen': {
+    de: [
+      '1. Alle leeren Pfandflaschen in einer Tragetasche sammeln',
+      '2. Die Tasche mit zum nächsten Supermarkt nehmen',
+      '3. Flaschen einzeln in den Pfandautomaten einschieben',
+      '4. Den ausgedruckten Pfandbon an der Kasse einlösen'
+    ],
+    en: [
+      '1. Gather all empty deposit bottles in a tote bag',
+      '2. Take the bag of bottles to the nearest supermarket',
+      '3. Insert the bottles one by one into the return machine',
+      '4. Hand the printed voucher to the cashier to redeem it'
+    ],
+    es: [
+      '1. Reunir todas las botellas con depósito vacías en una bolsa',
+      '2. Llevar la bolsa de botellas al supermercado más cercano',
+      '3. Introducir las botellas una a una en la máquina de devolución',
+      '4. Entregar el ticket impreso en la caja para cobrarlo'
+    ],
+    el: [
+      '1. Μάζεψε όλα τα άδεια μπουκάλια σε μια τσάντα μεταφοράς',
+      '2. Πάρε την τσάντα μαζί σου στο πλησιέστερο σούπερ μάρκετ',
+      '3. Βάλε τα μπουκάλια ένα-ένα στο μηχάνημα επιστροφής',
+      '4. Δώσε την εκτυπωμένη απόδειξη στο ταμείο για να την εξαργυρώσεις'
+    ]
+  },
+
+  // OCCASIONAL TASKS
+  'Haare waschen': {
+    de: [
+      '1. Haare unter der Dusche gründlich nass machen',
+      '2. Eine Portion Shampoo sanft in die Kopfhaut einmassieren',
+      '3. Den Schaum mit warmem Wasser restlos ausspülen',
+      '4. Bei Bedarf Conditioner in die Spitzen geben und ausspülen'
+    ],
+    en: [
+      '1. Wet hair thoroughly under the warm shower',
+      '2. Gently massage a dollop of shampoo into your scalp',
+      '3. Rinse the suds out completely with warm water',
+      '4. Apply conditioner to the ends if needed and rinse well'
+    ],
+    es: [
+      '1. Mojar el cabello por completo bajo la ducha templada',
+      '2. Masajear suavemente una porción de champú en el cuero cabelludo',
+      '3. Aclarar la espuma por completo con agua templada',
+      '4. Aplicar acondicionador en las puntas si es necesario y aclarar bien'
+    ],
+    el: [
+      '1. Βρέξε καλά τα μαλλιά σου κάτω από το ντους',
+      '2. Κάνε απαλό μασάζ με μια ποσότητα σαμπουάν στο τριχωτό της κεφαλής',
+      '3. Ξέπλυνε τελείως τον αφρό με ζεστό νερό',
+      '4. Βάλε κρέμα μαλλιών στις άκρες αν χρειάζεται και ξέπλυνε καλά'
+    ]
+  },
+  'Haare schneiden': {
+    de: [
+      '1. Haare gut kämmen und glätten',
+      '2. Eine Haarschneideschere und Handtuch bereitlegen',
+      '3. Die Spitzen oder gewünschte Partien vorsichtig schneiden',
+      '4. Lose Haare vom Hals abpinseln und den Boden fegen'
+    ],
+    en: [
+      '1. Comb and straighten hair thoroughly',
+      '2. Get hair cutting scissors and a towel ready',
+      '3. Carefully trim the split ends or desired sections',
+      '4. Brush loose hairs off your neck and sweep the floor'
+    ],
+    es: [
+      '1. Peinar y alisar el cabello por completo',
+      '2. Preparar unas tijeras de peluquería y una toalla',
+      '3. Cortar con cuidado las puntas o las zonas deseadas',
+      '4. Sacudir los pelos sueltos del cuello y barrer el suelo'
+    ],
+    el: [
+      '1. Χτένισε καλά τα μαλλιά σου',
+      '2. Ετοίμασε ένα ψαλίδι κουρέματος και μια πετσέτα',
+      '3. Κόψε προσεκτικά τις άκρες ή τα σημεία που θέλεις',
+      '4. Καθάρισε τις τρίχες από τον λαιμό σου και σκούπισε το πάτωμα'
+    ]
+  },
+  'Bettwäsche tauschen': {
+    de: [
+      '1. Kopfkissen- und Bettdeckenbezug abziehen',
+      '2. Das alte Bettlaken vorsichtig von der Matratze entfernen',
+      '3. Die gebrauchte Wäsche direkt in die Waschmaschine bringen',
+      '4. Die Matratze und Bettdecken mit frischen Bezügen beziehen'
+    ],
+    en: [
+      '1. Remove the pillowcases and the duvet cover',
+      '2. Carefully pull the old sheet off the mattress',
+      '3. Take the dirty bedsheets straight to the laundry room',
+      '4. Put fresh, clean sheets, cases, and covers on the bed'
+    ],
+    es: [
+      '1. Quitar las fundas de almohada y la funda del edredón',
+      '2. Retirar con cuidado la sábana bajera antigua del colchón',
+      '3. Llevar la ropa de cama sucia directa al cesto de lavar',
+      '4. Colocar sábanas y fundas limpias y frescas en la cama'
+    ],
+    el: [
+      '1. Βγάλε τις μαξιλαροθήκες και το πάπλωμα από τις θήκες τους',
+      '2. Αφαίρεσε προσεκτικά το παλιό σεντόνι από το στρώμα',
+      '3. Πήγαινε τα λερωμένα σεντόνια κατευθείαν για πλύσιμο',
+      '4. Στρώσε καθαρά σεντόνια και βάλε καθαρές θήκες στα μαξιλάρια και το πάπλωμα'
+    ]
+  },
+  'Nägel schneiden': {
+    de: [
+      '1. Den Nagelknipser oder eine Nagelschere holen',
+      '2. Die Fingernägel und Fußnägel vorsichtig kürzen',
+      '3. Eventuelle scharfe Ecken mit einer Feile glätten',
+      '4. Hände und Füße mit feuchtigkeitsspendender Creme pflegen'
+    ],
+    en: [
+      '1. Get your nail clippers or manicure scissors',
+      '2. Carefully trim your fingernails and toenails',
+      '3. Smooth out any sharp edges using a nail file',
+      '4. Apply a moisturizing lotion to your hands and feet'
+    ],
+    es: [
+      '1. Coger el cortaúñas o unas tijeras de manicura',
+      '2. Cortar con cuidado las uñas de las manos y de los pies',
+      '3. Suavizar los bordes afilados con una lima de uñas',
+      '4. Aplicar crema hidratante en las manos y en los pies'
+    ],
+    el: [
+      '1. Πάρε τον νυχοκόπτη ή ένα ψαλιδάκι νυχιών',
+      '2. Κόψε προσεκτικά τα νύχια των χεριών και των ποδιών σου',
+      '3. Λίμαρε τις αιχμηρές άκρες με μια λίμα',
+      '4. Βάλε ενυδατική κρέμα στα χέρια και στα πόδια σου'
+    ]
+  },
+  'Türe/Fenster putzen': {
+    de: [
+      '1. Glasflächen mit Fensterreiniger großzügig einsprühen',
+      '2. Mit einem Gummiabzieher die Flächen streifenfrei abziehen',
+      '3. Fensterrahmen und Türgriffe feucht abwischen',
+      '4. Die Kanten mit einem Mikrofasertuch trockenpolieren'
+    ],
+    en: [
+      '1. Spray glass surfaces generously with window cleaner',
+      '2. Use a rubber squeegee to wipe the glass streak-free',
+      '3. Wipe down the window frames and door handles with a damp cloth',
+      '4. Polish the edges dry using a clean microfiber cloth'
+    ],
+    es: [
+      '1. Rociar los cristales generosamente con limpiacristales',
+      '2. Pasar una rasqueta de goma para secar sin dejar marcas',
+      '3. Limpiar los marcos de las ventanas y pomos con un paño húmedo',
+      '4. Secar y repasar los bordes con un paño de microfibra'
+    ],
+    el: [
+      '1. Ψέκασε τις γυάλινες επιφάνειες με καθαριστικό τζαμιών',
+      '2. Χρησιμοποίησε έναν υαλοκαθαριστήρα για να μην αφήσεις θαμπάδες',
+      '3. Σκούπισε τα κουφώματα και τα πόμολα με ένα υγρό πανί',
+      '4. Γύρισε τις άκρες με ένα καθαρό πανί μικροϊνών για να στεγνώσουν'
+    ]
+  },
+  'Herd & Kühlschrank putzen': {
+    de: [
+      '1. Das Kochfeld einsprühen, einwirken lassen und abwischen',
+      '2. Abgelaufene Lebensmittel aus dem Kühlschrank entsorgen',
+      '3. Alle Fächer und Fächerwände im Kühlschrank feucht auswischen',
+      '4. Alles wieder ordentlich einräumen und Außenflächen abwischen'
+    ],
+    en: [
+      '1. Spray the stovetop, let it sit, then wipe it clean',
+      '2. Empty the fridge and discard any expired food items',
+      '3. Wipe down all shelves and compartments in the fridge with a damp cloth',
+      '4. Organize everything back inside and wipe down the exterior'
+    ],
+    es: [
+      '1. Rociar la placa de la cocina, dejar actuar y limpiar',
+      '2. Vaciar la nevera y desechar los alimentos caducados',
+      '3. Limpiar todos los estantes y cajones de la nevera con un paño húmedo',
+      '4. Volver a colocar todo bien ordenado y limpiar el exterior'
+    ],
+    el: [
+      '1. Ψέκασε τις εστίες της κουζίνας, άφησέ το να δράσει και σκούπισε',
+      '2. Άδειασε το ψυγείο και πέταξε τα ληγμένα τρόφιμα',
+      '3. Σκούπισε όλα τα ράφια και τις θήκες του ψυγείου με ένα υγρό πανί',
+      '4. Τακτοποίησε τα τρόφιμα πάλι μέσα και σκούπισε το εξωτερικό μέρος'
     ]
   }
 };
 
 const FALLBACK_STEPS = {
-  de: [
-    '1. Material & benötigte Gegenstände für "{task}" heraussuchen',
-    '2. Ablenkungen reduzieren & Handy stummschalten',
-    '3. Den ersten konkreten Anfangsschritt direkt ausführen (2-5 Min)',
-    '4. Hauptteil von "{task}" fokussiert abarbeiten',
-    '5. Arbeitsplatz säubern, Material verstauen & Aufgabe als erledigt abhaken! 🎉'
-  ],
   en: [
     '1. Gather all materials and items needed for "{task}"',
     '2. Reduce distractions and silence your phone',
@@ -321,19 +761,26 @@ const FALLBACK_STEPS = {
     '4. Focus on working through the main part of "{task}"',
     '5. Clean up your workspace, put away materials, and check it off! 🎉'
   ],
+  de: [
+    '1. Material & benötigte Gegenstände für "{task}" heraussuchen',
+    '2. Ablenkungen reduzieren & Handy stummschalten',
+    '3. Den ersten konkreten Anfangsschritt direkt ausführen (2-5 Min)',
+    '4. Hauptteil von "{task}" fokussiert abarbeiten',
+    '5. Arbeitsplatz säubern, Material verstauen & Aufgabe als erledigt abhaken! 🎉'
+  ],
   es: [
     '1. Reunir todos los materiales y objetos necesarios para "{task}"',
-    '2. Reducir las distracciones y silenciar el móvil',
+    '2. Reducir las distracciones und silenciar el móvil',
     '3. Realizar el primer paso pequeño de inmediato (2-5 min)',
     '4. Concentrarse en avanzar la parte principal de "{task}"',
     '5. Limpiar el espacio de trabajo, guardar los materiales y marcar como hecho. 🎉'
   ],
   el: [
-    '1. Συγκεντρώστε όλα τα απαραίτητα υλικά και αντικείμενα για την εργασία "{task}"',
-    '2. Μειώστε τους περισπασμούς και βάλτε το τηλέφωνο στο αθόρυβο',
-    '3. Κάντε αμέσως το πρώτο μικρό βήμα για να ξεκινήσετε (2-5 λεπτά)',
-    '4. Εστιάστε στην ολοκλήρωση του κύριου μέρους της εργασίας "{task}"',
-    '5. Καθαρίστε τον χώρο εργασίας, μαζέψτε τα υλικά και σημειώστε την ως ολοκληρωμένη! 🎉'
+    '1. Συγκέντρωσε όλα τα απαραίτητα υλικά και αντικείμενα για την εργασία "{task}"',
+    '2. Μείωσε τους περισπασμούς και βάλε το τηλέφωνο στο αθόρυβο',
+    '3. Κάνε αμέσως το πρώτο μικρό βήμα για να ξεκινήσεις (2-5 λεπτά)',
+    '4. Εστίασε στην ολοκλήρωση του κύριου μέρους της εργασίας "{task}"',
+    '5. Καθάρισε τον χώρο εργασίας, μάζεψε τα υλικά και σημείωσε την ως ολοκληρωμένη! 🎉'
   ]
 };
 
@@ -362,7 +809,7 @@ const TASK_ICONS = {
   'Geschirr spülen': 'utensils', 'Washing dishes': 'utensils', 'Lavar los platos': 'utensils', 'Πλύσιμο πιάτων': 'utensils',
   'Wäsche waschen': 'washing-machine', 'Washing laundry': 'washing-machine', 'Hacer la colada': 'washing-machine', 'Πλύσιμο ρούχων': 'washing-machine',
   'Wäsche aufhängen': 'towel-rack', 'Hanging up laundry': 'towel-rack', 'Colgar la ropa': 'towel-rack', 'Άπλωμα ρούχων': 'towel-rack',
-  'Waschbecken & Spiegelschrank putzen': 'sparkles', 'Cleaning sink & mirror cabinet': 'sparkles', 'Limpiar el lavabo y espejo': 'sparkles', 'Καθαρισμός νιπτήρα & καθρέφτη': 'sparkles',
+  'Waschbecken & Spiegelschrank putzen': 'sparkles', 'Cleaning sink & mirror cabinet': 'sparkles', 'Limpiar el lavabo und espejo': 'sparkles', 'Καθαρισμός νιπτήρα & καθρέφτη': 'sparkles',
   'Fliesen & Badewanne': 'bath', 'Tiles & bathtub': 'bath', 'Azulejos y bañera': 'bath', 'Πλακάκια & μπανιέρα': 'bath',
   'Klo putzen': 'toilet', 'Cleaning the toilet': 'toilet', 'Limpiar el váter': 'toilet', 'Καθαρισμός λεκάνης': 'toilet',
   'Müll wegbringen': 'trash-2', 'Taking out the trash': 'trash-2', 'Sacar la basura': 'trash-2', 'Πέταμα σκουπιδιών': 'trash-2',
@@ -377,6 +824,67 @@ const TASK_ICONS = {
 
 // COMPLETE HUMAN TRANSLATIONS DICTIONARY (UI & SYSTEM)
 const TRANSLATIONS = {
+  en: {
+    weekly: 'Household',
+    daily: 'Today',
+    todo: 'To-do',
+    done: 'Done',
+    termine: 'Appointments',
+    occasionally: 'Occasionally',
+    notes: 'Notes',
+    add: 'Add task',
+    report: 'Protocol',
+    report_title: 'Protocol & Statistics',
+    settings: 'Options',
+    whatnow: 'What now?',
+    notesPlaceholder: 'Write your notes here...',
+    give_feedback: 'Give Feedback',
+    feedback: 'Feedback',
+    feedback_desc: 'How do you like Flow? Your feedback helps us a lot!',
+    feedback_placeholder: 'Your message...',
+    send: 'Send',
+    zen_title: 'Zen Focus',
+    next_rec: 'Recommendation',
+    start_focus: 'Start Focus',
+    other_suggestion: 'Other Suggestion',
+    open_steps: 'Open Steps',
+    completed: 'Completed!',
+    timer_title: 'Focus Timer',
+    start: 'Start',
+    stop: 'Stop',
+    steps_btn: 'Steps',
+    steps_tab: 'Steps',
+    pick_desc: 'Overwhelmed by too many tasks? Let us suggest a suitable task based on your daily priority:',
+    next_suggestion: '🎲 Next Suggestion',
+    steps_desc: 'Select a task to view the step-by-step guide:',
+    start_timer: 'Start Timer',
+    dropdown_placeholder: '-- Select a task from your plan --',
+    today: 'Today',
+    week: 'Week',
+    month: 'Month',
+    completed_stat: 'Done',
+    rate_stat: 'Rate',
+    options_title: 'Options & Settings',
+    theme_select: 'Color Theme',
+    lang_select: 'Language',
+    sounds: 'Sounds',
+    soundscape_title: 'Focus Sounds',
+    sound_rain: 'Rain',
+    sound_rain_desc: 'Pink Noise',
+    sound_ocean: 'Ocean',
+    sound_ocean_desc: 'Brown Waves',
+    sound_alpha: 'Alpha Beats',
+    sound_alpha_desc: '10Hz Focus',
+    sound_wind: 'Soft Wind',
+    sound_wind_desc: 'White Noise',
+    levels: ['Focus Starter', 'Flow Explorer', 'Productivity Pro', 'Dopamine Master', 'Zen Grandmaster'],
+    praise: [
+      'Awesome!', 'Done!', 'Clean!', 'Top notch!', 'Nice work!', 'Brilliant!',
+      'Outstanding!', 'Incredible!', 'Phenomenal!', 'Boom, done!', 'Level up!',
+      'Pure magic!', 'Keep it up!', 'Fabulous!', 'Excellent!', 'Productivity monster!'
+    ],
+    zen: 'Focus'
+  },
   de: {
     weekly: 'Haushalt',
     daily: 'Heute',
@@ -436,67 +944,8 @@ const TRANSLATIONS = {
       'Genial!', 'Fantastisch!', 'Wunderbar!', 'Einfach magisch!', 'Boom, geschafft!',
       'Level up!', 'Produktivitäts-Held:in!', 'Hervorragend!', 'Ausgezeichnet!',
       'Keks verdient! 🍪', 'Und wech! 🪄', 'Schon wieder fertig? Angeber! 😜'
-    ]
-  },
-  en: {
-    weekly: 'Household',
-    daily: 'Today',
-    todo: 'To-do',
-    done: 'Done',
-    termine: 'Appointments',
-    occasionally: 'Occasionally',
-    notes: 'Notes',
-    add: 'Add task',
-    report: 'Protocol',
-    report_title: 'Protocol & Statistics',
-    settings: 'Options',
-    whatnow: 'What now?',
-    notesPlaceholder: 'Write your notes here...',
-    give_feedback: 'Give Feedback',
-    feedback: 'Feedback',
-    feedback_desc: 'How do you like Flow? Your feedback helps us a lot!',
-    feedback_placeholder: 'Your message...',
-    send: 'Send',
-    zen_title: 'Zen Focus',
-    next_rec: 'Recommendation',
-    start_focus: 'Start Focus',
-    other_suggestion: 'Other Suggestion',
-    open_steps: 'Open Steps',
-    completed: 'Completed!',
-    timer_title: 'Focus Timer',
-    start: 'Start',
-    stop: 'Stop',
-    steps_btn: 'Steps',
-    steps_tab: 'Steps',
-    pick_desc: 'Overwhelmed by too many tasks? Let us suggest a suitable task based on your daily priority:',
-    next_suggestion: '🎲 Next Suggestion',
-    steps_desc: 'Select a task to view the step-by-step guide:',
-    start_timer: 'Start Timer',
-    dropdown_placeholder: '-- Select a task from your plan --',
-    today: 'Today',
-    week: 'Week',
-    month: 'Month',
-    completed_stat: 'Done',
-    rate_stat: 'Rate',
-    options_title: 'Options & Settings',
-    theme_select: 'Color Theme',
-    lang_select: 'Language',
-    sounds: 'Sounds',
-    soundscape_title: 'Focus Sounds',
-    sound_rain: 'Rain',
-    sound_rain_desc: 'Pink Noise',
-    sound_ocean: 'Ocean',
-    sound_ocean_desc: 'Brown Waves',
-    sound_alpha: 'Alpha Beats',
-    sound_alpha_desc: '10Hz Focus',
-    sound_wind: 'Soft Wind',
-    sound_wind_desc: 'White Noise',
-    levels: ['Focus Starter', 'Flow Explorer', 'Productivity Pro', 'Dopamine Master', 'Zen Grandmaster'],
-    praise: [
-      'Awesome!', 'Done!', 'Clean!', 'Top notch!', 'Nice work!', 'Brilliant!',
-      'Outstanding!', 'Incredible!', 'Phenomenal!', 'Boom, done!', 'Level up!',
-      'Pure magic!', 'Keep it up!', 'Fabulous!', 'Excellent!', 'Productivity monster!'
-    ]
+    ],
+    zen: 'Fokus'
   },
   es: {
     weekly: 'Hogar',
@@ -555,7 +1004,8 @@ const TRANSLATIONS = {
     praise: [
       '¡Fantástico!', '¡Hecho!', '¡Excelente!', '¡Genial!', '¡Nivel arriba!', '¡Increíble!',
       '¡Sensacional!', '¡Qué productivo!', '¡A por la siguiente!', '¡Dominado! ⚡'
-    ]
+    ],
+    zen: 'Enfoque'
   },
   el: {
     weekly: 'Σπίτι',
@@ -570,11 +1020,11 @@ const TRANSLATIONS = {
     report_title: 'Ιστορικό & Στατιστικά',
     settings: 'Επιλογές',
     whatnow: 'Και τώρα τι;',
-    notesPlaceholder: 'Γράψτε τις σημειώσεις σας...',
+    notesPlaceholder: 'Γράψε τις σημειώσεις σου...',
     give_feedback: 'Αποστολή Σχολίων',
     feedback: 'Σχόλια',
-    feedback_desc: 'Πώς σας φαίνεται το Flow; Η γνώμη σας μας βοηθάει πολύ!',
-    feedback_placeholder: 'Το μήνυμά σας...',
+    feedback_desc: 'Πώς σου φαίνεται το Flow; Η γνώμη σου μας βοηθάει πολύ!',
+    feedback_placeholder: 'Το μήνυμά σου...',
     send: 'Αποστολή',
     zen_title: 'Ζεν Εστίαση',
     next_rec: 'Επόμενη Πρόταση',
@@ -587,11 +1037,9 @@ const TRANSLATIONS = {
     stop: 'Διακοπή',
     steps_btn: 'Βήματα',
     steps_tab: 'Βήματα',
-    pick_desc: 'Πελαγωμένος από πολλές εργασίες; Αφήστε μας να σας προτείνουμε μια κατάλληλη εργασία με βάση την προτεραιότητά σας:',
-    next_suggestion: '🎲 Επόμενη Πρόταση',
-    steps_desc: 'Επιλέξτε μια εργασία για να δείτε τον οδηγό βήμα προς βήμα:',
-    start_timer: 'Έναρξη Χρονομέτρου',
-    dropdown_placeholder: '-- Επιλέξτε εργασία από το πλάνο σας --',
+    pick_desc: 'Πελαγωμένος από πολλές εργασίες; Άφησε να σου προτείνω μια κατάλληλη εργασία με βάση την προτεραιότητά σου:',
+    steps_desc: 'Επίλεξε μια εργασία για να δεις τον οδηγό βήμα προς βήμα:',
+    dropdown_placeholder: '-- Επιλογή εργασίας από το πλάνο σου --',
     today: 'Σήμερα',
     week: 'Εβδομάδα',
     month: 'Μήνας',
@@ -614,6 +1062,7 @@ const TRANSLATIONS = {
     praise: [
       'Μπράβο!', 'Έγινε!', 'Τέλεια!', 'Εξαιρετικά!', 'Level up!', 'Φανταστικά!',
       'Απίστευτο!', 'Είσαι μηχανή παραγωγικότητας!', 'Συνέχισε έτσι! ⚡'
-    ]
+    ],
+    zen: 'Εστίαση'
   }
 };

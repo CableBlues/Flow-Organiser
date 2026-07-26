@@ -1,7 +1,7 @@
 // STATE MANAGEMENT
 let state = loadState();
 let historyStack = loadHistory();
-let currentLang = localStorage.getItem('flowPlannerLanguage') || detectBrowserLanguage();
+let currentLang = localStorage.getItem('flowPlannerLanguage') || 'en';
 let currentTheme = localStorage.getItem('flowPlannerTheme') || 'aurora';
 let isMinimalist = localStorage.getItem('flowPlannerMinimalist') === 'true';
 let isTerminFormOpen = false;
@@ -13,9 +13,9 @@ let timerRunning = false;
 let timerInterval = null;
 
 function detectBrowserLanguage() {
-  let lang = navigator.language || navigator.userLanguage || 'de';
+  let lang = navigator.language || navigator.userLanguage || 'en';
   lang = lang.substring(0, 2);
-  return ['de', 'en', 'es', 'el'].includes(lang) ? lang : 'de';
+  return ['de', 'en', 'es', 'el'].includes(lang) ? lang : 'en';
 }
 
 function loadState() {
@@ -35,7 +35,7 @@ function loadState() {
   } catch (e) {}
 
   const todayStr = new Date().toISOString().split('T')[0];
-  const initialLang = detectBrowserLanguage();
+  const initialLang = 'en';
   const localizedDefaults = DEFAULT_TASKS_BY_LANG[initialLang];
 
   return {
@@ -87,6 +87,13 @@ document.addEventListener('DOMContentLoaded', () => {
   renderApp();
   updateZenView();
   populateAdhdTaskSelect();
+  
+  // Set minimalistischer Start-Button
+  const btnHeader = document.getElementById('timer-toggle-btn');
+  if (btnHeader) {
+    btnHeader.innerHTML = '<i data-lucide="play" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>';
+  }
+  
   lucide.createIcons();
 });
 
@@ -105,13 +112,12 @@ function setLanguage(lang) {
   // Map any unmodified default tasks dynamically on language change
   translateUserTasks(oldLang, lang);
 
-  // Update lang buttons highlighting
-  ['de', 'en', 'el', 'es'].forEach(l => {
-    const btnMenu = document.getElementById(`lang-${l}-menu`);
-    if (btnMenu) {
-      btnMenu.className = `p-1.5 rounded-lg border border-white/5 text-[11px] font-bold text-center ${l === lang ? 'bg-[var(--accent)] text-white border-[var(--accent)] font-extrabold' : 'bg-white/5 hover:bg-white/10 opacity-60'}`;
-    }
-  });
+  // Update Custom Flag-Symbol im Button
+  const flagMap = { de: '🇩🇪', en: '🇬🇧', es: '🇪🇸', el: '🇬🇷' };
+  const flagEl = document.getElementById('active-lang-flag');
+  if (flagEl) {
+    flagEl.innerText = flagMap[lang] || '🇬🇧';
+  }
 
   // Run dynamic translation engine on elements with data-i18n
   translateUI();
@@ -210,20 +216,12 @@ function toggleMinimalist() {
 function updateDateAndStreak() {
   const locales = { de: 'de-DE', en: 'en-GB', el: 'el-GR', es: 'es-ES' };
   try {
-    const str = new Intl.DateTimeFormat(locales[currentLang] || 'de-DE', {
+    const str = new Intl.DateTimeFormat(locales[currentLang] || 'en-GB', {
       weekday: 'long', day: 'numeric', month: 'long'
     }).format(new Date());
     document.getElementById('date-display').innerText = str;
   } catch (e) {
     document.getElementById('date-display').innerText = new Date().toLocaleDateString();
-  }
-
-  const streakContainer = document.getElementById('streak-container');
-  if (state.streak > 0) {
-    streakContainer.classList.remove('hidden');
-    document.getElementById('streak-count').innerText = state.streak;
-  } else {
-    streakContainer.classList.add('hidden');
   }
 }
 
@@ -388,7 +386,7 @@ function renderApp() {
       </h2>
       ${!isDone && !isNotes ? `
         <div class="w-full h-1 bg-white/[0.05] rounded-full mb-3.5 overflow-hidden">
-          <div class="h-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-light)] transition-all duration-500" style="width: ${pct}%"></div>
+          <div class="h-full bg-gradient-to-r from-[var(--accent)] to-emerald-400 transition-all duration-500" style="width: ${pct}%"></div>
         </div>
       ` : ''}
       <div id="list-${id}" class="flex flex-col gap-2.5 flex-1 min-h-[120px] overflow-y-auto py-0.5 px-0.5"></div>
@@ -448,12 +446,12 @@ function renderApp() {
 
         itemDiv.innerHTML = `
           <div class="flex items-center justify-between gap-2 w-full">
-            <button onclick="handleCompleteTask('termine', ${originalIndex}, event)" class="flex items-center gap-2 w-full text-left bg-transparent border-0 text-inherit cursor-pointer p-0 min-w-0 pr-1 group-hover:pr-8 transition-all duration-150">
+            <button onclick="handleCompleteTask('termine', ${originalIndex}, event)" class="flex items-center gap-2 w-full text-left bg-transparent border-0 text-inherit cursor-pointer p-0 min-w-0 pr-1 transition-all duration-150">
               <i data-lucide="clock" class="w-3.5 h-3.5 text-[var(--accent-light)] shrink-0"></i>
-              <span class="text-xs font-semibold text-white">${taskTitle}</span>
+              <span class="block text-xs font-semibold text-white truncate">${taskTitle}</span>
             </button>
-            <div class="absolute right-1.5 top-2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition shrink-0 bg-[#13131a]/95 border border-white/15 px-1 py-0.5 rounded-lg shadow-lg z-10">
-              <button onclick="handleDeleteTask('termine', ${originalIndex}, event)" class="p-1 text-gray-500 hover:text-red-400 hover:bg-white/10 rounded transition cursor-pointer" title="Löschen">
+            <div class="absolute right-1.5 -top-3.5 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition shrink-0 bg-[#13131a]/95 border border-white/15 px-1 py-0.5 rounded-lg shadow-lg z-20">
+              <button onclick="deleteTask('termine', ${originalIndex}, event)" class="p-1 text-gray-500 hover:text-red-400 hover:bg-white/10 rounded transition cursor-pointer" title="Löschen">
                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
               </button>
             </div>
@@ -521,7 +519,7 @@ function renderApp() {
           const inputTitle = formDiv.querySelector('#add-termin-title');
           if (inputTitle) {
             inputTitle.onkeydown = (e) => {
-              if (e.key === 'Enter') handleAddTermin();
+              if (e.key === 'Enter' && inputTitle.value.trim()) handleAddTermin();
               if (e.key === 'Escape') toggleTerminForm(false);
             };
           }
@@ -544,11 +542,11 @@ function renderApp() {
         const safeTaskEscaped = taskText.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
         itemDiv.innerHTML = `
-          <button onclick="handleCompleteTask('${id}', ${index}, event)" class="flex items-center gap-2 w-full text-left bg-transparent border-0 text-inherit cursor-pointer p-0 min-w-0 pr-1 group-hover:pr-20 transition-all duration-150">
+          <button onclick="handleCompleteTask('${id}', ${index}, event)" class="flex items-center gap-2 w-full text-left bg-transparent border-0 text-inherit cursor-pointer p-0 min-w-0 pr-1 transition-all duration-150">
             <i data-lucide="${iconName}" class="w-3.5 h-3.5 ${isTaskActive ? 'text-amber-400 animate-pulse' : 'text-[var(--accent-light)]'} shrink-0"></i>
-            <span class="text-xs leading-snug min-w-0 flex-1 font-medium text-gray-200 ${isTaskActive ? 'text-amber-200 font-bold' : ''}" title="${taskText.replace(/"/g, '&quot;')}">${taskText}</span>
+            <span class="block text-xs leading-snug min-w-0 flex-1 font-medium text-gray-200 truncate ${isTaskActive ? 'text-amber-200 font-bold' : ''}" title="${taskText.replace(/"/g, '&quot;')}">${taskText}</span>
           </button>
-          <div class="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition duration-150 shrink-0 bg-[#13131a]/95 border border-white/15 px-1 py-0.5 rounded-lg shadow-lg z-10">
+          <div class="absolute right-1.5 -top-3.5 flex items-center gap-1 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition duration-150 shrink-0 bg-[#13131a] border border-white/10 px-1 py-0.5 rounded-lg shadow-lg z-20">
             <button onclick="openTaskStepsModal('${id}', ${index}, event)" class="p-1 text-[var(--accent-light)] hover:text-white hover:bg-white/10 rounded transition cursor-pointer" title="Steps">
               <i data-lucide="footprints" class="w-3.5 h-3.5"></i>
             </button>
@@ -557,7 +555,7 @@ function renderApp() {
               <i data-lucide="timer" class="w-3.5 h-3.5"></i>
             </button>
             <div class="w-[1px] h-3 bg-white/15 my-auto"></div>
-            <button onclick="handleDeleteTask('${id}', ${index}, event)" class="p-1 text-gray-500 hover:text-red-400 hover:bg-white/10 rounded transition cursor-pointer" title="Löschen">
+            <button onclick="deleteTask('${id}', ${index}, event)" class="p-1 text-gray-500 hover:text-red-400 hover:bg-white/10 rounded transition cursor-pointer" title="Löschen">
               <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
             </button>
           </div>
@@ -632,7 +630,7 @@ function handleCompleteTask(category, index, event) {
   populateAdhdTaskSelect();
 }
 
-function handleDeleteTask(category, index, event) {
+function deleteTask(category, index, event) {
   if (event) event.stopPropagation();
   saveHistory();
   const taskObj = state.items[category][index];
@@ -813,23 +811,12 @@ function showToast(msg) {
   setTimeout(() => overlay.classList.add('hidden'), 2200);
 }
 
-function showPraise() {
-  const praises = TRANSLATIONS[currentLang]?.praise || TRANSLATIONS.de.praise;
-  const msg = praises[Math.floor(Math.random() * praises.length)];
-  const overlay = document.getElementById('praise-overlay');
-  const card = document.getElementById('praise-card');
-  card.innerText = msg;
-  overlay.classList.remove('hidden');
-  card.style.animation = 'scaleBounce 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards';
-  setTimeout(() => overlay.classList.add('hidden'), 1100);
-}
-
 // PANELS HOVER & TOGGLE
 let hoverPanelTimeout = null;
 
 function showPanelHover(panelName) {
   clearTimeout(hoverPanelTimeout);
-  ['feedback', 'report', 'settings', 'soundscape'].forEach(p => {
+  ['feedback', 'report', 'settings', 'soundscape', 'language'].forEach(p => {
     const el = document.getElementById(`panel-${p}`);
     if (!el) return;
     if (p === panelName) {
@@ -851,7 +838,7 @@ function hidePanelHover(panelName) {
 
 function togglePanel(panelName) {
   clearTimeout(hoverPanelTimeout);
-  ['feedback', 'report', 'settings', 'soundscape'].forEach(p => {
+  ['feedback', 'report', 'settings', 'soundscape', 'language'].forEach(p => {
     const el = document.getElementById(`panel-${p}`);
     if (!el) return;
     if (p === panelName) {
@@ -871,7 +858,7 @@ function setReportTimeframe(tf) {
     const btn = document.getElementById(`report-tab-${t}`);
     if (btn) {
       if (t === tf) {
-        btn.className = 'px-2 py-0.5 rounded text-[var(--accent-light)] bg-[var(--accent)]/20 cursor-pointer font-bold';
+        btn.className = 'px-2 py-0.5 rounded text-[var(--accent-light)] bg-[var(--accent)]/25 cursor-pointer font-bold';
       } else {
         btn.className = 'px-2 py-0.5 rounded text-gray-400 hover:text-white cursor-pointer';
       }
@@ -952,7 +939,7 @@ function updateReportPanel() {
             <span class="text-gray-400 font-mono">${completedInCat}/${totalInCat} (${catPct}%)</span>
           </div>
           <div class="w-full h-1.5 bg-black/40 rounded-full overflow-hidden border border-white/5">
-            <div class="h-full bg-gradient-to-r from-[var(--accent)] to-emerald-400 transition-all duration-300" style="width: ${catPct}%"></div>
+            <div class="h-full bg-gradient-to-r from-[var(--accent)] to-emerald-400 transition-all duration-500" style="width: ${catPct}%"></div>
           </div>
         `;
         catBarsEl.appendChild(row);
@@ -967,28 +954,28 @@ function updateReportPanel() {
         de: 'Noch keine erledigten Aufgaben in diesem Zeitraum. Starte jetzt mit einer kleinen Aufgabe!',
         en: 'No completed tasks in this timeframe yet. Start with a small task now!',
         es: 'Aún no hay tareas completadas en este período. ¡Empieza con una tarea pequeña!',
-        el: 'Δεν υπάρχουν ολοκληρωμένες εργασίες για αυτήν την περίοδο ακόμα. Ξεκινήστε με μια μικρή εργασία τώρα!'
+        el: 'Δεν υπάρχουν ολοκληρωμένες εργασίες για αυτήν την περίοδο ακόμα. Ξεκίνησε με μια μικρή εργασία τώρα!'
       }[currentLang];
     } else if (count < 3) {
       insightEl.innerText = {
         de: `Guter Anfang! Du hast ${count} Aufgaben geschafft. Bleib dran!`,
         en: `Good start! You accomplished ${count} tasks. Keep going!`,
         es: `¡Buen comienzo! Has completado ${count} tareas. ¡Sigue así!`,
-        el: `Καλή αρχή! Ολοκληρώσατε ${count} εργασίες. Συνεχίστε έτσι!`
+        el: `Καλή αρχή! Ολοκλήρωσες εργασίες. Συνέχισε έτσι!`
       }[currentLang];
     } else if (count < 8) {
       insightEl.innerText = {
         de: `Starkes Ergebnis! ${count} Aufgaben erledigt. Du bist voll im Flow! ⚡`,
         en: `Great result! ${count} tasks completed. You are in the flow! ⚡`,
         es: `¡Gran resultado! ${count} tareas completadas. ¡Estás en racha! ⚡`,
-        el: `Εξαιρετικό αποτέλεσμα! Ολοκληρώσατε ${count} εργασίες. Είστε σε πλήρη ροή! ⚡`
+        el: `Εξαιρετικό αποτέλεσμα! Ολοκλήρωσες εργασίες. Είσαι σε πλήρη ροή! ⚡`
       }[currentLang];
     } else {
       insightEl.innerText = {
         de: `Hervorragende Produktivität! ${count} Aufgaben geschafft. Zeit für eine Pause! 🎉`,
         en: `Outstanding productivity! ${count} tasks finished. Time for a well-deserved break! 🎉`,
         es: `¡Productividad sobresaliente! ${count} tareas hechas. ¡Es hora de un descanso! 🎉`,
-        el: `Εξαιρετική παραγωγικότητα! Ολοκληρώσατε ${count} εργασίες. Ώρα για ένα διάλειμμα! 🎉`
+        el: `Εξαιρετική παραγωγικότητα! Ολοκλήρωσες εργασίες. Ώρα για ένα διάλειμμα! 🎉`
       }[currentLang];
     }
   }
@@ -1073,7 +1060,10 @@ function setTimerPreset(mins) {
   const zenLabel = document.getElementById('zen-timer-btn-label');
   const presetSel = document.getElementById('timer-preset-select');
   if (presetSel) presetSel.value = String(mins);
-  if (btnHeader) btnHeader.innerText = t('start');
+  if (btnHeader) {
+    btnHeader.innerHTML = '<i data-lucide="play" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>';
+    lucide.createIcons();
+  }
   if (zenLabel) zenLabel.innerText = t('start');
   updateTimerDisplay();
   updateActiveTimerBadge();
@@ -1088,13 +1078,19 @@ function toggleTimer() {
   if (timerRunning) {
     clearInterval(timerInterval);
     timerRunning = false;
-    if (btnHeader) btnHeader.innerText = t('start');
+    if (btnHeader) {
+      btnHeader.innerHTML = '<i data-lucide="play" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>';
+      lucide.createIcons();
+    }
     if (zenLabel) zenLabel.innerText = t('start');
     updateActiveTimerBadge();
     renderApp();
   } else {
     timerRunning = true;
-    if (btnHeader) btnHeader.innerText = labelPause;
+    if (btnHeader) {
+      btnHeader.innerHTML = '<i data-lucide="pause" class="w-3.5 h-3.5 text-amber-400 animate-pulse"></i>';
+      lucide.createIcons();
+    }
     if (zenLabel) zenLabel.innerText = labelPause;
     updateActiveTimerBadge();
     renderApp();
@@ -1112,7 +1108,10 @@ function toggleTimer() {
           es: '¡Tiempo de enfoque terminado! ¡Tómate un descanso! ☕',
           el: 'Ο χρόνος εστίασης τελείωσε! Ώρα για ένα μικρό διάλειμμα! ☕'
         }[currentLang]);
-        if (btnHeader) btnHeader.innerText = t('start');
+        if (btnHeader) {
+          btnHeader.innerHTML = '<i data-lucide="play" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>';
+          lucide.createIcons();
+        }
         if (zenLabel) zenLabel.innerText = t('start');
         updateActiveTimerBadge();
         renderApp();
@@ -1128,7 +1127,10 @@ function resetTimer() {
   activeTimerTask = null;
   const btnHeader = document.getElementById('timer-toggle-btn');
   const zenLabel = document.getElementById('zen-timer-btn-label');
-  if (btnHeader) btnHeader.innerText = t('start');
+  if (btnHeader) {
+    btnHeader.innerHTML = '<i data-lucide="play" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>';
+    lucide.createIcons();
+  }
   if (zenLabel) zenLabel.innerText = t('start');
   updateTimerDisplay();
   updateActiveTimerBadge();
@@ -1173,7 +1175,7 @@ function updateZenView() {
     const endMsg = {
       de: '🎉 Alle Aufgaben erledigt! Entspanne dich und genieße deine freie Zeit.',
       en: '🎉 All tasks completed! Relax and enjoy your free time.',
-      es: '🎉 ¡Todas las tareas completadas! Relájate y disfruta de tu tiempo libre.',
+      es: '🎉 ¡Todas las Aufgaben erledigt! ¡Disfruta de tu día!',
       el: '🎉 Όλες οι εργασίες ολοκληρώθηκαν! Χαλαρώστε και απολαύστε τον ελεύθερο χρόνο σας.'
     }[currentLang];
     zenTextEl.innerHTML = `<span class="text-emerald-400">${endMsg}</span>`;
@@ -1333,7 +1335,7 @@ function pickRandomTask() {
     const doneMsg = {
       de: '🎉 Alle Aufgaben erledigt! Fantastisch, genieß deinen Tag!',
       en: '🎉 All tasks completed! Fantastic, enjoy your day!',
-      es: '🎉 ¡Todas las tareas completadas! ¡Disfruta de tu día!',
+      es: '🎉 ¡Todas las Aufgaben erledigt! ¡Disfruta de tu día!',
       el: '🎉 Όλες οι εργασίες ολοκληρώθηκαν! Απολαύστε τη μέρα σας!'
     }[currentLang];
     box.innerHTML = `<div class="text-emerald-400 font-bold">${doneMsg}</div>`;
@@ -1681,6 +1683,17 @@ function triggerConfetti() {
   requestAnimationFrame(frame);
 }
 
+function showPraise() {
+  const praises = TRANSLATIONS[currentLang]?.praise || TRANSLATIONS.de.praise;
+  const msg = praises[Math.floor(Math.random() * praises.length)];
+  const overlay = document.getElementById('praise-overlay');
+  const card = document.getElementById('praise-card');
+  card.innerText = msg;
+  overlay.classList.remove('hidden');
+  card.style.animation = 'scaleBounce 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+  setTimeout(() => overlay.classList.add('hidden'), 1100);
+}
+
 // KEYBOARD SHORTCUTS
 document.addEventListener('keydown', (e) => {
   if (e.key === 'z' || e.key === 'Z') {
@@ -1692,7 +1705,7 @@ document.addEventListener('keydown', (e) => {
   }
   if (e.key === 'Escape') {
     closeAdhdModal();
-    ['feedback', 'report', 'settings', 'soundscape'].forEach(p => {
+    ['feedback', 'report', 'settings', 'soundscape', 'language'].forEach(p => {
       const el = document.getElementById(`panel-${p}`);
       if (el) el.classList.add('hidden');
     });
