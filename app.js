@@ -586,9 +586,7 @@ function renderApp() {
   });
 
   lucide.createIcons();
-}
-
-// ACTIONS
+  // ACTIONS
 function handleCompleteTask(category, index, event) {
   if (event) event.stopPropagation();
   const rawTask = state.items[category][index];
@@ -1203,11 +1201,17 @@ function zenCompleteCurrentTask() {
 
 let currentActiveTaskRef = null;
 
-// ADHD MODAL & STEPS LOGIC
-function openAdhdModal(tab) {
-  document.getElementById('adhd-modal').classList.remove('hidden');
-  populateAdhdTaskSelect();
-  switchAdhdTab(tab);
+// ADHD MODAL & STEPS LOGIC (Aufgeteilt in zwei separate Modals)
+function openAdhdModal(type) {
+  if (type === 'pick') {
+    const modal = document.getElementById('adhd-pick-modal');
+    if (modal) modal.classList.remove('hidden');
+    pickRandomTask();
+  } else if (type === 'steps') {
+    const modal = document.getElementById('adhd-steps-modal');
+    if (modal) modal.classList.remove('hidden');
+    populateAdhdTaskSelect();
+  }
 }
 
 function openTaskStepsModal(category, index, event) {
@@ -1235,32 +1239,10 @@ function openTaskStepsModal(category, index, event) {
 }
 
 function closeAdhdModal() {
-  document.getElementById('adhd-modal').classList.add('hidden');
-}
-
-function switchAdhdTab(tab) {
-  const pickBtn = document.getElementById('adhd-tab-pick');
-  const stepsBtn = document.getElementById('adhd-tab-steps');
-  const pickContent = document.getElementById('adhd-content-pick');
-  const stepsContent = document.getElementById('adhd-content-steps');
-
-  if (tab === 'pick') {
-    pickBtn.className = 'text-amber-400 border-b-2 border-amber-400 pb-1 cursor-pointer font-bold';
-    stepsBtn.className = 'text-gray-400 hover:text-white pb-1 cursor-pointer';
-    pickContent.classList.remove('hidden');
-    stepsContent.classList.add('hidden');
-    pickRandomTask();
-  } else {
-    stepsBtn.className = 'text-amber-400 border-b-2 border-amber-400 pb-1 cursor-pointer font-bold';
-    pickBtn.className = 'text-gray-400 hover:text-white pb-1 cursor-pointer';
-    stepsContent.classList.remove('hidden');
-    pickContent.classList.add('hidden');
-
-    const select = document.getElementById('adhd-task-select');
-    if (select && select.value) {
-      generateTaskSteps(select.value);
-    }
-  }
+  const pickModal = document.getElementById('adhd-pick-modal');
+  const stepsModal = document.getElementById('adhd-steps-modal');
+  if (pickModal) pickModal.classList.add('hidden');
+  if (stepsModal) stepsModal.classList.add('hidden');
 }
 
 function populateAdhdTaskSelect() {
@@ -1716,3 +1698,4 @@ document.addEventListener('keydown', (e) => {
     toggleTimer();
   }
 });
+}
