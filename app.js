@@ -636,7 +636,7 @@ function updateReportPanel() {
     if (count === 0) insightEl.innerText = { de: 'Noch keine erledigten Aufgaben in diesem Zeitraum. Starte jetzt mit einer kleinen Aufgabe!', en: 'No completed tasks in this timeframe yet. Start with a small task now!', es: 'Aún no hay tareas completadas en este período. ¡Empieza con una tarea pequeña!', el: 'Δεν υπάρχουν ολοκληρωμένες εργασίες για αυτήν την περίοδο ακόμα. Ξεκίνησε με μια μικρή εργασία τώρα!' }[currentLang];
     else if (count < 3) insightEl.innerText = { de: `Guter Anfang! Du hast ${count} Aufgaben geschafft. Bleib dran!`, en: `Good start! You accomplished ${count} tasks. Keep going!`, es: `¡Buen comienzo! Has completado ${count} tareas. ¡Sigue así!`, el: `Καλή αρχή! Ολοκλήρωσες εργασίες. Συνέχισε έτσι!` }[currentLang];
     else if (count < 8) insightEl.innerText = { de: `Starkes Ergebnis! ${count} Aufgaben erledigt. Du bist voll im Flow! ⚡`, en: `Great result! ${count} tasks completed. You are in the flow! ⚡`, es: `¡Gran resultado! ${count} tareas completadas. ¡Estás en racha! ⚡`, el: `Εξαιρετικό αποτέλεσμα! Ολοκλήρωσες εργασίες. Είσαι σε πλήρη ροή! ⚡` }[currentLang];
-    else insightEl.innerText = { de: `Hervorragende Produktivität! ${count} Aufgaben geschafft. Zeit für eine Pause! 🎉`, en: `Outstanding productivity! ${count} tasks finished. Time for a well-deserved break! 🎉`, es: `¡Productividad sobresaliente! ${count} tareas hechas. ¡Es hora de un descanso! 🎉`, el: `Εξαιρετική παραγωγικότητα! Ολοκλήρωσες εργασίες. Ώρα για ένα διάλειμμα! 🎉` }[currentLang];
+    else insightEl.innerText = { de: `Hervorragende Produktivität! ${count} Aufgaben geschafft. Zeit für eine Pause! 🎉`, en: `Outstanding productivity! ${count} tasks finished. Time for a well-deserved break! 🎉`, es: `¡Productividad sobresaliente! ${count} tareas hechas. ¡Es hora de un descanso! 🎉`, el: `Εξαιρετική παραγωγικότητα! Ολοκλήρωσες εργασίες. Ώρα für ein διάλειμμα! 🎉` }[currentLang];
   }
   const list = document.getElementById('report-list');
   if (list) {
@@ -948,6 +948,7 @@ let currentSoundType = null;
 let soundGainNode = null;
 let soundOscillators = [];
 let soundMasterVolume = 0.5;
+let activeUserAudio = null;
 
 function initAudioContext() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -994,17 +995,39 @@ function playAmbientSound(type) {
 function stopAmbientSound(silent = false) {
   if (soundGainNode && audioCtx) {
     const activeGain = soundGainNode; const activeOscs = [...soundOscillators];
+    const activeAudio = activeUserAudio;
     activeGain.gain.setValueAtTime(activeGain.gain.value, audioCtx.currentTime);
     activeGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.8);
     setTimeout(() => {
       activeOscs.forEach(osc => { try { osc.stop(); } catch(e) {} });
+      if (activeAudio) {
+        try {
+          activeAudio.pause();
+          activeAudio.src = "";
+        } catch(e) {}
+      }
     }, 850);
   }
-  soundOscillators = []; currentSoundType = null; updateSoundscapeUI();
+  soundOscillators = []; activeUserAudio = null; currentSoundType = null; updateSoundscapeUI();
+  const nameLabel = document.getElementById('user-sound-name'); if (nameLabel) nameLabel.classList.add('hidden');
   if (!silent) {
-    const toastLabel = { de: 'Focus Sound gestoppt', en: 'Focus Sound stopped', es: 'Sonido de enfoque deenido', el: 'Ήχος εστίασης σταμάτησε' }[currentLang];
+    const toastLabel = { de: 'Focus Sound gestoppt', en: 'Focus Sound stopped', es: 'Sonido de enfoque detenido', el: 'Ήχος εστίασης σταμάτησε' }[currentLang];
     showToast(toastLabel);
   }
+}
+function handleUserSoundFile(event) {
+  const file = event.target.files?.[0]; if (!file) return;
+  initAudioContext(); stopAmbientSound(true);
+  const fileUrl = URL.createObjectURL(file);
+  const audio = new Audio(fileUrl); audio.loop = true; activeUserAudio = audio;
+  currentSoundType = 'custom'; soundGainNode = audioCtx.createGain();
+  soundGainNode.gain.setValueAtTime(0, audioCtx.currentTime); soundGainNode.connect(audioCtx.destination);
+  soundGainNode.gain.linearRampToValueAtTime(soundMasterVolume * 0.25, audioCtx.currentTime + 1.5);
+  const source = audioCtx.createMediaElementSource(audio); source.connect(soundGainNode);
+  audio.play().catch(e => { showToast("Fehler beim Abspielen der Datei."); });
+  const nameLabel = document.getElementById('user-sound-name');
+  if (nameLabel) { nameLabel.innerText = `🎵 ${file.name}`; nameLabel.classList.remove('hidden'); }
+  updateSoundscapeUI(); showToast(currentLang === 'de' ? `Eigener Sound gestartet: ${file.name}` : `Custom sound started: ${file.name}`);
 }
 function setSoundVolume(val) {
   soundMasterVolume = parseFloat(val);
