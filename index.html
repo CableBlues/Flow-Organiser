@@ -71,8 +71,14 @@
       <!-- GRUPPE 2: ADHD Tools & Date & Timer (Mitte - Einzeilig & Zentral) -->
       <div class="flex items-center gap-3.5 p-1.5 bg-white/[0.02] border border-white/10 rounded-xl shadow-sm mx-auto shrink-0">
         <!-- Minimalistischer Timer (Vor "Was nun?" mit optischem Abstand) -->
-        <div class="flex items-center gap-2 pr-4 border-r border-white/10 mr-2 h-8">
-          <span id="timer-display" class="font-display font-extrabold text-sm tracking-wider text-amber-200">25:00</span>
+        <div class="flex items-center gap-2 pr-4 border-r border-white/10 mr-2 h-10">
+          <div class="flex flex-col items-start justify-center min-w-[50px]">
+            <span id="timer-display" class="font-display font-extrabold text-sm tracking-wider text-amber-200 leading-none">25:00</span>
+            <!-- Sleek progress bar -->
+            <div class="w-full h-1 bg-white/10 rounded-full mt-1 overflow-hidden">
+              <div id="timer-progress-bar" class="h-full bg-amber-400 transition-all duration-300" style="width: 100%"></div>
+            </div>
+          </div>
           
           <select id="timer-preset-select" onchange="setTimerPreset(parseInt(this.value))" class="px-1 py-0.5 bg-black/60 border border-white/15 hover:border-amber-400/50 rounded-md text-[9px] font-bold text-amber-300 outline-none cursor-pointer p-0.5 transition">
             <option value="5">5m</option>
@@ -161,6 +167,17 @@
               </div>
             </div>
 
+            <!-- 7-Day Productivity Bar Chart -->
+            <div class="mb-3 p-3 bg-white/[0.02] border border-white/10 rounded-xl">
+              <h5 class="text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-2 flex items-center justify-between">
+                <span>7-Tage-Aktivität</span>
+                <span id="report-total-week-tasks" class="font-mono text-purple-300 font-bold">0 Tasks</span>
+              </h5>
+              <div id="report-weekly-chart" class="flex items-end justify-between h-16 pt-2 px-1">
+                <!-- Dynamically populated via JS -->
+              </div>
+            </div>
+
             <!-- Category Progress Bars -->
             <div id="report-category-bars" class="space-y-1.5 mb-3 text-xs">
               <!-- Dynamically populated -->
@@ -199,8 +216,9 @@
               <button onclick="togglePanel('soundscape')" class="text-gray-400 hover:text-white text-xs font-bold p-1">✕</button>
             </div>
 
-            <!-- Presets Grid -->
+            <!-- Presets Grid (Jetzt mit 8 procedere-generierten Sounds!) -->
             <div class="grid grid-cols-2 gap-2 mb-3">
+              <!-- Regen -->
               <button onclick="playAmbientSound('rain')" id="sound-btn-rain" class="p-2 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-2">
                 <span class="text-base">🌧️</span>
                 <div>
@@ -209,6 +227,7 @@
                 </div>
               </button>
 
+              <!-- Ozean -->
               <button onclick="playAmbientSound('ocean')" id="sound-btn-ocean" class="p-2 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-2">
                 <span class="text-base">🌊</span>
                 <div>
@@ -217,6 +236,7 @@
                 </div>
               </button>
 
+              <!-- Alpha-Beats -->
               <button onclick="playAmbientSound('alpha')" id="sound-btn-alpha" class="p-2 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-2">
                 <span class="text-base">🧠</span>
                 <div>
@@ -225,11 +245,48 @@
                 </div>
               </button>
 
+              <!-- Sanfter Wind -->
               <button onclick="playAmbientSound('wind')" id="sound-btn-wind" class="p-2 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-2">
                 <span class="text-base">🍃</span>
                 <div>
                   <div class="text-white font-bold text-xs" data-i18n="sound_wind">Sanfter Wind</div>
                   <div class="text-[10px] text-gray-400" data-i18n="sound_wind_desc">White Noise</div>
+                </div>
+              </button>
+
+              <!-- Wald -->
+              <button onclick="playAmbientSound('forest')" id="sound-btn-forest" class="p-2 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-2">
+                <span class="text-base">🌲</span>
+                <div>
+                  <div class="text-white font-bold text-xs">Wald</div>
+                  <div class="text-[10px] text-gray-400">Birds & Wind</div>
+                </div>
+              </button>
+
+              <!-- Kaminfeuer -->
+              <button onclick="playAmbientSound('fire')" id="sound-btn-fire" class="p-2 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-2">
+                <span class="text-base">🔥</span>
+                <div>
+                  <div class="text-white font-bold text-xs">Kaminfeuer</div>
+                  <div class="text-[10px] text-gray-400">Warm Crackle</div>
+                </div>
+              </button>
+
+              <!-- Cozy Café -->
+              <button onclick="playAmbientSound('cafe')" id="sound-btn-cafe" class="p-2 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-2">
+                <span class="text-base">☕</span>
+                <div>
+                  <div class="text-white font-bold text-xs">Cozy Café</div>
+                  <div class="text-[10px] text-gray-400">Murmur & Clinks</div>
+                </div>
+              </button>
+
+              <!-- Sommerwiese / Grillen -->
+              <button onclick="playAmbientSound('crickets')" id="sound-btn-crickets" class="p-2 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-2">
+                <span class="text-base">🦗</span>
+                <div>
+                  <div class="text-white font-bold text-xs">Sommerwiese</div>
+                  <div class="text-[10px] text-gray-400">Crickets Chirp</div>
                 </div>
               </button>
             </div>
@@ -344,9 +401,28 @@
         <div id="adhd-pick-box" class="p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl text-center font-bold text-base text-amber-300 min-h-[60px] flex items-center justify-center">
           <!-- Wird dynamisch befüllt -->
         </div>
-        <button onclick="pickRandomTask()" class="w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-400 transition cursor-pointer flex items-center justify-center gap-1.5">
+        <button onclick="pickRandomTask()" class="w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-400 transition cursor-pointer flex items-center justify-center gap-1.5 font-sans">
           <span data-i18n="next_suggestion">🎲 Nächster Vorschlag</span>
         </button>
+
+        <!-- Dopamin-Kick Button -->
+        <div class="border-t border-white/10 pt-4 mt-2">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[11px] font-bold text-pink-300 uppercase tracking-wider flex items-center gap-1">
+              <i data-lucide="zap" class="w-3.5 h-3.5 text-pink-400"></i>
+              Fokus-Blockade? Dopamin-Kick nötig!
+            </span>
+          </div>
+          <div id="dopamine-task-box" class="p-3 bg-pink-500/10 border border-pink-500/20 rounded-xl text-center text-xs text-pink-200 min-h-[50px] flex flex-col items-center justify-center gap-2">
+            <span id="dopamine-task-text" class="font-bold">Brauchst du einen schnellen Motivationsschub?</span>
+            <div class="flex items-center gap-2 w-full mt-1 justify-center">
+              <button onclick="triggerDopamineKick()" class="px-3 py-1.5 bg-pink-500/25 hover:bg-pink-500/40 border border-pink-500/40 text-pink-100 rounded-lg text-[10px] font-bold transition cursor-pointer font-sans">
+                ⚡ Kick starten (+10 XP)
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -383,8 +459,13 @@
   <!-- CONFETTI CANVAS -->
   <canvas id="confetti-canvas" class="pointer-events-none fixed inset-0 z-[2000] w-full h-full"></canvas>
 
-  <!-- Verknüpfungen zu den getrennten JS-Dateien -->
+  <!-- Verknüpfungen zu den aufgeteilten JS-Dateien (Reihenfolge ist wichtig!) -->
   <script src="data.js"></script>
+  <script src="state.js"></script>
+  <script src="utils.js"></script>
+  <script src="audio.js"></script>
+  <script src="timer.js"></script>
+  <script src="adhd.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

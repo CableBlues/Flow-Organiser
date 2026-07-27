@@ -1,61 +1,4 @@
-let state = loadState();
-let historyStack = loadHistory();
-let currentLang = localStorage.getItem('flowPlannerLanguage') || 'en';
-let currentTheme = localStorage.getItem('flowPlannerTheme') || 'aurora';
-let isMinimalist = localStorage.getItem('flowPlannerMinimalist') === 'true';
-let isTerminFormOpen = false;
-let currentGeneratedSteps = [];
-let timerSeconds = 25 * 60;
-let timerRunning = false;
-let timerInterval = null;
-
-function detectBrowserLanguage() {
-  let lang = navigator.language || navigator.userLanguage || 'en';
-  lang = lang.substring(0, 2);
-  return ['de', 'en', 'es', 'el'].includes(lang) ? lang : 'en';
-}
-function loadState() {
-  try {
-    const saved = localStorage.getItem(STORE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (parsed && parsed.items) {
-        if (!parsed.items.notes || Array.isArray(parsed.items.notes)) {
-          parsed.items.notes = Array.isArray(parsed.items.notes) ? parsed.items.notes.join('\n') : '';
-        }
-        if (parsed.streak === undefined) parsed.streak = 0;
-        if (!parsed.completedSteps) parsed.completedSteps = {};
-        return parsed;
-      }
-    }
-  } catch (e) {}
-  const todayStr = new Date().toISOString().split('T')[0];
-  const initialLang = 'en';
-  const localizedDefaults = DEFAULT_TASKS_BY_LANG[initialLang];
-  return {
-    version: 3, lastDate: todayStr,
-    items: { daily: [...localizedDefaults.daily], weekly: [...localizedDefaults.weekly], occasionally: [...localizedDefaults.occasionally], todo: [], termine: [], notes: '' },
-    done: [], archive: [], streak: 0, completedSteps: {}
-  };
-}
-function loadHistory() {
-  try {
-    const saved = localStorage.getItem(HISTORY_KEY);
-    if (saved) return JSON.parse(saved);
-  } catch (e) {}
-  return [];
-}
-function saveState() {
-  localStorage.setItem(STORE_KEY, JSON.stringify(state));
-  localStorage.setItem(HISTORY_KEY, JSON.stringify(historyStack));
-}
-function saveHistory() {
-  historyStack.push(JSON.parse(JSON.stringify(state)));
-  if (historyStack.length > 20) historyStack.shift();
-}
-function t(key) {
-  return TRANSLATIONS[currentLang]?.[key] || TRANSLATIONS.de[key] || key;
-}
+let currentZenTaskInfo = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   setTheme(currentTheme);
@@ -78,6 +21,7 @@ function setTheme(theme) {
   if (isMinimalist) document.body.classList.add('minimalist');
   localStorage.setItem('flowPlannerTheme', theme);
 }
+
 function setLanguage(lang) {
   const oldLang = currentLang;
   currentLang = lang;
@@ -92,6 +36,7 @@ function setLanguage(lang) {
   updateZenView();
   populateAdhdTaskSelect();
 }
+
 function translateUI() {
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
@@ -102,6 +47,7 @@ function translateUI() {
     if (TRANSLATIONS[currentLang]?.[key]) el.setAttribute('placeholder', TRANSLATIONS[currentLang][key]);
   });
 }
+
 function translateUserTasks(fromLang, toLang) {
   if (fromLang === toLang) return;
   saveHistory();
@@ -136,17 +82,7 @@ function translateUserTasks(fromLang, toLang) {
   }
   saveState();
 }
-function getGermanStandardKey(taskName) {
-  const cats = ['daily', 'weekly', 'occasionally'];
-  for (const cat of cats) {
-    for (const lang of ['de', 'en', 'es', 'el']) {
-      const list = DEFAULT_TASKS_BY_LANG[lang][cat];
-      const idx = list.indexOf(taskName);
-      if (idx !== -1) return DEFAULT_TASKS_BY_LANG['de'][cat][idx];
-    }
-  }
-  return taskName;
-}
+
 function toggleMinimalist() {
   isMinimalist = !isMinimalist;
   localStorage.setItem('flowPlannerMinimalist', String(isMinimalist));
@@ -158,51 +94,7 @@ function toggleMinimalist() {
   }
   showToast(isMinimalist ? 'Zen-Modus aktiv 🧘' : 'Zen-Modus aus');
 }
-function updateDateAndStreak() {
-  const locales = { de: 'de-DE', en: 'en-GB', el: 'el-GR', es: 'es-ES' };
-  try {
-    const str = new Intl.DateTimeFormat(locales[currentLang] || 'en-GB', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
-    document.getElementById('date-display').innerText = str;
-  } catch (e) {
-    document.getElementById('date-display').innerText = new Date().toLocaleDateString();
-  }
-}
-function playProceduralSound() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const now = ctx.currentTime;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(523.25, now);
-    osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.15);
-    gain.gain.setValueAtTime(0.15, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-    osc.start(now);
-    osc.stop(now + 0.35);
-  } catch(e) {}
-}
-function formatTerminDate(dateStr, timeStr) {
-  if (!dateStr) return timeStr ? `🕒 ${timeStr}` : '';
-  const today = new Date();
-  const todayISO = today.toISOString().split('T')[0];
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const tomorrowISO = tomorrow.toISOString().split('T')[0];
-  const localizedToday = { de: '📍 Heute', en: '📍 Today', es: '📍 Hoy', el: '📍 Σήμερα' }[currentLang] || 'Today';
-  const localizedTomorrow = { de: '🗓️ Morgen', en: '🗓️ Tomorrow', es: '🗓️ Mañana', el: '🗓️ Αύριο' }[currentLang] || 'Tomorrow';
-  let label = '';
-  if (dateStr === todayISO) label = localizedToday;
-  else if (dateStr === tomorrowISO) label = localizedTomorrow;
-  else {
-    const parts = dateStr.split('-');
-    if (parts.length === 3) label = `🗓️ ${parts[2]}.${parts[1]}.`;
-    else label = `🗓️ ${dateStr}`;
-  }
-  return timeStr ? `${label} · ${timeStr}` : label;
-}
+
 function toggleTerminForm(open) {
   isTerminFormOpen = open !== undefined ? open : !isTerminFormOpen;
   renderApp();
@@ -213,6 +105,7 @@ function toggleTerminForm(open) {
     }, 50);
   }
 }
+
 function handleAddTermin() {
   const titleEl = document.getElementById('add-termin-title');
   const dateEl = document.getElementById('add-termin-date');
@@ -233,6 +126,7 @@ function handleAddTermin() {
   populateAdhdTaskSelect();
   showToast(currentLang === 'de' ? 'Termin eingetragen! 📅' : 'Appointment saved! 📅');
 }
+
 function getTaskIcon(taskText, category = '') {
   if (!taskText) return 'check-circle';
   if (TASK_ICONS[taskText]) return TASK_ICONS[taskText];
@@ -448,6 +342,7 @@ function handleCompleteTask(category, index, event) {
   if (state.completedSteps) delete state.completedSteps[taskText];
   saveState(); playProceduralSound(); triggerConfetti(); showPraise(); renderApp(); updateZenView(); populateAdhdTaskSelect();
 }
+
 function deleteTask(category, index, event) {
   if (event) event.stopPropagation();
   saveHistory();
@@ -457,6 +352,7 @@ function deleteTask(category, index, event) {
   if (taskText && state.completedSteps) delete state.completedSteps[taskText];
   saveState(); showToast(currentLang === 'de' ? 'Aufgabe gelöscht' : 'Task deleted'); renderApp(); updateZenView(); populateAdhdTaskSelect();
 }
+
 function handleRestoreDoneTask(doneIndex) {
   saveHistory();
   const reversedIndex = state.done.length - 1 - doneIndex;
@@ -467,46 +363,6 @@ function handleRestoreDoneTask(doneIndex) {
   state.items[targetCat].push(item.task);
   saveState(); showToast(currentLang === 'de' ? 'Aufgabe wiederhergestellt' : 'Task restored'); renderApp(); updateZenView(); populateAdhdTaskSelect();
 }
-function handleUndo() {
-  if (historyStack.length === 0) {
-    showToast(currentLang === 'de' ? 'Keine Änderungen zum Rückgängig machen.' : 'Nothing to undo.');
-    return;
-  }
-  state = historyStack.pop(); saveState(); showToast(currentLang === 'de' ? 'Rückgängig gemacht.' : 'Undo applied.'); renderApp(); populateAdhdTaskSelect();
-}
-function handleReset() {
-  const confirmMsg = { de: 'Möchtest du den gesamten Plan wirklich zurücksetzen?', en: 'Do you really want to reset your entire plan?', es: '¿Seguro que quieres reiniciar todo el plan?', el: 'Θέλετε πραγματικά να επαναφέρετε ολόκληρο το πλάνο σας;' }[currentLang] || 'Reset?';
-  if (confirm(confirmMsg)) {
-    saveHistory();
-    const localizedDefaults = DEFAULT_TASKS_BY_LANG[currentLang];
-    state = {
-      version: 3, lastDate: new Date().toISOString().split('T')[0],
-      items: { daily: [...localizedDefaults.daily], weekly: [...localizedDefaults.weekly], occasionally: [...localizedDefaults.occasionally], todo: [], termine: [], notes: '' },
-      done: [], archive: [], streak: 0, completedSteps: {}
-    };
-    saveState(); showToast(currentLang === 'de' ? 'Zurückgesetzt!' : 'Reset complete!'); renderApp(); populateAdhdTaskSelect();
-  }
-}
-function handleSaveJson() {
-  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = `flow-plan-${state.lastDate}.json`; a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-function handleOpenFile(e) {
-  const file = e.target.files?.[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const imported = JSON.parse(reader.result);
-      if (imported && imported.items) {
-        saveHistory(); state = imported; if (!state.completedSteps) state.completedSteps = {};
-        saveState(); showToast(currentLang === 'de' ? 'Plan erfolgreich importiert!' : 'Plan imported successfully!'); renderApp(); populateAdhdTaskSelect();
-      }
-    } catch(err) { alert('Error importing file.'); }
-  };
-  reader.readAsText(file);
-}
 
 let draggedItemInfo = null;
 function handleDragStart(e, category, index) {
@@ -514,7 +370,9 @@ function handleDragStart(e, category, index) {
   e.dataTransfer.setData('text/plain', JSON.stringify({ category, index }));
   e.dataTransfer.effectAllowed = 'move';
 }
+
 function handleDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
+
 function handleItemDrop(e, targetCategory, targetIndex) {
   e.preventDefault(); e.stopPropagation();
   let data = draggedItemInfo;
@@ -527,6 +385,7 @@ function handleItemDrop(e, targetCategory, targetIndex) {
   state.items[targetCategory].splice(targetIndex, 0, item);
   draggedItemInfo = null; saveState(); renderApp(); populateAdhdTaskSelect();
 }
+
 function handleDrop(e, targetCategory) {
   e.preventDefault();
   let data = draggedItemInfo;
@@ -540,13 +399,6 @@ function handleDrop(e, targetCategory) {
   draggedItemInfo = null; saveState(); renderApp(); populateAdhdTaskSelect();
 }
 
-function showToast(msg) {
-  const overlay = document.getElementById('toast-overlay');
-  const card = document.getElementById('toast-card');
-  card.innerText = msg; overlay.classList.remove('hidden');
-  setTimeout(() => overlay.classList.add('hidden'), 2200);
-}
-
 let hoverPanelTimeout = null;
 function showPanelHover(panelName) {
   clearTimeout(hoverPanelTimeout);
@@ -557,12 +409,14 @@ function showPanelHover(panelName) {
     } else { el.classList.add('hidden'); }
   });
 }
+
 function hidePanelHover(panelName) {
   clearTimeout(hoverPanelTimeout);
   hoverPanelTimeout = setTimeout(() => {
     const el = document.getElementById(`panel-${panelName}`); if (el) el.classList.add('hidden');
   }, 250);
 }
+
 function togglePanel(panelName) {
   clearTimeout(hoverPanelTimeout);
   ['feedback', 'report', 'settings', 'soundscape', 'language'].forEach(p => {
@@ -586,6 +440,72 @@ function setReportTimeframe(tf) {
   });
   updateReportPanel();
 }
+
+// 7-Tage-Produktivitätsdiagramm rendern
+function renderWeeklyChart() {
+  const chartEl = document.getElementById('report-weekly-chart');
+  const totalWeekTasksEl = document.getElementById('report-total-week-tasks');
+  if (!chartEl) return;
+
+  chartEl.innerHTML = '';
+  const now = new Date();
+  const last7Days = [];
+  const weekdaysShort = {
+    de: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+    en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    es: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+    el: ['Κυρ', 'Δευ', 'Τρι', 'Τετ', 'Πεμ', 'Παρ', 'Σαβ']
+  };
+
+  // Erzeuge die letzten 7 Tage (inkl. heute)
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(now.getDate() - i);
+    const iso = d.toISOString().split('T')[0];
+    last7Days.push({
+      date: iso,
+      label: weekdaysShort[currentLang]?.[d.getDay()] || weekdaysShort['en'][d.getDay()],
+      count: 0
+    });
+  }
+
+  // Zähle Erledigungen aus state.done
+  let totalWeekCount = 0;
+  (state.done || []).forEach(item => {
+    const found = last7Days.find(day => day.date === item.date);
+    if (found) {
+      found.count++;
+      totalWeekCount++;
+    }
+  });
+
+  if (totalWeekTasksEl) {
+    totalWeekTasksEl.innerText = currentLang === 'de' 
+      ? `${totalWeekCount} Aufgaben` 
+      : `${totalWeekCount} Tasks`;
+  }
+
+  const maxCount = Math.max(...last7Days.map(d => d.count), 4); // Mindest-Maximalwert für eine schöne Skalierung
+
+  last7Days.forEach(day => {
+    const pct = (day.count / maxCount) * 100;
+    const isToday = day.date === now.toISOString().split('T')[0];
+    const barCol = isToday ? 'bg-amber-400' : 'bg-[var(--accent)]';
+    const barBg = isToday ? 'bg-amber-500/10 border-amber-400/20' : 'bg-[var(--accent)]/10 border-purple-500/20';
+
+    const barWrapper = document.createElement('div');
+    barWrapper.className = 'flex flex-col items-center gap-1.5 flex-1 max-w-[40px]';
+    barWrapper.innerHTML = `
+      <span class="text-[9px] font-bold font-mono ${day.count > 0 ? 'text-white' : 'text-gray-600'}">${day.count}</span>
+      <div class="w-5 h-12 ${barBg} border rounded-md relative flex items-end overflow-hidden" title="${day.date}: ${day.count}">
+        <div class="w-full ${barCol} transition-all duration-500 rounded-t animate-slide-up" style="height: ${pct}%"></div>
+      </div>
+      <span class="text-[9px] font-bold ${isToday ? 'text-amber-300 font-extrabold' : 'text-gray-400'}">${day.label}</span>
+    `;
+    chartEl.appendChild(barWrapper);
+  });
+}
+
 function updateReportPanel() {
   const now = new Date();
   const todayISO = now.toISOString().split('T')[0];
@@ -615,6 +535,10 @@ function updateReportPanel() {
   const pct = totalAll > 0 ? Math.round((count / totalAll) * 100) : 100;
   const todayEl = document.getElementById('report-today-count'); if (todayEl) todayEl.innerText = count;
   const rateEl = document.getElementById('report-rate-pct'); if (rateEl) rateEl.innerText = `${pct}%`;
+  
+  // Wöchentliche Aktivität zeichnen
+  renderWeeklyChart();
+
   const catBarsEl = document.getElementById('report-category-bars');
   if (catBarsEl) {
     catBarsEl.innerHTML = '';
@@ -653,6 +577,7 @@ function updateReportPanel() {
     }
   }
 }
+
 function submitFeedback() {
   const text = document.getElementById('feedback-text').value;
   if (text.trim()) {
@@ -661,86 +586,6 @@ function submitFeedback() {
   }
 }
 
-let activeTimerTask = null;
-function startTaskTimer(taskName, event) {
-  if (event) event.stopPropagation(); if (!taskName) return;
-  activeTimerTask = taskName; timerSeconds = 25 * 60;
-  if (!timerRunning) toggleTimer(); else updateTimerDisplay();
-  updateActiveTimerBadge(); renderApp(); showToast(`⏱️ ${t('timer_title')}: "${taskName}"`);
-}
-function updateActiveTimerBadge() {
-  const badge = document.getElementById('active-timer-badge');
-  if (badge) {
-    if (activeTimerTask && timerRunning) {
-      badge.classList.remove('hidden'); badge.innerText = `🎯 ${activeTimerTask}`; badge.title = `Fokus: ${activeTimerTask}`;
-    } else if (activeTimerTask) {
-      badge.classList.remove('hidden'); badge.innerText = `⏸️ ${activeTimerTask}`;
-    } else { badge.classList.add('hidden'); }
-  }
-}
-function setTimerPreset(mins) {
-  clearInterval(timerInterval); timerRunning = false; timerSeconds = mins * 60;
-  const btnHeader = document.getElementById('timer-toggle-btn');
-  const zenLabel = document.getElementById('zen-timer-btn-label');
-  const presetSel = document.getElementById('timer-preset-select');
-  if (presetSel) presetSel.value = String(mins);
-  if (btnHeader) {
-    btnHeader.innerHTML = '<i data-lucide="play" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>'; lucide.createIcons();
-  }
-  if (zenLabel) zenLabel.innerText = t('start');
-  updateTimerDisplay(); updateActiveTimerBadge(); renderApp(); showToast(`⏱️ ${mins}m`);
-}
-function toggleTimer() {
-  const btnHeader = document.getElementById('timer-toggle-btn');
-  const zenLabel = document.getElementById('zen-timer-btn-label');
-  const labelPause = { de: 'Pause', en: 'Pause', es: 'Pausa', el: 'Παύση' }[currentLang] || 'Pause';
-  if (timerRunning) {
-    clearInterval(timerInterval); timerRunning = false;
-    if (btnHeader) {
-      btnHeader.innerHTML = '<i data-lucide="play" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>'; lucide.createIcons();
-    }
-    if (zenLabel) zenLabel.innerText = t('start');
-    updateActiveTimerBadge(); renderApp();
-  } else {
-    timerRunning = true;
-    if (btnHeader) {
-      btnHeader.innerHTML = '<i data-lucide="pause" class="w-3.5 h-3.5 text-amber-400 animate-pulse"></i>'; lucide.createIcons();
-    }
-    if (zenLabel) zenLabel.innerText = labelPause;
-    updateActiveTimerBadge(); renderApp();
-    timerInterval = setInterval(() => {
-      if (timerSeconds > 0) {
-        timerSeconds--; updateTimerDisplay();
-      } else {
-        clearInterval(timerInterval); timerRunning = false; playProceduralSound();
-        showToast({ de: 'Fokus-Zeit abgelaufen! Zeit für eine Pause! ☕', en: 'Focus timer finished! Time for a short break! ☕', es: '¡Tiempo de enfoque terminado! ¡Tómate un descanso! ☕', el: 'Ο χρόνος εστίασης τελείωσε! Ώρα για ένα μικρό διάλειμμα! ☕' }[currentLang]);
-        if (btnHeader) {
-          btnHeader.innerHTML = '<i data-lucide="play" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>'; lucide.createIcons();
-        }
-        if (zenLabel) zenLabel.innerText = t('start');
-        updateActiveTimerBadge(); renderApp();
-      }
-    }, 1000);
-  }
-}
-function resetTimer() {
-  clearInterval(timerInterval); timerRunning = false; timerSeconds = 25 * 60; activeTimerTask = null;
-  const btnHeader = document.getElementById('timer-toggle-btn');
-  const zenLabel = document.getElementById('zen-timer-btn-label');
-  if (btnHeader) {
-    btnHeader.innerHTML = '<i data-lucide="play" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>'; lucide.createIcons();
-  }
-  if (zenLabel) zenLabel.innerText = t('start');
-  updateTimerDisplay(); updateActiveTimerBadge(); renderApp();
-}
-function updateTimerDisplay() {
-  const mins = Math.floor(timerSeconds / 60); const secs = timerSeconds % 60;
-  const str = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-  const headerDisp = document.getElementById('timer-display'); if (headerDisp) headerDisp.innerText = str;
-  const zenDisp = document.getElementById('zen-timer-display'); if (zenDisp) zenDisp.innerText = str;
-}
-
-let currentZenTaskInfo = null;
 function updateZenView() {
   const zenCatEl = document.getElementById('zen-task-cat');
   const zenTextEl = document.getElementById('zen-task-text');
@@ -764,6 +609,7 @@ function updateZenView() {
   }
   updateTimerDisplay(); lucide.createIcons();
 }
+
 function zenCompleteCurrentTask() {
   if (!currentZenTaskInfo) {
     showToast(currentLang === 'de' ? 'Keine aktive Aufgabe zum Erledigen.' : 'No active task.'); return;
@@ -772,316 +618,6 @@ function zenCompleteCurrentTask() {
   const idx = (state.items[cat] || []).findIndex(t => (typeof t === 'object' ? t.task : t) === task);
   if (idx !== -1) handleCompleteTask(cat, idx);
   updateZenView();
-}
-
-let currentActiveTaskRef = null;
-function openAdhdModal(type) {
-  if (type === 'pick') {
-    const modal = document.getElementById('adhd-pick-modal');
-    if (modal) modal.classList.remove('hidden');
-    pickRandomTask();
-  } else if (type === 'steps') {
-    const modal = document.getElementById('adhd-steps-modal');
-    if (modal) modal.classList.remove('hidden');
-    populateAdhdTaskSelect();
-  }
-}
-function openTaskStepsModal(category, index, event) {
-  if (event) event.stopPropagation();
-  const task = state.items[category]?.[index]; if (!task) return;
-  currentActiveTaskRef = { category, index, task };
-  openAdhdModal('steps');
-  const select = document.getElementById('adhd-task-select');
-  if (select) {
-    let found = false;
-    for (let opt of select.options) {
-      if (opt.value === task) { select.value = task; found = true; break; }
-    }
-    if (!found) select.value = '';
-  }
-  generateTaskSteps(task);
-}
-function closeAdhdModal() {
-  const pickModal = document.getElementById('adhd-pick-modal');
-  const stepsModal = document.getElementById('adhd-steps-modal');
-  if (pickModal) pickModal.classList.add('hidden');
-  if (stepsModal) stepsModal.classList.add('hidden');
-}
-function populateAdhdTaskSelect() {
-  const select = document.getElementById('adhd-task-select'); if (!select) return;
-  select.innerHTML = `<option value="">${t('dropdown_placeholder')}</option>`;
-  const allTasks = [];
-  ['daily', 'weekly', 'todo', 'occasionally'].forEach(cat => {
-    (state.items[cat] || []).forEach(task => { if (!allTasks.includes(task)) allTasks.push(task); });
-  });
-  const standardPresetsInCurrentLang = [...DEFAULT_TASKS_BY_LANG[currentLang].daily, ...DEFAULT_TASKS_BY_LANG[currentLang].weekly, ...DEFAULT_TASKS_BY_LANG[currentLang].occasionally];
-  standardPresetsInCurrentLang.forEach(task => { if (!allTasks.includes(task)) allTasks.push(task); });
-  allTasks.forEach(task => {
-    const opt = document.createElement('option'); opt.value = task; opt.innerText = task; select.appendChild(opt);
-  });
-}
-function onAdhdSelectTask() {
-  const select = document.getElementById('adhd-task-select');
-  const val = select ? select.value : '';
-  if (val) { currentActiveTaskRef = { task: val }; generateTaskSteps(val); }
-}
-function pickRandomTask() {
-  let chosen = null;
-  const dailyTasks = (state.items.daily || []).map(t => ({ cat: 'daily', task: typeof t === 'object' ? t.task : t }));
-  const weeklyTasks = (state.items.weekly || []).map(t => ({ cat: 'weekly', task: typeof t === 'object' ? t.task : t }));
-  const todoTasks = (state.items.todo || []).map(t => ({ cat: 'todo', task: typeof t === 'object' ? t.task : t }));
-  const occasionallyTasks = (state.items.occasionally || []).map(t => ({ cat: 'occasionally', task: typeof t === 'object' ? t.task : t }));
-  if (dailyTasks.length > 0) chosen = dailyTasks[Math.floor(Math.random() * dailyTasks.length)];
-  else {
-    const mixedMidPriority = []; const maxLen = Math.max(todoTasks.length, weeklyTasks.length);
-    for (let i = 0; i < maxLen; i++) {
-      if (todoTasks[i]) mixedMidPriority.push(todoTasks[i]); if (weeklyTasks[i]) mixedMidPriority.push(weeklyTasks[i]);
-    }
-    if (mixedMidPriority.length > 0) chosen = mixedMidPriority[Math.floor(Math.random() * Math.min(mixedMidPriority.length, 3))];
-    else if (occasionallyTasks.length > 0) chosen = occasionallyTasks[Math.floor(Math.random() * occasionallyTasks.length)];
-  }
-  const box = document.getElementById('adhd-pick-box');
-  if (!chosen) {
-    const doneMsg = { de: '🎉 Alle Aufgaben erledigt! Fantastisch, genieß deinen Tag!', en: '🎉 All tasks completed! Fantastic, enjoy your day!', es: '🎉 ¡Todas las Aufgaben erledigt! ¡Disfruta de tu día!', el: '🎉 Όλες οι εργασίες ολοκληρώθηκαν! Απολαύστε τη μέρα σας!' }[currentLang];
-    box.innerHTML = `<div class="text-emerald-400 font-bold">${doneMsg}</div>`;
-  } else {
-    const catName = t(chosen.cat);
-    const taskIdx = (state.items[chosen.cat] || []).findIndex(item => (typeof item === 'object' ? item.task : item) === chosen.task);
-    const stepsBtnLabel = t('open_steps'); const doneBtnLabel = t('completed');
-    box.innerHTML = `
-      <div class="flex flex-col items-center gap-2 w-full py-1">
-        <div class="text-[11px] font-semibold text-amber-400/90 uppercase tracking-wider">${t('next_rec')} (${catName})</div>
-        <div class="text-base font-bold text-white px-2 break-words text-center">${chosen.task}</div>
-        <div class="flex flex-wrap items-center justify-center gap-2 mt-2 w-full">
-          <button onclick="startTaskTimer('${chosen.task.replace(/'/g, "\\'")}')" class="px-3 py-1.5 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-purple-300 rounded-lg text-xs font-semibold cursor-pointer transition flex items-center gap-1 hover:scale-105 active:scale-95"><i data-lucide="timer" class="w-3.5 h-3.5"></i><span>Timer</span></button>
-          <button onclick="openTaskStepsModal('${chosen.cat}', ${taskIdx})" class="px-3 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 rounded-lg text-xs font-semibold cursor-pointer transition flex items-center gap-1"><i data-lucide="footprints" class="w-3.5 h-3.5"></i><span>${stepsBtnLabel}</span></button>
-          <button onclick="handleCompleteTask('${chosen.cat}', ${taskIdx}); pickRandomTask();" class="px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 rounded-lg text-xs font-semibold cursor-pointer transition flex items-center gap-1"><i data-lucide="check" class="w-3.5 h-3.5"></i><span>${doneBtnLabel}</span></button>
-        </div>
-      </div>
-    `;
-    lucide.createIcons();
-  }
-}
-function generateTaskSteps(specificTask) {
-  let val = specificTask;
-  if (!val) {
-    const select = document.getElementById('adhd-task-select'); val = select ? select.value : '';
-  }
-  if (!val) {
-    const resBox = document.getElementById('adhd-steps-result');
-    if (resBox) resBox.innerHTML = `<p class="text-xs text-gray-400 italic text-center py-4">${currentLang === 'de' ? 'Bitte wähle oben eine Aufgabe aus.' : 'Please select a task.'}</p>`;
-    return;
-  }
-  if (!currentActiveTaskRef || currentActiveTaskRef.task !== val) currentActiveTaskRef = { task: val };
-  const resBox = document.getElementById('adhd-steps-result'); if (!resBox) return;
-  const deKey = getGermanStandardKey(val);
-  let steps = TASK_STEPS_DATABASE[deKey]?.[currentLang];
-  if (!steps || steps.length === 0) {
-    const template = FALLBACK_STEPS[currentLang] || FALLBACK_STEPS['en'];
-    steps = template.map(step => step.replace('{task}', val));
-  }
-  currentGeneratedSteps = steps; resBox.innerHTML = '';
-  if (!state.completedSteps) state.completedSteps = {};
-  const completedIndices = state.completedSteps[val] || [];
-  steps.forEach((stepText, idx) => {
-    const isChecked = completedIndices.includes(idx);
-    const label = document.createElement('label');
-    label.className = 'flex items-start gap-2.5 p-2.5 bg-white/[0.03] hover:bg-white/[0.07] rounded-xl border border-white/5 cursor-pointer transition text-gray-200 leading-snug my-1';
-    label.innerHTML = `
-      <input type="checkbox" onchange="toggleStepCheck(this, ${idx})" ${isChecked ? 'checked' : ''} class="mt-0.5 h-4 w-4 rounded border-gray-600 bg-black/50 text-[var(--accent)] focus:ring-0 accent-purple-500 cursor-pointer">
-      <span class="step-text flex-1 ${isChecked ? 'line-through text-gray-500' : ''}">${stepText}</span>
-    `;
-    resBox.appendChild(label);
-  });
-  lucide.createIcons();
-}
-function toggleStepCheck(checkbox, stepIndex) {
-  const label = checkbox.closest('label');
-  const textSpan = label.querySelector('.step-text');
-  let targetTask = currentActiveTaskRef?.task;
-  if (!targetTask) {
-    const select = document.getElementById('adhd-task-select'); targetTask = select ? select.value : '';
-  }
-  if (!state.completedSteps) state.completedSteps = {};
-  if (!state.completedSteps[targetTask]) state.completedSteps[targetTask] = [];
-  if (checkbox.checked) {
-    textSpan.classList.add('line-through', 'text-gray-500');
-    if (!state.completedSteps[targetTask].includes(stepIndex)) state.completedSteps[targetTask].push(stepIndex);
-    playProceduralSound();
-  } else {
-    textSpan.classList.remove('line-through', 'text-gray-500');
-    state.completedSteps[targetTask] = state.completedSteps[targetTask].filter(i => i !== stepIndex);
-  }
-  saveState();
-  const resBox = document.getElementById('adhd-steps-result');
-  const checkboxes = Array.from(resBox.querySelectorAll('input[type="checkbox"]'));
-  if (checkboxes.length > 0 && checkboxes.every(cb => cb.checked)) {
-    let targetCat = currentActiveTaskRef?.category;
-    if (targetTask) {
-      let catToUse = targetCat; let idxToUse = -1;
-      if (catToUse && state.items[catToUse]) idxToUse = state.items[catToUse].indexOf(targetTask);
-      if (idxToUse === -1) {
-        for (const cat of ['daily', 'weekly', 'todo', 'occasionally', 'termine']) {
-          const idx = (state.items[cat] || []).indexOf(targetTask);
-          if (idx !== -1) { catToUse = cat; idxToUse = idx; break; }
-        }
-      }
-      setTimeout(() => {
-        closeAdhdModal(); delete state.completedSteps[targetTask]; saveState();
-        if (catToUse && idxToUse !== -1) handleCompleteTask(catToUse, idxToUse);
-        else {
-          playProceduralSound(); showPraise();
-          showToast({
-            de: `🎉 Alle Schritte gelöst! "${targetTask}" ist erledigt!`,
-            en: `🎉 All steps completed! "${targetTask}" is done!`,
-            es: `🎉 ¡Todos los pasos completados! ¡"${targetTask}" está terminado!`,
-            el: `🎉 Όλα τα βήματα ολοκληρώθηκαν! Η εργασία "${targetTask}" έγινε!`
-          }[currentLang]);
-        }
-      }, 350);
-    }
-  }
-}
-
-let audioCtx = null;
-let currentSoundType = null;
-let soundGainNode = null;
-let soundOscillators = [];
-let soundMasterVolume = 0.5;
-let activeUserAudio = null;
-
-function initAudioContext() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-}
-function playAmbientSound(type) {
-  initAudioContext(); stopAmbientSound(true);
-  currentSoundType = type; soundGainNode = audioCtx.createGain();
-  soundGainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-  soundGainNode.connect(audioCtx.destination);
-  soundGainNode.gain.linearRampToValueAtTime(soundMasterVolume * 0.25, audioCtx.currentTime + 1.5);
-  if (type === 'rain' || type === 'wind' || type === 'ocean') {
-    const bufferSize = audioCtx.sampleRate * 2;
-    const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-    const output = noiseBuffer.getChannelData(0);
-    let lastOut = 0.0;
-    for (let i = 0; i < bufferSize; i++) {
-      const white = Math.random() * 2 - 1;
-      if (type === 'rain') {
-        lastOut = (lastOut * 0.95) + (white * 0.05); output[i] = lastOut * 3;
-      } else if (type === 'ocean') {
-        lastOut = (lastOut * 0.98) + (white * 0.02); output[i] = lastOut * 4;
-      } else output[i] = white * 0.15;
-    }
-    const whiteNoise = audioCtx.createBufferSource();
-    whiteNoise.buffer = noiseBuffer; whiteNoise.loop = true;
-    const filter = audioCtx.createBiquadFilter(); filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(type === 'rain' ? 800 : (type === 'ocean' ? 400 : 1200), audioCtx.currentTime);
-    whiteNoise.connect(filter); filter.connect(soundGainNode); whiteNoise.start();
-    soundOscillators.push(whiteNoise);
-  } else if (type === 'alpha') {
-    const oscL = audioCtx.createOscillator(); const oscR = audioCtx.createOscillator();
-    const merger = audioCtx.createChannelMerger(2);
-    oscL.frequency.setValueAtTime(200, audioCtx.currentTime);
-    oscR.frequency.setValueAtTime(210, audioCtx.currentTime);
-    oscL.connect(merger, 0, 0); oscR.connect(merger, 0, 1);
-    merger.connect(soundGainNode); oscL.start(); oscR.start();
-    soundOscillators.push(oscL, oscR);
-  }
-  updateSoundscapeUI();
-  const toastLabel = { de: 'Focus Sound: gestartet 🎧', en: 'Focus Sound: started 🎧', es: 'Sonido de Enfoque: iniciado 🎧', el: 'Ήχος Εστίασης: ξεκίνησε 🎧' }[currentLang];
-  showToast(`${toastLabel}`);
-}
-function stopAmbientSound(silent = false) {
-  if (soundGainNode && audioCtx) {
-    const activeGain = soundGainNode; const activeOscs = [...soundOscillators];
-    const activeAudio = activeUserAudio;
-    activeGain.gain.setValueAtTime(activeGain.gain.value, audioCtx.currentTime);
-    activeGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.8);
-    setTimeout(() => {
-      activeOscs.forEach(osc => { try { osc.stop(); } catch(e) {} });
-      if (activeAudio) {
-        try {
-          activeAudio.pause();
-          activeAudio.src = "";
-        } catch(e) {}
-      }
-    }, 850);
-  }
-  soundOscillators = []; activeUserAudio = null; currentSoundType = null; updateSoundscapeUI();
-  const nameLabel = document.getElementById('user-sound-name'); if (nameLabel) nameLabel.classList.add('hidden');
-  if (!silent) {
-    const toastLabel = { de: 'Focus Sound gestoppt', en: 'Focus Sound stopped', es: 'Sonido de enfoque detenido', el: 'Ήχος εστίασης σταμάτησε' }[currentLang];
-    showToast(toastLabel);
-  }
-}
-function handleUserSoundFile(event) {
-  const file = event.target.files?.[0]; if (!file) return;
-  initAudioContext(); stopAmbientSound(true);
-  const fileUrl = URL.createObjectURL(file);
-  const audio = new Audio(fileUrl); audio.loop = true; activeUserAudio = audio;
-  currentSoundType = 'custom'; soundGainNode = audioCtx.createGain();
-  soundGainNode.gain.setValueAtTime(0, audioCtx.currentTime); soundGainNode.connect(audioCtx.destination);
-  soundGainNode.gain.linearRampToValueAtTime(soundMasterVolume * 0.25, audioCtx.currentTime + 1.5);
-  const source = audioCtx.createMediaElementSource(audio); source.connect(soundGainNode);
-  audio.play().catch(e => { showToast("Fehler beim Abspielen der Datei."); });
-  const nameLabel = document.getElementById('user-sound-name');
-  if (nameLabel) { nameLabel.innerText = `🎵 ${file.name}`; nameLabel.classList.remove('hidden'); }
-  updateSoundscapeUI(); showToast(currentLang === 'de' ? `Eigener Sound gestartet: ${file.name}` : `Custom sound started: ${file.name}`);
-}
-function setSoundVolume(val) {
-  soundMasterVolume = parseFloat(val);
-  if (soundGainNode && audioCtx) soundGainNode.gain.setValueAtTime(soundMasterVolume * 0.25, audioCtx.currentTime);
-}
-function updateSoundscapeUI() {
-  ['rain', 'ocean', 'alpha', 'wind'].forEach(st => {
-    const btn = document.getElementById(`sound-btn-${st}`);
-    if (btn) {
-      if (st === currentSoundType) btn.className = 'p-2 bg-blue-500/30 border border-blue-400 rounded-xl text-left text-xs text-white font-bold transition cursor-pointer flex items-center gap-2 shadow-sm animate-pulse';
-      else btn.className = 'p-2 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-2';
-    }
-  });
-  const indicator = document.getElementById('soundscape-indicator');
-  if (indicator) {
-    if (currentSoundType) indicator.classList.remove('hidden');
-    else indicator.classList.add('hidden');
-  }
-}
-
-function triggerConfetti() {
-  const canvas = document.getElementById('confetti-canvas'); if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-  const particles = []; const colors = ['#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#38bdf8', '#a855f7'];
-  for (let i = 0; i < 60; i++) {
-    particles.push({
-      x: canvas.width / 2 + (Math.random() - 0.5) * 200, y: canvas.height / 3 + (Math.random() - 0.5) * 100,
-      vx: (Math.random() - 0.5) * 12, vy: (Math.random() - 0.8) * 12, size: Math.random() * 7 + 4,
-      color: colors[Math.floor(Math.random() * colors.length)], life: 1, decay: Math.random() * 0.02 + 0.015,
-      rotation: Math.random() * Math.PI * 2, vRot: (Math.random() - 0.5) * 0.2
-    });
-  }
-  function frame() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height); let active = false;
-    particles.forEach(p => {
-      if (p.life > 0) {
-        active = true; p.x += p.vx; p.y += p.vy; p.vy += 0.3; p.life -= p.decay; p.rotation += p.vRot;
-        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rotation); ctx.fillStyle = p.color;
-        ctx.globalAlpha = Math.max(0, p.life); ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size); ctx.restore();
-      }
-    });
-    if (active) requestAnimationFrame(frame); else ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }
-  requestAnimationFrame(frame);
-}
-function showPraise() {
-  const praises = TRANSLATIONS[currentLang]?.praise || TRANSLATIONS.de.praise;
-  const msg = praises[Math.floor(Math.random() * praises.length)];
-  const overlay = document.getElementById('praise-overlay');
-  const card = document.getElementById('praise-card');
-  card.innerText = msg; overlay.classList.remove('hidden');
-  card.style.animation = 'scaleBounce 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards';
-  setTimeout(() => overlay.classList.add('hidden'), 1100);
 }
 
 document.addEventListener('keydown', (e) => {
