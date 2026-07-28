@@ -73,8 +73,14 @@
       <!-- GRUPPE 2: ADHD Tools & Date & Timer (Mitte - Einzeilig & Zentral) -->
       <div class="flex items-center gap-3.5 p-1.5 bg-white/[0.02] border border-white/10 rounded-xl shadow-sm mx-auto shrink-0">
         <!-- Minimalistischer Timer (Vor "Was nun?" mit optischem Abstand) -->
-        <div class="flex items-center gap-2 pr-4 border-r border-white/10 mr-2 h-8">
-          <span id="timer-display" class="font-display font-extrabold text-sm tracking-wider text-amber-200">25:00</span>
+        <div class="flex items-center gap-2 pr-4 border-r border-white/10 mr-2 h-10">
+          <div class="flex flex-col items-start justify-center min-w-[50px]">
+            <span id="timer-display" class="font-display font-extrabold text-sm tracking-wider text-amber-200 leading-none">25:00</span>
+            <!-- Sleek progress bar -->
+            <div class="w-full h-1 bg-white/10 rounded-full mt-1 overflow-hidden">
+              <div id="timer-progress-bar" class="h-full bg-amber-400 transition-all duration-300" style="width: 100%"></div>
+            </div>
+          </div>
           
           <select id="timer-preset-select" onchange="setTimerPreset(parseInt(this.value))" class="px-1 py-0.5 bg-black/60 border border-white/15 hover:border-amber-400/50 rounded-md text-[9px] font-bold text-amber-300 outline-none cursor-pointer p-0.5 transition">
             <option value="5">5m</option>
@@ -163,6 +169,17 @@
               </div>
             </div>
 
+            <!-- 7-Day Productivity Bar Chart -->
+            <div class="mb-3 p-3 bg-white/[0.02] border border-white/10 rounded-xl">
+              <h5 class="text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-2 flex items-center justify-between">
+                <span>7-Tage-Aktivität</span>
+                <span id="report-total-week-tasks" class="font-mono text-purple-300 font-bold">0 Tasks</span>
+              </h5>
+              <div id="report-weekly-chart" class="flex items-end justify-between h-16 pt-2 px-1">
+                <!-- Dynamically populated via JS -->
+              </div>
+            </div>
+
             <!-- Category Progress Bars -->
             <div id="report-category-bars" class="space-y-1.5 mb-3 text-xs">
               <!-- Dynamically populated -->
@@ -201,8 +218,9 @@
               <button onclick="togglePanel('soundscape')" class="text-gray-400 hover:text-white text-xs font-bold p-1">✕</button>
             </div>
 
-            <!-- Presets Grid -->
+            <!-- Presets Grid (Jetzt mit 8 procedere-generierten Sounds!) -->
             <div class="grid grid-cols-2 gap-2 mb-3">
+              <!-- Regen -->
               <button onclick="playAmbientSound('rain')" id="sound-btn-rain" class="p-2 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-2">
                 <span class="text-base">🌧️</span>
                 <div>
@@ -211,6 +229,7 @@
                 </div>
               </button>
 
+              <!-- Ozean -->
               <button onclick="playAmbientSound('ocean')" id="sound-btn-ocean" class="p-2 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-2">
                 <span class="text-base">🌊</span>
                 <div>
@@ -219,6 +238,7 @@
                 </div>
               </button>
 
+              <!-- Alpha-Beats -->
               <button onclick="playAmbientSound('alpha')" id="sound-btn-alpha" class="p-2 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-2">
                 <span class="text-base">🧠</span>
                 <div>
@@ -227,11 +247,48 @@
                 </div>
               </button>
 
+              <!-- Sanfter Wind -->
               <button onclick="playAmbientSound('wind')" id="sound-btn-wind" class="p-2 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-2">
                 <span class="text-base">🍃</span>
                 <div>
                   <div class="text-white font-bold text-xs" data-i18n="sound_wind">Sanfter Wind</div>
                   <div class="text-[10px] text-gray-400" data-i18n="sound_wind_desc">White Noise</div>
+                </div>
+              </button>
+
+              <!-- Wald -->
+              <button onclick="playAmbientSound('forest')" id="sound-btn-forest" class="p-2 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-2">
+                <span class="text-base">🌲</span>
+                <div>
+                  <div class="text-white font-bold text-xs">Wald</div>
+                  <div class="text-[10px] text-gray-400">Birds & Wind</div>
+                </div>
+              </button>
+
+              <!-- Kaminfeuer -->
+              <button onclick="playAmbientSound('fire')" id="sound-btn-fire" class="p-2 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-2">
+                <span class="text-base">🔥</span>
+                <div>
+                  <div class="text-white font-bold text-xs">Kaminfeuer</div>
+                  <div class="text-[10px] text-gray-400">Warm Crackle</div>
+                </div>
+              </button>
+
+              <!-- Cozy Café -->
+              <button onclick="playAmbientSound('cafe')" id="sound-btn-cafe" class="p-2 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-2">
+                <span class="text-base">☕</span>
+                <div>
+                  <div class="text-white font-bold text-xs">Cozy Café</div>
+                  <div class="text-[10px] text-gray-400">Murmur & Clinks</div>
+                </div>
+              </button>
+
+              <!-- Sommerwiese / Grillen -->
+              <button onclick="playAmbientSound('crickets')" id="sound-btn-crickets" class="p-2 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-2">
+                <span class="text-base">🦗</span>
+                <div>
+                  <div class="text-white font-bold text-xs">Sommerwiese</div>
+                  <div class="text-[10px] text-gray-400">Crickets Chirp</div>
                 </div>
               </button>
             </div>
@@ -346,9 +403,28 @@
         <div id="adhd-pick-box" class="p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl text-center font-bold text-base text-amber-300 min-h-[60px] flex items-center justify-center">
           <!-- Wird dynamisch befüllt -->
         </div>
-        <button onclick="pickRandomTask()" class="w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-400 transition cursor-pointer flex items-center justify-center gap-1.5">
+        <button onclick="pickRandomTask()" class="w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl hover:bg-amber-400 transition cursor-pointer flex items-center justify-center gap-1.5 font-sans">
           <span data-i18n="next_suggestion">🎲 Nächster Vorschlag</span>
         </button>
+
+        <!-- Dopamin-Kick Button -->
+        <div class="border-t border-white/10 pt-4 mt-2">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[11px] font-bold text-pink-300 uppercase tracking-wider flex items-center gap-1">
+              <i data-lucide="zap" class="w-3.5 h-3.5 text-pink-400"></i>
+              Fokus-Blockade? Dopamin-Kick nötig!
+            </span>
+          </div>
+          <div id="dopamine-task-box" class="p-3 bg-pink-500/10 border border-pink-500/20 rounded-xl text-center text-xs text-pink-200 min-h-[50px] flex flex-col items-center justify-center gap-2">
+            <span id="dopamine-task-text" class="font-bold">Brauchst du einen schnellen Motivationsschub?</span>
+            <div class="flex items-center gap-2 w-full mt-1 justify-center">
+              <button onclick="triggerDopamineKick()" class="px-3 py-1.5 bg-pink-500/25 hover:bg-pink-500/40 border border-pink-500/40 text-pink-100 rounded-lg text-[10px] font-bold transition cursor-pointer font-sans">
+                ⚡ Kick starten (+10 XP)
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -761,7 +837,18 @@ let currentSoundType = null;
 let soundGainNode = null;
 let soundOscillators = [];
 let soundMasterVolume = 0.5;
-let activeUserAudio = null;
+let activeUserAudio = null; // Hier speichern wir das aktive HTML5-Audio-Objekt
+
+// Zuverlässige Audio-Loops von Wikimedia Commons
+const SOUND_URLS = {
+  rain: "https://upload.wikimedia.org/wikipedia/commons/8/80/Bourne_woods_rain_2020-05-10_0757.mp3",
+  ocean: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Het_kabbelen_van_water_-_SoundCloud_-_Beeld_en_Geluid.ogg",
+  wind: "https://upload.wikimedia.org/wikipedia/commons/a/a2/Bourne_woods_windy_2020-05-05_0753.mp3",
+  forest: "https://upload.wikimedia.org/wikipedia/commons/e/ee/Bourne_Woods_2020-05-29_0758.mp3",
+  fire: "https://upload.wikimedia.org/wikipedia/commons/5/52/Campfire_sound_ambience.ogg",
+  cafe: "https://upload.wikimedia.org/wikipedia/commons/0/0e/Bertoldsbrunnen_mit_Tram.mp3",
+  crickets: "https://upload.wikimedia.org/wikipedia/commons/1/12/Cicada_calling_in_Irving%2C_TX_in_June_of_2012.ogg"
+};
 
 function initAudioContext() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -769,31 +856,17 @@ function initAudioContext() {
 }
 
 function playAmbientSound(type) {
-  initAudioContext(); stopAmbientSound(true);
-  currentSoundType = type; soundGainNode = audioCtx.createGain();
-  soundGainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-  soundGainNode.connect(audioCtx.destination);
-  soundGainNode.gain.linearRampToValueAtTime(soundMasterVolume * 0.25, audioCtx.currentTime + 1.5);
-  if (type === 'rain' || type === 'wind' || type === 'ocean') {
-    const bufferSize = audioCtx.sampleRate * 2;
-    const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-    const output = noiseBuffer.getChannelData(0);
-    let lastOut = 0.0;
-    for (let i = 0; i < bufferSize; i++) {
-      const white = Math.random() * 2 - 1;
-      if (type === 'rain') {
-        lastOut = (lastOut * 0.95) + (white * 0.05); output[i] = lastOut * 3;
-      } else if (type === 'ocean') {
-        lastOut = (lastOut * 0.98) + (white * 0.02); output[i] = lastOut * 4;
-      } else output[i] = white * 0.15;
-    }
-    const whiteNoise = audioCtx.createBufferSource();
-    whiteNoise.buffer = noiseBuffer; whiteNoise.loop = true;
-    const filter = audioCtx.createBiquadFilter(); filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(type === 'rain' ? 800 : (type === 'ocean' ? 400 : 1200), audioCtx.currentTime);
-    whiteNoise.connect(filter); filter.connect(soundGainNode); whiteNoise.start();
-    soundOscillators.push(whiteNoise);
-  } else if (type === 'alpha') {
+  stopAmbientSound(true); // Vorherigen Sound sauber stoppen
+  currentSoundType = type;
+
+  if (type === 'alpha') {
+    // Binaurale Alpha-Schwingungen benötigen den AudioContext
+    initAudioContext();
+    soundGainNode = audioCtx.createGain();
+    soundGainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    soundGainNode.connect(audioCtx.destination);
+    soundGainNode.gain.linearRampToValueAtTime(soundMasterVolume * 0.25, audioCtx.currentTime + 1.5);
+
     const oscL = audioCtx.createOscillator(); const oscR = audioCtx.createOscillator();
     const merger = audioCtx.createChannelMerger(2);
     oscL.frequency.setValueAtTime(200, audioCtx.currentTime);
@@ -801,29 +874,50 @@ function playAmbientSound(type) {
     oscL.connect(merger, 0, 0); oscR.connect(merger, 0, 1);
     merger.connect(soundGainNode); oscL.start(); oscR.start();
     soundOscillators.push(oscL, oscR);
+  } else if (SOUND_URLS[type]) {
+    // Umgehung der CORS-Sperre: Wir spielen die Datei direkt ab (ohne AudioContext)
+    const audio = new Audio(SOUND_URLS[type]);
+    audio.loop = true;
+    // Regulierung der Lautstärke direkt am Element (0.0 bis 1.0)
+    audio.volume = soundMasterVolume * 0.5; 
+    activeUserAudio = audio;
+    
+    audio.play().catch(e => {
+      console.log("Audio-Wiedergabe verzögert:", e);
+      showToast("Fokus Sound wird geladen...");
+    });
   }
+
   updateSoundscapeUI();
-  const toastLabel = { de: 'Focus Sound: gestartet 🎧', en: 'Focus Sound: started 🎧', es: 'Sonido de Enfoque: iniciado 🎧', el: 'Ήχος Εστίασης: ξεκίνησε 🎧' }[currentLang];
+  const toastLabel = { de: 'Focus Sound gestartet 🎧', en: 'Focus Sound started 🎧', es: 'Sonido de enfoque iniciado 🎧', el: 'Ήχος εστίασης ξεκίνησε 🎧' }[currentLang];
   showToast(`${toastLabel}`);
 }
 
 function stopAmbientSound(silent = false) {
+  // 1. Synthetischen Sound (Alpha) stoppen
   if (soundGainNode && audioCtx) {
-    const activeGain = soundGainNode; const activeOscs = [...soundOscillators];
-    const activeAudio = activeUserAudio;
+    const activeGain = soundGainNode;
+    const activeOscs = [...soundOscillators];
     activeGain.gain.setValueAtTime(activeGain.gain.value, audioCtx.currentTime);
-    activeGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.8);
+    activeGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
     setTimeout(() => {
       activeOscs.forEach(osc => { try { osc.stop(); } catch(e) {} });
-      if (activeAudio) {
-        try {
-          activeAudio.pause();
-          activeAudio.src = "";
-        } catch(e) {}
-      }
-    }, 850);
+    }, 350);
   }
-  soundOscillators = []; activeUserAudio = null; currentSoundType = null; updateSoundscapeUI();
+  soundOscillators = [];
+
+  // 2. Realen Natur-Sound stoppen
+  if (activeUserAudio) {
+    try {
+      activeUserAudio.pause();
+      activeUserAudio.src = "";
+    } catch(e) {}
+    activeUserAudio = null;
+  }
+
+  currentSoundType = null;
+  updateSoundscapeUI();
+  
   const nameLabel = document.getElementById('user-sound-name'); if (nameLabel) nameLabel.classList.add('hidden');
   if (!silent) {
     const toastLabel = { de: 'Focus Sound gestoppt', en: 'Focus Sound stopped', es: 'Sonido de enfoque detenido', el: 'Ήχος εστίασης σταμάτησε' }[currentLang];
@@ -833,13 +927,14 @@ function stopAmbientSound(silent = false) {
 
 function handleUserSoundFile(event) {
   const file = event.target.files?.[0]; if (!file) return;
-  initAudioContext(); stopAmbientSound(true);
+  stopAmbientSound(true);
   const fileUrl = URL.createObjectURL(file);
-  const audio = new Audio(fileUrl); audio.loop = true; activeUserAudio = audio;
-  currentSoundType = 'custom'; soundGainNode = audioCtx.createGain();
-  soundGainNode.gain.setValueAtTime(0, audioCtx.currentTime); soundGainNode.connect(audioCtx.destination);
-  soundGainNode.gain.linearRampToValueAtTime(soundMasterVolume * 0.25, audioCtx.currentTime + 1.5);
-  const source = audioCtx.createMediaElementSource(audio); source.connect(soundGainNode);
+  
+  const audio = new Audio(fileUrl);
+  audio.loop = true;
+  audio.volume = soundMasterVolume * 0.5;
+  activeUserAudio = audio;
+  
   audio.play().catch(e => { showToast("Fehler beim Abspielen der Datei."); });
   const nameLabel = document.getElementById('user-sound-name');
   if (nameLabel) { nameLabel.innerText = `🎵 ${file.name}`; nameLabel.classList.remove('hidden'); }
@@ -848,11 +943,20 @@ function handleUserSoundFile(event) {
 
 function setSoundVolume(val) {
   soundMasterVolume = parseFloat(val);
-  if (soundGainNode && audioCtx) soundGainNode.gain.setValueAtTime(soundMasterVolume * 0.25, audioCtx.currentTime);
+  
+  // Lautstärke für Alpha-Beats anpassen
+  if (soundGainNode && audioCtx) {
+    soundGainNode.gain.setValueAtTime(soundMasterVolume * 0.25, audioCtx.currentTime);
+  }
+  
+  // Lautstärke für Natur-Sounds anpassen
+  if (activeUserAudio) {
+    activeUserAudio.volume = soundMasterVolume * 0.5;
+  }
 }
 
 function updateSoundscapeUI() {
-  ['rain', 'ocean', 'alpha', 'wind'].forEach(st => {
+  ['rain', 'ocean', 'alpha', 'wind', 'forest', 'fire', 'cafe', 'crickets'].forEach(st => {
     const btn = document.getElementById(`sound-btn-${st}`);
     if (btn) {
       if (st === currentSoundType) btn.className = 'p-2 bg-blue-500/30 border border-blue-400 rounded-xl text-left text-xs text-white font-bold transition cursor-pointer flex items-center gap-2 shadow-sm animate-pulse';
@@ -871,13 +975,33 @@ function updateSoundscapeUI() {
 --- START OF FILE timer.js ---
 
 let timerSeconds = 25 * 60;
+let timerInitialSeconds = 25 * 60;
 let timerRunning = false;
 let timerInterval = null;
 let activeTimerTask = null;
 
+// Warmherzige Pausen-Empfehlungen für ADHD (Ablenkung & Bewegung)
+const BREAK_TIPS_DE = [
+  "Mache 5 Kniebeugen oder strecke deinen Körper einmal kräftig durch!",
+  "Trinke ein großes Glas frisches, kaltes Wasser!",
+  "Blicke für 1 Minute aus dem Fenster in die Ferne, um deine Augen zu entspannen!",
+  "Schüttle deine Arme und Beine für 15 Sekunden kräftig aus (Dopamin-Reset)!",
+  "Atme 5-mal ganz tief durch die Nase ein und langsam durch den Mund wieder aus!"
+];
+
+const BREAK_TIPS_EN = [
+  "Do 5 squats or stretch your body vigorously!",
+  "Drink a large glass of fresh, cold water!",
+  "Look out the window into the distance for 1 minute to relax your eyes!",
+  "Shake out your arms and legs for 15 seconds (dopamine reset)!",
+  "Take 5 deep breaths in through your nose and slowly out through your mouth!"
+];
+
 function startTaskTimer(taskName, event) {
   if (event) event.stopPropagation(); if (!taskName) return;
-  activeTimerTask = taskName; timerSeconds = 25 * 60;
+  activeTimerTask = taskName; 
+  timerSeconds = 25 * 60;
+  timerInitialSeconds = 25 * 60;
   if (!timerRunning) toggleTimer(); else updateTimerDisplay();
   updateActiveTimerBadge(); renderApp(); showToast(`⏱️ ${t('timer_title')}: "${taskName}"`);
 }
@@ -894,7 +1018,9 @@ function updateActiveTimerBadge() {
 }
 
 function setTimerPreset(mins) {
-  clearInterval(timerInterval); timerRunning = false; timerSeconds = mins * 60;
+  clearInterval(timerInterval); timerRunning = false; 
+  timerSeconds = mins * 60;
+  timerInitialSeconds = mins * 60;
   const btnHeader = document.getElementById('timer-toggle-btn');
   const zenLabel = document.getElementById('zen-timer-btn-label');
   const presetSel = document.getElementById('timer-preset-select');
@@ -929,7 +1055,16 @@ function toggleTimer() {
         timerSeconds--; updateTimerDisplay();
       } else {
         clearInterval(timerInterval); timerRunning = false; playProceduralSound();
-        showToast({ de: 'Fokus-Zeit abgelaufen! Zeit für eine Pause! ☕', en: 'Focus timer finished! Time for a short break! ☕', es: '¡Tiempo de enfoque terminado! ¡Tómate un descanso! ☕', el: 'Ο χρόνος εστίασης τελείωσε! Ώρα για ένα μικρό διάλειμμα! ☕' }[currentLang]);
+        
+        // Zufälligen Pausen-Tipp auswählen
+        const tips = currentLang === 'de' ? BREAK_TIPS_DE : BREAK_TIPS_EN;
+        const tip = tips[Math.floor(Math.random() * tips.length)];
+        
+        // Dialogfenster (sorgt dafür, dass der Browser sich meldet, selbst wenn der Tab im Hintergrund ist)
+        const breakTitle = currentLang === 'de' ? 'Fokus-Zeit abgelaufen! ☕' : 'Focus session finished! ☕';
+        const breakTipLabel = currentLang === 'de' ? 'Empfehlung für deine Pause' : 'Break recommendation';
+        alert(`🎉 ${breakTitle}\n\n${breakTipLabel}:\n👉 ${tip}`);
+        
         if (btnHeader) {
           btnHeader.innerHTML = '<i data-lucide="play" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>'; lucide.createIcons();
         }
@@ -941,7 +1076,10 @@ function toggleTimer() {
 }
 
 function resetTimer() {
-  clearInterval(timerInterval); timerRunning = false; timerSeconds = 25 * 60; activeTimerTask = null;
+  clearInterval(timerInterval); timerRunning = false; 
+  timerSeconds = 25 * 60; 
+  timerInitialSeconds = 25 * 60; 
+  activeTimerTask = null;
   const btnHeader = document.getElementById('timer-toggle-btn');
   const zenLabel = document.getElementById('zen-timer-btn-label');
   if (btnHeader) {
@@ -956,6 +1094,13 @@ function updateTimerDisplay() {
   const str = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   const headerDisp = document.getElementById('timer-display'); if (headerDisp) headerDisp.innerText = str;
   const zenDisp = document.getElementById('zen-timer-display'); if (zenDisp) zenDisp.innerText = str;
+  
+  // Statusbalken-Fortschritt im Header aktualisieren
+  const progressBar = document.getElementById('timer-progress-bar');
+  if (progressBar) {
+    const pct = (timerSeconds / timerInitialSeconds) * 100;
+    progressBar.style.width = `${pct}%`;
+  }
 }
 
 --- END OF FILE ---
@@ -964,11 +1109,36 @@ function updateTimerDisplay() {
 
 let currentActiveTaskRef = null;
 let currentGeneratedSteps = [];
+let currentDopamineTask = null;
+
+// Psychologische Micro-Steps zur Überwindung von Blockaden
+const DOPAMINE_TASKS_DE = [
+  "Trinke 3 Schlucke frisches Wasser 💧",
+  "Strecke deine Arme 10 Sekunden lang fest Richtung Decke 🙋‍♂️",
+  "Räume einen einzigen Gegenstand auf deinem Tisch auf 🧹",
+  "Schüttle deine Hände 15 Sekunden lang ganz locker aus 🫨",
+  "Atme 3-mal ganz tief durch die Nase ein und den Mund aus 🌬️",
+  "Rolle deine Schultern 5-mal langsam nach hinten 🧘",
+  "Lächle dich selbst im Spiegel oder auf dem ausgeschalteten Bildschirm für 10 Sekunden an! 😁",
+  "Kreise deine Fußgelenke 5-mal in beide Richtungen 🦶"
+];
+
+const DOPAMINE_TASKS_EN = [
+  "Drink 3 sips of fresh water 💧",
+  "Stretch your arms tightly towards the ceiling for 10 seconds 🙋‍♂️",
+  "Tidy up a single object on your desk 🧹",
+  "Vigorously shake out your hands for 15 seconds 🫨",
+  "Take 3 deep breaths in through your nose and out through your mouth 🌬️",
+  "Roll your shoulders slowly backwards 5 times 🧘",
+  "Smile at yourself in the mirror or on your black screen for 10 seconds! 😁",
+  "Rotate your ankles 5 times in both directions 🦶"
+];
 
 function openAdhdModal(type) {
   if (type === 'pick') {
     const modal = document.getElementById('adhd-pick-modal');
     if (modal) modal.classList.remove('hidden');
+    resetDopamineBox(); // Startet den Dopamin-Bereich frisch
     pickRandomTask();
   } else if (type === 'steps') {
     const modal = document.getElementById('adhd-steps-modal');
@@ -1137,6 +1307,80 @@ function toggleStepCheck(checkbox, stepIndex) {
         }
       }, 350);
     }
+  }
+}
+
+// -------------------------------------------------------------
+// DOPAMIN-KICK SYSTEM (QUICK WINS)
+// -------------------------------------------------------------
+
+function triggerDopamineKick() {
+  const tips = currentLang === 'de' ? DOPAMINE_TASKS_DE : DOPAMINE_TASKS_EN;
+  const randomTask = tips[Math.floor(Math.random() * tips.length)];
+  currentDopamineTask = randomTask;
+  
+  const boxEl = document.getElementById('dopamine-task-box');
+  if (boxEl) {
+    const doneBtnLabel = currentLang === 'de' ? 'Erledigt! 🎉 (+25 XP)' : 'Done! 🎉 (+25 XP)';
+    const rerollLabel = currentLang === 'de' ? 'Anderer Kick 🔄' : 'Other Kick 🔄';
+    
+    boxEl.innerHTML = `
+      <span id="dopamine-task-text" class="font-bold text-pink-300 text-sm animate-pulse">${randomTask}</span>
+      <div class="flex items-center gap-2 w-full mt-2 justify-center">
+        <button onclick="completeDopamineKick()" class="px-4 py-1.5 bg-pink-500 hover:bg-pink-400 text-white rounded-lg text-xs font-bold transition cursor-pointer font-sans shadow-md">
+          ${doneBtnLabel}
+        </button>
+        <button onclick="triggerDopamineKick()" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-gray-300 rounded-lg text-[10px] font-semibold transition cursor-pointer font-sans">
+          ${rerollLabel}
+        </button>
+      </div>
+    `;
+    lucide.createIcons();
+  }
+}
+
+function completeDopamineKick() {
+  if (!currentDopamineTask) return;
+  
+  saveHistory();
+  
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const todayStr = now.toISOString().split('T')[0];
+  
+  const logText = currentLang === 'de' 
+    ? `⚡ Dopamin-Kick: ${currentDopamineTask}` 
+    : `⚡ Dopamine Kick: ${currentDopamineTask}`;
+    
+  state.done.push({ task: logText, origin: 'adhd', date: todayStr, time: timeStr });
+  saveState();
+  
+  playProceduralSound();
+  triggerConfetti();
+  showPraise();
+  
+  resetDopamineBox();
+  
+  if (typeof updateReportPanel === 'function') updateReportPanel();
+  
+  showToast(currentLang === 'de' ? 'Dopamin-Kick geschafft! ⚡' : 'Dopamine kick completed! ⚡');
+}
+
+function resetDopamineBox() {
+  currentDopamineTask = null;
+  const boxEl = document.getElementById('dopamine-task-box');
+  if (boxEl) {
+    const title = currentLang === 'de' ? 'Brauchst du einen schnellen Motivationsschub?' : 'Need a quick boost of motivation?';
+    const btnLabel = currentLang === 'de' ? '⚡ Kick starten' : '⚡ Start Kick';
+    boxEl.innerHTML = `
+      <span id="dopamine-task-text" class="font-bold">${title}</span>
+      <div class="flex items-center gap-2 w-full mt-1 justify-center">
+        <button onclick="triggerDopamineKick()" class="px-3 py-1.5 bg-pink-500/25 hover:bg-pink-500/40 border border-pink-500/40 text-pink-100 rounded-lg text-[10px] font-bold transition cursor-pointer font-sans">
+          ${btnLabel}
+        </button>
+      </div>
+    `;
+    lucide.createIcons();
   }
 }
 
@@ -1587,6 +1831,71 @@ function setReportTimeframe(tf) {
   updateReportPanel();
 }
 
+// 7-Tage-Produktivitätsdiagramm rendern
+function renderWeeklyChart() {
+  const chartEl = document.getElementById('report-weekly-chart');
+  const totalWeekTasksEl = document.getElementById('report-total-week-tasks');
+  if (!chartEl) return;
+
+  chartEl.innerHTML = '';
+  const now = new Date();
+  const last7Days = [];
+  const weekdaysShort = {
+    de: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+    en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    es: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+    el: ['Κυρ', 'Δευ', 'Τρι', 'Τετ', 'Πεμ', 'Παρ', 'Σαβ']
+  };
+
+  // Erzeuge die letzten 7 Tage (inkl. heute)
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(now.getDate() - i);
+    const iso = d.toISOString().split('T')[0];
+    last7Days.push({
+      date: iso,
+      label: weekdaysShort[currentLang]?.[d.getDay()] || weekdaysShort['en'][d.getDay()],
+      count: 0
+    });
+  }
+
+  // Zähle Erledigungen aus state.done
+  let totalWeekCount = 0;
+  (state.done || []).forEach(item => {
+    const found = last7Days.find(day => day.date === item.date);
+    if (found) {
+      found.count++;
+      totalWeekCount++;
+    }
+  });
+
+  if (totalWeekTasksEl) {
+    totalWeekTasksEl.innerText = currentLang === 'de' 
+      ? `${totalWeekCount} Aufgaben` 
+      : `${totalWeekCount} Tasks`;
+  }
+
+  const maxCount = Math.max(...last7Days.map(d => d.count), 4); // Mindest-Maximalwert für eine schöne Skalierung
+
+  last7Days.forEach(day => {
+    const pct = (day.count / maxCount) * 100;
+    const isToday = day.date === now.toISOString().split('T')[0];
+    const barCol = isToday ? 'bg-amber-400' : 'bg-[var(--accent)]';
+    const barBg = isToday ? 'bg-amber-500/10 border-amber-400/20' : 'bg-[var(--accent)]/10 border-purple-500/20';
+
+    const barWrapper = document.createElement('div');
+    barWrapper.className = 'flex flex-col items-center gap-1.5 flex-1 max-w-[40px]';
+    barWrapper.innerHTML = `
+      <span class="text-[9px] font-bold font-mono ${day.count > 0 ? 'text-white' : 'text-gray-600'}">${day.count}</span>
+      <div class="w-5 h-12 ${barBg} border rounded-md relative flex items-end overflow-hidden" title="${day.date}: ${day.count}">
+        <div class="w-full ${barCol} transition-all duration-500 rounded-t animate-slide-up" style="height: ${pct}%"></div>
+      </div>
+      <span class="text-[9px] font-bold ${isToday ? 'text-amber-300 font-extrabold' : 'text-gray-400'}">${day.label}</span>
+    `;
+    chartEl.appendChild(barWrapper);
+  });
+}
+
 function updateReportPanel() {
   const now = new Date();
   const todayISO = now.toISOString().split('T')[0];
@@ -1616,6 +1925,10 @@ function updateReportPanel() {
   const pct = totalAll > 0 ? Math.round((count / totalAll) * 100) : 100;
   const todayEl = document.getElementById('report-today-count'); if (todayEl) todayEl.innerText = count;
   const rateEl = document.getElementById('report-rate-pct'); if (rateEl) rateEl.innerText = `${pct}%`;
+  
+  // Wöchentliche Aktivität zeichnen
+  renderWeeklyChart();
+
   const catBarsEl = document.getElementById('report-category-bars');
   if (catBarsEl) {
     catBarsEl.innerHTML = '';
@@ -1652,6 +1965,14 @@ function updateReportPanel() {
         list.appendChild(div);
       });
     }
+  }
+}
+
+function submitFeedback() {
+  const text = document.getElementById('feedback-text').value;
+  if (text.trim()) {
+    showToast({ de: 'Vielen Dank für dein Feedback! ❤️', en: 'Thank you so much for your feedback! ❤️', es: '¡Muchas gracias por tus comentarios! ❤️', el: 'Σας ευχαριστούμε πολύ για τα σχόλιά σας! ❤️' }[currentLang]);
+    document.getElementById('feedback-text').value = ''; togglePanel('feedback');
   }
 }
 
