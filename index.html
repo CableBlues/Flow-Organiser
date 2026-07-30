@@ -40,7 +40,7 @@
 
   <div id="app" class="min-h-screen max-w-[1920px] w-full mx-auto flex flex-col p-3 md:p-5 select-none">
     
-    <!-- HEADER BAR (Strikte Einzeiligkeit ohne Umbruch. Optimiert durch kompakte Gaps und den gekürzten Button-Namen 'Funke') -->
+    <!-- HEADER BAR -->
     <header class="relative z-[100] flex flex-nowrap items-center justify-between gap-x-1.5 lg:gap-x-3.5 mb-6 w-full bg-[#13131c]/90 px-4 py-3.5 border border-white/10 rounded-2xl backdrop-blur-xl shadow-2xl">
       
       <!-- BEHÄLTER 1: Logo & Feedback (Links) -->
@@ -57,14 +57,14 @@
           </button>
           
           <div id="panel-feedback" class="hidden absolute left-0 top-[calc(100%+8px)] z-[110] w-[320px] bg-[#111116] border border-purple-500/40 p-4 rounded-2xl shadow-2xl">
-            <h4 class="font-bold text-sm font-display mb-1 text-white">Hey, ich bin jmonke! 👋</h4>
-            <p class="text-[11px] text-gray-400 mb-3 leading-relaxed">
+            <h4 class="font-bold text-sm font-display mb-1 text-white" data-i18n="feedback_greet">Hey, ich bin jmonke! 👋</h4>
+            <p class="text-[11px] text-gray-400 mb-3 leading-relaxed" data-i18n="feedback_prompt">
               Hast du Kritik, Korrekturen oder neue Ideen für Flow? Schreib mir kurz, ich freue mich über jede Rückmeldung!
             </p>
-            <textarea id="feedback-text" rows="3" class="w-full p-2.5 bg-black/40 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-[var(--accent)] mb-3 leading-relaxed placeholder:text-gray-600" placeholder="Deine Gedanken..."></textarea>
+            <textarea id="feedback-text" rows="3" class="w-full p-2.5 bg-black/40 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-[var(--accent)] mb-3 leading-relaxed placeholder:text-gray-600" data-i18n-placeholder="feedback_placeholder" placeholder="Deine Gedanken..."></textarea>
             
-            <button onclick="submitFeedback()" class="w-full py-2 bg-[var(--accent)] text-white text-xs font-bold rounded-xl hover:opacity-90 transform transition-all hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer hover:title-tooltip" title="Oder schicke direkt eine Mail an jmonke@gmail.com">Senden</button>
-            <div class="text-[9px] text-gray-500 text-center mt-2">Alternativ direkt an jmonke@gmail.com</div>
+            <button onclick="submitFeedback()" class="w-full py-2 bg-[var(--accent)] text-white text-xs font-bold rounded-xl hover:opacity-90 transform transition-all hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer hover:title-tooltip" data-i18n="send" title="Oder schicke direkt eine Mail an jmonke@gmail.com">Senden</button>
+            <div class="text-[9px] text-gray-500 text-center mt-2" data-i18n="feedback_alt">Alternativ direkt an jmonke@gmail.com</div>
           </div>
         </div>
       </div>
@@ -109,7 +109,7 @@
         </button>
       </div>
 
-      <!-- BEHÄLTER 3: Datum (Mittig positioniert, textlich dezent verkleinert für Platzgewinn) -->
+      <!-- BEHÄLTER 3: Datum (Mittig) -->
       <div class="flex items-center justify-center p-1.5 bg-white/[0.02] border border-white/10 rounded-xl shadow-sm shrink-0 transform transition-transform duration-300 hover:scale-102 hover:-translate-y-0.5 mx-1">
         <div class="flex items-center gap-1.5 px-3 py-1 h-8">
           <i data-lucide="calendar" class="w-4 h-4 text-purple-300"></i>
@@ -119,7 +119,7 @@
         </div>
       </div>
 
-      <!-- BEHÄLTER 4: Sounds, Musik & Antrieb (Dopamin-Funke gekürzt zu 'Funke') -->
+      <!-- BEHÄLTER 4: Sounds, Musik & Antrieb -->
       <div class="flex items-center gap-2.5 p-1.5 bg-white/[0.02] border border-white/10 rounded-xl shadow-sm shrink-0 transform transition-all duration-300 hover:scale-102 hover:-translate-y-0.5">
         
         <!-- Sounds (Naturgeräusche) -->
@@ -134,74 +134,74 @@
             <div class="flex items-center justify-between mb-3 border-b border-white/10 pb-2">
               <h4 class="font-bold text-sm font-display text-white flex items-center gap-2">
                 <i data-lucide="leaf" class="w-4 h-4 text-blue-400"></i>
-                <span>Naturgeräusche</span>
+                <span data-i18n="soundscape_title">Naturgeräusche</span>
               </h4>
               <button onclick="togglePanel('soundscape')" class="text-gray-400 hover:text-white text-xs font-bold p-1">✕</button>
             </div>
 
-            <!-- Naturgeräusche Presets (Erweitert auf 16 Töne) -->
+            <!-- Naturgeräusche Presets (16 Töne) -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
               <button onclick="playAmbientSound('rain')" id="sound-btn-rain" class="p-1.5 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-1.5">
                 <span class="text-sm">🌧️</span>
                 <div class="truncate">
-                  <div class="text-white font-bold text-[10px] truncate">Regen</div>
-                  <div class="text-[8px] text-gray-400 truncate">Pink Noise</div>
+                  <div class="text-white font-bold text-[10px] truncate" data-i18n="sound_rain">Regen</div>
+                  <div class="text-[8px] text-gray-400 truncate" data-i18n="sound_rain_desc">Pink Noise</div>
                 </div>
               </button>
 
               <button onclick="playAmbientSound('ocean')" id="sound-btn-ocean" class="p-1.5 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-1.5">
                 <span class="text-sm">🌊</span>
                 <div class="truncate">
-                  <div class="text-white font-bold text-[10px] truncate">Ozean</div>
-                  <div class="text-[8px] text-gray-400 truncate">Brown Waves</div>
+                  <div class="text-white font-bold text-[10px] truncate" data-i18n="sound_ocean">Ozean</div>
+                  <div class="text-[8px] text-gray-400 truncate" data-i18n="sound_ocean_desc">Brown Waves</div>
                 </div>
               </button>
 
               <button onclick="playAmbientSound('birds')" id="sound-btn-birds" class="p-1.5 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-1.5">
                 <span class="text-sm">🐦</span>
                 <div class="truncate">
-                  <div class="text-white font-bold text-[10px] truncate">Vögel</div>
-                  <div class="text-[8px] text-gray-400 truncate">Waldgezwitscher</div>
+                  <div class="text-white font-bold text-[10px] truncate" data-i18n="sound_birds">Vögel</div>
+                  <div class="text-[8px] text-gray-400 truncate" data-i18n="sound_birds_desc">Waldgezwitscher</div>
                 </div>
               </button>
 
               <button onclick="playAmbientSound('thunder')" id="sound-btn-thunder" class="p-1.5 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-1.5">
                 <span class="text-sm">⚡</span>
                 <div class="truncate">
-                  <div class="text-white font-bold text-[10px] truncate">Gewitter</div>
-                  <div class="text-[8px] text-gray-400 truncate">Sturmsound</div>
+                  <div class="text-white font-bold text-[10px] truncate" data-i18n="sound_thunder">Gewitter</div>
+                  <div class="text-[8px] text-gray-400 truncate" data-i18n="sound_thunder_desc">Sturmsound</div>
                 </div>
               </button>
 
               <button onclick="playAmbientSound('wind')" id="sound-btn-wind" class="p-1.5 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-1.5">
                 <span class="text-sm">🍃</span>
                 <div class="truncate">
-                  <div class="text-white font-bold text-[10px] truncate">Wind</div>
-                  <div class="text-[8px] text-gray-400 truncate">White Noise</div>
+                  <div class="text-white font-bold text-[10px] truncate" data-i18n="sound_wind">Wind</div>
+                  <div class="text-[8px] text-gray-400 truncate" data-i18n="sound_wind_desc">White Noise</div>
                 </div>
               </button>
 
               <button onclick="playAmbientSound('fire')" id="sound-btn-fire" class="p-1.5 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-1.5">
                 <span class="text-sm">🔥</span>
                 <div class="truncate">
-                  <div class="text-white font-bold text-[10px] truncate">Feuer</div>
-                  <div class="text-[8px] text-gray-400 truncate">Warm Crackle</div>
+                  <div class="text-white font-bold text-[10px] truncate" data-i18n="sound_fire">Feuer</div>
+                  <div class="text-[8px] text-gray-400 truncate" data-i18n="sound_fire_desc">Warm Crackle</div>
                 </div>
               </button>
 
               <button onclick="playAmbientSound('cafe')" id="sound-btn-cafe" class="p-1.5 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-1.5">
                 <span class="text-sm">☕</span>
                 <div class="truncate">
-                  <div class="text-white font-bold text-[10px] truncate">Café</div>
-                  <div class="text-[8px] text-gray-400">Gemurmel</div>
+                  <div class="text-white font-bold text-[10px] truncate" data-i18n="sound_cafe">Café</div>
+                  <div class="text-[8px] text-gray-400" data-i18n="sound_cafe_desc">Gemurmel</div>
                 </div>
               </button>
 
               <button onclick="playAmbientSound('crickets')" id="sound-btn-crickets" class="p-1.5 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-1.5">
                 <span class="text-sm">🦗</span>
                 <div class="truncate">
-                  <div class="text-white font-bold text-[10px] truncate">Wiese</div>
-                  <div class="text-[8px] text-gray-400">Grillenzirpen</div>
+                  <div class="text-white font-bold text-[10px] truncate" data-i18n="sound_crickets">Wiese</div>
+                  <div class="text-[8px] text-gray-400" data-i18n="sound_crickets_desc">Grillenzirpen</div>
                 </div>
               </button>
 
@@ -209,64 +209,64 @@
               <button onclick="playAmbientSound('white')" id="sound-btn-white" class="p-1.5 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-1.5">
                 <span class="text-sm">📻</span>
                 <div class="truncate">
-                  <div class="text-white font-bold text-[10px] truncate">Rauschen</div>
-                  <div class="text-[8px] text-gray-400">White Noise</div>
+                  <div class="text-white font-bold text-[10px] truncate" data-i18n="sound_white">Rauschen</div>
+                  <div class="text-[8px] text-gray-400" data-i18n="sound_white_desc">White Noise</div>
                 </div>
               </button>
 
               <button onclick="playAmbientSound('purr')" id="sound-btn-purr" class="p-1.5 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-1.5">
                 <span class="text-sm">🐱</span>
                 <div class="truncate">
-                  <div class="text-white font-bold text-[10px] truncate">Schnurren</div>
-                  <div class="text-[8px] text-gray-400">Katzensound</div>
+                  <div class="text-white font-bold text-[10px] truncate" data-i18n="sound_purr">Schnurren</div>
+                  <div class="text-[8px] text-gray-400" data-i18n="sound_purr_desc">Katzensound</div>
                 </div>
               </button>
 
               <button onclick="playAmbientSound('jungle')" id="sound-btn-jungle" class="p-1.5 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-1.5">
                 <span class="text-sm">🌴</span>
                 <div class="truncate">
-                  <div class="text-white font-bold text-[10px] truncate">Dschungel</div>
-                  <div class="text-[8px] text-gray-400">Natur & Vögel</div>
+                  <div class="text-white font-bold text-[10px] truncate" data-i18n="sound_jungle">Dschungel</div>
+                  <div class="text-[8px] text-gray-400" data-i18n="sound_jungle_desc">Natur & Vögel</div>
                 </div>
               </button>
 
               <button onclick="playAmbientSound('train')" id="sound-btn-train" class="p-1.5 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-1.5">
                 <span class="text-sm">🚂</span>
                 <div class="truncate">
-                  <div class="text-white font-bold text-[10px] truncate">Zugfahrt</div>
-                  <div class="text-[8px] text-gray-400">Gleis-Loop</div>
+                  <div class="text-white font-bold text-[10px] truncate" data-i18n="sound_train">Zugfahrt</div>
+                  <div class="text-[8px] text-gray-400" data-i18n="sound_train_desc">Gleis-Loop</div>
                 </div>
               </button>
 
               <button onclick="playAmbientSound('library')" id="sound-btn-library" class="p-1.5 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-1.5">
                 <span class="text-sm">📚</span>
                 <div class="truncate">
-                  <div class="text-white font-bold text-[10px] truncate">Bibliothek</div>
-                  <div class="text-[8px] text-gray-400">Seitenrascheln</div>
+                  <div class="text-white font-bold text-[10px] truncate" data-i18n="sound_library">Bibliothek</div>
+                  <div class="text-[8px] text-gray-400" data-i18n="sound_library_desc">Seitenrascheln</div>
                 </div>
               </button>
 
               <button onclick="playAmbientSound('keyboard')" id="sound-btn-keyboard" class="p-1.5 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-1.5">
                 <span class="text-sm">⌨️</span>
                 <div class="truncate">
-                  <div class="text-white font-bold text-[10px] truncate">Tastatur</div>
-                  <div class="text-[8px] text-gray-400">Tippgeräusche</div>
+                  <div class="text-white font-bold text-[10px] truncate" data-i18n="sound_keyboard">Tastatur</div>
+                  <div class="text-[8px] text-gray-400" data-i18n="sound_keyboard_desc">Tippgeräusche</div>
                 </div>
               </button>
 
               <button onclick="playAmbientSound('spaceship')" id="sound-btn-spaceship" class="p-1.5 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-1.5">
                 <span class="text-sm">🛸</span>
                 <div class="truncate">
-                  <div class="text-white font-bold text-[10px] truncate">Spaceship</div>
-                  <div class="text-[8px] text-gray-400">Cockpit-Hum</div>
+                  <div class="text-white font-bold text-[10px] truncate" data-i18n="sound_spaceship">Spaceship</div>
+                  <div class="text-[8px] text-gray-400" data-i18n="sound_spaceship_desc">Cockpit-Hum</div>
                 </div>
               </button>
 
               <button onclick="playAmbientSound('sub')" id="sound-btn-sub" class="p-1.5 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-1.5">
                 <span class="text-sm">🫧</span>
                 <div class="truncate">
-                  <div class="text-white font-bold text-[10px] truncate">Submarine</div>
-                  <div class="text-[8px] text-gray-400">Unterwasser</div>
+                  <div class="text-white font-bold text-[10px] truncate" data-i18n="sound_sub">Submarine</div>
+                  <div class="text-[8px] text-gray-400" data-i18n="sound_sub_desc">Unterwasser</div>
                 </div>
               </button>
             </div>
@@ -284,32 +284,32 @@
         <div id="music-trigger-container" class="relative group opacity-60 hover:opacity-100 transition-opacity duration-200 cursor-pointer rounded-xl" onmouseenter="showPanelHover('music')" onmouseleave="hidePanelHover('music')">
           <button onclick="handleMusicMainClick()" class="h-8 px-2.5 border border-purple-500/30 rounded-lg sm:rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-200 flex items-center gap-1 text-xs font-bold cursor-pointer transform transition-all duration-200 hover:scale-108 hover:-translate-y-1 active:scale-95 whitespace-nowrap shadow-sm">
             <i data-lucide="music" class="w-3.5 h-3.5 text-purple-400"></i>
-            <span>Musik</span>
+            <span data-i18n="music">Musik</span>
           </button>
           
           <div id="panel-music" class="hidden absolute left-1/2 -translate-x-1/2 top-[calc(100%+8px)] z-[110] w-[300px] sm:w-[320px] bg-[#111116] border border-purple-500/40 p-4 rounded-2xl shadow-2xl">
             <div class="flex flex-col gap-2">
               <h4 class="font-bold text-sm font-display text-white flex items-center gap-2 border-b border-white/10 pb-2">
                 <i data-lucide="music" class="w-4 h-4 text-purple-400"></i>
-                <span>Musik-Player</span>
+                <span data-i18n="music_player">Musik-Player</span>
               </h4>
               
               <button onclick="document.getElementById('sound-file-input').click()" class="w-full py-2 bg-purple-500/10 hover:bg-purple-500/20 border border-dashed border-purple-400/30 text-purple-300 hover:text-white rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">
                 <i data-lucide="upload" class="w-3.5 h-3.5"></i>
-                <span>Eigene Tracks abspielen</span>
+                <span data-i18n="custom_tracks">Eigene Tracks abspielen</span>
               </button>
               <input type="file" id="sound-file-input" accept="audio/*" onchange="handleUserSoundFile(event)" class="hidden" multiple />
               
               <!-- Playlist Player -->
               <div id="custom-playlist-player" class="hidden p-2.5 bg-black/40 border border-white/5 rounded-xl flex flex-col gap-1.5">
-                <div id="user-sound-name" class="text-[10px] text-purple-300 text-center truncate italic font-semibold">Keine Titel geladen</div>
+                <div id="user-sound-name" class="text-[10px] text-purple-300 text-center truncate italic font-semibold" data-i18n="no_tracks">Keine Titel geladen</div>
                 <div class="flex items-center justify-center gap-3.5 mt-1">
                   <!-- Play / Pause -->
                   <button id="player-play-pause-btn" onclick="togglePlaylistPlayback()" class="p-1.5 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-purple-300 rounded-lg cursor-pointer hover:scale-105 active:scale-95 transition-all">
                     <i data-lucide="pause" class="w-3.5 h-3.5"></i>
                   </button>
                   <!-- Next -->
-                  <button onclick="playNextTrackWithCrossfade()" class="p-1.5 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-purple-300 rounded-lg cursor-pointer hover:scale-105 active:scale-95 transition-all" title="Nächster Track (mit Crossfade)">
+                  <button onclick="playNextTrackWithCrossfade()" class="p-1.5 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-purple-300 rounded-lg cursor-pointer hover:scale-105 active:scale-95 transition-all" title="Nächster Track">
                     <i data-lucide="skip-forward" class="w-3.5 h-3.5"></i>
                   </button>
                 </div>
@@ -318,21 +318,21 @@
           </div>
         </div>
 
-        <!-- Antrieb (Dopamin-Funke / Gekürzt auf 'Funke' zur optimalen Platzersparnis) -->
+        <!-- Antrieb (Dopamin-Funke) -->
         <div class="relative group" onmouseenter="showPanelHover('boost')" onmouseleave="hidePanelHover('boost')">
           <button onclick="togglePanel('boost')" class="h-8 px-2.5 border border-pink-500/30 rounded-xl bg-pink-500/10 hover:bg-pink-500/20 text-pink-300 flex items-center gap-1.5 text-xs font-bold cursor-pointer transform transition-all duration-200 hover:scale-108 hover:-translate-y-1 active:scale-95 shadow-sm">
             <i data-lucide="rocket" class="w-3.5 h-3.5 text-pink-400"></i>
-            <span id="btn-label-boost">Funke</span>
+            <span id="btn-label-boost" data-i18n="boost_btn">Funke</span>
           </button>
           
           <div id="panel-boost" class="hidden absolute left-1/2 -translate-x-1/2 top-[calc(100%+8px)] z-[110] w-[280px] bg-[#111116] border border-pink-500/40 p-4 rounded-2xl shadow-2xl flex flex-col gap-3">
-            <p class="text-[11px] text-gray-400 leading-normal">
+            <p class="text-[11px] text-gray-400 leading-normal" data-i18n="boost_desc">
               Fühlst du dich blockiert? Gönn dir eine winzige, 30-sekündige Aktivität, um deinen Fokus neu auszurichten:
             </p>
-            <div id="boost-activity-box" class="p-3 bg-pink-500/10 border border-pink-500/20 rounded-xl text-center text-xs font-semibold text-pink-200 min-h-[48px] flex items-center justify-center">
+            <div id="boost-activity-box" class="p-3 bg-pink-500/10 border border-pink-500/20 rounded-xl text-center text-xs font-semibold text-pink-200 min-h-[48px] flex items-center justify-center" data-i18n="boost_placeholder">
               Klicke unten für einen Vorschlag!
             </div>
-            <button onclick="suggestBoostActivity()" class="w-full py-1.5 bg-pink-500 text-white text-xs font-bold rounded-lg hover:opacity-90 transform transition-all hover:scale-[1.02] active:scale-95 cursor-pointer">Neuer Vorschlag 🔄</button>
+            <button onclick="suggestBoostActivity()" class="w-full py-1.5 bg-pink-500 text-white text-xs font-bold rounded-lg hover:opacity-90 transform transition-all hover:scale-[1.02] active:scale-95 cursor-pointer" data-i18n="boost_new">Neuer Vorschlag 🔄</button>
           </div>
         </div>
 
@@ -344,7 +344,7 @@
         <div class="relative group" onmouseenter="showPanelHover('report')" onmouseleave="hidePanelHover('report')">
           <button onclick="togglePanel('report')" class="h-8 px-2.5 border border-white/10 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] hover:border-purple-500/30 text-gray-200 flex items-center gap-1 text-xs font-semibold cursor-pointer transform transition-all duration-200 hover:scale-108 hover:-translate-y-1 active:scale-95 whitespace-nowrap shadow-sm">
             <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>
-            <span id="btn-label-report">Statistik</span>
+            <span id="btn-label-report" data-i18n="report">Statistik</span>
           </button>
           
           <div id="panel-report" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] w-[320px] sm:w-[420px] md:w-[480px] bg-[#111116] border border-purple-500/40 p-4 rounded-2xl shadow-2xl overflow-y-auto max-h-[520px]">
@@ -355,14 +355,14 @@
               <div class="flex items-center justify-between mb-3 border-b border-white/10 pb-2">
                 <h4 class="font-bold text-sm font-display text-white flex items-center gap-2">
                   <i data-lucide="bar-chart-3" class="w-4 h-4 text-[var(--accent)]"></i>
-                  <span id="report-title">Statistik</span>
+                  <span id="report-title" data-i18n="report_title">Statistik</span>
                 </h4>
                 
                 <!-- Timeframe Tabs -->
                 <div class="flex items-center bg-black/50 p-0.5 rounded-lg border border-white/10 text-[11px] font-bold">
-                  <button onclick="setReportTimeframe('today')" id="report-tab-today" class="px-2.5 py-1 rounded text-[var(--accent-light)] bg-[var(--accent)]/20 cursor-pointer transform transition-all duration-200 hover:scale-105 active:scale-95">Heute</button>
-                  <button onclick="setReportTimeframe('week')" id="report-tab-week" class="px-2.5 py-1 rounded text-gray-400 hover:text-white cursor-pointer transform transition-all duration-200 hover:scale-105 active:scale-95">Woche</button>
-                  <button onclick="setReportTimeframe('month')" id="report-tab-month" class="px-2.5 py-1 rounded text-gray-400 hover:text-white cursor-pointer transform transition-all duration-200 hover:scale-105 active:scale-95">Monat</button>
+                  <button onclick="setReportTimeframe('today')" id="report-tab-today" class="px-2.5 py-1 rounded text-[var(--accent-light)] bg-[var(--accent)]/20 cursor-pointer transform transition-all duration-200 hover:scale-105 active:scale-95" data-i18n="today">Heute</button>
+                  <button onclick="setReportTimeframe('week')" id="report-tab-week" class="px-2.5 py-1 rounded text-gray-400 hover:text-white cursor-pointer transform transition-all duration-200 hover:scale-105 active:scale-95" data-i18n="week">Woche</button>
+                  <button onclick="setReportTimeframe('month')" id="report-tab-month" class="px-2.5 py-1 rounded text-gray-400 hover:text-white cursor-pointer transform transition-all duration-200 hover:scale-105 active:scale-95" data-i18n="month">Monat</button>
                 </div>
               </div>
 
@@ -381,7 +381,7 @@
               <!-- 7-Tage-Produktstabilitäts-Chart -->
               <div id="report-chart-container" class="mb-3 p-3 bg-white/[0.02] border border-white/10 rounded-xl hidden">
                 <h5 class="text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-2 flex items-center justify-between">
-                  <span>7-Tage-Aktivität (Mo-So)</span>
+                  <span data-i18n="weekly_activity">7-Tage-Aktivität (Mo-So)</span>
                   <span id="report-total-week-tasks" class="font-mono text-purple-300 font-bold">0 Tasks</span>
                 </h5>
                 <div id="report-weekly-chart" class="flex items-end justify-between h-16 pt-2 px-1">
@@ -395,7 +395,7 @@
               </div>
 
               <!-- Intelligent Insights Tip -->
-              <div id="report-insight-box" class="p-2.5 bg-[#1a131f] border border-purple-500/30 rounded-xl text-xs text-purple-200 flex items-start gap-2 bg-[#1c1c28]">
+              <div id="report-insight-box" class="p-2.5 border rounded-xl text-xs text-purple-200 flex items-start gap-2 bg-[#1c1c28]">
                 <i data-lucide="lightbulb" class="w-4 h-4 text-amber-400 shrink-0 mt-0.5"></i>
                 <span id="report-insight-text" data-i18n="loading_stats">Lade deine Statistiken...</span>
               </div>
@@ -404,7 +404,7 @@
             <!-- Export Button -->
             <button onclick="exportReportAsImage()" class="w-full mt-3 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-md transform transition-all duration-200 hover:scale-105 hover:-translate-y-1 active:scale-95 cursor-pointer">
               <i data-lucide="image" class="w-3.5 h-3.5"></i>
-              <span>Export</span>
+              <span data-i18n="export">Export</span>
             </button>
 
             <!-- Completed Items Log -->
@@ -437,15 +437,15 @@
         <div class="relative group" onmouseenter="showPanelHover('sync')" onmouseleave="hidePanelHover('sync')">
           <button onclick="togglePanel('sync')" class="h-8 px-3 border border-emerald-500/30 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 flex items-center gap-1.5 text-xs font-bold cursor-pointer transform transition-all duration-200 hover:scale-110 hover:-translate-y-1 active:scale-95 shadow-sm">
             <i data-lucide="user-round" class="w-3.5 h-3.5 text-emerald-400"></i>
-            <span>Anmelden</span>
+            <span data-i18n="login_btn">Anmelden</span>
           </button>
           
           <!-- Hover Menu für Registrierung / Login -->
           <div id="panel-sync" class="hidden absolute left-1/2 -translate-x-1/2 top-[calc(100%+8px)] z-[110] w-[220px] bg-[#111116] border border-emerald-500/40 p-3 rounded-2xl shadow-2xl flex flex-col gap-2">
-            <div class="text-[10px] uppercase font-bold tracking-wider text-emerald-400 font-mono">Geräte-Synchronisation</div>
-            <p class="text-[10px] text-gray-400 leading-normal mb-1">Übertrage und sichere deinen Plan nahtlos auf all deinen Geräten.</p>
-            <button onclick="showToast('Schnittstelle folgt in Kürze... 🔒')" class="w-full py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold rounded-lg transition-all hover:scale-[1.02] cursor-pointer">Einloggen</button>
-            <button onclick="showToast('Schnittstelle folgt in Kürze... 🔒')" class="w-full py-1.5 bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold rounded-lg transition-all hover:scale-[1.02] cursor-pointer">Registrieren</button>
+            <div class="text-[10px] uppercase font-bold tracking-wider text-emerald-400 font-mono" data-i18n="sync_title">Geräte-Synchronisation</div>
+            <p class="text-[10px] text-gray-400 leading-normal mb-1" data-i18n="sync_desc">Übertrage und sichere deinen Plan nahtlos auf all deinen Geräten.</p>
+            <button onclick="showToast('Schnittstelle folgt in Kürze... 🔒')" class="w-full py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold rounded-lg transition-all hover:scale-[1.02] cursor-pointer" data-i18n="login">Einloggen</button>
+            <button onclick="showToast('Schnittstelle folgt in Kürze... 🔒')" class="w-full py-1.5 bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold rounded-lg transition-all hover:scale-[1.02] cursor-pointer" data-i18n="register">Registrieren</button>
           </div>
         </div>
       </div>

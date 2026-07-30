@@ -67,18 +67,24 @@ function getGermanStandardKey(taskName) {
 
 function handleUndo() {
   if (historyStack.length === 0) {
-    showToast(currentLang === 'de' ? 'Keine Änderungen zum Rückgängig machen.' : 'Nothing to undo.');
+    showToast(t('toast_no_undo'));
     return;
   }
   state = historyStack.pop();
   saveState();
-  showToast(currentLang === 'de' ? 'Rückgängig gemacht.' : 'Undo applied.');
+  showToast(t('toast_undo_applied'));
   renderApp();
   populateAdhdTaskSelect();
 }
 
 function handleReset() {
-  const confirmMsg = { de: 'Möchtest du den gesamten Plan wirklich zurücksetzen?', en: 'Do you really want to reset your entire plan?', es: '¿Seguro que quieres reiniciar todo el plan?', el: 'Θέλετε πραγματικά να επαναφέρετε ολόκληρο το πλάνο σας;' }[currentLang] || 'Reset?';
+  const confirmMsg = {
+    de: 'Möchtest du den gesamten Plan wirklich zurücksetzen?',
+    en: 'Do you really want to reset your entire plan?',
+    es: '¿Seguro que quieres reiniciar todo el plan?',
+    el: 'Θέλετε πραγματικά να επαναφέρετε ολόκληρο το πλάνο σας;'
+  }[currentLang] || 'Reset?';
+  
   if (confirm(confirmMsg)) {
     saveHistory();
     const localizedDefaults = DEFAULT_TASKS_BY_LANG[currentLang];
@@ -88,7 +94,7 @@ function handleReset() {
       done: [], archive: [], streak: 0, completedSteps: {}
     };
     saveState();
-    showToast(currentLang === 'de' ? 'Zurückgesetzt!' : 'Reset complete!');
+    showToast(t('toast_reset_success'));
     renderApp();
     populateAdhdTaskSelect();
   }
@@ -109,9 +115,9 @@ function handleOpenFile(e) {
       const imported = JSON.parse(reader.result);
       if (imported && imported.items) {
         saveHistory(); state = imported; if (!state.completedSteps) state.completedSteps = {};
-        saveState(); showToast(currentLang === 'de' ? 'Plan erfolgreich importiert!' : 'Plan imported successfully!'); renderApp(); populateAdhdTaskSelect();
+        saveState(); showToast(t('toast_import_success')); renderApp(); populateAdhdTaskSelect();
       }
-    } catch(err) { alert('Error importing file.'); }
+    } catch(err) { alert(t('toast_import_error')); }
   };
   reader.readAsText(file);
 }

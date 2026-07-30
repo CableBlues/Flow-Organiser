@@ -2,29 +2,6 @@ let currentActiveTaskRef = null;
 let currentGeneratedSteps = [];
 let currentDopamineTask = null;
 
-// Psychologische Micro-Steps zur Überwindung von Blockaden
-const DOPAMINE_TASKS_DE = [
-  "Trinke 3 Schlucke frisches Wasser 💧",
-  "Strecke deine Arme 10 Sekunden lang fest Richtung Decke 🙋‍♂️",
-  "Räume einen einzigen Gegenstand auf deinem Tisch auf 🧹",
-  "Schüttle deine Hände 15 Sekunden lang ganz locker aus 🫨",
-  "Atme 3-mal ganz tief durch die Nase ein und den Mund aus 🌬️",
-  "Rolle deine Schultern 5-mal langsam nach hinten 🧘",
-  "Lächle dich selbst im Spiegel oder auf dem ausgeschalteten Bildschirm für 10 Sekunden an! 😁",
-  "Kreise deine Fußgelenke 5-mal in beide Richtungen 🦶"
-];
-
-const DOPAMINE_TASKS_EN = [
-  "Drink 3 sips of fresh water 💧",
-  "Stretch your arms tightly towards the ceiling for 10 seconds 🙋‍♂️",
-  "Tidy up a single object on your desk 🧹",
-  "Vigorously shake out your hands for 15 seconds 🫨",
-  "Take 3 deep breaths in through your nose and out through your mouth 🌬️",
-  "Roll your shoulders slowly backwards 5 times 🧘",
-  "Smile at yourself in the mirror or on your black screen for 10 seconds! 😁",
-  "Rotate your ankles 5 times in both directions 🦶"
-];
-
 function openAdhdModal(type) {
   if (type === 'pick') {
     const modal = document.getElementById('adhd-pick-modal');
@@ -98,7 +75,7 @@ function pickRandomTask() {
   }
   const box = document.getElementById('adhd-pick-box');
   if (!chosen) {
-    const doneMsg = { de: '🎉 Alle Aufgaben erledigt! Fantastisch, genieß deinen Tag!', en: '🎉 All tasks completed! Fantastic, enjoy your day!', es: '🎉 ¡Todas las Aufgaben erledigt! ¡Disfruta de tu día!', el: '🎉 Όλες οι εργασίες ολοκληρώθηκαν! Απολαύστε τη μέρα σας!' }[currentLang];
+    const doneMsg = { de: '🎉 Alle Aufgaben erledigt! Fantastisch, genieß deinen Tag!', en: '🎉 All tasks completed! Fantastic, enjoy your day!', es: '🎉 ¡Todas las tareas completadas! ¡Disfruta de tu día!', el: '🎉 Όλες οι εργασίες ολοκληρώθηκαν! Απολαύστε τη μέρα σας!' }[currentLang];
     box.innerHTML = `<div class="text-emerald-400 font-bold">${doneMsg}</div>`;
   } else {
     const catName = t(chosen.cat);
@@ -201,19 +178,15 @@ function toggleStepCheck(checkbox, stepIndex) {
   }
 }
 
-// -------------------------------------------------------------
-// DOPAMIN-KICK SYSTEM (QUICK WINS)
-// -------------------------------------------------------------
-
 function triggerDopamineKick() {
-  const tips = currentLang === 'de' ? DOPAMINE_TASKS_DE : DOPAMINE_TASKS_EN;
+  const tips = DOPAMINE_TASKS[currentLang] || DOPAMINE_TASKS['en'];
   const randomTask = tips[Math.floor(Math.random() * tips.length)];
   currentDopamineTask = randomTask;
   
   const boxEl = document.getElementById('dopamine-task-box');
   if (boxEl) {
-    const doneBtnLabel = currentLang === 'de' ? 'Erledigt! 🎉 (+25 XP)' : 'Done! 🎉 (+25 XP)';
-    const rerollLabel = currentLang === 'de' ? 'Anderer Kick 🔄' : 'Other Kick 🔄';
+    const doneBtnLabel = t('dopamine_kick_done');
+    const rerollLabel = t('dopamine_kick_other');
     
     boxEl.innerHTML = `
       <span id="dopamine-task-text" class="font-bold text-pink-300 text-sm animate-pulse">${randomTask}</span>
@@ -232,37 +205,28 @@ function triggerDopamineKick() {
 
 function completeDopamineKick() {
   if (!currentDopamineTask) return;
-  
   saveHistory();
-  
   const now = new Date();
   const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const todayStr = now.toISOString().split('T')[0];
-  
-  const logText = currentLang === 'de' 
-    ? `⚡ Dopamin-Kick: ${currentDopamineTask}` 
-    : `⚡ Dopamine Kick: ${currentDopamineTask}`;
+  const logText = `${t('dopamine_kick_success_log')} ${currentDopamineTask}`;
     
   state.done.push({ task: logText, origin: 'adhd', date: todayStr, time: timeStr });
   saveState();
-  
   playProceduralSound();
   triggerConfetti();
   showPraise();
-  
   resetDopamineBox();
-  
   if (typeof updateReportPanel === 'function') updateReportPanel();
-  
-  showToast(currentLang === 'de' ? 'Dopamin-Kick geschafft! ⚡' : 'Dopamine kick completed! ⚡');
+  showToast(t('dopamine_kick_completed_toast'));
 }
 
 function resetDopamineBox() {
   currentDopamineTask = null;
   const boxEl = document.getElementById('dopamine-task-box');
   if (boxEl) {
-    const title = currentLang === 'de' ? 'Brauchst du einen schnellen Motivationsschub?' : 'Need a quick boost of motivation?';
-    const btnLabel = currentLang === 'de' ? '⚡ Kick starten' : '⚡ Start Kick';
+    const title = t('dopamine_kick_title');
+    const btnLabel = t('dopamine_kick_start');
     boxEl.innerHTML = `
       <span id="dopamine-task-text" class="font-bold">${title}</span>
       <div class="flex items-center gap-2 w-full mt-1 justify-center">

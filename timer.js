@@ -4,23 +4,6 @@ let timerRunning = false;
 let timerInterval = null;
 let activeTimerTask = null;
 
-// Warmherzige Pausen-Empfehlungen für ADHD (Ablenkung & Bewegung)
-const BREAK_TIPS_DE = [
-  "Mache 5 Kniebeugen oder strecke deinen Körper einmal kräftig durch!",
-  "Trinke ein großes Glas frisches, kaltes Wasser!",
-  "Blicke für 1 Minute aus dem Fenster in die Ferne, um deine Augen zu entspannen!",
-  "Schüttle deine Arme und Beine für 15 Sekunden kräftig aus (Dopamin-Reset)!",
-  "Atme 5-mal ganz tief durch die Nase ein und langsam durch den Mund wieder aus!"
-];
-
-const BREAK_TIPS_EN = [
-  "Do 5 squats or stretch your body vigorously!",
-  "Drink a large glass of fresh, cold water!",
-  "Look out the window into the distance for 1 minute to relax your eyes!",
-  "Shake out your arms and legs for 15 seconds (dopamine reset)!",
-  "Take 5 deep breaths in through your nose and slowly out through your mouth!"
-];
-
 function startTaskTimer(taskName, event) {
   if (event) event.stopPropagation(); if (!taskName) return;
   activeTimerTask = taskName; 
@@ -80,13 +63,13 @@ function toggleTimer() {
       } else {
         clearInterval(timerInterval); timerRunning = false; playProceduralSound();
         
-        // Zufälligen Pausen-Tipp auswählen
-        const tips = currentLang === 'de' ? BREAK_TIPS_DE : BREAK_TIPS_EN;
+        // Zufälligen Pausen-Tipp aus der data.js Datenbank auswählen
+        const tips = BREAK_TIPS[currentLang] || BREAK_TIPS['en'];
         const tip = tips[Math.floor(Math.random() * tips.length)];
         
-        // Dialogfenster (sorgt dafür, dass der Browser sich meldet, selbst wenn der Tab im Hintergrund ist)
-        const breakTitle = currentLang === 'de' ? 'Fokus-Zeit abgelaufen! ☕' : 'Focus session finished! ☕';
-        const breakTipLabel = currentLang === 'de' ? 'Empfehlung für deine Pause' : 'Break recommendation';
+        // Lokalisiertes Dialogfenster
+        const breakTitle = t('timer_session_finished');
+        const breakTipLabel = t('timer_recommendation');
         alert(`🎉 ${breakTitle}\n\n${breakTipLabel}:\n👉 ${tip}`);
         
         if (btnHeader) {

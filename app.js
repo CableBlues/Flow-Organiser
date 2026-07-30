@@ -1,95 +1,8 @@
 let currentZenTaskInfo = null;
 let lastSelectedSound = 'rain'; // Standardmäßiger Fokus-Sound
 
-// 40 psychologische und abwechslungsreiche ADHD-Kurzaktivitäten für den Dopamin-Funken
-const BOOST_ACTIVITIES_DE = [
-  "Atme 3-mal tief durch deine Nase ein und gaaaaanz langsam durch deinen Mund wieder aus. 🌬️",
-  "Trinke ein großes Glas frisches, kaltes Wasser, um deine Gehirnzellen aufzuwecken! 💧",
-  "Rolle deine Schultern 5-mal langsam nach hinten. 🧘",
-  "Steh kurz auf, strecke deine Arme fest Richtung Decke aus und mach dich ganz lang. 🙋‍♂️",
-  "Kreise deine Hand- und Fußgelenke 5-mal in beide Richtungen. 🦶",
-  "Schüttle deine Hände 15 Sekunden lang ganz locker aus (Dopamin-Reset)! 🫨",
-  "Blicke für 15 Sekunden aus dem Fenster auf den am weitesten entfernten Punkt. 🌲",
-  "Laufe einmal quer durch den Raum, tipp kurz an die Wand und komm wieder zurück! 🏃",
-  "Lächle dich selbst im Spiegel oder auf dem schwarzen Bildschirm für 10 Sekunden an! 😁",
-  "Massiere deine Ohrmuscheln sanft für 10 Sekunden von oben nach unten. 👂",
-  "Schließe deine Augen und nimm 3 verschiedene Geräusche um dich herum bewusst wahr. 🎧",
-  "Schneide eine super lustige Grimasse, um deine gesamte Gesichtsmuskulatur zu entspannen! 🤪",
-  "Klopfe deine Arme und Beine von oben nach unten sanft ab (Aktivierung). 🫳",
-  "Knülle ein Papier zusammen und wirf es als Zielwurf in deinen Papierkorb! 🏀",
-  "Tu für 10 Sekunden so, als würdest du ein Musikinstrument wie Luftgitarre spielen! 🎸",
-  "Zähle rückwärts von 20 auf 0 in Dreierschritten (20, 17, 14...). 🧠",
-  "Öffne deinen Kiefer weit und gähne einmal tief, um Gesichtsspannungen zu lösen! 🥱",
-  "Reibe deine Handflächen kräftig aneinander, bis sie richtig schön warm werden! 👐",
-  "Trommle deine Finger für 10 Sekunden wie auf einem Klavier auf den Tisch. 🎹",
-  "Hüpfe für 10 Sekunden leicht federnd auf der Stelle. ⚡",
-  "Summe deine Lieblingsmelodie für 15 Sekunden vor dich hin. 🎵",
-  "Umfasse deine Hände hinter dem Rücken und zieh deine Brust nach vorne auf (Dehnen). 🙆‍♀️",
-  "Suche einen roten Gegenstand in deiner direkten Umgebung und fokussiere ihn für 5 Sekunden. 🔴",
-  "Drücke deine Zungenspitze für 10 Sekunden fest gegen deinen Gaumen. 👅",
-  "Mache 5 langsame Kniebeugen, um das Blut in deine Beine zu bringen. 🏋️",
-  "Balanciere für 10 Sekunden auf einem Bein und schließe dabei die Augen! 🤸",
-  "Knete oder massiere deine Nackenmuskeln mit beiden Händen für 15 Sekunden. 💆‍♂️",
-  "Finde einen kreisförmigen Gegenstand im Raum und fahre seine Konturen mit den Augen ab. ⭕",
-  "Nimm dir ein Buch oder Magazin und lies ein einziges zufälliges Wort laut vor. 📖",
-  "Reibe deine Daumen- und Zeigefingerspitzen für 10 Sekunden aneinander (Sinnreiz). 🤌",
-  "Verändere deine Sitzposition um 90 Grad oder sitze für 20 Sekunden kerzengerade aufrecht. 🪑",
-  "Mach deine Augen ganz weit auf, kneife sie dann fest zusammen und öffne sie wieder. 👁️",
-  "Führe deinen Ellenbogen für 5 Sekunden zum diagonalen Knie (Cross-Crawl). 🏃‍♂️",
-  "Bewege deine Zehen in deinen Schuhen oder Socken ganz wild hin und her. 🧦",
-  "Nenne 3 Dinge in deinem Kopf, für die du heute dankbar bist. 🌸",
-  "Klopfe mit deinen Fingerspitzen ganz sanft dein Gesicht ab (Tapping). 💆‍♀️",
-  "Denke an ein Tier, das mit dem Anfangsbuchstaben deines Namens beginnt. 🦁",
-  "Atme tief ein, halte die Luft für 4 Sekunden an, und atme langsam wieder aus (Box-Breathing). 🫁",
-  "Klopfe dir einmal kräftig selbst auf die Schulter! Das machst du gut. 👏",
-  "Spreize deine Finger so weit wie möglich, halte sie für 5 Sekunden und entspanne sie. 🖐️"
-];
-
-const BOOST_ACTIVITIES_EN = [
-  "Take 3 deep breaths in through your nose and exhale veeeery slowly. 🌬️",
-  "Drink a large glass of cold water to awaken your brain cells! 💧",
-  "Roll your shoulders slowly backwards 5 times. 🧘",
-  "Stand up, stretch your arms tightly towards the ceiling and make yourself tall. 🙋‍♂️",
-  "Rotate your wrist and ankle joints 5 times in both directions. 🦶",
-  "Vigorously shake out your hands for 15 seconds (dopamine reset)! 🫨",
-  "Look out the window at the furthest point for 15 seconds. 🌲",
-  "Walk once across the room, tap the wall, and come back! 🏃",
-  "Smile at yourself in the mirror or black screen for 10 seconds! 😁",
-  "Gently massage your earlobes from top to bottom for 10 seconds. 👂",
-  "Close your eyes and try to identify 3 different sounds around you. 🎧",
-  "Make a funny face to completely relax all your muscles! 🤪",
-  "Gently pat down your arms and legs from top to bottom (activation). 🫳",
-  "Crumple a piece of paper and throw it into the trash can as a target practice! 🏀",
-  "Pretend to play a musical instrument like an air guitar for 10 seconds! 🎸",
-  "Count backwards from 20 to 0 in steps of 3 (20, 17, 14...). 🧠",
-  "Open your jaw wide and yawn deeply to release facial tension! 🥱",
-  "Rub your palms vigorously together until they get really warm! 👐",
-  "Drum your fingers on the desk for 10 seconds like on a piano. 🎹",
-  "Bounce lightly on the spot for 10 seconds. ⚡",
-  "Hum your favorite melody for 15 seconds. 🎵",
-  "Clasp your hands behind your back and open up your chest (stretch). 🙆‍♀️",
-  "Find a red object in your immediate vicinity and focus on it for 5 seconds. 🔴",
-  "Press the tip of your tongue firmly against the roof of your mouth for 10 seconds. 👅",
-  "Do 5 slow squats to get the blood pumping into your legs. 🏋️",
-  "Balance on one leg for 10 seconds and close your eyes! 🤸",
-  "Knead or massage your neck muscles with both hands for 15 seconds. 💆‍♂️",
-  "Find a circular object in the room and trace its contours with your eyes. ⭕",
-  "Grab a book or magazine and read a single random word out loud. 📖",
-  "Rub your thumb and index finger tips together for 10 seconds (sensory stimulation). 🤌",
-  "Change your sitting position by 90 degrees or sit up perfectly straight for 20 seconds. 🪑",
-  "Open your eyes very wide, squeeze them shut tightly, and open them again. 👁️",
-  "Touch your elbow to your opposite knee (cross-crawl exercise) 5 times. 🏃‍♂️",
-  "Wiggle your toes inside your shoes or socks wildly back and forth. 🧦",
-  "Name 3 things in your mind that you are grateful for today. 🌸",
-  "Gently tap your face with your fingertips (tapping technique). 💆‍♀️",
-  "Think of an animal that starts with the first letter of your name. 🦁",
-  "Inhale deeply, hold your breath for 4 seconds, and exhale slowly (box breathing). 🫁",
-  "Give yourself a firm pat on the back! You are doing great. 👏",
-  "Spread your fingers as wide as possible, hold for 5 seconds, then relax. 🖐️"
-];
-
 function suggestBoostActivity() {
-  const list = currentLang === 'de' ? BOOST_ACTIVITIES_DE : BOOST_ACTIVITIES_EN;
+  const list = BOOST_ACTIVITIES[currentLang] || BOOST_ACTIVITIES['en'];
   const randomActivity = list[Math.floor(Math.random() * list.length)];
   const box = document.getElementById('boost-activity-box');
   if (box) {
@@ -139,9 +52,19 @@ function setTheme(theme) {
 }
 
 function setLanguage(lang) {
+  // Sicherheits-Check: Falls ein alter, ungültiger Sprachschlüssel im Speicher existiert -> Fallback zu Englisch
+  if (!lang || !TRANSLATIONS[lang] || !DEFAULT_TASKS_BY_LANG[lang]) {
+    lang = 'en';
+  }
   const oldLang = currentLang;
   currentLang = lang;
   localStorage.setItem('flowPlannerLanguage', lang);
+  
+  // WICHTIG: Ändert das lang-Attribut auf HTML-Ebene.
+  // Dadurch weiß die text-transform Engine des Browsers, dass Griechisch aktiv ist,
+  // und rendert Großbuchstaben (all-caps) absolut fehlerfrei ohne Tonoi (Akzente).
+  document.documentElement.lang = lang;
+  
   translateUserTasks(oldLang, lang);
   const flagMap = { de: '🇩🇪', en: '🇬🇧', es: '🇪🇸', el: '🇬🇷' };
   const flagEl = document.getElementById('active-lang-flag');
@@ -162,10 +85,17 @@ function translateUI() {
     const key = el.getAttribute('data-i18n-placeholder');
     if (TRANSLATIONS[currentLang]?.[key]) el.setAttribute('placeholder', TRANSLATIONS[currentLang][key]);
   });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    const key = el.getAttribute('data-i18n-title');
+    if (TRANSLATIONS[currentLang]?.[key]) el.setAttribute('title', TRANSLATIONS[currentLang][key]);
+  });
 }
 
 function translateUserTasks(fromLang, toLang) {
   if (fromLang === toLang) return;
+  // Sicherheits-Check, falls alte Sprach-Schlüssel im Speicher vorhanden waren
+  if (!DEFAULT_TASKS_BY_LANG[fromLang] || !DEFAULT_TASKS_BY_LANG[toLang]) return;
+  
   saveHistory();
   const cats = ['daily', 'weekly', 'occasionally'];
   cats.forEach(cat => {
@@ -208,7 +138,7 @@ function toggleMinimalist() {
   } else {
     document.body.classList.remove('minimalist');
   }
-  showToast(isMinimalist ? 'Zen-Modus aktiv 🧘' : 'Zen-Modus aus');
+  showToast(isMinimalist ? t('toast_zen_active') : t('toast_zen_inactive'));
 }
 
 function toggleTerminForm(open) {
@@ -230,7 +160,7 @@ function handleAddTermin() {
   const date = dateEl ? dateEl.value : '';
   const time = timeEl ? timeEl.value : '';
   if (!title) {
-    showToast(currentLang === 'de' ? 'Bitte Name für den Termin eingeben.' : 'Please enter appointment name.');
+    showToast(t('toast_appointment_name_error'));
     return;
   }
   saveHistory();
@@ -240,7 +170,7 @@ function handleAddTermin() {
   saveState();
   renderApp();
   populateAdhdTaskSelect();
-  showToast(currentLang === 'de' ? 'Termin eingetragen! 📅' : 'Appointment saved! 📅');
+  showToast(t('toast_appointment_saved'));
 }
 
 function getTaskIcon(taskText, category = '') {
@@ -361,18 +291,18 @@ function renderApp() {
         const btnEl = document.createElement('button');
         btnEl.onclick = () => toggleTerminForm(true);
         btnEl.className = 'mt-2 w-full min-h-[38px] p-2 rounded-lg border border-dashed border-white/15 bg-[#0a0a0e] hover:bg-[#13131e] text-center text-xs text-gray-400 hover:text-white font-semibold transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm';
-        const btnT = { de: '＋ Termin eintragen', en: '＋ Add Appointment', es: '＋  Cita', el: '＋ Προσθήκη Ραντεβού' }[currentLang] || '＋ Add';
+        const btnT = t('appointment_new_btn');
         btnEl.innerHTML = `<i data-lucide="calendar-plus" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i><span>${btnT}</span>`;
         listEl.appendChild(btnEl);
       } else {
         const formDiv = document.createElement('div');
         formDiv.className = 'mt-2 p-3 bg-[#0e0e14] border border-[var(--accent)]/40 rounded-xl flex flex-col gap-2.5 shadow-lg';
-        const formT = { de: 'Neuer Termin', en: 'New Appointment', es: 'Nueva Cita', el: 'Νέο Ραντεβού' }[currentLang] || 'New';
-        const nameT = { de: 'Termin Name (z.B. Zahnarzt)...', en: 'Appointment (e.g., Dentist)...', es: 'Nombre de la cita (ej. Dentista)...', el: 'Όνομα ραντεβού (π.χ. Οδοντίατρος)...' }[currentLang] || 'Name';
-        const dateT = { de: 'Datum', en: 'Date', es: 'Fecha', el: 'Ημερομηνία' }[currentLang] || 'Date';
-        const timeT = { de: 'Uhrzeit', en: 'Time', es: 'Ώra' }[currentLang] || 'Time';
-        const saveT = { de: 'Speichern', en: 'Save', es: 'Guardar', el: 'Αποθήκευση' }[currentLang] || 'Save';
-        const cancelT = { de: 'Abbrechen', en: 'Cancel', es: 'Cancelar', el: 'Ακύρωση' }[currentLang] || 'Cancel';
+        const formT = t('appointment_form_title');
+        const nameT = t('appointment_form_name_placeholder');
+        const dateT = t('appointment_form_date_label');
+        const timeT = t('appointment_form_time_label');
+        const saveT = t('appointment_form_save_btn');
+        const cancelT = t('appointment_form_cancel_btn');
         formDiv.innerHTML = `
           <div class="flex items-center justify-between text-xs font-bold text-amber-300">
             <span class="flex items-center gap-1.5"><i data-lucide="calendar" class="w-3.5 h-3.5"></i> ${formT}</span>
@@ -468,7 +398,7 @@ function deleteTask(category, index, event) {
   const taskText = typeof taskObj === 'object' ? taskObj?.task : taskObj;
   state.items[category].splice(index, 1);
   if (taskText && state.completedSteps) delete state.completedSteps[taskText];
-  saveState(); showToast(currentLang === 'de' ? 'Aufgabe gelöscht' : 'Task deleted'); renderApp(); updateZenView(); populateAdhdTaskSelect();
+  saveState(); showToast(t('toast_task_deleted')); renderApp(); updateZenView(); populateAdhdTaskSelect();
 }
 
 function handleRestoreDoneTask(doneIndex) {
@@ -479,7 +409,7 @@ function handleRestoreDoneTask(doneIndex) {
   state.done.splice(reversedIndex, 1);
   const targetCat = state.items[item.origin] ? item.origin : 'daily';
   state.items[targetCat].push(item.task);
-  saveState(); showToast(currentLang === 'de' ? 'Aufgabe wiederhergestellt' : 'Task restored'); renderApp(); updateZenView(); populateAdhdTaskSelect();
+  saveState(); showToast(t('toast_task_restored')); renderApp(); updateZenView(); populateAdhdTaskSelect();
 }
 
 let draggedItemInfo = null;
@@ -671,10 +601,10 @@ function updateReportPanel() {
   }
   const insightEl = document.getElementById('report-insight-text');
   if (insightEl) {
-    if (count === 0) insightEl.innerText = { de: 'Noch keine erledigten Aufgaben in diesem Zeitraum. Starte jetzt mit einer kleinen Aufgabe!', en: 'No completed tasks in this timeframe yet. Start with a small task now!', es: 'Aún no hay Aufgaben erledigt in diesem Zeitraum. ¡Empieza mit einer Aufgabe kleine!', el: 'Δεν υπάρχουν ολοκληρωμένες εργασίες για αυτήν την περίοδο ακόμα. Ξεκίνησε με μια μικρή εργασία τώρα!' }[currentLang];
-    else if (count < 3) insightEl.innerText = { de: `Guter Anfang! Du hast ${count} Aufgaben geschafft. Bleib dran!`, en: `Good start! You accomplished ${count} tasks. Keep going!`, es: `¡Buen開始! Has completado ${count} tareas. ¡Sigue así!`, el: `Καλή αρχή! Ολοκλήρωσες εργασίες. Συνέχισε έτσι!` }[currentLang];
-    else if (count < 8) insightEl.innerText = { de: `Starkes Ergebnis! ${count} Aufgaben erledigt. Du bist voll im Flow! ⚡`, en: `Great result! ${count} tasks completed. You are in the flow! ⚡`, es: `¡Gran Ergebnis! ${count} Tareas erledigt. ¡Estás en flow! ⚡`, el: `Εξαιρετικό αποτέλεσμα! Ολοκλήρωσες εργασίες. Είσαι σε πλήρη ροή! ⚡` }[currentLang];
-    else insightEl.innerText = { de: `Hervorragende Produktivität! ${count} Aufgaben geschafft. Zeit für eine Pause! 🎉`, en: `Outstanding productivity! ${count} tasks finished. Time for a well-deserved break! 🎉`, es: `¡Productividad sobresaliente! ${count} tareas hechas. ¡Es hora de un descanso! 🎉`, el: `Εξαιρετική παραγωγικότητα! Ολοκλήρωσες εργασίες. Ώra für ein διάλειμμα! 🎉` }[currentLang];
+    if (count === 0) insightEl.innerText = t('loading_stats');
+    else if (count < 3) insightEl.innerText = { de: `Guter Anfang! Du hast ${count} Aufgaben geschafft. Bleib dran!`, en: `Good start! You accomplished ${count} tasks. Keep going!`, es: `¡Buen comienzo! Has completado ${count} tareas. ¡Sigue así!`, el: `Καλή αρχή! Ολοκλήρωσες ${count} εργασίες. Συνέχισε έτσι!` }[currentLang];
+    else if (count < 8) insightEl.innerText = { de: `Starkes Ergebnis! ${count} Aufgaben erledigt. Du bist voll im Flow! ⚡`, en: `Great result! ${count} tasks completed. You are in the flow! ⚡`, es: `¡Gran resultado! ${count} tareas completadas. ¡Estás en flujo! ⚡`, el: `Εξαιρετικό αποτέλεσμα! Ολοκλήρωσες ${count} εργασίες. Είσαι σε πλήρη ροή! ⚡` }[currentLang];
+    else insightEl.innerText = { de: `Hervorragende Produktivität! ${count} Aufgaben geschafft. Zeit für eine Pause! 🎉`, en: `Outstanding productivity! ${count} tasks finished. Time for a well-deserved break! 🎉`, es: `¡Productividad sobresaliente! ${count} tareas hechas. ¡Es hora de un descanso! 🎉`, el: `Εξαιρετική παραγωγικότητα! Ολοκλήρωσες ${count} εργασίες. Ώρα για ένα διάλειμμα! 🎉` }[currentLang];
   }
   const list = document.getElementById('report-list');
   if (list) {
@@ -695,7 +625,7 @@ function updateReportPanel() {
 function submitFeedback() {
   const text = document.getElementById('feedback-text').value;
   if (text.trim()) {
-    showToast({ de: 'Vielen Dank für dein Feedback! ❤️', en: 'Thank you so much for your feedback! ❤️', es: '¡Muchas gracias für deine Gedanken! ❤️', el: 'Σας ευχαριστούμε πολύ für τα σχόلιά soaps! ❤️' }[currentLang]);
+    showToast({ de: 'Vielen Dank für dein Feedback! ❤️', en: 'Thank you so much for your feedback! ❤️', es: '¡Muchas gracias por tus comentarios! ❤️', el: 'Σας ευχαριστούμε πολύ για τα σχόλιά σας! ❤️' }[currentLang]);
     document.getElementById('feedback-text').value = ''; togglePanel('feedback');
   }
 }
@@ -715,7 +645,7 @@ function updateZenView() {
   currentZenTaskInfo = chosen;
   if (!chosen) {
     if (zenCatEl) zenCatEl.innerText = t('completed');
-    const endMsg = { de: '🎉 Alle Aufgaben erledigt! Entspanne dich und genieße deine freie Zeit.', en: '🎉 All tasks completed! Relax and enjoy your free time.', es: '🎉 ¡Todas las Aufgaben erledigt! ¡Disfruta de tu día!', el: '🎉 Όλες οι εργασίες ολοκληρώθηκαν! Χαλαρώστε und απολαύστε τον ελεύθερο χρόνο σας.' }[currentLang];
+    const endMsg = { de: '🎉 Alle Aufgaben erledigt! Entspanne dich und genieße deine freie Zeit.', en: '🎉 All tasks completed! Relax and enjoy your free time.', es: '🎉 ¡Todas las tareas completadas! ¡Disfruta de tu tiempo libre!', el: '🎉 Όλες οι εργασίες ολοκληρώθηκαν! Χαλαρώστε και απολαύστε τον ελεύθερο χρόνο σας.' }[currentLang];
     zenTextEl.innerHTML = `<span class="text-emerald-400">${endMsg}</span>`;
   } else {
     const catName = t(chosen.cat); if (zenCatEl) zenCatEl.innerText = `${t('next_rec')} · ${catName}`;
@@ -771,4 +701,3 @@ function exportReportAsImage() {
     showToast("Export fehlgeschlagen.");
   });
 }
-

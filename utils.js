@@ -48,7 +48,7 @@ function triggerConfetti() {
 
 function playProceduralSound() {
   try {
-    initAudioContext(); // Verwendet jetzt den globalen, stabilen Kontext aus audio.js
+    initAudioContext(); // Verwendet den globalen Kontext aus audio.js
     if (!audioCtx) return;
     const now = audioCtx.currentTime;
     const osc = audioCtx.createOscillator();
@@ -78,8 +78,8 @@ function formatTerminDate(dateStr, timeStr) {
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
   const tomorrowISO = tomorrow.toISOString().split('T')[0];
-  const localizedToday = { de: '📍 Heute', en: '📍 Today', es: '📍 Hoy', el: '📍 Σήμερα' }[currentLang] || 'Today';
-  const localizedTomorrow = { de: '🗓️ Morgen', en: '🗓️ Tomorrow', es: '🗓️ Mañana', el: '🗓️ Αύριο' }[currentLang] || 'Tomorrow';
+  const localizedToday = t('date_badge_today');
+  const localizedTomorrow = t('date_badge_tomorrow');
   let label = '';
   if (dateStr === todayISO) label = localizedToday;
   else if (dateStr === tomorrowISO) label = localizedTomorrow;
