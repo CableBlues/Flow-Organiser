@@ -1,8 +1,10 @@
 function showToast(msg) {
   const overlay = document.getElementById('toast-overlay');
   const card = document.getElementById('toast-card');
-  card.innerText = msg; overlay.classList.remove('hidden');
-  setTimeout(() => overlay.classList.add('hidden'), 2200);
+  if (card && overlay) {
+    card.innerText = msg; overlay.classList.remove('hidden');
+    setTimeout(() => overlay.classList.add('hidden'), 2200);
+  }
 }
 
 function showPraise() {
@@ -10,9 +12,11 @@ function showPraise() {
   const msg = praises[Math.floor(Math.random() * praises.length)];
   const overlay = document.getElementById('praise-overlay');
   const card = document.getElementById('praise-card');
-  card.innerText = msg; overlay.classList.remove('hidden');
-  card.style.animation = 'scaleBounce 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards';
-  setTimeout(() => overlay.classList.add('hidden'), 1100);
+  if (card && overlay) {
+    card.innerText = msg; overlay.classList.remove('hidden');
+    card.style.animation = 'scaleBounce 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+    setTimeout(() => overlay.classList.add('hidden'), 1100);
+  }
 }
 
 function triggerConfetti() {
@@ -44,20 +48,27 @@ function triggerConfetti() {
 
 function playProceduralSound() {
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const now = ctx.currentTime;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
+    initAudioContext(); // Verwendet jetzt den globalen, stabilen Kontext aus audio.js
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    
     osc.connect(gain);
-    gain.connect(ctx.destination);
+    gain.connect(audioCtx.destination);
+    
     osc.type = 'sine';
     osc.frequency.setValueAtTime(523.25, now);
     osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.15);
-    gain.gain.setValueAtTime(0.15, now);
+    
+    gain.gain.setValueAtTime(0.12, now);
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+    
     osc.start(now);
     osc.stop(now + 0.35);
-  } catch(e) {}
+  } catch(e) {
+    console.error("Fehler beim Energiser-Feedback:", e);
+  }
 }
 
 function formatTerminDate(dateStr, timeStr) {
@@ -84,8 +95,10 @@ function updateDateAndStreak() {
   const locales = { de: 'de-DE', en: 'en-GB', el: 'el-GR', es: 'es-ES' };
   try {
     const str = new Intl.DateTimeFormat(locales[currentLang] || 'en-GB', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
-    document.getElementById('date-display').innerText = str;
+    const displayEl = document.getElementById('date-display');
+    if (displayEl) displayEl.innerText = str;
   } catch (e) {
-    document.getElementById('date-display').innerText = new Date().toLocaleDateString();
+    const displayEl = document.getElementById('date-display');
+    if (displayEl) displayEl.innerText = new Date().toLocaleDateString();
   }
 }
