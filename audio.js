@@ -4,15 +4,16 @@ let currentSoundType = null;
 let soundGainNode = null;
 let soundOscillators = [];
 let soundMasterVolume = 0.5;
-let activeUserAudio = null; // Speichert das aktive HTML5-Audio-Objekt (Eigene MP3s)
-let localSoundCache = {}; // Cache für bereits generierte Audio-Data-URIs
+let activeUserAudio = null; // Speichert das aktive HTML5-Audio-Objekt
+let localSoundCache = {}; 
 let activeNodes = [];
 let activeTimeouts = [];
 let noiseBuffers = {};
 
-// Playlist-Zustände für eigene Musiktracks
+// Playlist-Zustände für eigene Tracks
 let playlistTracks = [];
 let currentTrackIndex = 0;
+let isPlayerShuffleEnabled = true; // standardmäßig aktiv (zufällige Wiedergabe)
 
 function initAudioContext() {
   try {
@@ -79,11 +80,6 @@ function getNoiseBuffer(type) {
       lastOut_r = right[i];
       right[i] *= 3.5;
     }
-  } else if (type === 'white_static') {
-    for (let i = 0; i < bufferSize; i++) {
-      left[i] = (Math.random() * 2 - 1) * 0.15;
-      right[i] = (Math.random() * 2 - 1) * 0.15;
-    }
   }
   noiseBuffers[type] = buffer;
   return buffer;
@@ -94,220 +90,148 @@ function clearActiveTimeouts() {
   activeTimeouts = [];
 }
 
-// Hauptfunktion zum lückenlosen Abspielen der Naturgeräusche
-function playAmbientSound(type) {
-  stopAmbientSound(true);
-  currentSoundType = type;
-
+// Hauptfunktion zum Abspielen der 18 Naturgeräusche (mit integriertem Crossfade-Support)
+function playAmbientSound(type, crossfade = false) {
   initAudioContext();
   if (!audioCtx) return;
 
-  soundGainNode = audioCtx.createGain();
-  let baseVolume = 0.45;
-  if (type === 'alpha') baseVolume = 0.25;
-  if (type === 'ocean') baseVolume = 0.55;
-  if (type === 'fire') baseVolume = 0.5;
+  if (crossfade && currentSoundType) {
+    const oldGain = soundGainNode;
+    const oldNodes = [...activeNodes];
 
-  soundGainNode.gain.setValueAtTime(soundMasterVolume * baseVolume, audioCtx.currentTime);
-  soundGainNode.connect(audioCtx.destination);
+    if (oldGain) {
+      const now = audioCtx.currentTime;
+      oldGain.gain.setValueAtTime(oldGain.gain.value, now);
+      oldGain.gain.linearRampToValueAtTime(0.0001, now + 4.0); // Blendet den alten Sound aus
+    }
 
-  if (type === 'rain') {
+    setTimeout(() => {
+      oldNodes.forEach(node => {
+        try { node.stop(); } catch(e) {}
+        try { node.disconnect(); } catch(e) {}
+      });
+      try { oldGain.disconnect(); } catch(e) {}
+    }, 4200);
+
+    activeNodes = [];
+    currentSoundType = type;
+
+    soundGainNode = audioCtx.createGain();
+    soundGainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    soundGainNode.gain.linearRampToValueAtTime(soundMasterVolume * 1.0, audioCtx.currentTime + 4.0); // Auf volle Lautstärke
+    soundGainNode.connect(audioCtx.destination);
+  } else {
+    stopAmbientSound(true);
+    currentSoundType = type;
+
+    soundGainNode = audioCtx.createGain();
+    soundGainNode.gain.setValueAtTime(soundMasterVolume * 1.0, audioCtx.currentTime);
+    soundGainNode.connect(audioCtx.destination);
+  }
+
+  // Generatoren anstoßen
+  if (type === 'rain') { 
     const source = audioCtx.createBufferSource();
     source.buffer = getNoiseBuffer('pink');
     source.loop = true;
-
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
     filter.frequency.setValueAtTime(1400, audioCtx.currentTime);
-
     source.connect(filter);
     filter.connect(soundGainNode);
     source.start();
     activeNodes.push(source);
 
-  } else if (type === 'ocean') {
+  } else if (type === 'ocean') { 
     const source = audioCtx.createBufferSource();
     source.buffer = getNoiseBuffer('brown');
     source.loop = true;
-
     const waveGain = audioCtx.createGain();
     waveGain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-
     const lfo = audioCtx.createOscillator();
     lfo.frequency.setValueAtTime(0.08, audioCtx.currentTime);
-
     const lfoGain = audioCtx.createGain();
     lfoGain.gain.setValueAtTime(0.35, audioCtx.currentTime);
-
     lfo.connect(lfoGain);
     lfoGain.connect(waveGain.gain);
-
     source.connect(waveGain);
     waveGain.connect(soundGainNode);
-
     lfo.start();
     source.start();
     activeNodes.push(lfo, source);
 
-  } else if (type === 'alpha') {
-    const oscL = audioCtx.createOscillator();
-    const oscR = audioCtx.createOscillator();
-    const merger = audioCtx.createChannelMerger(2);
-
-    oscL.frequency.setValueAtTime(200, audioCtx.currentTime);
-    oscR.frequency.setValueAtTime(210, audioCtx.currentTime);
-
-    const pad1 = audioCtx.createOscillator();
-    const pad2 = audioCtx.createOscillator();
-    const padFilter = audioCtx.createBiquadFilter();
-    const padGain = audioCtx.createGain();
-
-    pad1.type = 'triangle';
-    pad2.type = 'triangle';
-    pad1.frequency.setValueAtTime(100, audioCtx.currentTime);
-    pad2.frequency.setValueAtTime(150, audioCtx.currentTime);
-
-    padFilter.type = 'lowpass';
-    padFilter.frequency.setValueAtTime(110, audioCtx.currentTime);
-    padGain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-
-    pad1.connect(padFilter);
-    pad2.connect(padFilter);
-    padFilter.connect(padGain);
-
-    oscL.connect(merger, 0, 0);
-    oscR.connect(merger, 0, 1);
-    padGain.connect(merger, 0, 0);
-    padGain.connect(merger, 0, 1);
-
-    merger.connect(soundGainNode);
-
-    oscL.start();
-    oscR.start();
-    pad1.start();
-    pad2.start();
-    activeNodes.push(oscL, oscR, pad1, pad2);
-
-  } else if (type === 'wind') {
-    const source = audioCtx.createBufferSource();
-    source.buffer = getNoiseBuffer('pink');
-    source.loop = true;
-
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.Q.setValueAtTime(2.2, audioCtx.currentTime);
-
-    const lfo = audioCtx.createOscillator();
-    lfo.frequency.setValueAtTime(0.06, audioCtx.currentTime);
-
-    const lfoGain = audioCtx.createGain();
-    lfoGain.gain.setValueAtTime(260, audioCtx.currentTime);
-
-    lfo.connect(lfoGain);
-    lfoGain.connect(filter.frequency);
-
-    filter.frequency.setValueAtTime(650, audioCtx.currentTime);
-
-    source.connect(filter);
-    filter.connect(soundGainNode);
-
-    lfo.start();
-    source.start();
-    activeNodes.push(lfo, source);
-
-  } else if (type === 'birds') { // Waldgezwitscher (Vögel)
-    const source = audioCtx.createBufferSource();
-    source.buffer = getNoiseBuffer('pink');
-    source.loop = true;
-
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(600, audioCtx.currentTime);
-
-    source.connect(filter);
-    filter.connect(soundGainNode);
-    source.start();
-    activeNodes.push(source);
-
-    scheduleBird();
-
-  } else if (type === 'thunder') { // Gewitter
-    const source = audioCtx.createBufferSource();
-    source.buffer = getNoiseBuffer('pink');
-    source.loop = true;
-
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(1400, audioCtx.currentTime);
-
-    source.connect(filter);
-    filter.connect(soundGainNode);
-    source.start();
-    activeNodes.push(source);
-
-    scheduleThunder();
-
-  } else if (type === 'fire') {
+  } else if (type === 'campfire') { 
     const source = audioCtx.createBufferSource();
     source.buffer = getNoiseBuffer('brown');
     source.loop = true;
-
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
     filter.frequency.setValueAtTime(180, audioCtx.currentTime);
-
     source.connect(filter);
     filter.connect(soundGainNode);
     source.start();
     activeNodes.push(source);
+    scheduleCampfireCrackles();
 
-    scheduleCrackle();
-
-  } else if (type === 'cafe') { // Cozy Café
+  } else if (type === 'birds') { 
     const source = audioCtx.createBufferSource();
     source.buffer = getNoiseBuffer('pink');
     source.loop = true;
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(550, audioCtx.currentTime);
+    source.connect(filter);
+    filter.connect(soundGainNode);
+    source.start();
+    activeNodes.push(source);
+    scheduleForestBirds();
 
+  } else if (type === 'stream') { 
+    const source = audioCtx.createBufferSource();
+    source.buffer = getNoiseBuffer('pink');
+    source.loop = true;
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(850, audioCtx.currentTime);
+    source.connect(filter);
+    filter.connect(soundGainNode);
+    source.start();
+    activeNodes.push(source);
+    scheduleStreamWaterGurgles();
+
+  } else if (type === 'temple') { 
+    const source = audioCtx.createBufferSource();
+    source.buffer = getNoiseBuffer('pink');
+    source.loop = true;
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
     filter.frequency.setValueAtTime(380, audioCtx.currentTime);
-
     source.connect(filter);
     filter.connect(soundGainNode);
     source.start();
     activeNodes.push(source);
+    scheduleTempleElements();
 
-    scheduleClink();
-
-  } else if (type === 'crickets') { // Sommerwiese (Grillen)
+  } else if (type === 'cafe') { 
     const source = audioCtx.createBufferSource();
     source.buffer = getNoiseBuffer('pink');
     source.loop = true;
-
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(280, audioCtx.currentTime);
-
+    filter.frequency.setValueAtTime(350, audioCtx.currentTime);
     source.connect(filter);
     filter.connect(soundGainNode);
     source.start();
     activeNodes.push(source);
+    scheduleCafeCupClinks();
 
-    scheduleCricket();
+  } else if (type === 'clock') { 
+    scheduleTickTockRhythm();
 
-  } else if (type === 'white') { // 9. Weißes Rauschen
-    const source = audioCtx.createBufferSource();
-    source.buffer = getNoiseBuffer('white_static');
-    source.loop = true;
-    source.connect(soundGainNode);
-    source.start();
-    activeNodes.push(source);
-
-  } else if (type === 'purr') { // 10. Katzen-Schnurren
+  } else if (type === 'purr') { 
     const lfo = audioCtx.createOscillator();
     const lfoGain = audioCtx.createGain();
     const purrGain = audioCtx.createGain();
-    
     const osc1 = audioCtx.createOscillator();
     const osc2 = audioCtx.createOscillator();
     
@@ -318,16 +242,14 @@ function playAmbientSound(type) {
     
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(80, audioCtx.currentTime);
+    filter.frequency.setValueAtTime(95, audioCtx.currentTime);
     
-    // Schnurr-Vibrato (ca. 0.28Hz Atemrhythmus)
-    lfo.frequency.setValueAtTime(0.28, audioCtx.currentTime);
-    lfoGain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-    purrGain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+    lfo.frequency.setValueAtTime(0.24, audioCtx.currentTime);
+    lfoGain.gain.setValueAtTime(0.45, audioCtx.currentTime);
+    purrGain.gain.setValueAtTime(1.2, audioCtx.currentTime);
     
     lfo.connect(lfoGain);
     lfoGain.connect(purrGain.gain);
-    
     osc1.connect(filter);
     osc2.connect(filter);
     filter.connect(purrGain);
@@ -338,71 +260,20 @@ function playAmbientSound(type) {
     osc2.start();
     activeNodes.push(lfo, osc1, osc2);
 
-  } else if (type === 'jungle') { // 11. Dschungel-Nacht
-    const source = audioCtx.createBufferSource();
-    source.buffer = getNoiseBuffer('pink');
-    source.loop = true;
-
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(400, audioCtx.currentTime);
-
-    source.connect(filter);
-    filter.connect(soundGainNode);
-    source.start();
-    activeNodes.push(source);
-
-    scheduleJungleSounds();
-
-  } else if (type === 'train') { // 12. Zugfahrt
+  } else if (type === 'train') { 
     const source = audioCtx.createBufferSource();
     source.buffer = getNoiseBuffer('brown');
     source.loop = true;
-
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(120, audioCtx.currentTime);
-
+    filter.frequency.setValueAtTime(140, audioCtx.currentTime);
     source.connect(filter);
     filter.connect(soundGainNode);
     source.start();
     activeNodes.push(source);
+    scheduleTrainSteamChuffs();
 
-    scheduleTrain();
-
-  } else if (type === 'library') { // 13. Bibliothek
-    const source = audioCtx.createBufferSource();
-    source.buffer = getNoiseBuffer('pink');
-    source.loop = true;
-
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(300, audioCtx.currentTime);
-
-    source.connect(filter);
-    filter.connect(soundGainNode);
-    source.start();
-    activeNodes.push(source);
-
-    schedulePageRustle();
-
-  } else if (type === 'keyboard') { // 14. Tastatur-Tippen
-    const source = audioCtx.createBufferSource();
-    source.buffer = getNoiseBuffer('pink');
-    source.loop = true;
-
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(100, audioCtx.currentTime);
-
-    source.connect(filter);
-    filter.connect(soundGainNode);
-    source.start();
-    activeNodes.push(source);
-
-    scheduleTypeClicks();
-
-  } else if (type === 'spaceship') { // 15. Spaceship
+  } else if (type === 'space') { 
     const osc = audioCtx.createOscillator();
     const osc2 = audioCtx.createOscillator();
     const filter = audioCtx.createBiquadFilter();
@@ -411,20 +282,19 @@ function playAmbientSound(type) {
     const lfoGain = audioCtx.createGain();
 
     osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(75, audioCtx.currentTime);
+    osc.frequency.setValueAtTime(60, audioCtx.currentTime);
     osc2.type = 'triangle';
-    osc2.frequency.setValueAtTime(112.5, audioCtx.currentTime);
+    osc2.frequency.setValueAtTime(90, audioCtx.currentTime);
 
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(100, audioCtx.currentTime);
-    waveGain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+    filter.frequency.setValueAtTime(140, audioCtx.currentTime);
+    waveGain.gain.setValueAtTime(0.95, audioCtx.currentTime);
 
-    lfo.frequency.setValueAtTime(0.15, audioCtx.currentTime);
-    lfoGain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    lfo.frequency.setValueAtTime(0.1, audioCtx.currentTime);
+    lfoGain.gain.setValueAtTime(0.3, audioCtx.currentTime);
 
     lfo.connect(lfoGain);
     lfoGain.connect(waveGain.gain);
-
     osc.connect(filter);
     osc2.connect(filter);
     filter.connect(waveGain);
@@ -435,109 +305,339 @@ function playAmbientSound(type) {
     osc2.start();
     activeNodes.push(lfo, osc, osc2);
 
-  } else if (type === 'sub') { // 16. Unterwasser (Submarine)
-    const source = audioCtx.createBufferSource();
-    source.buffer = getNoiseBuffer('brown');
-    source.loop = true;
+  } else if (type === 'arcade') { 
+    scheduleArcadeChiptunes();
 
+  } else if (type === 'waterfall') { 
+    const source1 = audioCtx.createBufferSource();
+    source1.buffer = getNoiseBuffer('brown');
+    source1.loop = true;
+    const filter1 = audioCtx.createBiquadFilter();
+    filter1.type = 'lowpass';
+    filter1.frequency.setValueAtTime(120, audioCtx.currentTime);
+
+    const source2 = audioCtx.createBufferSource();
+    source2.buffer = getNoiseBuffer('pink');
+    source2.loop = true;
+    const filter2 = audioCtx.createBiquadFilter();
+    filter2.type = 'lowpass';
+    filter2.frequency.setValueAtTime(1000, audioCtx.currentTime);
+
+    const gain1 = audioCtx.createGain();
+    const gain2 = audioCtx.createGain();
+    gain1.gain.setValueAtTime(1.0, audioCtx.currentTime);
+    gain2.gain.setValueAtTime(0.55, audioCtx.currentTime);
+
+    source1.connect(filter1);
+    filter1.connect(gain1);
+    gain1.connect(soundGainNode);
+
+    source2.connect(filter2);
+    filter2.connect(gain2);
+    gain2.connect(soundGainNode);
+
+    source1.start();
+    source2.start();
+    activeNodes.push(source1, source2);
+
+  } else if (type === 'guitarpad') { 
+    const source = audioCtx.createBufferSource();
+    source.buffer = getNoiseBuffer('pink');
+    source.loop = true;
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(90, audioCtx.currentTime);
-
+    filter.frequency.setValueAtTime(220, audioCtx.currentTime);
     source.connect(filter);
     filter.connect(soundGainNode);
     source.start();
     activeNodes.push(source);
+    scheduleGuitarPadMelody();
 
-    scheduleUnderwaterBubbles();
+  } else if (type === 'monastery') { 
+    const source = audioCtx.createBufferSource();
+    source.buffer = getNoiseBuffer('brown');
+    source.loop = true;
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(90, audioCtx.currentTime);
+    source.connect(filter);
+    filter.connect(soundGainNode);
+    source.start();
+    activeNodes.push(source);
+    scheduleMonasteryElements();
+
+  } else if (type === 'keyboard') { 
+    scheduleTypewriterClicks();
+
+  } else if (type === 'storm') { 
+    const source = audioCtx.createBufferSource();
+    source.buffer = getNoiseBuffer('pink');
+    source.loop = true;
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.Q.setValueAtTime(2.5, audioCtx.currentTime);
+    
+    const lfo = audioCtx.createOscillator();
+    lfo.frequency.setValueAtTime(0.05, audioCtx.currentTime);
+    const lfoGain = audioCtx.createGain();
+    lfoGain.gain.setValueAtTime(350, audioCtx.currentTime);
+
+    lfo.connect(lfoGain);
+    lfoGain.connect(filter.frequency);
+    filter.frequency.setValueAtTime(550, audioCtx.currentTime);
+
+    source.connect(filter);
+    filter.connect(soundGainNode);
+
+    lfo.start();
+    source.start();
+    activeNodes.push(lfo, source);
+    scheduleStormThunderRumbles();
+
+  } else if (type === 'frogs') { 
+    const source = audioCtx.createBufferSource();
+    source.buffer = getNoiseBuffer('pink');
+    source.loop = true;
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(300, audioCtx.currentTime);
+    source.connect(filter);
+    filter.connect(soundGainNode);
+    source.start();
+    activeNodes.push(source);
+    scheduleFrogsChirpsAndCroaks();
   }
 
   updateSoundscapeUI();
-  
-  // Letzten gespielten Sound im state merken
   lastSelectedSound = type;
-  
-  const toastLabel = { 
-    de: 'Focus Sound gestartet 🎧', 
-    en: 'Focus Sound started 🎧', 
-    es: 'Sonido de enfoque iniciado 🎧', 
-    el: 'Ήχος εστίασης ξεκίνησε 🎧' 
-  }[currentLang] || 'Sound started 🎧';
-  showToast(toastLabel);
 }
 
-// --- PROZEDURALE SOUND-BERECHNER ---
+// Ducking-Regler auf 1.0 festgeschrieben (Gleiche Lautstärke)
+function duckAmbientVolume(ratio) {
+  if (soundGainNode && audioCtx) {
+    try {
+      soundGainNode.gain.setValueAtTime(soundGainNode.gain.value, audioCtx.currentTime);
+      soundGainNode.gain.linearRampToValueAtTime(soundMasterVolume * 1.0, audioCtx.currentTime + 0.35);
+    } catch(e) {}
+  }
+  if (activeUserAudio) {
+    try { activeUserAudio.volume = soundMasterVolume * 0.7; } catch(e) {}
+  }
+}
 
-function scheduleThunder() {
-  if (currentSoundType !== 'thunder') return;
+function restoreAmbientVolume() {
+  if (soundGainNode && audioCtx) {
+    try {
+      soundGainNode.gain.setValueAtTime(soundGainNode.gain.value, audioCtx.currentTime);
+      soundGainNode.gain.linearRampToValueAtTime(soundMasterVolume * 1.0, audioCtx.currentTime + 0.6);
+    } catch(e) {}
+  }
+  if (activeUserAudio) {
+    try { activeUserAudio.volume = soundMasterVolume * 0.7; } catch(e) {}
+  }
+}
+
+// Sanfter, gleitender Lautstärke-Fade-Out am Sitzungsende
+function fadeOutAmbientSound(durationSeconds = 4.5) {
+  if (soundGainNode && audioCtx) {
+    try {
+      const now = audioCtx.currentTime;
+      soundGainNode.gain.setValueAtTime(soundGainNode.gain.value, now);
+      soundGainNode.gain.linearRampToValueAtTime(0.0001, now + durationSeconds);
+    } catch(e) {
+      console.error("Fade-Out Fehler:", e);
+    }
+  }
+  if (activeUserAudio) {
+    let steps = 25;
+    let stepTime = (durationSeconds * 1000) / steps;
+    let currentVol = activeUserAudio.volume;
+    let volStep = currentVol / steps;
+    let fadeInterval = setInterval(() => {
+      if (activeUserAudio && activeUserAudio.volume > volStep) {
+        activeUserAudio.volume -= volStep;
+      } else {
+        clearInterval(fadeInterval);
+        try { if (activeUserAudio) activeUserAudio.pause(); } catch(e) {}
+      }
+    }, stepTime);
+  }
+  
+  setTimeout(() => {
+    stopAmbientSound(true); 
+  }, durationSeconds * 1000 + 100);
+}
+
+// --- SOUND-SCHEDULER ---
+
+function scheduleCampfireCrackles() {
+  if (currentSoundType !== 'campfire') return;
   let timeout = setTimeout(() => {
-    playThunder();
-    scheduleThunder();
-  }, 9000 + Math.random() * 14000);
+    playCampfireCrack();
+    if (Math.random() > 0.94) playAcousticPluck();
+    scheduleCampfireCrackles();
+  }, 35 + Math.random() * 240);
   activeTimeouts.push(timeout);
 }
 
-function playThunder() {
-  if (!audioCtx || currentSoundType !== 'thunder') return;
+function playCampfireCrack() {
+  if (!audioCtx || currentSoundType !== 'campfire') return;
   const now = audioCtx.currentTime;
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
   const filter = audioCtx.createBiquadFilter();
 
-  osc.type = 'sawtooth';
-  osc.frequency.setValueAtTime(40 + Math.random() * 25, now);
-  
+  osc.type = 'triangle';
+  filter.type = 'bandpass';
+  filter.frequency.value = 1900 + Math.random() * 3200;
+  filter.Q.value = 6;
+
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(soundGainNode);
+
+  osc.frequency.setValueAtTime(90 + Math.random() * 210, now);
+
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.04 + Math.random() * 0.04, now + 0.001); 
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.008 + Math.random() * 0.012);
+
+  osc.start(now);
+  osc.stop(now + 0.03);
+}
+
+function playAcousticPluck() {
+  if (!audioCtx || currentSoundType !== 'campfire') return;
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  const filter = audioCtx.createBiquadFilter();
+
+  osc.type = 'triangle';
+  const notes = [146.83, 196.00, 246.94, 293.66, 329.63]; 
+  const pitch = notes[Math.floor(Math.random() * notes.length)];
+  osc.frequency.setValueAtTime(pitch, now);
+
   filter.type = 'lowpass';
-  filter.frequency.setValueAtTime(75, now);
-  filter.Q.setValueAtTime(4, now);
+  filter.frequency.setValueAtTime(450, now);
 
   osc.connect(filter);
   filter.connect(gain);
   gain.connect(soundGainNode);
 
   gain.gain.setValueAtTime(0, now);
-  gain.gain.linearRampToValueAtTime(0.35 + Math.random() * 0.35, now + 0.15);
-  gain.gain.exponentialRampToValueAtTime(0.001, now + 3.5 + Math.random() * 2.0);
+  gain.gain.linearRampToValueAtTime(0.25, now + 0.015); 
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.8);
 
   osc.start(now);
-  osc.stop(now + 6.0);
+  osc.stop(now + 2.0);
 }
 
-function scheduleBird() {
+function scheduleForestBirds() {
   if (currentSoundType !== 'birds') return;
   let timeout = setTimeout(() => {
-    playBird();
-    scheduleBird();
-  }, 2200 + Math.random() * 3800);
+    playBirdSinging();
+    scheduleForestBirds();
+  }, 1600 + Math.random() * 2800);
   activeTimeouts.push(timeout);
 }
 
-function playBird() {
+function playBirdSinging() {
   if (!audioCtx || currentSoundType !== 'birds') return;
   const now = audioCtx.currentTime;
   const osc = audioCtx.createOscillator();
-  const osc2 = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
 
   osc.type = 'sine';
-  osc2.type = 'sine';
-
-  let baseFreq = 2200 + Math.random() * 900;
+  let baseFreq = 2100 + Math.random() * 900;
   osc.frequency.setValueAtTime(baseFreq, now);
-  osc2.frequency.setValueAtTime(baseFreq * 1.5, now);
 
-  osc.frequency.linearRampToValueAtTime(baseFreq + 600, now + 0.15);
-  osc.frequency.exponentialRampToValueAtTime(baseFreq - 150, now + 0.3);
-  osc2.frequency.linearRampToValueAtTime(baseFreq * 1.5 + 400, now + 0.15);
-  osc2.frequency.exponentialRampToValueAtTime(baseFreq * 1.5 - 150, now + 0.3);
+  osc.frequency.linearRampToValueAtTime(baseFreq + 600, now + 0.12);
+  osc.frequency.exponentialRampToValueAtTime(baseFreq - 200, now + 0.28);
 
   gain.gain.setValueAtTime(0, now);
-  gain.gain.linearRampToValueAtTime(0.04, now + 0.05);
+  gain.gain.linearRampToValueAtTime(0.18, now + 0.04); 
   gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.32);
 
   const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
   osc.connect(gain);
-  osc2.connect(gain);
+
+  if (panner) {
+    panner.pan.setValueAtTime(Math.random() * 1.4 - 0.7, now);
+    gain.connect(panner);
+    panner.connect(soundGainNode);
+  } else {
+    gain.connect(soundGainNode);
+  }
+
+  osc.start(now);
+  osc.stop(now + 0.35);
+}
+
+function scheduleStreamWaterGurgles() {
+  if (currentSoundType !== 'stream') return;
+  let timeout = setTimeout(() => {
+    playWaterBubble();
+    scheduleStreamWaterGurgles();
+  }, 100 + Math.random() * 300);
+  activeTimeouts.push(timeout);
+}
+
+function playWaterBubble() {
+  if (!audioCtx || currentSoundType !== 'stream') return;
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const filter = audioCtx.createBiquadFilter();
+  const gain = audioCtx.createGain();
+
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(230 + Math.random() * 200, now);
+  osc.frequency.exponentialRampToValueAtTime(600 + Math.random() * 250, now + 0.25);
+
+  filter.type = 'bandpass';
+  filter.frequency.setValueAtTime(450, now);
+  filter.frequency.exponentialRampToValueAtTime(700, now + 0.25);
+  filter.Q.setValueAtTime(4, now);
+
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.15, now + 0.06); 
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
+
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(soundGainNode);
+
+  osc.start(now);
+  osc.stop(now + 0.3);
+}
+
+function scheduleTempleElements() {
+  if (currentSoundType !== 'temple') return;
+  let timeout = setTimeout(() => {
+    if (Math.random() > 0.3) playWindChime();
+    if (Math.random() > 0.75) playBambooFountainThump();
+    scheduleTempleElements();
+  }, 2000 + Math.random() * 3200);
+  activeTimeouts.push(timeout);
+}
+
+function playWindChime() {
+  if (!audioCtx || currentSoundType !== 'temple') return;
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+
+  osc.type = 'sine';
+  const freqs = [1900, 2300, 2700, 3200];
+  const f = freqs[Math.floor(Math.random() * freqs.length)] + (Math.random() * 100 - 50);
+  osc.frequency.setValueAtTime(f, now);
+
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.12, now + 0.01); 
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.6);
+
+  const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+  osc.connect(gain);
 
   if (panner) {
     panner.pan.setValueAtTime(Math.random() * 1.6 - 0.8, now);
@@ -548,211 +648,345 @@ function playBird() {
   }
 
   osc.start(now);
-  osc2.start(now);
-  osc.stop(now + 0.35);
-  osc2.stop(now + 0.35);
+  osc.stop(now + 1.8);
 }
 
-function scheduleCrackle() {
-  if (currentSoundType !== 'fire') return;
-  let timeout = setTimeout(() => {
-    playCrackle();
-    scheduleCrackle();
-  }, 40 + Math.random() * 260);
-  activeTimeouts.push(timeout);
-}
-
-function playCrackle() {
-  if (!audioCtx || currentSoundType !== 'fire') return;
+function playBambooFountainThump() {
+  if (!audioCtx || currentSoundType !== 'temple') return;
   const now = audioCtx.currentTime;
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
   const filter = audioCtx.createBiquadFilter();
 
   osc.type = 'triangle';
-  filter.type = 'bandpass';
-  filter.frequency.value = 1600 + Math.random() * 3200;
-  filter.Q.value = 4;
+  osc.frequency.setValueAtTime(100, now);
+  osc.frequency.exponentialRampToValueAtTime(45, now + 0.12);
+
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(150, now);
+
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.35, now + 0.005); 
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
 
   osc.connect(filter);
   filter.connect(gain);
   gain.connect(soundGainNode);
 
-  osc.frequency.setValueAtTime(110 + Math.random() * 200, now);
-
-  gain.gain.setValueAtTime(0, now);
-  gain.gain.linearRampToValueAtTime(0.012 + Math.random() * 0.03, now + 0.001);
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.008 + Math.random() * 0.01);
-
   osc.start(now);
-  osc.stop(now + 0.03);
+  osc.stop(now + 0.22);
 }
 
-function scheduleClink() {
+function scheduleCafeCupClinks() {
   if (currentSoundType !== 'cafe') return;
   let timeout = setTimeout(() => {
-    playClink();
-    scheduleClink();
-  }, 1500 + Math.random() * 4500);
+    playCafeClink();
+    scheduleCafeCupClinks();
+  }, 2000 + Math.random() * 4200);
   activeTimeouts.push(timeout);
 }
 
-function playClink() {
+function playCafeClink() {
   if (!audioCtx || currentSoundType !== 'cafe') return;
   const now = audioCtx.currentTime;
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
 
   osc.type = 'sine';
-  osc.frequency.setValueAtTime(2600 + Math.random() * 2000, now);
+  osc.frequency.setValueAtTime(2900 + Math.random() * 1900, now);
 
   osc.connect(gain);
   gain.connect(soundGainNode);
 
   gain.gain.setValueAtTime(0, now);
-  gain.gain.linearRampToValueAtTime(0.006 + Math.random() * 0.01, now + 0.002);
+  gain.gain.linearRampToValueAtTime(0.08 + Math.random() * 0.08, now + 0.002); 
   gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06 + Math.random() * 0.1);
 
   osc.start(now);
   osc.stop(now + 0.25);
 }
 
-function scheduleCricket() {
-  if (currentSoundType !== 'crickets') return;
+let lastClockTickHigh = false;
+function scheduleTickTockRhythm() {
+  if (currentSoundType !== 'clock') return;
   let timeout = setTimeout(() => {
-    playCricket();
-    scheduleCricket();
-  }, 1000 + Math.random() * 1800);
+    playClockTick();
+    scheduleTickTockRhythm();
+  }, 1000);
   activeTimeouts.push(timeout);
 }
 
-function playCricket() {
-  if (!audioCtx || currentSoundType !== 'crickets') return;
+function playClockTick() {
+  if (!audioCtx || currentSoundType !== 'clock') return;
   const now = audioCtx.currentTime;
-  const carrier = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-
-  carrier.type = 'sine';
-  carrier.frequency.setValueAtTime(4100 + Math.random() * 300, now);
-
-  carrier.connect(gain);
-  gain.connect(soundGainNode);
-
-  let startTime = now;
-  for (let i = 0; i < 4; i++) {
-    gain.gain.setValueAtTime(0, startTime);
-    gain.gain.linearRampToValueAtTime(0.006, startTime + 0.002);
-    gain.gain.linearRampToValueAtTime(0, startTime + 0.015);
-    startTime += 0.022;
-  }
-
-  carrier.start(now);
-  carrier.stop(startTime);
-}
-
-// 11. Dschungel-Nacht Zirpen & Geräusche
-function scheduleJungleSounds() {
-  if (currentSoundType !== 'jungle') return;
-  let timeout = setTimeout(() => {
-    playCricket();
-    if (Math.random() > 0.6) playBird();
-    scheduleJungleSounds();
-  }, 800 + Math.random() * 1500);
-  activeTimeouts.push(timeout);
-}
-
-// 12. Zugfahrt Glei-Stoßgeräusche (Clack-Clack)
-function scheduleTrain() {
-  if (currentSoundType !== 'train') return;
-  let timeout = setTimeout(() => {
-    playTrainClack();
-    scheduleTrain();
-  }, 1600 + Math.random() * 600);
-  activeTimeouts.push(timeout);
-}
-
-function playTrainClack() {
-  if (!audioCtx || currentSoundType !== 'train') return;
-  const now = audioCtx.currentTime;
-  
-  // Stoß 1
-  const osc1 = audioCtx.createOscillator();
-  const gain1 = audioCtx.createGain();
-  osc1.type = 'triangle';
-  osc1.frequency.setValueAtTime(60, now);
-  osc1.frequency.exponentialRampToValueAtTime(25, now + 0.12);
-  gain1.gain.setValueAtTime(0, now);
-  gain1.gain.linearRampToValueAtTime(0.08, now + 0.01);
-  gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
-  
-  osc1.connect(gain1);
-  gain1.connect(soundGainNode);
-  osc1.start(now);
-  osc1.stop(now + 0.15);
-
-  // Stoß 2
-  const osc2 = audioCtx.createOscillator();
-  const gain2 = audioCtx.createGain();
-  osc2.type = 'triangle';
-  osc2.frequency.setValueAtTime(55, now + 0.08);
-  osc2.frequency.exponentialRampToValueAtTime(25, now + 0.2);
-  gain2.gain.setValueAtTime(0, now + 0.08);
-  gain2.gain.linearRampToValueAtTime(0.06, now + 0.09);
-  gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
-  
-  osc2.connect(gain2);
-  gain2.connect(soundGainNode);
-  osc2.start(now + 0.08);
-  osc2.stop(now + 0.22);
-}
-
-// 13. Bibliothek Seitenrascheln
-function schedulePageRustle() {
-  if (currentSoundType !== 'library') return;
-  let timeout = setTimeout(() => {
-    playPageRustle();
-    schedulePageRustle();
-  }, 6000 + Math.random() * 12000);
-  activeTimeouts.push(timeout);
-}
-
-function playPageRustle() {
-  if (!audioCtx || currentSoundType !== 'library') return;
-  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
   const filter = audioCtx.createBiquadFilter();
   const gain = audioCtx.createGain();
+
+  osc.type = 'triangle';
+  const pitch = lastClockTickHigh ? 780 : 580;
+  lastClockTickHigh = !lastClockTickHigh;
   
+  osc.frequency.setValueAtTime(pitch, now);
+
   filter.type = 'bandpass';
-  filter.frequency.setValueAtTime(1500 + Math.random() * 1000, now);
-  filter.Q.setValueAtTime(3, now);
-  
-  const osc = audioCtx.createOscillator();
-  osc.type = 'sawtooth';
-  osc.frequency.setValueAtTime(80, now);
-  
+  filter.frequency.setValueAtTime(pitch, now);
+  filter.Q.setValueAtTime(8, now);
+
   gain.gain.setValueAtTime(0, now);
-  gain.gain.linearRampToValueAtTime(0.015, now + 0.1);
-  gain.gain.linearRampToValueAtTime(0.008, now + 0.22);
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
-  
+  gain.gain.linearRampToValueAtTime(0.35, now + 0.001); 
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.022);
+
   osc.connect(filter);
   filter.connect(gain);
   gain.connect(soundGainNode);
+
   osc.start(now);
-  osc.stop(now + 0.5);
+  osc.stop(now + 0.04);
+
+  if (Math.random() > 0.90) {
+    playClockGong();
+  }
 }
 
-// 14. Office mechanical keyboard clicks
-function scheduleTypeClicks() {
-  if (currentSoundType !== 'keyboard') return;
+function playClockGong() {
+  if (!audioCtx || currentSoundType !== 'clock') return;
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const filter = audioCtx.createBiquadFilter();
+  const gain = audioCtx.createGain();
+
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(115, now);
+
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(180, now);
+
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.45, now + 0.08); 
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.8);
+
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(soundGainNode);
+
+  osc.start(now);
+  osc.stop(now + 3.0);
+}
+
+function scheduleTrainSteamChuffs() {
+  if (currentSoundType !== 'train') return;
   let timeout = setTimeout(() => {
-    playTypeClick();
-    scheduleTypeClicks();
-  }, 80 + Math.random() * 260);
+    playTrainChuff();
+    if (Math.random() > 0.75) playTrainTrackClack();
+    scheduleTrainSteamChuffs();
+  }, 400); 
   activeTimeouts.push(timeout);
 }
 
-function playTypeClick() {
+function playTrainChuff() {
+  if (!audioCtx || currentSoundType !== 'train') return;
+  const now = audioCtx.currentTime;
+  const filter = audioCtx.createBiquadFilter();
+  const gain = audioCtx.createGain();
+  const source = audioCtx.createBufferSource();
+
+  source.buffer = getNoiseBuffer('pink');
+  filter.type = 'bandpass';
+  filter.frequency.setValueAtTime(180, now);
+  filter.frequency.linearRampToValueAtTime(90, now + 0.12);
+  filter.Q.setValueAtTime(3.5, now);
+
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.45, now + 0.015); 
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+
+  source.connect(filter);
+  filter.connect(gain);
+  gain.connect(soundGainNode);
+
+  source.start(now);
+  source.stop(now + 0.2);
+}
+
+function playTrainTrackClack() {
+  if (!audioCtx || currentSoundType !== 'train') return;
+  const now = audioCtx.currentTime;
+  
+  const playClickNode = (pitch, delay) => {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(pitch, now + delay);
+    osc.frequency.exponentialRampToValueAtTime(25, now + delay + 0.08);
+    gain.gain.setValueAtTime(0, now + delay);
+    gain.gain.linearRampToValueAtTime(0.25, now + delay + 0.005); 
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + delay + 0.08);
+    osc.connect(gain);
+    gain.connect(soundGainNode);
+    osc.start(now + delay);
+    osc.stop(now + delay + 0.1);
+  };
+
+  playClickNode(55, 0);
+  playClickNode(48, 0.07);
+}
+
+function scheduleArcadeChiptunes() {
+  if (currentSoundType !== 'arcade') return;
+  let timeout = setTimeout(() => {
+    playArcadeBeep();
+    scheduleArcadeChiptunes();
+  }, 900 + Math.random() * 2000);
+  activeTimeouts.push(timeout);
+}
+
+function playArcadeBeep() {
+  if (!audioCtx || currentSoundType !== 'arcade') return;
+  const now = audioCtx.currentTime;
+  
+  const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 523.25]; 
+  const startPitch = notes[Math.floor(Math.random() * notes.length)];
+  
+  let timeOffset = 0;
+  for (let i = 0; i < 5; i++) { 
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    
+    osc.type = 'square';
+    const pitch = startPitch * (1 + (i * 0.25));
+    osc.frequency.setValueAtTime(pitch, now + timeOffset);
+    
+    gain.gain.setValueAtTime(0, now + timeOffset);
+    gain.gain.linearRampToValueAtTime(0.15, now + timeOffset + 0.005); 
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + timeOffset + 0.08);
+    
+    osc.connect(gain);
+    gain.connect(soundGainNode);
+    
+    osc.start(now + timeOffset);
+    osc.stop(now + timeOffset + 0.1);
+    
+    timeOffset += 0.08;
+  }
+}
+
+function scheduleGuitarPadMelody() {
+  if (currentSoundType !== 'guitarpad') return;
+  let timeout = setTimeout(() => {
+    playGuitarPadChord();
+    scheduleGuitarPadMelody();
+  }, 3500 + Math.random() * 1500);
+  activeTimeouts.push(timeout);
+}
+
+function playGuitarPadChord() {
+  if (!audioCtx || currentSoundType !== 'guitarpad') return;
+  const now = audioCtx.currentTime;
+  
+  const chords = [
+    [130.81, 196.00, 261.63, 329.63, 392.00, 523.25],
+    [146.83, 196.00, 293.66, 392.00, 440.00, 587.33]
+  ];
+  const notes = chords[Math.floor(Math.random() * chords.length)];
+  
+  notes.forEach((freq, idx) => {
+    const osc = audioCtx.createOscillator();
+    const filter = audioCtx.createBiquadFilter();
+    const gain = audioCtx.createGain();
+    
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(freq, now + (idx * 0.06));
+    
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(800, now);
+    
+    gain.gain.setValueAtTime(0, now + (idx * 0.06) + 0.03); 
+    gain.gain.linearRampToValueAtTime(0.2, now + (idx * 0.06) + 0.03); 
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.5);
+    
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(soundGainNode);
+    
+    osc.start(now);
+    osc.stop(now + 4.0);
+  });
+}
+
+function scheduleMonasteryElements() {
+  if (currentSoundType !== 'monastery') return;
+  let timeout = setTimeout(() => {
+    if (Math.random() > 0.3) playZenSingingBowl();
+    if (Math.random() > 0.7) playMonasteryOhmChant();
+    scheduleMonasteryElements();
+  }, 4000 + Math.random() * 4000);
+  activeTimeouts.push(timeout);
+}
+
+function playZenSingingBowl() {
+  if (!audioCtx || currentSoundType !== 'monastery') return;
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(440, now);
+  
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.3, now + 0.02); 
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.8);
+  
+  osc.connect(gain);
+  gain.connect(soundGainNode);
+  
+  osc.start(now);
+  osc.stop(now + 4.0);
+}
+
+function playMonasteryOhmChant() {
+  if (!audioCtx || currentSoundType !== 'monastery') return;
+  const now = audioCtx.currentTime;
+  const osc1 = audioCtx.createOscillator();
+  const osc2 = audioCtx.createOscillator();
+  const filter = audioCtx.createBiquadFilter();
+  const gain = audioCtx.createGain();
+  
+  osc1.type = 'sawtooth';
+  osc1.frequency.setValueAtTime(65.41, now);
+  osc2.type = 'triangle';
+  osc2.frequency.setValueAtTime(130.81, now);
+  
+  filter.type = 'bandpass';
+  filter.frequency.setValueAtTime(380, now);
+  filter.Q.setValueAtTime(6, now);
+  
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.25, now + 0.8); 
+  gain.gain.linearRampToValueAtTime(0.25, now + 2.5);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.8);
+  
+  osc1.connect(filter);
+  osc2.connect(filter);
+  filter.connect(gain);
+  gain.connect(soundGainNode);
+  
+  osc1.start(now);
+  osc2.start(now);
+  osc1.stop(now + 4.0);
+  osc2.stop(now + 4.0);
+}
+
+function scheduleTypewriterClicks() {
+  if (currentSoundType !== 'keyboard') return;
+  let timeout = setTimeout(() => {
+    playTypewriterClick();
+    scheduleTypewriterClicks();
+  }, 100 + Math.random() * 450);
+  activeTimeouts.push(timeout);
+}
+
+function playTypewriterClick() {
   if (!audioCtx || currentSoundType !== 'keyboard') return;
   const now = audioCtx.currentTime;
   const osc = audioCtx.createOscillator();
@@ -760,60 +994,135 @@ function playTypeClick() {
   const gain = audioCtx.createGain();
 
   osc.type = 'triangle';
-  osc.frequency.setValueAtTime(750 + Math.random() * 350, now);
+  osc.frequency.setValueAtTime(800 + Math.random() * 600, now);
 
   filter.type = 'bandpass';
-  filter.frequency.setValueAtTime(1100 + Math.random() * 700, now);
-  filter.Q.setValueAtTime(5, now);
+  filter.frequency.setValueAtTime(1300 + Math.random() * 900, now);
+  filter.Q.setValueAtTime(7, now);
+
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.4, now + 0.001); 
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.012);
 
   osc.connect(filter);
   filter.connect(gain);
   gain.connect(soundGainNode);
 
-  gain.gain.setValueAtTime(0, now);
-  gain.gain.linearRampToValueAtTime(0.015, now + 0.001);
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.016);
-
   osc.start(now);
   osc.stop(now + 0.02);
+
+  if (Math.random() > 0.95) {
+    setTimeout(playTypewriterBell, 200);
+  }
 }
 
-// 16. Unterwasser Blubbern (Bubble sweeps)
-function scheduleUnderwaterBubbles() {
-  if (currentSoundType !== 'sub') return;
+function playTypewriterBell() {
+  if (!audioCtx || currentSoundType !== 'keyboard') return;
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(2400, now);
+  
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.25, now + 0.005); 
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+  
+  osc.connect(gain);
+  gain.connect(soundGainNode);
+  
+  osc.start(now);
+  osc.stop(now + 0.7);
+}
+
+function scheduleStormThunderRumbles() {
+  if (currentSoundType !== 'storm') return;
   let timeout = setTimeout(() => {
-    playBubble();
-    scheduleUnderwaterBubbles();
-  }, 1000 + Math.random() * 2400);
+    playStormThunder();
+    scheduleStormThunderRumbles();
+  }, 10000 + Math.random() * 15000);
   activeTimeouts.push(timeout);
 }
 
-function playBubble() {
-  if (!audioCtx || currentSoundType !== 'sub') return;
+function playStormThunder() {
+  if (!audioCtx || currentSoundType !== 'storm') return;
+  const now = audioCtx.currentTime;
+  const source = audioCtx.createBufferSource();
+  const filter = audioCtx.createBiquadFilter();
+  const gain = audioCtx.createGain();
+  
+  source.buffer = getNoiseBuffer('brown');
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(45 + Math.random() * 30, now);
+  
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.65 + Math.random() * 0.25, now + 1.2); 
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 7.5);
+  
+  source.connect(filter);
+  filter.connect(gain);
+  gain.connect(soundGainNode);
+  
+  source.start(now);
+  source.stop(now + 8.0);
+}
+
+function scheduleFrogsChirpsAndCroaks() {
+  if (currentSoundType !== 'frogs') return;
+  let timeout = setTimeout(() => {
+    if (Math.random() > 0.4) playFrogCroak();
+    if (Math.random() > 0.2) playTeichCricketChirp();
+    scheduleFrogsChirpsAndCroaks();
+  }, 1500 + Math.random() * 2500);
+  activeTimeouts.push(timeout);
+}
+
+function playFrogCroak() {
+  if (!audioCtx || currentSoundType !== 'frogs') return;
   const now = audioCtx.currentTime;
   const osc = audioCtx.createOscillator();
   const filter = audioCtx.createBiquadFilter();
   const gain = audioCtx.createGain();
-
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(140, now);
-  osc.frequency.exponentialRampToValueAtTime(380 + Math.random() * 150, now + 0.42);
-
+  
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(80 + Math.random() * 40, now);
+  
   filter.type = 'bandpass';
   filter.frequency.setValueAtTime(140, now);
-  filter.frequency.exponentialRampToValueAtTime(380, now + 0.42);
   filter.Q.setValueAtTime(6, now);
-
+  
   gain.gain.setValueAtTime(0, now);
-  gain.gain.linearRampToValueAtTime(0.05, now + 0.1);
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
-
+  gain.gain.linearRampToValueAtTime(0.25, now + 0.02); 
+  gain.gain.linearRampToValueAtTime(0.05, now + 0.12);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.25);
+  
   osc.connect(filter);
   filter.connect(gain);
   gain.connect(soundGainNode);
-
+  
   osc.start(now);
-  osc.stop(now + 0.45);
+  osc.stop(now + 0.28);
+}
+
+function playTeichCricketChirp() {
+  if (!audioCtx || currentSoundType !== 'frogs') return;
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(3900 + Math.random() * 400, now);
+  
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.08, now + 0.005); 
+  gain.gain.linearRampToValueAtTime(0, now + 0.025);
+  
+  osc.connect(gain);
+  gain.connect(soundGainNode);
+  
+  osc.start(now);
+  osc.stop(now + 0.03);
 }
 
 // --- STOP & LAUTSTÄRKE ---
@@ -838,7 +1147,6 @@ function stopAmbientSound(silent = false) {
     activeNodes = [];
   }
 
-  // Eigene Playlist-Tracks stoppen
   if (activeUserAudio) {
     try {
       activeUserAudio.pause();
@@ -864,26 +1172,65 @@ function stopAmbientSound(silent = false) {
   }
 }
 
-// MULTI-PLAYLIST PLAYER VERWALTUNG
 function handleUserSoundFile(event) {
   const files = event.target.files; if (!files || files.length === 0) return;
   stopAmbientSound(true);
   
-  // Playlist-Dateien in RAM einlesen
   playlistTracks = Array.from(files).map(file => ({
     url: URL.createObjectURL(file),
     name: file.name
   }));
   
-  currentTrackIndex = 0;
+  // Standardmäßig zufällige Wiedergabe (Shuffle) aktivieren falls gewünscht
+  if (isPlayerShuffleEnabled && playlistTracks.length > 1) {
+    currentTrackIndex = Math.floor(Math.random() * playlistTracks.length);
+  } else {
+    currentTrackIndex = 0;
+  }
   
-  // Zeige den Playlist-Player an
   const playerContainer = document.getElementById('custom-playlist-player');
   if (playerContainer) playerContainer.classList.remove('hidden');
   
   playTrack(currentTrackIndex);
 }
 
+// Integriert Mitzähler und Fortschrittsüberwachung für geladene Tracks
+function attachAudioEvents(audio) {
+  audio.addEventListener('timeupdate', () => {
+    if (activeUserAudio !== audio) return; 
+    const pct = (audio.currentTime / audio.duration) * 100 || 0;
+    const bar = document.getElementById('player-progress-bar');
+    if (bar) bar.style.width = `${pct}%`;
+    
+    const currentEl = document.getElementById('player-time-current');
+    if (currentEl) currentEl.innerText = formatAudioTime(audio.currentTime);
+  });
+  
+  audio.addEventListener('loadedmetadata', () => {
+    if (activeUserAudio !== audio) return;
+    const durationEl = document.getElementById('player-time-duration');
+    if (durationEl) durationEl.innerText = formatAudioTime(audio.duration);
+  });
+}
+
+function formatAudioTime(secs) {
+  if (isNaN(secs)) return '00:00';
+  const m = Math.floor(secs / 60);
+  const s = Math.floor(secs % 60);
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+// Erlaubt das Klicken/Springen in der interaktiven Fortschrittsleiste
+function handleProgressBarClick(event) {
+  if (!activeUserAudio) return;
+  const rect = event.currentTarget.getBoundingClientRect();
+  const clickX = event.clientX - rect.left;
+  const width = rect.width;
+  const ratio = clickX / width;
+  activeUserAudio.currentTime = ratio * activeUserAudio.duration;
+}
+
+// Deck-Steuerung zur Wiedergabe geladener Tracks mit 11-Sekunden-Crossfade
 function playTrack(index) {
   if (playlistTracks.length === 0) return;
   if (index < 0 || index >= playlistTracks.length) index = 0;
@@ -891,31 +1238,73 @@ function playTrack(index) {
   
   const track = playlistTracks[currentTrackIndex];
   
-  if (activeUserAudio) {
-    try { activeUserAudio.pause(); } catch(e) {}
-  }
+  let oldAudio = activeUserAudio;
   
   const audio = new Audio(track.url);
-  audio.loop = false; // Nach Ende soll der nächste Song kommen
-  audio.volume = soundMasterVolume * 0.7;
+  audio.loop = false;
+  audio.volume = 0; // Startet bei Null für einen sanften Crossfade-Einblendeffekt
   activeUserAudio = audio;
+  attachAudioEvents(audio);
   
-  // Automatisch nächstes Lied starten, sobald aktuelles endet
+  // Am Ende des Tracks automatisch den nächsten mit Crossfade anstoßen
   audio.addEventListener('ended', () => {
     playNextTrackWithCrossfade();
   });
   
   audio.play().then(() => {
     updatePlayPauseButtonUI(true);
+    
+    // Sanfter, linearer Crossfade Fade-In über exakt 11 Sekunden (11000ms)
+    const targetVolume = soundMasterVolume * 0.7;
+    const fadeDuration = 11000; 
+    const steps = 55;
+    const stepTime = fadeDuration / steps;
+    const stepVol = targetVolume / steps;
+    
+    let fadeInInterval = setInterval(() => {
+      if (activeUserAudio === audio) {
+        if (audio.volume < targetVolume - stepVol) {
+          audio.volume = Math.min(targetVolume, audio.volume + stepVol);
+        } else {
+          audio.volume = targetVolume;
+          clearInterval(fadeInInterval);
+        }
+      } else {
+        clearInterval(fadeInInterval);
+      }
+    }, stepTime);
   }).catch(e => {
-    console.error("Fehler beim Abspielen des Tracks:", e);
+    console.error("Fehler beim Abspielen:", e);
   });
   
-  const nameLabel = document.getElementById('user-sound-name');
-  if (nameLabel) nameLabel.innerText = `🎵 ${track.name}`;
+  // Alten Track parallel über exakt 11 Sekunden (11000ms) ausblenden und stoppen
+  if (oldAudio) {
+    const fadeDuration = 11000;
+    const steps = 55;
+    const stepTime = fadeDuration / steps;
+    const stepVol = oldAudio.volume / steps;
+    
+    let fadeOutInterval = setInterval(() => {
+      try {
+        if (oldAudio.volume > stepVol) {
+          oldAudio.volume = Math.max(0, oldAudio.volume - stepVol);
+        } else {
+          oldAudio.volume = 0;
+          oldAudio.pause();
+          clearInterval(fadeOutInterval);
+        }
+      } catch(e) {
+        clearInterval(fadeOutInterval);
+      }
+    }, stepTime);
+  }
   
+  const nameLabel = document.getElementById('user-sound-name');
+  if (nameLabel) nameLabel.innerText = "🎵 " + track.name;
+  
+  renderTrackList(); // Markierung und Liste aktualisieren
   updateSoundscapeUI();
-  showToast(currentLang === 'de' ? `Spiele Musik: ${track.name}` : `Playing music: ${track.name}`);
+  showToast(currentLang === 'de' ? "Spiele Track: " + track.name : "Playing track: " + track.name);
 }
 
 function togglePlaylistPlayback() {
@@ -939,36 +1328,46 @@ function updatePlayPauseButtonUI(isPlaying) {
   }
 }
 
+// Gleichzeitiger 11-Sekunden-Crossfade und Shuffler
 function playNextTrackWithCrossfade() {
   if (playlistTracks.length === 0) return;
-  let nextIndex = currentTrackIndex + 1;
-  if (nextIndex >= playlistTracks.length) nextIndex = 0;
   
-  // Crossfade ausfaden (sanfte Lautstärkenabsenkung)
-  if (activeUserAudio) {
-    const oldAudio = activeUserAudio;
-    let fadeInterval = setInterval(() => {
-      if (oldAudio.volume > 0.05) {
-        oldAudio.volume -= 0.05;
-      } else {
-        clearInterval(fadeInterval);
-        try { oldAudio.pause(); } catch(e) {}
-      }
-    }, 50);
+  let nextIndex = currentTrackIndex;
+  
+  if (isPlayerShuffleEnabled && playlistTracks.length > 1) {
+    do {
+      nextIndex = Math.floor(Math.random() * playlistTracks.length);
+    } while (nextIndex === currentTrackIndex);
+  } else {
+    nextIndex = currentTrackIndex + 1;
+    if (nextIndex >= playlistTracks.length) nextIndex = 0;
   }
   
   playTrack(nextIndex);
+}
+
+function togglePlayerShuffle() {
+  isPlayerShuffleEnabled = !isPlayerShuffleEnabled;
+  const badge = document.getElementById('player-shuffle-badge');
+  const btn = document.getElementById('player-shuffle-toggle-btn');
+  if (badge) {
+    badge.innerText = isPlayerShuffleEnabled ? "Shuffle On" : "Shuffle Off";
+    if (isPlayerShuffleEnabled) {
+      badge.className = 'text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold uppercase tracking-wider font-mono';
+      btn.className = 'p-1.5 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 rounded-lg cursor-pointer transition';
+    } else {
+      badge.className = 'text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-gray-500 border border-white/10 font-bold uppercase tracking-wider font-mono';
+      btn.className = 'p-1.5 bg-white/5 hover:bg-white/10 text-gray-400 rounded-lg cursor-pointer transition';
+    }
+  }
+  if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 function setSoundVolume(val) {
   soundMasterVolume = parseFloat(val);
   
   if (soundGainNode && audioCtx) {
-    let multiplier = 0.45;
-    if (currentSoundType === 'alpha') multiplier = 0.25;
-    if (currentSoundType === 'ocean') multiplier = 0.55;
-    if (currentSoundType === 'fire') multiplier = 0.5;
-    soundGainNode.gain.setValueAtTime(soundMasterVolume * multiplier, audioCtx.currentTime);
+    soundGainNode.gain.setValueAtTime(soundMasterVolume * 1.0, audioCtx.currentTime);
   }
   
   if (activeUserAudio) {
@@ -976,10 +1375,35 @@ function setSoundVolume(val) {
   }
 }
 
+// Dezente und professionelle Queue-Ansicht ohne die Bezeichnung Playlist zu verwenden
+function renderTrackList() {
+  const container = document.getElementById('track-list-container');
+  if (!container) return;
+  container.innerHTML = '';
+  
+  playlistTracks.forEach((track, idx) => {
+    const item = document.createElement('button');
+    const isActive = idx === currentTrackIndex;
+    
+    item.className = `w-full text-left px-2 py-1.5 rounded text-[10px] transition duration-150 cursor-pointer truncate ${
+      isActive 
+        ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold shadow-inner' 
+        : 'text-gray-400 hover:text-white hover:bg-white/5 font-medium'
+    }`;
+    
+    item.onclick = (e) => {
+      e.stopPropagation();
+      playTrack(idx);
+    };
+    
+    item.innerText = `${idx + 1}. ${track.name}`;
+    container.appendChild(item);
+  });
+}
+
 function updateSoundscapeUI() {
-  // Synchronisiert alle 16 Naturgeräusche mit den Buttons in der index.html
-  ['rain', 'ocean', 'birds', 'thunder', 'wind', 'fire', 'cafe', 'crickets', 'white', 'purr', 'jungle', 'train', 'library', 'keyboard', 'spaceship', 'sub'].forEach(st => {
-    const btn = document.getElementById(`sound-btn-${st}`);
+  ['rain', 'ocean', 'campfire', 'birds', 'stream', 'temple', 'cafe', 'clock', 'purr', 'train', 'space', 'arcade', 'waterfall', 'guitarpad', 'monastery', 'keyboard', 'storm', 'frogs'].forEach(st => {
+    const btn = document.getElementById("sound-btn-" + st);
     if (btn) {
       if (st === currentSoundType) btn.className = 'p-1.5 bg-blue-500/30 border border-blue-400 rounded-xl text-left text-xs text-white font-bold transition cursor-pointer flex items-center gap-1.5 shadow-sm animate-pulse';
       else btn.className = 'p-1.5 bg-white/5 hover:bg-blue-500/20 border border-white/10 rounded-xl text-left text-xs text-gray-200 font-semibold transition cursor-pointer flex items-center gap-1.5';

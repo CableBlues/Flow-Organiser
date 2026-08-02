@@ -6,6 +6,31 @@ let currentTheme = localStorage.getItem('flowPlannerTheme') || 'aurora';
 let isMinimalist = localStorage.getItem('flowPlannerMinimalist') === 'true';
 let isTerminFormOpen = false;
 
+// Dynamische und persistente Verwaltung der Spaltenreihenfolge
+let categoriesOrder = loadCategoriesOrder();
+
+function loadCategoriesOrder() {
+  try {
+    const saved = localStorage.getItem('flowPlannerCategoriesOrder');
+    if (saved) return JSON.parse(saved);
+  } catch (e) {}
+  
+  // Standard-Layout
+  return [
+    ['daily', 'sun'],
+    ['weekly', 'calendar-days'],
+    ['todo', 'list-todo'],
+    ['done', 'check-circle'],
+    ['termine', 'clock'],
+    ['notes', 'sticky-note'],
+    ['occasionally', 'calendar-range']
+  ];
+}
+
+function saveCategoriesOrder() {
+  localStorage.setItem('flowPlannerCategoriesOrder', JSON.stringify(categoriesOrder));
+}
+
 function loadState() {
   try {
     const saved = localStorage.getItem(STORE_KEY);
@@ -17,6 +42,19 @@ function loadState() {
         }
         if (parsed.streak === undefined) parsed.streak = 0;
         if (!parsed.completedSteps) parsed.completedSteps = {};
+        
+        // Dynamische Injektion: Gesicht waschen direkt nach Zähne morgens platzieren
+        if (parsed.items.daily) {
+          const dentalGerman = parsed.items.daily.indexOf("Zähne morgens");
+          if (dentalGerman !== -1 && !parsed.items.daily.includes("Gesicht waschen")) {
+            parsed.items.daily.splice(dentalGerman + 1, 0, "Gesicht waschen");
+          }
+          const dentalEnglish = parsed.items.daily.indexOf("Brush teeth (morning)");
+          if (dentalEnglish !== -1 && !parsed.items.daily.includes("Wash face")) {
+            parsed.items.daily.splice(dentalEnglish + 1, 0, "Wash face");
+          }
+        }
+        
         return parsed;
       }
     }
@@ -24,9 +62,17 @@ function loadState() {
   const todayStr = new Date().toISOString().split('T')[0];
   const initialLang = 'en';
   const localizedDefaults = DEFAULT_TASKS_BY_LANG[initialLang];
+  
+  // Ersteinspielung der täglichen Aufgaben inklusive Gesicht waschen
+  const initialDaily = [...localizedDefaults.daily];
+  const dentalEnglish = initialDaily.indexOf("Brush teeth (morning)");
+  if (dentalEnglish !== -1) {
+    initialDaily.splice(dentalEnglish + 1, 0, "Wash face");
+  }
+
   return {
     version: 3, lastDate: todayStr,
-    items: { daily: [...localizedDefaults.daily], weekly: [...localizedDefaults.weekly], occasionally: [...localizedDefaults.occasionally], todo: [], termine: [], notes: '' },
+    items: { daily: initialDaily, weekly: [...localizedDefaults.weekly], occasionally: [...localizedDefaults.occasionally], todo: [], termine: [], notes: '' },
     done: [], archive: [], streak: 0, completedSteps: {}
   };
 }
@@ -59,7 +105,9 @@ function getGermanStandardKey(taskName) {
     for (const lang of ['de', 'en', 'es', 'el']) {
       const list = DEFAULT_TASKS_BY_LANG[lang][cat];
       const idx = list.indexOf(taskName);
-      if (idx !== -1) return DEFAULT_TASKS_BY_LANG['de'][cat][idx];
+      if (idx !== -1) {
+        return DEFAULT_TASKS_BY_LANG['de'][cat][idx];
+      }
     }
   }
   return taskName;
@@ -74,7 +122,7 @@ function handleUndo() {
   saveState();
   showToast(t('toast_undo_applied'));
   renderApp();
-  populateAdhdTaskSelect();
+  populateHelperTaskSelect(); // Korrigierte Referenz
 }
 
 function handleReset() {
@@ -82,21 +130,44 @@ function handleReset() {
     de: 'Möchtest du den gesamten Plan wirklich zurücksetzen?',
     en: 'Do you really want to reset your entire plan?',
     es: '¿Seguro que quieres reiniciar todo el plan?',
-    el: 'Θέλετε πραγματικά να επαναφέρετε ολόκληρο το πλάνο σας;'
+    get: 'Θέλετε πραγματικά να επαναφέρετε ολόκληρο το πλάνο σας;'
   }[currentLang] || 'Reset?';
   
   if (confirm(confirmMsg)) {
     saveHistory();
     const localizedDefaults = DEFAULT_TASKS_BY_LANG[currentLang];
+    
+    const dailyList = [...localizedDefaults.daily];
+    const dentalGerman = dailyList.indexOf("Zähne morgens");
+    if (dentalGerman !== -1 && !dailyList.includes("Gesicht waschen")) {
+      dailyList.splice(dentalGerman + 1, 0, "Gesicht waschen");
+    }
+    const dentalEnglish = dailyList.indexOf("Brush teeth (morning)");
+    if (dentalEnglish !== -1 && !dailyList.includes("Wash face")) {
+      dailyList.splice(dentalEnglish + 1, 0, "Wash face");
+    }
+
     state = {
       version: 3, lastDate: new Date().toISOString().split('T')[0],
-      items: { daily: [...localizedDefaults.daily], weekly: [...localizedDefaults.weekly], occasionally: [...localizedDefaults.occasionally], todo: [], termine: [], notes: '' },
+      items: { daily: dailyList, weekly: [...localizedDefaults.weekly], occasionally: [...localizedDefaults.occasionally], todo: [], termine: [], notes: '' },
       done: [], archive: [], streak: 0, completedSteps: {}
     };
+    
+    categoriesOrder = [
+      ['daily', 'sun'],
+      ['weekly', 'calendar-days'],
+      ['todo', 'list-todo'],
+      ['done', 'check-circle'],
+      ['termine', 'clock'],
+      ['notes', 'sticky-note'],
+      ['occasionally', 'calendar-range']
+    ];
+    saveCategoriesOrder();
     saveState();
+    
     showToast(t('toast_reset_success'));
     renderApp();
-    populateAdhdTaskSelect();
+    populateHelperTaskSelect(); // Korrigierte Referenz
   }
 }
 
@@ -115,7 +186,7 @@ function handleOpenFile(e) {
       const imported = JSON.parse(reader.result);
       if (imported && imported.items) {
         saveHistory(); state = imported; if (!state.completedSteps) state.completedSteps = {};
-        saveState(); showToast(t('toast_import_success')); renderApp(); populateAdhdTaskSelect();
+        saveState(); showToast(t('toast_import_success')); renderApp(); populateHelperTaskSelect(); // Korrigierte Referenz
       }
     } catch(err) { alert(t('toast_import_error')); }
   };

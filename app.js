@@ -1,6 +1,9 @@
 let currentZenTaskInfo = null;
 let lastSelectedSound = 'rain'; // Standardmäßiger Fokus-Sound
 
+// Zusätzliche globale Variable für die Spalten-Verschiebefunktion
+let draggedColumnId = null;
+
 function suggestBoostActivity() {
   const list = BOOST_ACTIVITIES[currentLang] || BOOST_ACTIVITIES['en'];
   const randomActivity = list[Math.floor(Math.random() * list.length)];
@@ -10,21 +13,20 @@ function suggestBoostActivity() {
   }
 }
 
-// Direkte Klicks auf Sounds & Musik (Aktivieren und Deaktivieren)
+// Direkte Klicks auf Sounds & Musik
 function handleSoundsMainClick() {
   if (currentSoundType) {
-    stopAmbientSound(); // Falls bereits einer läuft -> stoppen
+    stopAmbientSound(); 
   } else {
-    playAmbientSound(lastSelectedSound); // Andernfalls den letzten gespielten Sound reaktivieren
+    playAmbientSound(lastSelectedSound); 
   }
 }
 
 function handleMusicMainClick() {
   if (playlistTracks.length === 0) {
-    // Falls noch keine Tracks geladen wurden: Lade-Fenster triggern
     document.getElementById('sound-file-input').click();
   } else {
-    togglePlaylistPlayback(); // Andernfalls Musik abspielen/pausieren
+    togglePlaylistPlayback(); 
   }
 }
 
@@ -35,8 +37,12 @@ document.addEventListener('DOMContentLoaded', () => {
   updateDateAndStreak();
   renderApp();
   updateZenView();
-  populateAdhdTaskSelect();
+  populateHelperTaskSelect();
   suggestBoostActivity(); // Pre-populate den Energizer
+  
+  // Automatische Perioden-Berichte prüfen und herunterladen
+  checkAndGenerateAutomaticReports();
+
   const btnHeader = document.getElementById('timer-toggle-btn');
   if (btnHeader) {
     btnHeader.innerHTML = '<i data-lucide="play" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>';
@@ -52,7 +58,6 @@ function setTheme(theme) {
 }
 
 function setLanguage(lang) {
-  // Sicherheits-Check: Falls ein alter, ungültiger Sprachschlüssel im Speicher existiert -> Fallback zu Englisch
   if (!lang || !TRANSLATIONS[lang] || !DEFAULT_TASKS_BY_LANG[lang]) {
     lang = 'en';
   }
@@ -60,9 +65,6 @@ function setLanguage(lang) {
   currentLang = lang;
   localStorage.setItem('flowPlannerLanguage', lang);
   
-  // WICHTIG: Ändert das lang-Attribut auf HTML-Ebene.
-  // Dadurch weiß die text-transform Engine des Browsers, dass Griechisch aktiv ist,
-  // und rendert Großbuchstaben (all-caps) absolut fehlerfrei ohne Tonoi (Akzente).
   document.documentElement.lang = lang;
   
   translateUserTasks(oldLang, lang);
@@ -73,7 +75,7 @@ function setLanguage(lang) {
   updateDateAndStreak();
   renderApp();
   updateZenView();
-  populateAdhdTaskSelect();
+  populateHelperTaskSelect();
 }
 
 function translateUI() {
@@ -93,7 +95,6 @@ function translateUI() {
 
 function translateUserTasks(fromLang, toLang) {
   if (fromLang === toLang) return;
-  // Sicherheits-Check, falls alte Sprach-Schlüssel im Speicher vorhanden waren
   if (!DEFAULT_TASKS_BY_LANG[fromLang] || !DEFAULT_TASKS_BY_LANG[toLang]) return;
   
   saveHistory();
@@ -103,10 +104,10 @@ function translateUserTasks(fromLang, toLang) {
     state.items[cat] = state.items[cat].map(taskItem => {
       const taskName = typeof taskItem === 'object' ? taskItem.task : taskItem;
       const fromList = DEFAULT_TASKS_BY_LANG[fromLang][cat];
-      const toList = DEFAULT_TASKS_BY_LANG[toLang][cat];
+      const oList = DEFAULT_TASKS_BY_LANG[toLang][cat];
       const idx = fromList.indexOf(taskName);
       if (idx !== -1) {
-        const nextVal = toList[idx];
+        const nextVal = oList[idx];
         return typeof taskItem === 'object' ? { ...taskItem, task: nextVal } : nextVal;
       }
       return taskItem;
@@ -118,9 +119,9 @@ function translateUserTasks(fromLang, toLang) {
       let updatedKey = key;
       cats.forEach(cat => {
         const fromList = DEFAULT_TASKS_BY_LANG[fromLang][cat];
-        const toList = DEFAULT_TASKS_BY_LANG[toLang][cat];
+        const oList = DEFAULT_TASKS_BY_LANG[toLang][cat];
         const idx = fromList.indexOf(key);
-        if (idx !== -1) updatedKey = toList[idx];
+        if (idx !== -1) updatedKey = oList[idx];
       });
       nextStepsObj[updatedKey] = state.completedSteps[key];
     }
@@ -154,22 +155,28 @@ function toggleTerminForm(open) {
 
 function handleAddTermin() {
   const titleEl = document.getElementById('add-termin-title');
+  const locEl = document.getElementById('add-termin-location');
   const dateEl = document.getElementById('add-termin-date');
   const timeEl = document.getElementById('add-termin-time');
+  
   const title = titleEl ? titleEl.value.trim() : '';
+  const location = locEl ? locEl.value.trim() : '';
   const date = dateEl ? dateEl.value : '';
   const time = timeEl ? timeEl.value : '';
+  
   if (!title) {
     showToast(t('toast_appointment_name_error'));
     return;
   }
   saveHistory();
   if (!state.items.termine) state.items.termine = [];
-  state.items.termine.push({ task: title, date, time });
+  
+  // Ort ("location") wird im Terminstatus gesichert
+  state.items.termine.push({ task: title, date, time, location });
   isTerminFormOpen = false;
   saveState();
   renderApp();
-  populateAdhdTaskSelect();
+  populateHelperTaskSelect();
   showToast(t('toast_appointment_saved'));
 }
 
@@ -178,7 +185,7 @@ function getTaskIcon(taskText, category = '') {
   if (TASK_ICONS[taskText]) return TASK_ICONS[taskText];
   const text = String(taskText).toLowerCase();
   if (/medi|pill|medicin|tableta|vitam|pharmak/.test(text)) return 'pill';
-  if (/zahn|dient|tooth|dent|toothb|dond/.test(text)) return 'sparkles';
+  if (/zahn|dient|tooth|dent|toothb|dond/.test(text)) return 'smile'; 
   if (/bett|bed|cama|krevat/.test(text)) return 'bed';
   if (/luft|wind|vent|aer/.test(text)) return 'wind';
   if (/koch|food|cook|comid|cena|recept|magir/.test(text)) return 'cooking-pot';
@@ -210,7 +217,8 @@ function renderApp() {
   if (!main) return;
   main.innerHTML = '';
   const todayISO = new Date().toISOString().split('T')[0];
-  CATEGORIES.forEach(([id, iconKey]) => {
+  
+  categoriesOrder.forEach(([id, iconKey]) => {
     const isDone = id === 'done';
     const isNotes = id === 'notes';
     const isTermine = id === 'termine';
@@ -221,22 +229,71 @@ function renderApp() {
     if (isDone) titleText += ` (${state.done.length})`;
     else if (!isNotes) titleText += ` (${doneInCat}/${totalInCat})`;
     const pct = (!isDone && !isNotes && totalInCat > 0) ? Math.round((doneInCat / totalInCat) * 100) : 0;
+    
     const article = document.createElement('article');
-    article.className = 'min-h-[380px] h-full flex flex-col p-3 rounded-2xl border border-white/[0.08] bg-[#13131a]/75 backdrop-blur-md shadow-lg hover:border-[var(--accent)]/30 transition duration-300';
-    article.ondragover = (e) => e.preventDefault();
-    article.ondrop = (e) => handleDrop(e, id);
+    article.className = 'min-h-[380px] h-full flex flex-col p-3 rounded-2xl border border-white/[0.08] bg-[#13131a]/75 backdrop-blur-md shadow-lg hover:border-[var(--accent)]/30 transition duration-300 cursor-default';
+    
+    article.draggable = true;
+    article.ondragstart = (e) => {
+      if (draggedItemInfo) {
+        return;
+      }
+      e.dataTransfer.setData('text/column', id);
+      e.dataTransfer.effectAllowed = 'move';
+      draggedColumnId = id;
+      article.classList.add('opacity-40');
+    };
+    article.ondragend = () => {
+      article.classList.remove('opacity-40');
+      draggedColumnId = null;
+    };
+    article.ondragover = (e) => {
+      e.preventDefault();
+      if (draggedColumnId) {
+        e.dataTransfer.dropEffect = 'move';
+        article.classList.add('border-dashed', 'border-[var(--accent)]');
+      }
+    };
+    article.ondragleave = () => {
+      article.classList.remove('border-dashed', 'border-[var(--accent)]');
+    };
+    article.ondrop = (e) => {
+      e.preventDefault();
+      article.classList.remove('border-dashed', 'border-[var(--accent)]');
+      if (draggedColumnId) {
+        const srcId = draggedColumnId;
+        const targetId = id;
+        if (srcId !== targetId) {
+          const srcIdx = categoriesOrder.findIndex(([catId]) => catId === srcId);
+          const targetIdx = categoriesOrder.findIndex(([catId]) => catId === targetId);
+          if (srcIdx !== -1 && targetIdx !== -1) {
+            saveHistory();
+            const [removed] = categoriesOrder.splice(srcIdx, 1);
+            categoriesOrder.splice(targetIdx, 0, removed);
+            saveCategoriesOrder();
+            renderApp();
+            showToast(currentLang === 'de' ? 'Spalten-Reihenfolge aktualisiert ↕️' : 'Column order updated ↕️');
+          }
+        }
+        draggedColumnId = null;
+      } else {
+        handleDrop(e, id);
+      }
+    };
+    
     article.innerHTML = `
-      <h2 class="flex justify-center items-center gap-2 mb-2.5 text-gray-400 font-bold font-display text-[10px] tracking-wider uppercase">
-        <i data-lucide="${iconKey}" class="w-4 h-4"></i>
-        <span>${titleText}</span>
+      <h2 class="flex justify-center items-center gap-2 mb-2.5 text-gray-400 font-bold font-display text-[10px] tracking-wider uppercase cursor-grab active:cursor-grabbing select-none">
+        <i data-lucide="${iconKey}" class="w-4 h-4 pointer-events-none"></i>
+        <span class="pointer-events-none">${titleText}</span>
       </h2>
       ${!isDone && !isNotes ? `
-        <div class="w-full h-1 bg-white/[0.05] rounded-full mb-3.5 overflow-hidden">
+        <div class="w-full h-1 bg-white/[0.05] rounded-full mb-3.5 overflow-hidden pointer-events-none">
           <div class="h-full bg-gradient-to-r from-[var(--accent)] to-emerald-400 transition-all duration-500" style="width: ${pct}%"></div>
         </div>
       ` : ''}
       <div id="list-${id}" class="flex flex-col gap-2.5 flex-1 min-h-[120px] overflow-y-auto py-0.5 px-0.5"></div>
     `;
+    
     const listEl = article.querySelector(`#list-${id}`);
     if (isDone) {
       state.done.slice().reverse().forEach((item, idx) => {
@@ -256,7 +313,7 @@ function renderApp() {
     } else if (isTermine) {
       const rawTermine = state.items.termine || [];
       const itemsWithMeta = rawTermine.map((item, originalIdx) => {
-        const obj = typeof item === 'object' ? item : { task: item, date: '', time: '' };
+        const obj = typeof item === 'object' ? item : { task: item, date: '', time: '', location: '' };
         return { ...obj, originalIdx };
       });
       itemsWithMeta.sort((a, b) => {
@@ -265,28 +322,58 @@ function renderApp() {
         if (!b.date) return -1;
         return `${a.date} ${a.time || '00:00'}`.localeCompare(`${b.date} ${b.time || '00:00'}`);
       });
+      
       itemsWithMeta.forEach((item) => {
         const originalIndex = item.originalIdx;
-        const dateBadge = formatTerminDate(item.date, item.time);
         const isToday = item.date === todayISO;
+        
+        let fullDateString = "Kein Datum";
+        if (item.date) {
+          const d = new Date(item.date);
+          const weekdaysFull = {
+            de: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+            en: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            es: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
+            el: ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο']
+          };
+          const weekdayString = weekdaysFull[currentLang]?.[d.getDay()] || weekdaysFull['de'][d.getDay()];
+          const parts = item.date.split('-');
+          if (parts.length === 3) {
+            fullDateString = `${weekdayString}, ${parts[2]}.${parts[1]}.${parts[0]}`;
+          } else {
+            fullDateString = `${weekdayString}, ${item.date}`;
+          }
+        }
+
         const itemDiv = document.createElement('div');
         itemDiv.draggable = true;
         itemDiv.ondragstart = (e) => handleDragStart(e, id, originalIndex);
-        itemDiv.className = `group relative w-full min-h-[44px] flex flex-col justify-center gap-1 p-2.5 border-0 border-l-[4px] ${isToday ? 'border-amber-400 bg-amber-500/10' : 'border-[var(--accent)] bg-white/[0.03]'} hover:bg-[rgba(139,92,246,0.18)] hover:scale-[1.02] text-gray-300 font-medium leading-tight transition duration-300 rounded-lg`;
+        
+        itemDiv.className = `group relative w-full min-h-[44px] flex items-center justify-between p-2.5 border-0 border-l-[4px] ${isToday ? 'border-amber-400 bg-amber-500/10' : 'border-[var(--accent)] bg-white/[0.03]'} hover:bg-[rgba(139,92,246,0.18)] hover:scale-[1.02] text-gray-300 font-medium leading-tight transition duration-300 rounded-lg`;
+        
         itemDiv.innerHTML = `
-          <div class="flex items-center justify-between gap-2 w-full">
-            <button onclick="handleCompleteTask('termine', ${originalIndex}, event)" class="flex items-center gap-2 w-full text-left bg-transparent border-0 text-inherit cursor-pointer p-0 min-w-0 pr-1 transition-all duration-150">
-              <i data-lucide="clock" class="w-3.5 h-3.5 text-[var(--accent-light)] shrink-0"></i>
-              <span class="block text-xs font-semibold text-white truncate">${item.task}</span>
-            </button>
-            <div class="absolute right-1.5 -top-3.5 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition shrink-0 bg-[#13131a]/95 border border-white/15 px-1 py-0.5 rounded-lg shadow-lg z-20">
-              <button onclick="deleteTask('termine', ${originalIndex}, event)" class="p-1 text-gray-500 hover:text-red-400 hover:bg-white/10 rounded transition cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+          <button onclick="handleCompleteTask('termine', ${originalIndex}, event)" class="flex items-center gap-2 flex-1 min-w-0 text-left bg-transparent border-0 text-inherit cursor-pointer p-0 transition duration-150 pr-2">
+            <i data-lucide="clock" class="w-3.5 h-3.5 text-[var(--accent-light)] shrink-0"></i>
+            <span class="block text-xs font-semibold text-white truncate">${item.task}</span>
+          </button>
+          
+          <div class="absolute right-1 -top-3 flex items-center opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200 shrink-0 bg-[#13131a] border border-white/15 px-1 py-0.5 rounded-lg shadow-lg z-50 whitespace-nowrap">
+            <button onclick="deleteTask('termine', ${originalIndex}, event)" class="p-1 text-gray-500 hover:text-red-400 hover:bg-white/10 rounded transition cursor-pointer" title="Löschen"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+          </div>
+
+          <div class="absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 mb-1 w-56 hidden group-hover:block bg-[#111116] border border-amber-400/35 p-3 rounded-xl shadow-2xl z-[9999] pointer-events-none transition-all duration-200">
+            <div class="text-[9px] text-amber-400 font-bold uppercase tracking-wider mb-1">Termindetails</div>
+            <div class="text-xs font-bold text-white mb-1.5 break-words">${item.task}</div>
+            <div class="space-y-1.5 text-[10px] text-gray-300 font-semibold">
+              <div class="flex items-center gap-1.5"><i data-lucide="calendar" class="w-3.5 h-3.5 text-amber-400/80 shrink-0"></i><span>${fullDateString}</span></div>
+              ${item.time ? `<div class="flex items-center gap-1.5"><i data-lucide="clock" class="w-3.5 h-3.5 text-amber-400/80 shrink-0"></i><span>${item.time} Uhr</span></div>` : ''}
+              ${item.location ? `<div class="flex items-center gap-1.5"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-amber-400/80 shrink-0"></i><span class="truncate">${item.location}</span></div>` : ''}
             </div>
           </div>
-          ${dateBadge ? `<div class="flex items-center mt-0.5"><span class="text-[10px] px-1.5 py-0.5 rounded ${isToday ? 'bg-amber-400/20 text-amber-300 border border-amber-400/30 font-bold' : 'bg-white/5 text-gray-300 border border-white/10'} font-mono">${dateBadge}</span></div>` : ''}
         `;
         listEl.appendChild(itemDiv);
       });
+      
       if (!isTerminFormOpen) {
         const btnEl = document.createElement('button');
         btnEl.onclick = () => toggleTerminForm(true);
@@ -296,20 +383,22 @@ function renderApp() {
         listEl.appendChild(btnEl);
       } else {
         const formDiv = document.createElement('div');
-        formDiv.className = 'mt-2 p-3 bg-[#0e0e14] border border-[var(--accent)]/40 rounded-xl flex flex-col gap-2.5 shadow-lg';
+        formDiv.className = 'mt-2 p-3 bg-[#0e0e14] border border-[var(--accent)]/40 rounded-xl flex flex-col gap-2 shadow-lg';
         const formT = t('appointment_form_title');
         const nameT = t('appointment_form_name_placeholder');
         const dateT = t('appointment_form_date_label');
         const timeT = t('appointment_form_time_label');
         const saveT = t('appointment_form_save_btn');
         const cancelT = t('appointment_form_cancel_btn');
+        
         formDiv.innerHTML = `
           <div class="flex items-center justify-between text-xs font-bold text-amber-300">
             <span class="flex items-center gap-1.5"><i data-lucide="calendar" class="w-3.5 h-3.5"></i> ${formT}</span>
             <button onclick="toggleTerminForm(false)" class="text-gray-400 hover:text-white p-0.5 cursor-pointer text-xs">✕</button>
           </div>
-          <input type="text" id="add-termin-title" placeholder="${nameT}" class="w-full p-2 bg-black/60 border border-white/15 rounded-lg text-xs text-white outline-none focus:border-[var(--accent)] font-semibold placeholder:text-gray-500" />
-          <div class="grid grid-cols-2 gap-2">
+          <input type="text" id="add-termin-title" placeholder="${nameT}" class="w-full p-2 bg-black/60 border border-white/15 rounded-lg text-xs text-white outline-none focus:border-[var(--accent)] font-semibold placeholder:text-gray-500 mb-2" />
+          <input type="text" id="add-termin-location" placeholder="Ort (z.B. Zoom, Büro, Park)" class="w-full p-2 bg-black/60 border border-white/15 rounded-lg text-xs text-white outline-none focus:border-[var(--accent)] font-semibold placeholder:text-gray-500 mb-2" />
+          <div class="grid grid-cols-2 gap-2 mb-2">
             <div><label class="text-[10px] text-gray-400 mb-0.5 block font-medium">${dateT}</label><input type="date" id="add-termin-date" value="${todayISO}" class="w-full p-1.5 bg-black/60 border border-white/15 rounded-lg text-xs text-gray-200 outline-none focus:border-[var(--accent)] cursor-pointer" /></div>
             <div><label class="text-[10px] text-gray-400 mb-0.5 block font-medium">${timeT}</label><input type="time" id="add-termin-time" value="10:00" class="w-full p-1.5 bg-black/60 border border-white/15 rounded-lg text-xs text-gray-200 outline-none focus:border-[var(--accent)] cursor-pointer" /></div>
           </div>
@@ -339,19 +428,21 @@ function renderApp() {
         itemDiv.ondragstart = (e) => handleDragStart(e, id, index);
         itemDiv.ondragover = (e) => handleDragOver(e);
         itemDiv.ondrop = (e) => handleItemDrop(e, id, index);
+        
         itemDiv.className = `group relative w-full min-h-[42px] flex items-center justify-between p-2 border-0 border-l-[4px] ${isTaskActive ? 'border-amber-400 bg-amber-500/15 shadow-[0_0_15px_rgba(251,191,36,0.2)]' : 'border-[var(--accent)] bg-white/[0.03]'} hover:bg-[rgba(139,92,246,0.18)] text-gray-300 font-medium leading-tight transition duration-200 rounded-lg`;
         const safeTaskEscaped = taskText.replace(/'/g, "\\'").replace(/"/g, '&quot;');
         itemDiv.innerHTML = `
-          <button onclick="handleCompleteTask('${id}', ${index}, event)" class="flex items-center gap-2 w-full text-left bg-transparent border-0 text-inherit cursor-pointer p-0 min-w-0 pr-1 transition-all duration-150">
+          <button onclick="handleCompleteTask('${id}', ${index}, event)" class="flex items-center gap-2 flex-1 min-w-0 text-left bg-transparent border-0 text-inherit cursor-pointer p-0 transition duration-150 pr-2">
             <i data-lucide="${iconName}" class="w-3.5 h-3.5 ${isTaskActive ? 'text-amber-400 animate-pulse' : 'text-[var(--accent-light)]'} shrink-0"></i>
             <span class="block text-xs leading-snug min-w-0 flex-1 font-medium text-gray-200 truncate ${isTaskActive ? 'text-amber-200 font-bold' : ''}" title="${taskText.replace(/"/g, '&quot;')}">${taskText}</span>
           </button>
-          <div class="absolute right-1.5 -top-3.5 flex items-center gap-1 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition duration-150 shrink-0 bg-[#13131a] border border-white/10 px-1 py-0.5 rounded-lg shadow-lg z-20">
-            <button onclick="openTaskStepsModal('${id}', ${index}, event)" class="p-1 text-[var(--accent-light)] hover:text-white hover:bg-white/10 rounded transition cursor-pointer"><i data-lucide="footprints" class="w-3.5 h-3.5"></i></button>
+          
+          <div class="absolute right-1 -top-3 flex items-center gap-1 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200 shrink-0 bg-[#13131a] border border-white/10 px-1 py-0.5 rounded-lg shadow-lg z-50 whitespace-nowrap">
+            <button onclick="openTaskStepsModal('${id}', ${index}, event)" class="p-1 text-[var(--accent-light)] hover:text-white hover:bg-white/10 rounded transition cursor-pointer" title="Steps"><i data-lucide="footprints" class="w-3.5 h-3.5"></i></button>
             <div class="w-[1px] h-3 bg-white/15 my-auto"></div>
-            <button onclick="startTaskTimer('${safeTaskEscaped}', event)" class="p-1 text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 rounded transition cursor-pointer"><i data-lucide="timer" class="w-3.5 h-3.5"></i></button>
+            <button onclick="startTaskTimer('${safeTaskEscaped}', event)" class="p-1 text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 rounded transition cursor-pointer" title="Timer"><i data-lucide="timer" class="w-3.5 h-3.5"></i></button>
             <div class="w-[1px] h-3 bg-white/15 my-auto"></div>
-            <button onclick="deleteTask('${id}', ${index}, event)" class="p-1 text-gray-500 hover:text-red-400 hover:bg-white/10 rounded transition cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+            <button onclick="deleteTask('${id}', ${index}, event)" class="p-1 text-gray-500 hover:text-red-400 hover:bg-white/10 rounded transition cursor-pointer" title="Löschen"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
           </div>
         `;
         listEl.appendChild(itemDiv);
@@ -363,7 +454,7 @@ function renderApp() {
         if (e.key === 'Enter' && addInput.value.trim()) {
           saveHistory();
           state.items[id].push(addInput.value.trim());
-          addInput.value = ''; saveState(); renderApp(); populateAdhdTaskSelect(); 
+          addInput.value = ''; saveState(); renderApp(); populateHelperTaskSelect(); 
           if (typeof lucide !== 'undefined') lucide.createIcons();
         }
       };
@@ -384,11 +475,30 @@ function handleCompleteTask(category, index, event) {
   const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const todayStr = now.toISOString().split('T')[0];
   let taskText = typeof rawTask === 'object' ? rawTask.task : rawTask;
-  if (typeof rawTask === 'object' && rawTask.date) taskText += ` (${formatTerminDate(rawTask.date, rawTask.time)})`;
+  if (typeof rawTask === 'object' && rawTask.date) {
+    let locInfo = rawTask.location ? ` @ ${rawTask.location}` : '';
+    taskText += ` (${formatTerminDate(rawTask.date, rawTask.time)}${locInfo})`;
+  }
   state.done.push({ task: taskText, origin: category, date: todayStr, time: timeStr });
   state.streak = (state.streak || 0) + 1;
   if (state.completedSteps) delete state.completedSteps[taskText];
-  saveState(); playProceduralSound(); triggerConfetti(); showPraise(); renderApp(); updateZenView(); populateAdhdTaskSelect();
+  
+  // DYNAMISCHER DOPAMIN-FARBWECHSEL: Sahara entfernt, Mint Glow eingebaut
+  const themes = ['ocean', 'aurora', 'pal', 'cozy', 'emerald', 'rose', 'cyber', 'midnight', 'glacier', 'mint', 'forest', 'neon', 'retro', 'lavender', 'crimson', 'carbon'];
+  let nextTheme;
+  do {
+    nextTheme = themes[Math.floor(Math.random() * themes.length)];
+  } while (nextTheme === currentTheme);
+  setTheme(nextTheme);
+
+  saveState(); 
+  
+  // showPraise steuert nun zentral alle Sprüche, Web Speech API Audios sowie Visuals an
+  showPraise(); 
+  
+  renderApp(); 
+  updateZenView(); 
+  populateHelperTaskSelect();
 }
 
 function deleteTask(category, index, event) {
@@ -398,7 +508,7 @@ function deleteTask(category, index, event) {
   const taskText = typeof taskObj === 'object' ? taskObj?.task : taskObj;
   state.items[category].splice(index, 1);
   if (taskText && state.completedSteps) delete state.completedSteps[taskText];
-  saveState(); showToast(t('toast_task_deleted')); renderApp(); updateZenView(); populateAdhdTaskSelect();
+  saveState(); showToast(t('toast_task_deleted')); renderApp(); updateZenView(); populateHelperTaskSelect();
 }
 
 function handleRestoreDoneTask(doneIndex) {
@@ -409,12 +519,13 @@ function handleRestoreDoneTask(doneIndex) {
   state.done.splice(reversedIndex, 1);
   const targetCat = state.items[item.origin] ? item.origin : 'daily';
   state.items[targetCat].push(item.task);
-  saveState(); showToast(t('toast_task_restored')); renderApp(); updateZenView(); populateAdhdTaskSelect();
+  saveState(); showToast(t('toast_task_restored')); renderApp(); updateZenView(); populateHelperTaskSelect();
 }
 
 let draggedItemInfo = null;
 function handleDragStart(e, category, index) {
   draggedItemInfo = { category, index };
+  e.stopPropagation(); 
   e.dataTransfer.setData('text/plain', JSON.stringify({ category, index }));
   e.dataTransfer.effectAllowed = 'move';
 }
@@ -431,7 +542,7 @@ function handleItemDrop(e, targetCategory, targetIndex) {
   saveHistory();
   const [item] = state.items[srcCat].splice(srcIdx, 1);
   state.items[targetCategory].splice(targetIndex, 0, item);
-  draggedItemInfo = null; saveState(); renderApp(); populateAdhdTaskSelect();
+  draggedItemInfo = null; saveState(); renderApp(); populateHelperTaskSelect();
 }
 
 function handleDrop(e, targetCategory) {
@@ -444,13 +555,13 @@ function handleDrop(e, targetCategory) {
   saveHistory();
   const [item] = state.items[srcCat].splice(srcIdx, 1);
   state.items[targetCategory].push(item);
-  draggedItemInfo = null; saveState(); renderApp(); populateAdhdTaskSelect();
+  draggedItemInfo = null; saveState(); renderApp(); populateHelperTaskSelect();
 }
 
 let hoverPanelTimeout = null;
 function showPanelHover(panelName) {
   clearTimeout(hoverPanelTimeout);
-  ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'sync', 'theme'].forEach(p => {
+  ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'sync', 'theme', 'calendar-dropdown'].forEach(p => {
     const el = document.getElementById(`panel-${p}`); if (!el) return;
     if (p === panelName) {
       el.classList.remove('hidden'); if (p === 'report') updateReportPanel();
@@ -467,7 +578,7 @@ function hidePanelHover(panelName) {
 
 function togglePanel(panelName) {
   clearTimeout(hoverPanelTimeout);
-  ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'sync', 'theme'].forEach(p => {
+  ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'sync', 'theme', 'calendar-dropdown'].forEach(p => {
     const el = document.getElementById(`panel-${p}`); if (!el) return;
     if (p === panelName) {
       el.classList.toggle('hidden');
@@ -564,16 +675,7 @@ function updateReportPanel() {
     filteredDone = filteredDone.filter(item => item.date && item.date >= thirtyDaysAgo);
   }
   const count = filteredDone.length;
-  const totalDoneAllTime = (state.done || []).length;
-  const totalXp = totalDoneAllTime * 25;
-  const userLevel = Math.floor(totalXp / 100) + 1;
-  const currentLevelXp = totalXp % 100;
-  const levelsList = TRANSLATIONS[currentLang]?.levels || TRANSLATIONS.de.levels;
-  const userTitle = levelsList[Math.min(userLevel - 1, levelsList.length - 1)];
-  const badgeEl = document.getElementById('user-level-badge'); if (badgeEl) badgeEl.innerText = `Lv.${userLevel}`;
-  const titleEl = document.getElementById('user-level-title'); if (titleEl) titleEl.innerText = userTitle;
-  const xpTextEl = document.getElementById('user-xp-text'); if (xpTextEl) xpTextEl.innerText = `${currentLevelXp} / 100 XP`;
-  const xpBarEl = document.getElementById('user-xp-bar'); if (xpBarEl) xpBarEl.style.width = `${currentLevelXp}%`;
+  
   let totalPending = 0;
   ['daily', 'weekly', 'todo', 'occasionally', 'termine'].forEach(cat => { totalPending += (state.items[cat] || []).length; });
   const totalAll = count + totalPending;
@@ -588,9 +690,29 @@ function updateReportPanel() {
     catBarsEl.innerHTML = '';
     const catStats = [{ id: 'daily', label: t('daily') }, { id: 'weekly', label: t('weekly') }, { id: 'todo', label: t('todo') }, { id: 'occasionally', label: t('occasionally') }];
     catStats.forEach(({ id, label }) => {
-      const pending = (state.items[id] || []).length;
-      const completedInCat = filteredDone.filter(item => item.origin === id).length;
-      const totalInCat = pending + completedInCat;
+      let pending = (state.items[id] || []).length;
+      let completedInCat = filteredDone.filter(item => item.origin === id).length;
+      let totalInCat = pending + completedInCat;
+
+      // 1. DYNAMISCHE BEZEICHNUNGEN (heute -> Täglich, Gelegentlich -> Gelegentliche)
+      if (reportTimeframe === 'week' || reportTimeframe === 'month') {
+        if (id === 'daily') label = currentLang === 'de' ? 'Täglich' : (currentLang === 'es' ? 'Diario' : (currentLang === 'el' ? 'Καθημερινά' : 'Daily'));
+        if (id === 'occasionally') label = currentLang === 'de' ? 'Gelegentliche' : (currentLang === 'es' ? 'Ocasionales' : (currentLang === 'el' ? 'Περιστασιακά' : 'Occasionally'));
+      }
+
+      // 2. WOCHENSICHT UND MONATSSICHT MULTIPLIKATOR FÜR TÄGLICHE AUFGABEN (7x bzw. 30x)
+      if (id === 'daily') {
+        if (reportTimeframe === 'week') {
+          const baseDailyCount = Math.max(1, (state.items.daily || []).length + (state.done || []).filter(item => item.origin === 'daily' && item.date === todayISO).length);
+          totalInCat = baseDailyCount * 7;
+          pending = Math.max(0, totalInCat - completedInCat);
+        } else if (reportTimeframe === 'month') {
+          const baseDailyCount = Math.max(1, (state.items.daily || []).length + (state.done || []).filter(item => item.origin === 'daily' && item.date === todayISO).length);
+          totalInCat = baseDailyCount * 30;
+          pending = Math.max(0, totalInCat - completedInCat);
+        }
+      }
+
       if (totalInCat > 0) {
         const catPct = Math.round((completedInCat / totalInCat) * 100);
         const row = document.createElement('div'); row.className = 'space-y-1';
@@ -599,13 +721,15 @@ function updateReportPanel() {
       }
     });
   }
+
   const insightEl = document.getElementById('report-insight-text');
   if (insightEl) {
     if (count === 0) insightEl.innerText = t('loading_stats');
     else if (count < 3) insightEl.innerText = { de: `Guter Anfang! Du hast ${count} Aufgaben geschafft. Bleib dran!`, en: `Good start! You accomplished ${count} tasks. Keep going!`, es: `¡Buen comienzo! Has completado ${count} tareas. ¡Sigue así!`, el: `Καλή αρχή! Ολοκλήρωσες ${count} εργασίες. Συνέχισε έτσι!` }[currentLang];
-    else if (count < 8) insightEl.innerText = { de: `Starkes Ergebnis! ${count} Aufgaben erledigt. Du bist voll im Flow! ⚡`, en: `Great result! ${count} tasks completed. You are in the flow! ⚡`, es: `¡Gran resultado! ${count} tareas completadas. ¡Estás en flujo! ⚡`, el: `Εξαιρετικό αποτέλεσμα! Ολοκλήρωσες ${count} εργασίες. Είσαι σε πλήρη ροή! ⚡` }[currentLang];
-    else insightEl.innerText = { de: `Hervorragende Produktivität! ${count} Aufgaben geschafft. Zeit für eine Pause! 🎉`, en: `Outstanding productivity! ${count} tasks finished. Time for a well-deserved break! 🎉`, es: `¡Productividad sobresaliente! ${count} tareas hechas. ¡Es hora de un descanso! 🎉`, el: `Εξαιρετική παραγωγικότητα! Ολοκλήρωσες ${count} εργασίες. Ώρα για ένα διάλειμμα! 🎉` }[currentLang];
+    else if (count < 8) insightEl.innerText = { de: `Starkes Ergebnis! ${count} Aufgaben erledigt. Du bist voll im Flow! ⚡`, en: `Great result! ${count} tasks completed. You are in the flow! ⚡`, es: `¡Gran resultado! ${count} tareas completadas. ¡Estás in fluxo! ⚡`, el: `Εξαιρετικό obstacle! Ολοκλήρωσες ${count} εργασίες. Είσαι voreilig ροή! ⚡` }[currentLang];
+    else insightEl.innerText = { de: `Hervorragende Produktivität! ${count} Aufgaben geschafft. Zeit für eine Pause! 🎉`, en: `Outstanding productivity! ${count} tasks finished. Time for a well-deserved break! 🎉`, es: `¡Productivity sobresaliente! ${count} tareas hechas. ¡Es hora de un descanso! 🎉`, el: `Εξαιρετική παραγωγικότητα! Ολοκλήρωσες ${count} εργασίες. Ώra für einilaemme! 🎉` }[currentLang];
   }
+
   const list = document.getElementById('report-list');
   if (list) {
     list.innerHTML = '';
@@ -620,12 +744,17 @@ function updateReportPanel() {
       });
     }
   }
+
+  // Live-Fehlerliste im Statistik-Panel updaten
+  updateMissedTasksList();
+
+  if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 function submitFeedback() {
   const text = document.getElementById('feedback-text').value;
   if (text.trim()) {
-    showToast({ de: 'Vielen Dank für dein Feedback! ❤️', en: 'Thank you so much for your feedback! ❤️', es: '¡Muchas gracias por tus comentarios! ❤️', el: 'Σας ευχαριστούμε πολύ για τα σχόλιά σας! ❤️' }[currentLang]);
+    showToast({ de: 'Vielen Dank für dein Feedback! ❤️', en: 'Thank you so much for your feedback! ❤️', es: '¡Muchas gracias por tus comentarios! ❤️', el: 'Σας ευχαριστούμε πολύ für die Rückmeldung! ❤️' }[currentLang]);
     document.getElementById('feedback-text').value = ''; togglePanel('feedback');
   }
 }
@@ -645,7 +774,7 @@ function updateZenView() {
   currentZenTaskInfo = chosen;
   if (!chosen) {
     if (zenCatEl) zenCatEl.innerText = t('completed');
-    const endMsg = { de: '🎉 Alle Aufgaben erledigt! Entspanne dich und genieße deine freie Zeit.', en: '🎉 All tasks completed! Relax and enjoy your free time.', es: '🎉 ¡Todas las tareas completadas! ¡Disfruta de tu tiempo libre!', el: '🎉 Όλες οι εργασίες ολοκληρώθηκαν! Χαλαρώστε και απολαύστε τον ελεύθερο χρόνο σας.' }[currentLang];
+    const endMsg = { de: '🎉 Alle Aufgaben erledigt! Entspanne dich und genieße deine freie Zeit.', en: '🎉 All tasks completed! Relax and enjoy your free time.', es: '🎉 ¡Todas las tareas completadas! ¡Disfruta de tu tempo libre!', el: '🎉 Όλες οι εργασίες ολοκληρώθηκαν! Χαλαρώστε και απολαύστε τον ελεύθερο χρόνο soaps.' }[currentLang];
     zenTextEl.innerHTML = `<span class="text-emerald-400">${endMsg}</span>`;
   } else {
     const catName = t(chosen.cat); if (zenCatEl) zenCatEl.innerText = `${t('next_rec')} · ${catName}`;
@@ -672,8 +801,8 @@ document.addEventListener('keydown', (e) => {
     }
   }
   if (e.key === 'Escape') {
-    closeAdhdModal();
-    ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'sync', 'theme'].forEach(p => {
+    closeHelperModal();
+    ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'sync', 'theme', 'calendar-dropdown'].forEach(p => {
       const el = document.getElementById(`panel-${p}`); if (el) el.classList.add('hidden');
     });
     return;
@@ -689,7 +818,7 @@ function exportReportAsImage() {
   
   html2canvas(target, {
     backgroundColor: '#111116',
-    scale: 2, // Höhere Auflösung
+    scale: 2, 
     useCORS: true
   }).then(canvas => {
     const link = document.createElement('a');
@@ -698,6 +827,239 @@ function exportReportAsImage() {
     link.click();
   }).catch(err => {
     console.error("Export-Fehler:", err);
-    showToast("Export fehlgeschlagen.");
+    showToast("Export failed.");
   });
+}
+
+// =========================================================================
+// NEU: AUTOMATISCHES BERICHTS-SYSTEM & MANUELLE EXPORT-LOGIK
+// =========================================================================
+
+function getYearAndWeek(d) {
+  const target = new Date(d.valueOf());
+  const dayNr = (d.getDay() + 6) % 7;
+  target.setDate(target.getDate() - dayNr + 3);
+  const firstThursday = target.valueOf();
+  target.setMonth(0, 1);
+  if (target.getDay() !== 4) {
+    target.setMonth(0, 1 + ((4 - target.getDay()) + 7) % 7);
+  }
+  const weekNum = 1 + Math.ceil((firstThursday - target) / 604800000);
+  return `${d.getFullYear()}-W${String(weekNum).padStart(2, '0')}`;
+}
+
+function updateMissedTasksList() {
+  const container = document.getElementById('report-missed-tasks-list');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const missed = [];
+  const todayISO = new Date().toISOString().split('T')[0];
+
+  (state.items.daily || []).forEach(task => {
+    missed.push({ task: typeof task === 'object' ? task.task : task, tag: currentLang === 'de' ? 'Täglich' : 'Daily' });
+  });
+
+  (state.items.weekly || []).forEach(task => {
+    missed.push({ task: typeof task === 'object' ? task.task : task, tag: currentLang === 'de' ? 'Wöchentlich' : 'Weekly' });
+  });
+
+  (state.items.todo || []).forEach(task => {
+    missed.push({ task: typeof task === 'object' ? task.task : task, tag: 'Todo' });
+  });
+
+  (state.items.occasionally || []).forEach(task => {
+    missed.push({ task: typeof task === 'object' ? task.task : task, tag: currentLang === 'de' ? 'Gelegentliche' : 'Occasionally' });
+  });
+
+  (state.items.termine || []).forEach(task => {
+    if (task.date === todayISO) {
+      missed.push({ task: task.task, tag: currentLang === 'de' ? 'Termin heute' : 'Appointment' });
+    }
+  });
+
+  if (missed.length === 0) {
+    container.innerHTML = `<div class="text-emerald-400 italic text-[10px] py-1 text-center font-semibold">🎉 Alles erledigt! Großartige Leistung.</div>`;
+  } else {
+    missed.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'flex justify-between items-center gap-1.5 py-1 px-1.5 bg-black/30 rounded border border-white/5 hover:border-rose-500/10 transition';
+      div.innerHTML = `
+        <span class="truncate font-semibold text-gray-200 text-[10px]">${item.task}</span>
+        <span class="text-[8px] px-1 py-0.5 rounded bg-rose-500/10 text-rose-300 border border-rose-500/20 shrink-0 font-mono font-bold">${item.tag}</span>
+      `;
+      container.appendChild(div);
+    });
+  }
+}
+
+function generateReportContent(timeframe, targetDateOrPeriod) {
+  const lang = currentLang || 'de';
+  const todayISO = new Date().toISOString().split('T')[0];
+  let filteredDone = state.done || [];
+  
+  let title = "";
+  let doneTasks = [];
+  let missedTasks = [];
+  
+  if (timeframe === 'daily') {
+    const targetDate = targetDateOrPeriod || todayISO;
+    title = lang === 'de' ? `TÄGLICHER FOCUS-BERICHT (${targetDate})` : `DAILY FOCUS REPORT (${targetDate})`;
+    doneTasks = filteredDone.filter(t => t.date === targetDate);
+    
+    (state.items.daily || []).forEach(task => { missedTasks.push(typeof task === 'object' ? task.task : task); });
+    (state.items.todo || []).forEach(task => { missedTasks.push(typeof task === 'object' ? task.task : task); });
+    (state.items.termine || []).forEach(t => { if (t.date === targetDate) missedTasks.push(`${t.task} (Termin)`); });
+  } else if (timeframe === 'weekly') {
+    const targetWeek = targetDateOrPeriod || getYearAndWeek(new Date());
+    title = lang === 'de' ? `WÖCHENTLICHER FOCUS-BERICHT (${targetWeek})` : `WEEKLY FOCUS REPORT (${targetWeek})`;
+    
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    doneTasks = filteredDone.filter(t => t.date && t.date >= sevenDaysAgo);
+    
+    (state.items.weekly || []).forEach(task => { missedTasks.push(typeof task === 'object' ? task.task : task); });
+    (state.items.todo || []).forEach(task => { missedTasks.push(typeof task === 'object' ? task.task : task); });
+    
+    const baseDailyCount = Math.max(1, (state.items.daily || []).length + (state.done || []).filter(item => item.origin === 'daily' && item.date === todayISO).length);
+    const targetDailyCount = baseDailyCount * 7;
+    const completedDailyCount = doneTasks.filter(item => item.origin === 'daily').length;
+    if (completedDailyCount < targetDailyCount) {
+      missedTasks.push(lang === 'de' 
+        ? `Tägliche Aufgaben: ${targetDailyCount - completedDailyCount} von ${targetDailyCount} wöchentlichen Wiederholungen verpasst`
+        : `Daily Tasks: Missed ${targetDailyCount - completedDailyCount} out of ${targetDailyCount} weekly repetitions`);
+    }
+  } else if (timeframe === 'monthly') {
+    const targetMonth = targetDateOrPeriod || todayISO.substring(0, 7);
+    title = lang === 'de' ? `MONATLICHER FOCUS-BERICHT (${targetMonth})` : `MONTHLY FOCUS REPORT (${targetMonth})`;
+    
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    doneTasks = filteredDone.filter(t => t.date && t.date >= thirtyDaysAgo);
+    
+    (state.items.occasionally || []).forEach(task => { missedTasks.push(typeof task === 'object' ? task.task : task); });
+    (state.items.todo || []).forEach(task => { missedTasks.push(typeof task === 'object' ? task.task : task); });
+    
+    const baseDailyCount = Math.max(1, (state.items.daily || []).length + (state.done || []).filter(item => item.origin === 'daily' && item.date === todayISO).length);
+    const targetDailyCount = baseDailyCount * 30;
+    const completedDailyCount = doneTasks.filter(item => item.origin === 'daily').length;
+    if (completedDailyCount < targetDailyCount) {
+      missedTasks.push(lang === 'de' 
+        ? `Tägliche Aufgaben: ${targetDailyCount - completedDailyCount} von ${targetDailyCount} monatlichen Wiederholungen verpasst`
+        : `Daily Tasks: Missed ${targetDailyCount - completedDailyCount} out of ${targetDailyCount} monthly repetitions`);
+    }
+  }
+
+  const successRate = (doneTasks.length + missedTasks.length) > 0 
+    ? Math.round((doneTasks.length / (doneTasks.length + missedTasks.length)) * 100) 
+    : 100;
+
+  let reportText = `==============================================\n`;
+  reportText += `       🌊 FLOW - AUTOMATISCHER BERICHT 🌊     \n`;
+  reportText += `==============================================\n\n`;
+  reportText += `${title}\n`;
+  reportText += `----------------------------------------------\n`;
+  reportText += lang === 'de' ? `Erledigte Aufgaben:    ${doneTasks.length}\n` : `Completed Tasks:       ${doneTasks.length}\n`;
+  reportText += lang === 'de' ? `Offene Aufgaben:       ${missedTasks.length}\n` : `Pending Tasks:         ${missedTasks.length}\n`;
+  reportText += lang === 'de' ? `Erfolgsquote:          ${successRate}%\n` : `Success Rate:          ${successRate}%\n`;
+  reportText += `----------------------------------------------\n\n`;
+  
+  reportText += lang === 'de' ? `✅ ERLEDIGTE AUFGABEN:\n` : `✅ COMPLETED TASKS:\n`;
+  if (doneTasks.length === 0) {
+    reportText += `   - (Keine)\n`;
+  } else {
+    doneTasks.forEach((t, i) => {
+      reportText += `   ${i + 1}. [${t.origin.toUpperCase()}] ${t.task} (${t.time || ''})\n`;
+    });
+  }
+  reportText += `\n`;
+  
+  reportText += lang === 'de' ? `❌ NICHT ERLEDIGTE AUFGABEN (OFFEN):\n` : `❌ UNCOMPLETED TASKS (OPEN):\n`;
+  if (missedTasks.length === 0) {
+    reportText += lang === 'de' ? `   🎉 Hervorragend! Alle Ziele wurden erreicht.\n` : `   🎉 Outstanding! All goals achieved.\n`;
+  } else {
+    missedTasks.forEach((t, i) => {
+      reportText += `   ${i + 1}. ${t}\n`;
+    });
+  }
+  
+  reportText += `\n==============================================\n`;
+  reportText += lang === 'de' ? `Generiert am: ${new Date().toLocaleString()}\n` : `Generated on: ${new Date().toLocaleString()}\n`;
+  reportText += `==============================================\n`;
+  
+  return { title, reportText, filename: `flow-report-${timeframe}-${targetDateOrPeriod || todayISO}.txt` };
+}
+
+function triggerManualReportDownload(timeframe) {
+  const { reportText, filename } = generateReportContent(timeframe);
+  const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  showToast(currentLang === 'de' ? `Bericht heruntergeladen! 📥` : `Report downloaded! 📥`);
+}
+
+function checkAndGenerateAutomaticReports() {
+  const now = new Date();
+  const todayISO = now.toISOString().split('T')[0];
+  const lang = currentLang || 'de';
+
+  // 1. Täglicher Berichts-Export bei Tagesübergang
+  if (state.lastDate && state.lastDate !== todayISO) {
+    const prevDate = state.lastDate;
+    const { reportText, filename } = generateReportContent('daily', prevDate);
+    const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    
+    showToast(lang === 'de' 
+      ? `Automatischer täglicher Bericht für ${prevDate} heruntergeladen! 📊` 
+      : `Automatic daily report for ${prevDate} downloaded! 📊`);
+      
+    state.lastDate = todayISO;
+    saveState();
+  }
+
+  // 2. Wöchentlicher Berichts-Export bei Wochenwechsel
+  const currentWeekStr = getYearAndWeek(now);
+  const lastWeeklyReport = localStorage.getItem('flow_last_weekly_report_week');
+  if (lastWeeklyReport && lastWeeklyReport !== currentWeekStr) {
+    const { reportText, filename } = generateReportContent('weekly', lastWeeklyReport);
+    const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    showToast(lang === 'de'
+      ? `Automatischer Wochenbericht (${lastWeeklyReport}) heruntergeladen! 📊`
+      : `Automatic weekly report (${lastWeeklyReport}) downloaded! 📊`);
+  }
+  localStorage.setItem('flow_last_weekly_report_week', currentWeekStr);
+
+  // 3. Monatlicher Berichts-Export bei Monatswechsel
+  const currentMonthStr = todayISO.substring(0, 7);
+  const lastMonthlyReport = localStorage.getItem('flow_last_monthly_report_month');
+  if (lastMonthlyReport && lastMonthlyReport !== currentMonthStr) {
+    const { reportText, filename } = generateReportContent('monthly', lastMonthlyReport);
+    const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    showToast(lang === 'de'
+      ? `Automatischer Monatsbericht (${lastMonthlyReport}) heruntergeladen! 📊`
+      : `Automatic monthly report (${lastMonthlyReport}) downloaded! 📊`);
+  }
+  localStorage.setItem('flow_last_monthly_report_month', currentMonthStr);
 }
