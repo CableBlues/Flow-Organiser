@@ -53,7 +53,7 @@ const MOTIVATIONAL_CHUNKS = {
   es: {
     start: ["¡Buen comienzo! Concéntrate en este primer paso.", "¡Excelente, ya has dado el primer paso!", "Paso a paso. ¡Tú puedes!"],
     halfway: ["¡Mitad de camino! Lo estás haciendo increíble.", "¡Sigue con este ritmo, vas por buen camino!", "¡Excelente progreso! Respira hondo y continúa."],
-    end: ["¡Casi terminado! Solo queda un último esfuerzo.", "¡Brillante! La meta está a la vista.", "¡Espectacular, ya casi lo logras!"],
+    end: ["¡Casi terminado! Solo queda un último effort.", "¡Brillante! La meta está a la vista.", "¡Espectacular, ya casi lo logras!"],
     overdue: ["¡Hora de cambiar!", "Tómate un descanso.", "Sesión terminada."]
   },
   el: {
@@ -94,8 +94,12 @@ function toggleTimerSound() {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
     }
-    stopPleasantRinging();
+    // Naturgeräusche und Background-Musik stoppen, aber den Timer ungestört weiterlaufen lassen!
     stopAmbientSound(true);
+    if (ringInterval) {
+      clearInterval(ringInterval);
+      ringInterval = null;
+    }
     showToast(currentLang === 'de' ? "Timer-Sound stummgeschaltet 🔇" : "Timer sound muted 🔇");
   } else {
     showToast(currentLang === 'de' ? "Timer-Sound eingeschaltet 🔊" : "Timer sound unmuted 🔊");
@@ -107,7 +111,7 @@ function toggleTimerSound() {
 }
 
 function updateMuteButtonsUI() {
-  const muteBtnIds = ['timer-mute-btn', 'adhd-pick-timer-mute-btn', 'adhd-steps-timer-mute'];
+  const muteBtnIds = ['timer-mute-btn', 'helper-pick-timer-mute-btn', 'helper-steps-timer-mute'];
   muteBtnIds.forEach(id => {
     const el = document.getElementById(id);
     if (el) {
@@ -424,9 +428,9 @@ function startTaskTimer(taskName, event) {
 
 function updateActiveTimerLabels() {
   const text = activeTimerTask || "";
-  const pickLabel = document.getElementById('adhd-pick-timer-task');
+  const pickLabel = document.getElementById('helper-pick-timer-task');
   if (pickLabel) pickLabel.innerText = text;
-  const stepsLabel = document.getElementById('adhd-steps-timer-task');
+  const stepsLabel = document.getElementById('helper-steps-timer-task');
   if (stepsLabel) stepsLabel.innerText = text;
 }
 
@@ -452,7 +456,7 @@ function setTimerPreset(mins) {
   timerSeconds = mins * 60;
   timerInitialSeconds = mins * 60;
   
-  const dropdowns = ['timer-preset-select-real', 'adhd-pick-timer-preset-select-real', 'adhd-steps-timer-preset-select-real'];
+  const dropdowns = ['timer-preset-select-real', 'helper-pick-timer-preset-select-real', 'helper-steps-timer-preset-select-real'];
   dropdowns.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = String(mins);
@@ -561,8 +565,9 @@ function resetTimer() {
 }
 
 function updateTimerUI() {
-  const playBtns = ['timer-play-btn', 'adhd-pick-timer-play-btn', 'adhd-steps-timer-play'];
-  const pauseBtns = ['timer-pause-btn', 'adhd-pick-timer-pause-btn', 'adhd-steps-timer-pause'];
+  const playBtns = ['timer-play-btn', 'helper-pick-timer-play-btn', 'helper-steps-timer-play'];
+  const pauseBtns = ['timer-pause-btn', 'helper-pick-timer-pause-btn', 'helper-steps-timer-pause'];
+  const muteBtns = ['timer-mute-btn', 'helper-pick-timer-mute-btn', 'helper-steps-timer-mute'];
   
   playBtns.forEach(id => {
     const el = document.getElementById(id);
@@ -580,8 +585,28 @@ function updateTimerUI() {
     }
   });
   
+  // Zeige die Lautstärketasten (Sound-Buttons) NUR dann, wenn der Timer aktiv läuft
+  muteBtns.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      if (timerRunning) el.classList.remove('hidden');
+      else el.classList.add('hidden');
+    }
+  });
+  
+  // Steuerung des gemeinsamen Start/Pause-Buttons in der Zen-Ansicht
+  const zenPlayPauseBtn = document.querySelector('#zen-chill-view button[onclick="toggleTimer()"]');
+  if (zenPlayPauseBtn) {
+    if (timerRunning) {
+      zenPlayPauseBtn.innerHTML = '<i data-lucide="pause" class="w-4 h-4 text-[var(--accent-light)] animate-pulse"></i>';
+    } else {
+      zenPlayPauseBtn.innerHTML = '<i data-lucide="play" class="w-4 h-4 text-emerald-400"></i>';
+    }
+  }
+
   updateActiveTimerBadge();
   updateMuteButtonsUI();
+  if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 function updateTimerDisplay() {
@@ -593,14 +618,14 @@ function updateTimerDisplay() {
   const sign = isNegative ? '-' : '';
   const str = `${sign}${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   
-  const displays = ['timer-display', 'adhd-pick-timer-display', 'adhd-steps-timer-display', 'zen-timer-display'];
+  const displays = ['timer-display', 'helper-pick-timer-display', 'helper-steps-timer-display', 'zen-timer-display'];
   displays.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.innerText = str;
   });
   
   const pct = timerInitialSeconds > 0 ? Math.max(0, (timerSeconds / timerInitialSeconds) * 100) : 100;
-  const progressBars = ['timer-progress-bar', 'adhd-pick-timer-progress-bar', 'adhd-steps-timer-progress-bar'];
+  const progressBars = ['timer-progress-bar', 'helper-pick-timer-progress-bar', 'helper-steps-timer-progress-bar'];
   progressBars.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.width = `${pct}%`;

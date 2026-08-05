@@ -33,7 +33,7 @@ const EXTENDED_PRAISES = {
     "Wieder ein Haken dran - stark!",
     "Das lief wie geschmiert!",
     "Sehr diszipliniert gelöst!",
-    "Dein Fokus ist messerscharf!",
+    "Dein Fokus is messerscharf!",
     "Hut ab vor dieser Leistung!",
     "Du übertreffst dich selbst!",
     "Perfekt durchgezogen!",
@@ -234,7 +234,6 @@ function showPraise() {
   if (card && overlay) {
     card.innerText = msg; overlay.classList.remove('hidden');
     card.style.animation = 'scaleBounce 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards';
-    // Timeout auf 2800ms heraufgesetzt für längere, befriedigende Sichtbarkeit
     setTimeout(() => overlay.classList.add('hidden'), 2800); 
   }
 
@@ -359,7 +358,7 @@ function playProceduralSound(idx = 0) {
         bOsc.start(now);
         bOsc.stop(now + 0.6);
         break;
-      case 11: // 12. Tribal Woodblock Woodblock Sequence
+      case 11: // 12. Tribal Woodblock Sequence
         playNode(440, 'triangle', 0.06, 0, 0.12);
         playNode(554, 'triangle', 0.06, 0.07, 0.10);
         playNode(659, 'triangle', 0.06, 0.14, 0.08);
@@ -410,7 +409,6 @@ function triggerPraiseAnimation(idx) {
         const size = Math.random() * 45 + 15;
         bubble.style.width = `${size}px`;
         bubble.style.height = `${size}px`;
-        // Radialer Farbverlauf erzeugt plastischen 3D-Glas-Schimmer
         bubble.style.background = `radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.6) 0%, rgba(168, 85, 247, 0.15) 40%, rgba(56, 189, 248, 0.45) 80%, rgba(255, 255, 255, 0) 100%)`;
         bubble.style.boxShadow = 'inset 0 0 12px rgba(255, 255, 255, 0.65), 0 4px 15px rgba(56, 189, 248, 0.25)';
         bubble.style.left = `${Math.random() * 100}vw`;
@@ -452,7 +450,7 @@ function triggerPraiseAnimation(idx) {
         setTimeout(() => spark.remove(), 1500);
       }
       break;
-    case 8: // 9. Floating Text Pop (Schwebender Fokus-Ausruf mit softem Zoom)
+    case 8: // 9. Floating Text Pop (Schwebender Fokus-Ausruf)
       const pop = document.createElement('div');
       const words = currentLang === 'de' ? ["KLASSE!", "FLOW!", "PRODUKTIV!", "FOKUS!", "STARK!"] : ["GREAT!", "FLOW!", "DOPAMINE!", "FOCUS!", "BOOM!"];
       pop.innerText = words[Math.floor(Math.random() * words.length)];

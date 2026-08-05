@@ -43,6 +43,10 @@ function loadState() {
         if (parsed.streak === undefined) parsed.streak = 0;
         if (!parsed.completedSteps) parsed.completedSteps = {};
         
+        // NEU: Absicherung für Einkaufsliste & Protokoll im geladenen Zustand
+        if (!parsed.shoppingList) parsed.shoppingList = [];
+        if (!parsed.shoppingHistory) parsed.shoppingHistory = [];
+        
         // Dynamische Injektion: Gesicht waschen direkt nach Zähne morgens platzieren
         if (parsed.items.daily) {
           const dentalGerman = parsed.items.daily.indexOf("Zähne morgens");
@@ -73,7 +77,8 @@ function loadState() {
   return {
     version: 3, lastDate: todayStr,
     items: { daily: initialDaily, weekly: [...localizedDefaults.weekly], occasionally: [...localizedDefaults.occasionally], todo: [], termine: [], notes: '' },
-    done: [], archive: [], streak: 0, completedSteps: {}
+    done: [], archive: [], streak: 0, completedSteps: {},
+    shoppingList: [], shoppingHistory: [] // NEU: Initialisierung der Einkaufs-Datenstrukturen
   };
 }
 
@@ -122,7 +127,7 @@ function handleUndo() {
   saveState();
   showToast(t('toast_undo_applied'));
   renderApp();
-  populateHelperTaskSelect(); // Korrigierte Referenz
+  populateHelperTaskSelect();
 }
 
 function handleReset() {
@@ -150,7 +155,8 @@ function handleReset() {
     state = {
       version: 3, lastDate: new Date().toISOString().split('T')[0],
       items: { daily: dailyList, weekly: [...localizedDefaults.weekly], occasionally: [...localizedDefaults.occasionally], todo: [], termine: [], notes: '' },
-      done: [], archive: [], streak: 0, completedSteps: {}
+      done: [], archive: [], streak: 0, completedSteps: {},
+      shoppingList: [], shoppingHistory: []
     };
     
     categoriesOrder = [
@@ -167,7 +173,7 @@ function handleReset() {
     
     showToast(t('toast_reset_success'));
     renderApp();
-    populateHelperTaskSelect(); // Korrigierte Referenz
+    populateHelperTaskSelect();
   }
 }
 
@@ -185,8 +191,11 @@ function handleOpenFile(e) {
     try {
       const imported = JSON.parse(reader.result);
       if (imported && imported.items) {
-        saveHistory(); state = imported; if (!state.completedSteps) state.completedSteps = {};
-        saveState(); showToast(t('toast_import_success')); renderApp(); populateHelperTaskSelect(); // Korrigierte Referenz
+        saveHistory(); state = imported; 
+        if (!state.completedSteps) state.completedSteps = {};
+        if (!state.shoppingList) state.shoppingList = [];
+        if (!state.shoppingHistory) state.shoppingHistory = [];
+        saveState(); showToast(t('toast_import_success')); renderApp(); populateHelperTaskSelect();
       }
     } catch(err) { alert(t('toast_import_error')); }
   };
