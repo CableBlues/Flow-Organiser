@@ -1,0 +1,4 @@
+@echo off
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$files = @('index.html', 'styles.css', 'state.js', 'utils.js', 'audio.js', 'timer.js', 'adhd.js', 'app.js'); $outFile = 'flow_code_bundle.txt'; Remove-Item $outFile -ErrorAction SilentlyContinue; foreach ($f in $files) { if (Test-Path $f) { Add-Content $outFile ('--- START OF FILE ' + $f + ' ---'); Add-Content $outFile ''; Get-Content $f -Raw | Add-Content $outFile; Add-Content $outFile ''; Add-Content $outFile '--- END OF FILE ---'; Add-Content $outFile '' } }"
+echo Fertig! flow_code_bundle.txt wurde erfolgreich erstellt.
+pause

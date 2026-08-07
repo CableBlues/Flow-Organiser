@@ -3,141 +3,88 @@ let praisePool = [];
 let soundPool = [];
 let animationPool = [];
 
-const EXTENDED_PRAISES = {
-  de: [
-    "Hervorragend gemacht!",
-    "Spitzenklasse!",
-    "Du bist unaufhaltbar!",
-    "Ganz starker Fokus!",
-    "Du rockst das!",
-    "Dein Flow ist sensationell!",
-    "Einfach meisterhaft!",
-    "Unglaubliche Produktivität!",
-    "Das nenne ich Fokus!",
-    "Wunderbar erledigt!",
-    "Ein gigantischer Schritt nach vorn!",
-    "Fantastische Leistung!",
-    "Du bist voll in deinem Element!",
-    "Unfassbar produktiv!",
-    "Dein Einsatz zahlt sich aus!",
-    "Phänomenal!",
-    "Absolut großartig!",
-    "Ein echter Triumph!",
-    "Du machst das überragend!",
-    "Einfach klasse!",
-    "Fokus-Meisterstufe erreicht!",
-    "Genialer Erfolg, weiter so!",
-    "Das war weltklasse!",
-    "Unglaubliche Willensstärke!",
-    "Du machst unaufhaltsame Fortschritte!",
-    "Wieder ein Haken dran - stark!",
-    "Das lief wie geschmiert!",
-    "Sehr diszipliniert gelöst!",
-    "Dein Fokus is messerscharf!",
-    "Hut ab vor dieser Leistung!",
-    "Du übertreffst dich selbst!",
-    "Perfekt durchgezogen!",
-    "Das war pure Meisterleistung!",
-    "Wieder einen Schritt näher am Ziel!",
-    "So geht Produktivität!",
-    "Auf dich ist Verlass!",
-    "Hervorragende Arbeit geleistet!",
-    "Du bist heute richtig produktiv!",
-    "Das war einfach exzellent!",
-    "Mit Vollgas voran, super!",
-    "Erstklassig gemeistert!",
-    "Du beweist echten Kampfgeist!",
-    "Da hatte Trägheit keine Chance!",
-    "Ein herrlicher Erfolg!",
-    "Schritt für Schritt zum Ziel!",
-    "Du machst das unglaublich gut!",
-    "Dein Durchhaltevermögen inspiriert!",
-    "Einfach sensationell fokussiert!",
-    "Die Produktivität strömt durch dich!",
-    "Du meisterst jede Hürde!",
-    "Das war absolut vorbildlich!",
-    "Du ziehst das einfach durch, genial!",
-    "Richtig gut gemacht!",
-    "Wunderbarer Fokus auf das Wesentliche!",
-    "Wieder ein großer Erfolg!",
-    "Deine Disziplin ist bewundernswert!",
-    "Du bist voll auf Erfolgskurs!",
-    "Großartige Willenskraft gezeigt!",
-    "Du bringst die Dinge zu Ende, stark!",
-    "Ein echtes Vorbild an Produktivität!",
-    "Du meisterst deinen Tag bravourös!",
-    "Fantastisch fokussiert geblieben!",
-    "Dein Flow ist heute legendär!",
-    "Sehr stark gelöst!",
-    "Unschlagbarer Fokus, großartig!"
-  ],
-  en: [
-    "Outstanding job!",
-    "Unstoppable progress!",
-    "You are rocking this!",
-    "Sensational focus!",
-    "Phenomenal execution!",
-    "Masterfully done!",
-    "Incredible productivity!",
-    "Your flow is amazing!",
-    "Fabulous work!",
-    "A giant leap forward!",
-    "Stunning performance!",
-    "Locked in and killing it!",
-    "Absolutely brilliant!",
-    "You make this look easy!",
-    "Spectacular effort!",
-    "Triumphant execution!",
-    "Top-tier focus!",
-    "Magnificent productivity!",
-    "You are in the zone!",
-    "Pure greatness!",
-    "Focus level maxed out!",
-    "Incredible work ethic!",
-    "A masterpiece of productivity!",
-    "You crushed that task!",
-    "Simply magnificent!",
-    "Superb discipline shown!",
-    "You're building real momentum!",
-    "An absolute home run!",
-    "Laser-focused and unstoppable!",
-    "Flawless execution right there!",
-    "Way to get things done!",
-    "You are on absolute fire!",
-    "Tremendous effort, well done!",
-    "Another win in the books!",
-    "You are making waves today!",
-    "Brilliant drive and focus!",
-    "You've completely conquered that!",
-    "Pure dedication in action!",
-    "Excellent attention to detail!",
-    "You are soaring to new heights!",
-    "Absolutely outstanding resolve!",
-    "A spectacular display of willpower!",
-    "You are mastering your day!",
-    "Unbelievably good progress!",
-    "You keep pushing boundaries!",
-    "Masterful display of efficiency!",
-    "Your work rate is inspiring!",
-    "Beautifully handled!",
-    "You did that with absolute style!",
-    "Phenomenally focused effort!",
-    "Highly impressive productivity!",
-    "You make progress look simple!",
-    "Truly great determination!",
-    "You are steering straight to success!",
-    "Nothing can hold you back!",
-    "Magnificent execution once again!",
-    "You are owning this day!",
-    "Incredible perseverance!",
-    "First-class work done!",
-    "Your flow state is unmatched!",
-    "You are executing at the highest level!",
-    "Superb drive and focus today!",
-    "You made light work of that!",
-    "Outstanding grit and discipline!",
-    "You are a focus legend!"
-  ]
+// Abgestuftes Lob-System (Skaliert mit dem Fortschritt des Tages)
+const TIERED_PRAISES = {
+  de: {
+    // Stufe 1: Erster Einstieg (1 Aufgabe geschafft)
+    tier1: [
+      "Guter Start! Der Anfang ist gemacht. Weiter so!",
+      "Schöner Einstieg! Schritt für Schritt geht es voran.",
+      "Erster Schritt geschafft! Die Trägheit hat verloren.",
+      "Klasse! Ein wunderbarer erster Haken heute.",
+      "Sehr gut! Der erste Dominostein ist gefallen. Welcher kommt als nächstes?",
+      "Ein schöner, ruhiger Anfang. Geh entspannt zur nächsten Aufgabe über.",
+      "Der erste Haken sitzt. Atme kurz durch und bleib im Fluss!"
+    ],
+    // Stufe 2: Erste Dynamik (2 bis 4 Aufgaben geschafft)
+    tier2: [
+      "Du bist im Rhythmus! Dranbleiben lohnt sich.",
+      "Klasse Fortschritt! Jede kleine Aufgabe summiert sich.",
+      "Ganz stark! Du baust gerade richtig Schwung auf.",
+      "Sehr fleißig! Spürst du, wie es im Kopf leichter wird?",
+      "Wunderbar! Du machst heute tolle Fortschritte.",
+      "Dein Fokus stabilisiert sich. Ein Schritt nach dem anderen!",
+      "Sehr diszipliniert. Du hast das heute fest im Griff."
+    ],
+    // Stufe 3: Hohe Ausdauer (5 bis 8 Aufgaben geschafft)
+    tier3: [
+      "Richtig starker Fokus! Du ziehst das super durch.",
+      "Klasse Leistung! Du hast heute schon richtig viel bewegt.",
+      "Sehr ausdauernd! Dein Fokus ist heute wirklich bemerkenswert.",
+      "Hut ab! Du beweist echtes Durchhaltevermögen.",
+      "Großartig gemacht! Du bist voll in deinem Element.",
+      "Dein Tag nimmt richtig Form an. Sehr inspirierend!",
+      "Hervorragende Arbeit. Du meisterst deine To-Dos heute souverän."
+    ],
+    // Stufe 4: Meisterstufe (9+ Aufgaben geschafft)
+    tier4: [
+      "Sensationell! Du hast heute unglaublich viel geschafft.",
+      "Einfach meisterhaft! Du darfst richtig stolz auf dich sein.",
+      "Phänomenaler Tag! Dein Flow ist heute unaufhaltbar.",
+      "Absolute Spitzenklasse! Gönn dir ruhig auch mal eine wohlverdiente Pause.",
+      "Was für ein produktiver Tag! Du hast heute alles gegeben.",
+      "Gigantische Leistung! Dein Kopf darf jetzt langsam in den Feierabend gehen.",
+      "Das war weltklasse! Ein echter Triumph über deine To-Do-Liste."
+    ]
+  },
+  en: {
+    tier1: [
+      "Great start! The beginning is made. Keep it up!",
+      "Nice entry! Step by step, you are moving forward.",
+      "First step achieved! Inertia has lost.",
+      "Great! A wonderful first checkmark today.",
+      "Very good! The first domino has fallen. Which one is next?",
+      "A nice, calm start. Gently move on to your next task.",
+      "The first task is checked. Take a breath and stay in your flow!"
+    ],
+    tier2: [
+      "You are in the rhythm! Staying on track is paying off.",
+      "Great progress! Every small task adds up.",
+      "So strong! You are building real momentum right now.",
+      "Excellent work! Do you feel your mind getting lighter?",
+      "Wonderful! You are making great strides today.",
+      "Your focus is stabilizing. One step at a time!",
+      "Very disciplined. You have a firm grip on your day."
+    ],
+    tier3: [
+      "Outstanding focus! You are pushing through beautifully.",
+      "Splendid job! You've already moved so much today.",
+      "Highly persistent! Your determination today is truly remarkable.",
+      "Hats off! You are showing incredible willpower.",
+      "Magnificently done! You are fully in your zone.",
+      "Your day is shaping up beautifully. Highly inspiring!",
+      "Superb work. You are mastering your to-dos with ease."
+    ],
+    tier4: [
+      "Sensational! You have accomplished an incredible amount today.",
+      "Simply masterful! You should be really proud of yourself.",
+      "Phenomenal day! Your flow is absolutely unstoppable.",
+      "Top-tier productivity! Feel free to treat yourself to a well-deserved break.",
+      "What a productive day! You've given it your absolute all.",
+      "Gigantic achievement! Your mind can slowly transition to rest now.",
+      "That was world-class! A true triumph over your to-do list."
+    ]
+  }
 };
 
 // Hilfsfunktion: Liefert den nächsten nicht-wiederholenden Index
@@ -224,9 +171,25 @@ function triggerConfetti() {
 
 function showPraise() {
   const lang = typeof currentLang !== 'undefined' ? currentLang : 'de';
-  const list = EXTENDED_PRAISES[lang] || EXTENDED_PRAISES['de'];
+  const todayISO = new Date().toISOString().split('T')[0];
   
-  const praiseIdx = getNextFromPool(praisePool, list.length);
+  // Zähle die heute erledigten Aufgaben
+  const completedToday = (state.done || []).filter(item => item.date === todayISO).length;
+  
+  // Bestimme die passende Stufe des Lobes
+  let activeTier = 'tier1';
+  if (completedToday >= 9) {
+    activeTier = 'tier4';
+  } else if (completedToday >= 5) {
+    activeTier = 'tier3';
+  } else if (completedToday >= 2) {
+    activeTier = 'tier2';
+  }
+  
+  const list = (TIERED_PRAISES[lang] || TIERED_PRAISES['de'])[activeTier];
+  
+  // Hole einen zufälligen Spruch aus der gewählten Stufe
+  const praiseIdx = Math.floor(Math.random() * list.length);
   const msg = list[praiseIdx];
 
   const overlay = document.getElementById('praise-overlay');
@@ -234,7 +197,9 @@ function showPraise() {
   if (card && overlay) {
     card.innerText = msg; overlay.classList.remove('hidden');
     card.style.animation = 'scaleBounce 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards';
-    setTimeout(() => overlay.classList.add('hidden'), 2800); 
+    
+    // VERBESSERUNG: Bleibt nun 5000ms statt 2800ms auf dem Bildschirm
+    setTimeout(() => overlay.classList.add('hidden'), 5000); 
   }
 
   if (typeof speakWithProfile === 'function') {
@@ -500,7 +465,7 @@ function renderMiniCalendar() {
 
   for (let i = 0; i < firstDayIndex; i++) {
     const empty = document.createElement('span');
-    empty.className = 'text-transparent select-none';
+    empty.className = 'text-transparent select-none pointer-events-none';
     empty.innerText = '';
     grid.appendChild(empty);
   }
@@ -531,13 +496,30 @@ function renderMiniCalendar() {
       const dot = document.createElement('span');
       dot.className = 'absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-amber-400 rounded-full shadow-[0_0_4px_rgba(245,158,11,0.8)] animate-pulse';
       daySpan.appendChild(dot);
-      
+    }
+
+    // Tooltip-Beschriftung: Standardhinweis plus optionale Terminliste, falls vorhanden
+    const tooltipAction = currentLang === 'de' 
+      ? "Auf ein Datum klicken, um einen Termin einzutragen" 
+      : "Click on a date to enter an appointment";
+
+    if (dayAppointments.length > 0) {
       const listStr = dayAppointments.map(t => {
         let loc = t.location ? ` (@ ${t.location})` : '';
         return `${t.time || 'Ganztägig'} · ${t.task}${loc}`;
       }).join('\n');
-      daySpan.title = listStr;
+      daySpan.title = `${tooltipAction}\n\nTermine:\n${listStr}`;
+    } else {
+      daySpan.title = tooltipAction;
     }
+
+    // Interaktiver Klick-Listener: Öffnet direkt das integrierte Formular
+    daySpan.onclick = (e) => {
+      e.stopPropagation();
+      if (typeof toggleTerminForm === 'function') {
+        toggleTerminForm(true, dateStr);
+      }
+    };
     
     grid.appendChild(daySpan);
   }

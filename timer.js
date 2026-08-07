@@ -20,20 +20,20 @@ let ringingSecondsInterval = null;
 // Konstante Liste aller integrierten Ambient-Sounds zum Durchmischen
 const TIMER_AMBIENTS = ['rain', 'ocean', 'campfire', 'birds', 'stream', 'temple', 'cafe', 'clock', 'purr', 'train', 'space', 'arcade', 'waterfall', 'guitarpad', 'monastery', 'keyboard', 'storm', 'frogs'];
 
-// 12 hochgradig charakteristische Rollenprofile mit lebendigen und beschleunigten Parametern
+// VERBESSERUNG: Junge, sympathische, warme und freundliche Profile mit natürlichem Sprechtempo (keine Extreme)
 const VOICE_PROFILES = [
-  { id: 'weiblich', pitch: 1.25, rate: 1.15, gender: 'female' },
-  { id: 'männlich', pitch: 0.95, rate: 1.10, gender: 'male' },
-  { id: 'kind', pitch: 1.65, rate: 1.30, gender: 'child' },
-  { id: 'opa', pitch: 0.62, rate: 0.95, gender: 'male' },
-  { id: 'granny', pitch: 0.80, rate: 0.90, gender: 'female' },
-  { id: 'schlaefrig', pitch: 0.85, rate: 0.85, gender: 'any' },
-  { id: 'sensationell', pitch: 1.45, rate: 1.40, gender: 'any' },
-  { id: 'sexy', pitch: 0.85, rate: 1.05, gender: 'any' },
-  { id: 'singend', pitch: 1.50, rate: 1.15, gender: 'any' },
-  { id: 'roboter', pitch: 1.10, rate: 1.10, gender: 'male' },
-  { id: 'militaer', pitch: 1.00, rate: 1.30, gender: 'male' },
-  { id: 'fee', pitch: 1.80, rate: 1.25, gender: 'female' }
+  { id: 'freundlich_weiblich_1', pitch: 1.12, rate: 0.98, gender: 'female' },
+  { id: 'warm_maennlich_1', pitch: 1.02, rate: 1.00, gender: 'male' },
+  { id: 'jung_weiblich_1', pitch: 1.18, rate: 1.02, gender: 'female' },
+  { id: 'sympathisch_maennlich_1', pitch: 0.98, rate: 0.98, gender: 'male' },
+  { id: 'sanft_weiblich_1', pitch: 1.10, rate: 0.96, gender: 'female' },
+  { id: 'herzlich_maennlich_1', pitch: 1.05, rate: 1.00, gender: 'male' },
+  { id: 'frisch_weiblich_1', pitch: 1.16, rate: 1.01, gender: 'female' },
+  { id: 'ruhig_maennlich_1', pitch: 0.96, rate: 0.97, gender: 'male' },
+  { id: 'hell_weiblich_1', pitch: 1.22, rate: 1.02, gender: 'female' },
+  { id: 'klar_maennlich_1', pitch: 1.04, rate: 0.99, gender: 'male' },
+  { id: 'milde_weiblich_1', pitch: 1.08, rate: 0.98, gender: 'female' },
+  { id: 'modern_maennlich_1', pitch: 1.01, rate: 1.01, gender: 'male' }
 ];
 
 // Motivierende Sätze, passend zum Fortschritt der Fokussitzung
@@ -94,7 +94,6 @@ function toggleTimerSound() {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
     }
-    // Naturgeräusche und Background-Musik stoppen, aber den Timer ungestört weiterlaufen lassen!
     stopAmbientSound(true);
     if (ringInterval) {
       clearInterval(ringInterval);

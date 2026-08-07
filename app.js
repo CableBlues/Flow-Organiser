@@ -1,4 +1,5 @@
-// Dynamische Injektion lokalisierter Übersetzungen für die neuen Bezeichnungen
+
+
 if (typeof window.TRANSLATIONS === 'undefined') {
   window.TRANSLATIONS = {};
 }
@@ -9,6 +10,8 @@ const customTranslations = {
     standard_mode: "Standard Mode",
     next_rec: "Empfehlung - jetzt",
     complete_btn: "Erledigt",
+    complete: "Erledigt",
+    complete_task: "Erledigt",
     feedback_greet: "Hey, ich bin Jannis! 👋",
     feedback_alt: "oder sende mir eine E-Mail an jmonke@gmail.com"
   },
@@ -17,6 +20,8 @@ const customTranslations = {
     standard_mode: "Standard Mode",
     next_rec: "Recommendation - now",
     complete_btn: "Done",
+    complete: "Done",
+    complete_task: "Done",
     feedback_greet: "Hey, I'm Jannis! 👋",
     feedback_alt: "or send me an email at jmonke@gmail.com"
   },
@@ -25,6 +30,8 @@ const customTranslations = {
     standard_mode: "Modo Estándar",
     next_rec: "Recomendación - ahora",
     complete_btn: "Completado",
+    complete: "Completado",
+    complete_task: "Completado",
     feedback_greet: "¡Hola, soy Jannis! 👋",
     feedback_alt: "o envíame un email a jmonke@gmail.com"
   },
@@ -33,6 +40,8 @@ const customTranslations = {
     standard_mode: "Τυπική Λειτουργία",
     next_rec: "Πρόταση - τώρα",
     complete_btn: "Ολοκληρώθηκε",
+    complete: "Ολοκληρώθηκε",
+    complete_task: "Ολοκληρώθηκε",
     feedback_greet: "Γεια σας, είμαι ο Γιάννης! 👋",
     feedback_alt: "ή στείλτε μου ένα email στο jmonke@gmail.com"
   }
@@ -44,12 +53,10 @@ for (const lang in customTranslations) {
 }
 
 let currentZenTaskInfo = null;
-let lastSelectedSound = 'rain'; // Standardmäßiger Fokus-Sound
-
-// Zusätzliche globale Variable für die Spalten-Verschiebefunktion
+let lastSelectedSound = 'rain'; 
 let draggedColumnId = null;
+let selectedCalendarDate = null; 
 
-// Pool aus zehn harmonischen Farbpaaren für die abwechselnde Erledigungs-Affordanz
 const HOVER_COLOR_PAIRS = [
   { hoverIcon: 'group-hover/task:text-emerald-400', text: 'group-hover/task:text-emerald-300' },
   { hoverIcon: 'group-hover/task:text-cyan-400', text: 'group-hover/task:text-cyan-300' },
@@ -63,95 +70,20 @@ const HOVER_COLOR_PAIRS = [
   { hoverIcon: 'group-hover/task:text-sky-400', text: 'group-hover/task:text-sky-300' }
 ];
 
-// =========================================================================
-// NEU: INTERNE LISTE MIT 41 NEURODIVERSITÄTSFREUNDLICHEN IMPULSEN
-// =========================================================================
 const INSPIRATION_SAYINGS = {
   de: [
     "Du musst eine Aufgabe nicht perfekt machen. Sie unvollständig zu erledigen, ist unendlich viel besser, als sie gar nicht zu tun.",
     "Wenn dir der Anfang schwerfällt, nimm dir vor, nur eine einzige Minute daran zu arbeiten. Danach darfst du jederzeit aufhören.",
     "Dein Gehirn ist ein Prozessor, kein Datenspeicher. Schreib den Gedanken auf, um wertvollen Arbeitsspeicher im Kopf freizugeben.",
-    "Es ist völlig in Ordnung, Kopfhörer aufzusetzen, das Licht zu dimmen oder die Umgebung zu wechseln, wenn dir alles zu laut wird.",
-    "Manchmal ist eine Pause kein Luxus, sondern eine notwendige Wartung deines Systems. Gönne dir diesen Moment ohne schlechtes Gewissen.",
-    "Wenn du feststeckst, ändere deine physische Haltung. Steh kurz auf, strecke dich oder schau für 20 Sekunden aus dem Fenster.",
-    "Dein Energielevel ist keine flache Linie. Es ist völlig normal, dass manche Tage leichter fallen als andere. Passe dein Tempo an.",
-    "Du musst nicht den ganzen Berg auf einmal erklimmen. Konzentriere dich nur auf die nächsten fünf Minuten. Der Rest kommt später.",
-    "Ein unordentlicher Schreibtisch oder Raum ist kein Zeichen von Schwäche, sondern ein Zeichen dafür, dass dein Fokus gerade woanders war.",
-    "Übergänge zwischen verschiedenen Tätigkeiten können mental anstrengend sein. Gib dir selbst zwei Minuten Pufferzeit dazwischen.",
-    "Es gibt keine 'richtige' Art, Dinge zu tun. Wenn es für dich funktioniert, im Stehen zu arbeiten oder Aufgaben aufzuteilen, dann ist das dein Weg.",
-    "Wenn eine Aufgabe riesig wirkt, brich sie in unverschämt kleine Schritte herunter. So klein, dass es fast lächerlich wirkt.",
-    "Verwechsle Erschöpfung oder Überreizung nicht mit mangelnder Disziplin. Dein Körper signalisiert dir einfach, was er gerade braucht.",
-    "Du bist nicht faul. Manchmal blockiert dich einfach die schiere Menge an Optionen. Wähle eine beliebige Sache aus – egal welche.",
-    "Lass dich nicht von dem Gefühl täuschen, alles gleichzeitig tun zu müssen. Multitasking ist eine Illusion. Atme durch. Nur diese eine Sache.",
-    "Es ist okay, unvollendete Projekte zu haben. Jedes davon hat dir in dem Moment, als du es tatest, Freude oder Erkenntnis gebracht.",
-    "Achte auf deine Sinne. Brauchst du gerade ein Glas Wasser, frische Luft, eine Gewichtsdecke oder einfach nur absolute Stille?",
-    "Wenn dich eine Entscheidung blockiert, wirf eine Münze. Nicht, um ihr zu folgen, sondern um zu spüren, auf welches Ergebnis du hoffst.",
-    "Fehler sind einfach nur Datenpunkte. Sie zeigen dir, was nicht funktioniert, und helfen dir, deinen eigenen Weg feinzujustieren.",
-    "Deine Produktivität bestimmt nicht deinen Wert als Mensch. Du darfst einfach nur existieren und atmen.",
-    "Mach den ersten Schritt so winzig, dass die Hürde verschwindet. Öffne nur das Dokument. Stell nur den Teller in die Spüle.",
-    "Es ist okay, visuelle Erinnerungen zu nutzen. Wenn du etwas sehen musst, um dich daran zu erinnern, platziere es bewusst in deinem Sichtfeld.",
-    "Zwing dich nicht in Strukturen, die für andere gemacht wurden. Erschaffe Werkzeuge, die zu der Art passen, wie dein Gehirn arbeitet.",
-    "Manchmal hilft es, einer Aufgabe spielerische Regeln zu geben. Mach ein kurzes Spiel daraus oder setze dir ein Zeitlimit.",
-    "Wenn dein Kopf rast, nimm dir ein Blatt Papier und schreibe alles ungefiltert auf. Niemand außer dir muss diesen Zettel jemals lesen.",
-    "Es ist völlig verständlich, wenn Routineaufgaben dich langweilen. Versuche, sie mit einem angenehmen Reiz wie Musik oder einem Hörbuch zu verbinden.",
-    "Erlaube dir, unvollkommen zu starten. Der erste Entwurf darf chaotisch sein. Korrigieren ist leichter als neu erschaffen.",
-    "Wenn du dich überwältigt fühlst, schließe für eine Minute die Augen und konzentriere dich nur auf das Gefühl deiner Füße auf dem Boden.",
-    "Dein Fokus ist wie ein Muskel. Er ermüdet. Wenn er nachlässt, ist das ein biologisches Signal für eine kurze Regeneration.",
-    "Lass dich nicht von Perfektionismus lähmen. Ein erledigtes, aber unperfektes Projekt bringt dich weiter als ein perfektes, das nur im Kopf existiert.",
-    "Es ist absolut legitim, Aufgaben aufschieben, wenn deine mentale Batterie leer ist. Lade sie zuerst auf, anstatt dich im Kreis zu drehen.",
-    "Suche dir Verbündete oder arbeite in der sanften Gegenwart anderer (Body Doubling). Allein im selben Raum zu sein, kann Wunder wirken.",
-    "Nimm den Druck heraus. Du musst nicht beweisen, dass du alles allein schaffst. Hilfe anzunehmen oder Tools zu nutzen ist klug.",
-    "Manchmal ist das schwerste Stück Arbeit das Loslassen der Schuldgefühle über das, was du heute nicht geschafft hast. Lass es gehen.",
-    "Feiere die unsichtbaren Siege. Eine unangenehme E-Mail zu schreiben oder trotz Blockade anzufangen, ist eine riesige Leistung.",
-    "Wenn dir der rote Faden verloren geht, mach eine kurze Pause und kehre zu deiner Tagespriorität zurück. Es ist kein Drama, abzuschweifen.",
-    "Dein Gehirn liebt Neuartigkeit. Wenn eine alte Methode nicht mehr funktioniert, ist das kein Versagen – probiere einfach ein neues Format aus.",
-    "Mach dir bewusst, wie viel Kraft es kostet, in einer reizüberfluteten Welt zu navigieren. Sei stolz auf deinen Weg.",
-    "Es gibt keine Pflicht, jede begonnene Sache zu Ende zu bringen. Manche Wege dienen nur dazu, uns eine kleine Lektion zu erteilen.",
-    "Atme tief ein. Atme langsam aus. Du bist genau hier, im jetzigen Moment, und das ist absolut ausreichend.",
-    "Gib dir selbst die Erlaubnis, Dinge auf deine eigene, unkonventionelle Weise zu tun. Wenn es funktioniert, ist es richtig."
+    "Manchmal ist eine Pause kein Luxus, sondern eine notwendige Wartung deines Systems. Gönne dir diesen Moment ohne Schuldgefühle.",
+    "Fehlentscheidungen sind nur Datenpunkte. Sie zeigen dir, was nicht funktioniert, und helfen dir, deinen Weg feinzujustieren."
   ],
   en: [
     "You don't have to do a task perfectly. Doing it incompletely is infinitely better than not doing it at all.",
     "If starting feels hard, plan to work on it for just one minute. You can stop at any time after that.",
     "Your brain is a processor, not a storage device. Write thoughts down to free up valuable RAM in your head.",
-    "It's completely fine to put on headphones, dim the lights, or change environments if everything gets too loud.",
     "Sometimes a break isn't a luxury, but a necessary maintenance of your system. Enjoy this moment guilt-free.",
-    "If you're stuck, change your physical posture. Stand up, stretch, or look out the window for 20 seconds.",
-    "Your energy level is not a flat line. It's normal that some days are easier than others. Adjust your pace.",
-    "You don't have to climb the whole mountain at once. Just focus on the next five minutes. The rest will follow.",
-    "A messy desk or room is not a sign of weakness, but a sign that your focus was simply elsewhere.",
-    "Transitions between different activities can be mentally exhausting. Give yourself two minutes of buffer time in between.",
-    "There is no 'correct' way to do things. If working while standing or breaking tasks down works for you, that's your way.",
-    "If a task feels huge, break it down into ridiculously small steps. So small it almost feels silly.",
-    "Don't confuse exhaustion or overstimulation with a lack of discipline. Your body is just signaling what it needs.",
-    "You are not lazy. Sometimes the sheer volume of choices paralyzes you. Just choose one random thing—anything.",
-    "Don't fall for the illusion of having to do everything at once. Multitasking is a myth. Breathe. Just this one thing.",
-    "It's okay to have unfinished projects. Each of them brought you joy or insight at the moment you were doing it.",
-    "Pay attention to your senses. Do you need a glass of water, fresh air, a weighted blanket, or just pure silence?",
-    "If a decision blocks you, flip a coin. Not to follow it, but to feel which outcome you are secretly hoping for.",
-    "Mistakes are simply data points. They show you what doesn't work and help you fine-tune your own path.",
-    "Your productivity does not define your worth as a human being. You are allowed to just exist and breathe.",
-    "Make the first step so tiny that the friction disappears. Just open the document. Just place one dish in the sink.",
-    "It's okay to use visual cues. If you need to see something to remember it, consciously place it in your field of vision.",
-    "Don't force yourself into structures built for others. Create tools that fit the way your brain naturally works.",
-    "Sometimes it helps to give a task playful rules. Make a quick game out of it or set a fun time limit.",
-    "If your head is racing, grab a sheet of paper and write everything down unfiltered. No one else ever has to read it.",
-    "It's completely natural to find routine tasks boring. Try pairing them with a pleasant stimulus like music or a podcast.",
-    "Allow yourself to start imperfectly. The first draft is allowed to be messy. Editing is much easier than creating.",
-    "If you feel overwhelmed, close your eyes for one minute and focus entirely on the feeling of your feet on the floor.",
-    "Your focus is like a muscle. It gets tired. When it fades, that's a biological signal for a brief recovery.",
-    "Don't let perfectionism paralyze you. A completed but imperfect project gets you further than a perfect one in your head.",
-    "It is absolutely legitimate to postpone tasks when your mental battery is empty. Recharge first instead of spinning.",
-    "Find allies or work in the gentle presence of others (body doubling). Just being in the same room can work wonders.",
-    "Take the pressure off. You don't have to prove you can do everything alone. Accepting help or using tools is smart.",
-    "Sometimes the hardest piece of work is letting go of the guilt over what you didn't accomplish today. Let it go.",
-    "Celebrate the invisible victories. Writing an uncomfortable email or starting despite a blockade is a huge feat.",
-    "If you lose your train of thought, take a quick break and return to your daily priority. Getting sidetracked is okay.",
-    "Your brain loves novelty. If an old method stops working, it's not a failure—just try a new format or medium.",
-    "Be aware of how much energy it takes to navigate a highly stimulating world. Be proud of your journey.",
-    "There is no obligation to finish everything you start. Some paths only exist to teach us a small lesson.",
-    "Inhale deeply. Exhale slowly. You are right here, in the present moment, and that is absolutely enough.",
-    "Give yourself permission to do things in your own unconventional way. If it works, it's right."
+    "Mistakes are simply data points. They show you what doesn't work and help you fine-tune your own path."
   ]
 };
 
@@ -159,43 +91,67 @@ function suggestInspirationQuote() {
   const list = INSPIRATION_SAYINGS[currentLang] || INSPIRATION_SAYINGS['de'] || INSPIRATION_SAYINGS['en'];
   const randomQuote = list[Math.floor(Math.random() * list.length)];
   const box = document.getElementById('inspiration-quote-box');
-  if (box) {
-    box.innerText = randomQuote;
-  }
+  if (box) box.innerText = randomQuote;
 }
 
 function suggestBoostActivity() {
   const list = BOOST_ACTIVITIES[currentLang] || BOOST_ACTIVITIES['en'];
   const randomActivity = list[Math.floor(Math.random() * list.length)];
   const box = document.getElementById('boost-activity-box');
-  if (box) {
-    box.innerText = randomActivity;
-  }
+  if (box) box.innerText = randomActivity;
 }
 
-// Direkte Klicks auf Sounds & Musik
 function handleSoundsMainClick() {
-  if (currentSoundType) {
-    stopAmbientSound(); 
-  } else {
-    playAmbientSound(lastSelectedSound); 
-  }
+  if (currentSoundType) stopAmbientSound(); 
+  else playAmbientSound(lastSelectedSound); 
 }
 
 function handleMusicMainClick() {
-  if (playlistTracks.length === 0) {
-    document.getElementById('sound-file-input').click();
-  } else {
-    togglePlaylistPlayback(); 
-  }
+  if (playlistTracks.length === 0) document.getElementById('sound-file-input').click();
+  else togglePlaylistPlayback(); 
 }
 
-// Globaler Modal-Schließer für einfache Aufrufe
 function closeHelperModal() {
   const m1 = document.getElementById('helper-pick-modal');
   const m2 = document.getElementById('helper-steps-modal');
   if (m1) m1.classList.add('hidden');
   if (m2) m2.classList.add('hidden');
+}
+
+const buttonSanitizerObserver = new MutationObserver(() => {
+  document.querySelectorAll('button, [role="button"], .task-complete-btn span, #helper-pick-box button, #zen-chill-view button span').forEach(el => {
+    const txt = el.innerText.trim();
+    if (txt === 'Erledigen' || txt === 'Als erledigt markieren' || txt === 'als erledigt markieren') {
+      el.innerText = 'Erledigt';
+    }
+  });
+});
+buttonSanitizerObserver.observe(document.body, { childList: true, subtree: true });
+
+let activeDancingSpecialButton = 'whatnow'; 
+let currentPremiumDanceIndex = 0;
+const premiumDances = ['premium-glow-btn', 'animate-premium-heartbeat', 'animate-premium-orbit', 'animate-premium-float', 'animate-premium-shimmer'];
+
+function rotatePremiumDance() {
+  const activeBtn = activeDancingSpecialButton === 'whatnow' 
+    ? document.getElementById('btn-whatnow-dance') 
+    : document.getElementById('btn-focus-mode');
+  
+  const inactiveBtn = activeDancingSpecialButton === 'whatnow'
+    ? document.getElementById('btn-focus-mode')
+    : document.getElementById('btn-whatnow-dance');
+  
+  if (inactiveBtn) {
+    premiumDances.forEach(c => inactiveBtn.classList.remove(c));
+    inactiveBtn.classList.add('bg-purple-500/10', 'border-purple-500/30');
+  }
+  
+  if (activeBtn) {
+    premiumDances.forEach(c => activeBtn.classList.remove(c));
+    activeBtn.classList.remove('bg-purple-500/10', 'border-purple-500/30');
+    currentPremiumDanceIndex = (currentPremiumDanceIndex + 1) % premiumDances.length;
+    activeBtn.classList.add(premiumDances[currentPremiumDanceIndex]);
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -213,15 +169,22 @@ document.addEventListener('DOMContentLoaded', () => {
     if (iconEl) iconEl.setAttribute('data-lucide', 'eye');
     if (textEl) textEl.innerText = t('minimal_mode');
   }
+
+  // Persistenz für den Faulpelz-Modus beim Laden prüfen
+  if (state.lazyMode === undefined) state.lazyMode = false;
+  if (state.lazyMode) {
+    document.body.classList.add('lazy-mode');
+  } else {
+    document.body.classList.remove('lazy-mode');
+  }
   
   updateDateAndStreak();
   renderApp();
   updateZenView();
   populateHelperTaskSelect();
-  suggestBoostActivity(); // Pre-populate den Energizer
-  suggestInspirationQuote(); // Pre-populate die Inspiration
+  suggestBoostActivity();
+  suggestInspirationQuote();
   
-  // Automatische Perioden-Berichte prüfen und herunterladen
   checkAndGenerateAutomaticReports();
 
   const btnHeader = document.getElementById('timer-toggle-btn');
@@ -229,17 +192,23 @@ document.addEventListener('DOMContentLoaded', () => {
     btnHeader.innerHTML = '<i data-lucide="play" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>';
   }
   
-  // GEÄNDERT: Globaler Button-Tanzparty Loop wird beim Laden gestartet
   startGlobalButtonDanceParty();
+  
+  rotatePremiumDance();
+  setInterval(rotatePremiumDance, 10000);
+  setInterval(() => {
+    activeDancingSpecialButton = activeDancingSpecialButton === 'whatnow' ? 'focus' : 'whatnow';
+    rotatePremiumDance();
+  }, 180000);
 
   if (typeof lucide !== 'undefined') lucide.createIcons();
 });
 
-// OPTIMIERT: Entfernt Tailwind bg-Klassen, damit styles.css das Hintergrundrendering ungestört übernimmt
 function setTheme(theme) {
   currentTheme = theme;
   document.body.className = `h-full antialiased flex flex-col font-sans select-none overflow-x-hidden text-[#f4f4f5] theme-${theme}`;
   if (isMinimalist) document.body.classList.add('minimalist');
+  if (state.lazyMode) document.body.classList.add('lazy-mode'); // Behalte die Filter-Klasse bei
   localStorage.setItem('flowPlannerTheme', theme);
 }
 
@@ -259,7 +228,6 @@ function setLanguage(lang) {
   if (flagEl) flagEl.innerText = flagMap[lang] || '🇬🇧';
   translateUI();
   
-  // Focus-Mode-Buttonübersetzung aktualisieren
   const textEl = document.getElementById('minimal-mode-btn-text');
   if (textEl) {
     textEl.innerText = isMinimalist ? t('standard_mode') : t('minimal_mode');
@@ -345,8 +313,13 @@ function toggleMinimalist() {
   showToast(isMinimalist ? t('minimal_mode') + " aktiv" : t('standard_mode') + " aktiv");
 }
 
-function toggleTerminForm(open) {
+function toggleTerminForm(open, prefilledDate) {
   isTerminFormOpen = open !== undefined ? open : !isTerminFormOpen;
+  if (prefilledDate) {
+    selectedCalendarDate = prefilledDate;
+  } else if (!isTerminFormOpen) {
+    selectedCalendarDate = null; 
+  }
   renderApp();
   if (isTerminFormOpen) {
     setTimeout(() => {
@@ -374,110 +347,48 @@ function handleAddTermin() {
   saveHistory();
   if (!state.items.termine) state.items.termine = [];
   
-  // Ort ("location") wird im Terminstatus gesichert
   state.items.termine.push({ task: title, date, time, location });
   isTerminFormOpen = false;
+  selectedCalendarDate = null; 
   saveState();
   renderApp();
   populateHelperTaskSelect();
   showToast(t('toast_appointment_saved'));
 }
 
-// Hilfsfunktion: Gibt ein Objekt mit dem passenden Symbol und der thematischen Textfarbe zurück
 function getTaskIconDetails(taskText, category = '') {
   if (!taskText) return { icon: 'check-circle', color: 'text-purple-400' };
-  
-  if (typeof TASK_ICONS !== 'undefined' && TASK_ICONS[taskText]) {
-    return { icon: TASK_ICONS[taskText], color: 'text-purple-300' };
-  }
-  
+  if (typeof TASK_ICONS !== 'undefined' && TASK_ICONS[taskText]) return { icon: TASK_ICONS[taskText], color: 'text-purple-300' };
   const text = String(taskText).toLowerCase();
-  
-  // 1. Gesundheit, Pflege, Selbstfürsorge
-  if (/medi|pill|medicin|tableta|vitam|pharmak|arzt|doctor|therap/.test(text)) {
-    return { icon: 'pill', color: 'text-rose-400' };
+  const rules = [
+    { rx: /medi|pill|medicin|tableta|vitam|pharmak|arzt|doctor|therap/, ic: 'pill', col: 'text-rose-400' },
+    { rx: /zahn|dient|tooth|dent|toothb|dond|brush/, ic: 'smile', col: 'text-cyan-400' },
+    { rx: /dusch|bath|shower|duch|ban|ntous|waschen|wash|hyg|gesicht/, ic: 'shower-head', col: 'text-sky-400' },
+    { rx: /haare|hair|pelo|kour|fris/, ic: 'scissors', col: 'text-pink-400' },
+    { rx: /nagel|nail|uñ|nych/, ic: 'sparkles', col: 'text-indigo-400' },
+    { rx: /trink|wat|agu|ner|glass|hydration/, ic: 'glass-water', col: 'text-blue-400' },
+    { rx: /bett|bed|cama|krevat/, ic: 'bed', col: 'text-amber-400' },
+    { rx: /aufräum|tidy|orden|takto|clean|putz|organi/, ic: 'package', col: 'text-yellow-500' },
+    { rx: /staub|dust|polv|xesk|fegen|sweep/, ic: 'feather', col: 'text-amber-300' },
+    { rx: /saugen|vacu|aspir|skoupi/, ic: 'tornado', col: 'text-cyan-500' },
+    { rx: /wisch|mop|freg|sfoug|droplets/, ic: 'droplets', col: 'text-sky-500' },
+    { rx: /spül|dish|plat|piat/, ic: 'utensils', col: 'text-emerald-400' },
+    { rx: /wasch|laund|colad|roux|clothes|wäsche/, ic: 'washing-machine', col: 'text-indigo-400' },
+    { rx: /aufhäng|hang|colg|aplon/, ic: 'shirt', col: 'text-violet-400' },
+    { rx: /klo|wc|toil|vater|lekan/, ic: 'toilet', col: 'text-teal-500' },
+    { rx: /müll|trash|basur|skoupid|waste/, ic: 'trash-2', col: 'text-rose-500' },
+    { rx: /pfand|bottle|envase|boukal|recycle/, ic: 'recycle', col: 'text-emerald-500' },
+    { rx: /koch|food|cook|comid|cena|recept|magir|essen|lunch|dinner|breakfast|mahlzeit/, ic: 'cooking-pot', col: 'text-orange-400' },
+    { rx: /einkauf|shop|compr|agor|supermarkt|store|kauf/, ic: 'shopping-cart', col: 'text-emerald-400' },
+    { rx: /arbeit|work|trabaj|doul|job|office|schreiben|mail|call|anruf/, ic: 'briefcase', col: 'text-amber-500' },
+    { rx: /les|book|libr|vivl|lernen|study/, ic: 'book-open', col: 'text-violet-400' },
+    { rx: /sport|gym|fit|train|gymn|workout|run|laufen|gehen|walk/, ic: 'activity', col: 'text-green-400' },
+    { rx: /paus|rest|desc|paus|relax|chill|medit|mindful/, ic: 'moon', col: 'text-indigo-300' },
+    { rx: /luft|wind|vent|aer|lüften|breath/, ic: 'wind', col: 'text-cyan-300' }
+  ];
+  for (const r of rules) {
+    if (r.rx.test(text)) return { icon: r.ic, color: r.col };
   }
-  if (/zahn|dient|tooth|dent|toothb|dond|brush/.test(text)) {
-    return { icon: 'smile', color: 'text-cyan-400' };
-  }
-  if (/dusch|bath|shower|duch|ban|ntous|waschen|wash|hyg|gesicht/.test(text)) {
-    return { icon: 'shower-head', color: 'text-sky-400' };
-  }
-  if (/haare|hair|pelo|kour|fris/.test(text)) {
-    return { icon: 'scissors', color: 'text-pink-400' };
-  }
-  if (/nagel|nail|uñ|nych/.test(text)) {
-    return { icon: 'sparkles', color: 'text-indigo-400' };
-  }
-  if (/trink|wat|agu|ner|glass|hydration/.test(text)) {
-    return { icon: 'glass-water', color: 'text-blue-400' };
-  }
-  
-  // 2. Haushalt, Reinigung, Organisation
-  if (/bett|bed|cama|krevat/.test(text)) {
-    return { icon: 'bed', color: 'text-amber-400' };
-  }
-  if (/aufräum|tidy|orden|takto|clean|putz|organi/.test(text)) {
-    return { icon: 'package', color: 'text-yellow-500' };
-  }
-  if (/staub|dust|polv|xesk|fegen|sweep/.test(text)) {
-    return { icon: 'feather', color: 'text-amber-300' };
-  }
-  if (/saugen|vacu|aspir|skoupi/.test(text)) {
-    return { icon: 'tornado', color: 'text-cyan-500' };
-  }
-  if (/wisch|mop|freg|sfoug|droplets/.test(text)) {
-    return { icon: 'droplets', color: 'text-sky-500' };
-  }
-  if (/spül|dish|plat|piat/.test(text)) {
-    return { icon: 'utensils', color: 'text-emerald-400' };
-  }
-  if (/wasch|laund|colad|roux|clothes|wäsche/.test(text)) {
-    return { icon: 'washing-machine', color: 'text-indigo-400' };
-  }
-  if (/aufhäng|hang|colg|aplon/.test(text)) {
-    return { icon: 'shirt', color: 'text-violet-400' };
-  }
-  if (/klo|wc|toil|vater|lekan/.test(text)) {
-    return { icon: 'toilet', color: 'text-teal-500' };
-  }
-  if (/müll|trash|basur|skoupid|waste/.test(text)) {
-    return { icon: 'trash-2', color: 'text-rose-500' };
-  }
-  if (/pfand|bottle|envase|boukal|recycle/.test(text)) {
-    return { icon: 'recycle', color: 'text-emerald-500' };
-  }
-  
-  // 3. Ernährung, Kochen
-  if (/koch|food|cook|comid|cena|recept|magir|essen|lunch|dinner|breakfast|mahlzeit/.test(text)) {
-    return { icon: 'cooking-pot', color: 'text-orange-400' };
-  }
-  
-  // 4. Einkaufen, Besorgungen
-  if (/einkauf|shop|compr|agor|supermarkt|store|kauf/.test(text)) {
-    return { icon: 'shopping-cart', color: 'text-emerald-400' };
-  }
-  
-  // 5. Arbeit, Studium, Produktivität
-  if (/arbeit|work|trabaj|doul|job|office|schreiben|mail|call|anruf/.test(text)) {
-    return { icon: 'briefcase', color: 'text-amber-500' };
-  }
-  if (/les|book|libr|vivl|lernen|study/.test(text)) {
-    return { icon: 'book-open', color: 'text-violet-400' };
-  }
-  
-  // 6. Fitness, Freizeit, Entspannung
-  if (/sport|gym|fit|train|gymn|workout|run|laufen|gehen|walk/.test(text)) {
-    return { icon: 'activity', color: 'text-green-400' };
-  }
-  if (/paus|rest|desc|paus|relax|chill|medit|mindful/.test(text)) {
-    return { icon: 'moon', color: 'text-indigo-300' };
-  }
-  if (/luft|wind|vent|aer|lüften|breath/.test(text)) {
-    return { icon: 'wind', color: 'text-cyan-300' };
-  }
-  
-  // Rückfallwert basierend auf Spalten-Kategorie
   const defaults = {
     daily: { icon: 'sun', color: 'text-amber-400' },
     weekly: { icon: 'calendar-days', color: 'text-purple-400' },
@@ -487,14 +398,34 @@ function getTaskIconDetails(taskText, category = '') {
     occasionally: { icon: 'calendar-range', color: 'text-pink-400' },
     notes: { icon: 'sticky-note', color: 'text-yellow-400' }
   };
-  
-  const d = defaults[category] || { icon: 'check-circle', color: 'text-purple-400' };
-  return { icon: d.icon, color: d.color };
+  return defaults[category] || { icon: 'check-circle', color: 'text-purple-400' };
 }
 
-// Abwärtskompatibler Wrapper zur Rückgabe des reinen Icon-Namens
 function getTaskIcon(taskText, category = '') {
   return getTaskIconDetails(taskText, category).icon;
+}
+
+// NEU: Logik für den Faulpelz-Modus (Aktivierung und persistenter Boardfilter)
+function toggleLazyMode() {
+  if (state.lazyMode === undefined) state.lazyMode = false;
+  state.lazyMode = !state.lazyMode;
+  saveState();
+  
+  const body = document.body;
+  
+  if (state.lazyMode) {
+    body.classList.add('lazy-mode');
+    // Wechselt automatisch auf das gemütliche Cozy-Thema bei Erschöpfung
+    setTheme('cozy'); 
+    showToast(currentLang === 'de' ? "Faulpelz-Modus aktiv: Nur das Nötigste zählt heute! 🦥" : "Lazy Mode active: Just the essentials today! 🦥");
+  } else {
+    body.classList.remove('lazy-mode');
+    setTheme('aurora'); // Zurück zum Mystical-Standard
+    showToast(currentLang === 'de' ? "Standard-Modus wieder aktiv 🔋" : "Standard Mode active 🔋");
+  }
+  
+  renderApp();
+  updateZenView();
 }
 
 function renderApp() {
@@ -502,8 +433,16 @@ function renderApp() {
   if (!main) return;
   main.innerHTML = '';
   const todayISO = new Date().toISOString().split('T')[0];
+
+  // Absicherung der Initialisierung
+  if (state.lazyMode === undefined) state.lazyMode = false;
   
   categoriesOrder.forEach(([id, iconKey]) => {
+    // VERBESSERUNG: Spalten-Ausblendung bei aktivem Faulpelz-Modus (Zeigt nur Haushalt/Täglich & Erledigt)
+    if (state.lazyMode && id !== 'daily' && id !== 'done') {
+      return; 
+    }
+
     const isDone = id === 'done';
     const isNotes = id === 'notes';
     const isTermine = id === 'termine';
@@ -520,9 +459,7 @@ function renderApp() {
     
     article.draggable = true;
     article.ondragstart = (e) => {
-      if (draggedItemInfo) {
-        return;
-      }
+      if (draggedItemInfo) return;
       e.dataTransfer.setData('text/column', id);
       e.dataTransfer.effectAllowed = 'move';
       draggedColumnId = id;
@@ -638,7 +575,6 @@ function renderApp() {
         
         itemDiv.className = `group relative w-full min-h-[44px] flex items-center justify-between p-2.5 border-0 border-l-[4px] ${isToday ? 'border-amber-400 bg-amber-500/10' : 'border-[var(--accent)] bg-white/[0.03]'} hover:bg-[rgba(255,255,255,0.02)] hover:scale-[1.02] text-gray-300 font-medium leading-tight transition duration-300 rounded-lg`;
         
-        // Jedes Element erhält basierend auf seinem Index eine andere Hover-Farbe
         const pair = HOVER_COLOR_PAIRS[(originalIndex + 12) % HOVER_COLOR_PAIRS.length];
 
         itemDiv.innerHTML = `
@@ -682,6 +618,8 @@ function renderApp() {
         const saveT = t('appointment_form_save_btn');
         const cancelT = t('appointment_form_cancel_btn');
         
+        const dateValue = selectedCalendarDate || todayISO;
+        
         formDiv.innerHTML = `
           <div class="flex items-center justify-between text-xs font-bold text-amber-300">
             <span class="flex items-center gap-1.5"><i data-lucide="calendar" class="w-3.5 h-3.5"></i> ${formT}</span>
@@ -690,7 +628,7 @@ function renderApp() {
           <input type="text" id="add-termin-title" placeholder="${nameT}" class="w-full p-2 bg-black/60 border border-white/15 rounded-lg text-xs text-white outline-none focus:border-[var(--accent)] font-semibold placeholder:text-gray-500 mb-2" title="Terminname eingeben" />
           <input type="text" id="add-termin-location" placeholder="Ort (z.B. Zoom, Büro, Park)" class="w-full p-2 bg-black/60 border border-white/15 rounded-lg text-xs text-white outline-none focus:border-[var(--accent)] font-semibold placeholder:text-gray-500 mb-2" title="Ort des Termins eingeben (optional)" />
           <div class="grid grid-cols-2 gap-2 mb-2">
-            <div><label class="text-[10px] text-gray-400 mb-0.5 block font-medium">${dateT}</label><input type="date" id="add-termin-date" value="${todayISO}" class="w-full p-1.5 bg-black/60 border border-white/15 rounded-lg text-xs text-gray-200 outline-none focus:border-[var(--accent)] cursor-pointer" title="Termindatum festlegen" /></div>
+            <div><label class="text-[10px] text-gray-400 mb-0.5 block font-medium">${dateT}</label><input type="date" id="add-termin-date" value="${dateValue}" class="w-full p-1.5 bg-black/60 border border-white/15 rounded-lg text-xs text-gray-200 outline-none focus:border-[var(--accent)] cursor-pointer" title="Termindatum festlegen" /></div>
             <div><label class="text-[10px] text-gray-400 mb-0.5 block font-medium">${timeT}</label><input type="time" id="add-termin-time" value="10:00" class="w-full p-1.5 bg-black/60 border border-white/15 rounded-lg text-xs text-gray-200 outline-none focus:border-[var(--accent)] cursor-pointer" title="Terminuhrzeit festlegen" /></div>
           </div>
           <div class="flex items-center gap-2 mt-1">
@@ -720,10 +658,16 @@ function renderApp() {
         itemDiv.ondragover = (e) => handleDragOver(e);
         itemDiv.ondrop = (e) => handleItemDrop(e, id, index);
         
-        itemDiv.className = `group relative w-full min-h-[42px] flex items-center justify-between p-2 border-0 border-l-[4px] ${isTaskActive ? 'border-amber-400 bg-amber-500/15 shadow-[0_0_15px_rgba(251,191,36,0.2)]' : 'border-[var(--accent)] bg-white/[0.03]'} hover:bg-[rgba(255,255,255,0.02)] text-gray-300 font-medium leading-tight transition duration-200 rounded-lg`;
+        // ZUFÄLLIGE SUBTILE TASK-ANIMATION
+        const randomVal = Math.random();
+        let subtleAnimClass = "";
+        if (randomVal < 0.1) subtleAnimClass = "task-anim-float";
+        else if (randomVal < 0.2) subtleAnimClass = "task-anim-shift";
+        else if (randomVal < 0.3) subtleAnimClass = "task-anim-pulse";
+        
+        itemDiv.className = `group relative w-full min-h-[42px] flex items-center justify-between p-2 border-0 border-l-[4px] ${isTaskActive ? 'border-amber-400 bg-amber-500/15 shadow-[0_0_15px_rgba(251,191,36,0.2)]' : 'border-[var(--accent)] bg-white/[0.03]'} hover:bg-[rgba(255,255,255,0.02)] text-gray-300 font-medium leading-tight transition duration-200 rounded-lg ${subtleAnimClass}`;
         const safeTaskEscaped = taskText.replace(/'/g, "\\'").replace(/"/g, '&quot;');
         
-        // Jedes Element erhält basierend auf seinem Index und Kategorie-Name eine andere Hover-Farbe
         const pair = HOVER_COLOR_PAIRS[(index + id.charCodeAt(0)) % HOVER_COLOR_PAIRS.length];
 
         itemDiv.innerHTML = `
@@ -759,45 +703,110 @@ function renderApp() {
     main.appendChild(article);
   });
   
-  // Synchronisiere das neue Einkauf-Popup mit den aktuellen Daten (skipLucide = true)
   updateShoppingListPopup(true);
   
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
+// VERBESSERUNG: Langsame, physikalische Flug-Animation von der Ursprungsspalte in die "Erledigt"-Spalte
+function animateTaskToDone(taskEl, targetSelector, onComplete) {
+  const rect = taskEl.getBoundingClientRect();
+  const targetCol = document.querySelector(targetSelector);
+  
+  if (!targetCol) {
+    onComplete();
+    return;
+  }
+  
+  const targetRect = targetCol.getBoundingClientRect();
+
+  // Erzeuge ein fliegendes Geister-Element
+  const ghost = taskEl.cloneNode(true);
+  ghost.style.position = 'fixed';
+  ghost.style.left = `${rect.left}px`;
+  ghost.style.top = `${rect.top}px`;
+  ghost.style.width = `${rect.width}px`;
+  ghost.style.height = `${rect.height}px`;
+  ghost.style.zIndex = '999999';
+  ghost.style.pointerEvents = 'none';
+  
+  // VERBESSERUNG: Langsamerer, majestätischerer Flug (1.6 Sekunden)
+  ghost.style.transition = 'all 1.6s cubic-bezier(0.25, 1, 0.5, 1)'; 
+  ghost.style.opacity = '1';
+  ghost.style.boxShadow = '0 12px 30px rgba(139, 92, 246, 0.4)';
+
+  document.body.appendChild(ghost);
+
+  // Verberge das Original-Element sofort für den sauberen Fluss
+  taskEl.style.opacity = '0';
+  taskEl.style.pointerEvents = 'none';
+
+  // Layout-Reflow triggern
+  ghost.offsetWidth;
+
+  // Berechne Zielkoordinaten (Zentriert in der Done-Liste)
+  const destX = targetRect.left + (targetRect.width - rect.width) / 2;
+  const destY = targetRect.top + 20;
+
+  // Bewegung und Verformung einleiten
+  ghost.style.left = `${destX}px`;
+  ghost.style.top = `${destY}px`;
+  ghost.style.transform = 'scale(0.7) rotate(6deg)'; 
+  ghost.style.opacity = '0.2';
+
+  // Nach der Flugdauer den Klon entfernen und die Logik ausführen
+  setTimeout(() => {
+    ghost.remove();
+    onComplete();
+  }, 1600);
+}
+
 function handleCompleteTask(category, index, event) {
   if (event) event.stopPropagation();
-  const rawTask = state.items[category][index];
-  if (!rawTask) return;
-  saveHistory();
-  state.items[category].splice(index, 1);
-  const now = new Date();
-  const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  const todayStr = now.toISOString().split('T')[0];
-  let taskText = typeof rawTask === 'object' ? rawTask.task : rawTask;
-  if (typeof rawTask === 'object' && rawTask.date) {
-    let locInfo = rawTask.location ? ` @ ${rawTask.location}` : '';
-    taskText += ` (${formatTerminDate(rawTask.date, rawTask.time)}${locInfo})`;
+  
+  // Versuche, das physische Spalten-Element zu ermitteln
+  let taskEl = null;
+  if (event && event.currentTarget) {
+    taskEl = event.currentTarget.closest('div[draggable="true"]');
   }
-  state.done.push({ task: taskText, origin: category, date: todayStr, time: timeStr });
-  state.streak = (state.streak || 0) + 1;
-  if (state.completedSteps) delete state.completedSteps[taskText];
-  
-  // GEÄNDERT: Genau auf die 12 neuen Themen abgestimmt (sage anstelle von ocean, terracotta anstelle von sahara)
-  const themes = ['sage', 'aurora', 'cozy', 'forest', 'architect', 'mono-hand', 'editorial', 'glacier', 'charcoal', 'executive', 'terracotta', 'carbon'];
-  let nextTheme;
-  do {
-    nextTheme = themes[Math.floor(Math.random() * themes.length)];
-  } while (nextTheme === currentTheme);
-  setTheme(nextTheme);
 
-  saveState(); 
-  
-  showPraise(); 
-  
-  renderApp(); 
-  updateZenView(); 
-  populateHelperTaskSelect();
+  const onComplete = () => {
+    const rawTask = state.items[category][index];
+    if (!rawTask) return;
+    saveHistory();
+    state.items[category].splice(index, 1);
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const todayStr = now.toISOString().split('T')[0];
+    let taskText = typeof rawTask === 'object' ? rawTask.task : rawTask;
+    if (typeof rawTask === 'object' && rawTask.date) {
+      let locInfo = rawTask.location ? ` @ ${rawTask.location}` : '';
+      taskText += ` (${formatTerminDate(rawTask.date, rawTask.time)}${locInfo})`;
+    }
+    state.done.push({ task: taskText, origin: category, date: todayStr, time: timeStr });
+    state.streak = (state.streak || 0) + 1;
+    if (state.completedSteps) delete state.completedSteps[taskText];
+    
+    const themes = ['sage', 'aurora', 'cozy', 'forest', 'architect', 'mono-hand', 'editorial', 'glacier', 'charcoal', 'executive', 'terracotta', 'carbon'];
+    let nextTheme;
+    do {
+      nextTheme = themes[Math.floor(Math.random() * themes.length)];
+    } while (nextTheme === currentTheme);
+    setTheme(nextTheme);
+
+    saveState(); 
+    showPraise(); 
+    renderApp(); 
+    updateZenView(); 
+    populateHelperTaskSelect();
+  };
+
+  // Wenn das Element vorhanden ist, fliegt es langsam; sonst bricht es sofort ab
+  if (taskEl) {
+    animateTaskToDone(taskEl, '#list-done', onComplete);
+  } else {
+    onComplete();
+  }
 }
 
 function deleteTask(category, index, event) {
@@ -829,7 +838,6 @@ function handleDragStart(e, category, index) {
   e.dataTransfer.effectAllowed = 'move';
 }
 
-// Drag & Drop
 function handleDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
 
 function handleItemDrop(e, targetCategory, targetIndex) {
@@ -858,13 +866,12 @@ function handleDrop(e, targetCategory) {
   draggedItemInfo = null; saveState(); renderApp(); populateHelperTaskSelect();
 }
 
-// OPTIMIERTES HOVER PANEL SYSTEM GEGEN LAYOUT-THRASHING
 let currentlyOpenPanel = null;
 let hoverPanelTimeout = null;
 
 function showPanelHover(panelName) {
   clearTimeout(hoverPanelTimeout);
-  if (currentlyOpenPanel === panelName) return; // Doppelte Event-Ketten ignorieren
+  if (currentlyOpenPanel === panelName) return; 
   
   currentlyOpenPanel = panelName;
   ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'sync', 'theme', 'calendar-dropdown', 'inspiration', 'shopping'].forEach(p => {
@@ -1073,21 +1080,12 @@ function updateReportPanel() {
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
-// ECHTES FEEDBACK-SENDEN PER MAIL AN JANNIS
 function submitFeedback() {
   const text = document.getElementById('feedback-text').value;
   if (text.trim()) {
-    // Erzeugt einen validen E-Mail-Entwurf an Jannis
     const mailtoUrl = `mailto:jmonke@gmail.com?subject=Flow App Feedback&body=${encodeURIComponent(text)}`;
     window.location.href = mailtoUrl;
-    
-    showToast({ 
-      de: 'E-Mail-Entwurf geöffnet! ❤️', 
-      en: 'Email draft opened! ❤️',
-      es: '¡Borrador de email abierto! ❤️',
-      el: 'Το προσχέδιο email áνοιξε! ❤️'
-    }[currentLang] || 'Email draft opened! ❤️');
-    
+    showToast({ de: 'E-Mail-Entwurf geöffnet! ❤️', en: 'Email draft opened! ❤️', es: '¡Borrador de email abierto! ❤️', el: 'Το προσχέδιο email áνοιξε! ❤️' }[currentLang] || 'Email draft opened! ❤️');
     document.getElementById('feedback-text').value = ''; 
     togglePanel('feedback');
   }
@@ -1125,10 +1123,13 @@ function zenCompleteCurrentTask() {
   const { cat, task } = currentZenTaskInfo;
   const idx = (state.items[cat] || []).findIndex(t => (typeof t === 'object' ? t.task : t) === task);
   if (idx !== -1) handleCompleteTask(cat, idx);
+  
+  if (typeof stopTimer === 'function') {
+    stopTimer();
+  }
   updateZenView();
 }
 
-// TASTATURSTEUERUNG MIT AKTIVEM ESCAPE-MODAL-SCHLIESSER & FOCUS-MODE EXIT LOGIK
 document.addEventListener('keydown', (e) => {
   if (e.key === 'z' || e.key === 'Z') {
     if (!['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
@@ -1149,7 +1150,6 @@ document.addEventListener('keydown', (e) => {
     const isSafeSpaceModalOpen = safeSpaceModal && !safeSpaceModal.classList.contains('hidden');
     const isScriptingModalOpen = scriptingModal && !scriptingModal.classList.contains('hidden');
     
-    // Zuerst prüfen, ob offene Helper-Fenster oder ein aktiver Wecker geschlossen werden müssen
     if (isPickModalOpen || isStepsModalOpen || isCompassModalOpen || isSafeSpaceModalOpen || isScriptingModalOpen || ringingModal) {
       closeHelperModal();
       closeCompassModal();
@@ -1157,11 +1157,9 @@ document.addEventListener('keydown', (e) => {
       closeScriptingModal();
       if (typeof stopPleasantRinging === 'function') stopPleasantRinging();
     } else if (isMinimalist) {
-      // Wenn kein Modal offen ist, aber der Minimalist/Focus-Modus aktiv ist: Modus beenden!
       toggleMinimalist();
     }
     
-    // Schließe alle eventuell offenen Header- & Footer-Dropdowns
     ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'sync', 'theme', 'calendar-dropdown', 'inspiration', 'shopping'].forEach(p => {
       const el = document.getElementById(`panel-${p}`); if (el) el.classList.add('hidden');
     });
@@ -1191,23 +1189,17 @@ function exportReportAsImage() {
   });
 }
 
-// =========================================================================
-// HILFSFUNKTIONEN FÜR DIE INTELLIGENTE EINKAUFSLISTE IM POPUP-DOCK
-// =========================================================================
-
+// VERBESSERUNG: Extrem vereinfachte Einkaufslisten-Aktualisierung (ohne lästige Rechenoperationen & separate Spalten)
 function updateShoppingListPopup(skipLucide = false) {
   const rowsContainer = document.getElementById('shopping-list-rows');
-  const sumEl = document.getElementById('shop-panel-sum');
   const badgeEl = document.getElementById('shop-badge-count');
   
   if (!rowsContainer) return;
   rowsContainer.innerHTML = '';
   
   const list = state.shoppingList || [];
-  const totalCost = list.reduce((sum, item) => sum + (item.qty * item.price), 0);
   
-  if (sumEl) sumEl.innerText = `${totalCost.toFixed(2)} €`;
-  
+  // Badge-Zähler aktualisieren
   if (badgeEl) {
     if (list.length > 0) {
       badgeEl.classList.remove('hidden');
@@ -1224,17 +1216,14 @@ function updateShoppingListPopup(skipLucide = false) {
       const div = document.createElement('div');
       div.className = 'flex items-center justify-between gap-1.5 py-1.5 border-b border-white/[0.03] text-gray-300';
       div.innerHTML = `
-        <input type="checkbox" onclick="handleToggleShoppingItem(${idx})" class="w-3.5 h-3.5 rounded bg-black border-white/10 text-emerald-500 accent-emerald-500 cursor-pointer shrink-0" title="Diesen Artikel als eingekauft markieren und ins Protokoll verschieben" />
-        <span class="truncate font-semibold flex-1 pl-1 text-[11px] text-white" title="${item.name}">${item.name}</span>
-        <span class="font-mono text-gray-400 font-bold shrink-0">${item.qty}x</span>
-        <span class="font-mono text-gray-300 font-bold shrink-0 w-12 text-right">${(item.qty * item.price).toFixed(2)} €</span>
-        <button onclick="handleDeleteShoppingItem(${idx})" class="p-1 text-gray-500 hover:text-red-400 rounded transition shrink-0 cursor-pointer" title="Diesen Artikel unwiderruflich aus der Liste entfernen"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
+        <input type="checkbox" onclick="handleToggleShoppingItem(${idx})" class="w-4 h-4 rounded bg-black border-white/10 text-emerald-500 accent-emerald-500 cursor-pointer shrink-0" title="Artikel abhaken" />
+        <span class="truncate font-semibold flex-1 pl-1.5 text-xs text-white" title="${item.name}">${item.name}</span>
+        <button onclick="handleDeleteShoppingItem(${idx})" class="p-1 text-gray-500 hover:text-red-400 rounded transition shrink-0 cursor-pointer" title="Löschen"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
       `;
       rowsContainer.appendChild(div);
     });
   }
   
-  // Einkaufsprotokoll bestücken falls ausgeklappt
   const historyBox = document.getElementById('shop-history-box');
   const historyList = document.getElementById('shop-history-list');
   const isHistoryVisible = localStorage.getItem('flow_shop_history_visible') === 'true';
@@ -1254,7 +1243,7 @@ function updateShoppingListPopup(skipLucide = false) {
         const hDiv = document.createElement('div');
         hDiv.className = 'flex justify-between items-center py-0.5 border-b border-white/[0.02] text-gray-400 text-[9px]';
         hDiv.innerHTML = `
-          <span class="truncate max-w-[120px] line-through decoration-emerald-500/40">${hItem.name} (${hItem.qty}x)</span>
+          <span class="truncate max-w-[150px] line-through decoration-emerald-500/40">${hItem.name}</span>
           <span class="font-mono text-[8px] text-gray-500 shrink-0">${hItem.date}</span>
         `;
         historyList.appendChild(hDiv);
@@ -1262,7 +1251,6 @@ function updateShoppingListPopup(skipLucide = false) {
     }
   }
   
-  // Intelligente Spartipps-Generierung
   const tipBox = document.getElementById('panel-shopping');
   if (tipBox) {
     generateSmartShoppingTips(tipBox);
@@ -1273,29 +1261,22 @@ function updateShoppingListPopup(skipLucide = false) {
   }
 }
 
+// VERBESSERUNG: Extrem vereinfachtes Hinzufügen (Nur noch ein Textfeld)
 function handleAddShoppingItem() {
   const nameEl = document.getElementById('shop-add-name');
-  const qtyEl = document.getElementById('shop-add-qty');
-  const priceEl = document.getElementById('shop-add-price');
-  
   const name = nameEl ? nameEl.value.trim() : '';
-  const qty = qtyEl ? parseInt(qtyEl.value) || 1 : 1;
-  const price = priceEl ? parseFloat(priceEl.value) || 0.00 : 0.00;
   
   if (!name) {
-    showToast(currentLang === 'de' ? "Artikelnr. angeben!" : "Please specify item name!");
+    showToast(currentLang === 'de' ? "Artikelnamen angeben!" : "Please specify item name!");
     return;
   }
   
   saveHistory();
   if (!state.shoppingList) state.shoppingList = [];
-  state.shoppingList.push({ name, qty, price });
+  state.shoppingList.push({ name });
   saveState();
   
-  // Reset Input
   if (nameEl) nameEl.value = '';
-  if (qtyEl) qtyEl.value = '1';
-  if (priceEl) priceEl.value = '';
   
   renderApp();
   showToast(currentLang === 'de' ? `"${name}" hinzugefügt!` : `Added "${name}"!`);
@@ -1310,6 +1291,7 @@ function handleDeleteShoppingItem(index) {
   showToast(currentLang === 'de' ? `"${removed.name}" gelöscht.` : `Deleted "${removed.name}".`);
 }
 
+// VERBESSERUNG: Extrem vereinfachtes Abhaken
 function handleToggleShoppingItem(index) {
   saveHistory();
   const item = state.shoppingList[index];
@@ -1317,13 +1299,11 @@ function handleToggleShoppingItem(index) {
   
   if (!state.shoppingHistory) state.shoppingHistory = [];
   const todayStr = new Date().toLocaleDateString([], { month: '2-digit', day: '2-digit' });
-  state.shoppingHistory.push({ name: item.name, qty: item.qty, price: item.price, date: todayStr });
+  state.shoppingHistory.push({ name: item.name, date: todayStr });
   
   saveState();
-  
-  if (typeof playProceduralSound === 'function') playProceduralSound(3); // bubbly POP sound
+  if (typeof playProceduralSound === 'function') playProceduralSound(3); 
   showToast(currentLang === 'de' ? `"${item.name}" eingekauft! ✅` : `Bought "${item.name}"! ✅`);
-  
   renderApp();
 }
 
@@ -1409,10 +1389,6 @@ function generateSmartShoppingTips(container) {
   
   tipTextEl.innerText = tip;
 }
-
-// =========================================================================
-// AUTOMATISCHES BERICHTS-SYSTEM & MANUELLE EXPORT-LOGIK
-// =========================================================================
 
 function getYearAndWeek(d) {
   const target = new Date(d.valueOf());
@@ -1584,7 +1560,6 @@ function checkAndGenerateAutomaticReports() {
   const todayISO = now.toISOString().split('T')[0];
   const lang = currentLang || 'de';
 
-  // 1. Täglicher Berichts-Export bei Tagesübergang
   if (state.lastDate && state.lastDate !== todayISO) {
     const prevDate = state.lastDate;
     const { reportText, filename = "" } = generateReportContent('daily', prevDate);
@@ -1604,7 +1579,6 @@ function checkAndGenerateAutomaticReports() {
     saveState();
   }
 
-  // 2. Wöchentlicher Berichts-Export bei Wochenwechsel
   const currentWeekStr = getYearAndWeek(now);
   const lastWeeklyReport = localStorage.getItem('flow_last_weekly_report_week');
   if (lastWeeklyReport && lastWeeklyReport !== currentWeekStr) {
@@ -1623,7 +1597,6 @@ function checkAndGenerateAutomaticReports() {
   }
   localStorage.setItem('flow_last_weekly_report_week', currentWeekStr);
 
-  // 3. Monatlicher Berichts-Export bei Monatswechsel
   const currentMonthStr = todayISO.substring(0, 7);
   const lastMonthlyReport = localStorage.getItem('flow_last_monthly_report_month');
   if (lastMonthlyReport && lastMonthlyReport !== currentMonthStr) {
@@ -1655,7 +1628,6 @@ let scaleArguments = [];
 let spoonOptions = [];
 
 function openCompassModal() {
-  // Zurücksetzen der Ansicht auf Schritt 1
   document.getElementById('compass-query-input').value = '';
   document.getElementById('coin-opt-a').value = '';
   document.getElementById('coin-opt-b').value = '';
@@ -1677,7 +1649,6 @@ function openCompassModal() {
 
   document.getElementById('compass-step-tools').classList.add('hidden');
   document.getElementById('compass-step-entry').classList.remove('hidden');
-
   document.getElementById('helper-compass-modal').classList.remove('hidden');
   
   if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -1701,11 +1672,9 @@ function submitCompassQuery() {
   currentCompassQuery = query;
   document.getElementById('compass-active-dilemma-label').innerText = query;
   
-  // Smarte Weichenstellung & automatisches Splitten bei „oder“
   let recommendedTab = "coin";
   const lowerQuery = query.toLowerCase();
   
-  // "oder" Splitting (Option A und B automatisch befüllen)
   const deSplit = query.split(/\s+oder\s+/i);
   const enSplit = query.split(/\s+or\s+/i);
   const activeSplit = deSplit.length > 1 ? deSplit : (enSplit.length > 1 ? enSplit : []);
@@ -1715,7 +1684,6 @@ function submitCompassQuery() {
     document.getElementById('coin-opt-b').value = activeSplit[1].replace(/(\?)$/, "").trim();
     recommendedTab = "coin";
   } else {
-    // Keyword-Kategorisierung
     if (/(heute|jetzt|müde|sport|kochen|aufräumen|löffel|spoon|energy|now)/i.test(lowerQuery)) {
       recommendedTab = "spoon";
     } else if (/(job|kündigen|umziehen|kaufen|verkaufen|zukunft|geld|career|quit|move|buy|financial)/i.test(lowerQuery)) {
@@ -1727,7 +1695,6 @@ function submitCompassQuery() {
     }
   }
 
-  // Setze dynamische Labels für die 10-10-10 Fragerunde
   document.getElementById('lbl-ten-mins').innerText = currentLang === 'de'
     ? `Wie fühle ich mich in 10 Minuten nach der Entscheidung für: "${query}"?`
     : `How will I feel in 10 minutes after deciding: "${query}"?`;
@@ -1757,7 +1724,6 @@ function returnToCompassEntry() {
 function switchCompassTab(tabId) {
   activeCompassTab = tabId;
   
-  // Tabs umschalten
   ['coin', 'scale', 'spoon', 'ten', 'fear'].forEach(t => {
     const btn = document.getElementById(`tab-btn-${t}`);
     const pane = document.getElementById(`compass-pane-${t}`);
@@ -1799,7 +1765,7 @@ function triggerCoinToss() {
   finalEl.classList.add('hidden');
   vetoBtn.disabled = true;
 
-  if (typeof playProceduralSound === 'function') playProceduralSound(10); // spring bounce sound
+  if (typeof playProceduralSound === 'function') playProceduralSound(10); 
 
   setTimeout(() => {
     spinningEl.classList.add('hidden');
@@ -1809,14 +1775,12 @@ function triggerCoinToss() {
     coinLastPicked = pickedA ? optA : optB;
     coinLastOther = pickedA ? optB : optA;
     
-    // Backup Absicherung
     if (coinLastOther === undefined || coinLastOther === null || coinLastOther === pickedA) {
       coinLastOther = pickedA ? optB : optA;
     }
 
     document.getElementById('coin-toss-verdict').innerText = coinLastPicked;
     
-    // Countdown für Veto starten
     coinVetoTimeLeft = 10;
     vetoBtn.disabled = false;
     vetoBtn.className = "px-3 py-1 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/30 text-rose-300 text-[10px] font-bold rounded-lg transition cursor-pointer";
@@ -1851,12 +1815,8 @@ function triggerCoinVeto() {
   document.getElementById('coin-toss-verdict').innerText = coinLastOther;
   document.getElementById('coin-veto-countdown').innerText = "VETO EINGELEGT! 🛑";
   
-  // Zeige den Lerneffekt an
-  const deText = `Veto eingelegt! Du hast dich aktiv gegen den Zufall entschieden. Das beweist: Du wolltest insgeheim Option "${coinLastOther}"! Vertraue deinem Bauchgefühl.`;
-  const enText = `Veto submitted! You actively decided against random chance. This proves: You secretly wanted Option "${coinLastOther}" all along! Trust your gut.`;
-  
   showToast(currentLang === 'de' ? "Veto registriert!" : "Veto registered!");
-  if (typeof playProceduralSound === 'function') playProceduralSound(0); // success chord
+  if (typeof playProceduralSound === 'function') playProceduralSound(0); 
 }
 
 // --- TAB 2: WERTE-WAAGE LOGIK ---
@@ -2017,7 +1977,6 @@ function recalculateSpoonCheck() {
 
   const batteryVal = document.getElementById('spoon-battery-select').value;
   
-  // Energieranking: overwhelmed (4), high (3), med (2), low (1)
   const allowedMax = {
     high: 4,
     med: 2,
@@ -2074,7 +2033,7 @@ function saveTenPerspective() {
     return;
   }
 
-  if (typeof playProceduralSound === 'function') playProceduralSound(0); // success chord
+  if (typeof playProceduralSound === 'function') playProceduralSound(0); 
   showToast(currentLang === 'de' ? "10-10-10-Perspektive erfolgreich gesichert! 💾" : "10-10-10 perspective successfully saved! 💾");
 }
 
@@ -2088,7 +2047,7 @@ function saveFearSettingPerspective() {
     return;
   }
 
-  if (typeof playProceduralSound === 'function') playProceduralSound(0); // success chord
+  if (typeof playProceduralSound === 'function') playProceduralSound(0); 
   showToast(currentLang === 'de' ? "Angst-Analyse (Fear Setting) erfolgreich gesichert! 💾" : "Fear setting analysis successfully saved! 💾");
 }
 
@@ -2141,7 +2100,7 @@ function startSafeSpaceBreathingCycle() {
   const txt = document.getElementById('safespace-breath-text');
   if (!circle || !txt) return;
 
-  let step = 0; // 0: einatmen, 1: halten, 2: ausatmen
+  let step = 0; 
   
   const runStep = () => {
     if (step === 0) {
@@ -2183,7 +2142,7 @@ function toggleSafeSpaceNoise() {
     btn.innerText = currentLang === 'de' ? "Stop 🔇" : "Stop 🔇";
     btn.className = "px-3 py-1.5 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/30 text-rose-300 text-[10px] font-bold rounded-lg transition cursor-pointer";
     if (typeof playAmbientSound === 'function') {
-      playAmbientSound('rain', true); // prasselndes Regenrauschen
+      playAmbientSound('rain', true); 
     }
   } else {
     btn.innerText = currentLang === 'de' ? "Start 🔊" : "Start 🔊";
@@ -2215,18 +2174,22 @@ const groundingStepsText = {
   es: [
     "Encuentra 5 cosas a tu alrededor que puedas ver. Tómate tu tiempo.",
     "Encuentra 4 cosas a tu alrededor que puedas tocar/sentir físicamente (ej. tu silla o el suelo).",
-    "Concéntrate en 3 sonidos que puedas escuchar en este momento. Bloquea el resto.",
-    "Inhala profundamente e identifica 2 cosas que puedas oler (ej. café, ropa o aire fresco).",
+    "Concéntrate en 3 sonidos que puedas escuchar in diesem Moment. Blockiere den Rest.",
+    "Inhala profundamente e identifica 2 cosas que puedas oler (ej. café, aroma o aire fresco).",
     "Reconoce 1 cualidad, fortaleza o cosa hermosa sobre ti mismo."
   ],
   el: [
-    "Βρες 5 πράγματα γύρω σου που μπορείς να δεις. Πάρε τον χρόνο σου.",
+    "Βρες 5 πράγματα γύρω σου που μπορείς να δεις. Παρε τον χρόνο σου.",
     "Βρες 4 πράγματα γύρω σου που μπορείς να αγγίξεις/νιώσεις (π.χ. την καρέκλα ή το πάτωμα σου).",
-    "Εστίασε σε 3 ήχους που μπορείς να ακούσεις αυτή τη στιγμή. Απομόνωσε τα υπόλοιπα.",
+    "Εστίασε σε 3 ήχους που μπορείς να ακούσεις αυτή τη στιγμή. Απομονώστε τα υπόλοιπα.",
     "Είσπνευσε βαθιά και εντόπισε 2 πράγματα που μπορείς να μυρίσεις (π.χ. καφέ, ρούχα ή καθαρό αέρα).",
     "Αναγνώρισε 1 θετικό χαρακτηριστικό, δύναμη ή κάτι όμορφο στον εαυτό σου."
   ]
 };
+
+function groundingStepsText_get(currentLang) {
+  return groundingStepsText[currentLang] || groundingStepsText['en'];
+}
 
 function resetGroundingAnchor() {
   anchorCurrentStep = 1;
@@ -2242,14 +2205,13 @@ function nextAnchorStep() {
   const steps = groundingStepsText[currentLang] || groundingStepsText['de'] || groundingStepsText['en'];
   
   if (anchorCurrentStep > 5) {
-    // Übung erfolgreich beendet!
     document.getElementById('anchor-step-title').innerText = currentLang === 'de' ? "ÜBUNG BEENDET" : "EXERCISE FINISHED";
     document.getElementById('anchor-step-instruction').innerText = currentLang === 'de'
       ? "🎉 Wunderbar geerdet! Du bist wieder voll im Hier und Jetzt angekommen."
       : "🎉 Beautifully grounded! You are fully back in the present moment.";
     document.getElementById('anchor-progress-bar').style.width = "100%";
     document.getElementById('anchor-next-btn').classList.add('hidden');
-    if (typeof playProceduralSound === 'function') playProceduralSound(0); // success chord
+    if (typeof playProceduralSound === 'function') playProceduralSound(0); 
     return;
   }
 
@@ -2258,10 +2220,10 @@ function nextAnchorStep() {
     : `Step ${anchorCurrentStep} of 5`;
   document.getElementById('anchor-step-instruction').innerText = steps[anchorCurrentStep - 1];
   document.getElementById('anchor-progress-bar').style.width = `${anchorCurrentStep * 20}%`;
-  if (typeof playProceduralSound === 'function') playProceduralSound(3); // bubble pop sound
+  if (typeof playProceduralSound === 'function') playProceduralSound(3); 
 }
 
-// --- SOCIAL SCRIPTING MODAL LOGIK 📜 ---
+// --- SOCIAL SCRIPTING MODAL LOGIK ---
 
 function openScriptingModal() {
   document.getElementById('helper-scripting-modal').classList.remove('hidden');
@@ -2324,7 +2286,7 @@ function onScenarioSelectChange() {
       <div class="grid grid-cols-2 gap-2">
         <div>
           <label class="text-[9px] text-gray-500 font-bold block mb-1">Problem (z.B. Heizung kalt)</label>
-          <input type="text" id="field-handyman-issue" value="Wasserhahn tropft stark" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+          <input type="text" id="field-handyman-issue" value="Wasserhahn tropft stark" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none focus:border-indigo-500" />
         </div>
         <div>
           <label class="text-[9px] text-gray-500 font-bold block mb-1">Dringlichkeit</label>
@@ -2374,7 +2336,7 @@ function generateSocialScript() {
   textContainer.innerText = scriptText;
   document.getElementById('script-result-box').classList.remove('hidden');
   
-  if (typeof playProceduralSound === 'function') playProceduralSound(0); // success chord
+  if (typeof playProceduralSound === 'function') playProceduralSound(0); 
 }
 
 function copyGeneratedScript() {
@@ -2388,48 +2350,176 @@ function copyGeneratedScript() {
   });
 }
 
-// --- SENSORTANZPARTY FÜR BUTTONS (BEHOBEN) ---
+// --- DOCK-PRIORISIERUNG FÜR DIE TANZPARTY (EINE EINZIGE DEKLARATION) ---
 
-let currentlyDancingButton = null;
-let currentDanceClass = "";
+let currentlyDancingButtons = [];
+let activeDanceTimeouts = [];
 
 function startGlobalButtonDanceParty() {
   const triggerDance = () => {
     try {
-      // Tanz beim vorherigen Button beenden
-      if (currentlyDancingButton) {
-        currentlyDancingButton.classList.remove(currentDanceClass);
+      activeDanceTimeouts.forEach(clearTimeout);
+      activeDanceTimeouts = [];
+
+      currentlyDancingButtons.forEach(item => {
+        if (item.element) {
+          item.element.classList.remove(item.className);
+        }
+      });
+      currentlyDancingButtons = [];
+
+      const allVisibleButtons = Array.from(document.querySelectorAll('button:not(.modal-close-btn), [role="button"], .logo-dance'))
+                                     .filter(btn => btn.offsetWidth > 0 && btn.offsetHeight > 0);
+      if (allVisibleButtons.length === 0) return;
+
+      const dockContainer = document.querySelector('.fixed.bottom-6');
+      
+      const dockButtons = allVisibleButtons.filter(btn => dockContainer && dockContainer.contains(btn));
+      const otherButtons = allVisibleButtons.filter(btn => !dockContainer || !dockContainer.contains(btn));
+
+      const selectedButtons = [];
+
+      if (dockButtons.length > 0) {
+        const randomDockBtn = dockButtons[Math.floor(Math.random() * dockButtons.length)];
+        selectedButtons.push(randomDockBtn);
       }
 
-      // Finde alle klickbaren Buttons im DOM, die aktiv sichtbar sind
-      const buttons = Array.from(document.querySelectorAll('button:not(.modal-close-btn), [role="button"], .logo-dance'))
-                           .filter(btn => btn.offsetWidth > 0 && btn.offsetHeight > 0);
-      if (buttons.length === 0) return;
+      const shuffledOthers = [...otherButtons].sort(() => 0.5 - Math.random());
+      while (selectedButtons.length < 3 && shuffledOthers.length > 0) {
+        const nextBtn = shuffledOthers.pop();
+        if (!selectedButtons.includes(nextBtn)) {
+          selectedButtons.push(nextBtn);
+        }
+      }
 
-      // Zufälligen Button auswählen
-      const randomButton = buttons[Math.floor(Math.random() * buttons.length)];
-      
-      // Zufällige Tanzanimation würfeln
+      if (selectedButtons.length < 3 && dockButtons.length > 1) {
+        const remainingDock = dockButtons.filter(btn => !selectedButtons.includes(btn));
+        const shuffledDock = remainingDock.sort(() => 0.5 - Math.random());
+        while (selectedButtons.length < 3 && shuffledDock.length > 0) {
+          selectedButtons.push(shuffledDock.pop());
+        }
+      }
+
       const danceClasses = [
         'animate-party-wobble',
         'animate-party-bounce',
-        'animate-party-shiver',
+        'animate-party-glow',
         'animate-party-pulse',
-        'animate-party-spin'
+        'animate-party-swing'
       ];
-      const randomClass = danceClasses[Math.floor(Math.random() * danceClasses.length)];
 
-      currentlyDancingButton = randomButton;
-      currentDanceClass = randomClass;
-      
-      // Tanz starten
-      randomButton.classList.add(randomClass);
+      selectedButtons.forEach((btn, idx) => {
+        const randomClass = danceClasses[Math.floor(Math.random() * danceClasses.length)];
+        const delay = idx * 220; 
+
+        const timeoutId = setTimeout(() => {
+          btn.classList.add(randomClass);
+          currentlyDancingButtons.push({ element: btn, className: randomClass });
+        }, delay);
+
+        activeDanceTimeouts.push(timeoutId);
+      });
+
     } catch (e) {
       console.error("Fehler beim globalen Button-Tanz:", e);
     }
   };
 
-  // Erster Tanz sofort starten, danach alle 20 Sekunden rotieren
   triggerDance();
-  setInterval(triggerDance, 20000);
+  setInterval(triggerDance, 5000);
 }
+
+function renderMiniCalendar() {
+  const grid = document.getElementById('cal-days-grid');
+  const title = document.getElementById('cal-month-title');
+  if (!grid || !title) return;
+
+  grid.innerHTML = '';
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+
+  const locales = { de: 'de-DE', en: 'en-US', el: 'el-GR', es: 'es-ES' };
+  const monthName = new Intl.DateTimeFormat(locales[currentLang] || 'en-US', { month: 'long', year: 'numeric' }).format(now);
+  title.innerText = monthName;
+
+  const firstDayOfMonth = new Date(year, month, 1);
+  let firstDayIndex = firstDayOfMonth.getDay();
+  firstDayIndex = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  for (let i = 0; i < firstDayIndex; i++) {
+    const empty = document.createElement('span');
+    empty.className = 'text-transparent select-none pointer-events-none';
+    empty.innerText = '';
+    grid.appendChild(empty);
+  }
+
+  const todayDate = now.getDate();
+  const todayMonth = now.getMonth();
+  const todayYear = now.getFullYear();
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const daySpan = document.createElement('span');
+    daySpan.innerText = day;
+    
+    const isToday = day === todayDate && month === todayMonth && year === todayYear;
+    if (isToday) {
+      daySpan.className = 'flex items-center justify-center h-5 w-5 bg-[var(--accent)] text-white font-bold rounded-lg shadow-[0_0_8px_rgba(139,92,246,0.5)] border border-[var(--accent-light)]/20 animate-pulse';
+    } else {
+      daySpan.className = 'flex items-center justify-center h-5 w-5 text-gray-400 hover:text-white hover:bg-white/5 rounded transition-all duration-150';
+    }
+    
+    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const dayAppointments = (state.items && state.items.termine) 
+      ? state.items.termine.filter(t => t.date === dateStr) 
+      : [];
+      
+    if (dayAppointments.length > 0) {
+      daySpan.className += ' border border-amber-400/40 relative shadow-[0_0_10px_rgba(245,158,11,0.15)]';
+      
+      const dot = document.createElement('span');
+      dot.className = 'absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-amber-400 rounded-full shadow-[0_0_4px_rgba(245,158,11,0.8)] animate-pulse';
+      daySpan.appendChild(dot);
+    }
+
+    const tooltipAction = currentLang === 'de' 
+      ? "Auf ein Datum klicken, um einen Termin einzutragen" 
+      : "Click on a date to enter an appointment";
+
+    if (dayAppointments.length > 0) {
+      const listStr = dayAppointments.map(t => {
+        let loc = t.location ? ` @ ${t.location}` : '';
+        return `${t.time || 'Ganztägig'} · ${t.task}${loc}`;
+      }).join('\n');
+      daySpan.title = `${tooltipAction}\n\nTermine:\n${listStr}`;
+    } else {
+      daySpan.title = tooltipAction;
+    }
+
+    daySpan.onclick = (e) => {
+      e.stopPropagation();
+      if (typeof toggleTerminForm === 'function') {
+        toggleTerminForm(true, dateStr);
+      }
+    };
+    
+    grid.appendChild(daySpan);
+  }
+}
+
+function updateDateAndStreak() {
+  const locales = { de: 'de-DE', en: 'en-GB', el: 'el-GR', es: 'es-ES' };
+  try {
+    const str = new Intl.DateTimeFormat(locales[currentLang] || 'en-GB', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
+    const displayEl = document.getElementById('date-display');
+    if (displayEl) displayEl.innerText = str;
+  } catch (e) {
+    const displayEl = document.getElementById('date-display');
+    if (displayEl) displayEl.innerText = new Date().toLocaleDateString();
+  }
+
+  renderMiniCalendar();
+}
+
