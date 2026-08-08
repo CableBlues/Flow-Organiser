@@ -1,5 +1,3 @@
-
-
 if (typeof window.TRANSLATIONS === 'undefined') {
   window.TRANSLATIONS = {};
 }
@@ -111,13 +109,6 @@ function handleMusicMainClick() {
   else togglePlaylistPlayback(); 
 }
 
-function closeHelperModal() {
-  const m1 = document.getElementById('helper-pick-modal');
-  const m2 = document.getElementById('helper-steps-modal');
-  if (m1) m1.classList.add('hidden');
-  if (m2) m2.classList.add('hidden');
-}
-
 const buttonSanitizerObserver = new MutationObserver(() => {
   document.querySelectorAll('button, [role="button"], .task-complete-btn span, #helper-pick-box button, #zen-chill-view button span').forEach(el => {
     const txt = el.innerText.trim();
@@ -170,21 +161,31 @@ document.addEventListener('DOMContentLoaded', () => {
     if (textEl) textEl.innerText = t('minimal_mode');
   }
 
-  // Persistenz für den Faulpelz-Modus beim Laden prüfen
-  if (state.lazyMode === undefined) state.lazyMode = false;
-  if (state.lazyMode) {
-    document.body.classList.add('lazy-mode');
-  } else {
-    document.body.classList.remove('lazy-mode');
-  }
-  
   updateDateAndStreak();
   renderApp();
   updateZenView();
   populateHelperTaskSelect();
   suggestBoostActivity();
   suggestInspirationQuote();
+  updateSyncUI(); // Sync-Zustand beim Start prüfen und visualisieren
   
+  // Überprüfung auf automatische QR-Kopplung per URL-Parameter (?join=XXXXXX)
+  const urlParams = new URLSearchParams(window.location.search);
+  const joinCode = urlParams.get('join');
+  if (joinCode) {
+    setTimeout(() => {
+      togglePanel('sync');
+      switchSyncTab('enter');
+      const inputEl = document.getElementById('sync-pairing-input') || document.getElementById('sync-input-code');
+      if (inputEl) {
+        inputEl.value = joinCode;
+        submitPairingCode();
+      }
+      // Bereinige die URL-Leiste ohne Neuladen
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }, 800);
+  }
+
   checkAndGenerateAutomaticReports();
 
   const btnHeader = document.getElementById('timer-toggle-btn');
@@ -208,7 +209,6 @@ function setTheme(theme) {
   currentTheme = theme;
   document.body.className = `h-full antialiased flex flex-col font-sans select-none overflow-x-hidden text-[#f4f4f5] theme-${theme}`;
   if (isMinimalist) document.body.classList.add('minimalist');
-  if (state.lazyMode) document.body.classList.add('lazy-mode'); // Behalte die Filter-Klasse bei
   localStorage.setItem('flowPlannerTheme', theme);
 }
 
@@ -405,44 +405,13 @@ function getTaskIcon(taskText, category = '') {
   return getTaskIconDetails(taskText, category).icon;
 }
 
-// NEU: Logik für den Faulpelz-Modus (Aktivierung und persistenter Boardfilter)
-function toggleLazyMode() {
-  if (state.lazyMode === undefined) state.lazyMode = false;
-  state.lazyMode = !state.lazyMode;
-  saveState();
-  
-  const body = document.body;
-  
-  if (state.lazyMode) {
-    body.classList.add('lazy-mode');
-    // Wechselt automatisch auf das gemütliche Cozy-Thema bei Erschöpfung
-    setTheme('cozy'); 
-    showToast(currentLang === 'de' ? "Faulpelz-Modus aktiv: Nur das Nötigste zählt heute! 🦥" : "Lazy Mode active: Just the essentials today! 🦥");
-  } else {
-    body.classList.remove('lazy-mode');
-    setTheme('aurora'); // Zurück zum Mystical-Standard
-    showToast(currentLang === 'de' ? "Standard-Modus wieder aktiv 🔋" : "Standard Mode active 🔋");
-  }
-  
-  renderApp();
-  updateZenView();
-}
-
 function renderApp() {
   const main = document.querySelector('main');
   if (!main) return;
   main.innerHTML = '';
   const todayISO = new Date().toISOString().split('T')[0];
 
-  // Absicherung der Initialisierung
-  if (state.lazyMode === undefined) state.lazyMode = false;
-  
   categoriesOrder.forEach(([id, iconKey]) => {
-    // VERBESSERUNG: Spalten-Ausblendung bei aktivem Faulpelz-Modus (Zeigt nur Haushalt/Täglich & Erledigt)
-    if (state.lazyMode && id !== 'daily' && id !== 'done') {
-      return; 
-    }
-
     const isDone = id === 'done';
     const isNotes = id === 'notes';
     const isTermine = id === 'termine';
@@ -522,7 +491,7 @@ function renderApp() {
         const itemDiv = document.createElement('div');
         itemDiv.className = 'group p-2 text-[11px] text-gray-400 hover:text-white border border-dashed border-slate-700 hover:border-purple-500 rounded-lg bg-slate-800/25 hover:bg-purple-900/20 cursor-pointer font-medium transition flex items-center justify-between gap-1';
         itemDiv.onclick = () => handleRestoreDoneTask(idx);
-        itemDiv.title = "Klicke hier, um diese erledigte Aufgabe zurück in den Plan zu verschieben";
+        itemDiv.title = "Zurück in den Plan verschieben";
         itemDiv.innerHTML = `<span class="truncate">${item.task} · ${item.time}</span><i data-lucide="undo" class="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 text-purple-400 shrink-0"></i>`;
         listEl.appendChild(itemDiv);
       });
@@ -531,7 +500,6 @@ function renderApp() {
       textarea.className = 'w-full h-full min-h-[220px] flex-1 p-3 bg-black/40 border border-dashed border-white/10 rounded-xl text-gray-200 text-xs leading-relaxed outline-none resize-none focus:border-[var(--accent)] transition';
       textarea.placeholder = t('notesPlaceholder');
       textarea.value = state.items.notes || '';
-      textarea.title = "Notizen und Gedanken unstrukturiert festhalten";
       textarea.oninput = (e) => { state.items.notes = e.target.value; saveState(); };
       listEl.appendChild(textarea);
     } else if (isTermine) {
@@ -578,13 +546,13 @@ function renderApp() {
         const pair = HOVER_COLOR_PAIRS[(originalIndex + 12) % HOVER_COLOR_PAIRS.length];
 
         itemDiv.innerHTML = `
-          <button onclick="handleCompleteTask('termine', ${originalIndex}, event)" class="task-complete-btn flex items-center gap-2.5 flex-1 min-w-0 text-left bg-transparent border-0 text-inherit cursor-pointer p-0 transition duration-150 pr-2 group/task" title="Diesen Termin als erledigt abhaken">
+          <button onclick="handleCompleteTask('termine', ${originalIndex}, event)" class="task-complete-btn flex items-center gap-2.5 flex-1 min-w-0 text-left bg-transparent border-0 text-inherit cursor-pointer p-0 transition duration-150 pr-2 group/task" title="Abhaken">
             <i data-lucide="clock" class="standard-task-icon w-5 h-5 text-amber-400 shrink-0 transition-colors duration-150 ${pair.hoverIcon}"></i>
             <span class="task-text-span block text-xs font-semibold text-white truncate ${pair.text} transition-colors duration-150">${item.task}</span>
           </button>
           
           <div class="absolute right-1 -top-3 flex items-center gap-1 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200 shrink-0 bg-[#13131a] border border-white/10 px-1 py-0.5 rounded-lg shadow-lg z-50 whitespace-nowrap">
-            <button onclick="deleteTask('termine', ${originalIndex}, event)" class="p-1 text-gray-500 hover:text-red-400 hover:bg-white/10 rounded transition cursor-pointer" title="Diesen Termin unwiderruflich aus dem Kalender löschen"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+            <button onclick="deleteTask('termine', ${originalIndex}, event)" class="p-1 text-gray-500 hover:text-red-400 hover:bg-white/10 rounded transition cursor-pointer" title="Löschen"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
           </div>
 
           <div class="absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 mb-1 w-56 hidden group-hover:block bg-[#111116] border border-amber-400/35 p-3 rounded-xl shadow-2xl z-[9999] pointer-events-none transition-all duration-200">
@@ -605,7 +573,6 @@ function renderApp() {
         btnEl.onclick = () => toggleTerminForm(true);
         btnEl.className = 'mt-2 w-full min-h-[38px] p-2 rounded-lg border border-dashed border-white/15 bg-[#0a0a0e] hover:bg-[#13131e] text-center text-xs text-gray-400 hover:text-white font-semibold transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm';
         const btnT = t('appointment_new_btn');
-        btnEl.title = "Formular zur Erstellung eines neuen Termins öffnen";
         btnEl.innerHTML = `<i data-lucide="calendar-plus" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i><span>${btnT}</span>`;
         listEl.appendChild(btnEl);
       } else {
@@ -623,16 +590,16 @@ function renderApp() {
         formDiv.innerHTML = `
           <div class="flex items-center justify-between text-xs font-bold text-amber-300">
             <span class="flex items-center gap-1.5"><i data-lucide="calendar" class="w-3.5 h-3.5"></i> ${formT}</span>
-            <button onclick="toggleTerminForm(false)" class="text-gray-400 hover:text-white p-0.5 cursor-pointer text-xs" title="Terminformular schließen">✕</button>
+            <button onclick="toggleTerminForm(false)" class="text-gray-400 hover:text-white p-0.5 cursor-pointer text-xs">✕</button>
           </div>
-          <input type="text" id="add-termin-title" placeholder="${nameT}" class="w-full p-2 bg-black/60 border border-white/15 rounded-lg text-xs text-white outline-none focus:border-[var(--accent)] font-semibold placeholder:text-gray-500 mb-2" title="Terminname eingeben" />
-          <input type="text" id="add-termin-location" placeholder="Ort (z.B. Zoom, Büro, Park)" class="w-full p-2 bg-black/60 border border-white/15 rounded-lg text-xs text-white outline-none focus:border-[var(--accent)] font-semibold placeholder:text-gray-500 mb-2" title="Ort des Termins eingeben (optional)" />
+          <input type="text" id="add-termin-title" placeholder="${nameT}" class="w-full p-2 bg-black/60 border border-white/15 rounded-lg text-xs text-white outline-none focus:border-[var(--accent)] font-semibold placeholder:text-gray-500 mb-2" />
+          <input type="text" id="add-termin-location" placeholder="Ort (z.B. Zoom, Büro, Park)" class="w-full p-2 bg-black/60 border border-white/15 rounded-lg text-xs text-white outline-none focus:border-[var(--accent)] font-semibold placeholder:text-gray-500 mb-2" />
           <div class="grid grid-cols-2 gap-2 mb-2">
-            <div><label class="text-[10px] text-gray-400 mb-0.5 block font-medium">${dateT}</label><input type="date" id="add-termin-date" value="${dateValue}" class="w-full p-1.5 bg-black/60 border border-white/15 rounded-lg text-xs text-gray-200 outline-none focus:border-[var(--accent)] cursor-pointer" title="Termindatum festlegen" /></div>
-            <div><label class="text-[10px] text-gray-400 mb-0.5 block font-medium">${timeT}</label><input type="time" id="add-termin-time" value="10:00" class="w-full p-1.5 bg-black/60 border border-white/15 rounded-lg text-xs text-gray-200 outline-none focus:border-[var(--accent)] cursor-pointer" title="Terminuhrzeit festlegen" /></div>
+            <div><label class="text-[10px] text-gray-400 mb-0.5 block font-medium">${dateT}</label><input type="date" id="add-termin-date" value="${dateValue}" class="w-full p-1.5 bg-black/60 border border-white/15 rounded-lg text-xs text-gray-200 outline-none focus:border-[var(--accent)] cursor-pointer" /></div>
+            <div><label class="text-[10px] text-gray-400 mb-0.5 block font-medium">${timeT}</label><input type="time" id="add-termin-time" value="10:00" class="w-full p-1.5 bg-black/60 border border-white/15 rounded-lg text-xs text-gray-200 outline-none focus:border-[var(--accent)] cursor-pointer" /></div>
           </div>
           <div class="flex items-center gap-2 mt-1">
-            <button onclick="handleAddTermin()" class="flex-1 py-1.5 bg-[var(--accent)] hover:opacity-90 text-white font-bold text-xs rounded-lg transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm" title="Termin jetzt speichern und eintragen"><i data-lucide="check" class="w-3.5 h-3.5"></i><span>${saveT}</span></button>
+            <button onclick="handleAddTermin()" class="flex-1 py-1.5 bg-[var(--accent)] hover:opacity-90 text-white font-bold text-xs rounded-lg transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm"><i data-lucide="check" class="w-3.5 h-3.5"></i><span>${saveT}</span></button>
             <button onclick="toggleTerminForm(false)" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-gray-300 font-semibold text-xs rounded-lg transition cursor-pointer">${cancelT}</button>
           </div>
         `;
@@ -658,7 +625,6 @@ function renderApp() {
         itemDiv.ondragover = (e) => handleDragOver(e);
         itemDiv.ondrop = (e) => handleItemDrop(e, id, index);
         
-        // ZUFÄLLIGE SUBTILE TASK-ANIMATION
         const randomVal = Math.random();
         let subtleAnimClass = "";
         if (randomVal < 0.1) subtleAnimClass = "task-anim-float";
@@ -671,24 +637,23 @@ function renderApp() {
         const pair = HOVER_COLOR_PAIRS[(index + id.charCodeAt(0)) % HOVER_COLOR_PAIRS.length];
 
         itemDiv.innerHTML = `
-          <button onclick="handleCompleteTask('${id}', ${index}, event)" class="task-complete-btn flex items-center gap-2.5 flex-1 min-w-0 text-left bg-transparent border-0 text-inherit cursor-pointer p-0 transition duration-150 pr-2 group/task" title="Diese Aufgabe als erledigt abhaken">
+          <button onclick="handleCompleteTask('${id}', ${index}, event)" class="task-complete-btn flex items-center gap-2.5 flex-1 min-w-0 text-left bg-transparent border-0 text-inherit cursor-pointer p-0 transition duration-150 pr-2 group/task" title="Abhaken">
             <i data-lucide="${iconDetails.icon}" class="standard-task-icon w-5 h-5 ${isTaskActive ? 'text-amber-400 animate-pulse' : iconDetails.color} shrink-0 transition-colors duration-150 ${pair.hoverIcon}"></i>
             <span class="task-text-span block text-xs leading-snug min-w-0 flex-1 font-medium text-gray-200 truncate ${isTaskActive ? 'text-amber-200 font-bold' : ''} ${pair.text} transition-colors duration-150" title="${taskText.replace(/"/g, '&quot;')}">${taskText}</span>
           </button>
           
           <div class="absolute right-1 -top-3 flex items-center gap-1 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200 shrink-0 bg-[#13131a] border border-white/10 px-1 py-0.5 rounded-lg shadow-lg z-50 whitespace-nowrap">
-            <button onclick="openTaskStepsModal('${id}', ${index}, event)" class="p-1 text-[var(--accent-light)] hover:text-white hover:bg-white/10 rounded transition cursor-pointer" title="Schritt-für-Schritt-Anleitung (Steps) für diese Aufgabe anzeigen"><i data-lucide="footprints" class="w-3.5 h-3.5"></i></button>
+            <button onclick="openTaskStepsModal('${id}', ${index}, event)" class="p-1 text-[var(--accent-light)] hover:text-white hover:bg-white/10 rounded transition cursor-pointer" title="Anleitung"><i data-lucide="footprints" class="w-3.5 h-3.5"></i></button>
             <div class="w-[1px] h-3 bg-white/15 my-auto"></div>
-            <button onclick="startTaskTimer('${safeTaskEscaped}', event)" class="p-1 text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 rounded transition cursor-pointer" title="Fokus-Timer für diese Aufgabe mit den voreingestellten Minuten starten"><i data-lucide="timer" class="w-3.5 h-3.5"></i></button>
+            <button onclick="startTaskTimer('${safeTaskEscaped}', event)" class="p-1 text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 rounded transition cursor-pointer" title="Timer starten"><i data-lucide="timer" class="w-3.5 h-3.5"></i></button>
             <div class="w-[1px] h-3 bg-white/15 my-auto"></div>
-            <button onclick="deleteTask('${id}', ${index}, event)" class="p-1 text-gray-500 hover:text-red-400 hover:bg-white/10 rounded transition cursor-pointer" title="Diese Aufgabe unwiderruflich aus der Spalte löschen"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+            <button onclick="deleteTask('${id}', ${index}, event)" class="p-1 text-gray-500 hover:text-red-400 hover:bg-white/10 rounded transition cursor-pointer" title="Löschen"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
           </div>
         `;
         listEl.appendChild(itemDiv);
       });
       const addInput = document.createElement('input');
       addInput.type = 'text'; addInput.placeholder = '＋';
-      addInput.title = "Neue Aufgabe eingeben und mit Enter hinzufügen";
       addInput.className = 'w-full min-h-[38px] p-2 rounded-lg border border-white/10 bg-[#0a0a0e] hover:bg-[#111118] text-center text-xs placeholder:text-gray-500 focus:outline-none focus:border-[var(--accent)] transition cursor-text font-semibold text-gray-300';
       addInput.onkeydown = (e) => {
         if (e.key === 'Enter' && addInput.value.trim()) {
@@ -705,10 +670,11 @@ function renderApp() {
   
   updateShoppingListPopup(true);
   
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
 }
 
-// VERBESSERUNG: Langsame, physikalische Flug-Animation von der Ursprungsspalte in die "Erledigt"-Spalte
 function animateTaskToDone(taskEl, targetSelector, onComplete) {
   const rect = taskEl.getBoundingClientRect();
   const targetCol = document.querySelector(targetSelector);
@@ -719,8 +685,6 @@ function animateTaskToDone(taskEl, targetSelector, onComplete) {
   }
   
   const targetRect = targetCol.getBoundingClientRect();
-
-  // Erzeuge ein fliegendes Geister-Element
   const ghost = taskEl.cloneNode(true);
   ghost.style.position = 'fixed';
   ghost.style.left = `${rect.left}px`;
@@ -730,41 +694,34 @@ function animateTaskToDone(taskEl, targetSelector, onComplete) {
   ghost.style.zIndex = '999999';
   ghost.style.pointerEvents = 'none';
   
-  // VERBESSERUNG: Langsamerer, majestätischerer Flug (1.6 Sekunden)
-  ghost.style.transition = 'all 1.6s cubic-bezier(0.25, 1, 0.5, 1)'; 
+  ghost.style.transition = 'all 1.2s cubic-bezier(0.16, 1, 0.3, 1)'; 
   ghost.style.opacity = '1';
-  ghost.style.boxShadow = '0 12px 30px rgba(139, 92, 246, 0.4)';
+  ghost.style.boxShadow = '0 12px 30px rgba(139, 92, 246, 0.3)';
 
   document.body.appendChild(ghost);
 
-  // Verberge das Original-Element sofort für den sauberen Fluss
   taskEl.style.opacity = '0';
   taskEl.style.pointerEvents = 'none';
 
-  // Layout-Reflow triggern
   ghost.offsetWidth;
 
-  // Berechne Zielkoordinaten (Zentriert in der Done-Liste)
   const destX = targetRect.left + (targetRect.width - rect.width) / 2;
   const destY = targetRect.top + 20;
 
-  // Bewegung und Verformung einleiten
   ghost.style.left = `${destX}px`;
   ghost.style.top = `${destY}px`;
-  ghost.style.transform = 'scale(0.7) rotate(6deg)'; 
-  ghost.style.opacity = '0.2';
+  ghost.style.transform = 'scale(0.8) rotate(4deg)'; 
+  ghost.style.opacity = '0.3';
 
-  // Nach der Flugdauer den Klon entfernen und die Logik ausführen
   setTimeout(() => {
     ghost.remove();
     onComplete();
-  }, 1600);
+  }, 1200);
 }
 
 function handleCompleteTask(category, index, event) {
   if (event) event.stopPropagation();
   
-  // Versuche, das physische Spalten-Element zu ermitteln
   let taskEl = null;
   if (event && event.currentTarget) {
     taskEl = event.currentTarget.closest('div[draggable="true"]');
@@ -801,7 +758,6 @@ function handleCompleteTask(category, index, event) {
     populateHelperTaskSelect();
   };
 
-  // Wenn das Element vorhanden ist, fliegt es langsam; sonst bricht es sofort ab
   if (taskEl) {
     animateTaskToDone(taskEl, '#list-done', onComplete);
   } else {
@@ -874,7 +830,7 @@ function showPanelHover(panelName) {
   if (currentlyOpenPanel === panelName) return; 
   
   currentlyOpenPanel = panelName;
-  ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'sync', 'theme', 'calendar-dropdown', 'inspiration', 'shopping'].forEach(p => {
+  ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'sync', 'theme', 'calendar-dropdown', 'inspiration', 'shopping', 'pause-dropdown'].forEach(p => {
     const el = document.getElementById(`panel-${p}`); if (!el) return;
     if (p === panelName) {
       if (el.classList.contains('hidden')) {
@@ -902,7 +858,7 @@ function togglePanel(panelName) {
   if (!el) return;
   const isCurrentlyHidden = el.classList.contains('hidden');
   
-  ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'sync', 'theme', 'calendar-dropdown', 'inspiration', 'shopping'].forEach(p => {
+  ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'sync', 'theme', 'calendar-dropdown', 'inspiration', 'shopping', 'pause-dropdown'].forEach(p => {
     if (p !== panelName) {
       const other = document.getElementById(`panel-${p}`);
       if (other) other.classList.add('hidden');
@@ -997,13 +953,13 @@ function renderWeeklyChart() {
 function updateReportPanel() {
   const now = new Date();
   const todayISO = now.toISOString().split('T')[0];
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
   let filteredDone = state.done || [];
   if (reportTimeframe === 'today') filteredDone = filteredDone.filter(item => item.date === todayISO);
   else if (reportTimeframe === 'week') {
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
     filteredDone = filteredDone.filter(item => item.date && item.date >= sevenDaysAgo);
   } else if (reportTimeframe === 'month') {
-    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
     filteredDone = filteredDone.filter(item => item.date && item.date >= thirtyDaysAgo);
   }
   const count = filteredDone.length;
@@ -1041,6 +997,13 @@ function updateReportPanel() {
           totalInCat = baseDailyCount * 30;
           pending = Math.max(0, totalInCat - completedInCat);
         }
+      }
+
+      // MONATLICHE HAUSHALTSAUFGABEN (WEEKLY CATEGORY) SKALIERUNG AUF DAS 4-FACHE
+      if (id === 'weekly' && reportTimeframe === 'month') {
+        const baseWeeklyCount = Math.max(1, (state.items.weekly || []).length + (state.done || []).filter(item => item.origin === 'weekly' && item.date && item.date >= thirtyDaysAgo).length / 4);
+        totalInCat = Math.round(baseWeeklyCount * 4);
+        pending = Math.max(0, totalInCat - completedInCat);
       }
 
       if (totalInCat > 0) {
@@ -1085,7 +1048,7 @@ function submitFeedback() {
   if (text.trim()) {
     const mailtoUrl = `mailto:jmonke@gmail.com?subject=Flow App Feedback&body=${encodeURIComponent(text)}`;
     window.location.href = mailtoUrl;
-    showToast({ de: 'E-Mail-Entwurf geöffnet! ❤️', en: 'Email draft opened! ❤️', es: '¡Borrador de email abierto! ❤️', el: 'Το προσχέδιο email áνοιξε! ❤️' }[currentLang] || 'Email draft opened! ❤️');
+    showToast({ de: 'E-Mail-Entwurf geöffnet! ❤️', en: 'Email draft opened! ❤️', es: '¡Borrador de email aberto! ❤️', el: 'Το προσχέδιο email άνοιξε! ❤️' }[currentLang] || 'Email draft opened! ❤️');
     document.getElementById('feedback-text').value = ''; 
     togglePanel('feedback');
   }
@@ -1106,7 +1069,7 @@ function updateZenView() {
   currentZenTaskInfo = chosen;
   if (!chosen) {
     if (zenCatEl) zenCatEl.innerText = t('completed');
-    const endMsg = { de: '🎉 Alle Aufgaben erledigt! Entspanne dich und genieße deine freie Zeit.', en: '🎉 All tasks completed! Relax and enjoy your free time.', es: '🎉 ¡Todas las tareas completadas! ¡Disfruta de tu tempo libre!', el: '🎉 Όλες οι εργασίες ολοκληρώθηκαν! Χαλαρώστε und απολαύστε τον eλεύθερο χρόνο soaps.' }[currentLang];
+    const endMsg = { de: '🎉 Alle Aufgaben erledigt! Entspanne dich und genieße deine freie Zeit.', en: '🎉 All tasks completed! Relax and enjoy your free time.', es: '🎉 ¡Todas las tares completadas! ¡Disfruta de tu tempo libre!', el: '🎉 Όλες οι εργασίες ολοκληρώθηκαν! Χαλαρώστε und απολαύστε τον ελεύθερο χρόνο soaps.' }[currentLang];
     zenTextEl.innerHTML = `<span class="text-emerald-400">${endMsg}</span>`;
   } else {
     const catName = t(chosen.cat); if (zenCatEl) zenCatEl.innerText = `${t('next_rec')} · ${catName}`;
@@ -1130,66 +1093,6 @@ function zenCompleteCurrentTask() {
   updateZenView();
 }
 
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'z' || e.key === 'Z') {
-    if (!['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
-      e.preventDefault(); toggleMinimalist(); return;
-    }
-  }
-  if (e.key === 'Escape') {
-    const pickModal = document.getElementById('helper-pick-modal');
-    const stepsModal = document.getElementById('helper-steps-modal');
-    const compassModal = document.getElementById('helper-compass-modal');
-    const safeSpaceModal = document.getElementById('helper-safespace-modal');
-    const scriptingModal = document.getElementById('helper-scripting-modal');
-    const ringingModal = document.getElementById('timer-ringing-modal');
-    
-    const isPickModalOpen = pickModal && !pickModal.classList.contains('hidden');
-    const isStepsModalOpen = stepsModal && !stepsModal.classList.contains('hidden');
-    const isCompassModalOpen = compassModal && !compassModal.classList.contains('hidden');
-    const isSafeSpaceModalOpen = safeSpaceModal && !safeSpaceModal.classList.contains('hidden');
-    const isScriptingModalOpen = scriptingModal && !scriptingModal.classList.contains('hidden');
-    
-    if (isPickModalOpen || isStepsModalOpen || isCompassModalOpen || isSafeSpaceModalOpen || isScriptingModalOpen || ringingModal) {
-      closeHelperModal();
-      closeCompassModal();
-      closeSafeSpaceModal();
-      closeScriptingModal();
-      if (typeof stopPleasantRinging === 'function') stopPleasantRinging();
-    } else if (isMinimalist) {
-      toggleMinimalist();
-    }
-    
-    ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'sync', 'theme', 'calendar-dropdown', 'inspiration', 'shopping'].forEach(p => {
-      const el = document.getElementById(`panel-${p}`); if (el) el.classList.add('hidden');
-    });
-    return;
-  }
-  if (e.code === 'Space' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
-    e.preventDefault(); toggleTimer();
-  }
-});
-
-function exportReportAsImage() {
-  const target = document.getElementById('report-export-target');
-  if (!target) return;
-  
-  html2canvas(target, {
-    backgroundColor: '#111116',
-    scale: 2, 
-    useCORS: true
-  }).then(canvas => {
-    const link = document.createElement('a');
-    link.download = `flow-statistik-${new Date().toISOString().split('T')[0]}.png`;
-    link.href = canvas.toDataURL();
-    link.click();
-  }).catch(err => {
-    console.error("Export-Fehler:", err);
-    showToast("Export failed.");
-  });
-}
-
-// VERBESSERUNG: Extrem vereinfachte Einkaufslisten-Aktualisierung (ohne lästige Rechenoperationen & separate Spalten)
 function updateShoppingListPopup(skipLucide = false) {
   const rowsContainer = document.getElementById('shopping-list-rows');
   const badgeEl = document.getElementById('shop-badge-count');
@@ -1199,7 +1102,6 @@ function updateShoppingListPopup(skipLucide = false) {
   
   const list = state.shoppingList || [];
   
-  // Badge-Zähler aktualisieren
   if (badgeEl) {
     if (list.length > 0) {
       badgeEl.classList.remove('hidden');
@@ -1216,9 +1118,9 @@ function updateShoppingListPopup(skipLucide = false) {
       const div = document.createElement('div');
       div.className = 'flex items-center justify-between gap-1.5 py-1.5 border-b border-white/[0.03] text-gray-300';
       div.innerHTML = `
-        <input type="checkbox" onclick="handleToggleShoppingItem(${idx})" class="w-4 h-4 rounded bg-black border-white/10 text-emerald-500 accent-emerald-500 cursor-pointer shrink-0" title="Artikel abhaken" />
+        <input type="checkbox" onclick="handleToggleShoppingItem(${idx})" class="w-4 h-4 rounded bg-black border-white/10 text-emerald-500 accent-emerald-500 cursor-pointer shrink-0" />
         <span class="truncate font-semibold flex-1 pl-1.5 text-xs text-white" title="${item.name}">${item.name}</span>
-        <button onclick="handleDeleteShoppingItem(${idx})" class="p-1 text-gray-500 hover:text-red-400 rounded transition shrink-0 cursor-pointer" title="Löschen"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+        <button onclick="handleDeleteShoppingItem(${idx})" class="p-1 text-gray-500 hover:text-red-400 rounded transition shrink-0 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
       `;
       rowsContainer.appendChild(div);
     });
@@ -1243,7 +1145,7 @@ function updateShoppingListPopup(skipLucide = false) {
         const hDiv = document.createElement('div');
         hDiv.className = 'flex justify-between items-center py-0.5 border-b border-white/[0.02] text-gray-400 text-[9px]';
         hDiv.innerHTML = `
-          <span class="truncate max-w-[150px] line-through decoration-emerald-500/40">${hItem.name}</span>
+          <span class="truncate max-w-[150px] line-through">${hItem.name}</span>
           <span class="font-mono text-[8px] text-gray-500 shrink-0">${hItem.date}</span>
         `;
         historyList.appendChild(hDiv);
@@ -1261,7 +1163,6 @@ function updateShoppingListPopup(skipLucide = false) {
   }
 }
 
-// VERBESSERUNG: Extrem vereinfachtes Hinzufügen (Nur noch ein Textfeld)
 function handleAddShoppingItem() {
   const nameEl = document.getElementById('shop-add-name');
   const name = nameEl ? nameEl.value.trim() : '';
@@ -1291,7 +1192,6 @@ function handleDeleteShoppingItem(index) {
   showToast(currentLang === 'de' ? `"${removed.name}" gelöscht.` : `Deleted "${removed.name}".`);
 }
 
-// VERBESSERUNG: Extrem vereinfachtes Abhaken
 function handleToggleShoppingItem(index) {
   saveHistory();
   const item = state.shoppingList[index];
@@ -1352,7 +1252,7 @@ function generateSmartShoppingTips(container) {
   let hasConvenience = false;
   
   const meatKeywords = ['fleisch', 'meat', 'hähnchen', 'chicken', 'beef', 'schwein', 'pork', 'schinken', 'wurst'];
-  const dairyKeywords = ['milch', 'milk', 'käse', 'cheese', 'butter', 'quark', 'joghurt', 'joghurt', 'sahne'];
+  const dairyKeywords = ['milch', 'milk', 'käse', 'cheese', 'butter', 'quark', 'joghurt', 'sahne'];
   const vegFruitKeywords = ['tomate', 'apfel', 'apple', 'banan', 'gemüse', 'obst', 'salat', 'gurke', 'paprika', 'kartoffel', 'orange'];
   const convenienceKeywords = ['pizza', 'chips', 'cola', 'fanta', 'snack', 'schoko', 'süss', 'sweet'];
 
@@ -1384,23 +1284,10 @@ function generateSmartShoppingTips(container) {
   } else {
     tip = currentLang === 'de'
       ? "Spartipp: Vergleiche immer den Grundpreis (Preis pro kg/Liter) im Regal, da Packungsgrößen oft täuschen!"
-      : "Smart Tip: Always compare the base price (price per kg/liter) on the shelf tags. Packaging sizes can be deceiving!";
+      : "Smart Tip: Always compare the base price (price per kg/liter) on the shelf tags.";
   }
   
   tipTextEl.innerText = tip;
-}
-
-function getYearAndWeek(d) {
-  const target = new Date(d.valueOf());
-  const dayNr = (d.getDay() + 6) % 7;
-  target.setDate(target.getDate() - dayNr + 3);
-  const firstThursday = target.valueOf();
-  target.setMonth(0, 1);
-  if (target.getDay() !== 4) {
-    target.setMonth(0, 1 + ((4 - target.getDay()) + 7) % 7);
-  }
-  const weekNum = 1 + Math.ceil((firstThursday - target) / 604800000);
-  return `${d.getFullYear()}-W${String(weekNum).padStart(2, '0')}`;
 }
 
 function updateMissedTasksList() {
@@ -1448,103 +1335,7 @@ function updateMissedTasksList() {
   }
 }
 
-function generateReportContent(timeframe, targetDateOrPeriod) {
-  const lang = currentLang || 'de';
-  const todayISO = new Date().toISOString().split('T')[0];
-  let filteredDone = state.done || [];
-  
-  let title = "";
-  let doneTasks = [];
-  let missedTasks = [];
-  
-  if (timeframe === 'daily') {
-    const targetDate = targetDateOrPeriod || todayISO;
-    title = lang === 'de' ? `TÄGLICHER FOCUS-BERICHT (${targetDate})` : `DAILY FOCUS REPORT (${targetDate})`;
-    doneTasks = filteredDone.filter(t => t.date === targetDate);
-    
-    (state.items.daily || []).forEach(task => { missedTasks.push(typeof task === 'object' ? task.task : task); });
-    (state.items.todo || []).forEach(task => { missedTasks.push(typeof task === 'object' ? task.task : task); });
-    (state.items.termine || []).forEach(t => { if (t.date === targetDate) missedTasks.push(`${t.task} (Termin)`); });
-  } else if (timeframe === 'weekly') {
-    const targetWeek = targetDateOrPeriod || getYearAndWeek(new Date());
-    title = lang === 'de' ? `WÖCHENTLICHER FOCUS-BERICHT (${targetWeek})` : `WEEKLY FOCUS REPORT (${targetWeek})`;
-    
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-    doneTasks = filteredDone.filter(t => t.date && t.date >= sevenDaysAgo);
-    
-    (state.items.weekly || []).forEach(task => { missedTasks.push(typeof task === 'object' ? task.task : task); });
-    (state.items.todo || []).forEach(task => { missedTasks.push(typeof task === 'object' ? task.task : task); });
-    
-    const baseDailyCount = Math.max(1, (state.items.daily || []).length + (state.done || []).filter(item => item.origin === 'daily' && item.date === todayISO).length);
-    const targetDailyCount = baseDailyCount * 7;
-    const completedDailyCount = doneTasks.filter(item => item.origin === 'daily').length;
-    if (completedDailyCount < targetDailyCount) {
-      missedTasks.push(lang === 'de' 
-        ? `Tägliche Aufgaben: ${targetDailyCount - completedDailyCount} von ${targetDailyCount} wöchentlichen Wiederholungen verpasst`
-        : `Daily Tasks: Missed ${targetDailyCount - completedDailyCount} out of ${targetDailyCount} weekly repetitions`);
-    }
-  } else if (timeframe === 'monthly') {
-    const targetMonth = targetDateOrPeriod || todayISO.substring(0, 7);
-    title = lang === 'de' ? `MONATLICHER FOCUS-BERICHT (${targetMonth})` : `MONTHLY FOCUS REPORT (${targetMonth})`;
-    
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-    doneTasks = filteredDone.filter(t => t.date && t.date >= thirtyDaysAgo);
-    
-    (state.items.occasionally || []).forEach(task => { missedTasks.push(typeof task === 'object' ? task.task : task); });
-    (state.items.todo || []).forEach(task => { missedTasks.push(typeof task === 'object' ? task.task : task); });
-    
-    const baseDailyCount = Math.max(1, (state.items.daily || []).length + (state.done || []).filter(item => item.origin === 'daily' && item.date === todayISO).length);
-    const targetDailyCount = baseDailyCount * 30;
-    const completedDailyCount = doneTasks.filter(item => item.origin === 'daily').length;
-    if (completedDailyCount < targetDailyCount) {
-      missedTasks.push(lang === 'de' 
-        ? `Tägliche Aufgaben: ${targetDailyCount - completedDailyCount} von ${targetDailyCount} monatlichen Wiederholungen verpasst`
-        : `Daily Tasks: Missed ${targetDailyCount - completedDailyCount} out of ${targetDailyCount} monthly repetitions`);
-    }
-  }
-
-  const successRate = (doneTasks.length + missedTasks.length) > 0 
-    ? Math.round((doneTasks.length / (doneTasks.length + missedTasks.length)) * 100) 
-    : 100;
-
-  let reportText = `==============================================\n`;
-  reportText += `       🌊 FLOW - AUTOMATISCHER BERICHT 🌊     \n`;
-  reportText += `==============================================\n\n`;
-  reportText += `${title}\n`;
-  reportText += `----------------------------------------------\n`;
-  reportText += lang === 'de' ? `Erledigte Aufgaben:    ${doneTasks.length}\n` : `Completed Tasks:       ${doneTasks.length}\n`;
-  reportText += lang === 'de' ? `Offene Aufgaben:       ${missedTasks.length}\n` : `Pending Tasks:         ${missedTasks.length}\n`;
-  reportText += lang === 'de' ? `Erfolgsquote:          ${successRate}%\n` : `Success Rate:          ${successRate}%\n`;
-  reportText += `----------------------------------------------\n\n`;
-  
-  reportText += lang === 'de' ? `✅ ERLEDIGTE AUFGABEN:\n` : `✅ COMPLETED TASKS:\n`;
-  if (doneTasks.length === 0) {
-    reportText += `   - (Keine)\n`;
-  } else {
-    doneTasks.forEach((t, i) => {
-      reportText += `   ${i + 1}. [${t.origin.toUpperCase()}] ${t.task} (${t.time || ''})\n`;
-    });
-  }
-  reportText += `\n`;
-  
-  reportText += lang === 'de' ? `❌ NICHT ERLEDIGTE AUFGABEN (OFFEN):\n` : `❌ UNCOMPLETED TASKS (OPEN):\n`;
-  if (missedTasks.length === 0) {
-    reportText += lang === 'de' ? `   🎉 Erledigt! Alle Ziele wurden erreicht.\n` : `   🎉 Outstanding! All goals achieved.\n`;
-  } else {
-    missedTasks.forEach((t, i) => {
-      reportText += `   ${i + 1}. ${t}\n`;
-    });
-  }
-  
-  reportText += `\n==============================================\n`;
-  reportText += lang === 'de' ? `Generiert am: ${new Date().toLocaleString()}\n` : `Generated on: ${new Date().toLocaleString()}\n`;
-  reportText += `==============================================\n`;
-  
-  return { title, reportText, filename: `flow-report-${timeframe}-${targetDateOrPeriod || todayISO}.txt` };
-}
-
-function triggerManualReportDownload(timeframe) {
-  const { reportText, filename = "" } = generateReportContent(timeframe);
+function triggerAutomaticDownload(reportText, filename) {
   const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1552,7 +1343,6 @@ function triggerManualReportDownload(timeframe) {
   a.download = filename;
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
-  showToast(currentLang === 'de' ? `Bericht heruntergeladen! 📥` : `Report downloaded! 📥`);
 }
 
 function checkAndGenerateAutomaticReports() {
@@ -1560,800 +1350,189 @@ function checkAndGenerateAutomaticReports() {
   const todayISO = now.toISOString().split('T')[0];
   const lang = currentLang || 'de';
 
+  // 1. Tägliche Berichte
   if (state.lastDate && state.lastDate !== todayISO) {
     const prevDate = state.lastDate;
-    const { reportText, filename = "" } = generateReportContent('daily', prevDate);
-    const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    
-    showToast(lang === 'de' 
-      ? `Automatischer täglicher Bericht für ${prevDate} heruntergeladen! 📊` 
-      : `Automatic daily report for ${prevDate} downloaded! 📊`);
-      
+    const { reportText, filename } = generateReportContent('daily', prevDate);
+    triggerAutomaticDownload(reportText, filename);
     state.lastDate = todayISO;
     saveState();
   }
 
+  // 2. Wöchentliche Berichte
   const currentWeekStr = getYearAndWeek(now);
   const lastWeeklyReport = localStorage.getItem('flow_last_weekly_report_week');
-  if (lastWeeklyReport && lastWeeklyReport !== currentWeekStr) {
-    const { reportText, filename = "" } = generateReportContent('weekly', lastWeeklyReport);
-    const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  const isSundayEvening = now.getDay() === 0 && now.getHours() >= 18;
+  const weeklyReportTriggeredThisWeek = localStorage.getItem('flow_weekly_report_triggered_' + currentWeekStr) === 'true';
 
+  if ((lastWeeklyReport && lastWeeklyReport !== currentWeekStr) || (isSundayEvening && !weeklyReportTriggeredThisWeek)) {
+    const weekToReport = (isSundayEvening && !weeklyReportTriggeredThisWeek) ? currentWeekStr : (lastWeeklyReport || currentWeekStr);
+    
+    const { reportText, filename } = generateReportContent('weekly', weekToReport);
+    triggerAutomaticDownload(reportText, filename);
+
+    localStorage.setItem('flow_last_weekly_report_week', currentWeekStr);
+    localStorage.setItem('flow_weekly_report_triggered_' + currentWeekStr, 'true');
+    
     showToast(lang === 'de'
-      ? `Automatischer Wochenbericht (${lastWeeklyReport}) heruntergeladen! 📊`
-      : `Automatic weekly report (${lastWeeklyReport}) downloaded! 📊`);
+      ? `Automatischer Wochenbericht (${weekToReport}) heruntergeladen! 📊`
+      : `Automatic weekly report (${weekToReport}) downloaded! 📊`);
   }
-  localStorage.setItem('flow_last_weekly_report_week', currentWeekStr);
 
+  // 3. Monatliche Berichte
   const currentMonthStr = todayISO.substring(0, 7);
   const lastMonthlyReport = localStorage.getItem('flow_last_monthly_report_month');
   if (lastMonthlyReport && lastMonthlyReport !== currentMonthStr) {
-    const { reportText, filename = "" } = generateReportContent('monthly', lastMonthlyReport);
-    const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-
+    const { reportText, filename } = generateReportContent('monthly', lastMonthlyReport);
+    triggerAutomaticDownload(reportText, filename);
+    localStorage.setItem('flow_last_monthly_report_month', currentMonthStr);
     showToast(lang === 'de'
       ? `Automatischer Monatsbericht (${lastMonthlyReport}) heruntergeladen! 📊`
       : `Automatic monthly report (${lastMonthlyReport}) downloaded! 📊`);
   }
-  localStorage.setItem('flow_last_monthly_report_month', currentMonthStr);
 }
 
-// =========================================================================
-// NEU: ENTSCHEIDUNGS-KOMPASS INTERAKTIVE ENGINE 🧭
-// =========================================================================
-
-let currentCompassQuery = "";
-let activeCompassTab = "coin";
-let coinVetoTimer = null;
-let coinVetoTimeLeft = 10;
-let scaleArguments = [];
-let spoonOptions = [];
-
-function openCompassModal() {
-  document.getElementById('compass-query-input').value = '';
-  document.getElementById('coin-opt-a').value = '';
-  document.getElementById('coin-opt-b').value = '';
-  document.getElementById('scale-add-text').value = '';
-  document.getElementById('coin-toss-result-box').classList.add('hidden');
-  document.getElementById('coin-toss-final').classList.add('hidden');
-  
-  scaleArguments = [];
-  spoonOptions = [];
-  renderScaleArguments();
-  recalculateScaleVerdict();
-  renderSpoonOptions();
-  recalculateSpoonCheck();
-  
-  if (coinVetoTimer) {
-    clearInterval(coinVetoTimer);
-    coinVetoTimer = null;
-  }
-
-  document.getElementById('compass-step-tools').classList.add('hidden');
-  document.getElementById('compass-step-entry').classList.remove('hidden');
-  document.getElementById('helper-compass-modal').classList.remove('hidden');
-  
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+function triggerManualReportDownload(timeframe) {
+  const { reportText, filename } = generateReportContent(timeframe);
+  triggerAutomaticDownload(reportText, filename);
+  showToast(currentLang === 'de' ? `Bericht heruntergeladen! 📥` : `Report downloaded! 📥`);
 }
 
-function closeCompassModal() {
-  document.getElementById('helper-compass-modal').classList.add('hidden');
-  if (coinVetoTimer) {
-    clearInterval(coinVetoTimer);
-    coinVetoTimer = null;
-  }
-}
+// === INTERAKTIVER INTELLIGENTER COACH-CHAT (FLOW-COACH JANNIS) ===
+let chatHistory = [];
 
-function submitCompassQuery() {
-  const query = document.getElementById('compass-query-input').value.trim();
-  if (!query) {
-    showToast(currentLang === 'de' ? "Bitte formuliere zuerst dein Anliegen!" : "Please write down your dilemma first!");
-    return;
-  }
+function toggleCoachChat() {
+  const widget = document.getElementById('coach-chat-widget');
+  if (!widget) return;
   
-  currentCompassQuery = query;
-  document.getElementById('compass-active-dilemma-label').innerText = query;
-  
-  let recommendedTab = "coin";
-  const lowerQuery = query.toLowerCase();
-  
-  const deSplit = query.split(/\s+oder\s+/i);
-  const enSplit = query.split(/\s+or\s+/i);
-  const activeSplit = deSplit.length > 1 ? deSplit : (enSplit.length > 1 ? enSplit : []);
-  
-  if (activeSplit.length > 1) {
-    document.getElementById('coin-opt-a').value = activeSplit[0].replace(/^(soll ich\s+)/i, "").trim();
-    document.getElementById('coin-opt-b').value = activeSplit[1].replace(/(\?)$/, "").trim();
-    recommendedTab = "coin";
+  const isHidden = widget.classList.contains('hidden');
+  if (isHidden) {
+    widget.classList.remove('hidden');
+    const msgBox = document.getElementById('chat-messages-box');
+    if (msgBox && msgBox.children.length === 0) {
+      appendCoachMessage("Hallo! Ich bin dein Flow-Coach Jannis. 🧠 Wie kann ich dir heute helfen?\n\nSchreib mir einfach, wenn du abgelenkt bist, deine Aufgaben strukturieren möchtest, oder Hilfe bei einer Aufgabe suchst!");
+    }
   } else {
-    if (/(heute|jetzt|müde|sport|kochen|aufräumen|löffel|spoon|energy|now)/i.test(lowerQuery)) {
-      recommendedTab = "spoon";
-    } else if (/(job|kündigen|umziehen|kaufen|verkaufen|zukunft|geld|career|quit|move|buy|financial)/i.test(lowerQuery)) {
-      recommendedTab = "scale";
-    } else if (/(sagen|beichten|streiten|trennen|ansprechen|konflikt)/i.test(lowerQuery)) {
-      recommendedTab = "ten";
-    } else if (/(angst|sorge|zweifel|schlimmste|worst|panic|fear)/i.test(lowerQuery)) {
-      recommendedTab = "fear";
-    }
+    widget.classList.add('hidden');
   }
-
-  document.getElementById('lbl-ten-mins').innerText = currentLang === 'de'
-    ? `Wie fühle ich mich in 10 Minuten nach der Entscheidung für: "${query}"?`
-    : `How will I feel in 10 minutes after deciding: "${query}"?`;
-  document.getElementById('lbl-ten-months').innerText = currentLang === 'de'
-    ? `Wie fühle ich mich in 10 Monaten nach der Entscheidung für: "${query}"?`
-    : `How will I feel in 10 months after deciding: "${query}"?`;
-  document.getElementById('lbl-ten-years').innerText = currentLang === 'de'
-    ? `Wie fühle ich mich in 10 Jahren nach der Entscheidung für: "${query}"?`
-    : `How will I feel in 10 years after deciding: "${query}"?`;
-
-  document.getElementById('compass-step-entry').classList.add('hidden');
-  document.getElementById('compass-step-tools').classList.remove('hidden');
-  
-  switchCompassTab(recommendedTab);
-  showToast(currentLang === 'de' ? `Kompass ausgerichtet! Empfehlung: ${recommendedTab}` : `Compass aligned! Recommended: ${recommendedTab}`);
 }
 
-function returnToCompassEntry() {
-  if (coinVetoTimer) {
-    clearInterval(coinVetoTimer);
-    coinVetoTimer = null;
-  }
-  document.getElementById('compass-step-tools').classList.add('hidden');
-  document.getElementById('compass-step-entry').classList.remove('hidden');
+function appendCoachMessage(text) {
+  const msgBox = document.getElementById('chat-messages-box');
+  if (!msgBox) return;
+  const el = document.createElement('div');
+  el.className = 'chat-msg-coach animate-fade-in whitespace-pre-line';
+  el.innerText = text;
+  msgBox.appendChild(el);
+  msgBox.scrollTop = msgBox.scrollHeight;
 }
 
-function switchCompassTab(tabId) {
-  activeCompassTab = tabId;
-  
-  ['coin', 'scale', 'spoon', 'ten', 'fear'].forEach(t => {
-    const btn = document.getElementById(`tab-btn-${t}`);
-    const pane = document.getElementById(`compass-pane-${t}`);
-    if (btn && pane) {
-      if (t === tabId) {
-        btn.className = 'flex-1 py-1.5 px-2 rounded text-[var(--accent-light)] bg-[var(--accent)]/25 border border-[var(--accent)]/30 cursor-pointer font-bold text-center';
-        pane.classList.remove('hidden');
-      } else {
-        btn.className = 'flex-1 py-1.5 px-2 rounded text-gray-400 hover:text-white hover:bg-white/5 cursor-pointer text-center';
-        pane.classList.add('hidden');
-      }
-    }
-  });
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+function appendUserMessage(text) {
+  const msgBox = document.getElementById('chat-messages-box');
+  if (!msgBox) return;
+  const el = document.createElement('div');
+  el.className = 'chat-msg-user animate-fade-in';
+  el.innerText = text;
+  msgBox.appendChild(el);
+  msgBox.scrollTop = msgBox.scrollHeight;
 }
 
-// --- TAB 1: BAUCHGEFÜHL LOGIK ---
-let coinLastPicked = "";
-let coinLastOther = "";
-
-function triggerCoinToss() {
-  const optA = document.getElementById('coin-opt-a').value.trim();
-  const optB = document.getElementById('coin-opt-b').value.trim();
+function sendCoachMessage() {
+  const input = document.getElementById('chat-user-input');
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text) return;
   
-  if (!optA || !optB) {
-    showToast(currentLang === 'de' ? "Trage zuerst Option A und B ein!" : "Please enter Option A and B first!");
-    return;
-  }
-
-  if (coinVetoTimer) clearInterval(coinVetoTimer);
-
-  const resultBox = document.getElementById('coin-toss-result-box');
-  const spinningEl = document.getElementById('coin-toss-spinning');
-  const finalEl = document.getElementById('coin-toss-final');
-  const vetoBtn = document.getElementById('coin-veto-btn');
-
-  resultBox.classList.remove('hidden');
-  spinningEl.classList.remove('hidden');
-  finalEl.classList.add('hidden');
-  vetoBtn.disabled = true;
-
-  if (typeof playProceduralSound === 'function') playProceduralSound(10); 
-
+  appendUserMessage(text);
+  input.value = '';
+  
   setTimeout(() => {
-    spinningEl.classList.add('hidden');
-    finalEl.classList.remove('hidden');
-    
-    const pickedA = Math.random() < 0.5;
-    coinLastPicked = pickedA ? optA : optB;
-    coinLastOther = pickedA ? optB : optA;
-    
-    if (coinLastOther === undefined || coinLastOther === null || coinLastOther === pickedA) {
-      coinLastOther = pickedA ? optB : optA;
-    }
+    const reply = getCoachReply(text);
+    appendCoachMessage(reply);
+  }, 750);
+}
 
-    document.getElementById('coin-toss-verdict').innerText = coinLastPicked;
-    
-    coinVetoTimeLeft = 10;
-    vetoBtn.disabled = false;
-    vetoBtn.className = "px-3 py-1 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/30 text-rose-300 text-[10px] font-bold rounded-lg transition cursor-pointer";
-    document.getElementById('coin-veto-countdown').innerText = `Veto-Dauer: ${coinVetoTimeLeft}s`;
-    
-    coinVetoTimer = setInterval(() => {
-      coinVetoTimeLeft--;
-      if (coinVetoTimeLeft <= 0) {
-        clearInterval(coinVetoTimer);
-        coinVetoTimer = null;
-        vetoBtn.disabled = true;
-        vetoBtn.className = "px-3 py-1 bg-white/5 text-gray-500 border border-white/5 text-[10px] font-bold rounded-lg transition cursor-not-allowed";
-        document.getElementById('coin-veto-countdown').innerText = currentLang === 'de' ? "Veto abgelaufen" : "Veto expired";
-      } else {
-        document.getElementById('coin-veto-countdown').innerText = `Veto-Dauer: ${coinVetoTimeLeft}s`;
+function getCoachReply(query) {
+  const q = query.toLowerCase();
+  const lang = currentLang || 'de';
+  
+  const openDailies = (state.items?.daily || []).filter(Boolean);
+  const openTodos = (state.items?.todo || []).filter(Boolean);
+  const openTermine = (state.items?.termine || []).filter(Boolean);
+  const totalOpen = openDailies.length + openTodos.length + openTermine.length;
+
+  if (lang === 'de') {
+    if (q.includes('hallo') || q.includes('hi ') || q.includes('hey') || q.includes('guten tag')) {
+      if (totalOpen > 0) {
+        return `Hallo! Schön, dass du da bist. 🌊 Du hast aktuell ${totalOpen} offene Aufgaben auf deinem Board.\n\nWomit möchtest du heute starten? Frag mich einfach, wenn ich dir helfen soll, eine dieser Aufgaben in kleine Teilschritte aufzuteilen!`;
       }
-    }, 1000);
-
-  }, 800);
-}
-
-function triggerCoinVeto() {
-  if (coinVetoTimer) {
-    clearInterval(coinVetoTimer);
-    coinVetoTimer = null;
-  }
-  
-  const vetoBtn = document.getElementById('coin-veto-btn');
-  vetoBtn.disabled = true;
-  vetoBtn.className = "px-3 py-1 bg-white/5 text-gray-500 border border-white/5 text-[10px] font-bold rounded-lg transition cursor-not-allowed";
-  
-  document.getElementById('coin-toss-verdict').innerText = coinLastOther;
-  document.getElementById('coin-veto-countdown').innerText = "VETO EINGELEGT! 🛑";
-  
-  showToast(currentLang === 'de' ? "Veto registriert!" : "Veto registered!");
-  if (typeof playProceduralSound === 'function') playProceduralSound(0); 
-}
-
-// --- TAB 2: WERTE-WAAGE LOGIK ---
-
-function handleAddScaleArgument() {
-  const textEl = document.getElementById('scale-add-text');
-  const typeEl = document.getElementById('scale-add-type');
-  const weightEl = document.getElementById('scale-add-weight');
-
-  const text = textEl ? textEl.value.trim() : "";
-  const type = typeEl ? typeEl.value : "pro";
-  const weight = weightEl ? parseInt(weightEl.value) || 1 : 1;
-
-  if (!text) {
-    showToast(currentLang === 'de' ? "Bitte formuliere ein Argument!" : "Please write down an argument!");
-    return;
-  }
-
-  scaleArguments.push({ text, type, weight });
-  textEl.value = '';
-  
-  renderScaleArguments();
-  recalculateScaleVerdict();
-}
-
-function renderScaleArguments() {
-  const proList = document.getElementById('scale-pro-list');
-  const conList = document.getElementById('scale-con-list');
-  if (!proList || !conList) return;
-
-  proList.innerHTML = '';
-  conList.innerHTML = '';
-
-  scaleArguments.forEach((arg, idx) => {
-    const div = document.createElement('div');
-    div.className = 'p-1.5 bg-black/40 border border-white/5 rounded-lg flex items-center justify-between gap-1 text-[10px] text-gray-200';
-    div.innerHTML = `
-      <span class="truncate flex-1 font-semibold">${arg.text} <span class="text-amber-400">(${"⭐".repeat(arg.weight)})</span></span>
-      <button onclick="deleteScaleArgument(${idx})" class="p-0.5 text-gray-500 hover:text-red-400 transition cursor-pointer shrink-0"><i data-lucide="x" class="w-3 h-3"></i></button>
-    `;
-    if (arg.type === 'pro') proList.appendChild(div);
-    else conList.appendChild(div);
-  });
-  if (typeof lucide !== 'undefined') lucide.createIcons();
-}
-
-function deleteScaleArgument(idx) {
-  scaleArguments.splice(idx, 1);
-  renderScaleArguments();
-  recalculateScaleVerdict();
-}
-
-function clearScaleMatrix() {
-  scaleArguments = [];
-  renderScaleArguments();
-  recalculateScaleVerdict();
-}
-
-function recalculateScaleVerdict() {
-  const box = document.getElementById('scale-verdict-box');
-  const txt = document.getElementById('scale-verdict-text');
-  if (!txt) return;
-
-  if (scaleArguments.length === 0) {
-    txt.innerText = currentLang === 'de' ? "Noch keine Argumente eingetragen." : "No arguments registered yet.";
-    box.className = "p-2.5 bg-white/[0.02] border border-white/5 rounded-xl flex items-center justify-between text-xs";
-    return;
-  }
-
-  const proWeight = scaleArguments.filter(a => a.type === 'pro').reduce((sum, a) => sum + a.weight, 0);
-  const conWeight = scaleArguments.filter(a => a.type === 'con').reduce((sum, a) => sum + a.weight, 0);
-
-  if (proWeight > conWeight) {
-    txt.innerText = currentLang === 'de' 
-      ? `PRO überwiegt mit ${proWeight} zu ${conWeight} Sternen! 👍` 
-      : `PRO outweighs with ${proWeight} to ${conWeight} stars! 👍`;
-    box.className = "p-2.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center justify-between text-xs text-emerald-300 font-bold";
-  } else if (conWeight > proWeight) {
-    txt.innerText = currentLang === 'de' 
-      ? `CONTRA überwiegt mit ${conWeight} zu ${proWeight} Sternen! 👎` 
-      : `CONTRA outweighs with ${conWeight} to ${proWeight} stars! 👎`;
-    box.className = "p-2.5 bg-rose-500/10 border border-rose-500/30 rounded-xl flex items-center justify-between text-xs text-rose-300 font-bold";
-  } else {
-    txt.innerText = currentLang === 'de' 
-      ? `Gleichstand! Beide Seiten wiegen exakt ${proWeight} Sterne. ⚖️` 
-      : `Tie! Both sides weigh exactly ${proWeight} stars. ⚖️`;
-    box.className = "p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-center justify-between text-xs text-amber-300 font-bold";
-  }
-}
-
-// --- TAB 3: LÖFFEL-CHECK (Spoon check) LOGIK ---
-
-function handleAddSpoonOptionPrompt() {
-  const name = prompt(currentLang === 'de' ? "Name des Vorhabens / der Aktivität:" : "Name of option/activity:");
-  if (!name || !name.trim()) return;
-
-  const energy = prompt(currentLang === 'de'
-    ? "Benötigte Energie (1 = sehr niedrig/erholsam, 2 = normal, 3 = hoch, 4 = extrem hoch/überwältigend):"
-    : "Energy required (1 = very low, 2 = normal, 3 = high, 4 = extremely high):", "2");
-  const eVal = parseInt(energy) || 2;
-
-  const energyMap = { 1: "low", 2: "med", 3: "high", 4: "overwhelmed" };
-  const energyKey = energyMap[eVal] || "med";
-
-  spoonOptions.push({ name: name.trim(), energy: energyKey });
-  
-  renderSpoonOptions();
-  recalculateSpoonCheck();
-}
-
-function renderSpoonOptions() {
-  const list = document.getElementById('spoon-options-list');
-  if (!list) return;
-  list.innerHTML = '';
-
-  if (spoonOptions.length === 0) {
-    list.innerHTML = `<div class="text-center text-gray-600 italic text-[10px] py-1">Noch keine Optionen eingetragen.</div>`;
-    return;
-  }
-
-  const energyLabels = {
-    low: currentLang === 'de' ? "Erholsam" : "Restorative",
-    med: currentLang === 'de' ? "Normal" : "Normal",
-    high: currentLang === 'de' ? "Anstrengend" : "Demanding",
-    overwhelmed: currentLang === 'de' ? "Extrem zehrend" : "Overwhelming"
-  };
-
-  spoonOptions.forEach((opt, idx) => {
-    const div = document.createElement('div');
-    div.id = `spoon-option-row-${idx}`;
-    div.className = 'p-2 bg-black/40 border border-white/5 rounded-xl flex items-center justify-between gap-1.5 text-xs text-white';
+      return "Hallo! Schön, dass du da bist. 🌊 Dein Board ist im Moment wunderbar leer und erledigt. Gibt es etwas, das du für die Zukunft planen möchtest, oder willst du dich einfach entspannen?";
+    }
     
-    div.innerHTML = `
-      <div class="flex items-center gap-2 min-w-0 flex-1">
-        <span id="spoon-badge-${idx}" class="shrink-0 font-bold text-[9px] px-2 py-0.5 rounded-full">Lade...</span>
-        <span class="truncate font-semibold">${opt.name}</span>
-        <span class="text-[9px] text-gray-500 font-bold shrink-0">(${energyLabels[opt.energy]})</span>
-      </div>
-      <button onclick="deleteSpoonOption(${idx})" class="p-1 text-gray-500 hover:text-rose-400 transition cursor-pointer shrink-0"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-    `;
-    list.appendChild(div);
-  });
-  if (typeof lucide !== 'undefined') lucide.createIcons();
-}
-
-function deleteSpoonOption(idx) {
-  spoonOptions.splice(idx, 1);
-  renderSpoonOptions();
-  recalculateSpoonCheck();
-}
-
-function recalculateSpoonCheck() {
-  if (spoonOptions.length === 0) {
-    const vTxt = document.getElementById('spoon-verdict-text');
-    if (vTxt) vTxt.innerText = currentLang === 'de' ? "Füge Optionen hinzu und wähle deine Energie aus!" : "Add options and select your energy budget!";
-    return;
-  }
-
-  const batteryVal = document.getElementById('spoon-battery-select').value;
-  
-  const allowedMax = {
-    high: 4,
-    med: 2,
-    low: 1,
-    overwhelmed: 1
-  }[batteryVal] || 4;
-
-  const energyScore = { low: 1, med: 2, high: 3, overwhelmed: 4 };
-
-  let allowedCount = 0;
-
-  spoonOptions.forEach((opt, idx) => {
-    const score = energyScore[opt.energy] || 2;
-    const badge = document.getElementById(`spoon-badge-${idx}`);
-    if (!badge) return;
-
-    if (score <= allowedMax) {
-      badge.innerText = currentLang === 'de' ? "Empfohlen ✅" : "Safe ✅";
-      badge.className = "shrink-0 font-bold text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
-      allowedCount++;
-    } else {
-      badge.innerText = currentLang === 'de' ? "Gesperrt ⚠️" : "Locked ⚠️";
-      badge.className = "shrink-0 font-bold text-[9px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30";
+    if (q.includes('überfordert') || q.includes('zuviel') || q.includes('zu viel') || q.includes('stress') || q.includes('panik')) {
+      return "Atme erst einmal tief durch. 🧘‍♂️ Bei Überforderung hilft es, alles auszublenden.\n\nKlicke oben im Header auf 'Pause' für eine sensorische Reizpause, geführte Atemübungen, Muskeldehnen oder eine gemütliche 5-Minuten-Auszeit. Mach langsam.";
     }
-  });
 
-  const vTxt = document.getElementById('spoon-verdict-text');
-  if (vTxt) {
-    if (batteryVal === 'overwhelmed') {
-      vTxt.innerText = currentLang === 'de'
-        ? "Du bist im roten Bereich (überreizt). Mache JETZT ausschließlich erholsame Dinge. Der Rest hat Pause!"
-        : "You are overwhelmed. Do RESTORATIVE things only. Everything else can wait!";
-    } else if (allowedCount === 0) {
-      vTxt.innerText = currentLang === 'de'
-        ? "Keine der eingetragenen Optionen passt zu deiner Energie. Gönne dir echte Ruhe!"
-        : "None of the options match your energy. Please take a proper break!";
-    } else {
-      vTxt.innerText = currentLang === 'de'
-        ? `Löffel-Check bereit: Du hast das Energiebudget für ${allowedCount} von ${spoonOptions.length} Vorhaben.`
-        : `Spoon-Check ready: You have the energy budget for ${allowedCount} out of ${spoonOptions.length} activities.`;
-    }
-  }
-}
-
-// --- TAB 4 & TAB 5: SPEICHER LOGIK ---
-
-function saveTenPerspective() {
-  const m = document.getElementById('ten-input-mins').value.trim();
-  const mo = document.getElementById('ten-input-months').value.trim();
-  const y = document.getElementById('ten-input-years').value.trim();
-
-  if (!m && !mo && !y) {
-    showToast(currentLang === 'de' ? "Bitte trage mindestens eine Perspektive ein!" : "Please write down at least one perspective!");
-    return;
-  }
-
-  if (typeof playProceduralSound === 'function') playProceduralSound(0); 
-  showToast(currentLang === 'de' ? "10-10-10-Perspektive erfolgreich gesichert! 💾" : "10-10-10 perspective successfully saved! 💾");
-}
-
-function saveFearSettingPerspective() {
-  const w = document.getElementById('fear-worst').value.trim();
-  const r = document.getElementById('fear-repair').value.trim();
-  const i = document.getElementById('fear-inaction').value.trim();
-
-  if (!w && !r && !i) {
-    showToast(currentLang === 'de' ? "Bitte fülle die Angst-Analyse aus!" : "Please fill out the fear analysis first!");
-    return;
-  }
-
-  if (typeof playProceduralSound === 'function') playProceduralSound(0); 
-  showToast(currentLang === 'de' ? "Angst-Analyse (Fear Setting) erfolgreich gesichert! 💾" : "Fear setting analysis successfully saved! 💾");
-}
-
-// --- SENSORISCHE REIZPAUSE MODAL LOGIK 🧘 ---
-
-let safeSpaceBreathInterval = null;
-let safeSpaceNoiseActive = false;
-
-function openSafeSpaceModal() {
-  document.getElementById('helper-safespace-modal').classList.remove('hidden');
-  switchSafeSpaceTab('breath');
-  if (typeof lucide !== 'undefined') lucide.createIcons();
-}
-
-function closeSafeSpaceModal() {
-  document.getElementById('helper-safespace-modal').classList.add('hidden');
-  stopSafeSpaceBreathingCycle();
-  if (safeSpaceNoiseActive) {
-    toggleSafeSpaceNoise();
-  }
-}
-
-function switchSafeSpaceTab(tabId) {
-  const tabs = ['breath', 'anchor'];
-  tabs.forEach(t => {
-    const btn = document.getElementById(`safespace-tab-${t}`);
-    const pane = document.getElementById(`safespace-pane-${t}`);
-    if (btn && pane) {
-      if (t === tabId) {
-        btn.className = 'flex-1 py-1 px-2 rounded text-[var(--accent-light)] bg-[var(--accent)]/25 border border-[var(--accent)]/30 cursor-pointer font-bold text-center';
-        pane.classList.remove('hidden');
-      } else {
-        btn.className = 'flex-1 py-1 px-2 rounded text-gray-400 hover:text-white hover:bg-white/5 cursor-pointer text-center';
-        pane.classList.add('hidden');
+    if (q.includes('was soll ich') || q.includes('was tun') || q.includes('was jetzt') || q.includes('was nun') || q.includes('hilfe')) {
+      if (openDailies.length > 0) {
+        const firstTask = typeof openDailies[0] === 'object' ? openDailies[0].task : openDailies[0];
+        return `Ich empfehle dir, mit einer kleinen Routine zu starten. Wie wäre es mit:\n\n👉 „${firstTask}“?\n\nIch kann dir auch über den 'Was nun?'-Knopf oben rechts jederzeit eine zufällige Aufgabe vorschlagen, um dir die Entscheidung abzunehmen!`;
+      } else if (openTodos.length > 0) {
+        const firstTask = typeof openTodos[0] === 'object' ? openTodos[0].task : openTodos[0];
+        return `Wie wäre es, wenn wir uns heute um diese Aufgabe kümmern:\n\n👉 „${firstTask}“?\n\nDu kannst im Dock auch den Social-Skripter oder den Entscheidungs-Kompass nutzen, falls du Unterstützung brauchst.`;
       }
+      return "Du hast gerade keine dringenden Aufgaben auf deinem Board! Perfekte Zeit für einen sanften Bewegungs-Impuls (Dumbbell-Symbol im Dock) oder ein wenig wohlverdiente Ruhe. 🌳";
     }
-  });
-  
-  if (tabId === 'breath') {
-    startSafeSpaceBreathingCycle();
-  } else {
-    stopSafeSpaceBreathingCycle();
-    resetGroundingAnchor();
-  }
-}
 
-function startSafeSpaceBreathingCycle() {
-  stopSafeSpaceBreathingCycle();
-  const circle = document.getElementById('safespace-breath-circle');
-  const txt = document.getElementById('safespace-breath-text');
-  if (!circle || !txt) return;
-
-  let step = 0; 
-  
-  const runStep = () => {
-    if (step === 0) {
-      txt.innerText = currentLang === 'de' ? "Einatmen (4s)" : "Inhale (4s)";
-      circle.style.transform = "scale3d(1.3, 1.3, 1)";
-      circle.style.borderColor = "rgba(20, 184, 166, 0.8)";
-      step = 1;
-      safeSpaceBreathInterval = setTimeout(runStep, 4000);
-    } else if (step === 1) {
-      txt.innerText = currentLang === 'de' ? "Halten (7s)" : "Hold (7s)";
-      circle.style.borderColor = "rgba(245, 158, 11, 0.8)";
-      step = 2;
-      safeSpaceBreathInterval = setTimeout(runStep, 7000);
-    } else {
-      txt.innerText = currentLang === 'de' ? "Ausatmen (8s)" : "Exhale (8s)";
-      circle.style.transform = "scale3d(0.85, 0.85, 1)";
-      circle.style.borderColor = "rgba(20, 184, 166, 0.4)";
-      step = 0;
-      safeSpaceBreathInterval = setTimeout(runStep, 8000);
+    if (q.includes('müde') || q.includes('erschöpft') || q.includes('keine kraft') || q.includes('löffel') || q.includes('spoons')) {
+      return "Respektiere deine Grenzen. 🔋 Wenn deine Energie ('Spoons') niedrig ist, passe dein Board an.\n\nNutze das Sport-Symbol im Dock auf Stufe 1 (Liegend/Sitzend) oder den Entscheidungs-Kompass mit dem 'Löffel-Check', um nur das absolut Nötigste einzuplanen.";
     }
-  };
 
-  runStep();
-}
-
-function stopSafeSpaceBreathingCycle() {
-  if (safeSpaceBreathInterval) {
-    clearTimeout(safeSpaceBreathInterval);
-    safeSpaceBreathInterval = null;
-  }
-}
-
-function toggleSafeSpaceNoise() {
-  safeSpaceNoiseActive = !safeSpaceNoiseActive;
-  const btn = document.getElementById('safespace-noise-btn');
-  if (!btn) return;
-
-  if (safeSpaceNoiseActive) {
-    btn.innerText = currentLang === 'de' ? "Stop 🔇" : "Stop 🔇";
-    btn.className = "px-3 py-1.5 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/30 text-rose-300 text-[10px] font-bold rounded-lg transition cursor-pointer";
-    if (typeof playAmbientSound === 'function') {
-      playAmbientSound('rain', true); 
+    if (q.includes('aufschieben') || q.includes('prokrastination') || q.includes('keine lust') || q.includes('unmotiviert') || q.includes('blockiert')) {
+      return "Das kenne ich nur zu gut! 🧠 Versuche die 5-Minuten-Regel:\n\nStelle dir einen Timer auf 5 Minuten (oben einstellbar) und fange einfach an. Wenn du danach aufhören willst, darfst du das jederzeit! Meistens kommt man so aber direkt in den Fluss.";
     }
-  } else {
-    btn.innerText = currentLang === 'de' ? "Start 🔊" : "Start 🔊";
-    btn.className = "px-3 py-1.5 bg-teal-500/20 hover:bg-teal-500/30 border border-teal-500/30 text-teal-300 text-[10px] font-bold rounded-lg transition cursor-pointer";
-    if (typeof stopAmbientSound === 'function') {
-      stopAmbientSound(true);
+
+    if (q.includes('einkauf') || q.includes('kauf') || q.includes('shopping')) {
+      return "Deine Einkaufsliste findest du direkt unten im macOS-Dock unter dem Korb-Symbol! Dort kannst du Artikel hinzufügen, abhaken und clevere Spartipps erhalten.";
     }
-  }
-}
 
-// --- FOKUS-ANKER (5-4-3-2-1 GROUNDING METHODE) LOGIK ---
-
-let anchorCurrentStep = 1;
-const groundingStepsText = {
-  de: [
-    "Finde 5 Dinge in deiner Umgebung, die du sehen kannst. Lasse dir Zeit.",
-    "Finde 4 Dinge um dich herum, die du physisch anfassen/spüren kannst (z.B. den Stuhl oder den Boden).",
-    "Konzentriere dich auf 3 Geräusche, die du in diesem Moment hören kannst. Blende den Rest aus.",
-    "Atme tief ein und finde 2 Dinge, die du riechen kannst (z.B. Kaffee, Kleidung oder frische Luft).",
-    "Nenne 1 positive Eigenschaft, Stärke oder etwas Schönes an dir selbst."
-  ],
-  en: [
-    "Find 5 things in your surroundings that you can see. Take your time.",
-    "Find 4 things around you that you can physically touch/feel (e.g., your chair or the floor).",
-    "Focus on 3 sounds that you can hear right in this moment. Block out the rest.",
-    "Inhale deeply and identify 2 things you can smell (e.g., coffee, clothes, or fresh air).",
-    "Acknowledge 1 positive trait, strength, or beautiful thing about yourself."
-  ],
-  es: [
-    "Encuentra 5 cosas a tu alrededor que puedas ver. Tómate tu tiempo.",
-    "Encuentra 4 cosas a tu alrededor que puedas tocar/sentir físicamente (ej. tu silla o el suelo).",
-    "Concéntrate en 3 sonidos que puedas escuchar in diesem Moment. Blockiere den Rest.",
-    "Inhala profundamente e identifica 2 cosas que puedas oler (ej. café, aroma o aire fresco).",
-    "Reconoce 1 cualidad, fortaleza o cosa hermosa sobre ti mismo."
-  ],
-  el: [
-    "Βρες 5 πράγματα γύρω σου που μπορείς να δεις. Παρε τον χρόνο σου.",
-    "Βρες 4 πράγματα γύρω σου που μπορείς να αγγίξεις/νιώσεις (π.χ. την καρέκλα ή το πάτωμα σου).",
-    "Εστίασε σε 3 ήχους που μπορείς να ακούσεις αυτή τη στιγμή. Απομονώστε τα υπόλοιπα.",
-    "Είσπνευσε βαθιά και εντόπισε 2 πράγματα που μπορείς να μυρίσεις (π.χ. καφέ, ρούχα ή καθαρό αέρα).",
-    "Αναγνώρισε 1 θετικό χαρακτηριστικό, δύναμη ή κάτι όμορφο στον εαυτό σου."
-  ]
-};
-
-function groundingStepsText_get(currentLang) {
-  return groundingStepsText[currentLang] || groundingStepsText['en'];
-}
-
-function resetGroundingAnchor() {
-  anchorCurrentStep = 1;
-  const steps = groundingStepsText[currentLang] || groundingStepsText['de'] || groundingStepsText['en'];
-  document.getElementById('anchor-step-title').innerText = currentLang === 'de' ? "Schritt 1 von 5" : "Step 1 of 5";
-  document.getElementById('anchor-step-instruction').innerText = steps[0];
-  document.getElementById('anchor-progress-bar').style.width = "20%";
-  document.getElementById('anchor-next-btn').classList.remove('hidden');
-}
-
-function nextAnchorStep() {
-  anchorCurrentStep++;
-  const steps = groundingStepsText[currentLang] || groundingStepsText['de'] || groundingStepsText['en'];
+    if (q.includes('danke') || q.includes('super') || q.includes('toll') || q.includes('klasse') || q.includes('cool')) {
+      return "Sehr gerne! Ich bin jederzeit hier, um dich im Fluss zu halten. Du machst das großartig! 🚀";
+    }
+    
+    return "Ich verstehe. Lass uns einen Schritt nach dem anderen gehen. Wenn du dich blockiert fühlst, frage mich nach der '5-Minuten-Regel' oder klicke auf 'Was nun?' für eine automatische Empfehlung.";
+  } 
   
-  if (anchorCurrentStep > 5) {
-    document.getElementById('anchor-step-title').innerText = currentLang === 'de' ? "ÜBUNG BEENDET" : "EXERCISE FINISHED";
-    document.getElementById('anchor-step-instruction').innerText = currentLang === 'de'
-      ? "🎉 Wunderbar geerdet! Du bist wieder voll im Hier und Jetzt angekommen."
-      : "🎉 Beautifully grounded! You are fully back in the present moment.";
-    document.getElementById('anchor-progress-bar').style.width = "100%";
-    document.getElementById('anchor-next-btn').classList.add('hidden');
-    if (typeof playProceduralSound === 'function') playProceduralSound(0); 
-    return;
-  }
-
-  document.getElementById('anchor-step-title').innerText = currentLang === 'de' 
-    ? `Schritt ${anchorCurrentStep} von 5` 
-    : `Step ${anchorCurrentStep} of 5`;
-  document.getElementById('anchor-step-instruction').innerText = steps[anchorCurrentStep - 1];
-  document.getElementById('anchor-progress-bar').style.width = `${anchorCurrentStep * 20}%`;
-  if (typeof playProceduralSound === 'function') playProceduralSound(3); 
-}
-
-// --- SOCIAL SCRIPTING MODAL LOGIK ---
-
-function openScriptingModal() {
-  document.getElementById('helper-scripting-modal').classList.remove('hidden');
-  document.getElementById('script-result-box').classList.add('hidden');
-  onScenarioSelectChange();
-  if (typeof lucide !== 'undefined') lucide.createIcons();
-}
-
-function closeScriptingModal() {
-  document.getElementById('helper-scripting-modal').classList.add('hidden');
-}
-
-function onScenarioSelectChange() {
-  const scenario = document.getElementById('script-scenario-select').value;
-  const fieldsContainer = document.getElementById('script-dynamic-fields');
-  if (!fieldsContainer) return;
-  fieldsContainer.innerHTML = '';
-
-  if (scenario === 'doctor') {
-    fieldsContainer.innerHTML = `
-      <div class="grid grid-cols-2 gap-2">
-        <div>
-          <label class="text-[9px] text-gray-500 font-bold block mb-1">Fachrichtung (z.B. Zahnarzt)</label>
-          <input type="text" id="field-doc-specialty" placeholder="Zahnarzt, Hausarzt..." value="Hausarzt" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
-        </div>
-        <div>
-          <label class="text-[9px] text-gray-500 font-bold block mb-1">Bevorzugter Zeitraum</label>
-          <input type="text" id="field-doc-time" placeholder="Morgens, Nächste Woche..." value="Nächste Woche Montag" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
-        </div>
-      </div>
-    `;
-  } else if (scenario === 'cancel') {
-    fieldsContainer.innerHTML = `
-      <div class="grid grid-cols-2 gap-2">
-        <div>
-          <label class="text-[9px] text-gray-500 font-bold block mb-1">Welcher Termin? (Name/Ort)</label>
-          <input type="text" id="field-cancel-name" placeholder="Zahnarzttermin" value="Termin am Montag" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
-        </div>
-        <div>
-          <label class="text-[9px] text-gray-500 font-bold block mb-1">Grund (z.B. Krank, Verschiebung)</label>
-          <input type="text" id="field-cancel-reason" placeholder="Krankheit, Terminüberschneidung..." value="akuter Krankheit" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
-        </div>
-      </div>
-    `;
-  } else if (scenario === 'food') {
-    fieldsContainer.innerHTML = `
-      <div class="grid grid-cols-2 gap-2">
-        <div>
-          <label class="text-[9px] text-gray-500 font-bold block mb-1">Deine Bestellung (z.B. Pizza Salami)</label>
-          <input type="text" id="field-food-order" value="1x Pizza Margherita und ein Spezi" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
-        </div>
-        <div>
-          <label class="text-[9px] text-gray-500 font-bold block mb-1">Deine Adresse (Straße / Hausnr.)</label>
-          <input type="text" id="field-food-address" placeholder="Musterstraße 12" value="Schillerstraße 15" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
-        </div>
-      </div>
-    `;
-  } else if (scenario === 'handyman') {
-    fieldsContainer.innerHTML = `
-      <div class="grid grid-cols-2 gap-2">
-        <div>
-          <label class="text-[9px] text-gray-500 font-bold block mb-1">Problem (z.B. Heizung kalt)</label>
-          <input type="text" id="field-handyman-issue" value="Wasserhahn tropft stark" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none focus:border-indigo-500" />
-        </div>
-        <div>
-          <label class="text-[9px] text-gray-500 font-bold block mb-1">Dringlichkeit</label>
-          <input type="text" id="field-handyman-urgency" placeholder="Sehr dringend, diese Woche..." value="Diese Woche noch" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
-        </div>
-      </div>
-    `;
-  } else if (scenario === 'custom') {
-    fieldsContainer.innerHTML = `
-      <div>
-        <label class="text-[9px] text-gray-500 font-bold block mb-1">Eigene Stichpunkte / Vorgaben</label>
-        <textarea id="field-custom-text" rows="3" placeholder="Ich möchte kündigen. Mein Vertrag läuft bis..." class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none resize-none leading-normal"></textarea>
-      </div>
-    `;
+  // English fallback
+  else {
+    if (q.includes('hello') || q.includes('hi') || q.includes('hey')) {
+      if (totalOpen > 0) {
+        return `Hello! Great to have you here. 🌊 You currently have ${totalOpen} open tasks on your board.\n\nWhere would you like to start? I can help you break a task down into steps!`;
+      }
+      return "Hello! Great to have you here. 🌊 Your board is beautifully clear right now. Is there anything you'd like to plan, or do you just want to relax?";
+    }
+    if (q.includes('overwhelm') || q.includes('stress') || q.includes('too much') || q.includes('panic')) {
+      return "Take a deep breath first. 🧘‍♂️ When overwhelmed, it helps to block out the noise.\n\nClick the 'Pause' button in the header for a sensory pause or breathing exercise.";
+    }
+    if (q.includes('what should i') || q.includes('what to do') || q.includes('help')) {
+      if (openDailies.length > 0) {
+        const firstTask = typeof openDailies[0] === 'object' ? openDailies[0].task : openDailies[0];
+        return `I suggest starting with a small routine. How about:\n\n👉 "${firstTask}"?\n\nYou can also click the 'What now?' button at the top for a random suggestion!`;
+      }
+      return "No urgent tasks on your board right now! Perfect time for a gentle stretch (dumbbell icon in the dock) or some rest. 🌳";
+    }
+    if (q.includes('tired') || q.includes('exhausted') || q.includes('no energy') || q.includes('spoon')) {
+      return "Respect your boundaries. 🔋 If your energy (spoons) is low, adjust your plans: use the dumbbell icon on level 1 (seated/lying) or use the Compass tool in the dock for a 'Spoon Check'.";
+    }
+    if (q.includes('procrastinat') || q.includes('stuck') || q.includes('lazy') || q.includes('no motivation')) {
+      return "I hear you! 🧠 Try the 5-minute rule:\n\nSet a timer for 5 minutes and just start. If you want to stop after 5 minutes, you are absolutely allowed to. Often, you will want to keep going!";
+    }
+    if (q.includes('thank')) {
+      return "You are very welcome! I'm always here to help keep you in your flow. You are doing great! 🚀";
+    }
+    return "I understand. Let's take it one step at a time. If you feel stuck, ask me about the '5-minute rule' or use 'What now?' for a smart recommendation.";
   }
 }
-
-function generateSocialScript() {
-  const scenario = document.getElementById('script-scenario-select').value;
-  const userName = document.getElementById('script-user-name').value.trim() || "Jannis";
-  const textContainer = document.getElementById('script-text-container');
-  if (!textContainer) return;
-
-  let scriptText = "";
-
-  if (scenario === 'doctor') {
-    const spec = document.getElementById('field-doc-specialty').value.trim() || "Arzt";
-    const time = document.getElementById('field-doc-time').value.trim() || "demnächst";
-    scriptText = `„Guten Tag, mein Name ist ${userName}.\nIch würde gerne einen Termin bei Ihnen im Bereich ${spec} vereinbaren.\nHaben Sie freie Termine für ${time}?\n(Warte auf Antwort)\nMeine Daten lauten: ${userName}. Vielen Dank.“`;
-  } else if (scenario === 'cancel') {
-    const name = document.getElementById('field-cancel-name').value.trim() || "meinem Termin";
-    const reason = document.getElementById('field-cancel-reason').value.trim() || "wichtigen Gründen";
-    scriptText = `„Guten Tag, mein Name ist ${userName}.\nIch rufe an, weil ich leider ${name} absagen muss.\nDer Grund dafür ist eine ${reason}.\nWäre es möglich, den Termin stattdessen zu verschieben?\n(Warte auf Antwort)\nDanke für Ihr Verständnis.“`;
-  } else if (scenario === 'food') {
-    const order = document.getElementById('field-food-order').value.trim() || "etwas Essen";
-    const addr = document.getElementById('field-food-address').value.trim() || "meine Adresse";
-    scriptText = `„Hallo, ich würde gerne eine Bestellung zur Lieferung aufgeben.\nUnd zwar: ${order}.\n(Warte auf Bestätigung)\nGeliefert werden soll das an die folgende Adresse: ${addr}.\nKönnen Sie mir sagen, wie lange es ungefähr dauert?\n(Warte auf Antwort)\nSuper, vielen Dank. Auf Wiederhören.“`;
-  } else if (scenario === 'handyman') {
-    const issue = document.getElementById('field-handyman-issue').value.trim() || "einem Defekt";
-    const urgency = document.getElementById('field-handyman-urgency').value.trim() || "demnächst";
-    scriptText = `„Guten Tag, mein Name ist ${userName}.\nIn meiner Wohnung gibt es ein Problem: ${issue}.\nKönnten Sie einen Handwerker schicken, der sich das ansieht?\nEs wäre gut, wenn das ${urgency} klappen könnte.\n(Warte auf Antwort)\nMeine Telefonnummer für Rückfragen ist im System hinterlegt. Vielen Dank.“`;
-  } else if (scenario === 'custom') {
-    const custom = document.getElementById('field-custom-text').value.trim() || "Keine Vorgaben.";
-    scriptText = `„Guten Tag, mein Name ist ${userName}.\n\n[DEINE STICHUNKTE FÜR DAS TELEFONAT]:\n${custom}“`;
-  }
-
-  textContainer.innerText = scriptText;
-  document.getElementById('script-result-box').classList.remove('hidden');
-  
-  if (typeof playProceduralSound === 'function') playProceduralSound(0); 
-}
-
-function copyGeneratedScript() {
-  const container = document.getElementById('script-text-container');
-  if (!container) return;
-
-  navigator.clipboard.writeText(container.innerText).then(() => {
-    showToast(currentLang === 'de' ? "Skript kopiert! 📋" : "Script copied! 📋");
-  }).catch(err => {
-    console.error("Fehler beim Kopieren:", err);
-  });
-}
-
-// --- DOCK-PRIORISIERUNG FÜR DIE TANZPARTY (EINE EINZIGE DEKLARATION) ---
-
-let currentlyDancingButtons = [];
-let activeDanceTimeouts = [];
 
 function startGlobalButtonDanceParty() {
   const triggerDance = () => {
@@ -2392,14 +1571,6 @@ function startGlobalButtonDanceParty() {
         }
       }
 
-      if (selectedButtons.length < 3 && dockButtons.length > 1) {
-        const remainingDock = dockButtons.filter(btn => !selectedButtons.includes(btn));
-        const shuffledDock = remainingDock.sort(() => 0.5 - Math.random());
-        while (selectedButtons.length < 3 && shuffledDock.length > 0) {
-          selectedButtons.push(shuffledDock.pop());
-        }
-      }
-
       const danceClasses = [
         'animate-party-wobble',
         'animate-party-bounce',
@@ -2429,97 +1600,626 @@ function startGlobalButtonDanceParty() {
   setInterval(triggerDance, 5000);
 }
 
-function renderMiniCalendar() {
-  const grid = document.getElementById('cal-days-grid');
-  const title = document.getElementById('cal-month-title');
-  if (!grid || !title) return;
+// === PAUSE-DROPDOWN-LOGIK (HEADER-FUNKTIONEN) ===
+function openSafeSpaceWithTab(tab) {
+  openSafeSpaceModal();
+  switchSafeSpaceTab(tab);
+  togglePanel('pause-dropdown'); // Dropdown nach Auswahl schließen
+}
 
-  grid.innerHTML = '';
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
-
-  const locales = { de: 'de-DE', en: 'en-US', el: 'el-GR', es: 'es-ES' };
-  const monthName = new Intl.DateTimeFormat(locales[currentLang] || 'en-US', { month: 'long', year: 'numeric' }).format(now);
-  title.innerText = monthName;
-
-  const firstDayOfMonth = new Date(year, month, 1);
-  let firstDayIndex = firstDayOfMonth.getDay();
-  firstDayIndex = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
-
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-  for (let i = 0; i < firstDayIndex; i++) {
-    const empty = document.createElement('span');
-    empty.className = 'text-transparent select-none pointer-events-none';
-    empty.innerText = '';
-    grid.appendChild(empty);
-  }
-
-  const todayDate = now.getDate();
-  const todayMonth = now.getMonth();
-  const todayYear = now.getFullYear();
-
-  for (let day = 1; day <= daysInMonth; day++) {
-    const daySpan = document.createElement('span');
-    daySpan.innerText = day;
-    
-    const isToday = day === todayDate && month === todayMonth && year === todayYear;
-    if (isToday) {
-      daySpan.className = 'flex items-center justify-center h-5 w-5 bg-[var(--accent)] text-white font-bold rounded-lg shadow-[0_0_8px_rgba(139,92,246,0.5)] border border-[var(--accent-light)]/20 animate-pulse';
-    } else {
-      daySpan.className = 'flex items-center justify-center h-5 w-5 text-gray-400 hover:text-white hover:bg-white/5 rounded transition-all duration-150';
-    }
-    
-    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    const dayAppointments = (state.items && state.items.termine) 
-      ? state.items.termine.filter(t => t.date === dateStr) 
-      : [];
-      
-    if (dayAppointments.length > 0) {
-      daySpan.className += ' border border-amber-400/40 relative shadow-[0_0_10px_rgba(245,158,11,0.15)]';
-      
-      const dot = document.createElement('span');
-      dot.className = 'absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-amber-400 rounded-full shadow-[0_0_4px_rgba(245,158,11,0.8)] animate-pulse';
-      daySpan.appendChild(dot);
-    }
-
-    const tooltipAction = currentLang === 'de' 
-      ? "Auf ein Datum klicken, um einen Termin einzutragen" 
-      : "Click on a date to enter an appointment";
-
-    if (dayAppointments.length > 0) {
-      const listStr = dayAppointments.map(t => {
-        let loc = t.location ? ` @ ${t.location}` : '';
-        return `${t.time || 'Ganztägig'} · ${t.task}${loc}`;
-      }).join('\n');
-      daySpan.title = `${tooltipAction}\n\nTermine:\n${listStr}`;
-    } else {
-      daySpan.title = tooltipAction;
-    }
-
-    daySpan.onclick = (e) => {
-      e.stopPropagation();
-      if (typeof toggleTerminForm === 'function') {
-        toggleTerminForm(true, dateStr);
+function triggerQuickStretch() {
+  if (typeof openSportModal === 'function') {
+    openSportModal();
+    const select = document.getElementById('sport-energy-select');
+    if (select) {
+      select.value = "1"; // Setzt Energie auf Stufe 1 (Liegend/Sitzend)
+      if (typeof generateSportSuggestion === 'function') {
+        generateSportSuggestion(); // Aktualisiert die Dehnübung passend
       }
-    };
-    
-    grid.appendChild(daySpan);
+    }
   }
+  togglePanel('pause-dropdown'); // Dropdown schließen
 }
 
-function updateDateAndStreak() {
-  const locales = { de: 'de-DE', en: 'en-GB', el: 'el-GR', es: 'es-ES' };
+function triggerFiveMinTeaBreak() {
+  if (typeof setTimerPreset === 'function') {
+    setTimerPreset(5); // Timer auf 5 Minuten setzen
+  }
+  if (typeof startTimer === 'function') {
+    startTimer(); // Timer starten
+  }
+  if (typeof playAmbientSound === 'function') {
+    playAmbientSound('cafe', true); // Cozy Café Atmosphäre starten (mit Crossfade)
+  }
+  togglePanel('pause-dropdown'); // Dropdown schließen
+}
+
+// Neue Pause-Dropdown Dienste
+function triggerBoxBreathing() {
+  openSafeSpaceWithTab('breath');
+  startSafeSpaceBoxBreathingCycle(); // Modularen Box-Breathing Zyklus starten
+}
+
+function triggerEyeRelaxation() {
+  openSafeSpaceModal();
+  switchSafeSpaceTab('breath');
+  stopSafeSpaceBreathCycle();
+  
+  const circle = document.getElementById('safespace-breath-circle');
+  const text = document.getElementById('safespace-breath-text');
+  if (circle && text) {
+    circle.style.transform = "scale(1.1)";
+    circle.style.borderColor = "rgba(20, 184, 166, 0.6)";
+    text.innerHTML = currentLang === 'de' 
+      ? "<b>Warmes Palming</b><br><br>Reibe deine Hände warm & lege sie für 1 Min. über die geschlossenen Augen."
+      : "<b>Warm Palming</b><br><br>Rub your hands warm & cup them over your closed eyes for 1 min.";
+  }
+  
+  if (typeof setTimerPreset === 'function') {
+    setTimerPreset(1); // 1 Minute Augen-Erholung
+  }
+  if (typeof startTimer === 'function') {
+    startTimer();
+  }
+  togglePanel('pause-dropdown');
+}
+
+function triggerNatureBirds() {
+  if (typeof setTimerPreset === 'function') {
+    setTimerPreset(3); // 3-Minuten Naturauszeit
+  }
+  if (typeof startTimer === 'function') {
+    startTimer();
+  }
+  if (typeof playAmbientSound === 'function') {
+    playAmbientSound('birds', true); // Waldvögel starten
+  }
+  togglePanel('pause-dropdown');
+}
+
+function triggerPowerNap() {
+  if (typeof setTimerPreset === 'function') {
+    setTimerPreset(20); // 20-Minuten Power Nap
+  }
+  if (typeof startTimer === 'function') {
+    startTimer();
+  }
+  if (typeof playAmbientSound === 'function') {
+    playAmbientSound('rain', true); // Beruhigender Regen
+  }
+  togglePanel('pause-dropdown');
+}
+
+function triggerShoulderSqueeze() {
+  if (typeof openSportModal === 'function') {
+    openSportModal();
+    const select = document.getElementById('sport-energy-select');
+    if (select) {
+      select.value = "2"; // Auf Stehend / Moderat einstellen
+      if (typeof generateSportSuggestion === 'function') {
+        generateSportSuggestion();
+      }
+      
+      const box = document.getElementById('sport-suggestion-box');
+      if (box) {
+        const isDe = currentLang === 'de';
+        box.innerHTML = `
+          <h4 class="text-white font-bold text-sm font-display mb-1">${isDe ? "Schulterblatt-Squeeze 🏋️" : "Shoulder Blade Squeeze 🏋️"}</h4>
+          <p class="text-xs text-gray-300 leading-relaxed font-semibold">
+            ${isDe 
+              ? "Stelle dich aufrecht hin, beuge die Ellbogen im 90-Grad-Winkel. Ziehe deine Schulterblätter hinten kraftvoll zusammen, halte für 3s und lockere wieder." 
+              : "Stand tall, elbows bent at a 90-degree angle. Pull your shoulder blades firmly together behind you, hold for 3s, then release."}
+          </p>
+          <div class="flex items-center justify-center gap-1.5 pt-2 text-[10px] text-orange-400 font-bold uppercase tracking-wider">
+            <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+            <span>60s</span>
+          </div>
+        `;
+        if (typeof lucide !== 'undefined') {
+          lucide.createIcons();
+        }
+      }
+    }
+  }
+  togglePanel('pause-dropdown');
+}
+
+// === DEZENTRALISIERTE CLOUD-GERÄTESYNCHRONISIERUNG PER KEY/VALUE API ===
+const SYNC_API_ENDPOINT = "https://keyvalue.immanuel.co/api/KeyVal";
+const SYNC_APP_KEY = "flowsync"; // Hardcodierter App-Key zur gemeinsamen Ablage aller anonymen Sync-Daten
+let syncPollInterval = null;
+
+// Hilfsfunktion: Bereinigt den State für den Cloud-Sync und schneidet das done-Archiv ab,
+// um die server-seitigen URL-Größenbegrenzungen (HTTP 414) permanent zu verhindern.
+function getCleanedSyncState() {
   try {
-    const str = new Intl.DateTimeFormat(locales[currentLang] || 'en-GB', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
-    const displayEl = document.getElementById('date-display');
-    if (displayEl) displayEl.innerText = str;
-  } catch (e) {
-    const displayEl = document.getElementById('date-display');
-    if (displayEl) displayEl.innerText = new Date().toLocaleDateString();
+    const syncState = JSON.parse(JSON.stringify(state));
+    
+    // Begrenze das Archiv für den Sync auf die neuesten 25 Einträge (völlig ausreichend zum Abgleich)
+    if (syncState.done && syncState.done.length > 25) {
+      syncState.done = syncState.done.slice(-25);
+    }
+    return syncState;
+  } catch(e) {
+    return state;
   }
-
-  renderMiniCalendar();
 }
 
+function updateSyncUI() {
+  const code = localStorage.getItem('flow_sync_code');
+  const unlinkedArea = document.getElementById('sync-unlinked-area');
+  const linkedArea = document.getElementById('sync-linked-area');
+  const displayEl = document.getElementById('sync-linked-code-display');
+  const btnHeader = document.querySelector('header button[onclick="togglePanel(\'sync\')"]');
+
+  if (!unlinkedArea || !linkedArea) return;
+
+  if (code) {
+    unlinkedArea.classList.add('hidden');
+    linkedArea.classList.remove('hidden');
+    if (displayEl) displayEl.innerText = `Key: ${code}`;
+    
+    // Status visualisieren (grüne Einfärbung des Header-Buttons signalisiert aktive Cloud-Sync)
+    if (btnHeader) {
+      btnHeader.className = "h-8 px-2 md:px-3 border border-emerald-500 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center gap-1.5 text-[10px] md:text-xs font-bold cursor-pointer transition shadow-[0_0_12px_rgba(16,185,129,0.25)]";
+      btnHeader.innerHTML = '<i data-lucide="cloud" class="w-3.5 h-3.5 text-emerald-300 animate-pulse"></i><span class="hidden lg:inline">Verbunden</span>';
+    }
+  } else {
+    unlinkedArea.classList.remove('hidden');
+    linkedArea.classList.add('hidden');
+    
+    if (btnHeader) {
+      btnHeader.className = "h-8 px-2 md:px-3 border border-emerald-500/30 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 flex items-center gap-1.5 text-[10px] md:text-xs font-bold cursor-pointer transition shadow-sm";
+      btnHeader.innerHTML = '<i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-emerald-400"></i><span class="hidden lg:inline" data-i18n="login_btn">Anmelden</span>';
+    }
+  }
+  if (typeof translateUI === 'function') translateUI();
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function generatePairingCode() {
+  handleGenerateSyncCode();
+}
+
+function handleGenerateSyncCode() {
+  // 1. Erzeuge einen hochgradig einzigartigen permanenten Sync-Key (geheimer Übertragungskanal)
+  const secretKey = "FLOW-KEY-" + Math.random().toString(36).substring(2, 14).toUpperCase();
+  
+  // 2. Erzeuge einen einfachen 6-stelligen Kopplungs-PIN für die visuelle Eingabe auf dem Smart-TV/PC
+  const pin = Math.floor(100000 + Math.random() * 900000).toString();
+  const formattedPin = `${pin.substring(0, 3)} - ${pin.substring(3, 6)}`;
+  
+  const displayEl = document.getElementById('sync-pairing-code-display') || document.getElementById('sync-active-code-display');
+  if (displayEl) displayEl.innerText = formattedPin;
+  
+  const codeBox = document.getElementById('sync-code-box') || document.getElementById('sync-unlinked-area');
+  if (codeBox && codeBox.id === 'sync-code-box') codeBox.classList.remove('hidden');
+  
+  // QR-Code für Smartphones befüllen (generiert einen link mit automatischem Autojoin-Parameter)
+  const qrEl = document.getElementById('sync-qr-image');
+  if (qrEl) {
+    const currentUrl = window.location.href.split('?')[0];
+    qrEl.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(currentUrl + '?join=' + pin)}`;
+  }
+
+  // 3. Hinterlege die PIN-zu-Key-Verbindung anonym in der Cloud
+  const registerUrl = `${SYNC_API_ENDPOINT}/UpdateValue/${SYNC_APP_KEY}/PIN_${pin}/${secretKey}`;
+  fetch(registerUrl, { method: 'POST' })
+    .then(() => {
+      // Setze den geheimen Sync-Key in den Wartezustand
+      return fetch(`${SYNC_API_ENDPOINT}/UpdateValue/${SYNC_APP_KEY}/${secretKey}/PENDING`, { method: 'POST' });
+    })
+    .then(() => {
+      // 4. Starte das Polling (Prüft im Hintergrund alle 3s, ob ein anderes Gerät den Code eingegeben hat)
+      startSyncPolling(secretKey);
+    })
+    .catch(() => {
+      showToast("Sync-Fehler bei Code-Verbindung!");
+    });
+}
+
+function startSyncPolling(secretKey) {
+  if (syncPollInterval) clearInterval(syncPollInterval);
+  
+  syncPollInterval = setInterval(() => {
+    const checkUrl = `${SYNC_API_ENDPOINT}/GetValue/${SYNC_APP_KEY}/${secretKey}`;
+    fetch(checkUrl)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data !== "null" && data !== "PENDING") {
+          // Ein anderes Gerät (z. B. Smartphone) hat die Verbindung autorisiert und Daten geschickt!
+          clearInterval(syncPollInterval);
+          syncPollInterval = null;
+          
+          try {
+            const decoded = decodeURIComponent(data);
+            const parsedState = JSON.parse(decoded);
+            
+            if (parsedState && parsedState.items) {
+              saveHistory();
+              state = parsedState;
+              if (!state.completedSteps) state.completedSteps = {};
+              if (!state.shoppingList) state.shoppingList = [];
+              if (!state.shoppingHistory) state.shoppingHistory = [];
+              
+              localStorage.setItem('flow_sync_code', secretKey);
+              saveState();
+              
+              updateSyncUI();
+              renderApp();
+              updateZenView();
+              populateHelperTaskSelect();
+              togglePanel('sync');
+              
+              showToast("Kopplung erfolgreich abgeschlossen! 🎉");
+            }
+          } catch(e) {
+            showToast("Fehler beim Importieren der empfangenen Spieldaten.");
+          }
+        }
+      });
+  }, 3000);
+}
+
+function handleConnectSyncCode() {
+  submitPairingCode();
+}
+
+function submitPairingCode() {
+  const inputEl = document.getElementById('sync-pairing-input') || document.getElementById('sync-input-code');
+  let rawInput = inputEl ? inputEl.value.trim().toUpperCase() : '';
+  
+  if (!rawInput) {
+    showToast("Bitte gib einen Code ein!");
+    return;
+  }
+
+  // Erkennung: Ist es ein direkter permanenter Sync-Key oder ein temporärer Kopplungs-PIN?
+  const isDirectKey = rawInput.startsWith("FLOW-KEY-") || (rawInput.startsWith("FLOW-") && rawInput.split('-').length === 3);
+
+  if (isDirectKey) {
+    // Option 1: Direkte Verbindung per permanentem Sync-Key (Kopierte Schlüssel direkt verarbeiten)
+    showToast("Verbinde direkt per Sync-Key... 🔄");
+    localStorage.setItem('flow_sync_code', rawInput);
+    handleDownloadSync(); // Lädt die Daten direkt herunter
+    togglePanel('sync');
+    return;
+  }
+
+  // Option 2: Kopplung per 6-stelligem PIN (z.B. 482 915)
+  const pin = rawInput.replace(/[^0-9]/g, ''); // Nur Ziffern filtern
+  
+  if (pin.length !== 6) {
+    showToast("Der Code muss 6-stellig oder ein FLOW-Sync-Key (z.B. FLOW-A7B8-9C2D) sein!");
+    return;
+  }
+  
+  showToast("Kopplung per PIN wird durchgeführt... 🔄");
+  
+  // 1. Hole den registrierten Sync-Key, der der eingegebenen PIN zugeordnet ist
+  const checkPinUrl = `${SYNC_API_ENDPOINT}/GetValue/${SYNC_APP_KEY}/PIN_${pin}`;
+  fetch(checkPinUrl)
+    .then(res => res.json())
+    .then(secretKey => {
+      if (!secretKey || secretKey === "null") {
+        showToast("Dieser Kopplungscode ist ungültig oder abgelaufen!");
+        return;
+      }
+      
+      // 2. Bereinige den State (Kürzung) und lade die Daten auf den geheimen Sync-Key hoch
+      const cleanedState = getCleanedSyncState();
+      const payload = encodeURIComponent(JSON.stringify(cleanedState));
+      const uploadUrl = `${SYNC_API_ENDPOINT}/UpdateValue/${SYNC_APP_KEY}/${secretKey}/${payload}`;
+      
+      fetch(uploadUrl, { method: 'POST' })
+        .then(() => {
+          // Speichere den Key lokal, um ab jetzt permanent mit diesem Kanal synchronisiert zu sein
+          localStorage.setItem('flow_sync_code', secretKey);
+          updateSyncUI();
+          showToast("Gerät erfolgreich verbunden und synchronisiert! ✅");
+          togglePanel('sync');
+        })
+        .catch(() => {
+          showToast("Verbindungsfehler beim Datenupload.");
+        });
+    })
+    .catch(() => {
+      showToast("Kopplung konnte nicht durchgeführt werden.");
+    });
+}
+
+function uploadStateToCloud(syncCode, callbackSuccess) {
+  // Pruning-Sicherheit aktivieren: done-Historie begrenzen, um Längenbegrenzung der URI (HTTP 414) zu umschiffen!
+  const cleanedState = getCleanedSyncState();
+  const payload = encodeURIComponent(JSON.stringify(cleanedState));
+  const postUrl = `${SYNC_API_ENDPOINT}/UpdateValue/${SYNC_APP_KEY}/${encodeURIComponent(syncCode)}/${payload}`;
+  
+  fetch(postUrl, { method: 'POST' })
+    .then(() => {
+      if (callbackSuccess) callbackSuccess();
+    })
+    .catch(() => {
+      // Im Hintergrund stumm loggen, um Toasts auf dem Interface des Nutzers zu vermeiden
+      console.warn("Automatischer Hintergrund-Sync fehlgeschlagen.");
+    });
+}
+
+function handleUploadSync() {
+  const code = localStorage.getItem('flow_sync_code');
+  if (!code) return;
+  
+  showToast("Sichere Plan in der Cloud... ☁️");
+  
+  const cleanedState = getCleanedSyncState();
+  const payload = encodeURIComponent(JSON.stringify(cleanedState));
+  const postUrl = `${SYNC_API_ENDPOINT}/UpdateValue/${SYNC_APP_KEY}/${encodeURIComponent(code)}/${payload}`;
+  
+  fetch(postUrl, { method: 'POST' })
+    .then(() => {
+      showToast("Erfolgreich in der Cloud gesichert! ☁️");
+    })
+    .catch(() => {
+      showToast("Konnte Daten nicht in der Cloud sichern. Bitte versuche es erneut!");
+    });
+}
+
+function handleDownloadSync() {
+  const code = localStorage.getItem('flow_sync_code');
+  if (!code) return;
+  
+  showToast("Lade Plan aus der Cloud... 📥");
+  
+  const fetchUrl = `${SYNC_API_ENDPOINT}/GetValue/${SYNC_APP_KEY}/${encodeURIComponent(code)}`;
+  fetch(fetchUrl)
+    .then(res => res.json())
+    .then(data => {
+      if (!data || data === "null" || data === "PENDING") {
+        showToast("Keine gültigen Sync-Daten in der Cloud vorhanden!");
+        return;
+      }
+      
+      try {
+        const decoded = decodeURIComponent(data);
+        const parsedState = JSON.parse(decoded);
+        
+        if (parsedState && parsedState.items) {
+          saveHistory();
+          state = parsedState;
+          if (!state.completedSteps) state.completedSteps = {};
+          if (!state.shoppingList) state.shoppingList = [];
+          if (!state.shoppingHistory) state.shoppingHistory = [];
+          
+          saveState();
+          renderApp();
+          updateZenView();
+          populateHelperTaskSelect();
+          showToast("Erfolgreich aus Cloud wiederhergestellt! 🔄");
+        }
+      } catch (err) {
+        showToast("Entschlüsselungsfehler beim Datenabruf!");
+      }
+    })
+    .catch(() => {
+      showToast("Verbindungsfehler beim Datenabruf!");
+    });
+}
+
+function handleDisconnectSync() {
+  if (confirm("Möchtest du die Synchronisierung auf diesem Gerät trennen? Deine lokalen Daten bleiben erhalten.")) {
+    localStorage.removeItem('flow_sync_code');
+    updateSyncUI();
+    showToast("Geräte-Verbindung erfolgreich getrennt 🔌");
+  }
+}
+
+function switchSyncTab(tab) {
+  const tabShow = document.getElementById('sync-tab-show');
+  const tabEnter = document.getElementById('sync-tab-enter');
+  const paneShow = document.getElementById('sync-pane-show');
+  const paneEnter = document.getElementById('sync-pane-enter');
+  
+  if (!tabShow || !tabEnter || !paneShow || !paneEnter) return;
+  
+  if (tab === 'show') {
+    tabShow.className = "flex-1 py-1.5 rounded text-emerald-300 bg-emerald-500/10 border border-emerald-500/20";
+    tabEnter.className = "flex-1 py-1.5 rounded text-gray-400 hover:text-white";
+    paneShow.classList.remove('hidden');
+    paneEnter.classList.add('hidden');
+  } else {
+    tabShow.className = "flex-1 py-1.5 rounded text-gray-400 hover:text-white";
+    tabEnter.className = "flex-1 py-1.5 rounded text-emerald-300 bg-emerald-500/10 border border-emerald-500/20";
+    paneShow.classList.add('hidden');
+    paneEnter.classList.remove('hidden');
+  }
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+// === SENSORISCHE REIZPAUSE (SAFE SPACE) SYSTEM-LOGIK ===
+let safeSpaceBreathInterval = null;
+let safeSpaceBreathStep = 0; // 0: Einatmen, 1: Halten, 2: Ausatmen
+let safeSpaceNoiseActive = false;
+let anchorStep = 1;
+
+const ANCHOR_STEPS = {
+  de: [
+    { title: "Schritt 1 von 5", text: "Finde 5 Dinge in deiner Umgebung, die du SEHEN kannst. Nimm dir Zeit, sie genau zu betrachten." },
+    { title: "Schritt 2 von 5", text: "Finde 4 Dinge, die du ANFASSEN kannst (z. B. die Textur deines Pullis, eine kühle Tischplatte)." },
+    { title: "Schritt 3 von 5", text: "Finde 3 Dinge, die du HÖREN kannst (z. B. das Summen des Kühlschranks, Vögel draußen)." },
+    { title: "Schritt 4 von 5", text: "Finde 2 Dinge, die du RIECHEN kannst (oder Gerüche, die du in der Umgebung magst)." },
+    { title: "Schritt 5 von 5", text: "Finde 1 Ding, das du SCHMECKEN kannst (oder nimm einen bewussten Schluck Wasser)." }
+  ],
+  en: [
+    { title: "Step 1 of 5", text: "Find 5 things in your surroundings that you can SEE. Take your time to study them." },
+    { title: "Step 2 of 5", text: "Find 4 things you can TOUCH (e.g., the texture of your shirt, a cool tabletop)." },
+    { title: "Step 3 of 5", text: "Find 3 things you can HEAR (e.g., the hum of the computer, birds chirping)." },
+    { title: "Step 4 of 5", text: "Find 2 things you can SMELL (or scents in your environment you like)." },
+    { title: "Step 5 of 5", text: "Find 1 thing you can TASTE (or take a conscious sip of water)." }
+  ]
+};
+
+function openSafeSpaceModal() {
+  const modal = document.getElementById('helper-safespace-modal');
+  if (modal) modal.classList.remove('hidden');
+  startSafeSpaceBreathCycle();
+}
+
+function closeSafeSpaceModal() {
+  const modal = document.getElementById('helper-safespace-modal');
+  if (modal) modal.classList.add('hidden');
+  stopSafeSpaceBreathCycle();
+  if (safeSpaceNoiseActive) {
+    toggleSafeSpaceNoise(); // Beendet aktiven Regen-Sound bei Modal-Schließung
+  }
+}
+
+function switchSafeSpaceTab(tab) {
+  const breathTab = document.getElementById('safespace-tab-breath');
+  const anchorTab = document.getElementById('safespace-tab-anchor');
+  const breathPane = document.getElementById('safespace-pane-breath');
+  const anchorPane = document.getElementById('safespace-pane-anchor');
+  
+  if (tab === 'breath') {
+    if (breathTab) breathTab.className = "flex-1 py-1.5 rounded text-teal-300 bg-teal-500/10 border border-teal-500/20";
+    if (anchorTab) anchorTab.className = "flex-1 py-1.5 rounded text-gray-400 hover:text-white";
+    if (breathPane) breathPane.classList.remove('hidden');
+    if (anchorPane) anchorPane.classList.add('hidden');
+    startSafeSpaceBreathCycle();
+  } else {
+    if (breathTab) breathTab.className = "flex-1 py-1.5 rounded text-gray-400 hover:text-white";
+    if (anchorTab) anchorTab.className = "flex-1 py-1.5 rounded text-teal-300 bg-teal-500/10 border border-teal-500/20";
+    if (breathPane) breathPane.classList.add('hidden');
+    if (anchorPane) anchorPane.classList.remove('hidden');
+    stopSafeSpaceBreathCycle();
+    resetAnchorSteps();
+  }
+}
+
+function startSafeSpaceBreathCycle() {
+  stopSafeSpaceBreathCycle();
+  const circle = document.getElementById('safespace-breath-circle');
+  const text = document.getElementById('safespace-breath-text');
+  if (!circle || !text) return;
+
+  safeSpaceBreathStep = 0;
+  
+  const runCycle = () => {
+    if (safeSpaceBreathStep === 0) {
+      // Einatmen
+      text.innerText = currentLang === 'de' ? "Einatmen... (4s)" : "Inhale... (4s)";
+      circle.style.transform = "scale(1.35)";
+      circle.style.borderColor = "rgba(20, 184, 166, 0.8)";
+      safeSpaceBreathStep = 1;
+    } else if (safeSpaceBreathStep === 1) {
+      // Halten
+      text.innerText = currentLang === 'de' ? "Anhalten... (4s)" : "Hold... (4s)";
+      circle.style.transform = "scale(1.35)";
+      circle.style.borderColor = "rgba(245, 158, 11, 0.6)";
+      safeSpaceBreathStep = 2;
+    } else {
+      // Ausatmen
+      text.innerText = currentLang === 'de' ? "Ausatmen... (4s)" : "Exhale... (4s)";
+      circle.style.transform = "scale(0.95)";
+      circle.style.borderColor = "rgba(20, 184, 166, 0.4)";
+      safeSpaceBreathStep = 0;
+    }
+  };
+  
+  runCycle();
+  safeSpaceBreathInterval = setInterval(runCycle, 4000);
+}
+
+function startSafeSpaceBoxBreathingCycle() {
+  stopSafeSpaceBreathCycle();
+  const circle = document.getElementById('safespace-breath-circle');
+  const text = document.getElementById('safespace-breath-text');
+  if (!circle || !text) return;
+
+  safeSpaceBreathStep = 0;
+  
+  const runBoxCycle = () => {
+    if (safeSpaceBreathStep === 0) {
+      text.innerText = currentLang === 'de' ? "Einatmen... (4s)" : "Inhale... (4s)";
+      circle.style.transform = "scale(1.35)";
+      circle.style.borderColor = "rgba(20, 184, 166, 0.8)";
+      safeSpaceBreathStep = 1;
+    } else if (safeSpaceBreathStep === 1) {
+      text.innerText = currentLang === 'de' ? "Halten... (4s)" : "Hold... (4s)";
+      circle.style.transform = "scale(1.35)";
+      circle.style.borderColor = "rgba(245, 158, 11, 0.6)";
+      safeSpaceBreathStep = 2;
+    } else if (safeSpaceBreathStep === 2) {
+      text.innerText = currentLang === 'de' ? "Ausatmen... (4s)" : "Exhale... (4s)";
+      circle.style.transform = "scale(0.95)";
+      circle.style.borderColor = "rgba(20, 184, 166, 0.4)";
+      safeSpaceBreathStep = 3;
+    } else {
+      text.innerText = currentLang === 'de' ? "Leere halten... (4s)" : "Hold empty... (4s)";
+      circle.style.transform = "scale(0.95)";
+      circle.style.borderColor = "rgba(239, 68, 68, 0.4)";
+      safeSpaceBreathStep = 0;
+    }
+  };
+  
+  runBoxCycle();
+  safeSpaceBreathInterval = setInterval(runBoxCycle, 4000);
+}
+
+function stopSafeSpaceBreathCycle() {
+  if (safeSpaceBreathInterval) {
+    clearInterval(safeSpaceBreathInterval);
+    safeSpaceBreathInterval = null;
+  }
+}
+
+function toggleSafeSpaceNoise() {
+  safeSpaceNoiseActive = !safeSpaceNoiseActive;
+  const btn = document.getElementById('safespace-noise-btn');
+  if (!btn) return;
+
+  if (safeSpaceNoiseActive) {
+    btn.innerText = currentLang === 'de' ? "Regen-Sound aus" : "Stop Rain Sound";
+    btn.className = "px-3.5 py-1.5 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-300 text-xs font-bold rounded-lg transition";
+    if (typeof playAmbientSound === 'function') {
+      playAmbientSound('rain', true);
+    }
+  } else {
+    btn.innerText = currentLang === 'de' ? "Regen-Sound ein" : "Start Rain Sound";
+    btn.className = "px-3.5 py-1.5 bg-teal-500/20 hover:bg-teal-500/30 border border-teal-500/30 text-teal-300 text-xs font-bold rounded-lg transition";
+    if (typeof stopAmbientSound === 'function') {
+      stopAmbientSound(true);
+    }
+  }
+}
+
+function resetAnchorSteps() {
+  anchorStep = 1;
+  updateAnchorStepUI();
+}
+
+function nextAnchorStep() {
+  anchorStep++;
+  if (anchorStep > 5) {
+    showToast(currentLang === 'de' ? "Erdung erfolgreich abgeschlossen! 🧘‍♂️" : "Grounding completed successfully! 🧘‍♂️");
+    closeSafeSpaceModal();
+  } else {
+    updateAnchorStepUI();
+    if (typeof playProceduralSound === 'function') {
+      playProceduralSound(3); // Spill-Klang abspielen
+    }
+  }
+}
+
+function updateAnchorStepUI() {
+  const titleEl = document.getElementById('anchor-step-title');
+  const textEl = document.getElementById('anchor-step-instruction');
+  const progressEl = document.getElementById('anchor-progress-bar');
+  if (!titleEl || !textEl || !progressEl) return;
+
+  const lang = currentLang === 'de' ? 'de' : 'en';
+  const steps = ANCHOR_STEPS[lang];
+  const stepData = steps[anchorStep - 1];
+
+  titleEl.innerText = stepData.title;
+  textEl.innerText = stepData.text;
+  progressEl.style.width = `${anchorStep * 20}%`;
+}

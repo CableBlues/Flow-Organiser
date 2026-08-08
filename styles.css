@@ -29,6 +29,24 @@ body, body #app, body #app * {
   font-family: var(--font-family) !important;
 }
 
+/* CUSTOM HIGH-QUALITY SCROLLBARS */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
 /* --- THEMEN 1 BIS 12 (EIGENSTÄNDIG KOORDINIERTE FARBWELTEN) --- */
 
 /* 1. Aurora (Mystical Deep Purple-Slate) */
@@ -126,7 +144,7 @@ body.theme-architect {
   --border-main: rgba(100, 116, 139, 0.2);
 }
 
-/* 6. Mono Hand (Klassisches Pergamentpapier - VOLLSTÄNDIG HELL) */
+/* 6. Mono Hand (Klassisches Pergamentpapier) */
 body.theme-mono-hand {
   --accent: #8b5a2b;
   --accent-light: #a0522d;
@@ -146,7 +164,7 @@ body.theme-mono-hand {
   --font-family: 'Caveat', cursive, sans-serif;
 }
 
-/* 7. Editorial (Ivory Zeitungspapier - VOLLSTÄNDIG HELL) */
+/* 7. Editorial (Ivory Zeitungspapier) */
 body.theme-editorial {
   --accent: #2c3e50;
   --accent-light: #34495e;
@@ -166,7 +184,7 @@ body.theme-editorial {
   --font-family: 'Playfair Display', Georgia, serif;
 }
 
-/* 8. Glacier (Nordisches, kühles Eisblau-Slate) */
+/* 8. Glacier (Nordisches Eisblau-Slate) */
 body.theme-glacier {
   --accent: #06b6d4;
   --accent-light: #a5f3fc;
@@ -264,7 +282,6 @@ body.theme-carbon {
 /* --- FOCUS MODE (MINIMAL MODE) --- */
 body.minimalist .zen-hide { display: none !important; }
 body.minimalist .particle { display: none !important; }
-body.minimalist .flying-task-ghost { transition: none !important; }
 body.minimalist main { display: none !important; }
 body.minimalist #zen-chill-view { display: flex !important; }
 body.minimalist article {
@@ -275,7 +292,7 @@ body.minimalist article {
 
 /* --- TYPOGRAFIE- & DESIGN-OVERRIDES FÜR HELLE THEMEN --- */
 
-/* Handschriftliches Thema (Mono Hand - Präzises Targeting auf Spalten, Notizen & Focus) */
+/* Handschriftliches Thema (Mono Hand) */
 body.theme-mono-hand main,
 body.theme-mono-hand main *,
 body.theme-mono-hand #zen-chill-view,
@@ -285,27 +302,18 @@ body.theme-mono-hand #zen-chill-view * {
   text-shadow: none !important;
 }
 body.theme-mono-hand {
-  font-size: 1.25rem !important; /* Vergrößert die Handschrift für beste Lesbarkeit */
+  font-size: 1.25rem !important;
 }
 body.theme-mono-hand .task-text-span {
-  font-size: 1.22rem !important; /* Spaltentexte groß und gefettet */
+  font-size: 1.22rem !important;
   font-weight: 700 !important;
 }
 body.theme-mono-hand article h2 span {
   font-size: 1.15rem !important;
   font-weight: 700 !important;
 }
-body.theme-mono-hand textarea {
-  font-size: 1.15rem !important;
-}
-body.theme-mono-hand input {
-  font-size: 1.1rem !important;
-}
-body.theme-mono-hand select {
-  font-size: 1.1rem !important;
-}
 
-/* Redaktionelles Buchdruck-Thema (Editorial - Präzises Targeting auf Spalten, Notizen & Focus) */
+/* Redaktionelles Buchdruck-Thema (Editorial) */
 body.theme-editorial main,
 body.theme-editorial main *,
 body.theme-editorial #zen-chill-view,
@@ -319,18 +327,9 @@ body.theme-editorial article {
   border-color: rgba(0, 0, 0, 0.08) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
 }
-body.theme-editorial article:hover {
-  background-color: #fdfdfd !important;
-  border-color: var(--accent) !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06) !important;
-}
 body.theme-editorial article div[draggable="true"] {
   border-color: rgba(0, 0, 0, 0.06) !important;
   background-color: #fafafa !important;
-}
-body.theme-editorial article div[draggable="true"]:hover {
-  border-color: var(--accent) !important;
-  background-color: #f5f5f5 !important;
 }
 body.theme-editorial select,
 body.theme-editorial textarea,
@@ -338,46 +337,6 @@ body.theme-editorial input {
   background-color: #fbfbfb !important;
   color: #1a1a1a !important;
   border: 1px solid rgba(0, 0, 0, 0.12) !important;
-}
-
-/* --- LIGHT-MODE HELPER-MODALS FÜR HELLE THEMEN --- */
-body.theme-mono-hand #helper-pick-card,
-body.theme-mono-hand #helper-steps-modal > div,
-body.theme-mono-hand #helper-compass-card,
-body.theme-mono-hand #helper-safespace-card,
-body.theme-mono-hand #helper-scripting-card,
-body.theme-mono-hand #helper-sport-card {
-  background-color: #fbfbf6 !important;
-  border-color: rgba(43, 29, 12, 0.25) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
-}
-body.theme-mono-hand #helper-pick-card *,
-body.theme-mono-hand #helper-steps-modal *,
-body.theme-mono-hand #helper-compass-card *,
-body.theme-mono-hand #helper-safespace-card *,
-body.theme-mono-hand #helper-scripting-card *,
-body.theme-mono-hand #helper-sport-card * {
-  font-family: 'Caveat', cursive, sans-serif !important;
-  color: #2b1d0c !important;
-}
-body.theme-editorial #helper-pick-card,
-body.theme-editorial #helper-steps-modal > div,
-body.theme-editorial #helper-compass-card,
-body.theme-editorial #helper-safespace-card,
-body.theme-editorial #helper-scripting-card,
-body.theme-editorial #helper-sport-card {
-  background-color: #ffffff !important;
-  border-color: rgba(0, 0, 0, 0.15) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
-}
-body.theme-editorial #helper-pick-card *,
-body.theme-editorial #helper-steps-modal *,
-body.theme-editorial #helper-compass-card *,
-body.theme-editorial #helper-safespace-card *,
-body.theme-editorial #helper-scripting-card *,
-body.theme-editorial #helper-sport-card * {
-  font-family: 'Playfair Display', Georgia, serif !important;
-  color: #1a1a1a !important;
 }
 
 /* --- LIGHT-MODE POPUPS & PANEL-MENÜS FÜR HELLE THEMEN --- */
@@ -390,12 +349,6 @@ body.theme-editorial #panel-calendar-dropdown {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
 }
 body.theme-mono-hand [id^="panel-"] *,
-body.theme-mono-hand #panel-calendar-dropdown *,
-body.theme-editorial [id^="panel-"] *,
-body.theme-editorial #panel-calendar-dropdown * {
-  color: inherit !important;
-}
-body.theme-mono-hand [id^="panel-"] *,
 body.theme-mono-hand #panel-calendar-dropdown * {
   color: #2b1d0c !important;
 }
@@ -403,57 +356,16 @@ body.theme-editorial [id^="panel-"] *,
 body.theme-editorial #panel-calendar-dropdown * {
   color: #1a1a1a !important;
 }
-body.theme-mono-hand [id^="panel-"] button:hover {
-  background-color: rgba(43, 29, 12, 0.08) !important;
-}
-body.theme-editorial [id^="panel-"] button:hover {
-  background-color: rgba(0, 0, 0, 0.05) !important;
-}
-body.theme-mono-hand [id^="panel-"] .bg-white\/5,
-body.theme-editorial [id^="panel-"] .bg-white\/5 {
-  background-color: rgba(0, 0, 0, 0.03) !important;
-}
-body.theme-mono-hand [id^="panel-"] .border-white\/5,
-body.theme-mono-hand [id^="panel-"] .border-white\/10 {
-  border-color: rgba(43, 29, 12, 0.1) !important;
-}
-body.theme-editorial [id^="panel-"] .border-white\/5,
-body.theme-editorial [id^="panel-"] .border-white\/10 {
-  border-color: rgba(0, 0, 0, 0.08) !important;
-}
-body.theme-mono-hand [id^="panel-"] .bg-black\/40,
-body.theme-mono-hand [id^="panel-"] .bg-black\/50,
-body.theme-mono-hand [id^="panel-"] .bg-black\/60 {
-  background-color: rgba(255, 255, 255, 0.6) !important;
-  border: 1px solid rgba(43, 29, 12, 0.15) !important;
-}
-body.theme-editorial [id^="panel-"] .bg-black\/40,
-body.theme-editorial [id^="panel-"] .bg-black\/50,
-body.theme-editorial [id^="panel-"] .bg-black\/60 {
-  background-color: #fbfbfb !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
-}
 
 /* --- ALLGEMEINE RESETS --- */
 *, button, span, label, h1, h2, h3, h4, header, footer {
   word-break: normal;
   overflow-wrap: break-word;
   hyphens: none !important;
-  -webkit-hyphens: none !important;
 }
 
 .whitespace-nowrap {
   white-space: nowrap !important;
-}
-
-body.theme-cozy #date-display {
-  background: linear-gradient(to right, #f43f5e, #fb923c);
-}
-
-@keyframes scaleBounce {
-  0% { transform: scale3d(0.85, 0.85, 1); opacity: 0; }
-  60% { transform: scale3d(1.05, 1.05, 1); opacity: 1; }
-  100% { transform: scale3d(1, 1, 1); opacity: 1; }
 }
 
 /* --- DYNAMISCH-FUTURISTISCHE DATUM-STILE --- */
@@ -461,14 +373,14 @@ body.theme-cozy #date-display {
   border: 1px solid color-mix(in srgb, var(--accent) 40%, rgba(255, 255, 255, 0.1));
   background-color: rgba(20, 20, 30, 0.45);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 0 10px color-mix(in srgb, var(--accent) 15%, transparent);
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
   will-change: transform;
 }
 
 #date-container:hover {
   border-color: var(--accent-light) !important;
   box-shadow: 0 12px 30px color-mix(in srgb, var(--accent) 35%, transparent), inset 0 0 18px color-mix(in srgb, var(--accent) 30%, transparent) !important;
-  transform: scale(1.18) translateY(-3px) !important;
+  transform: scale(1.1) translateY(-2px) !important;
   z-index: 10000 !important;
 }
 
@@ -482,59 +394,26 @@ body.theme-cozy #date-display {
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
-  filter: drop-shadow(0 2px 8px color-mix(in srgb, var(--accent) 25%, transparent));
-  transition: all 0.3s ease;
 }
 
 #date-icon {
   color: var(--accent-light);
   opacity: 0.8;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-#date-container:hover #date-icon {
-  opacity: 1;
-}
-
-/* Cozy-Datum auf Cozy-Hintergrund */
-body.theme-cozy #date-display {
-  background: linear-gradient(to right, #f43f5e, #fb923c) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  background-clip: text !important;
-}
-
-/* Gradients für Datum bei hellen Themes */
-body.theme-mono-hand #date-display {
-  font-family: 'Caveat', cursive, sans-serif !important;
-  font-size: 1.15rem !important;
-  background: linear-gradient(135deg, #8b5a2b 0%, #2c241a 100%) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  background-clip: text !important;
-}
-body.theme-editorial #date-display {
-  font-family: 'Playfair Display', Georgia, serif !important;
-  font-size: 0.95rem !important;
-  background: linear-gradient(135deg, #2c3e50 0%, #1a1a1a 100%) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  background-clip: text !important;
 }
 
 /* --- DYNAMISCHE KALENDERZELLE HOVER-EFFEKTE --- */
 #cal-days-grid span:not(.text-transparent) {
   cursor: pointer !important;
   position: relative !important;
-  transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1), 
-              background-color 0.25s ease, 
-              color 0.25s ease, 
-              box-shadow 0.25s ease !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+              background-color 0.2s ease, 
+              color 0.2s ease, 
+              box-shadow 0.2s ease !important;
   will-change: transform;
 }
 
 #cal-days-grid span:not(.text-transparent):hover {
-  transform: scale(1.3) translateY(-3px) !important;
+  transform: scale(1.25) translateY(-2px) !important;
   background-color: var(--accent) !important;
   color: #ffffff !important;
   border-radius: 6px !important;
@@ -564,20 +443,14 @@ html body #app .premium-glow-btn i {
 }
 
 @keyframes button-icon-move {
-  0%, 100% {
-    transform: scale3d(1, 1, 1) rotate(0deg);
-    filter: drop-shadow(0 0 2px transparent);
-  }
-  50% {
-    transform: scale3d(1.22, 1.22, 1) rotate(15deg);
-    filter: drop-shadow(0 0 5px var(--accent-light));
-  }
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.2) rotate(15deg); }
 }
 
 /* Weiche Puls-Animation für den Vorschlags-Container */
 @keyframes softCardPulse {
-  0%, 100% { transform: scale3d(1, 1, 1); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4); }
-  50% { transform: scale3d(1.005, 1.005, 1); box-shadow: 0 4px 35px rgba(139, 92, 246, 0.08); }
+  0%, 100% { transform: scale(1); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4); }
+  50% { transform: scale(1.005); box-shadow: 0 4px 35px rgba(139, 92, 246, 0.08); }
 }
 
 .helper-suggestion-card-active {
@@ -586,11 +459,11 @@ html body #app .premium-glow-btn i {
 
 /* --- ANIMATION FÜR DIE ZEN-ANSICHT --- */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translate3d(0, 15px, 0) scale3d(0.98, 0.98, 1); }
-  to { opacity: 1; transform: translate3d(0, 0, 0) scale3d(1, 1, 1); }
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 .animate-fade-in {
-  animation: fadeIn 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* --- SCHLIESSEN-X KNÖPFE --- */
@@ -598,36 +471,15 @@ html body #app .premium-glow-btn i {
   position: absolute !important;
   top: 1.25rem !important;
   right: 1.25rem !important;
-  transform: none !important;
-  box-shadow: none !important;
-  filter: none !important;
   background: transparent !important;
   z-index: 100005 !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
   cursor: pointer !important;
   transition: color 0.15s ease, transform 0.15s ease !important;
 }
 
 .modal-close-btn:hover {
-  transform: scale3d(1.2, 1.2, 1) translateY(0px) !important;
+  transform: scale(1.2) !important;
   color: #ffffff !important;
-  box-shadow: none !important;
-  background: transparent !important;
-  filter: none !important;
-  --tw-scale-x: 1.2 !important;
-  --tw-scale-y: 1.2 !important;
-  --tw-translate-y: 0px !important;
-}
-
-/* --- WEICHER ÜBERGANG BEI HOVER --- */
-.task-complete-btn .task-text-span {
-  transition: color 0.18s ease !important;
-}
-
-.standard-task-icon {
-  transition: color 0.18s ease !important;
 }
 
 /* --- SPEZIFISCHE STRUKTUR-BINDUNGEN FÜR VARIABLE FARBEN --- */
@@ -641,12 +493,6 @@ html body #app header {
 html body #app header * {
   color: var(--text-header) !important;
 }
-html body #app header .logo-dance svg {
-  stroke: var(--text-header) !important;
-}
-html body #app header .logo-dance span {
-  color: var(--text-header) !important;
-}
 
 /* Main Spalten-Karten */
 html body #app main article {
@@ -658,28 +504,8 @@ html body #app main article:hover {
   background-color: var(--bg-card-hover) !important;
   border-color: var(--accent) !important;
 }
-html body #app main article h2 span {
-  color: var(--text-main) !important;
-}
 html body #app main article div[draggable="true"] {
   border-color: var(--border-main) !important;
-}
-html body #app main article div[draggable="true"] span,
-html body #app main article div[draggable="true"] i {
-  color: var(--text-main) !important;
-}
-html body #app main article input {
-  border-color: var(--border-main) !important;
-}
-
-/* Central Dock unten */
-html body #app .fixed.bottom-6 {
-  background-color: var(--bg-dock) !important;
-  border-color: var(--border-main) !important;
-  color: var(--text-dock) !important;
-}
-html body #app .fixed.bottom-6 button {
-  color: var(--text-dock) !important;
 }
 
 /* Popups & Panels */
@@ -703,143 +529,47 @@ html body #app .fixed.bottom-6 button {
   border-color: var(--border-main) !important;
   color: var(--text-main) !important;
 }
-#helper-pick-card *, #helper-steps-modal *, #helper-compass-card *, #helper-safespace-card *, #helper-scripting-card *, #helper-sport-card * {
-  color: var(--text-main) !important;
-}
-#helper-pick-card select, #helper-steps-modal select, #helper-compass-card select, #helper-compass-card textarea, #helper-compass-card input, #helper-sport-card select, #helper-sport-card input {
-  background-color: rgba(0, 0, 0, 0.2) !important;
-  color: var(--text-main) !important;
-  border-color: var(--border-main) !important;
-}
 
 /* --- DYNAMISCHE PARTY-TANZ-KLASSEN --- */
 html body .animate-party-wobble {
   animation: partyWobble 2.5s cubic-bezier(0.25, 1, 0.5, 1) infinite !important;
-  transition: none !important;
-  will-change: transform;
 }
 html body .animate-party-bounce {
   animation: partyBounce 2.5s cubic-bezier(0.25, 1, 0.5, 1) infinite !important;
-  transition: none !important;
-  will-change: transform;
 }
 html body .animate-party-glow {
   animation: partyGlow 2.5s ease-in-out infinite !important;
-  transition: none !important;
-  will-change: filter, box-shadow;
 }
 html body .animate-party-pulse {
   animation: partyPulse 2.5s cubic-bezier(0.25, 1, 0.5, 1) infinite !important;
-  transition: none !important;
-  will-change: transform;
 }
 html body .animate-party-swing {
   animation: partySwing 3s ease-in-out infinite !important;
-  transition: none !important;
-  will-change: transform;
 }
 
 @keyframes partyWobble {
-  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
-  50% { transform: translate3d(0, 0, 0) rotate(6deg); }
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(5deg); }
 }
 @keyframes partyBounce {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  50% { transform: translate3d(0, -10px, 0); }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }
 @keyframes partyGlow {
-  0%, 100% {
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
-    filter: drop-shadow(0 0 2px transparent);
-  }
-  50% {
-    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
-    filter: drop-shadow(0 0 8px var(--accent-light));
-  }
+  0%, 100% { box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35); }
+  50% { box-shadow: 0 8px 24px rgba(139, 92, 246, 0.45); }
 }
 @keyframes partyPulse {
-  0%, 100% { transform: scale3d(1, 1, 1); }
-  50% { transform: scale3d(1.12, 1.12, 1); }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
 }
 @keyframes partySwing {
   0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(4deg); }
-  75% { transform: rotate(-4deg); }
+  25% { transform: rotate(3deg); }
+  75% { transform: rotate(-3deg); }
 }
 
-/* --- PREMIUM DYNAMISCHE IDLE-TÄNZE --- */
-@keyframes premiumHeartbeat {
-  0%, 100% { transform: scale(1); }
-  25% { transform: scale(1.05); }
-  30% { transform: scale(1.02); }
-  45% { transform: scale(1.08); }
-  60% { transform: scale(1); }
-}
-@keyframes premiumOrbit {
-  0%, 100% { transform: translate(0, 0); }
-  25% { transform: translate(4px, -3px); }
-  50% { transform: translate(-2px, 3px); }
-  75% { transform: translate(-4px, -2px); }
-}
-@keyframes premiumFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-@keyframes premiumShimmer {
-  0%, 100% { filter: hue-rotate(0deg); }
-  50% { filter: hue-rotate(45deg); }
-}
-
-.animate-premium-heartbeat { animation: premiumHeartbeat 3s ease-in-out infinite !important; }
-.animate-premium-orbit { animation: premiumOrbit 4s ease-in-out infinite !important; }
-.animate-premium-float { animation: premiumFloat 3.5s ease-in-out infinite !important; }
-.animate-premium-shimmer { animation: premiumShimmer 5s linear infinite !important; }
-
-/* --- SUBTILE TASK-ANIMATIONEN --- */
-@keyframes subtleTaskFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
-}
-@keyframes subtleTaskShift {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(2px); }
-}
-@keyframes subtleTaskPulse {
-  0%, 100% { opacity: 0.92; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.012); }
-}
-
-.task-anim-float { animation: subtleTaskFloat 6s ease-in-out infinite !important; }
-.task-anim-shift { animation: subtleTaskShift 7s ease-in-out infinite !important; }
-.task-anim-pulse { animation: subtleTaskPulse 5s ease-in-out infinite !important; }
-
-/* --- ALLGEMEINE SEITEN-BUTTONS-KORREKTUREN --- */
-html body #app button:not(.mac-dock-btn):not(.mac-tools-trigger),
-html body #app select,
-html body #app [role="button"] {
-  position: relative !important;
-  transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1), 
-              box-shadow 0.2s ease !important;
-  will-change: transform;
-}
-
-html body #app button:not(.mac-dock-btn):not(.mac-tools-trigger):hover,
-html body #app select:hover,
-html body #app [role="button"]:hover {
-  transform: scale(1.12) translateY(-2px) !important;
-  --tw-scale-x: 1.12 !important;
-  --tw-scale-y: 1.12 !important;
-  --tw-translate-y: -2px !important;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.45), 
-              0 0 12px var(--accent-light, rgba(139, 92, 246, 0.35)) !important;
-  z-index: 9999 !important;
-}
-
-
-/* =========================================================================
-   macOS perspective 3D DOCK-SHELF STYLING 🌊 [1]
-   ========================================================================= */
-
+/* --- macOS 3D DOCK-SHELF STYLING 🌊 --- */
 .mac-floating-wrapper {
   position: fixed !important;
   left: 50% !important;
@@ -847,7 +577,6 @@ html body #app [role="button"]:hover {
   transform: translateX(-50%) !important;
   z-index: 9999;
   pointer-events: none;
-  transition: none !important; /* Unterbindet Teleportation */
 }
 
 .mac-floating-wrapper * {
@@ -864,16 +593,14 @@ html body #app [role="button"]:hover {
   position: relative;
 }
 
-/* Ein unsichtbares Schutzschild, das beim Hovern den gesamten 
-   Auffächerungs-Bogen abdeckt. Angepasst an den neuen 120px Radius */
 .mac-dock-container::before {
   content: '';
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 640px; /* Reduziert von 900px, passend für die gerade Leiste */
-  height: 90px; /* Klein im geschlossenen Zustand */
+  width: 680px;
+  height: 90px;
   background: transparent;
   pointer-events: auto;
   z-index: 1;
@@ -881,7 +608,7 @@ html body #app [role="button"]:hover {
 }
 
 .mac-dock-container:hover::before {
-  height: 180px; /* Reduziert von 520px */
+  height: 180px;
 }
 
 .mac-dock {
@@ -889,28 +616,29 @@ html body #app [role="button"]:hover {
   backdrop-filter: blur(20px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  transform-style: flat !important; /* Flat-Rendering, um elliptische Zerrung zu meiden */
-  transform: translate3d(0, 0, 0) scale(0) !important; /* Im Grundzustand kollabiert */
+  transform-style: flat !important;
+  transform: translate3d(0, 0, 0) scale(0) !important;
   opacity: 0;
   pointer-events: none;
   box-shadow: 
     0 15px 35px rgba(0, 0, 0, 0.5), 
     inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
-  border-radius: 20px !important;
+  border-radius: 24px !important;
   display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important; /* Vertikal zentriert, da horizontal */
+  align-items: center !important;
   justify-content: center !important;
-  padding: 10px 16px !important;
-  gap: 12px !important; /* Erhöhter Abstand, damit die Ballons nicht kollidieren */
-  height: 72px !important; /* Feste Höhe */
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, background 0.3s, border-color 0.3s !important;
+  padding: 10px 18px !important;
+  gap: 14px !important;
+  height: 94px !important;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease !important;
+  visibility: hidden; /* Behebt jegliche subpixelartigen Geister-Kanten im geschlossenen Zustand */
 }
 
 .mac-dock-container:hover .mac-dock {
   transform: translate3d(0, 0, 0) scale(1) !important;
   opacity: 1;
   pointer-events: auto;
+  visibility: visible;
 }
 
 /* 3D Glass floor reflection shelf */
@@ -919,242 +647,257 @@ html body #app [role="button"]:hover {
   bottom: -4px;
   left: 2%;
   right: 2%;
-  height: 20px;
+  height: 24px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 80%, transparent 100%);
-  transform: scale(0); /* Kollabiert im Ruhezustand */
+  transform: scale(0);
   opacity: 0;
   border-radius: 50% / 15%;
   border: 1px solid rgba(255, 255, 255, 0.08);
   pointer-events: none;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
   z-index: 1;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease !important;
+  visibility: hidden;
 }
 
 .mac-dock-container:hover .mac-dock-floor {
   transform: scale(1);
   opacity: 1;
+  visibility: visible;
 }
 
-/* Individual items transitioning nicely with hardware acceleration */
 .mac-dock-item-wrapper {
   display: flex !important;
-  flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
   position: relative !important;
-  /* Verriegelte quadratische Maße verhindern jede Rugby-Dehnung */
-  width: 48px !important;
-  height: 48px !important;
+  width: 64px !important;
+  height: 64px !important;
   aspect-ratio: 1 / 1 !important;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), margin 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), margin 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 @media (min-width: 768px) {
   .mac-dock-item-wrapper {
-    width: 52px !important;
-    height: 52px !important;
+    width: 74px !important;
+    height: 74px !important;
   }
 }
 
-/* --- 3D BALLOON / SPHERE STYLES [1] --- */
+/* Ambient-Animation für schwebende Dock-Symbole bei Hover */
+@keyframes subtleFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.mac-dock-item-wrapper:hover {
+  transform: scale(1.15) translateY(-4px) !important;
+  animation: subtleFloat 2s ease-in-out infinite !important;
+  z-index: 50 !important;
+}
+
 .mac-dock-btn {
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 100% !important; /* Nimmt die Maße des quadratischen Wrappers an */
+  gap: 5px !important;
+  width: 100% !important;
   height: 100% !important;
-  border-radius: 50% !important; /* Perfekter Kreisballon */
+  border-radius: 20px !important;
   border: none !important;
-  will-change: transform;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s, box-shadow 0.2s !important;
   position: relative;
   aspect-ratio: 1 / 1 !important;
-  
-  /* VERBESSERUNG: Flexbox zentriert Icon und Text perfekt auf dem Ballon */
-  padding: 4px !important;
-  gap: 2px !important;
+  padding: 8px !important;
 }
 
-/* VERBESSERUNG: Erhöhter Kontrast und weißer 3D-Schlagschatten für die Icons im Ballon */
 .mac-dock-btn i {
   color: #ffffff !important;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.65)) !important;
-  width: 16px !important; /* Proportional verkleinert, damit Platz für Text ist */
-  height: 16px !important;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5)) !important;
+  width: 22px !important;
+  height: 22px !important;
   transition: transform 0.2s ease !important;
   z-index: 2;
 }
 
-/* Category-specific glossy 3D radial balloon gradients (PASSEND ZUR APPLIKATION) */
-/* Stilvolle, dunkle Obsidian-Glas-Töne mit zarten, themenbezogenen Farbsäumen */
+/* Kategorie-spezifische, plastisch glänzende radial-gradients (Moderne 3D-Ballon-Optik) */
 .balloon-sounds {
-  background: radial-gradient(circle at 35% 35%, #5eead4 0%, #0f172a 60%, #000 100%) !important;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), inset 0 4px 6px rgba(255, 255, 255, 0.4), inset 0 -10px 16px rgba(0, 0, 0, 0.6) !important;
+  background: radial-gradient(circle at 35% 35%, #5eead4 0%, #0d201d 60%, #000000 100%) !important;
+  border: 1px solid rgba(94, 234, 212, 0.25) !important;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5), inset 0 3px 5px rgba(255, 255, 255, 0.3) !important;
 }
 .balloon-music {
-  background: radial-gradient(circle at 35% 35%, #c084fc 0%, #0f172a 60%, #000 100%) !important;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), inset 0 4px 6px rgba(255, 255, 255, 0.4), inset 0 -10px 16px rgba(0, 0, 0, 0.6) !important;
+  background: radial-gradient(circle at 35% 35%, #c084fc 0%, #1e112d 60%, #000000 100%) !important;
+  border: 1px solid rgba(192, 132, 252, 0.25) !important;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5), inset 0 3px 5px rgba(255, 255, 255, 0.3) !important;
 }
 .balloon-pause {
-  background: radial-gradient(circle at 35% 35%, #94a3b8 0%, #0f172a 60%, #000 100%) !important;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), inset 0 4px 6px rgba(255, 255, 255, 0.4), inset 0 -10px 16px rgba(0, 0, 0, 0.6) !important;
+  background: radial-gradient(circle at 35% 35%, #94a3b8 0%, #171d24 60%, #000000 100%) !important;
+  border: 1px solid rgba(148, 163, 184, 0.25) !important;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5), inset 0 3px 5px rgba(255, 255, 255, 0.3) !important;
 }
 .balloon-inspire {
-  background: radial-gradient(circle at 35% 35%, #c084fc 0%, #0f172a 60%, #000 100%) !important;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), inset 0 4px 6px rgba(255, 255, 255, 0.4), inset 0 -10px 16px rgba(0, 0, 0, 0.6) !important;
+  background: radial-gradient(circle at 35% 35%, #c084fc 0%, #20112f 60%, #000000 100%) !important;
+  border: 1px solid rgba(168, 85, 247, 0.25) !important;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5), inset 0 3px 5px rgba(255, 255, 255, 0.3) !important;
 }
 .balloon-shopping {
-  background: radial-gradient(circle at 35% 35%, #4ade80 0%, #0f172a 60%, #000 100%) !important;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), inset 0 4px 6px rgba(255, 255, 255, 0.4), inset 0 -10px 16px rgba(0, 0, 0, 0.6) !important;
+  background: radial-gradient(circle at 35% 35%, #4ade80 0%, #0c2615 60%, #000000 100%) !important;
+  border: 1px solid rgba(74, 222, 128, 0.25) !important;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5), inset 0 3px 5px rgba(255, 255, 255, 0.3) !important;
 }
 .balloon-scripting {
-  background: radial-gradient(circle at 35% 35%, #818cf8 0%, #0f172a 60%, #000 100%) !important;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), inset 0 4px 6px rgba(255, 255, 255, 0.4), inset 0 -10px 16px rgba(0, 0, 0, 0.6) !important;
+  background: radial-gradient(circle at 35% 35%, #818cf8 0%, #121532 60%, #000000 100%) !important;
+  border: 1px solid rgba(129, 140, 248, 0.25) !important;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5), inset 0 3px 5px rgba(255, 255, 255, 0.3) !important;
 }
 .balloon-boost {
-  background: radial-gradient(circle at 35% 35%, #fbbf24 0%, #0f172a 60%, #000 100%) !important;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), inset 0 4px 6px rgba(255, 255, 255, 0.4), inset 0 -10px 16px rgba(0, 0, 0, 0.6) !important;
+  background: radial-gradient(circle at 35% 35%, #fbbf24 0%, #301f09 60%, #000000 100%) !important;
+  border: 1px solid rgba(251, 191, 36, 0.25) !important;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5), inset 0 3px 5px rgba(255, 255, 255, 0.3) !important;
 }
 .balloon-compass {
-  background: radial-gradient(circle at 35% 35%, #fb7185 0%, #0f172a 60%, #000 100%) !important;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), inset 0 4px 6px rgba(255, 255, 255, 0.4), inset 0 -10px 16px rgba(0, 0, 0, 0.6) !important;
+  background: radial-gradient(circle at 35% 35%, #fb7185 0%, #350f13 60%, #000000 100%) !important;
+  border: 1px solid rgba(251, 113, 133, 0.25) !important;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5), inset 0 3px 5px rgba(255, 255, 255, 0.3) !important;
 }
 .balloon-sport {
-  background: radial-gradient(circle at 35% 35%, #f97316 0%, #0f172a 60%, #000 100%) !important;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), inset 0 4px 6px rgba(255, 255, 255, 0.4), inset 0 -10px 16px rgba(0, 0, 0, 0.6) !important;
+  background: radial-gradient(circle at 35% 35%, #f97316 0%, #3a1506 60%, #000000 100%) !important;
+  border: 1px solid rgba(249, 115, 22, 0.25) !important;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5), inset 0 3px 5px rgba(255, 255, 255, 0.3) !important;
 }
 
-/* NEU: WARMER GLOW-BALLON FÜR DEN FAULPELZ-MODUS 🦥 */
-.balloon-lazy {
-  background: radial-gradient(circle at 35% 35%, #fcd34d 0%, #0f172a 60%, #000 100%) !important;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), inset 0 4px 6px rgba(255, 255, 255, 0.4), inset 0 -10px 16px rgba(0, 0, 0, 0.6) !important;
-}
-
-/* Subtle readable text labels positioned underneath the buttons */
 .dock-label {
   font-size: 8px !important;
   font-weight: 800 !important;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  opacity: 0; /* Standardmäßig ausgeblendet, erscheint weich bei Hover */
+  opacity: 0.85 !important;
   color: #ffffff !important;
-  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.95); /* high contrast [1] */
-  transition: opacity 0.15s ease, color 0.15s ease, transform 0.15s ease;
-  position: absolute;
-  bottom: -18px !important; /* Horizontal gerade unter den runden Ballons */
-  left: 50% !important;
-  transform: translateX(-50%) !important; /* Zentriert und flach */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  transition: opacity 0.15s ease, color 0.15s ease;
+  position: static !important;
+  transform: none !important;
   white-space: nowrap;
   pointer-events: none;
   z-index: 2;
+  line-height: 1 !important;
 }
 
 .mac-dock-item-wrapper:hover .dock-label {
-  opacity: 1;
+  opacity: 1 !important;
   color: var(--accent-light) !important;
 }
 
-/* Shift icons slightly up on hover inside the balloon */
 .mac-dock-item-wrapper:hover i {
-  transform: translateY(-2px);
+  transform: scale(1.1) translateY(-1px);
 }
 
-/* Separators for categories */
+/* Separators */
 .mac-dock div[class*="bg-white/10"] {
   width: 1px !important;
-  height: 24px !important;
+  height: 28px !important;
   background-color: rgba(255, 255, 255, 0.12) !important;
   margin: 0 6px !important;
   align-self: center !important;
 }
 
-
-/* --- THEME CUSTOM OVERRIDES FOR DOCK & SHELF --- */
-
-/* Mono Hand Override */
-body.theme-mono-hand .mac-dock {
-  background: rgba(234, 227, 207, 0.95) !important;
-  border-color: rgba(139, 90, 43, 0.3) !important;
-  box-shadow: 0 15px 35px rgba(43, 29, 12, 0.2) !important;
+/* --- "TOOLS" COLLAPSED SPHERE --- */
+@keyframes triggerFloat {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0) scale(1); }
+  50% { transform: translate(-50%, -50%) translateY(-3px) scale(1.02); }
 }
-body.theme-mono-hand .mac-dock-floor {
-  background: linear-gradient(180deg, rgba(139, 90, 43, 0.2) 0%, transparent 100%);
-  border-color: rgba(139, 90, 43, 0.2);
-}
-body.theme-mono-hand .mac-dock-item-wrapper {
-  background-color: transparent !important;
-}
-body.theme-mono-hand .dock-label {
-  color: #ffffff !important; /* Weißer Text bleibt für Kontrast im Ballon erhalten */
-}
-
-/* Editorial Override */
-body.theme-editorial .mac-dock {
-  background: rgba(255, 255, 255, 0.96) !important;
-  border-color: rgba(0, 0, 0, 0.15) !important;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
-}
-body.theme-editorial .mac-dock-floor {
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, transparent 100%);
-  border-color: rgba(0, 0, 0, 0.15);
-}
-body.theme-editorial .mac-dock-item-wrapper {
-  background-color: transparent !important;
-}
-body.theme-editorial .dock-label {
-  color: #ffffff !important; /* Weißer Text bleibt für Kontrast im Ballon erhalten */
-}
-
-
-/* =========================================================================
-   NEW: "TOOLS" COLLAPSED 3D TRIGGER SPHERE [1]
-   ========================================================================= */
 
 .mac-tools-trigger {
-  width: 86px !important;
-  height: 86px !important;
-  border-radius: 50% !important; /* Perfect sphere */
-  background: radial-gradient(circle at 35% 35%, var(--accent-light) 0%, var(--accent) 55%, rgba(0,0,0,0.4) 85%, #000 100%) !important;
+  width: 72px !important;
+  height: 72px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 35% 35%, var(--accent-light) 0%, var(--accent) 55%, #000000 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
   box-shadow: 
-    0 15px 35px rgba(0, 0, 0, 0.7), 
-    inset 0 4px 8px rgba(255, 255, 255, 0.7), 
-    inset 0 -12px 18px rgba(0, 0, 0, 0.6) !important;
-  border: none !important;
+    0 10px 25px rgba(0, 0, 0, 0.65), 
+    inset 0 3px 6px rgba(255, 255, 255, 0.45) !important;
   display: flex !important;
+  flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  font-family: "Space Grotesk", sans-serif !important;
-  font-weight: 900 !important;
-  font-size: 11px !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.08em !important;
-  color: #ffffff !important;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease !important;
+  gap: 1px !important;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease !important;
   position: absolute !important;
   left: 50% !important;
   top: 50% !important;
-  transform: translate(-50%, -50%) scale(1) !important; /* Sichtbar im Grundzustand */
+  transform: translate(-50%, -50%) scale(1) !important;
+  animation: triggerFloat 6s ease-in-out infinite; /* Dezente, moderne Ambient-Schwebung */
   z-index: 200 !important;
   pointer-events: auto;
   cursor: pointer;
+  overflow: hidden;
 }
 
-/* Versteckt den Tools-Trigger, wenn der Container berührt wird */
+.mac-tools-trigger:hover {
+  animation: none !important;
+  border-color: var(--accent-light) !important;
+  box-shadow: 
+    0 16px 35px rgba(0, 0, 0, 0.65), 
+    inset 0 3px 6px rgba(255, 255, 255, 0.55),
+    0 0 15px rgba(139, 92, 246, 0.3) !important;
+  transform: translate(-50%, -50%) scale(1.08) translateY(-2px) !important;
+}
+
+.mac-tools-trigger span:first-child {
+  font-family: "Space Grotesk", sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 9px !important;
+  letter-spacing: 0.14em !important;
+  color: var(--accent-light) !important;
+  text-transform: uppercase;
+  line-height: 1 !important;
+}
+
+.mac-tools-trigger span:last-child {
+  font-family: "Space Grotesk", sans-serif !important;
+  font-weight: 900 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.04em !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6) !important;
+  text-transform: uppercase;
+  line-height: 1.1 !important;
+}
+
 .mac-dock-container:hover .mac-tools-trigger {
   transform: translate(-50%, -50%) scale(0) !important;
   opacity: 0 !important;
   pointer-events: none !important;
 }
 
-/* Custom balloon-music colors for Mono Hand & Editorial theme triggers */
 body.theme-mono-hand .mac-tools-trigger {
-  background: radial-gradient(circle at 35% 35%, #a0522d 0%, #8b5a2b 55%, #2b1d0c 85%, #000 100%) !important;
-  text-shadow: none !important;
+  background: radial-gradient(circle at 35% 35%, #d2b48c 0%, #8b5a2b 55%, #000000 100%) !important;
 }
 body.theme-editorial .mac-tools-trigger {
-  background: radial-gradient(circle at 35% 35%, #555555 0%, #2c3e50 55%, #1a1a1a 85%, #000 100%) !important;
-  text-shadow: none !important;
+  background: radial-gradient(circle at 35% 35%, #eae6df 0%, #2c3e50 55%, #000000 100%) !important;
+}
+
+/* Pause-Dropdown Panel */
+#panel-pause-dropdown {
+  background-color: var(--bg-panel) !important;
+  border-color: rgba(20, 184, 166, 0.3) !important; /* Dezentes Teal */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(20, 184, 166, 0.1) !important;
+}
+
+/* Cloud-Sync-Dropdown Panel */
+#panel-sync {
+  background-color: var(--bg-panel) !important;
+  border-color: rgba(16, 185, 129, 0.3) !important; /* Dezentes Smaragdgrün */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(16, 185, 129, 0.1) !important;
+}
+
+#sync-pairing-code-display {
+  font-family: "Space Grotesk", monospace !important;
+  text-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+#sync-qr-image {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
