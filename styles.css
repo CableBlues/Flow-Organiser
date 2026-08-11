@@ -341,9 +341,7 @@ body.theme-editorial input {
 
 /* --- LIGHT-MODE POPUPS & PANEL-MENÜS FÜR HELLE THEMEN --- */
 body.theme-mono-hand [id^="panel-"],
-body.theme-mono-hand #panel-calendar-dropdown,
-body.theme-editorial [id^="panel-"],
-body.theme-editorial #panel-calendar-dropdown {
+body.theme-mono-hand #panel-calendar-dropdown {
   background-color: #fbfbf6 !important;
   border-color: rgba(0, 0, 0, 0.15) !important;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
@@ -351,6 +349,12 @@ body.theme-editorial #panel-calendar-dropdown {
 body.theme-mono-hand [id^="panel-"] *,
 body.theme-mono-hand #panel-calendar-dropdown * {
   color: #2b1d0c !important;
+}
+body.theme-editorial [id^="panel-"],
+body.theme-editorial #panel-calendar-dropdown {
+  background-color: #fbfbf6 !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
 }
 body.theme-editorial [id^="panel-"] *,
 body.theme-editorial #panel-calendar-dropdown * {
@@ -885,19 +889,70 @@ body.theme-editorial .mac-tools-trigger {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(20, 184, 166, 0.1) !important;
 }
 
-/* Cloud-Sync-Dropdown Panel */
-#panel-sync {
-  background-color: var(--bg-panel) !important;
-  border-color: rgba(16, 185, 129, 0.3) !important; /* Dezentes Smaragdgrün */
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(16, 185, 129, 0.1) !important;
+/* --- COMIC SPRECHBLASEN-DESIGN (NUR FÜR FEEDBACK & STATISTIK) --- */
+#panel-feedback, #panel-report {
+  position: absolute !important;
+  border: 2.5px solid var(--accent, #8b5cf6) !important;
+  border-radius: 1.25rem !important;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.6) !important;
+  background-color: var(--bg-panel, #111116) !important;
+  filter: none !important;
+  overflow: visible !important; /* Wichtig, damit der Pfeil außerhalb der Box sichtbar bleibt */
 }
 
-#sync-pairing-code-display {
-  font-family: "Space Grotesk", monospace !important;
-  text-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+/* Gemeinsame Basis für die Sprechblasen-Zeiger (HÖCHST ROBUSTER CSS-TRIANGLE-REBUILD) */
+#panel-feedback::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 14px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid var(--accent, #8b5cf6);
+  z-index: 120;
+  pointer-events: none;
 }
 
-#sync-qr-image {
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
+#panel-feedback::after {
+  content: "";
+  position: absolute;
+  top: -7.5px;
+  left: 14px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid var(--bg-panel, #111116);
+  z-index: 121;
+  pointer-events: none;
+}
+
+#panel-report::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  right: 24px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid var(--accent, #8b5cf6);
+  z-index: 120;
+  pointer-events: none;
+}
+
+#panel-report::after {
+  content: "";
+  position: absolute;
+  top: -7.5px;
+  right: 24px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid var(--bg-panel, #111116);
+  z-index: 121;
+  pointer-events: none;
 }

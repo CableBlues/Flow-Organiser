@@ -132,14 +132,14 @@
       <div class="flex items-center gap-1.5 md:gap-2 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
         <!-- Feedback Icon Button -->
         <div class="relative group zen-hide" onmouseenter="showPanelHover('feedback')" onmouseleave="hidePanelHover('feedback')">
-          <button onclick="togglePanel('feedback')" class="h-8 w-8 flex items-center justify-center border border-pink-500/30 rounded-xl bg-pink-500/10 hover:bg-pink-500/20 text-pink-300 cursor-pointer transition shadow-sm" title="Feedback & Verbesserungsvorschläge an den Entwickler senden">
-            <i data-lucide="message-square-heart" class="w-4 h-4 text-pink-400"></i>
+          <button onclick="togglePanel('feedback')" class="h-7 w-7 flex items-center justify-center border border-pink-500/30 rounded-lg bg-pink-500/10 hover:bg-pink-500/20 text-pink-300 cursor-pointer transition shadow-sm" title="Feedback & Verbesserungsvorschläge an den Entwickler senden">
+            <i data-lucide="message-square-heart" class="w-3.5 h-3.5 text-pink-400"></i>
           </button>
           
           <div id="panel-feedback" class="hidden absolute left-0 top-[calc(100%+8px)] z-[110] w-[280px] sm:w-[320px] bg-[#111116] border border-purple-500/40 p-4 rounded-2xl shadow-2xl">
             <h4 class="font-bold text-sm font-display mb-1 text-white" data-i18n="feedback_greet">Hey, ich bin Jannis! 👋</h4>
             <p class="text-[11px] text-gray-400 mb-3 leading-relaxed" data-i18n="feedback_prompt">
-              Hast du Kritik, Korrekturen oder neue Ideen für Flow? Schreib mir kurz, ich freue mich über jede Rückmeldung!
+              Hast du Feedback, Kritik oder neue Ideen für Flow? Schreib mir gerne eine kurze Nachricht – ich freue mich über jeden Impuls!
             </p>
             <textarea id="feedback-text" rows="3" class="w-full p-2.5 bg-black/40 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-[var(--accent)] mb-3 leading-relaxed placeholder:text-gray-600" data-i18n-placeholder="feedback_placeholder" placeholder="Deine Gedanken..."></textarea>
             
@@ -204,15 +204,7 @@
       <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
         <button onclick="toggleMinimalist()" class="h-8 px-2 md:h-10 md:px-3.5 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 hover:border-purple-500/60 rounded-xl text-purple-200 flex items-center gap-1.5 text-[10px] md:text-xs font-bold cursor-pointer transition-all duration-300 shadow-[0_0_12px_rgba(139,92,246,0.15)] hover:shadow-[0_0_20px_rgba(139,92,246,0.3)]" title="Minimalistischen Fokus-Modus ein- oder ausschalten">
           <i id="zen-btn-icon" data-lucide="eye" class="w-3.5 h-3.5 text-purple-400 animate-pulse"></i>
-          <span id="minimal-mode-btn-text" data-i18n="minimal_mode">Focus Mode</span>
-        </button>
-      </div>
-
-      <!-- BEHÄLTER 5: Was nun? (hierhin verschoben links vor 'Datum') -->
-      <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
-        <button id="btn-whatnow-dance" onclick="openHelperModal('pick')" class="h-8 px-2 md:h-10 md:px-4 rounded-xl text-white flex items-center gap-2 text-xs md:text-sm font-bold cursor-pointer transition-all duration-300 shrink-0 premium-glow-btn" title="Zufällige Aufgabe basierend auf deiner Tagespriorität vorschlagen lassen">
-          <i data-lucide="lightbulb" class="w-4 h-4 text-[var(--accent-light)]"></i>
-          <span class="hidden lg:inline" id="btn-label-whatnow" data-i18n="whatnow">Was nun?</span>
+          <span class="hidden xl:inline" id="minimal-mode-btn-text" data-i18n="minimal_mode">Focus Mode</span>
         </button>
       </div>
 
@@ -237,16 +229,24 @@
         </div>
       </div>
 
-      <!-- BEHÄLTER 8: Statistik -->
+      <!-- BEHÄLTER 5: Was nun? -->
+      <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
+        <button id="btn-whatnow-dance" onclick="openHelperModal('pick')" class="h-8 px-2 md:h-10 md:px-4 rounded-xl text-white flex items-center gap-2 text-xs md:text-sm font-bold cursor-pointer transition-all duration-300 shrink-0 premium-glow-btn" title="Zufällige Aufgabe basierend auf deiner Tagespriorität vorschlagen lassen">
+          <i data-lucide="lightbulb" class="w-4 h-4 text-[var(--accent-light)]"></i>
+          <span class="hidden xl:inline" id="btn-label-whatnow" data-i18n="whatnow">Was nun?</span>
+        </button>
+      </div>
+
+      <!-- BEHÄLTER 8: Statistik (hierhin verschoben nach 'Was nun?') -->
       <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0 zen-hide">
         <div class="relative group cursor-pointer" onmouseenter="showPanelHover('report')" onmouseleave="hidePanelHover('report')">
           <button onclick="togglePanel('report')" class="h-8 px-2 md:px-3 border border-white/10 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] hover:border-purple-500/30 text-gray-200 flex items-center gap-1 text-[10px] md:text-xs font-semibold cursor-pointer transition whitespace-nowrap shadow-sm" title="Erledigungsstatistiken und Diagramme einsehen">
             <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>
-            <span class="hidden lg:inline" id="btn-label-report" data-i18n="report">Statistik</span>
+            <span class="hidden xl:inline" id="btn-label-report" data-i18n="report">Statistik</span>
           </button>
           
-          <div id="panel-report" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] w-[300px] sm:w-[420px] bg-[#111116] border border-purple-500/40 p-4 rounded-2xl shadow-2xl overflow-y-auto max-h-[500px]">
-            <div id="report-export-target" class="p-3 bg-[#111116] rounded-xl border border-white/5">
+          <div id="panel-report" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] w-[300px] sm:w-[420px] bg-[#111116] border border-purple-500/40 p-4 rounded-2xl shadow-2xl overflow-visible">
+            <div id="report-export-target" class="p-3 bg-[#111116] rounded-xl border border-white/5 overflow-y-auto max-h-[380px]">
               <div class="flex items-center justify-between mb-3 border-b border-white/10 pb-2">
                 <h4 class="font-bold text-sm font-display text-white flex items-center gap-2">
                   <i data-lucide="bar-chart-3" class="w-4 h-4 text-[var(--accent)]"></i>
@@ -305,12 +305,12 @@
         </div>
       </div>
 
-      <!-- BEHÄLTER 3.5: Pause -->
+      <!-- BEHÄLTER 3.5: Pause (hierhin verschoben nach 'Statistik') -->
       <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
         <div class="relative group cursor-pointer" onmouseenter="showPanelHover('pause-dropdown')" onmouseleave="hidePanelHover('pause-dropdown')">
           <button onclick="togglePanel('pause-dropdown')" class="h-8 px-2.5 md:h-10 md:px-3.5 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 hover:border-teal-500/60 rounded-xl text-teal-200 flex items-center gap-1.5 text-[10px] md:text-xs font-bold cursor-pointer transition shadow-sm" title="Reizpause & Entspannungs-Optionen öffnen">
             <i data-lucide="shield" class="w-3.5 h-3.5 text-teal-400"></i>
-            <span data-i18n="pause_btn">Pause</span>
+            <span class="hidden xl:inline" data-i18n="pause_btn">Pause</span>
           </button>
           
           <div id="panel-pause-dropdown" class="hidden absolute left-1/2 -translate-x-1/2 md:left-auto md:right-0 md:translate-x-0 top-[calc(100%+8px)] z-[110] w-[290px] bg-[#111116] border border-teal-500/40 p-3 rounded-2xl shadow-2xl flex flex-col gap-2 max-h-[440px] overflow-y-auto scrollbar-thin">
@@ -401,39 +401,19 @@
         </div>
       </div>
 
-      <!-- BEHÄLTER 6: Anmelden & Cloud-Sync -->
+      <!-- BEHÄLTER 6: Anmelden -->
       <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
         <div class="relative group cursor-pointer zen-hide" onmouseenter="showPanelHover('sync')" onmouseleave="hidePanelHover('sync')">
           <button onclick="togglePanel('sync')" class="h-8 px-2 md:px-3 border border-emerald-500/30 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 flex items-center gap-1.5 text-[10px] md:text-xs font-bold cursor-pointer transition shadow-sm" title="Geräte-Synchronisierung einrichten">
-            <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-emerald-400"></i>
-            <span class="hidden lg:inline" data-i18n="login_btn">Anmelden</span>
+            <i data-lucide="user-round" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span class="hidden xl:inline" data-i18n="login_btn">Anmelden</span>
           </button>
           
-          <div id="panel-sync" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] w-[270px] bg-[#111116] border border-emerald-500/40 p-4 rounded-2xl shadow-2xl flex flex-col gap-2">
-            <div class="text-[10px] uppercase font-bold tracking-wider text-emerald-400 font-mono flex items-center gap-1"><i data-lucide="refresh-cw" class="w-3.5 h-3.5 animate-spin"></i> Cloud-Sync</div>
-            <p class="text-[10px] text-gray-400 leading-normal mb-2">Übertrage deinen Plan nahtlos auf all deine Geräte per Sync-Code.</p>
-            
-            <div id="sync-unlinked-area" class="space-y-2 flex flex-col">
-              <button onclick="handleGenerateSyncCode()" class="w-full py-2 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold rounded-lg transition">Neuen Sync-Code erstellen</button>
-              <div class="h-[1px] bg-white/10 my-1"></div>
-              <label class="text-[9px] text-gray-400 font-semibold block mb-0.5">Vorhandenen Code verbinden:</label>
-              <div class="flex gap-1.5">
-                <input type="text" id="sync-input-code" placeholder="z.B. FLOW-A7B8-9C2D" class="flex-1 p-2 bg-black/60 border border-white/15 rounded-lg text-xs text-white outline-none focus:border-emerald-500 uppercase font-mono font-bold" />
-                <button onclick="handleConnectSyncCode()" class="px-3 bg-emerald-500 text-black text-xs font-bold rounded-lg hover:opacity-90 transition flex items-center justify-center"><i data-lucide="link" class="w-4 h-4"></i></button>
-              </div>
-            </div>
-
-            <div id="sync-linked-area" class="hidden space-y-2.5 flex flex-col">
-              <div class="p-2 bg-black/40 border border-white/5 rounded-xl text-center">
-                <div class="text-[9px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">Dein aktiver Sync-Code</div>
-                <div id="sync-active-code-display" class="text-sm font-mono font-black text-emerald-300 tracking-wider">FLOW-XXXX-XXXX</div>
-              </div>
-              <div class="grid grid-cols-2 gap-2">
-                <button onclick="handleUploadSync()" class="py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm"><i data-lucide="cloud-upload" class="w-3.5 h-3.5"></i> Sichern</button>
-                <button onclick="handleDownloadSync()" class="py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 text-xs font-semibold rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm"><i data-lucide="cloud-download" class="w-3.5 h-3.5"></i> Laden</button>
-              </div>
-              <button onclick="handleDisconnectSync()" class="w-full py-1.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-300 text-[10px] font-bold rounded-lg transition">Verbindung trennen</button>
-            </div>
+          <div id="panel-sync" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] w-[200px] bg-[#111116] border border-emerald-500/40 p-3 rounded-2xl shadow-2xl flex flex-col gap-2">
+            <div class="text-[10px] uppercase font-bold tracking-wider text-emerald-400 font-mono" data-i18n="sync_title">Geräte-Sync</div>
+            <p class="text-[10px] text-gray-400 leading-normal mb-1" data-i18n="sync_desc">Übertrage deinen Plan nahtlos auf all deine Geräte.</p>
+            <button onclick="showToast('Schnittstelle folgt in Kürze... 🔒')" class="w-full py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold rounded-lg transition">Einloggen</button>
+            <button onclick="showToast('Schnittstelle folgt in Kürze... 🔒')" class="w-full py-1.5 bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold rounded-lg transition">Registrieren</button>
           </div>
         </div>
       </div>
@@ -456,7 +436,7 @@
       </div>
 
       <!-- BEHÄLTER 9: Sprache & Farbschemas -->
-      <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm bg-black/40">
+      <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm bg-black/40 shrink-0">
         
         <!-- Language Dropdown Menu -->
         <div class="relative group cursor-pointer" onmouseenter="showPanelHover('language')" onmouseleave="hidePanelHover('language')">
@@ -677,7 +657,7 @@
           <div class="h-8 w-[1px] bg-white/10 mx-1 align-middle self-center"></div>
 
           <!-- FACH 2: Alltag & Utility -->
-          <div class="flex items-center gap-1.5 px-1 bg-transparent relative">
+          <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
             <!-- Einkauf -->
             <div class="relative group cursor-pointer mac-dock-item-wrapper" onmouseenter="showPanelHover('shopping')" onmouseleave="hidePanelHover('shopping')">
               <button onclick="togglePanel('shopping')" class="mac-dock-btn balloon-shopping h-14 w-14 md:h-16 md:w-16 rounded-2xl text-emerald-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Interaktive Einkaufsliste und Spartipps öffnen">
@@ -723,6 +703,23 @@
               </div>
             </div>
 
+            <!-- Kochen -->
+            <div class="relative group cursor-pointer mac-dock-item-wrapper" onmouseenter="showPanelHover('cooking')" onmouseleave="hidePanelHover('cooking')">
+              <button onclick="togglePanel('cooking')" class="mac-dock-btn balloon-cooking h-14 w-14 md:h-16 md:w-16 border border-orange-500/30 rounded-2xl bg-orange-500/10 hover:bg-orange-500/20 text-orange-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Kochen: Zutaten verwalten und Rezeptvorschläge nach dem vorhandenen Vorrat erhalten">
+                <i data-lucide="cooking-pot" class="w-5 h-5 text-orange-400"></i>
+                <span class="dock-label">Kochen</span>
+              </button>
+
+              <div id="panel-cooking" class="hidden absolute left-1/2 -translate-x-1/2 bottom-[calc(100%+10px)] z-[110] w-[300px] bg-[#111116]/95 border border-orange-500/40 p-4 rounded-3xl shadow-2xl backdrop-blur-md flex flex-col gap-3">
+                <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                  <h4 class="font-bold text-sm font-display text-white flex items-center gap-1.5">
+                    <i data-lucide="cooking-pot" class="w-4 h-4 text-orange-400"></i>
+                    <span>Kochen</span>
+                  </h4>
+                </div>
+              </div>
+            </div>
+
             <!-- Skripte -->
             <div class="mac-dock-item-wrapper">
               <button id="scripting-trigger-btn" onclick="openScriptingModal()" class="mac-dock-btn balloon-scripting h-14 w-14 md:h-16 md:w-16 rounded-2xl text-indigo-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Social-Skripter: Telefonskripte & soziale Vorlagen">
@@ -754,7 +751,7 @@
               </div>
             </div>
 
-            <!-- Inspiration -->
+            <!-- Inspiration (hierhin verschoben nach Funke) -->
             <div class="relative group cursor-pointer mac-dock-item-wrapper" onmouseenter="showPanelHover('inspiration')" onmouseleave="hidePanelHover('inspiration')">
               <button onclick="togglePanel('inspiration')" class="mac-dock-btn balloon-inspire h-14 w-14 md:h-16 md:w-16 rounded-2xl text-violet-300 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Inspirierenden Impuls für den Geist anzeigen">
                 <i data-lucide="sparkles" class="w-5 h-5 text-violet-400"></i>
@@ -889,7 +886,7 @@
 
       <div class="space-y-4">
         <p class="text-xs text-gray-400 leading-relaxed font-semibold">
-          Egal wie unsportlich oder müde du dich fühlst: Wähle dein aktuelles Energie-Level, um eine maßgeschneiderte, wohltuende Bewegung zu erhalten:
+          Ganz entspannt bewegen: Wähle einfach dein aktuelles Energie-Level, um eine perfekt passende, wohltuende Bewegung zu erhalten:
         </p>
 
         <div>
@@ -959,7 +956,9 @@
           <div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden border border-white/5">
             <div id="anchor-progress-bar" class="h-full bg-teal-400 transition-all duration-300" style="width: 20%"></div>
           </div>
-          <button id="anchor-next-btn" onclick="nextAnchorStep()" class="w-full py-2 bg-teal-500/20 hover:bg-teal-500/30 border border-teal-500/40 text-teal-200 text-xs font-bold rounded-lg transition">Verstanden & Weiter</button>
+          <div class="flex gap-2">
+            <button id="anchor-next-btn" onclick="nextAnchorStep()" class="flex-1 py-2 bg-teal-500/20 hover:bg-teal-500/30 border border-teal-500/40 text-teal-200 text-xs font-bold rounded-lg transition">Verstanden & Weiter</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1092,7 +1091,7 @@
         <!-- 10-10-10 -->
         <div id="compass-pane-ten" class="hidden space-y-3">
           <p class="text-[10px] text-gray-400 leading-normal">
-            Bewerte die Langzeitfolgen deiner Entscheidung mit der wissenschaftlich erprobten 10-10-10 Methode.
+            Bewerte die Langzeitfolgen deiner Entscheidung mit die wissenschaftlich erprobten 10-10-10 Methode.
           </p>
           <div class="space-y-2 text-xs">
             <div class="flex items-center gap-2 bg-[#12121e]/80 border border-white/10 rounded-xl p-2">

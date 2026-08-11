@@ -27,6 +27,44 @@ function loadCategoriesOrder() {
   ];
 }
 
+function createDefaultCookingState() {
+  return {
+    pantryItems: [],
+    recipes: [
+      {
+        id: 'pasta-tomate',
+        title: 'Schnelle Tomaten-Pasta',
+        duration: '15 Min',
+        ingredients: ['Pasta', 'Tomaten', 'Knoblauch', 'Olivenöl', 'Basilikum'],
+        steps: ['Wasser aufkochen und die Pasta darin garen.', 'Tomaten mit Knoblauch in Öl anschwitzen.', 'Pasta mit den Tomaten vermengen und mit Basilikum servieren.']
+      },
+      {
+        id: 'wrap-huhn',
+        title: 'Wrap mit Hähnchen und Gemüse',
+        duration: '20 Min',
+        ingredients: ['Wraps', 'Hähnchen', 'Salat', 'Gurke', 'Joghurt'],
+        steps: ['Hähnchen kurz erwärmen.', 'Salat und Gurke vorbereiten.', 'Alles in den Wrap geben und mit Joghurt abschließen.']
+      },
+      {
+        id: 'omelette',
+        title: 'Frühstücks-Omelett',
+        duration: '10 Min',
+        ingredients: ['Eier', 'Käse', 'Spinat', 'Pfeffer', 'Salz'],
+        steps: ['Eier verquirlen und würzen.', 'Spinat kurz in der Pfanne andünsten.', 'Eier hinzugeben, mit Käse füllen und zusammenklappen.']
+      },
+      {
+        id: 'linsen-suppe',
+        title: 'Schnelle Linsensuppe',
+        duration: '25 Min',
+        ingredients: ['Linsen', 'Karotten', 'Zwiebel', 'Gemüsebrühe', 'Kräuter'],
+        steps: ['Zwiebel und Karotten anschwitzen.', 'Linsen und Brühe dazugeben und köcheln lassen.', 'Mit Kräutern würzen und servieren.']
+      }
+    ],
+    activeRecipeId: null,
+    activeRecipe: null
+  };
+}
+
 function saveCategoriesOrder() {
   localStorage.setItem('flowPlannerCategoriesOrder', JSON.stringify(categoriesOrder));
 }
@@ -43,9 +81,19 @@ function loadState() {
         if (parsed.streak === undefined) parsed.streak = 0;
         if (!parsed.completedSteps) parsed.completedSteps = {};
         
-        // NEU: Absicherung für Einkaufsliste & Protokoll im geladenen Zustand
+        // Absicherung für Einkaufsliste & Protokoll im geladenen Zustand
         if (!parsed.shoppingList) parsed.shoppingList = [];
         if (!parsed.shoppingHistory) parsed.shoppingHistory = [];
+        if (!parsed.cooking) {
+          parsed.cooking = createDefaultCookingState();
+        } else {
+          parsed.cooking = {
+            pantryItems: Array.isArray(parsed.cooking.pantryItems) ? parsed.cooking.pantryItems : [],
+            recipes: Array.isArray(parsed.cooking.recipes) && parsed.cooking.recipes.length ? parsed.cooking.recipes : createDefaultCookingState().recipes,
+            activeRecipeId: parsed.cooking.activeRecipeId || null,
+            activeRecipe: parsed.cooking.activeRecipe || null
+          };
+        }
         
         // Dynamische Injektion: Gesicht waschen direkt nach Zähne morgens platzieren
         if (parsed.items.daily) {
@@ -78,7 +126,8 @@ function loadState() {
     version: 3, lastDate: todayStr,
     items: { daily: initialDaily, weekly: [...localizedDefaults.weekly], occasionally: [...localizedDefaults.occasionally], todo: [], termine: [], notes: '' },
     done: [], archive: [], streak: 0, completedSteps: {},
-    shoppingList: [], shoppingHistory: [] // NEU: Initialisierung der Einkaufs-Datenstrukturen
+    shoppingList: [], shoppingHistory: [],
+    cooking: createDefaultCookingState()
   };
 }
 
@@ -135,7 +184,7 @@ function handleReset() {
     de: 'Möchtest du den gesamten Plan wirklich zurücksetzen?',
     en: 'Do you really want to reset your entire plan?',
     es: '¿Seguro que quieres reiniciar todo el plan?',
-    get: 'Θέλετε πραγματικά να επαναφέρετε ολόκληρο το πλάνο σας;'
+    el: 'Θέλεις πραγματικά να επαναφέρεις ολόκληρο το πλάνο σου;' // Korrektur auf "Du"-Form (Θέλεις/σου) und Zuweisung zu 'el' statt 'get'
   }[currentLang] || 'Reset?';
   
   if (confirm(confirmMsg)) {
@@ -156,7 +205,8 @@ function handleReset() {
       version: 3, lastDate: new Date().toISOString().split('T')[0],
       items: { daily: dailyList, weekly: [...localizedDefaults.weekly], occasionally: [...localizedDefaults.occasionally], todo: [], termine: [], notes: '' },
       done: [], archive: [], streak: 0, completedSteps: {},
-      shoppingList: [], shoppingHistory: []
+      shoppingList: [], shoppingHistory: [],
+      cooking: createDefaultCookingState()
     };
     
     categoriesOrder = [
