@@ -237,7 +237,7 @@
         </button>
       </div>
 
-      <!-- BEHÄLTER 8: Statistik (hierhin verschoben nach 'Was nun?') -->
+      <!-- BEHÄLTER 8: Statistik -->
       <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0 zen-hide">
         <div class="relative group cursor-pointer" onmouseenter="showPanelHover('report')" onmouseleave="hidePanelHover('report')">
           <button onclick="togglePanel('report')" class="h-8 px-2 md:px-3 border border-white/10 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] hover:border-purple-500/30 text-gray-200 flex items-center gap-1 text-[10px] md:text-xs font-semibold cursor-pointer transition whitespace-nowrap shadow-sm" title="Erledigungsstatistiken und Diagramme einsehen">
@@ -305,7 +305,7 @@
         </div>
       </div>
 
-      <!-- BEHÄLTER 3.5: Pause (hierhin verschoben nach 'Statistik') -->
+      <!-- BEHÄLTER 3.5: Pause -->
       <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
         <div class="relative group cursor-pointer" onmouseenter="showPanelHover('pause-dropdown')" onmouseleave="hidePanelHover('pause-dropdown')">
           <button onclick="togglePanel('pause-dropdown')" class="h-8 px-2.5 md:h-10 md:px-3.5 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 hover:border-teal-500/60 rounded-xl text-teal-200 flex items-center gap-1.5 text-[10px] md:text-xs font-bold cursor-pointer transition shadow-sm" title="Reizpause & Entspannungs-Optionen öffnen">
@@ -453,25 +453,33 @@
           </div>
         </div>
 
-        <!-- Theme Selector Dropdown -->
+        <!-- Theme Selector Dropdown (4x4 Grid - 16 Themes) -->
         <div class="relative group cursor-pointer" onmouseenter="showPanelHover('theme')" onmouseleave="hidePanelHover('theme')">
           <button onclick="togglePanel('theme')" class="h-8 w-8 flex items-center justify-center border border-white/5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-gray-200 cursor-pointer transition shadow-sm" title="Farbschema und Hintergrund der App ändern">
             <i data-lucide="palette" class="w-4 h-4 text-purple-300"></i>
           </button>
           
           <div id="panel-theme" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] bg-[#111116] border border-purple-500/40 p-2.5 rounded-xl shadow-2xl grid grid-cols-4 gap-2 w-[120px] origin-top">
+            <!-- Reihe 1 -->
             <button onclick="setTheme('aurora')" class="w-3.5 h-3.5 rounded-full bg-[#a855f7] border border-white/10 hover:scale-125 transition" title="Aurora (Mystical Purple)"></button>
             <button onclick="setTheme('sage')" class="w-3.5 h-3.5 rounded-full bg-[#86efac] border border-white/10 hover:scale-125 transition" title="Sage (Earthy Sage Green)"></button>
             <button onclick="setTheme('cozy')" class="w-3.5 h-3.5 rounded-full bg-[#f59e0b] border border-white/10 hover:scale-125 transition" title="Cozy (Warm Amber)"></button>
             <button onclick="setTheme('forest')" class="w-3.5 h-3.5 rounded-full bg-[#22c55e] border border-white/10 hover:scale-125 transition" title="Forest (Pine Green)"></button>
+            <!-- Reihe 2 -->
             <button onclick="setTheme('architect')" class="w-3.5 h-3.5 rounded-full bg-[#64748b] border border-white/10 hover:scale-125 transition" title="Architect (Steel Grey)"></button>
             <button onclick="setTheme('mono-hand')" class="w-3.5 h-3.5 rounded-full bg-[#d2b48c] border border-stone-800 hover:scale-125 transition" title="Mono Hand (Antique Paper)"></button>
             <button onclick="setTheme('editorial')" class="w-3.5 h-3.5 rounded-full bg-[#eae6df] border border-stone-800 hover:scale-125 transition" title="Editorial (Ink & Ivory)"></button>
             <button onclick="setTheme('glacier')" class="w-3.5 h-3.5 rounded-full bg-[#a5f3fc] border border-white/10 hover:scale-125 transition" title="Glacier (Nordic Ice)"></button>
+            <!-- Reihe 3 -->
             <button onclick="setTheme('charcoal')" class="w-3.5 h-3.5 rounded-full bg-[#475569] border border-white/10 hover:scale-125 transition" title="Charcoal (Pure Graphite)"></button>
             <button onclick="setTheme('executive')" class="w-3.5 h-3.5 rounded-full bg-[#b5a642] border border-white/10 hover:scale-125 transition" title="Executive (Navy & Gold)"></button>
             <button onclick="setTheme('terracotta')" class="w-3.5 h-3.5 rounded-full bg-[#cca480] border border-white/10 hover:scale-125 transition" title="Terracotta (Dune & Clay)"></button>
             <button onclick="setTheme('carbon')" class="w-3.5 h-3.5 rounded-full bg-[#1e293b] border border-white/10 hover:scale-125 transition" title="Carbon (Ultra-Minimal)"></button>
+            <!-- Reihe 4 (Neue Premium Paper-Themen) -->
+            <button onclick="setTheme('parchment')" class="w-3.5 h-3.5 rounded-full bg-[#8d5b34] border border-stone-800 hover:scale-125 transition" title="Parchment (Espresso & Parchment)"></button>
+            <button onclick="setTheme('minimalist-light')" class="w-3.5 h-3.5 rounded-full bg-[#f8fafc] border border-stone-400 hover:scale-125 transition" title="Minimalist Light (Scandinavian White)"></button>
+            <button onclick="setTheme('terracotta-light')" class="w-3.5 h-3.5 rounded-full bg-[#9a4c24] border border-stone-800 hover:scale-125 transition" title="Terracotta Light (Sand & Clay)"></button>
+            <button onclick="setTheme('slate-ivory')" class="w-3.5 h-3.5 rounded-full bg-[#2e3b4e] border border-stone-800 hover:scale-125 transition" title="Slate Ivory (Steel-Blue & Ivory)"></button>
           </div>
         </div>
       </div>
@@ -751,7 +759,7 @@
               </div>
             </div>
 
-            <!-- Inspiration (hierhin verschoben nach Funke) -->
+            <!-- Inspiration -->
             <div class="relative group cursor-pointer mac-dock-item-wrapper" onmouseenter="showPanelHover('inspiration')" onmouseleave="hidePanelHover('inspiration')">
               <button onclick="togglePanel('inspiration')" class="mac-dock-btn balloon-inspire h-12 w-12 md:h-14 md:w-14 rounded-2xl text-violet-300 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Inspirierenden Impuls für den Geist anzeigen">
                 <i data-lucide="sparkles" class="w-5 h-5 text-violet-400"></i>

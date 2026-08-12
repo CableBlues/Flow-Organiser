@@ -184,7 +184,7 @@ function handleReset() {
     de: 'Möchtest du den gesamten Plan wirklich zurücksetzen?',
     en: 'Do you really want to reset your entire plan?',
     es: '¿Seguro que quieres reiniciar todo el plan?',
-    el: 'Θέλεις πραγματικά να επαναφέρεις ολόκληρο το πλάνο σου;' // Korrektur auf "Du"-Form (Θέλεις/σου) und Zuweisung zu 'el' statt 'get'
+    el: 'Θέλεις πραγματικά να επαναφέρεις ολόκληρο το πλάνο σου;'
   }[currentLang] || 'Reset?';
   
   if (confirm(confirmMsg)) {

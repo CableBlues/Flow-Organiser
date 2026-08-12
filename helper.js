@@ -444,7 +444,7 @@ function handleStepClick(stepIndex) {
   
   if (!isCompleted) {
     state.completedSteps[targetTask].push(stepIndex);
-    if (typeof playProceduralSound === 'function') playProceduralSound();
+    if (typeof playProceduralSound === 'function') playProceduralSound(3);
   } else {
     state.completedSteps[targetTask] = state.completedSteps[targetTask].filter(i => i !== stepIndex);
   }
@@ -486,7 +486,7 @@ function handleStepClick(stepIndex) {
       if (catToUse && idxToUse !== -1) {
         handleCompleteTask(catToUse, idxToUse);
       } else {
-        if (typeof playProceduralSound === 'function') playProceduralSound(); 
+        if (typeof playProceduralSound === 'function') playProceduralSound(3); 
         if (typeof triggerConfetti === 'function') triggerConfetti();
         if (typeof showPraise === 'function') showPraise();
         showToast({
@@ -536,7 +536,7 @@ function completeDopamineKick() {
     
   state.done.push({ task: logText, origin: 'adhd', date: todayStr, time: timeStr });
   saveState();
-  if (typeof playProceduralSound === 'function') playProceduralSound();
+  if (typeof playProceduralSound === 'function') playProceduralSound(3);
   if (typeof triggerConfetti === 'function') triggerConfetti();
   if (typeof showPraise === 'function') showPraise();
   resetDopamineBox();

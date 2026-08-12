@@ -207,7 +207,7 @@ const customTranslations = {
     completed_stat: "Ολοκληρωμένα",
     rate_stat: "Ποσοστό επιτυχίας",
     weekly_activity: "Δραστηριότητα τελευταίων 7 ημερών",
-    loading_stats: "Φόρτωση των επιτευγμάτων σου...",
+    loading_stats: "Φόρτωση των επιτευμάτων σου...",
     export: "Αποθήκευση ως εικόνα",
     login_btn: "Σύνδεση",
     sync_title: "Συγχρονισμός συσκευών",
@@ -269,7 +269,7 @@ const INSPIRATION_SAYINGS = {
     "Wenn dir der Anfang schwerfällt, nimm dir vor, nur eine einzige Minute daran zu arbeiten. Danach darfst du jederzeit aufhören.",
     "Dein Gehirn ist ein Prozessor, kein Datenspeicher. Schreib den Gedanken auf, um wertvollen Arbeitsspeicher im Kopf freizugeben.",
     "Manchmal ist eine Pause kein Luxus, sondern eine notwendige Wartung deines Systems. Gönne dir diesen Moment ohne Schuldgefühle.",
-    "Fehlentscheidungen sild nur Datenpunkte. Sie zeigen dir, was nicht funktioniert, und helfen dir, deinen Weg feinzujustieren."
+    "Fehlentscheidungen sind nur Datenpunkte. Sie zeigen dir, was nicht funktioniert, und helfen dir, deinen Weg feinzujustieren."
   ],
   en: [
     "You don't have to do a task perfectly. Doing it incompletely is infinitely better than not doing it at all.",
@@ -467,7 +467,7 @@ function getTaskIconDetails(taskText, category = '') {
 function getTaskIcon(taskText, category = '') { return getTaskIconDetails(taskText, category).icon; }
 
 // ==========================================
-// KOCHEN UTILS & RENDERING (HOCHPROFESSIONELL)
+// KOCHEN UTILS & RENDERING
 // ==========================================
 
 function getCookingState() {
@@ -1052,7 +1052,13 @@ function handleCompleteTask(category, index, event) {
     }
     state.done.push({ task: taskText, origin: category, date: todayStr, time: timeStr });
     state.streak = (state.streak || 0) + 1; if (state.completedSteps) delete state.completedSteps[taskText];
-    const themes = ['sage', 'aurora', 'cozy', 'forest', 'architect', 'mono-hand', 'editorial', 'glacier', 'charcoal', 'executive', 'terracotta', 'carbon'];
+    
+    // Inkludiert die 4 neuen Paper-Designs in die zufällige Themenrotation
+    const themes = [
+      'sage', 'aurora', 'cozy', 'forest', 'architect', 'mono-hand', 'editorial', 'glacier', 
+      'charcoal', 'executive', 'terracotta', 'carbon', 'parchment', 'minimalist-light', 
+      'terracotta-light', 'slate-ivory'
+    ];
     let nextTheme; do { nextTheme = themes[Math.floor(Math.random() * themes.length)]; } while (nextTheme === currentTheme);
     setTheme(nextTheme); saveState(); showPraise(); renderApp(); updateZenView(); populateHelperTaskSelect();
   };
@@ -1738,3 +1744,4 @@ function formatTerminDate(dateStr, timeStr) {
   const day = String(d.getDate()).padStart(2, '0'); const month = String(d.getMonth() + 1).padStart(2, '0');
   const year = d.getFullYear(); const time = timeStr ? ` ${timeStr}` : ''; return `${day}.${month}.${year}${time}`;
 }
+

@@ -47,7 +47,7 @@ body, body #app, body #app * {
   background: var(--accent);
 }
 
-/* --- THEMEN 1 BIS 12 (EIGENSTÄNDIG KOORDINIERTE FARBWELTEN) --- */
+/* --- THEMEN 1 BIS 16 (EIGENSTÄNDIG KOORDINIERTE FARBWELTEN) --- */
 
 /* 1. Aurora (Mystical Deep Purple-Slate) */
 body.theme-aurora {
@@ -146,41 +146,41 @@ body.theme-architect {
 
 /* 6. Mono Hand (Klassisches Pergamentpapier) */
 body.theme-mono-hand {
-  --accent: #8b5a2b;
-  --accent-light: #a0522d;
-  --accent-border: rgba(139, 90, 43, 0.2);
+  --accent: #783e19;
+  --accent-light: #9a5324;
+  --accent-border: rgba(120, 62, 25, 0.35);
   --bg-app: #f4efdf;
   --bg-header: #eae3cf;
-  --bg-card: rgba(255, 255, 255, 0.45);
-  --bg-card-hover: rgba(255, 255, 255, 0.7);
+  --bg-card: rgba(255, 255, 255, 0.55);
+  --bg-card-hover: rgba(255, 255, 255, 0.75);
   --bg-dock: #eae3cf;
-  --bg-panel: #fbfbf6;
-  --bg-modal: #fbfbf6;
-  --text-main: #2b1d0c;
-  --text-muted: #8b5a2b;
-  --text-header: #2b1d0c;
-  --text-dock: #2b1d0c;
-  --border-main: rgba(139, 90, 43, 0.25);
+  --bg-panel: #fcfbf7;
+  --bg-modal: #fcfbf7;
+  --text-main: #231207;
+  --text-muted: #783e19;
+  --text-header: #231207;
+  --text-dock: #231207;
+  --border-main: rgba(120, 62, 25, 0.25);
   --font-family: 'Caveat', cursive, sans-serif;
 }
 
 /* 7. Editorial (Ivory Zeitungspapier) */
 body.theme-editorial {
-  --accent: #2c3e50;
-  --accent-light: #34495e;
-  --accent-border: rgba(44, 62, 80, 0.2);
-  --bg-app: #f9f6f0;
-  --bg-header: #eeeae0;
-  --bg-card: #ffffff;
-  --bg-card-hover: #fafafa;
-  --bg-dock: #eeeae0;
+  --accent: #1e293b;
+  --accent-light: #334155;
+  --accent-border: rgba(30, 41, 59, 0.3);
+  --bg-app: #fbf9f4;
+  --bg-header: #f3efe6;
+  --bg-card: rgba(255, 255, 255, 0.75);
+  --bg-card-hover: rgba(255, 255, 255, 0.95);
+  --bg-dock: #f3efe6;
   --bg-panel: #ffffff;
   --bg-modal: #ffffff;
-  --text-main: #1a1a1a;
-  --text-muted: #555555;
-  --text-header: #1a1a1a;
-  --text-dock: #1a1a1a;
-  --border-main: rgba(0, 0, 0, 0.12);
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-header: #0f172a;
+  --text-dock: #0f172a;
+  --border-main: rgba(30, 41, 59, 0.18);
   --font-family: 'Playfair Display', Georgia, serif;
 }
 
@@ -279,86 +279,454 @@ body.theme-carbon {
   --border-main: rgba(255, 255, 255, 0.05);
 }
 
-/* --- FOCUS MODE (MINIMAL MODE) --- */
-body.minimalist .zen-hide { display: none !important; }
-body.minimalist .particle { display: none !important; }
-body.minimalist main { display: none !important; }
-body.minimalist #zen-chill-view { display: flex !important; }
-body.minimalist article {
-  box-shadow: none !important;
-  border-color: var(--border-main) !important;
-  background-color: var(--bg-card) !important;
+/* --- NEUE HELLE PREMIUM PAPER-DESIGNS (13 - 16) --- */
+
+/* 13. Parchment (Warmer antiker Buch-Einband & Espresso-Tinte) */
+body.theme-parchment {
+  --accent: #5e3c23;
+  --accent-light: #8d5b34;
+  --accent-border: rgba(94, 60, 35, 0.35);
+  --bg-app: #f1ebd8;
+  --bg-header: #e4dcb8;
+  --bg-card: rgba(255, 255, 255, 0.5);
+  --bg-card-hover: rgba(255, 255, 255, 0.75);
+  --bg-dock: #e4dcb8;
+  --bg-panel: #FAF7EF;
+  --bg-modal: #FAF7EF;
+  --text-main: #331e0f;
+  --text-muted: #5e3c23;
+  --text-header: #331e0f;
+  --text-dock: #331e0f;
+  --border-main: rgba(94, 60, 35, 0.25);
+  --font-family: 'Playfair Display', Georgia, serif;
 }
 
-/* --- TYPOGRAFIE- & DESIGN-OVERRIDES FÜR HELLE THEMEN --- */
-
-/* Handschriftliches Thema (Mono Hand) */
-body.theme-mono-hand main,
-body.theme-mono-hand main *,
-body.theme-mono-hand #zen-chill-view,
-body.theme-mono-hand #zen-chill-view * {
-  font-family: 'Caveat', cursive, sans-serif !important;
-  color: #2b1d0c !important;
-  text-shadow: none !important;
+/* 14. Minimalist Light (Kühler, reiner skandinavischer Weißraum) */
+body.theme-minimalist-light {
+  --accent: #0f172a;
+  --accent-light: #334155;
+  --accent-border: rgba(15, 23, 42, 0.25);
+  --bg-app: #f8fafc;
+  --bg-header: #e2e8f0;
+  --bg-card: rgba(255, 255, 255, 0.85);
+  --bg-card-hover: #ffffff;
+  --bg-dock: #e2e8f0;
+  --bg-panel: #ffffff;
+  --bg-modal: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-header: #0f172a;
+  --text-dock: #0f172a;
+  --border-main: rgba(15, 23, 42, 0.15);
+  --font-family: "Plus Jakarta Sans", sans-serif;
 }
+
+/* 15. Terracotta Light (Sanfter Wüstensand & Ziegelton) */
+body.theme-terracotta-light {
+  --accent: #9a4c24;
+  --accent-light: #bc724c;
+  --accent-border: rgba(154, 76, 36, 0.3);
+  --bg-app: #fcf7f2;
+  --bg-header: #f2e3d5;
+  --bg-card: rgba(255, 255, 255, 0.65);
+  --bg-card-hover: rgba(255, 255, 255, 0.85);
+  --bg-dock: #f2e3d5;
+  --bg-panel: #fffbf8;
+  --bg-modal: #fffbf8;
+  --text-main: #4a1e0a;
+  --text-muted: #9a4c24;
+  --text-header: #4a1e0a;
+  --text-dock: #4a1e0a;
+  --border-main: rgba(154, 76, 36, 0.2);
+  --font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+/* 16. Slate Ivory (Hochwertiges stahlblaues Slate auf Elfenbein) */
+body.theme-slate-ivory {
+  --accent: #2e3b4e;
+  --accent-light: #4c5d75;
+  --accent-border: rgba(46, 59, 78, 0.3);
+  --bg-app: #FAF8F4;
+  --bg-header: #eee9dd;
+  --bg-card: rgba(255, 255, 255, 0.7);
+  --bg-card-hover: rgba(255, 255, 255, 0.9);
+  --bg-dock: #eee9dd;
+  --bg-panel: #ffffff;
+  --bg-modal: #ffffff;
+  --text-main: #1a2332;
+  --text-muted: #4c5d75;
+  --text-header: #1a2332;
+  --text-dock: #1a2332;
+  --border-main: rgba(46, 59, 78, 0.2);
+  --font-family: 'Playfair Display', Georgia, serif;
+}
+
+/* --- MONO HAND: MASSIVE SCHRIFTVERGRÖSSERUNG ÜBERALL (10% KLEINER ALS VORHER) --- */
 body.theme-mono-hand {
-  font-size: 1.25rem !important;
+  font-size: 1.32rem !important;
 }
+
 body.theme-mono-hand .task-text-span {
+  font-size: 1.32rem !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+}
+
+body.theme-mono-hand article h2 span {
+  font-size: 1.4rem !important;
+  font-weight: 800 !important;
+}
+
+body.theme-mono-hand p,
+body.theme-mono-hand h1,
+body.theme-mono-hand h3,
+body.theme-mono-hand h4,
+body.theme-mono-hand textarea,
+body.theme-mono-hand input,
+body.theme-mono-hand select,
+body.theme-mono-hand button {
   font-size: 1.22rem !important;
   font-weight: 700 !important;
+  line-height: 1.3 !important;
 }
-body.theme-mono-hand article h2 span {
-  font-size: 1.15rem !important;
+
+body.theme-mono-hand .dock-label {
+  font-size: 0.85rem !important;
+  font-weight: 800 !important;
+}
+
+body.theme-mono-hand span:not(.dock-label):not(#active-lang-flag) {
+  font-size: 1.12rem !important;
   font-weight: 700 !important;
 }
 
-/* Redaktionelles Buchdruck-Thema (Editorial) */
-body.theme-editorial main,
-body.theme-editorial main *,
-body.theme-editorial #zen-chill-view,
-body.theme-editorial #zen-chill-view * {
-  font-family: 'Playfair Display', Georgia, serif !important;
-  color: #1a1a1a !important;
-  text-shadow: none !important;
-}
-body.theme-editorial article {
-  background-color: #ffffff !important;
-  border-color: rgba(0, 0, 0, 0.08) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
-}
-body.theme-editorial article div[draggable="true"] {
-  border-color: rgba(0, 0, 0, 0.06) !important;
-  background-color: #fafafa !important;
-}
-body.theme-editorial select,
-body.theme-editorial textarea,
-body.theme-editorial input {
-  background-color: #fbfbfb !important;
-  color: #1a1a1a !important;
-  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+body.theme-mono-hand #timer-display {
+  font-size: 1.25rem !important;
+  font-weight: 900 !important;
 }
 
-/* --- LIGHT-MODE POPUPS & PANEL-MENÜS FÜR HELLE THEMEN --- */
+/* --- GRUPPIERTE HOCHAUFLÖSENDE ANPASSUNGEN FÜR DIE ANDEREN HELLEN THEMEN --- */
+body.theme-editorial,
+body.theme-parchment,
+body.theme-minimalist-light,
+body.theme-terracotta-light,
+body.theme-slate-ivory {
+  font-size: 1.05rem !important;
+}
+
+body.theme-editorial .task-text-span,
+body.theme-parchment .task-text-span,
+body.theme-minimalist-light .task-text-span,
+body.theme-terracotta-light .task-text-span,
+body.theme-slate-ivory .task-text-span {
+  font-size: 0.98rem !important;
+  font-weight: 700 !important;
+  color: var(--text-main) !important;
+}
+
+body.theme-editorial article h2 span,
+body.theme-parchment article h2 span,
+body.theme-slate-ivory article h2 span {
+  font-size: 1.15rem !important;
+  font-weight: 800 !important;
+}
+
+/* Karten & Spaltenränder in allen hellen Themen */
+body.theme-mono-hand article,
+body.theme-editorial article,
+body.theme-parchment article,
+body.theme-minimalist-light article,
+body.theme-terracotta-light article,
+body.theme-slate-ivory article {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border-main) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
+}
+
+body.theme-mono-hand article:hover,
+body.theme-editorial article:hover,
+body.theme-parchment article:hover,
+body.theme-minimalist-light article:hover,
+body.theme-terracotta-light article:hover,
+body.theme-slate-ivory article:hover {
+  background-color: var(--bg-card-hover) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 0 0 12px var(--accent-border) !important;
+}
+
+/* Aufgaben-Einträge */
+body.theme-mono-hand article div[draggable="true"],
+body.theme-editorial article div[draggable="true"],
+body.theme-parchment article div[draggable="true"],
+body.theme-minimalist-light article div[draggable="true"],
+body.theme-terracotta-light article div[draggable="true"],
+body.theme-slate-ivory article div[draggable="true"] {
+  border-color: var(--border-main) !important;
+  background-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+body.theme-mono-hand article div[draggable="true"]:hover,
+body.theme-editorial article div[draggable="true"]:hover,
+body.theme-parchment article div[draggable="true"]:hover,
+body.theme-minimalist-light article div[draggable="true"]:hover,
+body.theme-terracotta-light article div[draggable="true"]:hover,
+body.theme-slate-ivory article div[draggable="true"]:hover {
+  background-color: #ffffff !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Formulareingaben & Selektoren */
+body.theme-mono-hand select,
+body.theme-mono-hand textarea,
+body.theme-mono-hand input,
+body.theme-editorial select,
+body.theme-editorial textarea,
+body.theme-editorial input,
+body.theme-parchment select,
+body.theme-parchment textarea,
+body.theme-parchment input,
+body.theme-minimalist-light select,
+body.theme-minimalist-light textarea,
+body.theme-minimalist-light input,
+body.theme-terracotta-light select,
+body.theme-terracotta-light textarea,
+body.theme-terracotta-light input,
+body.theme-slate-ivory select,
+body.theme-slate-ivory textarea,
+body.theme-slate-ivory input {
+  background-color: #ffffff !important;
+  color: var(--text-main) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+}
+
+/* --- KONTRASTE IM HEADER FÜR HELLE THEMEN --- */
+body.theme-mono-hand header,
+body.theme-editorial header,
+body.theme-parchment header,
+body.theme-minimalist-light header,
+body.theme-terracotta-light header,
+body.theme-slate-ivory header {
+  background-color: var(--bg-header) !important;
+  border-color: var(--border-main) !important;
+}
+
+body.theme-mono-hand header *,
+body.theme-editorial header *,
+body.theme-parchment header *,
+body.theme-minimalist-light header *,
+body.theme-terracotta-light header *,
+body.theme-slate-ivory header * {
+  color: var(--text-header) !important;
+}
+
+/* Helle Themen: Header-Aktionsknöpfe (SCHLIESST THEME- & SPRACHPANEL-BUTTONS PRÄZISE AUS) */
+body.theme-mono-hand header button:not([id^="panel-"] button),
+body.theme-editorial header button:not([id^="panel-"] button),
+body.theme-parchment header button:not([id^="panel-"] button),
+body.theme-minimalist-light header button:not([id^="panel-"] button),
+body.theme-terracotta-light header button:not([id^="panel-"] button),
+body.theme-slate-ivory header button:not([id^="panel-"] button) {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  color: var(--accent) !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03) !important;
+}
+
+body.theme-mono-hand header button:not([id^="panel-"] button) i,
+body.theme-editorial header button:not([id^="panel-"] button) i,
+body.theme-parchment header button:not([id^="panel-"] button) i,
+body.theme-minimalist-light header button:not([id^="panel-"] button) i,
+body.theme-terracotta-light header button:not([id^="panel-"] button) i,
+body.theme-slate-ivory header button:not([id^="panel-"] button) i {
+  color: var(--accent) !important;
+}
+
+/* Helle Themen: Datumsanzeige */
+body.theme-mono-hand #date-container,
+body.theme-editorial #date-container,
+body.theme-parchment #date-container,
+body.theme-minimalist-light #date-container,
+body.theme-terracotta-light #date-container,
+body.theme-slate-ivory #date-container {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03) !important;
+}
+
+body.theme-mono-hand #date-display,
+body.theme-editorial #date-display,
+body.theme-parchment #date-display,
+body.theme-minimalist-light #date-display,
+body.theme-terracotta-light #date-display,
+body.theme-slate-ivory #date-display {
+  background: none !important;
+  -webkit-text-fill-color: var(--accent) !important;
+  color: var(--accent) !important;
+  text-shadow: none !important;
+}
+
+body.theme-mono-hand #date-icon,
+body.theme-editorial #date-icon,
+body.theme-parchment #date-icon,
+body.theme-minimalist-light #date-icon,
+body.theme-terracotta-light #date-icon,
+body.theme-slate-ivory #date-icon {
+  color: var(--accent) !important;
+}
+
+/* --- DYNAMISCHE LOGO-ANPASSUNG FÜR ALLE SCHEMATA --- */
+.logo-dance {
+  background: linear-gradient(135deg, var(--bg-card), var(--bg-panel)) !important;
+  border: 1px solid var(--border-main) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  color: var(--text-main) !important;
+}
+
+.logo-dance span {
+  color: var(--text-main) !important;
+}
+
+.logo-dance svg {
+  color: var(--accent) !important;
+}
+
+/* Logo-Anpassung bei Hover */
+.logo-dance:hover {
+  border-color: var(--accent-light) !important;
+  box-shadow: 0 0 20px var(--accent-border) !important;
+}
+
+/* Logo-Spezialoverride für alle hellen Papier-Designs */
+body.theme-mono-hand .logo-dance,
+body.theme-editorial .logo-dance,
+body.theme-parchment .logo-dance,
+body.theme-minimalist-light .logo-dance,
+body.theme-terracotta-light .logo-dance,
+body.theme-slate-ivory .logo-dance {
+  background: #ffffff !important;
+  border: 1.5px solid var(--accent) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.theme-mono-hand .logo-dance span,
+body.theme-editorial .logo-dance span,
+body.theme-parchment .logo-dance span,
+body.theme-minimalist-light .logo-dance span,
+body.theme-terracotta-light .logo-dance span,
+body.theme-slate-ivory .logo-dance span {
+  color: var(--accent) !important;
+  text-shadow: none !important;
+}
+
+/* --- COGNITIVE TIMER LEGIBILITY & CONTRAST OVERRIDES --- */
+#timer-trigger-container {
+  background-color: rgba(0, 0, 0, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+#timer-preset-select-real {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  color: var(--accent-light) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+#timer-display {
+  color: var(--accent-light) !important;
+}
+
+/* Exakte Timer-Übersteuerungen für alle hellen Papier-Designs */
+body.theme-mono-hand #timer-trigger-container,
+body.theme-editorial #timer-trigger-container,
+body.theme-parchment #timer-trigger-container,
+body.theme-minimalist-light #timer-trigger-container,
+body.theme-terracotta-light #timer-trigger-container,
+body.theme-slate-ivory #timer-trigger-container {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  border: 1.5px solid rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03) !important;
+}
+
+body.theme-mono-hand #timer-display,
+body.theme-editorial #timer-display,
+body.theme-parchment #timer-display,
+body.theme-minimalist-light #timer-display,
+body.theme-terracotta-light #timer-display,
+body.theme-slate-ivory #timer-display {
+  color: var(--accent) !important; /* Nutzt den dunklen Akzentton auf Papierhintergründen */
+}
+
+body.theme-mono-hand #timer-preset-select-real,
+body.theme-editorial #timer-preset-select-real,
+body.theme-parchment #timer-preset-select-real,
+body.theme-minimalist-light #timer-preset-select-real,
+body.theme-terracotta-light #timer-preset-select-real,
+body.theme-slate-ivory #timer-preset-select-real {
+  background-color: #ffffff !important;
+  color: var(--accent) !important;
+  border: 1.5px solid rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Timer Knöpfe mit 100% Farb-Overrides für maximale Sichtbarkeit */
+html body #app #timer-trigger-container button i {
+  transition: transform 0.2s ease !important;
+}
+
+html body #app #timer-trigger-container button#timer-play-btn i {
+  color: #10b981 !important; /* Immer leuchtendes Smaragd-Grün */
+}
+
+html body #app #timer-trigger-container button#timer-pause-btn i {
+  color: var(--accent) !important; /* Immer Akzentfarbe */
+}
+
+html body #app #timer-trigger-container button#timer-stop-btn i {
+  color: #f43f5e !important; /* Immer klares Signalrot */
+}
+
+html body #app #timer-trigger-container button#timer-mute-btn i {
+  color: #64748b !important; /* Immer gut sichtbares Schiefer-Grau */
+}
+
+body.theme-mono-hand #timer-trigger-container button#timer-mute-btn i,
+body.theme-editorial #timer-trigger-container button#timer-mute-btn i,
+body.theme-parchment #timer-trigger-container button#timer-mute-btn i,
+body.theme-minimalist-light #timer-trigger-container button#timer-mute-btn i,
+body.theme-terracotta-light #timer-trigger-container button#timer-mute-btn i,
+body.theme-slate-ivory #timer-trigger-container button#timer-mute-btn i {
+  color: var(--accent) !important; /* Tintenton im stummen Zustand für Papier-Themes */
+}
+
+/* --- POPUPS & PANELS FÜR HELLE THEMEN --- */
 body.theme-mono-hand [id^="panel-"],
-body.theme-mono-hand #panel-calendar-dropdown {
-  background-color: #fbfbf6 !important;
-  border-color: rgba(0, 0, 0, 0.15) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
-}
-body.theme-mono-hand [id^="panel-"] *,
-body.theme-mono-hand #panel-calendar-dropdown * {
-  color: #2b1d0c !important;
-}
+body.theme-mono-hand #panel-calendar-dropdown,
 body.theme-editorial [id^="panel-"],
-body.theme-editorial #panel-calendar-dropdown {
-  background-color: #fbfbf6 !important;
-  border-color: rgba(0, 0, 0, 0.15) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
+body.theme-editorial #panel-calendar-dropdown,
+body.theme-parchment [id^="panel-"],
+body.theme-parchment #panel-calendar-dropdown,
+body.theme-minimalist-light [id^="panel-"],
+body.theme-minimalist-light #panel-calendar-dropdown,
+body.theme-terracotta-light [id^="panel-"],
+body.theme-terracotta-light #panel-calendar-dropdown,
+body.theme-slate-ivory [id^="panel-"],
+body.theme-slate-ivory #panel-calendar-dropdown {
+  background-color: var(--bg-panel) !important;
+  border: 1.5px solid rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
 }
+
+body.theme-mono-hand [id^="panel-"] *,
+body.theme-mono-hand #panel-calendar-dropdown *,
 body.theme-editorial [id^="panel-"] *,
-body.theme-editorial #panel-calendar-dropdown * {
-  color: #1a1a1a !important;
+body.theme-editorial #panel-calendar-dropdown *,
+body.theme-parchment [id^="panel-"] *,
+body.theme-parchment #panel-calendar-dropdown *,
+body.theme-minimalist-light [id^="panel-"] *,
+body.theme-minimalist-light #panel-calendar-dropdown *,
+body.theme-terracotta-light [id^="panel-"] *,
+body.theme-terracotta-light #panel-calendar-dropdown *,
+body.theme-slate-ivory [id^="panel-"] *,
+body.theme-slate-ivory #panel-calendar-dropdown * {
+  color: var(--text-main) !important;
 }
 
 /* --- ALLGEMEINE RESETS --- */
@@ -733,7 +1101,7 @@ html body .animate-party-swing {
 .balloon-music {
   background: radial-gradient(circle at 30% 30%, rgba(192, 132, 252, 0.5) 0%, rgba(168, 85, 247, 0.65) 45%, rgba(108, 43, 155, 0.5) 70%, #040208 100%) !important;
   border: none !important;
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(192, 132, 252, 0.08), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(94, 234, 212, 0.08), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 .balloon-pause {
   background: radial-gradient(circle at 30% 30%, rgba(148, 163, 184, 0.45) 0%, rgba(100, 116, 139, 0.6) 45%, rgba(71, 85, 105, 0.45) 70%, #040506 100%) !important;
@@ -769,6 +1137,69 @@ html body .animate-party-swing {
   background: radial-gradient(circle at 30% 30%, rgba(249, 115, 22, 0.45) 0%, rgba(194, 65, 12, 0.6) 45%, rgba(127, 39, 10, 0.45) 70%, #080504 100%) !important;
   border: none !important;
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(249, 115, 22, 0.06), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* OVERRIDES FÜR DIE macOS DOCK-SCHALE IN ALLEN HELLEN THEMEN */
+body.theme-mono-hand .mac-dock,
+body.theme-editorial .mac-dock,
+body.theme-parchment .mac-dock,
+body.theme-minimalist-light .mac-dock,
+body.theme-terracotta-light .mac-dock,
+body.theme-slate-ivory .mac-dock {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+}
+
+body.theme-mono-hand .mac-dock-btn,
+body.theme-editorial .mac-dock-btn,
+body.theme-parchment .mac-dock-btn,
+body.theme-minimalist-light .mac-dock-btn,
+body.theme-terracotta-light .mac-dock-btn,
+body.theme-slate-ivory .mac-dock-btn {
+  background: #ffffff !important;
+  border: 1.5px solid var(--accent) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.theme-mono-hand .mac-dock-btn i,
+body.theme-editorial .mac-dock-btn i,
+body.theme-parchment .mac-dock-btn i,
+body.theme-minimalist-light .mac-dock-btn i,
+body.theme-terracotta-light .mac-dock-btn i,
+body.theme-slate-ivory .mac-dock-btn i {
+  color: var(--accent) !important;
+  filter: none !important;
+}
+
+body.theme-mono-hand .dock-label,
+body.theme-editorial .dock-label,
+body.theme-parchment .dock-label,
+body.theme-minimalist-light .dock-label,
+body.theme-terracotta-light .dock-label,
+body.theme-slate-ivory .dock-label {
+  color: var(--accent) !important;
+  text-shadow: none !important;
+  font-weight: 800 !important;
+}
+
+body.theme-mono-hand .mac-dock-btn:hover,
+body.theme-editorial .mac-dock-btn:hover,
+body.theme-parchment .mac-dock-btn:hover,
+body.theme-minimalist-light .mac-dock-btn:hover,
+body.theme-terracotta-light .mac-dock-btn:hover,
+body.theme-slate-ivory .mac-dock-btn:hover {
+  background-color: var(--bg-app) !important;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08) !important;
+}
+
+body.theme-mono-hand .mac-dock div[class*="bg-white/10"],
+body.theme-editorial .mac-dock div[class*="bg-white/10"],
+body.theme-parchment .mac-dock div[class*="bg-white/10"],
+body.theme-minimalist-light .mac-dock div[class*="bg-white/10"],
+body.theme-terracotta-light .mac-dock div[class*="bg-white/10"],
+body.theme-slate-ivory .mac-dock div[class*="bg-white/10"] {
+  background-color: rgba(0, 0, 0, 0.15) !important;
 }
 
 .dock-label {
@@ -880,84 +1311,33 @@ html body .animate-party-swing {
   pointer-events: none !important;
 }
 
-body.theme-mono-hand .mac-tools-trigger {
-  background: radial-gradient(circle at 35% 35%, #d2b48c 0%, #8b5a2b 55%, #000000 100%) !important;
-}
-body.theme-editorial .mac-tools-trigger {
-  background: radial-gradient(circle at 35% 35%, #eae6df 0%, #2c3e50 55%, #000000 100%) !important;
-}
-
-/* Pause-Dropdown Panel */
-#panel-pause-dropdown {
-  background-color: var(--bg-panel) !important;
-  border-color: rgba(20, 184, 166, 0.3) !important; /* Dezentes Teal */
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(20, 184, 166, 0.1) !important;
+/* Tools Sphere für helle Themen */
+body.theme-mono-hand .mac-tools-trigger,
+body.theme-editorial .mac-tools-trigger,
+body.theme-parchment .mac-tools-trigger,
+body.theme-minimalist-light .mac-tools-trigger,
+body.theme-terracotta-light .mac-tools-trigger,
+body.theme-slate-ivory .mac-tools-trigger {
+  background: var(--accent) !important;
+  border: 1px solid var(--accent-light) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* --- COMIC SPRECHBLASEN-DESIGN (NUR FÜR FEEDBACK & STATISTIK) --- */
-#panel-feedback, #panel-report {
-  position: absolute !important;
-  border: 2.5px solid var(--accent, #8b5cf6) !important;
-  border-radius: 1.25rem !important;
-  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.6) !important;
-  background-color: var(--bg-panel, #111116) !important;
-  filter: none !important;
-  overflow: visible !important; /* Wichtig, damit der Pfeil außerhalb der Box sichtbar bleibt */
+body.theme-mono-hand .mac-tools-trigger span:first-child,
+body.theme-editorial .mac-tools-trigger span:first-child,
+body.theme-parchment .mac-tools-trigger span:first-child,
+body.theme-minimalist-light .mac-tools-trigger span:first-child,
+body.theme-terracotta-light .mac-tools-trigger span:first-child,
+body.theme-slate-ivory .mac-tools-trigger span:first-child {
+  color: var(--bg-app) !important;
 }
 
-/* Gemeinsame Basis für die Sprechblasen-Zeiger (HÖCHST ROBUSTER CSS-TRIANGLE-REBUILD) */
-#panel-feedback::before {
-  content: "";
-  position: absolute;
-  top: -10px;
-  left: 14px;
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid var(--accent, #8b5cf6);
-  z-index: 120;
-  pointer-events: none;
-}
-
-#panel-feedback::after {
-  content: "";
-  position: absolute;
-  top: -7.5px;
-  left: 14px;
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid var(--bg-panel, #111116);
-  z-index: 121;
-  pointer-events: none;
-}
-
-#panel-report::before {
-  content: "";
-  position: absolute;
-  top: -10px;
-  right: 24px;
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid var(--accent, #8b5cf6);
-  z-index: 120;
-  pointer-events: none;
-}
-
-#panel-report::after {
-  content: "";
-  position: absolute;
-  top: -7.5px;
-  right: 24px;
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid var(--bg-panel, #111116);
-  z-index: 121;
-  pointer-events: none;
+body.theme-mono-hand .mac-tools-trigger span:last-child,
+body.theme-editorial .mac-tools-trigger span:last-child,
+body.theme-parchment .mac-tools-trigger span:last-child,
+body.theme-minimalist-light .mac-tools-trigger span:last-child,
+body.theme-terracotta-light .mac-tools-trigger span:last-child,
+body.theme-slate-ivory .mac-tools-trigger span:last-child {
+  color: #ffffff !important;
+  text-shadow: none !important;
 }
