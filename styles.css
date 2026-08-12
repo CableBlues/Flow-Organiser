@@ -674,16 +674,16 @@ html body .animate-party-swing {
   align-items: center !important;
   justify-content: center !important;
   position: relative !important;
-  width: 64px !important;
-  height: 64px !important;
+  width: 56px !important;
+  height: 56px !important;
   aspect-ratio: 1 / 1 !important;
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), margin 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 @media (min-width: 768px) {
   .mac-dock-item-wrapper {
-    width: 74px !important;
-    height: 74px !important;
+    width: 68px !important;
+    height: 68px !important;
   }
 }
 
@@ -707,9 +707,9 @@ html body .animate-party-swing {
   gap: 5px !important;
   width: 100% !important;
   height: 100% !important;
-  border-radius: 20px !important;
+  border-radius: 32px !important;
   border: none !important;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s, box-shadow 0.2s !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s, box-shadow 0.3s !important;
   position: relative;
   aspect-ratio: 1 / 1 !important;
   padding: 8px !important;
@@ -726,49 +726,49 @@ html body .animate-party-swing {
 
 /* Kategorie-spezifische, plastisch glänzende radial-gradients (Moderne 3D-Ballon-Optik) */
 .balloon-sounds {
-  background: radial-gradient(circle at 35% 35%, #5eead4 0%, #0d201d 60%, #000000 100%) !important;
-  border: 1px solid rgba(94, 234, 212, 0.25) !important;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5), inset 0 3px 5px rgba(255, 255, 255, 0.3) !important;
+  background: radial-gradient(circle at 30% 30%, rgba(94, 234, 212, 0.5) 0%, rgba(20, 184, 166, 0.65) 45%, rgba(15, 118, 110, 0.5) 70%, #040908 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(94, 234, 212, 0.08), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 .balloon-music {
-  background: radial-gradient(circle at 35% 35%, #c084fc 0%, #1e112d 60%, #000000 100%) !important;
-  border: 1px solid rgba(192, 132, 252, 0.25) !important;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5), inset 0 3px 5px rgba(255, 255, 255, 0.3) !important;
+  background: radial-gradient(circle at 30% 30%, rgba(192, 132, 252, 0.5) 0%, rgba(168, 85, 247, 0.65) 45%, rgba(108, 43, 155, 0.5) 70%, #040208 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(192, 132, 252, 0.08), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 .balloon-pause {
-  background: radial-gradient(circle at 35% 35%, #94a3b8 0%, #171d24 60%, #000000 100%) !important;
-  border: 1px solid rgba(148, 163, 184, 0.25) !important;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5), inset 0 3px 5px rgba(255, 255, 255, 0.3) !important;
+  background: radial-gradient(circle at 30% 30%, rgba(148, 163, 184, 0.45) 0%, rgba(100, 116, 139, 0.6) 45%, rgba(71, 85, 105, 0.45) 70%, #040506 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(148, 163, 184, 0.06), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 .balloon-inspire {
-  background: radial-gradient(circle at 35% 35%, #c084fc 0%, #20112f 60%, #000000 100%) !important;
-  border: 1px solid rgba(168, 85, 247, 0.25) !important;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5), inset 0 3px 5px rgba(255, 255, 255, 0.3) !important;
+  background: radial-gradient(circle at 30% 30%, rgba(192, 132, 252, 0.5) 0%, rgba(168, 85, 247, 0.65) 45%, rgba(108, 43, 155, 0.5) 70%, #040208 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(168, 85, 247, 0.08), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 .balloon-shopping {
-  background: radial-gradient(circle at 35% 35%, #4ade80 0%, #0c2615 60%, #000000 100%) !important;
-  border: 1px solid rgba(74, 222, 128, 0.25) !important;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5), inset 0 3px 5px rgba(255, 255, 255, 0.3) !important;
+  background: radial-gradient(circle at 30% 30%, rgba(74, 222, 128, 0.45) 0%, rgba(34, 197, 94, 0.6) 45%, rgba(20, 123, 69, 0.45) 70%, #040706 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(74, 222, 128, 0.06), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 .balloon-scripting {
-  background: radial-gradient(circle at 35% 35%, #818cf8 0%, #121532 60%, #000000 100%) !important;
-  border: 1px solid rgba(129, 140, 248, 0.25) !important;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5), inset 0 3px 5px rgba(255, 255, 255, 0.3) !important;
+  background: radial-gradient(circle at 30% 30%, rgba(129, 140, 248, 0.45) 0%, rgba(99, 102, 241, 0.6) 45%, rgba(67, 72, 180, 0.45) 70%, #040407 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(129, 140, 248, 0.06), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 .balloon-boost {
-  background: radial-gradient(circle at 35% 35%, #fbbf24 0%, #301f09 60%, #000000 100%) !important;
-  border: 1px solid rgba(251, 191, 36, 0.25) !important;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5), inset 0 3px 5px rgba(255, 255, 255, 0.3) !important;
+  background: radial-gradient(circle at 30% 30%, rgba(251, 191, 36, 0.45) 0%, rgba(217, 119, 6, 0.6) 45%, rgba(160, 82, 45, 0.45) 70%, #080605 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(251, 191, 36, 0.06), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 .balloon-compass {
-  background: radial-gradient(circle at 35% 35%, #fb7185 0%, #350f13 60%, #000000 100%) !important;
-  border: 1px solid rgba(251, 113, 133, 0.25) !important;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5), inset 0 3px 5px rgba(255, 255, 255, 0.3) !important;
+  background: radial-gradient(circle at 30% 30%, rgba(251, 113, 133, 0.45) 0%, rgba(225, 29, 72, 0.6) 45%, rgba(149, 20, 46, 0.45) 70%, #080405 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(251, 113, 133, 0.06), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 .balloon-sport {
-  background: radial-gradient(circle at 35% 35%, #f97316 0%, #3a1506 60%, #000000 100%) !important;
-  border: 1px solid rgba(249, 115, 22, 0.25) !important;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5), inset 0 3px 5px rgba(255, 255, 255, 0.3) !important;
+  background: radial-gradient(circle at 30% 30%, rgba(249, 115, 22, 0.45) 0%, rgba(194, 65, 12, 0.6) 45%, rgba(127, 39, 10, 0.45) 70%, #080504 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(249, 115, 22, 0.06), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 
 .dock-label {
@@ -794,7 +794,12 @@ html body .animate-party-swing {
 }
 
 .mac-dock-item-wrapper:hover i {
-  transform: scale(1.1) translateY(-1px);
+  transform: scale(1.15) translateY(-2px);
+}
+
+.mac-dock-btn:hover {
+  transform: scale(1.08) !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7) !important;
 }
 
 /* Separators */
@@ -813,14 +818,15 @@ html body .animate-party-swing {
 }
 
 .mac-tools-trigger {
-  width: 72px !important;
-  height: 72px !important;
+  width: 76px !important;
+  height: 76px !important;
   border-radius: 50% !important;
-  background: radial-gradient(circle at 35% 35%, var(--accent-light) 0%, var(--accent) 55%, #000000 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  background: radial-gradient(circle at 30% 30%, rgba(192, 132, 252, 0.65) 0%, rgba(139, 92, 246, 0.75) 40%, rgba(75, 40, 130, 0.6) 70%, #050205 100%) !important;
+  border: none !important;
   box-shadow: 
-    0 10px 25px rgba(0, 0, 0, 0.65), 
-    inset 0 3px 6px rgba(255, 255, 255, 0.45) !important;
+    0 14px 36px rgba(0, 0, 0, 0.7), 
+    0 0 16px rgba(139, 92, 246, 0.15),
+    inset 0 -2px 8px rgba(0, 0, 0, 0.4) !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
@@ -840,12 +846,11 @@ html body .animate-party-swing {
 
 .mac-tools-trigger:hover {
   animation: none !important;
-  border-color: var(--accent-light) !important;
   box-shadow: 
-    0 16px 35px rgba(0, 0, 0, 0.65), 
-    inset 0 3px 6px rgba(255, 255, 255, 0.55),
-    0 0 15px rgba(139, 92, 246, 0.3) !important;
-  transform: translate(-50%, -50%) scale(1.08) translateY(-2px) !important;
+    0 18px 44px rgba(0, 0, 0, 0.7), 
+    0 0 20px rgba(139, 92, 246, 0.2),
+    inset 0 -2px 8px rgba(0, 0, 0, 0.4) !important;
+  transform: translate(-50%, -50%) scale(1.09) translateY(-2px) !important;
 }
 
 .mac-tools-trigger span:first-child {

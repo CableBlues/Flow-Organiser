@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Flow – Dein Alltagshelfer</title>
+  <title>Flow - Dein Alltagsbegleiter</title>
 
   <!-- Hochauflösendes Wellen-Favicon -->
   <link class="icon" rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌊</text></svg>">
@@ -132,7 +132,7 @@
       <div class="flex items-center gap-1.5 md:gap-2 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
         <!-- Feedback Icon Button -->
         <div class="relative group zen-hide" onmouseenter="showPanelHover('feedback')" onmouseleave="hidePanelHover('feedback')">
-          <button onclick="togglePanel('feedback')" class="h-7 w-7 flex items-center justify-center border border-pink-500/30 rounded-lg bg-pink-500/10 hover:bg-pink-500/20 text-pink-300 cursor-pointer transition shadow-sm" title="Feedback & Verbesserungsvorschläge an den Entwickler senden">
+          <button onclick="togglePanel('feedback')" class="h-7 w-7 flex items-center justify-center border border-pink-500/30 rounded-xl bg-pink-500/10 hover:bg-pink-500/20 text-pink-300 cursor-pointer transition shadow-sm" title="Feedback & Verbesserungsvorschläge an den Entwickler senden">
             <i data-lucide="message-square-heart" class="w-3.5 h-3.5 text-pink-400"></i>
           </button>
           
@@ -211,7 +211,7 @@
       <!-- BEHÄLTER 4: Datum -->
       <div id="date-container" class="hidden xl:flex items-center justify-center p-0.5 border rounded-xl shadow-sm shrink-0 mx-1 transition-all duration-300 relative group cursor-pointer" onmouseenter="showPanelHover('calendar-dropdown')" onmouseleave="hidePanelHover('calendar-dropdown')">
         <div class="flex items-center gap-1.5 px-2 py-1 h-8">
-          <button onclick="togglePanel('calendar-dropdown')" id="date-calendar-btn" class="group/date h-7 w-7 flex items-center justify-center rounded-lg hover:bg-white/10 transition-all duration-300" title="Monatskalender und Termine anzeigen">
+          <button onclick="togglePanel('calendar-dropdown')" id="date-calendar-btn" class="group/date h-7 w-7 flex items-center justify-center rounded-xl hover:bg-white/10 transition-all duration-300" title="Monatskalender und Termine anzeigen">
             <i id="date-icon" data-lucide="calendar-days" class="w-4 h-4 shrink-0 transition-all duration-300"></i>
           </button>
           <span id="date-display" class="whitespace-nowrap"></span>
@@ -254,7 +254,7 @@
                 </h4>
                 
                 <!-- Timeframe Tabs -->
-                <div class="flex items-center bg-black/50 p-0.5 rounded-lg border border-white/10 text-[11px] font-bold">
+                <div class="flex items-center bg-black/50 p-0.5 rounded-xl border border-white/10 text-[11px] font-bold">
                   <button onclick="setTheme(currentTheme)" class="hidden"></button>
                   <button onclick="setReportTimeframe('today')" id="report-tab-today" class="px-2 py-1 rounded text-[var(--accent-light)] bg-[var(--accent)]/25 cursor-pointer transition">Heute</button>
                   <button onclick="setReportTimeframe('week')" id="report-tab-week" class="px-2 py-1 rounded text-gray-400 hover:text-white cursor-pointer transition">Woche</button>
@@ -318,7 +318,7 @@
             <p class="text-[10px] text-gray-400 leading-normal mb-1">Methoden zur sensorischen Pause:</p>
             
             <!-- Option 1: Atemtakt -->
-            <button onclick="openSafeSpaceWithTab('breath')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-lg text-teal-300 transition flex items-center gap-2">
+            <button onclick="openSafeSpaceWithTab('breath')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2">
               <i data-lucide="wind" class="w-4 h-4 shrink-0 text-teal-400"></i>
               <div>
                 <div class="leading-none mb-0.5">Atemtakt-Übung 🧘‍♀️</div>
@@ -327,7 +327,7 @@
             </button>
 
             <!-- Option 2: Box Breathing -->
-            <button onclick="triggerBoxBreathing()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-lg text-teal-300 transition flex items-center gap-2">
+            <button onclick="triggerBoxBreathing()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2">
               <i data-lucide="box" class="w-4 h-4 shrink-0 text-teal-400"></i>
               <div>
                 <div class="leading-none mb-0.5">Box-Breathing (Atembox) 📦</div>
@@ -336,7 +336,7 @@
             </button>
             
             <!-- Option 3: Erdungs-Anker -->
-            <button onclick="openSafeSpaceWithTab('anchor')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-lg text-teal-300 transition flex items-center gap-2">
+            <button onclick="openSafeSpaceWithTab('anchor')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2">
               <i data-lucide="anchor" class="w-4 h-4 shrink-0 text-teal-400"></i>
               <div>
                 <div class="leading-none mb-0.5">Erdungs-Anker ⚓</div>
@@ -345,7 +345,7 @@
             </button>
 
             <!-- Option 4: Augen-Entspannung -->
-            <button onclick="triggerEyeRelaxation()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-lg text-teal-300 transition flex items-center gap-2">
+            <button onclick="triggerEyeRelaxation()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2">
               <i data-lucide="eye" class="w-4 h-4 shrink-0 text-teal-400"></i>
               <div>
                 <div class="leading-none mb-0.5">Augen-Entspannung 👀</div>
@@ -354,7 +354,7 @@
             </button>
             
             <!-- Option 5: Schneller Stretch -->
-            <button onclick="triggerQuickStretch()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-lg text-teal-300 transition flex items-center gap-2">
+            <button onclick="triggerQuickStretch()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2">
               <i data-lucide="dumbbell" class="w-4 h-4 shrink-0 text-teal-400"></i>
               <div>
                 <div class="leading-none mb-0.5">Schneller Stretch 🧘</div>
@@ -363,7 +363,7 @@
             </button>
 
             <!-- Option 6: Schulter-Squeeze -->
-            <button onclick="triggerShoulderSqueeze()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-lg text-teal-300 transition flex items-center gap-2">
+            <button onclick="triggerShoulderSqueeze()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2">
               <i data-lucide="dumbbell" class="w-4 h-4 shrink-0 text-teal-400 animate-pulse"></i>
               <div>
                 <div class="leading-none mb-0.5">Nacken-Squeeze (1 Min) 🏋️</div>
@@ -372,7 +372,7 @@
             </button>
             
             <!-- Option 7: 5-Minuten Teepause -->
-            <button onclick="triggerFiveMinTeaBreak()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-lg text-teal-300 transition flex items-center gap-2">
+            <button onclick="triggerFiveMinTeaBreak()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2">
               <i data-lucide="coffee" class="w-4 h-4 shrink-0 text-teal-400"></i>
               <div>
                 <div class="leading-none mb-0.5">5-Minuten Teepause ☕</div>
@@ -381,7 +381,7 @@
             </button>
 
             <!-- Option 8: Wald-Auszeit -->
-            <button onclick="triggerNatureBirds()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-lg text-teal-300 transition flex items-center gap-2">
+            <button onclick="triggerNatureBirds()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2">
               <i data-lucide="trees" class="w-4 h-4 shrink-0 text-teal-400"></i>
               <div>
                 <div class="leading-none mb-0.5">Wald-Auszeit (3 Min) 🐦</div>
@@ -390,7 +390,7 @@
             </button>
 
             <!-- Option 9: Power Nap -->
-            <button onclick="triggerPowerNap()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-lg text-teal-300 transition flex items-center gap-2">
+            <button onclick="triggerPowerNap()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2">
               <i data-lucide="bed" class="w-4 h-4 shrink-0 text-teal-400"></i>
               <div>
                 <div class="leading-none mb-0.5">Power Nap (20 Min) 😴</div>
@@ -412,8 +412,8 @@
           <div id="panel-sync" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] w-[200px] bg-[#111116] border border-emerald-500/40 p-3 rounded-2xl shadow-2xl flex flex-col gap-2">
             <div class="text-[10px] uppercase font-bold tracking-wider text-emerald-400 font-mono" data-i18n="sync_title">Geräte-Sync</div>
             <p class="text-[10px] text-gray-400 leading-normal mb-1" data-i18n="sync_desc">Übertrage deinen Plan nahtlos auf all deine Geräte.</p>
-            <button onclick="showToast('Schnittstelle folgt in Kürze... 🔒')" class="w-full py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold rounded-lg transition">Einloggen</button>
-            <button onclick="showToast('Schnittstelle folgt in Kürze... 🔒')" class="w-full py-1.5 bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold rounded-lg transition">Registrieren</button>
+            <button onclick="showToast('Schnittstelle folgt in Kürze... 🔒')" class="w-full py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold rounded-xl transition">Einloggen</button>
+            <button onclick="showToast('Schnittstelle folgt in Kürze... 🔒')" class="w-full py-1.5 bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold rounded-xl transition">Registrieren</button>
           </div>
         </div>
       </div>
@@ -440,7 +440,7 @@
         
         <!-- Language Dropdown Menu -->
         <div class="relative group cursor-pointer" onmouseenter="showPanelHover('language')" onmouseleave="hidePanelHover('language')">
-          <button onclick="togglePanel('language')" class="h-8 px-2 border border-white/5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-gray-200 flex items-center gap-1 text-xs font-semibold cursor-pointer transition shadow-sm">
+          <button onclick="togglePanel('language')" class="h-8 px-2 border border-white/5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-gray-200 flex items-center gap-1 text-xs font-semibold cursor-pointer transition shadow-sm">
             <span id="active-lang-flag" class="text-xs md:text-sm">🇬🇧</span>
             <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-gray-400"></i>
           </button>
@@ -455,7 +455,7 @@
 
         <!-- Theme Selector Dropdown -->
         <div class="relative group cursor-pointer" onmouseenter="showPanelHover('theme')" onmouseleave="hidePanelHover('theme')">
-          <button onclick="togglePanel('theme')" class="h-8 w-8 flex items-center justify-center border border-white/5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-gray-200 cursor-pointer transition shadow-sm" title="Farbschema und Hintergrund der App ändern">
+          <button onclick="togglePanel('theme')" class="h-8 w-8 flex items-center justify-center border border-white/5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-gray-200 cursor-pointer transition shadow-sm" title="Farbschema und Hintergrund der App ändern">
             <i data-lucide="palette" class="w-4 h-4 text-purple-300"></i>
           </button>
           
@@ -507,10 +507,10 @@
           </div>
           <div class="h-5 w-[1px] bg-white/10"></div>
           <div class="flex items-center gap-2">
-            <button onclick="toggleTimer()" class="p-1.5 hover:bg-white/5 rounded-lg transition text-emerald-400" title="Start/Pause">
+            <button onclick="toggleTimer()" class="p-1.5 hover:bg-white/5 rounded-xl transition text-emerald-400" title="Start/Pause">
               <i data-lucide="play" class="w-4 h-4"></i>
             </button>
-            <button onclick="stopTimer()" class="p-1.5 hover:bg-white/5 rounded-lg transition text-rose-400" title="Stop">
+            <button onclick="stopTimer()" class="p-1.5 hover:bg-white/5 rounded-xl transition text-rose-400" title="Stop">
               <i data-lucide="square" class="w-4 h-4"></i>
             </button>
           </div>
@@ -538,7 +538,7 @@
           <!-- FACH 1: Geist & Entspannung -->
           <div class="flex items-center gap-1.5 px-1 bg-transparent relative">
             <div class="relative group cursor-pointer mac-dock-item-wrapper" onmouseenter="showPanelHover('soundscape')" onmouseleave="hidePanelHover('soundscape')">
-              <button onclick="handleSoundsMainClick()" class="mac-dock-btn balloon-sounds h-14 w-14 md:h-16 md:w-16 rounded-2xl text-zinc-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Naturgeräusche ein- oder ausschalten">
+              <button onclick="handleSoundsMainClick()" class="mac-dock-btn balloon-sounds h-12 w-12 md:h-14 md:w-14 rounded-2xl text-zinc-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Naturgeräusche ein- oder ausschalten">
                 <i data-lucide="leaf" class="w-5 h-5 text-zinc-400"></i>
                 <span class="dock-label">Sounds</span>
                 <span id="soundscape-indicator" class="hidden w-1.5 h-1.5 rounded-full bg-zinc-400 animate-ping absolute top-1 right-1"></span>
@@ -554,39 +554,39 @@
                 </div>
 
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 mb-2.5">
-                  <button onclick="playAmbientSound('rain')" id="sound-btn-rain" class="p-1 bg-white/5 hover:bg-zinc-500/20 border border-white/10 rounded-lg text-left transition cursor-pointer flex items-center gap-1.5 min-w-0 h-8">
+                  <button onclick="playAmbientSound('rain')" id="sound-btn-rain" class="p-1 bg-white/5 hover:bg-zinc-500/20 border border-white/10 rounded-xl text-left transition cursor-pointer flex items-center gap-1.5 min-w-0 h-8">
                     <span class="text-xs shrink-0">🌧️</span>
                     <span class="text-white font-bold text-[9px] truncate" data-i18n="sound_rain">Sommerregen</span>
                   </button>
-                  <button onclick="playAmbientSound('ocean')" id="sound-btn-ocean" class="p-1 bg-white/5 hover:bg-zinc-500/20 border border-white/10 rounded-lg text-left transition cursor-pointer flex items-center gap-1.5 min-w-0 h-8">
+                  <button onclick="playAmbientSound('ocean')" id="sound-btn-ocean" class="p-1 bg-white/5 hover:bg-zinc-500/20 border border-white/10 rounded-xl text-left transition cursor-pointer flex items-center gap-1.5 min-w-0 h-8">
                     <span class="text-xs shrink-0">🌊</span>
                     <span class="text-white font-bold text-[9px] truncate" data-i18n="sound_ocean">Ozeanwellen</span>
                   </button>
-                  <button onclick="playAmbientSound('campfire')" id="sound-btn-campfire" class="p-1 bg-white/5 hover:bg-zinc-500/20 border border-white/10 rounded-lg text-left transition cursor-pointer flex items-center gap-1.5 min-w-0 h-8">
+                  <button onclick="playAmbientSound('campfire')" id="sound-btn-campfire" class="p-1 bg-white/5 hover:bg-zinc-500/20 border border-white/10 rounded-xl text-left transition cursor-pointer flex items-center gap-1.5 min-w-0 h-8">
                     <span class="text-xs shrink-0">🔥</span>
                     <span class="text-white font-bold text-[9px] truncate">Lagerfeuer</span>
                   </button>
-                  <button onclick="playAmbientSound('birds')" id="sound-btn-birds" class="p-1 bg-white/5 hover:bg-zinc-500/20 border border-white/10 rounded-lg text-left transition cursor-pointer flex items-center gap-1.5 min-w-0 h-8">
+                  <button onclick="playAmbientSound('birds')" id="sound-btn-birds" class="p-1 bg-white/5 hover:bg-zinc-500/20 border border-white/10 rounded-xl text-left transition cursor-pointer flex items-center gap-1.5 min-w-0 h-8">
                     <span class="text-xs shrink-0">🐦</span>
                     <span class="text-white font-bold text-[9px] truncate" data-i18n="sound_birds">Waldvögel</span>
                   </button>
-                  <button onclick="playAmbientSound('stream')" id="sound-btn-stream" class="p-1 bg-white/5 hover:bg-zinc-500/20 border border-white/10 rounded-lg text-left transition cursor-pointer flex items-center gap-1.5 min-w-0 h-8">
+                  <button onclick="playAmbientSound('stream')" id="sound-btn-stream" class="p-1 bg-white/5 hover:bg-zinc-500/20 border border-white/10 rounded-xl text-left transition cursor-pointer flex items-center gap-1.5 min-w-0 h-8">
                     <span class="text-xs shrink-0">🏔️</span>
                     <span class="text-white font-bold text-[9px] truncate">Gebirgsbach</span>
                   </button>
-                  <button onclick="playAmbientSound('temple')" id="sound-btn-temple" class="p-1 bg-white/5 hover:bg-zinc-500/20 border border-white/10 rounded-lg text-left transition cursor-pointer flex items-center gap-1.5 min-w-0 h-8">
+                  <button onclick="playAmbientSound('temple')" id="sound-btn-temple" class="p-1 bg-white/5 hover:bg-zinc-500/20 border border-white/10 rounded-xl text-left transition cursor-pointer flex items-center gap-1.5 min-w-0 h-8">
                     <span class="text-xs shrink-0">🎋</span>
                     <span class="text-white font-bold text-[9px] truncate">Zen-Tempel</span>
                   </button>
-                  <button onclick="playAmbientSound('cafe')" id="sound-btn-cafe" class="p-1 bg-white/5 hover:bg-zinc-500/20 border border-white/10 rounded-lg text-left transition cursor-pointer flex items-center gap-1.5 min-w-0 h-8">
+                  <button onclick="playAmbientSound('cafe')" id="sound-btn-cafe" class="p-1 bg-white/5 hover:bg-zinc-500/20 border border-white/10 rounded-xl text-left transition cursor-pointer flex items-center gap-1.5 min-w-0 h-8">
                     <span class="text-xs shrink-0">☕</span>
                     <span class="text-white font-bold text-[9px] truncate" data-i18n="sound_cafe">Cozy Café</span>
                   </button>
-                  <button onclick="playAmbientSound('clock')" id="sound-btn-clock" class="p-1 bg-white/5 hover:bg-zinc-500/20 border border-white/10 rounded-lg text-left transition cursor-pointer flex items-center gap-1.5 min-w-0 h-8">
+                  <button onclick="playAmbientSound('clock')" id="sound-btn-clock" class="p-1 bg-white/5 hover:bg-zinc-500/20 border border-white/10 rounded-xl text-left transition cursor-pointer flex items-center gap-1.5 min-w-0 h-8">
                     <span class="text-xs shrink-0">🕰️</span>
                     <span class="text-white font-bold text-[9px] truncate">Uhrenladen</span>
                   </button>
-                  <button onclick="playAmbientSound('purr')" id="sound-btn-purr" class="p-1 bg-white/5 hover:bg-zinc-500/20 border border-white/10 rounded-lg text-left transition cursor-pointer flex items-center gap-1.5 min-w-0 h-8">
+                  <button onclick="playAmbientSound('purr')" id="sound-btn-purr" class="p-1 bg-white/5 hover:bg-zinc-500/20 border border-white/10 rounded-xl text-left transition cursor-pointer flex items-center gap-1.5 min-w-0 h-8">
                     <span class="text-xs shrink-0">🐱</span>
                     <span class="text-white font-bold text-[9px] truncate" data-i18n="sound_purr">Katzen-Schnurren</span>
                   </button>
@@ -594,7 +594,7 @@
 
                 <div class="flex items-center gap-2 pt-1.5 border-t border-white/10 text-xs">
                   <i data-lucide="volume-2" class="w-3.5 h-3.5 text-zinc-400 shrink-0"></i>
-                  <input type="range" min="0" max="1" step="0.05" value="0.5" oninput="setSoundVolume(this.value)" class="w-full accent-[var(--accent)] cursor-pointer h-1 bg-black/50 rounded-lg">
+                  <input type="range" min="0" max="1" step="0.05" value="0.5" oninput="setSoundVolume(this.value)" class="w-full accent-[var(--accent)] cursor-pointer h-1 bg-black/50 rounded-xl">
                   <button onclick="stopAmbientSound()" class="px-2 py-0.5 bg-red-500/15 hover:bg-red-500/25 border border-red-500/30 text-red-300 rounded text-[10px] font-bold transition shrink-0 cursor-pointer" data-i18n="stop">Stop</button>
                 </div>
               </div>
@@ -602,7 +602,7 @@
 
             <!-- Musik -->
             <div class="relative group cursor-pointer mac-dock-item-wrapper" onmouseenter="showPanelHover('music')" onmouseleave="hidePanelHover('music')">
-              <button onclick="handleMusicMainClick()" class="mac-dock-btn balloon-music h-14 w-14 md:h-16 md:w-16 rounded-2xl text-purple-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Eigene Audio-Tracks laden, abspielen oder pausieren">
+              <button onclick="handleMusicMainClick()" class="mac-dock-btn balloon-music h-12 w-12 md:h-14 md:w-14 rounded-2xl text-purple-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Eigene Audio-Tracks laden, abspielen oder pausieren">
                 <i data-lucide="waves" class="w-5 h-5 text-purple-400"></i>
                 <span class="dock-label">Musik</span>
               </button>
@@ -636,13 +636,13 @@
                     </div>
                     
                     <div class="flex items-center justify-center gap-4 mt-1">
-                      <button onclick="togglePlayerShuffle()" id="player-shuffle-toggle-btn" class="p-1.5 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 rounded-lg cursor-pointer transition">
+                      <button onclick="togglePlayerShuffle()" id="player-shuffle-toggle-btn" class="p-1.5 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 rounded-xl cursor-pointer transition">
                         <i data-lucide="shuffle" class="w-3.5 h-3.5"></i>
                       </button>
                       <button id="player-play-pause-btn" onclick="togglePlaylistPlayback()" class="p-2.5 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-purple-300 rounded-xl cursor-pointer transition shadow-md">
                         <i data-lucide="pause" class="w-4 h-4"></i>
                       </button>
-                      <button onclick="playNextTrackWithCrossfade()" class="p-1.5 bg-white/5 hover:bg-white/10 text-purple-400 rounded-lg cursor-pointer transition">
+                      <button onclick="playNextTrackWithCrossfade()" class="p-1.5 bg-white/5 hover:bg-white/10 text-purple-400 rounded-xl cursor-pointer transition">
                         <i data-lucide="skip-forward" class="w-3.5 h-3.5"></i>
                       </button>
                     </div>
@@ -660,7 +660,7 @@
           <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
             <!-- Einkauf -->
             <div class="relative group cursor-pointer mac-dock-item-wrapper" onmouseenter="showPanelHover('shopping')" onmouseleave="hidePanelHover('shopping')">
-              <button onclick="togglePanel('shopping')" class="mac-dock-btn balloon-shopping h-14 w-14 md:h-16 md:w-16 rounded-2xl text-emerald-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Interaktive Einkaufsliste und Spartipps öffnen">
+              <button onclick="togglePanel('shopping')" class="mac-dock-btn balloon-shopping h-12 w-12 md:h-14 md:w-14 rounded-2xl text-emerald-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Interaktive Einkaufsliste und Spartipps öffnen">
                 <i data-lucide="shopping-basket" class="w-5 h-5 text-emerald-400"></i>
                 <span class="dock-label">Kauf</span>
                 <span id="shop-badge-count" class="hidden px-1 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[8px] font-bold absolute top-1 right-1">0</span>
@@ -677,13 +677,13 @@
                 <div class="max-h-[140px] overflow-y-auto pr-1 flex flex-col gap-1.5 text-xs text-gray-300" id="shopping-list-rows"></div>
 
                 <div class="flex gap-1.5 p-1 bg-black/40 border border-white/5 rounded-xl">
-                  <input type="text" id="shop-add-name" placeholder="Artikel hinzufügen..." class="flex-1 p-2 bg-[#12121c] border border-white/10 rounded-lg text-xs text-white outline-none focus:border-emerald-500 font-semibold" />
-                  <button onclick="handleAddShoppingItem()" class="px-3 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 rounded-lg flex items-center justify-center transition cursor-pointer">
+                  <input type="text" id="shop-add-name" placeholder="Artikel hinzufügen..." class="flex-1 p-2 bg-[#12121c] border border-white/10 rounded-xl text-xs text-white outline-none focus:border-emerald-500 font-semibold" />
+                  <button onclick="handleAddShoppingItem()" class="px-3 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 rounded-xl flex items-center justify-center transition cursor-pointer">
                     <i data-lucide="plus" class="w-4 h-4"></i>
                   </button>
                 </div>
 
-                <div id="shop-tip-box" class="p-2 bg-emerald-500/5 border border-emerald-500/20 text-[9px] text-emerald-200 rounded-lg flex items-start gap-1.5 leading-normal">
+                <div id="shop-tip-box" class="p-2 bg-emerald-500/5 border border-emerald-500/20 text-[9px] text-emerald-200 rounded-xl flex items-start gap-1.5 leading-normal">
                   <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-400 shrink-0 animate-pulse"></i>
                   <span id="shop-tip-text">Spartipps werden geladen...</span>
                 </div>
@@ -705,7 +705,7 @@
 
             <!-- Kochen -->
             <div class="relative group cursor-pointer mac-dock-item-wrapper" onmouseenter="showPanelHover('cooking')" onmouseleave="hidePanelHover('cooking')">
-              <button onclick="togglePanel('cooking')" class="mac-dock-btn balloon-cooking h-14 w-14 md:h-16 md:w-16 border border-orange-500/30 rounded-2xl bg-orange-500/10 hover:bg-orange-500/20 text-orange-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Kochen: Zutaten verwalten und Rezeptvorschläge nach dem vorhandenen Vorrat erhalten">
+              <button onclick="togglePanel('cooking')" class="mac-dock-btn balloon-cooking h-12 w-12 md:h-14 md:w-14 border border-orange-500/30 rounded-2xl bg-orange-500/10 hover:bg-orange-500/20 text-orange-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Kochen: Zutaten verwalten und Rezeptvorschläge nach dem vorhandenen Vorrat erhalten">
                 <i data-lucide="cooking-pot" class="w-5 h-5 text-orange-400"></i>
                 <span class="dock-label">Kochen</span>
               </button>
@@ -722,7 +722,7 @@
 
             <!-- Skripte -->
             <div class="mac-dock-item-wrapper">
-              <button id="scripting-trigger-btn" onclick="openScriptingModal()" class="mac-dock-btn balloon-scripting h-14 w-14 md:h-16 md:w-16 rounded-2xl text-indigo-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Social-Skripter: Telefonskripte & soziale Vorlagen">
+              <button id="scripting-trigger-btn" onclick="openScriptingModal()" class="mac-dock-btn balloon-scripting h-12 w-12 md:h-14 md:w-14 rounded-2xl text-indigo-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Social-Skripter: Telefonskripte & soziale Vorlagen">
                 <i data-lucide="scroll" class="w-5 h-5 text-indigo-400"></i>
                 <span class="dock-label">Skripte</span>
               </button>
@@ -735,7 +735,7 @@
           <div class="flex items-center gap-1.5 px-1 bg-transparent relative">
             <!-- Funke -->
             <div class="relative group mac-dock-item-wrapper" onmouseenter="showPanelHover('boost'); suggestBoostActivity();" onmouseleave="hidePanelHover('boost')">
-              <button onclick="togglePanel('boost')" class="mac-dock-btn balloon-boost h-14 w-14 md:h-16 md:w-16 rounded-2xl text-amber-300 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="30-Sekunden-Aktivität zur Überwindung von Blockaden erhalten">
+              <button onclick="togglePanel('boost')" class="mac-dock-btn balloon-boost h-12 w-12 md:h-14 md:w-14 rounded-2xl text-amber-300 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="30-Sekunden-Aktivität zur Überwindung von Blockaden erhalten">
                 <i data-lucide="zap" class="w-5 h-5 text-amber-400"></i>
                 <span class="dock-label">Funke</span>
               </button>
@@ -747,13 +747,13 @@
                 <div id="boost-activity-box" class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-center text-xs font-semibold text-amber-200 min-h-[48px] flex items-center justify-center" data-i18n="boost_placeholder">
                   Klicke unten für einen Vorschlag!
                 </div>
-                <button onclick="suggestBoostActivity()" class="w-full py-1.5 bg-amber-500 text-black text-xs font-bold rounded-lg hover:opacity-90 transition cursor-pointer" data-i18n="boost_new">Neuer Vorschlag 🔄</button>
+                <button onclick="suggestBoostActivity()" class="w-full py-1.5 bg-amber-500 text-black text-xs font-bold rounded-xl hover:opacity-90 transition cursor-pointer" data-i18n="boost_new">Neuer Vorschlag 🔄</button>
               </div>
             </div>
 
             <!-- Inspiration (hierhin verschoben nach Funke) -->
             <div class="relative group cursor-pointer mac-dock-item-wrapper" onmouseenter="showPanelHover('inspiration')" onmouseleave="hidePanelHover('inspiration')">
-              <button onclick="togglePanel('inspiration')" class="mac-dock-btn balloon-inspire h-14 w-14 md:h-16 md:w-16 rounded-2xl text-violet-300 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Inspirierenden Impuls für den Geist anzeigen">
+              <button onclick="togglePanel('inspiration')" class="mac-dock-btn balloon-inspire h-12 w-12 md:h-14 md:w-14 rounded-2xl text-violet-300 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Inspirierenden Impuls für den Geist anzeigen">
                 <i data-lucide="sparkles" class="w-5 h-5 text-violet-400"></i>
                 <span class="dock-label">Inspire</span>
               </button>
@@ -771,7 +771,7 @@
                 <div id="inspiration-quote-box" class="p-3.5 bg-violet-500/5 border border-violet-500/20 rounded-xl text-left text-xs font-semibold text-violet-200 min-h-[72px] flex items-center justify-center italic leading-relaxed">
                   <p class="p-3.5 bg-violet-500/5 border border-violet-500/20 rounded-xl text-left text-xs font-semibold text-violet-200 min-h-[72px] flex items-center justify-center italic leading-relaxed">Klicke unten für einen inspirierenden Impuls!</p>
                 </div>
-                <button onclick="suggestInspirationQuote()" class="w-full py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold rounded-lg transition cursor-pointer flex items-center justify-center gap-1">
+                <button onclick="suggestInspirationQuote()" class="w-full py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold rounded-xl transition cursor-pointer flex items-center justify-center gap-1">
                   <span>Nächster Impuls</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
                 </button>
               </div>
@@ -779,7 +779,7 @@
 
             <!-- Kompass -->
             <div class="mac-dock-item-wrapper">
-              <button onclick="openCompassModal()" class="mac-dock-btn balloon-compass h-14 w-14 md:h-16 md:w-16 rounded-2xl text-rose-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Entscheidungs-Kompass: Intuitive, rationale & psychologische Lebensentscheidungen treffen">
+              <button onclick="openCompassModal()" class="mac-dock-btn balloon-compass h-12 w-12 md:h-14 md:w-14 rounded-2xl text-rose-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Entscheidungs-Kompass: Intuitive, rationale & psychologische Lebensentscheidungen treffen">
                 <i data-lucide="compass" class="w-5 h-5 text-rose-400"></i>
                 <span class="dock-label">Kompass</span>
               </button>
@@ -787,7 +787,7 @@
 
             <!-- Sport -->
             <div class="mac-dock-item-wrapper">
-              <button id="sport-trigger-btn" onclick="openSportModal()" class="mac-dock-btn balloon-sport h-14 w-14 md:h-16 md:w-16 rounded-2xl text-orange-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Sport & Aktivierung: Wohltuende Mikrobewegung für jeden Energiezustand">
+              <button id="sport-trigger-btn" onclick="openSportModal()" class="mac-dock-btn balloon-sport h-12 w-12 md:h-14 md:w-14 rounded-2xl text-orange-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Sport & Aktivierung: Wohltuende Mikrobewegung für jeden Energiezustand">
                 <i data-lucide="dumbbell" class="w-5 h-5 text-orange-400 animate-pulse"></i>
                 <span class="dock-label">Sport</span>
               </button>
@@ -908,9 +908,9 @@
             </div>
           </div>
           <div class="flex items-center gap-2">
-            <button id="sport-timer-play-btn" onclick="startSportTimer()" class="px-3 py-1 bg-orange-500/20 hover:bg-orange-500/30 border border-orange-500/40 text-orange-300 text-[10px] font-bold rounded-lg transition">Start</button>
-            <button id="sport-timer-pause-btn" onclick="pauseSportTimer()" class="hidden px-3 py-1 bg-white/5 hover:bg-white/10 text-gray-300 text-[10px] font-bold rounded-lg transition">Pause</button>
-            <button onclick="skipSportTimer()" class="px-3 py-1 bg-white/5 hover:bg-white/10 text-gray-300 text-[10px] font-bold rounded-lg transition">Überspringen</button>
+            <button id="sport-timer-play-btn" onclick="startSportTimer()" class="px-3 py-1 bg-orange-500/20 hover:bg-orange-500/30 border border-orange-500/40 text-orange-300 text-[10px] font-bold rounded-xl transition">Start</button>
+            <button id="sport-timer-pause-btn" onclick="pauseSportTimer()" class="hidden px-3 py-1 bg-white/5 hover:bg-white/10 text-gray-300 text-[10px] font-bold rounded-xl transition">Pause</button>
+            <button onclick="skipSportTimer()" class="px-3 py-1 bg-white/5 hover:bg-white/10 text-gray-300 text-[10px] font-bold rounded-xl transition">Überspringen</button>
           </div>
         </div>
 
@@ -943,7 +943,7 @@
             <span id="safespace-breath-text" class="text-xs font-bold text-teal-300 tracking-wide">Lade...</span>
           </div>
           <div class="flex items-center gap-2.5">
-            <button id="safespace-noise-btn" onclick="toggleSafeSpaceNoise()" class="px-3.5 py-1.5 bg-teal-500/20 hover:bg-teal-500/30 border border-teal-500/30 text-teal-300 text-xs font-bold rounded-lg transition">Regen-Sound ein</button>
+            <button id="safespace-noise-btn" onclick="toggleSafeSpaceNoise()" class="px-3.5 py-1.5 bg-teal-500/20 hover:bg-teal-500/30 border border-teal-500/30 text-teal-300 text-xs font-bold rounded-xl transition">Regen-Sound ein</button>
           </div>
         </div>
 
@@ -957,7 +957,7 @@
             <div id="anchor-progress-bar" class="h-full bg-teal-400 transition-all duration-300" style="width: 20%"></div>
           </div>
           <div class="flex gap-2">
-            <button id="anchor-next-btn" onclick="nextAnchorStep()" class="flex-1 py-2 bg-teal-500/20 hover:bg-teal-500/30 border border-teal-500/40 text-teal-200 text-xs font-bold rounded-lg transition">Verstanden & Weiter</button>
+            <button id="anchor-next-btn" onclick="nextAnchorStep()" class="flex-1 py-2 bg-teal-500/20 hover:bg-teal-500/30 border border-teal-500/40 text-teal-200 text-xs font-bold rounded-xl transition">Verstanden & Weiter</button>
           </div>
         </div>
       </div>
@@ -1009,7 +1009,7 @@
             <input type="text" id="coin-opt-a" placeholder="Option A" class="p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
             <input type="text" id="coin-opt-b" placeholder="Option B" class="p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
           </div>
-          <button onclick="triggerCoinToss()" class="w-full py-2 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-200 text-xs font-bold rounded-lg transition">Münze werfen 🪙</button>
+          <button onclick="triggerCoinToss()" class="w-full py-2 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-200 text-xs font-bold rounded-xl transition">Münze werfen 🪙</button>
           
           <div id="coin-toss-result-box" class="hidden p-3 bg-black/60 border border-white/5 rounded-xl flex flex-col items-center justify-center gap-2">
             <div id="coin-toss-spinning" class="text-xs text-rose-400 font-bold animate-pulse">Münze rotiert im Orbit...</div>
@@ -1018,7 +1018,7 @@
               <div id="coin-toss-verdict" class="text-sm font-black text-rose-300">Option A</div>
               <div class="flex items-center justify-between border-t border-white/5 pt-2 mt-1">
                 <span id="coin-veto-countdown" class="text-[9px] text-gray-500 font-bold">Veto-Dauer: 10s</span>
-                <button id="coin-veto-btn" onclick="triggerCoinVeto()" class="px-3 py-1 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/30 text-rose-300 text-[10px] font-bold rounded-lg transition">VETO EINLEGEN! 🛑</button>
+                <button id="coin-veto-btn" onclick="triggerCoinVeto()" class="px-3 py-1 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/30 text-rose-300 text-[10px] font-bold rounded-xl transition">VETO EINLEGEN! 🛑</button>
               </div>
             </div>
           </div>
@@ -1107,7 +1107,7 @@
               <input type="text" id="ten-input-years" placeholder="Schreibe auf..." class="flex-1 bg-transparent border-0 outline-none text-xs text-white" />
             </div>
           </div>
-          <button onclick="saveTenPerspective()" class="w-full py-1.5 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-200 text-xs font-bold rounded-lg transition">Perspektive sichern 💾</button>
+          <button onclick="saveTenPerspective()" class="w-full py-1.5 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-200 text-xs font-bold rounded-xl transition">Perspektive sichern 💾</button>
         </div>
 
         <!-- Worst Case -->
@@ -1129,7 +1129,7 @@
               <input type="text" id="fear-inaction" placeholder="Verpasste Chancen" class="w-full p-2 bg-[#12121e]/80 border border-white/10 rounded-xl text-xs text-white outline-none" />
             </div>
           </div>
-          <button onclick="saveFearSettingPerspective()" class="w-full py-1.5 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-200 text-xs font-bold rounded-lg transition">Angst-Matrix sichern 💾</button>
+          <button onclick="saveFearSettingPerspective()" class="w-full py-1.5 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-200 text-xs font-bold rounded-xl transition">Angst-Matrix sichern 💾</button>
         </div>
 
       </div>
@@ -1175,8 +1175,8 @@
 
         <div id="script-result-box" class="hidden p-3.5 bg-indigo-950/20 border border-indigo-500/25 rounded-xl space-y-2">
           <div class="text-[9px] uppercase font-bold tracking-wider text-indigo-400">Telefon-Skript (Sprechvorlage):</div>
-          <div id="script-text-container" class="p-2.5 bg-black/40 border border-white/5 rounded-lg text-xs leading-relaxed text-gray-200 select-all font-semibold whitespace-pre-line max-h-36 overflow-y-auto"></div>
-          <button onclick="copyGeneratedScript()" class="w-full py-1.5 bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 text-[10px] font-bold rounded-lg transition">In Zwischenablage kopieren 📋</button>
+          <div id="script-text-container" class="p-2.5 bg-black/40 border border-white/5 rounded-xl text-xs leading-relaxed text-gray-200 select-all font-semibold whitespace-pre-line max-h-36 overflow-y-auto"></div>
+          <button onclick="copyGeneratedScript()" class="w-full py-1.5 bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 text-[10px] font-bold rounded-xl transition">In Zwischenablage kopieren 📋</button>
         </div>
       </div>
     </div>
