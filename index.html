@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="de" class="h-full bg-[#0a0a0f] text-[#f4f4f5]">
 <head>
@@ -22,6 +23,10 @@
   <!-- html2canvas für den Bild-Export -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
+  <!-- Three.js & OrbitControls für die 3D Gamification -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
   <!-- Tailwind Config -->
   <script>
     tailwind.config = {
@@ -37,89 +42,11 @@
   </script>
 
   <!-- Externe Stylesheet-Verknüpfung mit Cache-Buster -->
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles-base.css?v=1">
+  <link rel="stylesheet" href="styles-animations.css?v=1">
+  <link rel="stylesheet" href="styles-dock.css?v=1">
+  <link rel="stylesheet" href="styles-hover.css?v=1">
 
-  <!-- DYNAMISCHE HOVER-EFFEKTE (VISUELL OPTIMIERT) -->
-  <style>
-    /* 1. INTERAKTIVE ELEMENTE & BUTTONS */
-    html body #app button:not(.mac-dock-btn):not(.mac-tools-trigger),
-    html body #app select,
-    html body #app [role="button"],
-    html body #helper-pick-modal button,
-    html body #helper-steps-modal button,
-    html body #helper-sport-modal button,
-    html body #app .logo-dance {
-      position: relative !important; 
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
-                  box-shadow 0.25s ease, 
-                  border-color 0.25s ease !important;
-      will-change: transform;
-    }
-
-    html body #app button:not(.mac-dock-btn):not(.mac-tools-trigger):hover,
-    html body #app select:hover,
-    html body #app [role="button"]:hover,
-    html body #helper-pick-modal button:hover,
-    html body #helper-steps-modal button:hover,
-    html body #helper-sport-modal button:hover,
-    html body #app .logo-dance:hover {
-      transform: scale(1.08) translateY(-2px) !important;
-      --tw-scale-x: 1.08 !important;
-      --tw-scale-y: 1.08 !important;
-      --tw-translate-y: -2px !important;
-      
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.45), 
-                  0 0 14px var(--accent-border, rgba(139, 92, 246, 0.35)) !important;
-      z-index: 50 !important;
-    }
-
-    html body #app button:active,
-    html body #app select:active {
-      transform: scale(0.96) translateY(0px) !important;
-    }
-
-    /* Feinanpassung für kleinste Timer-Optionen */
-    html body #app #timer-trigger-container button:hover {
-      transform: scale(1.06) translateY(-1px) !important;
-    }
-
-    /* 2. JEDE LISTEN-SPALTE (Article-Karten) */
-    html body #app main article {
-      position: relative !important;
-      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
-                  border-color 0.35s ease, 
-                  box-shadow 0.35s ease, 
-                  background-color 0.35s ease !important;
-      will-change: transform;
-    }
-
-    html body #app main article:hover {
-      transform: scale(1.015) translateY(-3px) !important;
-      --tw-scale-x: 1.015 !important;
-      --tw-scale-y: 1.015 !important;
-      --tw-translate-y: -3px !important;
-      
-      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.5), 
-                  0 0 20px var(--accent-border, rgba(139, 92, 246, 0.15)) !important;
-      border-color: var(--accent) !important;
-      background-color: rgba(22, 22, 32, 0.96) !important;
-      z-index: 30 !important;
-    }
-
-    /* 3. AUFGABEN-EINTRÄGE INNERHALB DER LISTEN */
-    html body #app main article div[draggable="true"] {
-      position: relative !important;
-      transition: border-color 0.25s ease, 
-                  background-color 0.25s ease, 
-                  transform 0.25s ease !important;
-    }
-
-    html body #app main article div[draggable="true"]:hover {
-      border-color: var(--accent-border, rgba(139, 92, 246, 0.3)) !important;
-      background-color: rgba(255, 255, 255, 0.05) !important;
-      z-index: 40 !important;
-    }
-  </style>
 </head>
 <body class="h-full antialiased flex flex-col font-sans select-none overflow-x-hidden text-[#f4f4f5] bg-[#12121a]">
 
@@ -148,13 +75,181 @@
           </div>
         </div>
 
-        <!-- Logo -->
-        <div class="logo-dance logo-shiver relative inline-flex items-center gap-2 px-3 py-1.5 border border-purple-500/30 rounded-xl bg-gradient-to-br from-[#1c1c2b] to-[#12121c] text-sm font-bold font-display text-white transition-all duration-500 hover:scale-105 hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:border-purple-400 group cursor-pointer" title="Flow-Anwendung neu laden">
-          <svg class="w-5 h-5 text-purple-300 transition-transform duration-700 group-hover:rotate-[360deg] shrink-0" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round">
-            <path d="M15 50 C 35 20, 65 80, 85 50" />
-            <path d="M15 50 C 35 80, 65 20, 85 50" opacity="0.3" stroke-width="6" stroke-dasharray="2 15" />
-          </svg>
-          <span class="tracking-tight leading-none text-gray-100 select-none text-sm md:text-base">Flow</span>
+        <!-- Logo & Hover Popup -->
+        <div class="relative inline-block" onmouseenter="showPanelHover('logo-guide')" onmouseleave="hidePanelHover('logo-guide')">
+          <div onclick="location.reload()" class="logo-dance logo-shiver relative inline-flex items-center gap-2 px-3 py-1.5 border border-purple-500/30 rounded-xl bg-gradient-to-br from-[#1c1c2b] to-[#12121c] text-sm font-bold font-display text-white transition-all duration-500 hover:scale-105 hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:border-purple-400 group cursor-pointer" title="Flow-Anwendung neu laden">
+            <svg class="w-5 h-5 text-purple-300 transition-transform duration-700 group-hover:rotate-[360deg] shrink-0" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round">
+              <path d="M15 50 C 35 20, 65 80, 85 50" />
+              <path d="M15 50 C 35 80, 65 20, 85 50" opacity="0.3" stroke-width="6" stroke-dasharray="2 15" />
+            </svg>
+            <span class="tracking-tight leading-none text-gray-100 select-none text-sm md:text-base">Flow</span>
+          </div>
+
+          <!-- DYNAMISCHES HOVER POPUP (SCHNELLSTART-GUIDE & TASTENKÜRZEL) -->
+          <div id="panel-logo-guide" class="hidden absolute left-0 top-[calc(100%+8px)] z-[110] w-[340px] sm:w-[380px] bg-[#111116] border border-purple-500/40 p-4 rounded-2xl shadow-2xl transition duration-300 animate-fade-in text-left">
+            <h4 class="font-bold text-sm font-display mb-2 text-white flex items-center gap-2">
+              <i data-lucide="help-circle" class="w-4 h-4 text-purple-400"></i>
+              <span>Flow Schnellstart-Guide</span>
+            </h4>
+            <p class="text-[11px] text-gray-400 mb-3 leading-relaxed">
+              Klicke auf ein Element, um die Funktion direkt zu öffnen. Nutze die Tasten außerhalb von Eingabefeldern!
+            </p>
+            
+            <!-- List of Functions -->
+            <div class="space-y-1.5 max-h-[320px] overflow-y-auto pr-1">
+              <!-- Item 1: Focus Mode -->
+              <div onclick="toggleMinimalist(); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="eye" class="w-3.5 h-3.5 text-purple-400"></i> Fokus-Modus
+                  </span>
+                  <span class="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 text-[9px] font-bold font-mono">Taste [F]</span>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  Blendet das ablenkende Hauptboard aus und zeigt ausschließlich deine aktuell wichtigste To-Do-Aufgabe in einer minimalistischen Zen-Ansicht.
+                </p>
+              </div>
+
+              <!-- Item 2: Focus Timer -->
+              <div onclick="toggleTimer(); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="timer" class="w-3.5 h-3.5 text-amber-400"></i> Fokus-Timer
+                  </span>
+                  <div class="flex gap-1">
+                    <span class="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300 text-[9px] font-bold font-mono">Start/Pause [T]</span>
+                    <span class="px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-300 text-[9px] font-bold font-mono">Stop [S]</span>
+                  </div>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  Starte fokussierte Arbeitssitzungen mit motivierender, periodischer Sprachbegleitung und stimmungsvoller Hintergrundmusik.
+                </p>
+              </div>
+
+              <!-- Item 3: Was nun? -->
+              <div onclick="openHelperModal('pick'); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-purple-300"></i> Was nun?
+                  </span>
+                  <span class="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 text-[9px] font-bold font-mono">Taste [W]</span>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  Verringert kognitive Blockaden, indem eine zufällige Aufgabe basierend auf deiner aktuellen Tagespriorität vorgeschlagen wird.
+                </p>
+              </div>
+
+              <!-- Item 4: Pause & Reizpause -->
+              <div onclick="togglePanel('pause-dropdown'); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="shield" class="w-3.5 h-3.5 text-teal-400"></i> Reizpause & Erholung
+                  </span>
+                  <span class="px-1.5 py-0.5 rounded bg-teal-500/20 text-teal-300 text-[9px] font-bold font-mono">Taste [P]</span>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  Unterstützt dich bei Reizüberflutung mit geführten Atemtakt-Rhythmen, 5-4-3-2-1 Achtsamkeits-Erdung oder schnellen Entspannungspausen.
+                </p>
+              </div>
+
+              <!-- Item 5: Kochen -->
+              <div onclick="togglePanel('cooking'); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="cooking-pot" class="w-3.5 h-3.5 text-orange-400"></i> Kochen & Vorrat
+                  </span>
+                  <span class="px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-300 text-[9px] font-bold font-mono">Taste [K]</span>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  Trage deine vorhandenen Zutaten ein und lass dir ein passendes Rezept samt strukturierter Schritt-für-Schritt-Anleitung generieren.
+                </p>
+              </div>
+
+              <!-- Item 6: Einkauf -->
+              <div onclick="togglePanel('shopping'); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="shopping-basket" class="w-3.5 h-3.5 text-emerald-400"></i> Einkaufsliste
+                  </span>
+                  <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[9px] font-bold font-mono">Taste [E]</span>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  Verwalte deine Einkäufe und sieh dir kluge Spartipps an, die auf den Inhalten deines Einkaufskorbs basieren.
+                </p>
+              </div>
+
+              <!-- Item 7: Kompass -->
+              <div onclick="openCompassModal(); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="compass" class="w-3.5 h-3.5 text-rose-400"></i> Entscheidungs-Kompass
+                  </span>
+                  <span class="px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 text-[9px] font-bold font-mono">Taste [C]</span>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  Triff schwierige Entscheidungen rational oder intuitiv mithilfe von Münzwürfen, Werte-Waagen, Löffel-Checks oder Angst-Analysen.
+                </p>
+              </div>
+
+              <!-- Item 8: Sport -->
+              <div onclick="openSportModal(); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="dumbbell" class="w-3.5 h-3.5 text-orange-400 animate-pulse"></i> Sport & Bewegung
+                  </span>
+                  <span class="px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-300 text-[9px] font-bold font-mono">Taste [O]</span>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  Aktiviere deinen Körper sanft mit 1-Minuten-Übungen, die perfekt auf dein aktuelles Energieniveau (Spoons) abgestimmt sind.
+                </p>
+              </div>
+
+              <!-- Item 9: Skripte -->
+              <div onclick="openScriptingModal(); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="scroll" class="w-3.5 h-3.5 text-indigo-400"></i> Social-Skripter
+                  </span>
+                  <span class="px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[9px] font-bold font-mono">Taste [X]</span>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  Formuliere schwierige Telefonate oder E-Mails (Arzttermine, Absagen, Bestellungen) stressfrei mit strukturierten Skriptvorlagen vor.
+                </p>
+              </div>
+
+              <!-- Item 10: Statistik -->
+              <div onclick="togglePanel('report'); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 text-purple-300"></i> Statistik & Erfolge
+                  </span>
+                  <span class="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 text-[9px] font-bold font-mono">Taste [R]</span>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  Analysiere deine Fortschritte, sieh dir deine wöchentliche Aktivität an und exportiere deine täglichen Haken als Bild-Report.
+                </p>
+              </div>
+
+              <!-- Item 11: Sonstige Abkürzungen -->
+              <div class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/30 transition flex flex-col gap-1 cursor-default">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="keyboard" class="w-3.5 h-3.5 text-gray-300"></i> Weitere Abkürzungen
+                  </span>
+                  <span class="px-1.5 py-0.5 rounded bg-white/10 text-gray-300 text-[9px] font-bold font-mono">Mehrere</span>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  • <b>Taste [U]</b>: Letzte Aktion rückgängig machen (Undo)<br>
+                  • <b>Taste [A]</b>: Neuen Kalendertermin/Termin hinzufügen<br>
+                  • <b>Taste [B]</b>: "Funke" (30s Überwindungstipp) öffnen<br>
+                  • <b>Taste [I]</b>: Inspirierenden Impuls öffnen<br>
+                  • <b>Taste [H]</b>: Diese Kurzanleitung öffnen/schließen<br>
+                  • <b>Taste [Esc]</b>: Alle geöffneten Modale oder Panels schließen
+                </p>
+              </div>
+
+            </div>
+          </div>
         </div>
       </div>
 
@@ -985,26 +1080,29 @@
       <!-- Step 1: Query Entry -->
       <div id="compass-step-entry" class="space-y-4">
         <p class="text-xs text-gray-400 leading-relaxed font-semibold">
-          Welches Dilemma beschäftigt dich? Formuliere dein Anliegen (z. B. <i>„Soll ich heute Sport machen oder entspannen?“</i>):
+          Welches Dilemma, Projekt oder Gedanken-Chaos beschäftigt dich? Formuliere dein Anliegen:
         </p>
-        <textarea id="compass-query-input" rows="3" placeholder="Ich weiß nicht, ob ich..." class="w-full p-2.5 bg-black/40 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-rose-500 font-semibold placeholder:text-gray-600 leading-relaxed"></textarea>
+        <textarea id="compass-query-input" rows="3" placeholder="Z.B.: Soll ich heute Sport machen oder entspannen? / Mein unaufgeräumtes Zimmer..." class="w-full p-2.5 bg-black/40 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-rose-500 font-semibold placeholder:text-gray-600 leading-relaxed"></textarea>
         <button onclick="submitCompassQuery()" class="w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold rounded-xl transition">Kompass ausrichten 🗺️</button>
       </div>
 
       <!-- Step 2: Decision Tools (Tabbed) -->
       <div id="compass-step-tools" class="hidden space-y-4">
         <div class="p-2.5 bg-white/[0.02] border border-white/5 rounded-xl flex items-center justify-between text-xs text-gray-300 font-semibold">
-          <span class="truncate flex-1"><b>Dilemma:</b> <span id="compass-active-dilemma-label" class="italic text-rose-300">Dilemma</span></span>
+          <span class="truncate flex-1"><b>Anliegen:</b> <span id="compass-active-dilemma-label" class="italic text-rose-300">Anliegen</span></span>
           <button onclick="returnToCompassEntry()" class="text-[10px] text-gray-500 hover:text-white font-bold shrink-0 pl-2">Ändern 🔄</button>
         </div>
 
-        <!-- Tabbed buttons -->
-        <div class="flex bg-black/40 p-0.5 rounded-xl border border-white/5 text-[10px] font-bold">
-          <button id="tab-btn-coin" onclick="switchCompassTab('coin')" class="flex-1 py-1.5 rounded text-rose-300 bg-rose-500/10 border border-rose-500/20">Bauchgefühl</button>
-          <button id="tab-btn-scale" onclick="switchCompassTab('scale')" class="flex-1 py-1.5 rounded text-gray-400 hover:text-white">Werte-Waage</button>
-          <button id="tab-btn-spoon" onclick="switchCompassTab('spoon')" class="flex-1 py-1.5 rounded text-gray-400 hover:text-white">Löffel-Check</button>
-          <button id="tab-btn-ten" onclick="switchCompassTab('ten')" class="flex-1 py-1.5 rounded text-gray-400 hover:text-white">10-10-10</button>
-          <button id="tab-btn-fear" onclick="switchCompassTab('fear')" class="flex-1 py-1.5 rounded text-gray-400 hover:text-white">Worst Case</button>
+        <!-- Tabbed buttons (expanded grid) -->
+        <div class="grid grid-cols-3 gap-1 bg-black/40 p-1 rounded-xl border border-white/5 text-[9px] font-bold">
+          <button id="tab-btn-coin" onclick="switchCompassTab('coin')" class="py-1 rounded text-rose-300 bg-rose-500/10 border border-rose-500/20">Bauchgefühl</button>
+          <button id="tab-btn-scale" onclick="switchCompassTab('scale')" class="py-1 rounded text-gray-400 hover:text-white">Werte-Waage</button>
+          <button id="tab-btn-spoon" onclick="switchCompassTab('spoon')" class="py-1 rounded text-gray-400 hover:text-white">Löffel-Check</button>
+          <button id="tab-btn-prioritizer" onclick="switchCompassTab('prioritizer')" class="py-1 rounded text-gray-400 hover:text-white">ADHD-Priorität</button>
+          <button id="tab-btn-splitter" onclick="switchCompassTab('splitter')" class="py-1 rounded text-gray-400 hover:text-white">Zerteiler</button>
+          <button id="tab-btn-braindump" onclick="switchCompassTab('braindump')" class="py-1 rounded text-gray-400 hover:text-white">Brain-Dump</button>
+          <button id="tab-btn-ten" onclick="switchCompassTab('ten')" class="py-1 rounded text-gray-400 hover:text-white">10-10-10</button>
+          <button id="tab-btn-fear" onclick="switchCompassTab('fear')" class="py-1 rounded text-gray-400 hover:text-white">Worst Case</button>
         </div>
 
         <!-- PANES -->
@@ -1096,6 +1194,80 @@
           </div>
         </div>
 
+        <!-- ADHD-Prioritizer (NEUES MODUL 1) -->
+        <div id="compass-pane-prioritizer" class="hidden space-y-3">
+          <p class="text-[10px] text-gray-400 leading-normal">
+            Bewerte Vorhaben nach Spaß (Dopamin) & Aufwand (Effort), um deine "Easy Wins" (leichte Erfolge) zur Überwindung von Blockaden zu identifizieren.
+          </p>
+          <div class="flex gap-1.5 items-end">
+            <div class="flex-1">
+              <label class="text-[8px] text-gray-500 font-bold block mb-0.5">Aufgabe</label>
+              <input type="text" id="prioritizer-task-input" placeholder="Aufgabe eingeben..." class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+            </div>
+            <div class="w-20">
+              <label class="text-[8px] text-gray-500 font-bold block mb-0.5">Aufwand (1-5)</label>
+              <select id="prioritizer-effort" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none">
+                <option value="1">1 (Easy)</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5 (Schwer)</option>
+              </select>
+            </div>
+            <div class="w-20">
+              <label class="text-[8px] text-gray-500 font-bold block mb-0.5">Spaß (1-5)</label>
+              <select id="prioritizer-fun" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none">
+                <option value="1">1 (Öde)</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5 (Geil!)</option>
+              </select>
+            </div>
+            <button onclick="handleAddPrioritizerTask()" class="px-3 py-1.5 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 rounded border border-rose-500/40 flex items-center justify-center transition font-bold text-xs">+</button>
+          </div>
+          <div id="prioritizer-results-list" class="space-y-1.5 h-24 overflow-y-auto pr-1"></div>
+        </div>
+
+        <!-- Projekt-Zerteiler (NEUES MODUL 2) -->
+        <div id="compass-pane-splitter" class="hidden space-y-3">
+          <p class="text-[10px] text-gray-400 leading-normal">
+            Große Vorhaben blockieren oft das Gehirn. Zerteile sie hier direkt in winzige, sofort machbare Teilschritte:
+          </p>
+          <div class="flex gap-1.5">
+            <input type="text" id="splitter-task-input" placeholder="Z.B. Zimmer aufräumen..." class="flex-1 p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none font-semibold" />
+            <button onclick="generateMicroSteps()" class="px-3 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 rounded border border-rose-500/40 text-xs font-bold transition">Zerteilen ⚡</button>
+          </div>
+          <div id="splitter-steps-list" class="space-y-1.5 h-28 overflow-y-auto pr-1"></div>
+        </div>
+
+        <!-- Brain-Dump Organizer (NEUES MODUL 3) -->
+        <div id="compass-pane-braindump" class="hidden space-y-3">
+          <p class="text-[10px] text-gray-400 leading-normal">
+            Schreibe alles ungefiltert auf (jede Zeile eine Aufgabe). Sortiere die Gedanken anschließend mit schnellen Klicks direkt in dein System:
+          </p>
+          <div id="braindump-input-container" class="space-y-2">
+            <textarea id="braindump-textarea" rows="3" placeholder="Wäsche waschen&#10;Arzt anrufen&#10;Milch kaufen..." class="w-full p-2.5 bg-black/40 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-rose-500 font-semibold placeholder:text-gray-600 leading-relaxed"></textarea>
+            <button onclick="analyzeBrainDump()" class="w-full py-1.5 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold rounded-xl transition">Dump analysieren 🧠</button>
+          </div>
+          <div id="braindump-sorting-container" class="hidden space-y-2">
+            <div class="p-2 bg-white/[0.03] border border-white/5 rounded-xl text-center text-xs">
+              <span class="text-gray-400 font-bold block mb-1">Aktueller Gedanke:</span>
+              <span id="braindump-active-thought" class="text-rose-300 font-black text-sm">Gedanke</span>
+            </div>
+            <div class="grid grid-cols-4 gap-1.5 text-[9px] font-bold">
+              <button onclick="sortBrainDump('daily')" class="py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/25 rounded">Täglich</button>
+              <button onclick="sortBrainDump('weekly')" class="py-1.5 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/25 rounded">Wöchentlich</button>
+              <button onclick="sortBrainDump('todo')" class="py-1.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 border border-blue-500/25 rounded">Todo</button>
+              <button onclick="sortBrainDump('shopping')" class="py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/25 rounded">Kauf</button>
+            </div>
+            <div class="flex justify-between items-center text-[9px] text-gray-500 pt-1">
+              <span id="braindump-progress-counter">Noch 0 Gedanken</span>
+              <button onclick="skipBrainDumpThought()" class="hover:text-white transition">Überspringen ⏭️</button>
+            </div>
+          </div>
+        </div>
+
         <!-- 10-10-10 -->
         <div id="compass-pane-ten" class="hidden space-y-3">
           <p class="text-[10px] text-gray-400 leading-normal">
@@ -1115,7 +1287,10 @@
               <input type="text" id="ten-input-years" placeholder="Schreibe auf..." class="flex-1 bg-transparent border-0 outline-none text-xs text-white" />
             </div>
           </div>
-          <button onclick="saveTenPerspective()" class="w-full py-1.5 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-200 text-xs font-bold rounded-xl transition">Perspektive sichern 💾</button>
+          <div class="flex gap-2">
+            <button onclick="saveTenPerspective()" class="flex-1 py-1.5 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-200 text-xs font-bold rounded-xl transition">Perspektive sichern 💾</button>
+            <button onclick="clearTenPerspective()" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-gray-400 rounded-xl text-xs font-semibold transition">Leeren</button>
+          </div>
         </div>
 
         <!-- Worst Case -->
@@ -1137,7 +1312,10 @@
               <input type="text" id="fear-inaction" placeholder="Verpasste Chancen" class="w-full p-2 bg-[#12121e]/80 border border-white/10 rounded-xl text-xs text-white outline-none" />
             </div>
           </div>
-          <button onclick="saveFearSettingPerspective()" class="w-full py-1.5 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-200 text-xs font-bold rounded-xl transition">Angst-Matrix sichern 💾</button>
+          <div class="flex gap-2">
+            <button onclick="saveFearSettingPerspective()" class="flex-1 py-1.5 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-200 text-xs font-bold rounded-xl transition">Angst-Matrix sichern 💾</button>
+            <button onclick="clearFearSetting()" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-gray-400 rounded-xl text-xs font-semibold transition">Leeren</button>
+          </div>
         </div>
 
       </div>
@@ -1256,13 +1434,96 @@
 
   <canvas id="confetti-canvas" class="fixed inset-0 z-[99999] pointer-events-none w-full h-full"></canvas>
 
-  <script src="data.js"></script>
+  <!-- GAMIFICATION TOGGLE BUTTON -->
+  <div class="fixed bottom-4 right-4 z-[100001] flex items-center gap-2">
+    <button id="game-mode-toggle" onclick="toggleGameMode()" class="h-12 w-12 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 border border-white/20 shadow-[0_0_20px_rgba(236,72,153,0.4)] flex items-center justify-center text-white cursor-pointer transition-all duration-300 hover:scale-110 active:scale-95" title="Spielmodus (3D) starten / beenden">
+      <i data-lucide="gamepad-2" id="game-mode-icon" class="w-6 h-6 animate-pulse text-white"></i>
+    </button>
+  </div>
+
+  <!-- 3D GAME MODE VIEWPORT & HUD -->
+  <div id="game-mode-container" class="hidden fixed inset-0 z-[99998] bg-black select-none font-sans overflow-hidden">
+    <!-- Three.js Canvas gets injected here -->
+    <div id="game-canvas-parent" class="w-full h-full absolute inset-0"></div>
+    
+    <!-- HUD OVERLAY -->
+    <div class="absolute inset-0 pointer-events-none flex flex-col justify-between p-4 md:p-6">
+      <!-- TOP BAR: Stats, Environment Selector, XP -->
+      <div class="flex flex-wrap items-center justify-between gap-4 pointer-events-auto w-full z-10 bg-[#13131c]/90 backdrop-blur-md border border-white/10 p-3 rounded-2xl">
+        <!-- Player Stats / RPG indicators -->
+        <div class="flex items-center gap-3">
+          <div class="h-10 w-10 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-xl shadow-inner">
+            👑
+          </div>
+          <div class="flex flex-col">
+            <div class="text-[10px] uppercase font-bold tracking-wider text-purple-300 font-mono">Flow Adventurer</div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-black text-white" id="game-player-level">LVL 1</span>
+              <div class="w-28 bg-white/10 h-2 rounded-full overflow-hidden border border-white/5 relative">
+                <div id="game-player-xp-bar" class="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Environment Selector -->
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] uppercase font-bold tracking-wider text-gray-400 font-mono hidden sm:inline">3D World:</span>
+          <select id="game-world-select" onchange="switchGameWorld(this.value)" class="px-3 py-1.5 bg-black border border-white/20 rounded-xl text-xs font-bold text-pink-300 outline-none cursor-pointer focus:border-pink-500 transition">
+            <option value="space">🌌 Space Odyssey</option>
+            <option value="nature">🌳 Zen Nature Sanctuary</option>
+            <option value="rpg">⚔️ Heroic Quest Guild</option>
+            <option value="erotik">💋 Neon Cabaret Lounge</option>
+          </select>
+        </div>
+
+        <!-- Back to Reality button -->
+        <button onclick="toggleGameMode()" class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-md">
+          <i data-lucide="log-out" class="w-4 h-4 text-red-400"></i>
+          <span>Normal Mode</span>
+        </button>
+      </div>
+
+      <!-- MIDDLE BLOCK: Active Task Information Card / Quest log -->
+      <div class="flex justify-center items-center w-full z-10">
+        <div class="bg-black/60 backdrop-blur-md border border-pink-500/20 p-4 rounded-2xl pointer-events-auto text-center max-w-md w-full shadow-2xl relative transition duration-300 hover:border-pink-500/50">
+          <span class="absolute top-1.5 right-2 px-1.5 py-0.5 rounded bg-pink-500/20 text-pink-300 text-[8px] font-bold font-mono tracking-widest uppercase">Target Quest</span>
+          <div class="text-[10px] uppercase font-bold tracking-widest text-pink-400 font-mono mb-1">Active Adventure</div>
+          <h3 id="game-active-quest-text" class="text-sm md:text-base font-black text-white leading-relaxed max-w-sm mx-auto">Klicke auf ein 3D Objekt um deine Quest abzuschließen!</h3>
+        </div>
+      </div>
+
+      <!-- BOTTOM BAR: Instruction Tips / Quick controls -->
+      <div class="flex items-center justify-between w-full z-10 pointer-events-auto">
+        <div class="text-[10px] text-gray-400 font-medium font-mono bg-black/40 px-3 py-1.5 rounded-xl border border-white/5">
+          🖱️ Links-Klick: Rotieren / Auswählen | Rechts-Klick: Verschieben | Scrollen: Zoom
+        </div>
+        <!-- Mini Game Music or sound trigger -->
+        <button onclick="toggleGameMute()" id="game-sound-btn" class="h-8 px-3 bg-black/60 border border-white/10 rounded-xl text-xs font-bold text-gray-300 hover:text-white transition flex items-center gap-1.5 cursor-pointer shadow-sm">
+          <i data-lucide="volume-2" id="game-sound-icon" class="w-4 h-4"></i>
+          <span id="game-sound-text">Game SFX An</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="data-tasks.js"></script>
+  <script src="data-translations.js"></script>
+  <script src="data-extras.js"></script>
   <script src="state.js"></script>
   <script src="utils.js"></script>
-  <script src="audio.js"></script>
+  <script src="audio-core.js"></script>
+  <script src="audio-scheduler.js"></script>
+  <script src="audio-player.js"></script>
   <script src="timer.js"></script>
-  <script src="helper.js"></script>
+  <script src="helper-core.js"></script>
+  <script src="helper-tools.js"></script>
   <script src="sport.js"></script>
-  <script src="app.js"></script>
+  <script src="gamification.js"></script>
+  <script src="app-core.js"></script>
+  <script src="app-cooking.js"></script>
+  <script src="app-tasks.js"></script>
+  <script src="app-reports.js"></script>
 </body>
 </html>
+ 

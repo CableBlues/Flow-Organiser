@@ -1,18 +1,87 @@
+
 let currentActiveTaskRef = null;
 let currentGeneratedSteps = [];
 let currentDopamineTask = null;
 
-// Zykluszähler für die Vorschlagsreihenfolge
 let suggestionCycleCount = 0;
 let lastSuggestionThemeIndex = -1;
 
-// Liste bereits vorgeschlagener Aufgaben in der aktuellen Sitzung
 let suggestedTaskNamesInCurrentRun = [];
-
-// Referenz für die Sprachausgabe
 let currentSpeechUtterance = null;
 
-// 6 hochmoderne Farbthemen (ohne Sternensymbole)
+let compassActiveDilemma = "";
+let coinVetoInterval = null;
+let coinVetoCountdownValue = 10;
+let coinWinningOption = "";
+let coinLosingOption = "";
+
+let brainDumpThoughts = [];
+let brainDumpCurrentIndex = 0;
+
+const DEFAULT_SPOON_OPTIONS = [
+  { name: "Arbeit / Job-Sitzung 🖥️", cost: 3 },
+  { name: "Haushalt / Saugen / Kochen 🧹", cost: 2 },
+  { name: "Arzttermin / Wichtiges Telefonat 🩺", cost: 2 },
+  { name: "Sanfter Spaziergang / Dehnen 🌳", cost: 1 },
+  { name: "Mit Freunden treffen / Socialize 💬", cost: 2 }
+];
+
+const PROCEDURAL_BREAKDOWNS = {
+  de: {
+    "zimmer": [
+      "1. Bringe Müll und schmutziges Geschirr in die Küche.",
+      "2. Hebe alle Kleidungsstücke auf und sortiere sie (Wäsche vs. Schrank).",
+      "3. Räume alle Oberflächen (Schreibtisch, Nachttisch) komplett frei.",
+      "4. Fege, sauge oder wische den Boden einmal gründlich.",
+      "5. Lüfte für 5 Minuten und mache dein Bett für das frische Gefühl."
+    ],
+    "steuer": [
+      "1. Sammle alle Belege, Rechnungen und Dokumente des Jahres an einem Ort.",
+      "2. Sortiere die Unterlagen chronologisch und nach Kategorien.",
+      "3. Öffne das Steuerprogramm oder Elster und trage deine Stammdaten ein.",
+      "4. Übertrage die Einnahmen und Werbungskosten Schritt für Schritt.",
+      "5. Prüfe die Angaben noch einmal und klicke entspannt auf Absenden."
+    ],
+    "lernen": [
+      "1. Räume deinen Arbeitsplatz komplett frei und schalte alle Benachrichtigungen aus.",
+      "2. Verschaffe dir einen Überblick und wähle nur ein konkretes Thema aus.",
+      "3. Schreibe die 3 wichtigsten Kernfragen auf ein leeres Blatt Papier.",
+      "4. Lies die Unterlagen für 20 Minuten aktiv durch und beantworte die Fragen.",
+      "5. Erkläre das Gelernte laut in eigenen Worten (Feynman-Methode)."
+    ],
+    "einkauf": [
+      "1. Gehe in die Küche und mache ein schnelles Foto vom Kühlschrank-Inhalt.",
+      "2. Schreibe eine strukturierte Einkaufsliste nach Abteilungen sortiert auf.",
+      "3. Nimm Einkaufstaschen mit und überprüfe dein Budget.",
+      "4. Gehe zügig durch den Supermarkt und weiche nicht von der Liste ab.",
+      "5. Räume die Einkäufe direkt nach deiner Rückkehr ordentlich ein."
+    ]
+  },
+  en: {
+    "room": [
+      "1. Take all trash and dirty dishes out to the kitchen.",
+      "2. Pick up all clothes and sort them (laundry vs. closet).",
+      "3. Clear all flat surfaces (desk, nightstand) completely.",
+      "4. Vacuum, sweep, or mop the floor.",
+      "5. Open windows for fresh air and make your bed."
+    ],
+    "tax": [
+      "1. Collect all receipts, invoices, and documents in one single pile.",
+      "2. Sort all documents chronologically and by category.",
+      "3. Log into your tax software and enter your personal details.",
+      "4. Step by step, fill in your income and deductible expenses.",
+      "5. Review all calculated data once and hit submit."
+    ],
+    "study": [
+      "1. Clear your desk completely and put your phone on silent.",
+      "2. Select exactly one narrow sub-topic to focus on.",
+      "3. Write down 3 key questions you want to answer on a blank paper.",
+      "4. Read your study material actively for 20 minutes to answer them.",
+      "5. Summarize and explain what you learned out loud in your own words."
+    ]
+  }
+};
+
 const SUGGESTION_THEMES = [
   {
     text: 'text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500',
@@ -32,7 +101,7 @@ const SUGGESTION_THEMES = [
     progressBarBg: 'bg-indigo-500',
     btnNext: 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500',
     btnSteps: 'border-indigo-500/25 bg-indigo-500/5 text-indigo-300 hover:bg-indigo-500/15 hover:border-indigo-400/40',
-    btnDone: 'bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/25 hover:border-indigo-400 text-indigo-200'
+    btnDone: 'bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/25 hover:border-purple-400 text-cyan-200'
   },
   {
     text: 'text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500',
@@ -85,19 +154,10 @@ function getNextNonRepeatingTheme() {
   return SUGGESTION_THEMES[themeIndex];
 }
 
-function safeTranslate(key) {
-  if (typeof TRANSLATIONS === 'undefined') return key;
-  const lang = typeof currentLang !== 'undefined' ? currentLang : 'en';
-  return TRANSLATIONS[lang]?.[key] || TRANSLATIONS.de?.[key] || key;
-}
-
-// Integrierte Sprachvorlesefunktion mit modularem Rollenzugriff
 function speakText(text, index = 0) {
   if (typeof speakWithProfile === 'function') {
-    // Ruft das rollenspezifische Sprachmuster aus timer.js auf
     speakWithProfile(text, index);
   } else {
-    // Lokaler Fallback
     if ('speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel();
@@ -107,20 +167,18 @@ function speakText(text, index = 0) {
         utterance.lang = targetLang;
         window.speechSynthesis.speak(utterance);
       } catch (e) {
-        console.error("Fehler bei Fallback speakText:", e);
+        console.error(e);
       }
     }
   }
 }
 
-// Bricht die Sprachausgabe beim Verlassen des Hovers ab
 function stopSpeaking() {
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
   }
 }
 
-// Hilfsfunktion: Bereinigt Text von führenden Zahlen und Punkten
 function cleanStepText(text) {
   if (!text) return '';
   let cleaned = text.replace(/^(?:schritt|step|schritte|steps|paso|etapa|βήμα|βημα)?\s*\d+[\s.:)\-]*\s*/i, '');
@@ -347,7 +405,7 @@ function pickRandomTask() {
     box.innerHTML = `
       <div class="flex flex-col items-center gap-3.5 w-full py-1">
         <div class="text-2xl md:text-3xl font-display font-black px-2 break-words text-center leading-tight tracking-tight ${theme.text}">${chosen.task}</div>
-        <div class="flex items-center justify-center gap-2.5 mt-2 w-full">
+        <div class="flex items-center justify-between gap-2.5 mt-2 w-full">
           <button onclick="openTaskStepsModal('${chosen.cat}', ${taskIdx})" class="px-3.5 py-1.5 rounded-lg text-[11px] font-semibold cursor-pointer transition duration-150 flex items-center gap-1.5 hover:scale-[1.02] ${theme.btnSteps}">
             <i data-lucide="footprints" class="w-3.5 h-3.5 shrink-0"></i>
             <span>Steps</span>
@@ -414,7 +472,6 @@ function generateTaskSteps(specificTask) {
       handleStepClick(idx);
     };
     
-    // Vorlesen des bereinigten Textes beim Hovern mit indexbasierter Stimmenrotation
     stepDiv.onmouseenter = () => speakText(cleanedText, idx);
     stepDiv.onmouseleave = () => stopSpeaking();
     
@@ -561,3 +618,4 @@ function resetDopamineBox() {
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
 }
+

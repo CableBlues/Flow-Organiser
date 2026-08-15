@@ -1,0 +1,282 @@
+@keyframes button-icon-move {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.2) rotate(15deg); }
+}
+
+@keyframes softCardPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4); }
+  50% { transform: scale(1.005); box-shadow: 0 4px 35px rgba(139, 92, 246, 0.08); }
+}
+
+.helper-suggestion-card-active {
+  animation: softCardPulse 4s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.modal-close-btn {
+  position: absolute !important;
+  top: 1.25rem !important;
+  right: 1.25rem !important;
+  background: transparent !important;
+  z-index: 100005 !important;
+  cursor: pointer !important;
+  transition: color 0.15s ease, transform 0.15s ease !important;
+}
+
+.modal-close-btn:hover {
+  transform: scale(1.2) !important;
+  color: #ffffff !important;
+}
+
+html body #app header {
+  background: rgba(22, 22, 35, 0.5) !important;
+  backdrop-filter: blur(30px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(190%) !important;
+  color: var(--text-header) !important;
+  border-top: 1.8px solid rgba(255, 255, 255, 0.25) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-bottom: 4.5px solid rgba(0, 0, 0, 0.6) !important;
+  box-shadow: 
+    0 20px 45px rgba(0, 0, 0, 0.5), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.1) !important;
+}
+
+html body #app header button:not(.mac-dock-btn):not(.mac-tools-trigger):not(.rounded-full):not([id^="panel-"] button) {
+  background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.04) 50%, rgba(0, 0, 0, 0.35) 100%) !important;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.25) !important;
+  border-bottom: 3.5px solid rgba(0, 0, 0, 0.55) !important;
+  border-left: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+  border-right: 1.5px solid rgba(255, 255, 255, 0.04) !important;
+  border-radius: 12px !important;
+  box-shadow: 
+    0 4px 10px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s, border-bottom-width 0.15s !important;
+}
+
+html body #app header button:not(.mac-dock-btn):not(.mac-tools-trigger):not(.rounded-full):not([id^="panel-"] button):hover {
+  transform: scale(1.08) translateY(-2px) !important;
+  background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.08) 50%, rgba(0, 0, 0, 0.25) 100%) !important;
+  border-top-color: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 
+    0 8px 18px rgba(0, 0, 0, 0.4),
+    0 0 14px var(--accent-border, rgba(139, 92, 246, 0.4)),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
+}
+
+html body #app header button:not(.mac-dock-btn):not(.mac-tools-trigger):not(.rounded-full):not([id^="panel-"] button):active {
+  transform: scale(0.96) translateY(1.5px) !important;
+  border-bottom-width: 1px !important;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.4),
+    inset 0 2px 3px rgba(0, 0, 0, 0.5) !important;
+}
+
+html body #app header #date-container {
+  background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.04) 50%, rgba(0, 0, 0, 0.35) 100%) !important;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.25) !important;
+  border-bottom: 3.5px solid rgba(0, 0, 0, 0.55) !important;
+  border-left: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+  border-right: 1.5px solid rgba(255, 255, 255, 0.04) !important;
+  border-radius: 12px !important;
+  box-shadow: 
+    0 4px 10px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+html body #app header #date-container:hover {
+  transform: scale(1.08) translateY(-2px) !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.65) !important;
+}
+
+#panel-theme button[onclick^="setTheme"] {
+  background: none !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.35) !important;
+  box-shadow: 
+    0 3px 6px rgba(0, 0, 0, 0.5), 
+    inset 0 1px 2px rgba(255, 255, 255, 0.25) !important;
+  transition: transform 0.2s ease !important;
+}
+
+#panel-theme button[onclick="setTheme('aurora')"] { background-color: #a855f7 !important; }
+#panel-theme button[onclick="setTheme('sage')"] { background-color: #86efac !important; }
+#panel-theme button[onclick="setTheme('cozy')"] { background-color: #f59e0b !important; }
+#panel-theme button[onclick="setTheme('forest')"] { background-color: #22c55e !important; }
+#panel-theme button[onclick="setTheme('architect')"] { background-color: #64748b !important; }
+#panel-theme button[onclick="setTheme('mono-hand')"] { background-color: #d2b48c !important; }
+#panel-theme button[onclick="setTheme('editorial')"] { background-color: #eae6df !important; }
+#panel-theme button[onclick="setTheme('glacier')"] { background-color: #a5f3fc !important; }
+#panel-theme button[onclick="setTheme('charcoal')"] { background-color: #475569 !important; }
+#panel-theme button[onclick="setTheme('executive')"] { background-color: #b5a642 !important; }
+#panel-theme button[onclick="setTheme('terracotta')"] { background-color: #cca480 !important; }
+#panel-theme button[onclick="setTheme('carbon')"] { background-color: #1e293b !important; }
+#panel-theme button[onclick="setTheme('parchment')"] { background-color: #8d5b34 !important; }
+#panel-theme button[onclick="setTheme('minimalist-light')"] { background-color: #f8fafc !important; }
+#panel-theme button[onclick="setTheme('terracotta-light')"] { background-color: #9a4c24 !important; }
+#panel-theme button[onclick="setTheme('slate-ivory')"] { background-color: #2e3b4e !important; }
+
+html body #app main article {
+  background-color: var(--bg-card) !important;
+  border-top: 1.8px solid rgba(255, 255, 255, 0.18) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.04) !important;
+  border-bottom: 5.5px solid rgba(0, 0, 0, 0.6) !important;
+  border-radius: 20px !important;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.4s ease, 
+              border-color 0.4s ease, 
+              background-color 0.4s ease !important;
+}
+
+html body #app main article:hover {
+  background-color: var(--bg-card-hover) !important;
+  border-top-color: rgba(255, 255, 255, 0.28) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.7) !important;
+  transform: scale(1.025) translateY(-5px) rotateX(3.5deg) rotateY(-1.2deg) !important;
+  box-shadow: 
+    0 25px 45px -8px rgba(0, 0, 0, 0.6),
+    0 0 25px var(--accent-border, rgba(139, 92, 246, 0.25)),
+    inset 0 1px 1px rgba(255, 255, 255, 0.12) !important;
+}
+
+html body #app main article div[draggable="true"] {
+  border-left: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%) !important;
+  border-top: 1.2px solid rgba(255, 255, 255, 0.22) !important;
+  border-bottom: 3.5px solid rgba(0, 0, 0, 0.55) !important;
+  border-radius: 10px !important;
+  box-shadow: 
+    0 3px 5px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-bottom-width 0.15s, 
+              box-shadow 0.15s, 
+              background-color 0.15s ease !important;
+}
+
+html body #app main article div[draggable="true"]:hover {
+  transform: translateY(-2px) !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 100%) !important;
+  border-top-color: rgba(255, 255, 255, 0.28) !important;
+  box-shadow: 
+    0 6px 12px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+}
+
+html body #app main article div[draggable="true"]:active {
+  transform: translateY(2px) !important;
+  border-bottom-width: 1px !important;
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.35),
+    inset 0 1px 1px rgba(0, 0, 0, 0.2) !important;
+}
+
+html body #app main article div[class*="border-amber-400"] {
+  border-top: 1.5px solid rgba(251, 191, 36, 0.55) !important;
+  border-bottom: 4px solid rgba(0, 0, 0, 0.6) !important;
+  box-shadow: 
+    0 8px 16px rgba(251, 191, 36, 0.18),
+    inset 0 1px 1px rgba(251, 191, 36, 0.15) !important;
+}
+
+[id^="panel-"], #panel-calendar-dropdown {
+  background-color: var(--bg-panel) !important;
+  border-color: var(--border-main) !important;
+  color: var(--text-main) !important;
+}
+[id^="panel-"] *, #panel-calendar-dropdown * {
+  color: var(--text-main) !important;
+}
+
+[id^="panel-"] input, [id^="panel-"] textarea, [id^="panel-"] select,
+html body #app select, html body #app input[type="text"], html body #app textarea {
+  background-color: rgba(0, 0, 0, 0.35) !important;
+  border-top: 1.5px solid rgba(0, 0, 0, 0.45) !important;
+  border-bottom: 1.2px solid rgba(255, 255, 255, 0.08) !important;
+  border-left: 1px solid rgba(0, 0, 0, 0.2) !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.2) !important;
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.55),
+    0 1px 0 rgba(255, 255, 255, 0.03) !important;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+html body #app select:focus, html body #app input[type="text"]:focus, html body #app textarea:focus {
+  border-top-color: var(--accent) !important;
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.35),
+    0 0 8px var(--accent-border, rgba(139, 92, 246, 0.3)) !important;
+}
+
+#helper-pick-card, 
+#helper-sport-card, 
+#helper-safespace-card, 
+#helper-compass-card, 
+#helper-scripting-card, 
+#helper-steps-modal > div {
+  background: rgba(18, 18, 26, 0.8) !important;
+  backdrop-filter: blur(25px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(190%) !important;
+  border-top: 1.8px solid rgba(255, 255, 255, 0.22) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-bottom: 5px solid rgba(0, 0, 0, 0.6) !important;
+  border-radius: 24px !important;
+  color: var(--text-main) !important;
+  box-shadow: 
+    0 15px 30px rgba(0, 0, 0, 0.4),
+    0 30px 65px -10px rgba(0, 0, 0, 0.7),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1) !important;
+}
+
+html body .animate-party-wobble {
+  animation: partyWobble 2.5s cubic-bezier(0.25, 1, 0.5, 1) infinite !important;
+}
+html body .animate-party-bounce {
+  animation: partyBounce 2.5s cubic-bezier(0.25, 1, 0.5, 1) infinite !important;
+}
+html body .animate-party-glow {
+  animation: partyGlow 2.5s ease-in-out infinite !important;
+}
+html body .animate-party-pulse {
+  animation: partyPulse 2.5s cubic-bezier(0.25, 1, 0.5, 1) infinite !important;
+}
+html body .animate-party-swing {
+  animation: partySwing 3s ease-in-out infinite !important;
+}
+
+@keyframes partyWobble {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(5deg); }
+}
+@keyframes partyBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes partyGlow {
+  0%, 100% { box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35); }
+  50% { box-shadow: 0 8px 24px rgba(139, 92, 246, 0.45); }
+}
+@keyframes partyPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+@keyframes partySwing {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(3deg); }
+  75% { transform: rotate(-3deg); }
+}
+

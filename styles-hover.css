@@ -1,0 +1,79 @@
+/* Dynamische Hover-Effekte (ausgelagert aus index.html) */
+    /* 1. INTERAKTIVE ELEMENTE & BUTTONS */
+    html body #app button:not(.mac-dock-btn):not(.mac-tools-trigger),
+    html body #app select,
+    html body #app [role="button"],
+    html body #helper-pick-modal button,
+    html body #helper-steps-modal button,
+    html body #helper-sport-modal button,
+    html body #app .logo-dance {
+      position: relative !important; 
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
+                  box-shadow 0.25s ease, 
+                  border-color 0.25s ease !important;
+      will-change: transform;
+    }
+
+    html body #app button:not(.mac-dock-btn):not(.mac-tools-trigger):hover,
+    html body #app select:hover,
+    html body #app [role="button"]:hover,
+    html body #helper-pick-modal button:hover,
+    html body #helper-steps-modal button:hover,
+    html body #helper-sport-modal button:hover,
+    html body #app .logo-dance:hover {
+      transform: scale(1.08) translateY(-2px) !important;
+      --tw-scale-x: 1.08 !important;
+      --tw-scale-y: 1.08 !important;
+      --tw-translate-y: -2px !important;
+      
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.45), 
+                  0 0 14px var(--accent-border, rgba(139, 92, 246, 0.35)) !important;
+      z-index: 50 !important;
+    }
+
+    html body #app button:active,
+    html body #app select:active {
+      transform: scale(0.96) translateY(0px) !important;
+    }
+
+    /* Feinanpassung für kleinste Timer-Optionen */
+    html body #app #timer-trigger-container button:hover {
+      transform: scale(1.06) translateY(-1px) !important;
+    }
+
+    /* 2. JEDE LISTEN-SPALTE (Article-Karten) */
+    html body #app main article {
+      position: relative !important;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+                  border-color 0.35s ease, 
+                  box-shadow 0.35s ease, 
+                  background-color 0.35s ease !important;
+      will-change: transform;
+    }
+
+    html body #app main article:hover {
+      transform: scale(1.015) translateY(-3px) !important;
+      --tw-scale-x: 1.015 !important;
+      --tw-scale-y: 1.015 !important;
+      --tw-translate-y: -3px !important;
+      
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.5), 
+                  0 0 20px var(--accent-border, rgba(139, 92, 246, 0.15)) !important;
+      border-color: var(--accent) !important;
+      background-color: rgba(22, 22, 32, 0.96) !important;
+      z-index: 30 !important;
+    }
+
+    /* 3. AUFGABEN-EINTRÄGE INNERHALB DER LISTEN */
+    html body #app main article div[draggable="true"] {
+      position: relative !important;
+      transition: border-color 0.25s ease, 
+                  background-color 0.25s ease, 
+                  transform 0.25s ease !important;
+    }
+
+    html body #app main article div[draggable="true"]:hover {
+      border-color: var(--accent-border, rgba(139, 92, 246, 0.3)) !important;
+      background-color: rgba(255, 255, 255, 0.05) !important;
+      z-index: 40 !important;
+    }

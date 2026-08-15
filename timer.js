@@ -1,3 +1,4 @@
+
 let timerSeconds = 2 * 60; // Standardmäßig auf 2 Minuten initialisiert
 let timerInitialSeconds = 2 * 60;
 let timerRunning = false;
@@ -641,4 +642,4 @@ function updateTimerDisplay() {
     }[lang] || `Overdue by: ${str}`;
     countEl.innerText = activeText;
   }
-}
+} 

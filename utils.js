@@ -1,3 +1,4 @@
+
 // Shuffler-Pools zur vollständigen Absicherung gegen Wiederholungen
 let praisePool = [];
 let soundPool = [];
@@ -537,4 +538,4 @@ function updateDateAndStreak() {
   }
 
   renderMiniCalendar();
-}
+} 

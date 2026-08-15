@@ -1,3 +1,4 @@
+
 // CONFIGURATION KEYS AND GLOBAL STATE DEFINITIONS
 let state = loadState();
 let historyStack = loadHistory();
@@ -250,4 +251,4 @@ function handleOpenFile(e) {
     } catch(err) { alert(t('toast_import_error')); }
   };
   reader.readAsText(file);
-}
+} 

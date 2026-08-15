@@ -1,0 +1,423 @@
+.mac-floating-wrapper {
+  position: fixed !important;
+  left: 50% !important;
+  bottom: 20px !important;
+  transform: translateX(-50%) !important;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.mac-floating-wrapper * {
+  pointer-events: auto;
+}
+
+.mac-dock-container {
+  perspective: 1000px;
+  padding-bottom: 8px;
+  display: flex;
+  justify-content: center;
+  width: max-content;
+  margin: 0 auto;
+  position: relative;
+}
+
+.mac-dock-container::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 680px;
+  height: 90px;
+  background: transparent;
+  pointer-events: auto;
+  z-index: 1;
+  transition: height 0.25s ease;
+}
+
+.mac-dock-container:hover::before {
+  height: 180px;
+}
+
+.mac-dock {
+  background: rgba(19, 19, 28, 0.45) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  transform-style: flat !important;
+  transform: translate3d(0, 0, 0) scale(0) !important;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.5), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+  border-radius: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 10px 18px !important;
+  gap: 14px !important;
+  height: 94px !important;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease !important;
+  visibility: hidden;
+}
+
+.mac-dock-container:hover .mac-dock {
+  transform: translate3d(0, 0, 0) scale(1) !important;
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.mac-dock-floor {
+  position: absolute;
+  bottom: -4px;
+  left: 2%;
+  right: 2%;
+  height: 24px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 80%, transparent 100%);
+  transform: scale(0);
+  opacity: 0;
+  border-radius: 50% / 15%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+  z-index: 1;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease !important;
+  visibility: hidden;
+}
+
+.mac-dock-container:hover .mac-dock-floor {
+  transform: scale(1);
+  opacity: 1;
+  visibility: visible;
+}
+
+.mac-dock-item-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  width: 56px !important;
+  height: 56px !important;
+  aspect-ratio: 1 / 1 !important;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), margin 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+@media (min-width: 768px) {
+  .mac-dock-item-wrapper {
+    width: 68px !important;
+    height: 68px !important;
+  }
+}
+
+@keyframes subtleFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.mac-dock-item-wrapper:hover {
+  transform: scale(1.15) translateY(-4px) !important;
+  animation: subtleFloat 2s ease-in-out infinite !important;
+  z-index: 50 !important;
+}
+
+.mac-dock-btn {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 32px !important;
+  border: none !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s, box-shadow 0.3s !important;
+  position: relative;
+  aspect-ratio: 1 / 1 !important;
+  padding: 8px !important;
+}
+
+.mac-dock-btn i {
+  color: #ffffff !important;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5)) !important;
+  width: 22px !important;
+  height: 22px !important;
+  transition: transform 0.2s ease !important;
+  z-index: 2;
+}
+
+.balloon-sounds {
+  background: radial-gradient(circle at 30% 30%, rgba(94, 234, 212, 0.5) 0%, rgba(20, 184, 166, 0.65) 45%, rgba(15, 118, 110, 0.5) 70%, #040908 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(94, 234, 212, 0.08), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+.balloon-music {
+  background: radial-gradient(circle at 30% 30%, rgba(192, 132, 252, 0.5) 0%, rgba(168, 85, 247, 0.65) 45%, rgba(108, 43, 155, 0.5) 70%, #040208 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(94, 234, 212, 0.08), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+.balloon-pause {
+  background: radial-gradient(circle at 30% 30%, rgba(148, 163, 184, 0.45) 0%, rgba(100, 116, 139, 0.6) 45%, rgba(71, 85, 105, 0.45) 70%, #040506 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(148, 163, 184, 0.06), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+.balloon-inspire {
+  background: radial-gradient(circle at 30% 30%, rgba(192, 132, 252, 0.5) 0%, rgba(168, 85, 247, 0.65) 45%, rgba(108, 43, 155, 0.5) 70%, #040208 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(168, 85, 247, 0.08), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+.balloon-shopping {
+  background: radial-gradient(circle at 30% 30%, rgba(74, 222, 128, 0.45) 0%, rgba(34, 197, 94, 0.6) 45%, rgba(20, 123, 69, 0.45) 70%, #040706 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(74, 222, 128, 0.06), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+.balloon-scripting {
+  background: radial-gradient(circle at 30% 30%, rgba(129, 140, 248, 0.45) 0%, rgba(99, 102, 241, 0.6) 45%, rgba(67, 72, 180, 0.45) 70%, #040407 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(129, 140, 248, 0.06), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+.balloon-boost {
+  background: radial-gradient(circle at 30% 30%, rgba(251, 191, 36, 0.45) 0%, rgba(217, 119, 6, 0.6) 45%, rgba(160, 82, 45, 0.45) 70%, #080605 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(251, 191, 36, 0.06), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+.balloon-compass {
+  background: radial-gradient(circle at 30% 30%, rgba(251, 113, 133, 0.45) 0%, rgba(225, 29, 72, 0.6) 45%, rgba(149, 20, 46, 0.45) 70%, #080405 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(251, 113, 133, 0.06), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+.balloon-sport {
+  background: radial-gradient(circle at 30% 30%, rgba(249, 115, 22, 0.45) 0%, rgba(194, 65, 12, 0.6) 45%, rgba(127, 39, 10, 0.45) 70%, #080504 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(249, 115, 22, 0.06), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.theme-mono-hand .mac-dock,
+body.theme-editorial .mac-dock,
+body.theme-parchment .mac-dock,
+body.theme-minimalist-light .mac-dock,
+body.theme-terracotta-light .mac-dock,
+body.theme-slate-ivory .mac-dock {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+}
+
+body.theme-mono-hand .mac-dock-btn,
+body.theme-editorial .mac-dock-btn,
+body.theme-parchment .mac-dock-btn,
+body.theme-minimalist-light .mac-dock-btn,
+body.theme-terracotta-light .mac-dock-btn,
+body.theme-slate-ivory .mac-dock-btn {
+  background: #ffffff !important;
+  border: 1.5px solid var(--accent) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.theme-mono-hand .mac-dock-btn i,
+body.theme-editorial .mac-dock-btn i,
+body.theme-parchment .mac-dock-btn i,
+body.theme-minimalist-light .mac-dock-btn i,
+body.theme-terracotta-light .mac-dock-btn i,
+body.theme-slate-ivory .mac-dock-btn i {
+  color: var(--accent) !important;
+  filter: none !important;
+}
+
+body.theme-mono-hand .dock-label,
+body.theme-editorial .dock-label,
+body.theme-parchment .dock-label,
+body.theme-minimalist-light .dock-label,
+body.theme-terracotta-light .dock-label,
+body.theme-slate-ivory .dock-label {
+  color: var(--accent) !important;
+  text-shadow: none !important;
+  font-weight: 800 !important;
+}
+
+body.theme-mono-hand .mac-dock-btn:hover,
+body.theme-editorial .mac-dock-btn:hover,
+body.theme-parchment .mac-dock-btn:hover,
+body.theme-minimalist-light .mac-dock-btn:hover,
+body.theme-terracotta-light .mac-dock-btn:hover,
+body.theme-slate-ivory .mac-dock-btn:hover {
+  background-color: var(--bg-app) !important;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08) !important;
+}
+
+body.theme-mono-hand .mac-dock div[class*="bg-white/10"],
+body.theme-editorial .mac-dock div[class*="bg-white/10"],
+body.theme-parchment .mac-dock div[class*="bg-white/10"],
+body.theme-minimalist-light .mac-dock div[class*="bg-white/10"],
+body.theme-terracotta-light .mac-dock div[class*="bg-white/10"],
+body.theme-slate-ivory .mac-dock div[class*="bg-white/10"] {
+  background-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+.dock-label {
+  font-size: 8px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.85 !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  transition: opacity 0.15s ease, color 0.15s ease;
+  position: static !important;
+  transform: none !important;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2;
+  line-height: 1 !important;
+}
+
+.mac-dock-item-wrapper:hover .dock-label {
+  opacity: 1 !important;
+  color: var(--accent-light) !important;
+}
+
+.mac-dock-item-wrapper:hover i {
+  transform: scale(1.15) translateY(-2px);
+}
+
+.mac-dock-btn:hover {
+  transform: scale(1.08) !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7) !important;
+}
+
+.mac-dock div[class*="bg-white/10"] {
+  width: 1px !important;
+  height: 28px !important;
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  margin: 0 6px !important;
+  align-self: center !important;
+}
+
+@keyframes triggerFloat {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0) scale(1); }
+  50% { transform: translate(-50%, -50%) translateY(-3px) scale(1.02); }
+}
+
+.mac-tools-trigger {
+  width: 76px !important;
+  height: 76px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 30% 30%, rgba(192, 132, 252, 0.65) 0%, rgba(139, 92, 246, 0.75) 40%, rgba(75, 40, 130, 0.6) 70%, #050205 100%) !important;
+  border: none !important;
+  box-shadow: 
+    0 14px 36px rgba(0, 0, 0, 0.7), 
+    0 0 16px rgba(139, 92, 246, 0.15),
+    inset 0 -2px 8px rgba(0, 0, 0, 0.4) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 1px !important;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) scale(1) !important;
+  animation: triggerFloat 6s ease-in-out infinite;
+  z-index: 200 !important;
+  pointer-events: auto;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.mac-tools-trigger:hover {
+  animation: none !important;
+  box-shadow: 
+    0 18px 44px rgba(0, 0, 0, 0.7), 
+    0 0 20px rgba(139, 92, 246, 0.2),
+    inset 0 -2px 8px rgba(0, 0, 0, 0.4) !important;
+  transform: translate(-50%, -50%) scale(1.09) translateY(-2px) !important;
+}
+
+.mac-tools-trigger span:first-child {
+  font-family: "Space Grotesk", sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 9px !important;
+  letter-spacing: 0.14em !important;
+  color: var(--accent-light) !important;
+  text-transform: uppercase;
+  line-height: 1 !important;
+}
+
+.mac-tools-trigger span:last-child {
+  font-family: "Space Grotesk", sans-serif !important;
+  font-weight: 900 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.04em !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6) !important;
+  text-transform: uppercase;
+  line-height: 1.1 !important;
+}
+
+.mac-dock-container:hover .mac-tools-trigger {
+  transform: translate(-50%, -50%) scale(0) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+body.theme-mono-hand .mac-tools-trigger,
+body.theme-editorial .mac-tools-trigger,
+body.theme-parchment .mac-tools-trigger,
+body.theme-minimalist-light .mac-tools-trigger,
+body.theme-terracotta-light .mac-tools-trigger,
+body.theme-slate-ivory .mac-tools-trigger {
+  background: var(--accent) !important;
+  border: 1px solid var(--accent-light) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+body.theme-mono-hand .mac-tools-trigger span:first-child,
+body.theme-editorial .mac-tools-trigger span:first-child,
+body.theme-parchment .mac-tools-trigger span:first-child,
+body.theme-minimalist-light .mac-tools-trigger span:first-child,
+body.theme-terracotta-light .mac-tools-trigger span:first-child,
+body.theme-slate-ivory .mac-tools-trigger span:first-child {
+  color: var(--bg-app) !important;
+}
+
+body.theme-mono-hand .mac-tools-trigger span:last-child,
+body.theme-editorial .mac-tools-trigger span:last-child,
+body.theme-parchment .mac-tools-trigger span:last-child,
+body.theme-minimalist-light .mac-tools-trigger span:last-child,
+body.theme-terracotta-light .mac-tools-trigger span:last-child,
+body.theme-slate-ivory .mac-tools-trigger span:last-child {
+  color: #ffffff !important;
+  text-shadow: none !important;
+}
+
+/* --- 3D GAMIFICATION SYSTEM INTEGRATIONS --- */
+#game-mode-container {
+  background-color: #050508 !important;
+}
+
+#game-mode-container select,
+#game-mode-container button {
+  font-family: "Space Grotesk", sans-serif !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+#game-mode-container button:hover {
+  transform: scale(1.06) !important;
+  box-shadow: 0 0 18px rgba(236, 72, 153, 0.5) !important;
+}
+
+@keyframes gameNeonFlicker {
+  0%, 100% { 
+    text-shadow: 0 0 4px #ff007f, 0 0 10px #ff007f, 0 0 18px #ff0055, 0 0 30px #ff00aa; 
+    box-shadow: 0 0 8px #ff007f, inset 0 0 4px #ff007f;
+  }
+  50% { 
+    text-shadow: 0 0 8px #ff007f, 0 0 18px #ff007f, 0 0 35px #ff0055, 0 0 50px #ff00aa; 
+    box-shadow: 0 0 16px #ff007f, inset 0 0 8px #ff007f;
+  }
+}
+
+.game-neon-active {
+  animation: gameNeonFlicker 3s infinite alternate;
+} 

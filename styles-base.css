@@ -1,0 +1,757 @@
+
+/* --- GLOBALE CSS-VARIABLEN FÜR DYNAMISCHE HINTERGRÜNDE & KONTRASTE --- */
+:root {
+  --accent: #8b5cf6;
+  --accent-light: #c084fc;
+  --bg-app: #0e0e14;
+  --bg-header: rgba(22, 22, 35, 0.7);
+  --bg-card: rgba(28, 28, 44, 0.65);
+  --bg-card-hover: rgba(36, 36, 58, 0.8);
+  --bg-dock: rgba(22, 22, 35, 0.8);
+  --bg-panel: #161622;
+  --bg-modal: #161622;
+  --text-main: #f4f4f5;
+  --text-muted: #a1a1aa;
+  --text-header: #f4f4f5;
+  --text-dock: #f4f4f5;
+  --border-main: rgba(255, 255, 255, 0.12);
+  --font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+body {
+  background-color: var(--bg-app) !important;
+  color: var(--text-main) !important;
+  font-family: var(--font-family) !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body, body #app, body #app * {
+  font-family: var(--font-family) !important;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* 1. Aurora (Mystical Deep Purple-Slate) */
+body.theme-aurora {
+  --accent: #a855f7;
+  --accent-light: #d8b4fe;
+  --accent-border: rgba(168, 85, 247, 0.35);
+  --bg-app: #110f1a;
+  --bg-header: rgba(25, 21, 42, 0.75);
+  --bg-card: rgba(32, 26, 54, 0.65);
+  --bg-card-hover: rgba(44, 34, 74, 0.8);
+  --bg-dock: #19152a;
+  --bg-panel: #141021;
+  --bg-modal: #141021;
+  --text-main: #eae6f5;
+  --text-muted: #a78bfa;
+  --text-header: #f3f0fa;
+  --text-dock: #f3f0fa;
+  --border-main: rgba(168, 85, 247, 0.2);
+}
+
+/* 2. Sage (Beruhigendes, neutrales Salbeigrün-Grau) */
+body.theme-sage {
+  --accent: #86efac;
+  --accent-light: #bbf7d0;
+  --accent-border: rgba(134, 239, 172, 0.35);
+  --bg-app: #1c1f1d;
+  --bg-header: rgba(38, 48, 42, 0.75);
+  --bg-card: rgba(46, 56, 50, 0.65);
+  --bg-card-hover: rgba(58, 72, 62, 0.8);
+  --bg-dock: #26302a;
+  --bg-panel: #1a211c;
+  --bg-modal: #1a211c;
+  --text-main: #e2f0d9;
+  --text-muted: #86efac;
+  --text-header: #edf7e1;
+  --text-dock: #edf7e1;
+  --border-main: rgba(134, 239, 172, 0.2);
+}
+
+/* 3. Cozy (Warmes Kaffeebraun / Espresso) */
+body.theme-cozy {
+  --accent: #f59e0b;
+  --accent-light: #fbbf24;
+  --accent-border: rgba(245, 158, 11, 0.35);
+  --bg-app: #1c1511;
+  --bg-header: rgba(41, 30, 24, 0.75);
+  --bg-card: rgba(53, 40, 31, 0.65);
+  --bg-card-hover: rgba(68, 50, 40, 0.8);
+  --bg-dock: #291e18;
+  --bg-panel: #1a120e;
+  --bg-modal: #1a120e;
+  --text-main: #faede0;
+  --text-muted: #cca480;
+  --text-header: #fffbf5;
+  --text-dock: #fffbf5;
+  --border-main: rgba(245, 158, 11, 0.2);
+}
+
+/* 4. Forest (Tiefes Waldgrün) */
+body.theme-forest {
+  --accent: #10b981;
+  --accent-light: #6ee7b7;
+  --accent-border: rgba(16, 185, 129, 0.35);
+  --bg-app: #0e1511;
+  --bg-header: rgba(21, 36, 27, 0.75);
+  --bg-card: rgba(30, 48, 38, 0.65);
+  --bg-card-hover: rgba(38, 62, 48, 0.8);
+  --bg-dock: #15241b;
+  --bg-panel: #0a110a;
+  --bg-modal: #0a110a;
+  --text-main: #e6f4ea;
+  --text-muted: #81c784;
+  --text-header: #f1fcf4;
+  --text-dock: #f1fcf4;
+  --border-main: rgba(16, 185, 129, 0.2);
+}
+
+/* 5. Architect (Kühles Architektur-Slate / Blaugrau) */
+body.theme-architect {
+  --accent: #64748b;
+  --accent-light: #94a3b8;
+  --accent-border: rgba(100, 116, 139, 0.35);
+  --bg-app: #202632;
+  --bg-header: rgba(45, 55, 72, 0.75);
+  --bg-card: rgba(45, 55, 72, 0.65);
+  --bg-card-hover: rgba(56, 68, 88, 0.8);
+  --bg-dock: #2d3748;
+  --bg-panel: #1a202c;
+  --bg-modal: #1a202c;
+  --text-main: #edf2f7;
+  --text-muted: #a0aec0;
+  --text-header: #f7fafc;
+  --text-dock: #f7fafc;
+  --border-main: rgba(100, 116, 139, 0.22);
+}
+
+/* 6. Mono Hand (Klassisches Pergamentpapier) */
+body.theme-mono-hand {
+  --accent: #783e19;
+  --accent-light: #9a5324;
+  --accent-border: rgba(120, 62, 25, 0.45);
+  --bg-app: #f4efdf;
+  --bg-header: rgba(234, 227, 207, 0.85);
+  --bg-card: rgba(255, 255, 255, 0.65);
+  --bg-card-hover: rgba(255, 255, 255, 0.85);
+  --bg-dock: #eae3cf;
+  --bg-panel: #fcfbf7;
+  --bg-modal: #fcfbf7;
+  --text-main: #231207;
+  --text-muted: #783e19;
+  --text-header: #231207;
+  --text-dock: #231207;
+  --border-main: rgba(120, 62, 25, 0.25);
+  --font-family: 'Caveat', cursive, sans-serif;
+}
+
+/* 7. Editorial (Ivory Zeitungspapier) */
+body.theme-editorial {
+  --accent: #1e293b;
+  --accent-light: #334155;
+  --accent-border: rgba(30, 41, 59, 0.4);
+  --bg-app: #fbf9f4;
+  --bg-header: rgba(243, 239, 230, 0.85);
+  --bg-card: rgba(255, 255, 255, 0.8);
+  --bg-card-hover: rgba(255, 255, 255, 0.95);
+  --bg-dock: #f3efe6;
+  --bg-panel: #ffffff;
+  --bg-modal: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-header: #0f172a;
+  --text-dock: #0f172a;
+  --border-main: rgba(30, 41, 59, 0.2);
+  --font-family: 'Playfair Display', Georgia, serif;
+}
+
+/* 8. Glacier (Nordisches Eisblau-Slate) */
+body.theme-glacier {
+  --accent: #06b6d4;
+  --accent-light: #a5f3fc;
+  --accent-border: rgba(6, 182, 212, 0.35);
+  --bg-app: #0f141d;
+  --bg-header: rgba(26, 34, 47, 0.75);
+  --bg-card: rgba(30, 41, 59, 0.65);
+  --bg-card-hover: rgba(40, 56, 78, 0.8);
+  --bg-dock: #1a222f;
+  --bg-panel: #090d16;
+  --bg-modal: #090d16;
+  --text-main: #e2f1f6;
+  --text-muted: #38bdf8;
+  --text-header: #f0fafc;
+  --text-dock: #f0fafc;
+  --border-main: rgba(6, 182, 212, 0.18);
+}
+
+/* 9. Charcoal (Mattes Graphit-Grau) */
+body.theme-charcoal {
+  --accent: #475569;
+  --accent-light: #94a3b8;
+  --accent-border: rgba(71, 85, 105, 0.3);
+  --bg-app: #181a1f;
+  --bg-header: rgba(33, 37, 43, 0.75);
+  --bg-card: rgba(40, 44, 52, 0.65);
+  --bg-card-hover: rgba(50, 54, 64, 0.8);
+  --bg-dock: #21252b;
+  --bg-panel: #121417;
+  --bg-modal: #121417;
+  --text-main: #e1e2e6;
+  --text-muted: #abb2bf;
+  --text-header: #f0f1f4;
+  --text-dock: #f0f1f4;
+  --border-main: rgba(255, 255, 255, 0.1);
+}
+
+/* 10. Executive (Dunkles Business-Marineblau & Gold) */
+body.theme-executive {
+  --accent: #c5a880;
+  --accent-light: #e2d1b9;
+  --accent-border: rgba(197, 168, 128, 0.35);
+  --bg-app: #050a18;
+  --bg-header: rgba(11, 20, 45, 0.75);
+  --bg-card: rgba(23, 37, 66, 0.65);
+  --bg-card-hover: rgba(30, 48, 86, 0.8);
+  --bg-dock: #0b142d;
+  --bg-panel: #02040c;
+  --bg-modal: #02040c;
+  --text-main: #f1eae2;
+  --text-muted: #c5a880;
+  --text-header: #fffbf7;
+  --text-dock: #fffbf7;
+  --border-main: rgba(197, 168, 128, 0.22);
+}
+
+/* 11. Terracotta (Warmer Wüstensand & Ton) */
+body.theme-terracotta {
+  --accent: #cca480;
+  --accent-light: #ebd6c0;
+  --accent-border: rgba(204, 164, 128, 0.3);
+  --bg-app: #1f1917;
+  --bg-header: rgba(44, 33, 29, 0.75);
+  --bg-card: rgba(68, 50, 44, 0.65);
+  --bg-card-hover: rgba(84, 60, 52, 0.8);
+  --bg-dock: #2c211d;
+  --bg-panel: #14100e;
+  --bg-modal: #14100e;
+  --text-main: #f7eee8;
+  --text-muted: #cca480;
+  --text-header: #fffaf6;
+  --text-dock: #fffaf6;
+  --border-main: rgba(204, 164, 128, 0.18);
+}
+
+/* 12. Carbon (Minimalistisches Carbon-Schwarz) */
+body.theme-carbon {
+  --accent: #cbd5e1;
+  --accent-light: #f8fafc;
+  --accent-border: rgba(203, 213, 225, 0.3);
+  --bg-app: #0d0e11;
+  --bg-header: rgba(18, 20, 22, 0.75);
+  --bg-card: rgba(26, 29, 32, 0.65);
+  --bg-card-hover: rgba(36, 40, 44, 0.8);
+  --bg-dock: #121416;
+  --bg-panel: #040405;
+  --bg-modal: #040405;
+  --text-main: #f3f4f6;
+  --text-muted: #9ca3af;
+  --text-header: #f9fafb;
+  --text-dock: #f9fafb;
+  --border-main: rgba(255, 255, 255, 0.08);
+}
+
+/* 13. Parchment (Warmer antiker Buch-Einband & Espresso-Tinte) */
+body.theme-parchment {
+  --accent: #5e3c23;
+  --accent-light: #8d5b34;
+  --accent-border: rgba(94, 60, 35, 0.45);
+  --bg-app: #f1ebd8;
+  --bg-header: rgba(228, 220, 184, 0.85);
+  --bg-card: rgba(255, 255, 255, 0.55);
+  --bg-card-hover: rgba(255, 255, 255, 0.75);
+  --bg-dock: #e4dcb8;
+  --bg-panel: #FAF7EF;
+  --bg-modal: #FAF7EF;
+  --text-main: #331e0f;
+  --text-muted: #5e3c23;
+  --text-header: #331e0f;
+  --text-dock: #331e0f;
+  --border-main: rgba(94, 60, 35, 0.25);
+  --font-family: 'Playfair Display', Georgia, serif;
+}
+
+/* 14. Minimalist Light (Kühler, reiner skandinavischer Weißraum) */
+body.theme-minimalist-light {
+  --accent: #0f172a;
+  --accent-light: #334155;
+  --accent-border: rgba(15, 23, 42, 0.35);
+  --bg-app: #f8fafc;
+  --bg-header: rgba(226, 232, 240, 0.85);
+  --bg-card: rgba(255, 255, 255, 0.85);
+  --bg-card-hover: #ffffff;
+  --bg-dock: #e2e8f0;
+  --bg-panel: #ffffff;
+  --bg-modal: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-header: #0f172a;
+  --text-dock: #0f172a;
+  --border-main: rgba(15, 23, 42, 0.18);
+  --font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+/* 15. Terracotta Light (Sanfter Wüstensand & Ziegelton) */
+body.theme-terracotta-light {
+  --accent: #9a4c24;
+  --accent-light: #bc724c;
+  --accent-border: rgba(154, 76, 36, 0.4);
+  --bg-app: #fcf7f2;
+  --bg-header: rgba(242, 227, 213, 0.85);
+  --bg-card: rgba(255, 255, 255, 0.65);
+  --bg-card-hover: rgba(255, 255, 255, 0.85);
+  --bg-dock: #f2e3d5;
+  --bg-panel: #fffbf8;
+  --bg-modal: #fffbf8;
+  --text-main: #4a1e0a;
+  --text-muted: #9a4c24;
+  --text-header: #4a1e0a;
+  --text-dock: #4a1e0a;
+  --border-main: rgba(154, 76, 36, 0.22);
+  --font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+/* 16. Slate Ivory (Hochwertiges stahlblaues Slate auf Elfenbein) */
+body.theme-slate-ivory {
+  --accent: #2e3b4e;
+  --accent-light: #4c5d75;
+  --accent-border: rgba(46, 59, 78, 0.4);
+  --bg-app: #FAF8F4;
+  --bg-header: rgba(238, 233, 221, 0.85);
+  --bg-card: rgba(255, 255, 255, 0.7);
+  --bg-card-hover: rgba(255, 255, 255, 0.9);
+  --bg-dock: #eee9dd;
+  --bg-panel: #ffffff;
+  --bg-modal: #ffffff;
+  --text-main: #1a2332;
+  --text-muted: #4c5d75;
+  --text-header: #1a2332;
+  --text-dock: #1a2332;
+  --border-main: rgba(46, 59, 78, 0.22);
+  --font-family: 'Playfair Display', Georgia, serif;
+}
+
+body.theme-mono-hand {
+  font-size: 1.32rem !important;
+}
+
+body.theme-mono-hand .task-text-span {
+  font-size: 1.32rem !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+}
+
+body.theme-mono-hand article h2 span {
+  font-size: 1.4rem !important;
+  font-weight: 800 !important;
+}
+
+body.theme-mono-hand p,
+body.theme-mono-hand h1,
+body.theme-mono-hand h3,
+body.theme-mono-hand h4,
+body.theme-mono-hand textarea,
+body.theme-mono-hand input,
+body.theme-mono-hand select,
+body.theme-mono-hand button {
+  font-size: 1.22rem !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+}
+
+body.theme-mono-hand .dock-label {
+  font-size: 0.85rem !important;
+  font-weight: 800 !important;
+}
+
+body.theme-mono-hand span:not(.dock-label):not(#active-lang-flag) {
+  font-size: 1.12rem !important;
+  font-weight: 700 !important;
+}
+
+body.theme-mono-hand #timer-display {
+  font-size: 1.25rem !important;
+  font-weight: 900 !important;
+}
+
+body.theme-editorial,
+body.theme-parchment,
+body.theme-minimalist-light,
+body.theme-terracotta-light,
+body.theme-slate-ivory {
+  font-size: 1.05rem !important;
+}
+
+body.theme-editorial .task-text-span,
+body.theme-parchment .task-text-span,
+body.theme-minimalist-light .task-text-span,
+body.theme-terracotta-light .task-text-span,
+body.theme-slate-ivory .task-text-span {
+  font-size: 0.98rem !important;
+  font-weight: 700 !important;
+  color: var(--text-main) !important;
+}
+
+body.theme-editorial article h2 span,
+body.theme-parchment article h2 span,
+body.theme-slate-ivory article h2 span {
+  font-size: 1.15rem !important;
+  font-weight: 800 !important;
+}
+
+body.theme-mono-hand article,
+body.theme-editorial article,
+body.theme-parchment article,
+body.theme-minimalist-light article,
+body.theme-terracotta-light article,
+body.theme-slate-ivory article {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border-main) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
+}
+
+body.theme-mono-hand article:hover,
+body.theme-editorial article:hover,
+body.theme-parchment article:hover,
+body.theme-minimalist-light article:hover,
+body.theme-terracotta-light article:hover,
+body.theme-slate-ivory article:hover {
+  background-color: var(--bg-card-hover) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 0 0 12px var(--accent-border) !important;
+}
+
+body.theme-mono-hand article div[draggable="true"],
+body.theme-editorial article div[draggable="true"],
+body.theme-parchment article div[draggable="true"],
+body.theme-minimalist-light article div[draggable="true"],
+body.theme-terracotta-light article div[draggable="true"],
+body.theme-slate-ivory article div[draggable="true"] {
+  border-color: var(--border-main) !important;
+  background-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+body.theme-mono-hand article div[draggable="true"]:hover,
+body.theme-editorial article div[draggable="true"]:hover,
+body.theme-parchment article div[draggable="true"]:hover,
+body.theme-minimalist-light article div[draggable="true"]:hover,
+body.theme-terracotta-light article div[draggable="true"]:hover,
+body.theme-slate-ivory article div[draggable="true"]:hover {
+  background-color: #ffffff !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.theme-mono-hand select,
+body.theme-mono-hand textarea,
+body.theme-mono-hand input,
+body.theme-editorial select,
+body.theme-editorial textarea,
+body.theme-editorial input,
+body.theme-parchment select,
+body.theme-parchment textarea,
+body.theme-parchment input,
+body.theme-minimalist-light select,
+body.theme-minimalist-light textarea,
+body.theme-minimalist-light input,
+body.theme-terracotta-light select,
+body.theme-terracotta-light textarea,
+body.theme-terracotta-light input,
+body.theme-slate-ivory select,
+body.theme-slate-ivory textarea,
+body.theme-slate-ivory input {
+  background-color: #ffffff !important;
+  color: var(--text-main) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+}
+
+body.theme-mono-hand header,
+body.theme-editorial header,
+body.theme-parchment header,
+body.theme-minimalist-light header,
+body.theme-terracotta-light header,
+body.theme-slate-ivory header {
+  background-color: var(--bg-header) !important;
+  border-color: var(--border-main) !important;
+}
+
+body.theme-mono-hand header *,
+body.theme-editorial header *,
+body.theme-parchment header *,
+body.theme-minimalist-light header *,
+body.theme-terracotta-light header *,
+body.theme-slate-ivory header * {
+  color: var(--text-header) !important;
+}
+
+body.theme-mono-hand header button:not([id^="panel-"] button),
+body.theme-editorial header button:not([id^="panel-"] button),
+body.theme-parchment header button:not([id^="panel-"] button),
+body.theme-minimalist-light header button:not([id^="panel-"] button),
+body.theme-terracotta-light header button:not([id^="panel-"] button),
+body.theme-slate-ivory header button:not([id^="panel-"] button) {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  color: var(--accent) !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03) !important;
+}
+
+body.theme-mono-hand header button:not([id^="panel-"] button) i,
+body.theme-editorial header button:not([id^="panel-"] button) i,
+body.theme-parchment header button:not([id^="panel-"] button) i,
+body.theme-minimalist-light header button:not([id^="panel-"] button) i,
+body.theme-terracotta-light header button:not([id^="panel-"] button) i,
+body.theme-slate-ivory header button:not([id^="panel-"] button) i {
+  color: var(--accent) !important;
+}
+
+body.theme-mono-hand #date-container,
+body.theme-editorial #date-container,
+body.theme-parchment #date-container,
+body.theme-minimalist-light #date-container,
+body.theme-terracotta-light #date-container,
+body.theme-slate-ivory #date-container {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03) !important;
+}
+
+body.theme-mono-hand #date-display,
+body.theme-editorial #date-display,
+body.theme-parchment #date-display,
+body.theme-minimalist-light #date-display,
+body.theme-terracotta-light #date-display,
+body.theme-slate-ivory #date-display {
+  background: none !important;
+  -webkit-text-fill-color: var(--accent) !important;
+  color: var(--accent) !important;
+  text-shadow: none !important;
+}
+
+body.theme-mono-hand #date-icon,
+body.theme-editorial #date-icon,
+body.theme-parchment #date-icon,
+body.theme-minimalist-light #date-icon,
+body.theme-terracotta-light #date-icon,
+body.theme-slate-ivory #date-icon {
+  color: var(--accent) !important;
+}
+
+#timer-trigger-container {
+  background-color: rgba(0, 0, 0, 0.35) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+#timer-preset-select-real {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  color: var(--accent-light) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+#timer-display {
+  color: var(--accent-light) !important;
+}
+
+body.theme-mono-hand #timer-trigger-container,
+body.theme-editorial #timer-trigger-container,
+body.theme-parchment #timer-trigger-container,
+body.theme-minimalist-light #timer-trigger-container,
+body.theme-terracotta-light #timer-trigger-container,
+body.theme-slate-ivory #timer-trigger-container {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  border: 1.5px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02) !important;
+}
+
+body.theme-mono-hand #timer-display,
+body.theme-editorial #timer-display,
+body.theme-parchment #timer-display,
+body.theme-minimalist-light #timer-display,
+body.theme-terracotta-light #timer-display,
+body.theme-slate-ivory #timer-display {
+  color: var(--accent) !important;
+}
+
+body.theme-mono-hand #timer-preset-select-real,
+body.theme-editorial #timer-preset-select-real,
+body.theme-parchment #timer-preset-select-real,
+body.theme-minimalist-light #timer-preset-select-real,
+body.theme-terracotta-light #timer-preset-select-real,
+body.theme-slate-ivory #timer-preset-select-real {
+  background-color: #ffffff !important;
+  color: var(--accent) !important;
+  border: 1.5px solid rgba(0, 0, 0, 0.15) !important;
+}
+
+html body #app #timer-trigger-container button i {
+  transition: transform 0.2s ease !important;
+}
+
+html body #app #timer-trigger-container button#timer-play-btn i {
+  color: #10b981 !important;
+}
+
+html body #app #timer-trigger-container button#timer-pause-btn i {
+  color: var(--accent) !important;
+}
+
+html body #app #timer-trigger-container button#timer-stop-btn i {
+  color: #f43f5e !important;
+}
+
+html body #app #timer-trigger-container button#timer-mute-btn i {
+  color: #64748b !important;
+}
+
+body.theme-mono-hand #timer-trigger-container button#timer-mute-btn i,
+body.theme-editorial #timer-trigger-container button#timer-mute-btn i,
+body.theme-parchment #timer-trigger-container button#timer-mute-btn i,
+body.theme-minimalist-light #timer-trigger-container button#timer-mute-btn i,
+body.theme-terracotta-light #timer-trigger-container button#timer-mute-btn i,
+body.theme-slate-ivory #timer-trigger-container button#timer-mute-btn i {
+  color: var(--accent) !important;
+}
+
+body.theme-mono-hand [id^="panel-"],
+body.theme-mono-hand #panel-calendar-dropdown,
+body.theme-editorial [id^="panel-"],
+body.theme-editorial #panel-calendar-dropdown,
+body.theme-parchment [id^="panel-"],
+body.theme-parchment #panel-calendar-dropdown,
+body.theme-minimalist-light [id^="panel-"],
+body.theme-minimalist-light #panel-calendar-dropdown,
+body.theme-terracotta-light [id^="panel-"],
+body.theme-terracotta-light #panel-calendar-dropdown,
+body.theme-slate-ivory [id^="panel-"],
+body.theme-slate-ivory #panel-calendar-dropdown {
+  background-color: var(--bg-panel) !important;
+  border: 1.5px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.theme-mono-hand [id^="panel-"] *,
+body.theme-mono-hand #panel-calendar-dropdown *,
+body.theme-editorial [id^="panel-"] *,
+body.theme-editorial #panel-calendar-dropdown *,
+body.theme-parchment [id^="panel-"] *,
+body.theme-parchment #panel-calendar-dropdown *,
+body.theme-minimalist-light [id^="panel-"] *,
+body.theme-minimalist-light #panel-calendar-dropdown *,
+body.theme-terracotta-light [id^="panel-"] *,
+body.theme-terracotta-light #panel-calendar-dropdown *,
+body.theme-slate-ivory [id^="panel-"] *,
+body.theme-slate-ivory #panel-calendar-dropdown * {
+  color: var(--text-main) !important;
+}
+
+*, button, span, label, h1, h2, h3, h4, header, footer {
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: none !important;
+}
+
+.whitespace-nowrap {
+  white-space: nowrap !important;
+}
+
+#date-container {
+  border: 1.5px solid color-mix(in srgb, var(--accent) 30%, rgba(255, 255, 255, 0.15));
+  border-bottom: 3.5px solid rgba(0, 0, 0, 0.45);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+  box-shadow: 
+    0 4px 10px rgba(0, 0, 0, 0.25), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform;
+}
+
+#date-container:hover {
+  border-color: var(--accent-light) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 
+    0 12px 25px color-mix(in srgb, var(--accent) 25%, transparent), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+  transform: scale(1.08) translateY(-3px) !important;
+  z-index: 10000 !important;
+}
+
+#date-display {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 900;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 55%, var(--text-header) 100%);
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+#date-icon {
+  color: var(--accent-light);
+  opacity: 0.8;
+}
+
+#cal-days-grid span:not(.text-transparent) {
+  cursor: pointer !important;
+  position: relative !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+              background-color 0.2s ease, 
+              color 0.2s ease, 
+              box-shadow 0.2s ease !important;
+  will-change: transform;
+}
+
+#cal-days-grid span:not(.text-transparent):hover {
+  transform: scale(1.25) translateY(-2px) !important;
+  background-color: var(--accent) !important;
+  color: #ffffff !important;
+  border-radius: 6px !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3), 
+              0 0 12px var(--accent-light, rgba(139, 92, 246, 0.4)) !important;
+  z-index: 50 !important;
+}
+
+html body #app .premium-glow-btn {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35), 0 0 10px var(--accent-border, rgba(139, 92, 246, 0.15)) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease !important;
+  will-change: transform;
+}
+
+html body #app .premium-glow-btn:hover {
+  border-color: var(--accent-light) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 18px var(--accent-light, rgba(139, 92, 246, 0.35)) !important;
+}
+
+html body #app .premium-glow-btn i {
+  animation: button-icon-move 3s ease-in-out infinite !important;
+  display: inline-block;
+  will-change: transform;
+}
+
