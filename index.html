@@ -3,7 +3,11 @@
 <html lang="de" class="h-full bg-[#0a0a0f] text-[#f4f4f5]">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0a0a0f" />
   <title>Flow - Dein Alltagsbegleiter</title>
 
   <!-- Hochauflösendes Wellen-Favicon -->
@@ -46,6 +50,7 @@
   <link rel="stylesheet" href="styles-animations.css?v=1">
   <link rel="stylesheet" href="styles-dock.css?v=1">
   <link rel="stylesheet" href="styles-hover.css?v=1">
+  <link rel="stylesheet" href="styles-mobile.css?v=1">
 
 </head>
 <body class="h-full antialiased flex flex-col font-sans select-none overflow-x-hidden text-[#f4f4f5] bg-[#12121a]">
@@ -588,6 +593,9 @@
       <!-- Generated columns via JS -->
     </main>
 
+    <!-- MOBILE: Bottom-Tab-Leiste für Kategorie-Navigation (nur auf Touch/Mobile sichtbar, siehe styles-mobile.css) -->
+    <nav id="mobile-category-tabs" class="mobile-category-tabs" aria-label="Kategorien"></nav>
+
     <!-- ZEN CHILL VIEW -->
     <div id="zen-chill-view" class="hidden flex-col items-center justify-center flex-1 max-w-2xl mx-auto w-full text-center p-6 md:p-10 my-auto animate-fade-in select-none">
       <div class="relative bg-[#13131c]/80 border border-purple-500/20 rounded-3xl p-8 md:p-12 shadow-[0_0_50px_rgba(139,92,246,0.15)] backdrop-blur-2xl w-full flex flex-col items-center gap-6 transition-all duration-300">
@@ -917,7 +925,7 @@
 
   <!-- NEUTRALES HELPER WAS NUN? MODAL -->
   <div id="helper-pick-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div id="helper-pick-card" class="w-full max-w-lg bg-[#111116]/95 border p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+    <div id="helper-pick-card" class="mobile-modal-card w-full max-w-lg bg-[#111116]/95 border p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeHelperModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
 
       <h3 class="text-white font-bold text-sm font-display mb-4 pb-2 border-b border-white/10 flex items-center gap-2">
@@ -981,7 +989,7 @@
 
   <!-- SANFTER BEWEGUNGS-IMPULS MODAL -->
   <div id="helper-sport-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div id="helper-sport-card" class="w-full max-w-md bg-[#111116]/95 border border-orange-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+    <div id="helper-sport-card" class="mobile-modal-card w-full max-w-md bg-[#111116]/95 border border-orange-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeSportModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
 
       <h3 class="text-white font-bold text-sm font-display mb-4 pb-2 border-b border-white/10 flex items-center gap-2">
@@ -1028,7 +1036,7 @@
 
   <!-- SENSORISCHE REIZPAUSE (SAFE SPACE) MODAL -->
   <div id="helper-safespace-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div id="helper-safespace-card" class="w-full max-w-md bg-[#111116]/95 border border-teal-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+    <div id="helper-safespace-card" class="mobile-modal-card w-full max-w-md bg-[#111116]/95 border border-teal-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeSafeSpaceModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
 
       <h3 class="text-white font-bold text-sm font-display mb-4 pb-2 border-b border-white/10 flex items-center gap-2">
@@ -1071,7 +1079,7 @@
 
   <!-- ENTSCHEIDUNGSKOMPASS MODAL -->
   <div id="helper-compass-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div id="helper-compass-card" class="w-full max-w-lg bg-[#111116]/95 border border-rose-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+    <div id="helper-compass-card" class="mobile-modal-card w-full max-w-lg bg-[#111116]/95 border border-rose-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeCompassModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
 
       <h3 class="text-white font-bold text-sm font-display mb-4 pb-2 border-b border-white/10 flex items-center gap-2">
@@ -1326,7 +1334,7 @@
 
   <!-- SOCIAL SCRIPTING MODAL -->
   <div id="helper-scripting-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div id="helper-scripting-card" class="w-full max-w-md bg-[#111116]/95 border border-indigo-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+    <div id="helper-scripting-card" class="mobile-modal-card w-full max-w-md bg-[#111116]/95 border border-indigo-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeScriptingModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
 
       <h3 class="text-white font-bold text-sm font-display mb-4 pb-2 border-b border-white/10 flex items-center gap-2">
@@ -1372,7 +1380,7 @@
 
   <!-- HELPER STEP-BY-STEP MODAL -->
   <div id="helper-steps-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div class="w-full max-w-lg bg-[#111116]/95 border p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+    <div class="mobile-modal-card w-full max-w-lg bg-[#111116]/95 border p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeHelperModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
 
       <h3 class="text-white font-bold text-sm font-display mb-4 pb-2 border-b border-white/10 flex items-center gap-2">

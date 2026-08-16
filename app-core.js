@@ -581,7 +581,7 @@ function setLanguage(lang) {
   if (!lang || !TRANSLATIONS[lang] || !DEFAULT_TASKS_BY_LANG[lang]) { lang = 'en'; }
   const oldLang = currentLang; currentLang = lang; localStorage.setItem('flowPlannerLanguage', lang);
   document.documentElement.lang = lang; translateUserTasks(oldLang, lang);
-  const flagMap = { de: '🇩🇪', en: '🇬🇧', es: '🇪🇸', el: '🇬🇷' };
+  const flagMap = { de: '🇩🇪', en: '🇬🇧', es: '🇪🇸', el: '🇬🇷', fr: '🇫🇷', it: '🇮🇹' };
   const flagEl = document.getElementById('active-lang-flag'); if (flagEl) flagEl.innerText = flagMap[lang] || '🇬🇧';
   translateUI(); const textEl = document.getElementById('minimal-mode-btn-text');
   if (textEl) { textEl.innerText = isMinimalist ? t('standard_mode') : t('minimal_mode'); }

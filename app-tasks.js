@@ -8,6 +8,7 @@ function renderApp() {
     if (isDone) titleText += ` (${state.done.length})`; else if (!isNotes) titleText += ` (${doneInCat}/${totalInCat})`;
     const pct = (!isDone && !isNotes && totalInCat > 0) ? Math.round((doneInCat / totalInCat) * 100) : 0;
     const article = document.createElement('article');
+    article.dataset.category = id;
     article.className = 'min-h-[380px] h-full flex flex-col p-3 rounded-2xl border border-white/[0.08] bg-[#13131a]/75 backdrop-blur-md shadow-lg hover:border-[var(--accent)]/30 transition duration-300 cursor-default';
     article.draggable = true;
     article.ondragstart = (e) => {
@@ -191,6 +192,46 @@ function renderApp() {
     main.appendChild(article);
   });
   updateShoppingListPopup(true); renderCookingPanel(true); if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+  renderMobileCategoryTabs();
+}
+
+// Baut die untere Tab-Leiste für Mobilgeräte auf (eine Kategorie sichtbar statt Scroll-Spalten).
+// Läuft immer mit (auch am Desktop), bleibt dort aber unsichtbar (siehe styles-mobile.css).
+function renderMobileCategoryTabs() {
+  const bar = document.getElementById('mobile-category-tabs');
+  if (!bar) return;
+
+  let activeCat = localStorage.getItem('flowPlannerMobileCategory');
+  if (!activeCat || !categoriesOrder.some(([id]) => id === activeCat)) {
+    activeCat = categoriesOrder[0] ? categoriesOrder[0][0] : 'daily';
+  }
+  document.body.dataset.mobileCat = activeCat;
+
+  bar.innerHTML = categoriesOrder.map(([id, iconKey]) => {
+    const isActive = id === activeCat;
+    const shortLabel = t(id).replace(/\s*\(.*?\)\s*$/, '');
+    return `
+      <button onclick="setMobileCategory('${id}')" class="mobile-tab-btn ${isActive ? 'mobile-tab-active' : ''}" data-cat="${id}">
+        <i data-lucide="${iconKey}" class="w-[18px] h-[18px]"></i>
+        <span>${shortLabel}</span>
+      </button>
+    `;
+  }).join('');
+
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+// Wechselt die auf dem Handy sichtbare Kategorie (Bottom-Tab-Leiste). Rein visuell,
+// die Daten und Spalten selbst bleiben unverändert im Hintergrund bestehen.
+function setMobileCategory(id) {
+  document.body.dataset.mobileCat = id;
+  localStorage.setItem('flowPlannerMobileCategory', id);
+  document.querySelectorAll('.mobile-tab-btn').forEach(btn => {
+    btn.classList.toggle('mobile-tab-active', btn.dataset.cat === id);
+  });
+  const main = document.querySelector('main');
+  if (main) main.scrollIntoView({ behavior: 'instant', block: 'start' });
+  window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
 function animateTaskToDone(taskEl, targetSelector, onComplete) {

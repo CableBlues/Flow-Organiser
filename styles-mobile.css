@@ -1,0 +1,214 @@
+/* ==========================================================================
+   MOBILE-OPTIMIERUNG
+   Alles in dieser Datei ist bewusst hinter (hover: none)/(pointer: coarse)
+   bzw. max-width Media Queries versteckt. Auf dem Desktop (Maus + großer
+   Screen) ändert sich dadurch NICHTS am bestehenden Verhalten oder Layout.
+   ========================================================================== */
+
+/* Auf dem Desktop (Standardfall) bleibt die Kategorie-Tab-Leiste unsichtbar
+   und wirkungslos – sie wird ausschließlich innerhalb der Touch-Media-Query
+   unten wieder eingeblendet. Das ist die einzige Regel in dieser Datei, die
+   nicht in der Media Query steckt, weil sie genau dafür sorgt, dass auf dem
+   Desktop garantiert nichts sichtbar wird. */
+.mobile-category-tabs {
+  display: none;
+}
+
+@media (hover: none), (pointer: coarse) {
+
+  /* Feinschliff für Touch-Antippen (Highlight-Flash, Doppel-Tap-Zoom) –
+     bewusst hier drin und nicht global, auch wenn die Wirkung auf Geräten
+     mit Maus ohnehin null wäre. */
+  button, a, [onclick] {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button, a, [onclick], input, select, textarea {
+    touch-action: manipulation; /* verhindert Doppel-Tap-Zoom-Verzögerung */
+  }
+
+  html {
+    overscroll-behavior-y: none; /* kein "Gummiband"-Overscroll der ganzen Seite */
+  }
+
+  /* Verhindert, dass iOS Safari beim Fokussieren eines Inputs die Seite
+     hineinzoomt (passiert automatisch bei Schriftgrößen < 16px). */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
+  /* ---------------- DOCK: von "nur Hover" auf "immer sichtbar" ---------------- */
+  /* Der Dock-Reveal per :hover funktioniert auf Touch-Geräten nicht zuverlässig.
+     Auf Touch-Geräten wird der Dock daher dauerhaft eingeblendet und bei Bedarf
+     horizontal scrollbar gemacht, statt auf Hover zu warten. */
+
+  .mac-tools-trigger {
+    display: none !important; /* der "Flow / Tools"-Orb wird überflüssig, da der Dock direkt offen ist */
+  }
+
+  .mac-dock-container::before {
+    content: none !important; /* die unsichtbare Hover-Hotzone wird nicht mehr gebraucht */
+  }
+
+  .mac-dock {
+    transform: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    max-width: calc(100vw - 20px);
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    justify-content: flex-start !important;
+  }
+
+  .mac-dock::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mac-dock-item-wrapper {
+    flex-shrink: 0;
+  }
+
+  .mac-dock-item-wrapper:hover {
+    /* Die "schwebende" Hover-Animation ergibt auf Touch keinen Sinn und kann
+       nach einem Tap hängen bleiben (sticky hover). Deaktivieren, Tap-Feedback
+       kommt stattdessen über :active weiter unten. */
+    transform: none !important;
+    animation: none !important;
+  }
+
+  .mac-dock-item-wrapper:active {
+    transform: scale(0.92) !important;
+  }
+
+  .mac-floating-wrapper {
+    bottom: calc(66px + env(safe-area-inset-bottom)) !important;
+    left: 10px !important;
+    right: 10px !important;
+    transform: none !important;
+    width: auto !important;
+  }
+
+  .mac-dock-container {
+    width: 100% !important;
+  }
+
+  /* ---------------- KATEGORIE-TABS: nur eine Kategorie gleichzeitig sichtbar ---------------- */
+  /* Ersetzt das Untereinander-Scrollen der 7 Spalten durch eine echte
+     Bottom-Tab-Navigation, wie man sie von nativen Apps kennt. Die Spalten
+     selbst (Daten, Logik, Drag&Drop) bleiben exakt gleich – es wird nur
+     gesteuert, welche davon sichtbar ist. */
+  main > article { display: none !important; }
+  body[data-mobile-cat="daily"]         main > article[data-category="daily"],
+  body[data-mobile-cat="weekly"]        main > article[data-category="weekly"],
+  body[data-mobile-cat="todo"]          main > article[data-category="todo"],
+  body[data-mobile-cat="done"]          main > article[data-category="done"],
+  body[data-mobile-cat="termine"]       main > article[data-category="termine"],
+  body[data-mobile-cat="notes"]         main > article[data-category="notes"],
+  body[data-mobile-cat="occasionally"]  main > article[data-category="occasionally"] {
+    display: flex !important;
+  }
+
+  main > article {
+    width: 100% !important;
+    min-height: calc(100dvh - 260px) !important;
+  }
+
+  .mobile-category-tabs {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9998;
+    background: rgba(15, 15, 22, 0.94);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom)) 4px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 2px;
+  }
+  .mobile-category-tabs::-webkit-scrollbar { display: none; }
+
+  .mobile-tab-btn {
+    flex: 1 0 auto;
+    min-width: 58px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 6px 4px;
+    border-radius: 12px;
+    color: #71717a;
+    background: transparent;
+    border: none;
+    font-size: 9px;
+    font-weight: 700;
+    font-family: var(--font-family, inherit);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.2s ease, background 0.2s ease;
+  }
+  .mobile-tab-btn span {
+    max-width: 64px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mobile-tab-btn:active { transform: scale(0.94); }
+  .mobile-tab-active {
+    color: var(--accent-light, #c084fc) !important;
+    background: rgba(139, 92, 246, 0.14);
+  }
+
+  /* Platz am unteren Bildschirmrand reservieren: Tab-Leiste + Tools-Dock
+     dürfen nie den Spalteninhalt verdecken. */
+  main {
+    padding-bottom: calc(150px + env(safe-area-inset-bottom)) !important;
+  }
+
+  /* ---------------- MODALS: nie über den Bildschirmrand hinauswachsen ---------------- */
+  .mobile-modal-card {
+    max-height: calc(100dvh - 32px - env(safe-area-inset-bottom));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  }
+
+  /* ---------------- Sprachauswahl: größere, leichter zu treffende Tap-Ziele ---------------- */
+  #panel-language {
+    width: 56px !important;
+    gap: 4px !important;
+  }
+
+  #panel-language button {
+    font-size: 1.35rem !important;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Fach-Popups im Dock (Sounds, Musik etc.) sollen auf schmalen Screens nie
+     breiter als der Viewport werden und nicht seitlich abgeschnitten sein. */
+  #panel-soundscape, #panel-music, #panel-boost {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: calc(100vw - 24px) !important;
+    max-width: 410px !important;
+  }
+}
+
+/* Sehr kleine Screens (< 380px): Dock-Icons dezent verkleinern, damit
+   möglichst viele Werkzeuge ohne Scrollen sichtbar sind. */
+@media (hover: none) and (max-width: 380px), (pointer: coarse) and (max-width: 380px) {
+  .mac-dock-item-wrapper {
+    width: 50px !important;
+    height: 50px !important;
+  }
+}
