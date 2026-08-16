@@ -54,7 +54,7 @@ const MOTIVATIONAL_CHUNKS = {
   es: {
     start: ["¡Buen comienzo! Concéntrate en este primer paso.", "¡Excelente, ya has dado el primer paso!", "Paso a paso. ¡Tú puedes!"],
     halfway: ["¡Mitad de camino! Lo estás haciendo increíble.", "¡Sigue con este ritmo, vas por buen camino!", "¡Excelente progreso! Respira hondo y continúa."],
-    end: ["¡Casi terminado! Solo queda un último effort.", "¡Brillante! La meta está a la vista.", "¡Espectacular, ya casi lo logras!"],
+    end: ["¡Casi terminado! Solo queda un último esfuerzo.", "¡Brillante! La meta está a la vista.", "¡Espectacular, ya casi lo logras!"],
     overdue: ["¡Hora de cambiar!", "Tómate un descanso.", "Sesión terminada."]
   },
   el: {
@@ -62,6 +62,18 @@ const MOTIVATIONAL_CHUNKS = {
     halfway: ["Στα μισά του δρόμου! Τα πηγαίνεις απολύτως φανταστικά.", "Κράτα αυτόν τον ρυθμό, είσαι σε τέλεια πορεία!", "Υπέροχη πρόοδος! Πάρε μια βαθιά ανάσα και συνέχισε."],
     end: ["Σχεδόν έφτασες! Μόνο μια μικρή τελική προσπάθεια.", "Φανταστικά! Ο τερματισμός είναι πλέον ορατός.", "Εξαιρετικά, έμεινε μόνο μια στιγμή!"],
     overdue: ["Ώρα για αλλαγή!", "Κάνε ένα διάλειμμα.", "Η συνεδρία ολοκληρώθηκε."]
+  },
+  fr: {
+    start: ["Beau départ ! Concentre-toi sur ce premier pas.", "Parfait, tu as fait le premier pas !", "Étape par étape. Tu gères ça !"],
+    halfway: ["Déjà à mi-chemin ! Tu t'en sors incroyablement bien.", "Garde ce rythme, tu es sur la bonne voie !", "Progrès superbe ! Respire un coup et continue."],
+    end: ["Presque fini ! Encore un tout petit effort.", "Brillant ! La ligne d'arrivée est en vue.", "Excellent, il ne reste qu'un instant !"],
+    overdue: ["Il est temps de changer !", "Accorde-toi une pause.", "La session est terminée."]
+  },
+  it: {
+    start: ["Ottimo inizio! Concentrati su questo primo passo.", "Perfetto, hai fatto il primo passo!", "Un passo alla volta. Ce la puoi fare!"],
+    halfway: ["Sei già a metà strada! Stai andando alla grande.", "Mantieni questo ritmo, sei sulla strada giusta!", "Progresso eccellente! Fai un respiro e continua."],
+    end: ["Quasi fatto! Manca solo un ultimo piccolo sforzo.", "Fantastico! Il traguardo è ormai in vista.", "Straordinario, resta solo un attimo!"],
+    overdue: ["È ora di cambiare!", "Concediti una pausa.", "La sessione è terminata."]
   }
 };
 
@@ -100,9 +112,9 @@ function toggleTimerSound() {
       clearInterval(ringInterval);
       ringInterval = null;
     }
-    showToast(currentLang === 'de' ? "Timer-Sound stummgeschaltet 🔇" : "Timer sound muted 🔇");
+    showToast(tr({ de: "Timer-Sound stummgeschaltet 🔇", en: "Timer sound muted 🔇", es: "Sonido del temporizador silenciado 🔇", el: "Ο ήχος του χρονομέτρου σίγασε 🔇", fr: "Son du minuteur coupé 🔇", it: "Audio del timer disattivato 🔇" }));
   } else {
-    showToast(currentLang === 'de' ? "Timer-Sound eingeschaltet 🔊" : "Timer sound unmuted 🔊");
+    showToast(tr({ de: "Timer-Sound eingeschaltet 🔊", en: "Timer sound unmuted 🔊", es: "Sonido del temporizador activado 🔊", el: "Ο ήχος του χρονομέτρου ενεργοποιήθηκε 🔊", fr: "Son du minuteur activé 🔊", it: "Audio del timer attivato 🔊" }));
     if (timerRunning) {
       playRandomTimerAmbient();
     }
@@ -117,10 +129,10 @@ function updateMuteButtonsUI() {
     if (el) {
       if (timerSoundEnabled) {
         el.innerHTML = '<i data-lucide="volume-2" class="w-3.5 h-3.5 text-gray-300 hover:text-white"></i>';
-        el.title = currentLang === 'de' ? "Stummschalten" : "Mute";
+        el.title = tr({ de: "Stummschalten", en: "Mute", es: "Silenciar", el: "Σίγαση", fr: "Couper le son", it: "Disattiva audio" });
       } else {
         el.innerHTML = '<i data-lucide="volume-x" class="w-3.5 h-3.5 text-rose-400"></i>';
-        el.title = currentLang === 'de' ? "Ton einschalten" : "Unmute";
+        el.title = tr({ de: "Ton einschalten", en: "Unmute", es: "Activar sonido", el: "Ενεργοποίηση ήχου", fr: "Activer le son", it: "Attiva audio" });
       }
     }
   });
@@ -160,7 +172,7 @@ function speakWithProfile(text, profileIndex) {
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     const lang = typeof currentLang !== 'undefined' ? currentLang : 'de';
-    const langMap = { de: 'de-DE', en: 'en-US', es: 'es-ES', el: 'el-GR' };
+    const langMap = { de: 'de-DE', en: 'en-US', es: 'es-ES', el: 'el-GR', fr: 'fr-FR', it: 'it-IT' };
     const targetLang = langMap[lang] || 'de-DE';
     utterance.lang = targetLang;
 
@@ -506,11 +518,15 @@ function startTimer() {
         if (lang === 'de') speechText = "Noch eine Minute";
         else if (lang === 'es') speechText = "Queda un minuto";
         else if (lang === 'el') speechText = "Απομένει ένα λεπτό";
+        else if (lang === 'fr') speechText = "Il reste une minute";
+        else if (lang === 'it') speechText = "Resta un minuto";
         else speechText = "One minute remaining";
       } else {
         if (lang === 'de') speechText = `Noch ${minsLeft} Minuten`;
         else if (lang === 'es') speechText = `Quedan ${minsLeft} minutos`;
         else if (lang === 'el') speechText = `Απομένουν ${minsLeft} λεπτά`;
+        else if (lang === 'fr') speechText = `Il reste ${minsLeft} minutes`;
+        else if (lang === 'it') speechText = `Restano ${minsLeft} minuti`;
         else speechText = `${minsLeft} minutes remaining`;
       }
       

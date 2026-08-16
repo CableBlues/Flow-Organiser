@@ -26,7 +26,8 @@ function renderWeeklyChart() {
   if (!chartEl) return; chartEl.innerHTML = ''; const now = new Date(); const last7Days = [];
   const weekdaysShort = {
     de: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'], en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-    es: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'], el: ['Κυρ', 'Δευ', 'Τρι', 'Τετ', 'Πεμ', 'Παρ', 'Σαβ']
+    es: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'], el: ['Κυρ', 'Δευ', 'Τρι', 'Τετ', 'Πεμ', 'Παρ', 'Σαβ'],
+    fr: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'], it: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
   };
   for (let i = 6; i >= 0; i--) {
     const d = new Date(); d.setDate(now.getDate() - i); const iso = d.toISOString().split('T')[0];
@@ -34,7 +35,7 @@ function renderWeeklyChart() {
   }
   let totalWeekCount = 0;
   (state.done || []).forEach(item => { const found = last7Days.find(day => day.date === item.date); if (found) { found.count++; totalWeekCount++; } });
-  if (totalWeekTasksEl) { totalWeekTasksEl.innerText = currentLang === 'de' ? `${totalWeekCount} Aufgaben` : `${totalWeekCount} Tasks`; }
+  if (totalWeekTasksEl) { totalWeekTasksEl.innerText = tr({ de: `${totalWeekCount} Aufgaben`, en: `${totalWeekCount} Tasks`, es: `${totalWeekCount} Tareas`, el: `${totalWeekCount} Εργασίες`, fr: `${totalWeekCount} Tâches`, it: `${totalWeekCount} Attività` }); }
   const maxCount = Math.max(...last7Days.map(d => d.count), 4);
   last7Days.forEach(day => {
     const pct = (day.count / maxCount) * 100; const isToday = day.date === now.toISOString().split('T')[0];
@@ -73,8 +74,8 @@ function updateReportPanel() {
     catStats.forEach(({ id, label }) => {
       let pending = (state.items[id] || []).length; let completedInCat = filteredDone.filter(item => item.origin === id).length; let totalInCat = pending + completedInCat;
       if (reportTimeframe === 'week' || reportTimeframe === 'month') {
-        if (id === 'daily') label = currentLang === 'de' ? 'Täglich' : (currentLang === 'es' ? 'Diario' : (currentLang === 'el' ? 'Καθημερινά' : 'Daily'));
-        if (id === 'occasionally') label = currentLang === 'de' ? 'Gelegentliche' : (currentLang === 'es' ? 'Ocasionales' : (currentLang === 'el' ? 'Περιστασιακά' : 'Occasionally'));
+        if (id === 'daily') label = tr({ de: 'Täglich', en: 'Daily', es: 'Diario', el: 'Καθημερινά', fr: 'Quotidien', it: 'Giornaliero' });
+        if (id === 'occasionally') label = tr({ de: 'Gelegentliche', en: 'Occasionally', es: 'Ocasionales', el: 'Περιστασιακά', fr: 'Occasionnel', it: 'Occasionale' });
       }
       if (id === 'daily') {
         if (reportTimeframe === 'week') {
@@ -105,7 +106,7 @@ function updateReportPanel() {
   }
   const list = document.getElementById('report-list');
   if (list) {
-    list.innerHTML = ''; if (filteredDone.length === 0) { list.innerHTML = `<div class="text-gray-500 italic text-center py-2 text-xs">${currentLang === 'de' ? 'Keine Protokolleinträge vorhanden.' : 'No logs available.'}</div>`; } 
+    list.innerHTML = ''; if (filteredDone.length === 0) { list.innerHTML = `<div class="text-gray-500 italic text-center py-2 text-xs">${tr({ de: 'Keine Protokolleinträge vorhanden.', en: 'No logs available.', es: 'No hay registros disponibles.', el: 'Δεν υπάρχουν καταχωρήσεις.', fr: 'Aucune entrée disponible.', it: 'Nessuna voce disponibile.' })}</div>`; } 
     else {
       filteredDone.slice().reverse().forEach(item => {
         const div = document.createElement('div'); div.className = 'p-2 bg-white/[0.02] border border-white/5 rounded-lg flex justify-between items-center text-gray-300 hover:bg-white/5 transition';
@@ -123,7 +124,7 @@ function submitFeedback() {
   if (text.trim()) {
     const mailtoUrl = `mailto:jmonke@gmail.com?subject=Flow App Feedback&body=${encodeURIComponent(text)}`;
     window.location.href = mailtoUrl;
-    showToast({ de: 'E-Mail-Entwurf geöffnet! ❤️', en: 'Email draft opened! ❤️', es: '¡Borrador de email aberto! ❤️', el: 'Το προσχέδιο email άνοιξε! ❤️' }[currentLang] || 'Email draft opened! ❤️');
+    showToast(tr({ de: 'E-Mail-Entwurf geöffnet! ❤️', en: 'Email draft opened! ❤️', es: '¡Borrador de email abierto! ❤️', el: 'Το προσχέδιο email άνοιξε! ❤️', fr: 'Brouillon d\'email ouvert ! ❤️', it: 'Bozza email aperta! ❤️' }));
     document.getElementById('feedback-text').value = ''; togglePanel('feedback');
   }
 }
@@ -141,7 +142,7 @@ function updateZenView() {
   currentZenTaskInfo = chosen;
   if (!chosen) {
     if (zenCatEl) zenCatEl.innerText = t('completed');
-    const endMsg = { de: '🎉 Alle Aufgaben erledigt! Entspanne dich und genieße deine freie Zeit.', en: '🎉 All tasks completed! Relax and enjoy your free time.', es: '🎉 ¡Todas las tareas completadas! ¡Disfruta de tu tempo libre!', el: '🎉 Όλες οι εργασίες ολοκληρώθηκαν! Χαλαρώστε και απολαύστε τον ελεύθερο χρόνο σας.' }[currentLang];
+    const endMsg = tr({ de: '🎉 Alle Aufgaben erledigt! Entspanne dich und genieße deine freie Zeit.', en: '🎉 All tasks completed! Relax and enjoy your free time.', es: '🎉 ¡Todas las tareas completadas! ¡Disfruta de tu tiempo libre!', el: '🎉 Όλες οι εργασίες ολοκληρώθηκαν! Χαλαρώστε και απολαύστε τον ελεύθερο χρόνο σας.', fr: '🎉 Toutes les tâches terminées ! Détends-toi et profite de ton temps libre.', it: '🎉 Tutte le attività completate! Rilassati e goditi il tuo tempo libero.' });
     zenTextEl.innerHTML = `<span class="text-emerald-400">${endMsg}</span>`;
   } else {
     const catName = t(chosen.cat); if (zenCatEl) zenCatEl.innerText = `${t('next_rec')} · ${catName}`;
@@ -157,7 +158,7 @@ function updateShoppingListPopup(skipLucide = false) {
     if (list.length > 0) { badgeEl.classList.remove('hidden'); badgeEl.innerText = list.length; } 
     else { badgeEl.classList.add('hidden'); }
   }
-  if (list.length === 0) { rowsContainer.innerHTML = `<div class="text-center text-gray-500 italic py-2.5 text-[10px]">Einkaufsliste leer.</div>`; } 
+  if (list.length === 0) { rowsContainer.innerHTML = `<div class="text-center text-gray-500 italic py-2.5 text-[10px]">${tr({ de: 'Einkaufsliste leer.', en: 'Shopping list empty.', es: 'Lista de la compra vacía.', el: 'Η λίστα αγορών είναι άδεια.', fr: 'Liste de courses vide.', it: 'Lista della spesa vuota.' })}</div>`; } 
   else {
     list.forEach((item, idx) => {
       const div = document.createElement('div'); div.className = 'flex items-center justify-between gap-1.5 py-1.5 border-b border-white/[0.03] text-gray-300';
@@ -174,7 +175,7 @@ function updateShoppingListPopup(skipLucide = false) {
   if (historyBox) { if (isHistoryVisible) historyBox.classList.remove('hidden'); else historyBox.classList.add('hidden'); }
   if (historyList) {
     historyList.innerHTML = ''; const hist = state.shoppingHistory || [];
-    if (hist.length === 0) { historyList.innerHTML = `<div class="text-gray-600 italic text-center py-1 text-[9px]">Noch keine Einkäufe.</div>`; } 
+    if (hist.length === 0) { historyList.innerHTML = `<div class="text-gray-600 italic text-center py-1 text-[9px]">${tr({ de: 'Noch keine Einkäufe.', en: 'No purchases yet.', es: 'Aún no hay compras.', el: 'Δεν υπάρχουν ακόμη αγορές.', fr: 'Aucun achat pour le moment.', it: 'Ancora nessun acquisto.' })}</div>`; } 
     else {
       hist.slice().reverse().forEach(hItem => {
         const hDiv = document.createElement('div'); hDiv.className = 'flex justify-between items-center py-0.5 border-b border-white/[0.02] text-gray-400 text-[9px]';
@@ -189,15 +190,15 @@ function updateShoppingListPopup(skipLucide = false) {
 
 function handleAddShoppingItem() {
   const nameEl = document.getElementById('shop-add-name'); const name = nameEl ? nameEl.value.trim() : '';
-  if (!name) { showToast(currentLang === 'de' ? "Artikelnamen angeben!" : "Please specify item name!"); return; }
+  if (!name) { showToast(tr({ de: "Artikelnamen angeben!", en: "Please specify item name!", es: "¡Indica el nombre del artículo!", el: "Δώσε ένα όνομα προϊόντος!", fr: "Indique un nom d'article !", it: "Indica il nome dell'articolo!" })); return; }
   saveHistory(); if (!state.shoppingList) state.shoppingList = [];
   state.shoppingList.push({ name }); saveState(); if (nameEl) nameEl.value = '';
-  renderApp(); showToast(currentLang === 'de' ? `"${name}" hinzugefügt!` : `Added "${name}"!`);
+  renderApp(); showToast(tr({ de: `"${name}" hinzugefügt!`, en: `Added "${name}"!`, es: `¡"${name}" añadido!`, el: `Το "${name}" προστέθηκε!`, fr: `"${name}" ajouté !`, it: `"${name}" aggiunto!` }));
 }
 
 function handleDeleteShoppingItem(index) {
   saveHistory(); const removed = state.shoppingList[index]; state.shoppingList.splice(index, 1);
-  saveState(); renderApp(); showToast(currentLang === 'de' ? `"${removed.name}" gelöscht.` : `Deleted "${removed.name}".`);
+  saveState(); renderApp(); showToast(tr({ de: `"${removed.name}" gelöscht.`, en: `Deleted "${removed.name}".`, es: `"${removed.name}" eliminado.`, el: `Το "${removed.name}" διαγράφηκε.`, fr: `"${removed.name}" supprimé.`, it: `"${removed.name}" eliminato.` }));
 }
 
 function handleToggleShoppingItem(index) {
@@ -206,7 +207,7 @@ function handleToggleShoppingItem(index) {
   const todayStr = new Date().toLocaleDateString([], { month: '2-digit', day: '2-digit' });
   state.shoppingHistory.push({ name: item.name, date: todayStr });
   saveState(); if (typeof playProceduralSound === 'function') playProceduralSound(3); 
-  showToast(currentLang === 'de' ? `"${item.name}" eingekauft! ✅` : `Bought "${item.name}"! ✅`); renderApp();
+  showToast(tr({ de: `"${item.name}" eingekauft! ✅`, en: `Bought "${item.name}"! ✅`, es: `¡"${item.name}" comprado! ✅`, el: `Το "${item.name}" αγοράστηκε! ✅`, fr: `"${item.name}" acheté ! ✅`, it: `"${item.name}" acquistato! ✅` })); renderApp();
 }
 
 function toggleShoppingHistory() {
@@ -215,13 +216,13 @@ function toggleShoppingHistory() {
 }
 
 function clearShoppingList() {
-  if (confirm(currentLang === 'de' ? "Gesamte Einkaufsliste leeren?" : "Clear entire shopping list?")) {
+  if (confirm(tr({ de: "Gesamte Einkaufsliste leeren?", en: "Clear entire shopping list?", es: "¿Vaciar toda la lista de la compra?", el: "Εκκαθάριση όλης της λίστας αγορών;", fr: "Vider toute la liste de courses ?", it: "Svuotare l'intera lista della spesa?" }))) {
     saveHistory(); state.shoppingList = []; saveState(); renderApp();
   }
 }
 
 function clearShoppingHistory() {
-  if (confirm(currentLang === 'de' ? "Einkaufs-Protokoll leeren?" : "Clear shopping logs?")) {
+  if (confirm(tr({ de: "Einkaufs-Protokoll leeren?", en: "Clear shopping logs?", es: "¿Vaciar el historial de compras?", el: "Εκκαθάριση ιστορικού αγορών;", fr: "Vider l'historique des achats ?", it: "Svuotare la cronologia degli acquisti?" }))) {
     saveHistory(); state.shoppingHistory = []; saveState(); renderApp();
   }
 }
@@ -231,9 +232,11 @@ function generateSmartShoppingTips(container) {
   if (!state.shoppingList || state.shoppingList.length === 0) {
     const defaultTips = {
       de: "Tipp: Gehe nie hungrig einkaufen & kaufe vorzugsweise saisonal, um bis zu 30% bei Gemüse zu sparen!",
-      en: "Tipp: Never go shopping hungry & prioritize seasonal produce to save up to 30%!",
-      es: "Consejo: ¡Nunca vayas de compras con hambre und compra alimentos de temporada para ahorrar!",
-      el: "Συμβουλή: Μην πηγαίνετε ποτέ πεινασμένοι για ψώνια & επιλέξτε εποχιακά προϊόντα!"
+      en: "Tip: Never go shopping hungry & prioritize seasonal produce to save up to 30%!",
+      es: "Consejo: ¡Nunca vayas de compras con hambre y compra alimentos de temporada para ahorrar hasta un 30%!",
+      el: "Συμβουλή: Μην πηγαίνετε ποτέ πεινασμένοι για ψώνια & επιλέξτε εποχιακά προϊόντα για έως 30% εξοικονόμηση!",
+      fr: "Astuce : Ne fais jamais les courses le ventre vide & privilégie les produits de saison pour économiser jusqu'à 30% !",
+      it: "Consiglio: Non fare mai la spesa a stomaco vuoto & scegli prodotti di stagione per risparmiare fino al 30%!"
     };
     tipTextEl.innerText = defaultTips[currentLang] || defaultTips.de; return;
   }
@@ -250,23 +253,23 @@ function generateSmartShoppingTips(container) {
     if (convenienceKeywords.some(kw => name.includes(kw))) hasConvenience = true;
   });
   let tip = "";
-  if (hasMeat) { tip = currentLang === 'de' ? "Spartipp: Fleisch lässt sich im Angebot in größeren Mengen kaufen und einfrieren. Das spart bis zu 35%!" : "Smart Tip: Buy meat in bulk when on sale and freeze it. Saves up to 35%!"; } 
-  else if (hasDairy) { tip = currentLang === 'de' ? "Spartipp: Eigenmarken bei Milch, Butter & Quark kommen oft von denselben Herstellern, kosten aber bis zu 40% weniger." : "Smart Tip: Store brands for dairy (milk, butter) often come from the same factories but cost up to 40% less."; } 
-  else if (hasVegFruit) { tip = currentLang === 'de' ? "Spartipp: Kaufe loses Obst & Gemüse statt Plastik-Verpackungen. Meist frischer und deutlich günstiger im Kilopreis!" : "Smart Tip: Buy loose fruits & veggies instead of pre-packaged plastic ones. Usually cheaper per kg!"; } 
-  else if (hasConvenience) { tip = currentLang === 'de' ? "Spartipp: Snacks und Fertiggerichte treiben den Bon extrem hoch. Selber machen oder Multipacks verringern die Kosten stark." : "Smart Tip: Prepared snacks inflate your bill. Buy multipacks or prep your own snacks to save big."; } 
-  else { tip = currentLang === 'de' ? "Spartipp: Vergleiche immer den Grundpreis (Preis pro kg/Liter) im Regal, da Packungsgrößen oft täuschen!" : "Smart Tip: Always compare the base price (price per kg/liter) on the shelf tags."; }
+  if (hasMeat) { tip = tr({ de: "Spartipp: Fleisch lässt sich im Angebot in größeren Mengen kaufen und einfrieren. Das spart bis zu 35%!", en: "Smart Tip: Buy meat in bulk when on sale and freeze it. Saves up to 35%!", es: "Consejo: Compra carne en oferta a granel y congélala. ¡Ahorra hasta un 35%!", el: "Συμβουλή: Αγόρασε κρέας σε προσφορά σε μεγαλύτερες ποσότητες και κατάψυξέ το. Εξοικονόμηση έως 35%!", fr: "Astuce : Achète de la viande en promotion en grande quantité et congèle-la. Économise jusqu'à 35% !", it: "Consiglio: Compra la carne in offerta in grandi quantità e congelala. Risparmi fino al 35%!" }); } 
+  else if (hasDairy) { tip = tr({ de: "Spartipp: Eigenmarken bei Milch, Butter & Quark kommen oft von denselben Herstellern, kosten aber bis zu 40% weniger.", en: "Smart Tip: Store brands for dairy (milk, butter) often come from the same factories but cost up to 40% less.", es: "Consejo: Las marcas blancas de lácteos suelen venir de las mismas fábricas, pero cuestan hasta un 40% menos.", el: "Συμβουλή: Τα προϊόντα ιδιωτικής ετικέτας (γάλα, βούτυρο) προέρχονται συχνά από τα ίδια εργοστάσια, αλλά κοστίζουν έως 40% λιγότερο.", fr: "Astuce : Les marques distributeur pour les produits laitiers viennent souvent des mêmes usines, mais coûtent jusqu'à 40% moins cher.", it: "Consiglio: I marchi del supermercato per i latticini spesso provengono dagli stessi stabilimenti, ma costano fino al 40% in meno." }); } 
+  else if (hasVegFruit) { tip = tr({ de: "Spartipp: Kaufe loses Obst & Gemüse statt Plastik-Verpackungen. Meist frischer und deutlich günstiger im Kilopreis!", en: "Smart Tip: Buy loose fruits & veggies instead of pre-packaged plastic ones. Usually cheaper per kg!", es: "Consejo: Compra fruta y verdura suelta en vez de envasada en plástico. ¡Normalmente más fresca y barata por kilo!", el: "Συμβουλή: Αγόρασε χύμα φρούτα & λαχανικά αντί για συσκευασμένα σε πλαστικό. Συνήθως πιο φρέσκα και φθηνότερα ανά κιλό!", fr: "Astuce : Achète des fruits & légumes en vrac plutôt qu'emballés dans du plastique. Souvent plus frais et moins cher au kilo !", it: "Consiglio: Compra frutta e verdura sfusa invece che confezionata in plastica. Di solito più fresca e conveniente al kg!" }); } 
+  else if (hasConvenience) { tip = tr({ de: "Spartipp: Snacks und Fertiggerichte treiben den Bon extrem hoch. Selber machen oder Multipacks verringern die Kosten stark.", en: "Smart Tip: Prepared snacks inflate your bill. Buy multipacks or prep your own snacks to save big.", es: "Consejo: Los snacks y platos preparados disparan la cuenta. Prepáralos tú mismo o compra packs para ahorrar mucho.", el: "Συμβουλή: Τα σνακ και τα έτοιμα γεύματα ανεβάζουν πολύ τον λογαριασμό. Φτιάξ' τα μόνος σου ή αγόρασε πολυσυσκευασίες.", fr: "Astuce : Les snacks et plats préparés font grimper la facture. Fais-les toi-même ou achète des lots pour économiser.", it: "Consiglio: Snack e piatti pronti fanno lievitare il conto. Prepararli da solo o comprare confezioni multiple riduce molto i costi." }); } 
+  else { tip = tr({ de: "Spartipp: Vergleiche immer den Grundpreis (Preis pro kg/Liter) im Regal, da Packungsgrößen oft täuschen!", en: "Smart Tip: Always compare the base price (price per kg/liter) on the shelf tags.", es: "Consejo: Compara siempre el precio por unidad (precio por kg/litro) en la etiqueta, ¡el tamaño del envase engaña!", el: "Συμβουλή: Σύγκρινε πάντα την τιμή μονάδας (τιμή ανά κιλό/λίτρο) στο ράφι, το μέγεθος συσκευασίας συχνά ξεγελά!", fr: "Astuce : Compare toujours le prix au kilo/litre sur l'étiquette, la taille de l'emballage est souvent trompeuse !", it: "Consiglio: Confronta sempre il prezzo al kg/litro sull'etichetta, la dimensione della confezione spesso inganna!" }); }
   tipTextEl.innerText = tip;
 }
 
 function updateMissedTasksList() {
   const container = document.getElementById('report-missed-tasks-list'); if (!container) return; container.innerHTML = '';
   const missed = []; const todayISO = new Date().toISOString().split('T')[0];
-  (state.items.daily || []).forEach(task => { missed.push({ task: typeof task === 'object' ? task.task : task, tag: currentLang === 'de' ? 'Täglich' : 'Daily' }); });
-  (state.items.weekly || []).forEach(task => { missed.push({ task: typeof task === 'object' ? task.task : task, tag: currentLang === 'de' ? 'Wöchentlich' : 'Weekly' }); });
+  (state.items.daily || []).forEach(task => { missed.push({ task: typeof task === 'object' ? task.task : task, tag: tr({ de: 'Täglich', en: 'Daily', es: 'Diario', el: 'Καθημερινά', fr: 'Quotidien', it: 'Giornaliero' }) }); });
+  (state.items.weekly || []).forEach(task => { missed.push({ task: typeof task === 'object' ? task.task : task, tag: tr({ de: 'Wöchentlich', en: 'Weekly', es: 'Semanal', el: 'Εβδομαδιαία', fr: 'Hebdomadaire', it: 'Settimanale' }) }); });
   (state.items.todo || []).forEach(task => { missed.push({ task: typeof task === 'object' ? task.task : task, tag: 'Todo' }); });
-  (state.items.occasionally || []).forEach(task => { missed.push({ task: typeof task === 'object' ? task.task : task, tag: currentLang === 'de' ? 'Gelegentliche' : 'Occasionally' }); });
-  (state.items.termine || []).forEach(task => { if (task.date === todayISO) { missed.push({ task: task.task, tag: currentLang === 'de' ? 'Termin heute' : 'Appointment' }); } });
-  if (missed.length === 0) { container.innerHTML = `<div class="text-emerald-400 italic text-[10px] py-1 text-center font-semibold">🎉 Alles erledigt! Großartige Leistung.</div>`; } 
+  (state.items.occasionally || []).forEach(task => { missed.push({ task: typeof task === 'object' ? task.task : task, tag: tr({ de: 'Gelegentliche', en: 'Occasionally', es: 'Ocasionales', el: 'Περιστασιακά', fr: 'Occasionnel', it: 'Occasionale' }) }); });
+  (state.items.termine || []).forEach(task => { if (task.date === todayISO) { missed.push({ task: task.task, tag: tr({ de: 'Termin heute', en: 'Appointment', es: 'Cita hoy', el: 'Ραντεβού σήμερα', fr: 'RDV aujourd\'hui', it: 'Appuntamento oggi' }) }); } });
+  if (missed.length === 0) { container.innerHTML = `<div class="text-emerald-400 italic text-[10px] py-1 text-center font-semibold">${tr({ de: '🎉 Alles erledigt! Großartige Leistung.', en: '🎉 All done! Great job.', es: '🎉 ¡Todo listo! Gran trabajo.', el: '🎉 Όλα έτοιμα! Εξαιρετική δουλειά.', fr: '🎉 Tout est fait ! Excellent travail.', it: '🎉 Tutto fatto! Ottimo lavoro.' })}</div>`; } 
   else {
     missed.forEach(item => {
       const div = document.createElement('div'); div.className = 'flex justify-between items-center gap-1.5 py-1 px-1.5 bg-black/30 rounded border border-white/5 hover:border-rose-500/10 transition';
@@ -295,105 +298,19 @@ function checkAndGenerateAutomaticReports() {
     const weekToReport = (isSundayEvening && !weeklyReportTriggeredThisWeek) ? currentWeekStr : (lastWeeklyReport || currentWeekStr);
     const { reportText, filename } = generateReportContent('weekly', weekToReport); triggerAutomaticDownload(reportText, filename);
     localStorage.setItem('flow_last_weekly_report_week', currentWeekStr); localStorage.setItem('flow_weekly_report_triggered_' + currentWeekStr, 'true');
-    showToast(lang === 'de' ? `Automatischer Wochenbericht (${weekToReport}) heruntergeladen! 📊` : `Automatic weekly report (${weekToReport}) downloaded! 📊`);
+    showToast(tr({ de: `Automatischer Wochenbericht (${weekToReport}) heruntergeladen! 📊`, en: `Automatic weekly report (${weekToReport}) downloaded! 📊`, es: `Informe semanal automático (${weekToReport}) descargado! 📊`, el: `Αυτόματη εβδομαδιαία αναφορά (${weekToReport}) λήφθηκε! 📊`, fr: `Rapport hebdomadaire automatique (${weekToReport}) téléchargé ! 📊`, it: `Report settimanale automatico (${weekToReport}) scaricato! 📊` }));
   }
   const currentMonthStr = todayISO.substring(0, 7); const lastMonthlyReport = localStorage.getItem('flow_last_monthly_report_month');
   if (lastMonthlyReport && lastMonthlyReport !== currentMonthStr) {
     const { reportText, filename } = generateReportContent('monthly', lastMonthlyReport); triggerAutomaticDownload(reportText, filename);
     localStorage.setItem('flow_last_monthly_report_month', currentMonthStr);
-    showToast(lang === 'de' ? `Automatischer Monatsbericht (${lastMonthlyReport}) heruntergeladen! 📊` : `Automatic monthly report (${lastMonthlyReport}) downloaded! 📊`);
+    showToast(tr({ de: `Automatischer Monatsbericht (${lastMonthlyReport}) heruntergeladen! 📊`, en: `Automatic monthly report (${lastMonthlyReport}) downloaded! 📊`, es: `Informe mensual automático (${lastMonthlyReport}) descargado! 📊`, el: `Αυτόματη μηνιαία αναφορά (${lastMonthlyReport}) λήφθηκε! 📊`, fr: `Rapport mensuel automatique (${lastMonthlyReport}) téléchargé ! 📊`, it: `Report mensile automatico (${lastMonthlyReport}) scaricato! 📊` }));
   }
 }
 
 function triggerManualReportDownload(timeframe) {
   const { reportText, filename } = generateReportContent(timeframe); triggerAutomaticDownload(reportText, filename);
-  showToast(currentLang === 'de' ? `Bericht heruntergeladen! 📥` : `Report downloaded! 📥`);
-}
-
-let chatHistory = [];
-
-function toggleCoachChat() {
-  const widget = document.getElementById('coach-chat-widget'); if (!widget) return;
-  const isHidden = widget.classList.contains('hidden');
-  if (isHidden) {
-    widget.classList.remove('hidden'); const msgBox = document.getElementById('chat-messages-box');
-    if (msgBox && msgBox.children.length === 0) { appendCoachMessage("Hallo! Ich bin dein Flow-Coach Jannis. 🧠 Wie kann ich dir heute helfen?\n\nSchreib mir einfach, wenn du abgelenkt bist, deine Aufgaben strukturieren möchtest, oder Hilfe bei einer Aufgabe suchst!"); }
-  } else { widget.classList.add('hidden'); }
-}
-
-function appendCoachMessage(text) {
-  const msgBox = document.getElementById('chat-messages-box'); if (!msgBox) return;
-  const el = document.createElement('div'); el.className = 'chat-msg-coach animate-fade-in whitespace-pre-line'; el.innerText = text;
-  msgBox.appendChild(el); msgBox.scrollTop = msgBox.scrollHeight;
-}
-
-function appendUserMessage(text) {
-  const msgBox = document.getElementById('chat-messages-box'); if (!msgBox) return;
-  const el = document.createElement('div'); el.className = 'chat-msg-user animate-fade-in'; el.innerText = text;
-  msgBox.appendChild(el); msgBox.scrollTop = msgBox.scrollHeight;
-}
-
-function sendCoachMessage() {
-  const input = document.getElementById('chat-user-input'); if (!input) return; const text = input.value.trim(); if (!text) return;
-  appendUserMessage(text); input.value = '';
-  setTimeout(() => { const reply = getCoachReply(text); appendCoachMessage(reply); }, 750);
-}
-
-function getCoachReply(query) {
-  const q = query.toLowerCase(); const lang = currentLang || 'de';
-  const openDailies = (state.items?.daily || []).filter(Boolean); const openTodos = (state.items?.todo || []).filter(Boolean);
-  const openTermine = (state.items?.termine || []).filter(Boolean); const totalOpen = openDailies.length + openTodos.length + openTermine.length;
-  if (lang === 'de') {
-    if (q.includes('hallo') || q.includes('hi ') || q.includes('hey') || q.includes('guten tag')) {
-      if (totalOpen > 0) { return `Hallo! Schön, dass du da bist. 🌊 Du hast aktuell ${totalOpen} offene Aufgaben auf deinem Board.\n\nWomit möchtest du heute starten? Frag mich einfach, wenn ich dir helfen soll, eine dieser Aufgaben in kleine Teilschritte aufzuteilen!`; }
-      return "Hallo! Schön, dass du da bist. 🌊 Dein Board is im Moment wunderbar leer und erledigt. Gibt es etwas, das du für die Zukunft planen möchtest, oder willst du dich einfach entspannen?";
-    }
-    if (q.includes('überfordert') || q.includes('zuviel') || q.includes('zu viel') || q.includes('stress') || q.includes('panik')) {
-      return "Atme erst einmal tief durch. 🧘‍♂️ Bei Überforderung hilft es, alles auszublenden.\n\nKlicke oben im Header auf 'Pause' für eine sensorische Reizpause, geführte Atemübungen, Muskeldehnen oder eine gemütliche 5-Minuten-Auszeit. Mach langsam.";
-    }
-    if (q.includes('was soll ich') || q.includes('was tun') || q.includes('was jetzt') || q.includes('was nun') || q.includes('hilfe')) {
-      if (openDailies.length > 0) {
-        const firstTask = typeof openDailies[0] === 'object' ? openDailies[0].task : openDailies[0];
-        return `Ich empfehle dir, mit einer kleinen Routine zu starten. Wie wäre es mit:\n\n👉 „${firstTask}“?\n\nIch kann dir auch über den 'Was nun?'-Knopf oben rechts jederzeit eine zufällige Aufgabe vorschlagen, um dir die Entscheidung abzunehmen!`;
-      } else if (openTodos.length > 0) {
-        const firstTask = typeof openTodos[0] === 'object' ? openTodos[0].task : openTodos[0];
-        return `Wie wäre es, wenn wir uns heute um diese Aufgabe kümmern:\n\n👉 „${firstTask}“?\n\nDu kannst im Dock auch den Social-Skripter oder den Entscheidungs-Kompass nutzen, falls du Unterstützung brauchst.`;
-      }
-      return "Du hast gerade keine dringenden Aufgaben auf deinem Board! Perfekte Zeit für einen sanften Bewegungs-Impuls (Dumbbell-Symbol im Dock) oder ein wenig wohlverdiente Ruhe. 🌳";
-    }
-    if (q.includes('müde') || q.includes('erschöpft') || q.includes('keine kraft') || q.includes('löffel') || q.includes('spoons')) {
-      return "Respektiere deine Grenzen. 🔋 Wenn deine Energie ('Spoons') niedrig ist, passe dein Board an.\n\nNutze das Sport-Symbol im Dock auf Stufe 1 (Liegend/Sitzend) oder den Entscheidungs-Kompass mit dem 'Löffel-Check', um nur das absolut Nötigste einzuplanen.";
-    }
-    if (q.includes('aufschieben') || q.includes('prokrastination') || q.includes('keine lust') || q.includes('unmotiviert') || q.includes('blockiert')) {
-      return "Das kenne ich nur zu gut! 🧠 Versuche die 5-Minuten-Regel:\n\nStelle dir einen Timer auf 5 Minuten (oben einstellbar) und fange einfach an. Wenn du danach aufhören willst, darfst du das jederzeit! Meistens kommt man so aber direkt in den Fluss.";
-    }
-    if (q.includes('einkauf') || q.includes('kauf') || q.includes('shopping')) { return "Deine Einkaufsliste findest du direkt unten im macOS-Dock unter dem Korb-Symbol! Dort kannst du Artikel hinzufügen, abhaken und clevere Spartipps erhalten."; }
-    if (q.includes('danke') || q.includes('super') || q.includes('toll') || q.includes('klasse') || q.includes('cool')) { return "Sehr gerne! Ich bin jederzeit hier, um dich im Fluss zu halten. Du machst das großartig! 🚀"; }
-    return "Ich verstehe. Lass uns einen Schritt nach dem anderen gehen. Wenn du dich blockiert fühlst, frage mich nach der '5-Minuten-Regel' oder klicke auf 'Was nun?' für eine automatische Empfehlung.";
-  } else {
-    if (q.includes('hello') || q.includes('hi') || q.includes('hey')) {
-      if (totalOpen > 0) { return `Hello! Great to have you here. 🌊 You currently have ${totalOpen} open tasks on your board.\n\nWhere would you like to start? I can help you break a task down into steps!`; }
-      return "Hello! Great to have you here. 🌊 Your board is beautifully clear right now. Is there anything you'd like to plan, or do you just want to relax?";
-    }
-    if (q.includes('overwhelm') || q.includes('stress') || q.includes('too much') || q.includes('panic')) {
-      return "Take a deep breath first. 🧘‍♂️ When overwhelmed, it helps to block out the noise.\n\nClick the 'Pause' button in the header for a sensory pause or breathing exercise.";
-    }
-    if (q.includes('what should i') || q.includes('what to do') || q.includes('help')) {
-      if (openDailies.length > 0) {
-        const firstTask = typeof openDailies[0] === 'object' ? openDailies[0].task : openDailies[0];
-        return `I suggest starting with a small routine. How about:\n\n👉 "${firstTask}"?\n\nYou can also click the 'What now?' button at the top for a random suggestion!`;
-      }
-      return "No urgent tasks on your board right now! Perfect time for a gentle stretch (dumbbell icon in the dock) or some rest. 🌳";
-    }
-    if (q.includes('tired') || q.includes('exhausted') || q.includes('no energy') || q.includes('spoon')) {
-      return "Respect your boundaries. 🔋 If your energy (spoons) is low, adjust your plans: use the dumbbell icon on level 1 (seated/lying) or use the Compass tool in the dock for a 'Spoon Check'.";
-    }
-    if (q.includes('procrastinat') || q.includes('stuck') || q.includes('lazy') || q.includes('no motivation')) {
-      return "I hear you! 🧠 Try the 5-minute rule:\n\nSet a timer for 5 minutes and just start. If you want to stop after 5 minutes, you are absolutely allowed to. Often, you will want to keep going!";
-    }
-    if (q.includes('thank')) { return "You are very welcome! I'm always here to help keep you in your flow. You are doing great! 🚀"; }
-    return "I understand. Let's take it one step at a time. If you feel stuck, ask me about the '5-minute rule' or use 'What now?' for a smart recommendation.";
-  }
+  showToast(tr({ de: `Bericht heruntergeladen! 📥`, en: `Report downloaded! 📥`, es: `¡Informe descargado! 📥`, el: `Η αναφορά λήφθηκε! 📥`, fr: `Rapport téléchargé ! 📥`, it: `Report scaricato! 📥` }));
 }
 
 let activeDanceTimeouts = []; let currentlyDancingButtons = [];

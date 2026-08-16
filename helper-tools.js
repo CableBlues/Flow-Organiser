@@ -25,7 +25,7 @@ function submitCompassQuery() {
   const query = textarea ? textarea.value.trim() : '';
   
   if (!query) {
-    showToast(currentLang === 'de' ? "Formuliere bitte dein Dilemma!" : "Please write down your dilemma!");
+    showToast(tr({ de: "Formuliere bitte dein Dilemma!", en: "Please write down your dilemma!", es: "¡Por favor, describe tu dilema!", el: "Παρακαλώ διατύπωσε το δίλημμά σου!", fr: "Formule ton dilemme, s'il te plaît !", it: "Formula il tuo dilemma, per favore!" }));
     return;
   }
   
@@ -41,8 +41,8 @@ function submitCompassQuery() {
   const optA = document.getElementById('coin-opt-a');
   const optB = document.getElementById('coin-opt-b');
   if (optA && optB) {
-    optA.value = currentLang === 'de' ? "Option A (Tu es)" : "Option A (Do it)";
-    optB.value = currentLang === 'de' ? "Option B (Lass es)" : "Option B (Don't do it)";
+    optA.value = tr({ de: "Option A (Tu es)", en: "Option A (Do it)", es: "Opción A (Hazlo)", el: "Επιλογή A (Κάν' το)", fr: "Option A (Fais-le)", it: "Opzione A (Fallo)" });
+    optB.value = tr({ de: "Option B (Lass es)", en: "Option B (Don't do it)", es: "Opción B (No lo hagas)", el: "Επιλογή B (Μην το κάνεις)", fr: "Option B (Ne le fais pas)", it: "Opzione B (Non farlo)" });
   }
 }
 
@@ -97,7 +97,7 @@ function triggerCoinToss() {
   const optB = document.getElementById('coin-opt-b').value.trim();
   
   if (!optA || !optB) {
-    showToast(currentLang === 'de' ? "Bitte trage beide Optionen ein!" : "Please fill in both options!");
+    showToast(tr({ de: "Bitte trage beide Optionen ein!", en: "Please fill in both options!", es: "¡Por favor, rellena ambas opciones!", el: "Παρακαλώ συμπλήρωσε και τις δύο επιλογές!", fr: "Merci de remplir les deux options !", it: "Compila entrambe le opzioni, per favore!" }));
     return;
   }
   
@@ -133,17 +133,17 @@ function triggerCoinToss() {
     verdict.innerText = coinWinningOption;
     
     coinVetoCountdownValue = 10;
-    vetoCountdown.innerText = currentLang === 'de' ? `Veto-Dauer: ${coinVetoCountdownValue}s` : `Veto duration: ${coinVetoCountdownValue}s`;
+    vetoCountdown.innerText = tr({ de: `Veto-Dauer: ${coinVetoCountdownValue}s`, en: `Veto duration: ${coinVetoCountdownValue}s`, es: `Duración del veto: ${coinVetoCountdownValue}s`, el: `Διάρκεια βέτο: ${coinVetoCountdownValue}s`, fr: `Durée du veto : ${coinVetoCountdownValue}s`, it: `Durata veto: ${coinVetoCountdownValue}s` });
     
     coinVetoInterval = setInterval(() => {
       coinVetoCountdownValue--;
       if (coinVetoCountdownValue <= 0) {
         clearInterval(coinVetoInterval);
         coinVetoInterval = null;
-        vetoCountdown.innerText = currentLang === 'de' ? "Veto-Zeit abgelaufen." : "Veto time expired.";
+        vetoCountdown.innerText = tr({ de: "Veto-Zeit abgelaufen.", en: "Veto time expired.", es: "Tiempo de veto agotado.", el: "Ο χρόνος βέτο έληξε.", fr: "Temps de veto écoulé.", it: "Tempo per il veto scaduto." });
         vetoBtn.classList.add('hidden');
       } else {
-        vetoCountdown.innerText = currentLang === 'de' ? `Veto-Dauer: ${coinVetoCountdownValue}s` : `Veto duration: ${coinVetoCountdownValue}s`;
+        vetoCountdown.innerText = tr({ de: `Veto-Dauer: ${coinVetoCountdownValue}s`, en: `Veto duration: ${coinVetoCountdownValue}s`, es: `Duración del veto: ${coinVetoCountdownValue}s`, el: `Διάρκεια βέτο: ${coinVetoCountdownValue}s`, fr: `Durée du veto : ${coinVetoCountdownValue}s`, it: `Durata veto: ${coinVetoCountdownValue}s` });
       }
     }, 1000);
   }, 1200);
@@ -165,9 +165,14 @@ function triggerCoinVeto() {
   
   verdict.innerText = coinWinningOption;
   
-  const message = currentLang === 'de' 
-    ? `VETO EINLEGEN! Dein Unterbewusstsein wollte also insgeheim doch: ${coinWinningOption}!` 
-    : `VETO ACTIVATED! Your subconscious secretly wanted: ${coinWinningOption}!`;
+  const message = tr({
+    de: `VETO EINLEGEN! Dein Unterbewusstsein wollte also insgeheim doch: ${coinWinningOption}!`,
+    en: `VETO ACTIVATED! Your subconscious secretly wanted: ${coinWinningOption}!`,
+    es: `¡VETO ACTIVADO! Tu subconsciente en realidad quería: ${coinWinningOption}!`,
+    el: `ΒΕΤΟ ΕΝΕΡΓΟΠΟΙΗΘΗΚΕ! Το υποσυνείδητό σου ήθελε στην πραγματικότητα: ${coinWinningOption}!`,
+    fr: `VETO ACTIVÉ ! Ton inconscient voulait secrètement : ${coinWinningOption} !`,
+    it: `VETO ATTIVATO! Il tuo inconscio voleva segretamente: ${coinWinningOption}!`
+  });
     
   vetoCountdown.innerHTML = `<span class="text-amber-400 font-bold">${message}</span>`;
   vetoBtn.classList.add('hidden');
@@ -190,7 +195,7 @@ function handleAddScaleArgument() {
   const weight = weightSelect ? parseInt(weightSelect.value) : 1;
   
   if (!text) {
-    showToast(currentLang === 'de' ? "Argument eintragen!" : "Write down an argument!");
+    showToast(tr({ de: "Argument eintragen!", en: "Write down an argument!", es: "¡Escribe un argumento!", el: "Καταχώρησε ένα επιχείρημα!", fr: "Note un argument !", it: "Scrivi un argomento!" }));
     return;
   }
   
@@ -258,26 +263,41 @@ function renderScaleArguments() {
   });
   
   if (args.length === 0) {
-    verdictBox.innerHTML = `<span>${currentLang === 'de' ? "Noch keine Argumente eingetragen." : "No arguments registered yet."}</span><button onclick="clearScaleMatrix()" class="hidden"></button>`;
+    verdictBox.innerHTML = `<span>${tr({ de: "Noch keine Argumente eingetragen.", en: "No arguments registered yet.", es: "Aún no se han añadido argumentos.", el: "Δεν έχουν καταχωρηθεί ακόμη επιχειρήματα.", fr: "Aucun argument n'a encore été ajouté.", it: "Nessun argomento ancora inserito." })}</span><button onclick="clearScaleMatrix()" class="hidden"></button>`;
   } else {
     let verdictText = "";
     if (scorePro > scoreCon) {
-      verdictText = currentLang === 'de' 
-        ? `<span class="text-emerald-400 font-bold">PRO überwiegt (${scorePro} vs ${scoreCon}) · Tu es! 🎉</span>` 
-        : `<span class="text-emerald-400 font-bold">PRO wins (${scorePro} vs ${scoreCon}) · Do it! 🎉</span>`;
+      verdictText = tr({
+        de: `<span class="text-emerald-400 font-bold">PRO überwiegt (${scorePro} vs ${scoreCon}) · Tu es! 🎉</span>`,
+        en: `<span class="text-emerald-400 font-bold">PRO wins (${scorePro} vs ${scoreCon}) · Do it! 🎉</span>`,
+        es: `<span class="text-emerald-400 font-bold">Gana el PRO (${scorePro} vs ${scoreCon}) · ¡Hazlo! 🎉</span>`,
+        el: `<span class="text-emerald-400 font-bold">Νικά το ΥΠΕΡ (${scorePro} vs ${scoreCon}) · Κάν' το! 🎉</span>`,
+        fr: `<span class="text-emerald-400 font-bold">Le POUR l'emporte (${scorePro} vs ${scoreCon}) · Fais-le ! 🎉</span>`,
+        it: `<span class="text-emerald-400 font-bold">Vince il PRO (${scorePro} vs ${scoreCon}) · Fallo! 🎉</span>`
+      });
     } else if (scoreCon > scorePro) {
-      verdictText = currentLang === 'de' 
-        ? `<span class="text-rose-400 font-bold">CONTRA überwiegt (${scorePro} vs ${scoreCon}) · Lass es lieber! 🛑</span>` 
-        : `<span class="text-rose-400 font-bold">CONTRA wins (${scorePro} vs ${scoreCon}) · Skip it! 🛑</span>`;
+      verdictText = tr({
+        de: `<span class="text-rose-400 font-bold">CONTRA überwiegt (${scorePro} vs ${scoreCon}) · Lass es lieber! 🛑</span>`,
+        en: `<span class="text-rose-400 font-bold">CONTRA wins (${scorePro} vs ${scoreCon}) · Skip it! 🛑</span>`,
+        es: `<span class="text-rose-400 font-bold">Gana el CONTRA (${scorePro} vs ${scoreCon}) · Mejor no lo hagas! 🛑</span>`,
+        el: `<span class="text-rose-400 font-bold">Νικά το ΚΑΤΑ (${scorePro} vs ${scoreCon}) · Καλύτερα μην το κάνεις! 🛑</span>`,
+        fr: `<span class="text-rose-400 font-bold">Le CONTRE l'emporte (${scorePro} vs ${scoreCon}) · Mieux vaut ne pas le faire ! 🛑</span>`,
+        it: `<span class="text-rose-400 font-bold">Vince il CONTRO (${scorePro} vs ${scoreCon}) · Meglio non farlo! 🛑</span>`
+      });
     } else {
-      verdictText = currentLang === 'de' 
-        ? `<span class="text-amber-400 font-bold">Unentschieden (${scorePro} vs ${scoreCon}) · Beide Wege sind gleichwertig.</span>` 
-        : `<span class="text-amber-400 font-bold">Tie (${scorePro} vs ${scoreCon}) · Both paths are equally weighted.</span>`;
+      verdictText = tr({
+        de: `<span class="text-amber-400 font-bold">Unentschieden (${scorePro} vs ${scoreCon}) · Beide Wege sind gleichwertig.</span>`,
+        en: `<span class="text-amber-400 font-bold">Tie (${scorePro} vs ${scoreCon}) · Both paths are equally weighted.</span>`,
+        es: `<span class="text-amber-400 font-bold">Empate (${scorePro} vs ${scoreCon}) · Ambos caminos tienen el mismo peso.</span>`,
+        el: `<span class="text-amber-400 font-bold">Ισοπαλία (${scorePro} vs ${scoreCon}) · Και οι δύο δρόμοι έχουν την ίδια βαρύτητα.</span>`,
+        fr: `<span class="text-amber-400 font-bold">Égalité (${scorePro} vs ${scoreCon}) · Les deux options se valent.</span>`,
+        it: `<span class="text-amber-400 font-bold">Pareggio (${scorePro} vs ${scoreCon}) · Entrambe le strade hanno lo stesso peso.</span>`
+      });
     }
     
     verdictBox.innerHTML = `
       ${verdictText}
-      <button onclick="clearScaleMatrix()" class="text-[9px] text-gray-500 hover:text-red-400 font-bold shrink-0">Zurücksetzen</button>
+      <button onclick="clearScaleMatrix()" class="text-[9px] text-gray-500 hover:text-red-400 font-bold shrink-0">${tr({ de: 'Zurücksetzen', en: 'Reset', es: 'Restablecer', el: 'Επαναφορά', fr: 'Réinitialiser', it: 'Reimposta' })}</button>
     `;
   }
 }
@@ -330,11 +350,11 @@ function toggleSpoonOption(index) {
 }
 
 function handleAddSpoonOptionPrompt() {
-  const name = prompt(currentLang === 'de' ? "Name des Vorhabens:" : "Name of target task:");
+  const name = prompt(tr({ de: "Name des Vorhabens:", en: "Name of target task:", es: "Nombre de la tarea:", el: "Όνομα εργασίας:", fr: "Nom de la tâche :", it: "Nome dell'attività:" }));
   if (!name) return;
-  const cost = parseInt(prompt(currentLang === 'de' ? "Aufwand in Löffeln (1-4):" : "Spoon cost (1-4):", "2"));
+  const cost = parseInt(prompt(tr({ de: "Aufwand in Löffeln (1-4):", en: "Spoon cost (1-4):", es: "Coste en cucharas (1-4):", el: "Κόστος σε κουτάλια (1-4):", fr: "Coût en cuillères (1-4) :", it: "Costo in cucchiai (1-4):" }), "2"));
   if (isNaN(cost) || cost < 1 || cost > 4) {
-    showToast(currentLang === 'de' ? "Zahl zwischen 1 und 4 eintragen!" : "Enter a number between 1 and 4!");
+    showToast(tr({ de: "Zahl zwischen 1 und 4 eintragen!", en: "Enter a number between 1 and 4!", es: "¡Introduce un número entre 1 y 4!", el: "Δώσε έναν αριθμό μεταξύ 1 και 4!", fr: "Indique un nombre entre 1 et 4 !", it: "Inserisci un numero tra 1 e 4!" }));
     return;
   }
   
@@ -369,19 +389,34 @@ function recalculateSpoonCheck() {
   });
   
   if (level === 'overwhelmed') {
-    verdictText.innerHTML = currentLang === 'de' 
-      ? `<span class="text-rose-400 font-bold">Schutzmodus aktiv! Heute bitte gar keine anstrengenden Aktivitäten. Nur ausruhen!</span>` 
-      : `<span class="text-rose-400 font-bold">Protection mode active! No exhausting activities today. Rest up!</span>`;
+    verdictText.innerHTML = tr({
+      de: `<span class="text-rose-400 font-bold">Schutzmodus aktiv! Heute bitte gar keine anstrengenden Aktivitäten. Nur ausruhen!</span>`,
+      en: `<span class="text-rose-400 font-bold">Protection mode active! No exhausting activities today. Rest up!</span>`,
+      es: `<span class="text-rose-400 font-bold">¡Modo protección activado! Hoy nada de actividades agotadoras. ¡Solo descansar!</span>`,
+      el: `<span class="text-rose-400 font-bold">Λειτουργία προστασίας ενεργή! Σήμερα καμία κουραστική δραστηριότητα. Μόνο ξεκούραση!</span>`,
+      fr: `<span class="text-rose-400 font-bold">Mode protection activé ! Aucune activité épuisante aujourd'hui. Repose-toi !</span>`,
+      it: `<span class="text-rose-400 font-bold">Modalità protezione attiva! Oggi niente attività faticose. Solo riposo!</span>`
+    });
   } else {
     const diff = budget - totalCost;
     if (diff >= 0) {
-      verdictText.innerHTML = currentLang === 'de' 
-        ? `<span class="text-emerald-400 font-bold">Energie reicht aus! Du hast noch ${diff} von ${budget} Löffeln übrig.</span>` 
-        : `<span class="text-emerald-400 font-bold">Energy is sufficient! You have ${diff} out of ${budget} spoons remaining.</span>`;
+      verdictText.innerHTML = tr({
+        de: `<span class="text-emerald-400 font-bold">Energie reicht aus! Du hast noch ${diff} von ${budget} Löffeln übrig.</span>`,
+        en: `<span class="text-emerald-400 font-bold">Energy is sufficient! You have ${diff} out of ${budget} spoons remaining.</span>`,
+        es: `<span class="text-emerald-400 font-bold">¡Energía suficiente! Te quedan ${diff} de ${budget} cucharas.</span>`,
+        el: `<span class="text-emerald-400 font-bold">Η ενέργεια επαρκεί! Σου απομένουν ${diff} από ${budget} κουτάλια.</span>`,
+        fr: `<span class="text-emerald-400 font-bold">Énergie suffisante ! Il te reste ${diff} cuillères sur ${budget}.</span>`,
+        it: `<span class="text-emerald-400 font-bold">Energia sufficiente! Ti restano ${diff} cucchiai su ${budget}.</span>`
+      });
     } else {
-      verdictText.innerHTML = currentLang === 'de' 
-        ? `<span class="text-rose-400 font-bold">Achtung! Deine Energie reicht nicht aus. Du überlastest dich um ${Math.abs(diff)} Löffel. Streiche unwichtige Dinge!</span>` 
-        : `<span class="text-rose-400 font-bold">Caution! Your energy is insufficient. You are overloaded by ${Math.abs(diff)} spoons. Cut non-essentials!</span>`;
+      verdictText.innerHTML = tr({
+        de: `<span class="text-rose-400 font-bold">Achtung! Deine Energie reicht nicht aus. Du überlastest dich um ${Math.abs(diff)} Löffel. Streiche unwichtige Dinge!</span>`,
+        en: `<span class="text-rose-400 font-bold">Caution! Your energy is insufficient. You are overloaded by ${Math.abs(diff)} spoons. Cut non-essentials!</span>`,
+        es: `<span class="text-rose-400 font-bold">¡Cuidado! Tu energía no es suficiente. Te sobrecargas en ${Math.abs(diff)} cucharas. ¡Elimina lo no esencial!</span>`,
+        el: `<span class="text-rose-400 font-bold">Προσοχή! Η ενέργειά σου δεν επαρκεί. Υπερφορτώνεσαι κατά ${Math.abs(diff)} κουτάλια. Αφαίρεσε τα μη απαραίτητα!</span>`,
+        fr: `<span class="text-rose-400 font-bold">Attention ! Ton énergie est insuffisante. Tu es en surcharge de ${Math.abs(diff)} cuillères. Élimine le superflu !</span>`,
+        it: `<span class="text-rose-400 font-bold">Attenzione! La tua energia non basta. Sei sovraccarico di ${Math.abs(diff)} cucchiai. Elimina il superfluo!</span>`
+      });
     }
   }
 }
@@ -396,7 +431,7 @@ function handleAddPrioritizerTask() {
   const fun = funSelect ? parseInt(funSelect.value) : 3;
   
   if (!text) {
-    showToast(currentLang === 'de' ? "Vorhaben eintragen!" : "Specify your task!");
+    showToast(tr({ de: "Vorhaben eintragen!", en: "Specify your task!", es: "¡Indica tu tarea!", el: "Καταχώρησε την εργασία σου!", fr: "Indique ta tâche !", it: "Indica la tua attività!" }));
     return;
   }
   
@@ -437,7 +472,7 @@ function addPrioritizedTaskToTodo(index) {
   renderPrioritizerResults();
   if (typeof renderApp === 'function') renderApp();
   
-  showToast(currentLang === 'de' ? `"${task.text}" zum Todo-Board hinzugefügt! 🚀` : `Added "${task.text}" to your Todo board! 🚀`);
+  showToast(tr({ de: `"${task.text}" zum Todo-Board hinzugefügt! 🚀`, en: `Added "${task.text}" to your Todo board! 🚀`, es: `¡"${task.text}" añadido a tu tablero! 🚀`, el: `Το "${task.text}" προστέθηκε στον πίνακα! 🚀`, fr: `"${task.text}" ajouté à ton tableau ! 🚀`, it: `"${task.text}" aggiunto alla tua bacheca! 🚀` }));
   if (typeof playProceduralSound === 'function') playProceduralSound(0);
 }
 
@@ -448,7 +483,7 @@ function renderPrioritizerResults() {
   
   const list = state.compassPrioritizerTasks || [];
   if (list.length === 0) {
-    container.innerHTML = `<div class="text-center text-gray-500 italic py-4 text-[10px]">${currentLang === 'de' ? "Noch keine Aufgaben priorisiert." : "No tasks prioritized yet."}</div>`;
+    container.innerHTML = `<div class="text-center text-gray-500 italic py-4 text-[10px]">${tr({ de: "Noch keine Aufgaben priorisiert.", en: "No tasks prioritized yet.", es: "Aún no hay tareas priorizadas.", el: "Δεν έχουν ταξινομηθεί ακόμη εργασίες.", fr: "Aucune tâche priorisée pour le moment.", it: "Nessuna attività ancora prioritizzata." })}</div>`;
     return;
   }
   
@@ -462,24 +497,27 @@ function renderPrioritizerResults() {
     row.className = "flex justify-between items-center bg-white/[0.02] border border-white/5 p-2 rounded-xl text-[10px] text-gray-300 leading-normal";
     
     let badgeClass = "bg-gray-500/20 text-gray-300";
-    let badgeText = currentLang === 'de' ? "Standard" : "Normal";
+    let badgeText = tr({ de: "Standard", en: "Normal", es: "Normal", el: "Κανονικό", fr: "Normal", it: "Normale" });
     
     if (item.score >= 2) {
       badgeClass = "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
-      badgeText = currentLang === 'de' ? "EASY WIN! ⚡" : "EASY WIN! ⚡";
+      badgeText = tr({ de: "EASY WIN! ⚡", en: "EASY WIN! ⚡", es: "¡FÁCIL! ⚡", el: "ΕΥΚΟΛΟ! ⚡", fr: "FACILE ! ⚡", it: "FACILE! ⚡" });
     } else if (item.score <= -2) {
       badgeClass = "bg-rose-500/20 text-rose-300 border border-rose-500/30";
-      badgeText = currentLang === 'de' ? "Hürde ⛰️" : "Heavy Task ⛰️";
+      badgeText = tr({ de: "Hürde ⛰️", en: "Heavy Task ⛰️", es: "Tarea pesada ⛰️", el: "Δύσκολο ⛰️", fr: "Tâche lourde ⛰️", it: "Attività pesante ⛰️" });
     }
     
+    const effortFunLabel = tr({ de: `Aufwand: ${item.effort} | Spaß: ${item.fun}`, en: `Effort: ${item.effort} | Fun: ${item.fun}`, es: `Esfuerzo: ${item.effort} | Diversión: ${item.fun}`, el: `Προσπάθεια: ${item.effort} | Διασκέδαση: ${item.fun}`, fr: `Effort : ${item.effort} | Plaisir : ${item.fun}`, it: `Sforzo: ${item.effort} | Divertimento: ${item.fun}` });
+    const scheduleLabel = tr({ de: "Einplanen", en: "Schedule", es: "Planificar", el: "Προγραμματισμός", fr: "Planifier", it: "Pianifica" });
+
     row.innerHTML = `
       <div class="flex items-center gap-2 overflow-hidden flex-1">
         <span class="px-1.5 py-0.5 rounded text-[8px] font-bold ${badgeClass} shrink-0">${badgeText}</span>
         <span class="truncate font-semibold text-white" title="${item.text}">${item.text}</span>
       </div>
       <div class="flex items-center gap-2 shrink-0 pl-1">
-        <span class="text-gray-500 font-mono text-[8px]">Effort: ${item.effort} | Fun: ${item.fun}</span>
-        <button onclick="addPrioritizedTaskToTodo(${item.originalIndex})" class="px-2 py-0.5 bg-rose-600/30 hover:bg-rose-600 text-rose-300 hover:text-white rounded font-bold transition text-[9px]">Einplanen</button>
+        <span class="text-gray-500 font-mono text-[8px]">${effortFunLabel}</span>
+        <button onclick="addPrioritizedTaskToTodo(${item.originalIndex})" class="px-2 py-0.5 bg-rose-600/30 hover:bg-rose-600 text-rose-300 hover:text-white rounded font-bold transition text-[9px]">${scheduleLabel}</button>
         <button onclick="removePrioritizerTask(${item.originalIndex})" class="text-gray-500 hover:text-red-400 font-bold transition text-xs p-0.5">×</button>
       </div>
     `;
@@ -488,23 +526,51 @@ function renderPrioritizerResults() {
 }
 
 function getGenericSplitterSteps(task) {
-  if (currentLang === 'de') {
-    return [
+  const stepsByLang = {
+    de: [
       `1. Definiere das genaue Ziel für "${task}" schriftlich auf Papier.`,
       `2. Sammle alle benötigten Werkzeuge oder Dokumente für "${task}" zusammen.`,
       `3. Erledige einen ersten, extrem winzigen 2-Minuten-Schritt für "${task}".`,
       `4. Arbeite für genau 15 Minuten ungestört an "${task}" (Timer nutzen!).`,
       `5. Atme durch, hake den Zwischenschritt ab und plane die nächste Phase.`
-    ];
-  } else {
-    return [
+    ],
+    en: [
       `1. Write down the exact goal of "${task}" clearly on paper.`,
       `2. Gather all tools, links, or documents needed for "${task}".`,
       `3. Do one tiny, immediate 2-minute starting step for "${task}".`,
       `4. Work undisturbed on "${task}" for exactly 15 minutes (use timer!).`,
       `5. Take a deep breath, mark this milestone, and plan the next phase.`
-    ];
-  }
+    ],
+    es: [
+      `1. Escribe en papel el objetivo exacto de "${task}".`,
+      `2. Reúne todas las herramientas, enlaces o documentos necesarios para "${task}".`,
+      `3. Haz un primer paso minúsculo de 2 minutos para "${task}".`,
+      `4. Trabaja sin interrupciones en "${task}" durante exactamente 15 minutos (¡usa un temporizador!).`,
+      `5. Respira hondo, marca este hito y planifica la siguiente fase.`
+    ],
+    el: [
+      `1. Γράψε καθαρά τον ακριβή στόχο για "${task}" σε χαρτί.`,
+      `2. Συγκέντρωσε όλα τα εργαλεία, τους συνδέσμους ή τα έγγραφα που χρειάζεσαι για "${task}".`,
+      `3. Κάνε ένα πολύ μικρό, άμεσο βήμα 2 λεπτών για "${task}".`,
+      `4. Δούλεψε απερίσπαστος στο "${task}" για ακριβώς 15 λεπτά (χρησιμοποίησε χρονόμετρο!).`,
+      `5. Πάρε μια βαθιά ανάσα, σημείωσε αυτό το ορόσημο και σχεδίασε την επόμενη φάση.`
+    ],
+    fr: [
+      `1. Note l'objectif précis de "${task}" clairement sur papier.`,
+      `2. Rassemble tous les outils, liens ou documents nécessaires pour "${task}".`,
+      `3. Fais un tout petit premier pas de 2 minutes pour "${task}".`,
+      `4. Travaille sans interruption sur "${task}" pendant exactement 15 minutes (utilise un minuteur !).`,
+      `5. Respire profondément, marque cette étape et planifie la phase suivante.`
+    ],
+    it: [
+      `1. Scrivi chiaramente su carta l'obiettivo esatto di "${task}".`,
+      `2. Raduna tutti gli strumenti, link o documenti necessari per "${task}".`,
+      `3. Fai un primo piccolissimo passo di 2 minuti per "${task}".`,
+      `4. Lavora indisturbato su "${task}" per esattamente 15 minuti (usa un timer!).`,
+      `5. Fai un respiro profondo, segna questo traguardo e pianifica la fase successiva.`
+    ]
+  };
+  return stepsByLang[currentLang] || stepsByLang.de;
 }
 
 function generateMicroSteps() {
@@ -512,7 +578,7 @@ function generateMicroSteps() {
   const task = input ? input.value.trim() : '';
   
   if (!task) {
-    showToast(currentLang === 'de' ? "Trage ein Vorhaben ein!" : "Please write a task name!");
+    showToast(tr({ de: "Trage ein Vorhaben ein!", en: "Please write a task name!", es: "¡Escribe el nombre de una tarea!", el: "Γράψε ένα όνομα εργασίας!", fr: "Écris le nom d'une tâche !", it: "Scrivi il nome di un'attività!" }));
     return;
   }
   
@@ -544,7 +610,7 @@ function renderSplitterSteps(steps) {
   container.innerHTML = '';
   
   if (steps.length === 0) {
-    container.innerHTML = `<div class="text-center text-gray-500 italic py-5 text-[10px]">${currentLang === 'de' ? "Gib oben eine Aufgabe ein." : "Type a task name above."}</div>`;
+    container.innerHTML = `<div class="text-center text-gray-500 italic py-5 text-[10px]">${tr({ de: "Gib oben eine Aufgabe ein.", en: "Type a task name above.", es: "Escribe una tarea arriba.", el: "Γράψε μια εργασία παραπάνω.", fr: "Écris une tâche ci-dessus.", it: "Scrivi un'attività qui sopra." })}</div>`;
     return;
   }
   
@@ -568,7 +634,7 @@ function addMicroStepToTodo(stepText) {
   saveState();
   
   if (typeof renderApp === 'function') renderApp();
-  showToast(currentLang === 'de' ? "Schritt zum Todo-Board hinzugefügt! ⚡" : "Step added to your Todo board! ⚡");
+  showToast(tr({ de: "Schritt zum Todo-Board hinzugefügt! ⚡", en: "Step added to your Todo board! ⚡", es: "¡Paso añadido a tu tablero! ⚡", el: "Το βήμα προστέθηκε στον πίνακα! ⚡", fr: "Étape ajoutée à ton tableau ! ⚡", it: "Passaggio aggiunto alla tua bacheca! ⚡" }));
   
   if (typeof playProceduralSound === 'function') {
     playProceduralSound(3);
@@ -591,7 +657,7 @@ function analyzeBrainDump() {
   const val = text ? text.value.trim() : '';
   
   if (!val) {
-    showToast(currentLang === 'de' ? "Schreibe zuerst Gedanken auf!" : "Write down some thoughts first!");
+    showToast(tr({ de: "Schreibe zuerst Gedanken auf!", en: "Write down some thoughts first!", es: "¡Escribe primero algunas ideas!", el: "Γράψε πρώτα μερικές σκέψεις!", fr: "Écris d'abord quelques pensées !", it: "Scrivi prima qualche pensiero!" }));
     return;
   }
   
@@ -600,7 +666,7 @@ function analyzeBrainDump() {
     .filter(line => line.length > 0);
     
   if (brainDumpThoughts.length === 0) {
-    showToast(currentLang === 'de' ? "Keine gültigen Zeilen gefunden." : "No valid lines found.");
+    showToast(tr({ de: "Keine gültigen Zeilen gefunden.", en: "No valid lines found.", es: "No se encontraron líneas válidas.", el: "Δεν βρέθηκαν έγκυρες γραμμές.", fr: "Aucune ligne valide trouvée.", it: "Nessuna riga valida trovata." }));
     return;
   }
   
@@ -623,7 +689,7 @@ function updateBrainDumpUI() {
   if (!thoughtEl || !progressEl) return;
   
   if (brainDumpCurrentIndex >= brainDumpThoughts.length) {
-    showToast(currentLang === 'de' ? "Alle Gedanken einsortiert! Wunderbar aufgeräumt. 🧠" : "All thoughts sorted! Perfectly decluttered. 🧠");
+    showToast(tr({ de: "Alle Gedanken einsortiert! Wunderbar aufgeräumt. 🧠", en: "All thoughts sorted! Perfectly decluttered. 🧠", es: "¡Todas las ideas organizadas! Mente despejada. 🧠", el: "Όλες οι σκέψεις ταξινομήθηκαν! Υπέροχα οργανωμένο. 🧠", fr: "Toutes les pensées triées ! Parfaitement rangé. 🧠", it: "Tutti i pensieri organizzati! Perfettamente in ordine. 🧠" }));
     resetBrainDumpSorter();
     return;
   }
@@ -632,7 +698,7 @@ function updateBrainDumpUI() {
   thoughtEl.innerText = currentThought;
   
   const left = brainDumpThoughts.length - brainDumpCurrentIndex;
-  progressEl.innerText = currentLang === 'de' ? `Noch ${left} Gedanken` : `${left} thoughts left`;
+  progressEl.innerText = tr({ de: `Noch ${left} Gedanken`, en: `${left} thoughts left`, es: `${left} ideas restantes`, el: `${left} σκέψεις απομένουν`, fr: `${left} pensées restantes`, it: `${left} pensieri rimasti` });
 }
 
 function sortBrainDump(category) {
@@ -683,7 +749,7 @@ function saveTenPerspective() {
   
   state.compassTenPerspective = { mins, months, years };
   saveState();
-  showToast(currentLang === 'de' ? "10-10-10 Perspektive gesichert! 💾" : "10-10-10 perspective saved! 💾");
+  showToast(tr({ de: "10-10-10 Perspektive gesichert! 💾", en: "10-10-10 perspective saved! 💾", es: "¡Perspectiva 10-10-10 guardada! 💾", el: "Η προοπτική 10-10-10 αποθηκεύτηκε! 💾", fr: "Perspective 10-10-10 enregistrée ! 💾", it: "Prospettiva 10-10-10 salvata! 💾" }));
 }
 
 function clearTenPerspective() {
@@ -718,7 +784,7 @@ function saveFearSettingPerspective() {
   
   state.compassFearSetting = { worst, repair, inaction };
   saveState();
-  showToast(currentLang === 'de' ? "Worst-Case Matrix gesichert! 💾" : "Worst-case matrix saved! 💾");
+  showToast(tr({ de: "Worst-Case Matrix gesichert! 💾", en: "Worst-case matrix saved! 💾", es: "¡Matriz del peor caso guardada! 💾", el: "Ο πίνακας χειρότερης περίπτωσης αποθηκεύτηκε! 💾", fr: "Matrice du pire scénario enregistrée ! 💾", it: "Matrice del caso peggiore salvata! 💾" }));
 }
 
 function clearFearSetting() {

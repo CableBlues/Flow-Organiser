@@ -131,7 +131,7 @@ function playTrack(index) {
   
   renderTrackList(); // Markierung und Liste aktualisieren
   updateSoundscapeUI();
-  showToast(currentLang === 'de' ? "Spiele Track: " + track.name : "Playing track: " + track.name);
+  showToast(tr({ de: "Spiele Track: " + track.name, en: "Playing track: " + track.name, es: "Reproduciendo: " + track.name, el: "Αναπαραγωγή: " + track.name, fr: "Lecture : " + track.name, it: "Riproduzione: " + track.name }));
 }
 
 function togglePlaylistPlayback() {

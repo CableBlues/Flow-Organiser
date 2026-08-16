@@ -24,6 +24,16 @@ const DEFAULT_TASKS_BY_LANG = {
     daily: ['Φάρμακα', 'Πλύσιμο δοντιών (πρωί)', 'Στρώσιμο κρεβατιού', 'Αερισμός χώρου', 'Μαγειρική', 'Πλύσιμο δοντιών (βράδυ)', 'Ντους', 'Τακτοποίηση'],
     weekly: ['Ξεσκόνισμα', 'Σκούπισμα', 'Σφουγγάρισμα', 'Πλύσιμο πιάτων', 'Πλύσιμο ρούχων', 'Άπλωμα ρούχων', 'Καθαρισμός νιπτήρα & καθρέφτη', 'Πλακάκια & μπανιέρα', 'Καθαρισμός λεκάνης', 'Πέταμα σκουπιδιών', 'Επιστροφή άδειων μπουκαλιών'],
     occasionally: ['Λούσιμο', 'Κούρεμα', 'Αλλαγή σεντονιών', 'Κόψιμο νυχιών', 'Καθαρισμός πορτών & παραθύρων', 'Καθαρισμός κουζίνας & ψυγείου']
+  },
+  fr: {
+    daily: ['Médicaments', 'Brossage des dents (matin)', 'Faire le lit', 'Aérer la pièce', 'Préparer un repas', 'Brossage des dents (soir)', 'Prendre une douche', 'Ranger'],
+    weekly: ['Épousseter', 'Passer l\'aspirateur', 'Laver le sol', 'Faire la vaisselle', 'Faire une lessive', 'Étendre le linge', 'Nettoyer lavabo & armoire à miroir', 'Carrelage & baignoire', 'Nettoyer les toilettes', 'Sortir les poubelles', 'Rapporter les bouteilles consignées'],
+    occasionally: ['Se laver les cheveux', 'Se couper les cheveux', 'Changer les draps', 'Se couper les ongles', 'Nettoyer portes & fenêtres', 'Nettoyer cuisinière & réfrigérateur']
+  },
+  it: {
+    daily: ['Farmaci', 'Lavare i denti (mattina)', 'Rifare il letto', 'Arieggiare la stanza', 'Preparare un pasto', 'Lavare i denti (sera)', 'Fare la doccia', 'Riordinare'],
+    weekly: ['Spolverare', 'Passare l\'aspirapolvere', 'Lavare i pavimenti', 'Lavare i piatti', 'Fare il bucato', 'Stendere il bucato', 'Pulire lavandino e armadietto specchio', 'Piastrelle e vasca', 'Pulire il WC', 'Portare fuori la spazzatura', 'Riportare le bottiglie con vuoto a rendere'],
+    occasionally: ['Lavare i capelli', 'Tagliare i capelli', 'Cambiare le lenzuola', 'Tagliare le unghie', 'Pulire porte e finestre', 'Pulire fornelli e frigorifero']
   }
 };
 
@@ -62,6 +72,22 @@ const TASK_STEPS_DATABASE = {
       '4. Πιες το με μια γουλιά νερό',
       '5. Τοποθέτησε τη συσκευασία πίσω στη θέση της',
       '6. Επιβεβαίωσε τη λήψη στον εαυτό σου / σημείωσε το στην εφαρμογή'
+    ],
+    fr: [
+      '1. Verse un verre d\'eau fraîche',
+      '2. Prends ta boîte à pilules ou ta plaquette',
+      '3. Sors la bonne dose du jour',
+      '4. Avale avec une gorgée d\'eau',
+      '5. Range la boîte à sa place habituelle',
+      '6. Prends un instant pour l\'enregistrer / coche-le dans l\'appli'
+    ],
+    it: [
+      '1. Versa un bicchiere d\'acqua fresca',
+      '2. Prendi il portapillole o il blister',
+      '3. Prendi la dose giornaliera corretta',
+      '4. Ingoiala con un sorso d\'acqua',
+      '5. Rimetti la confezione al suo posto',
+      '6. Prenditi un attimo per registrarlo / spuntalo nell\'app'
     ]
   },
   'Zähne morgens': {
@@ -96,6 +122,22 @@ const TASK_STEPS_DATABASE = {
       '4. Βούρτσισε σχολαστικά όλα τα δόντια για 2 λεπτά',
       '5. Ξέπλυνε καλά το στόμα και την οδοντόβουρτσα',
       '6. Φρέσκαρε το πρόσωπό σου με κρύο νερό και σκουπίσου'
+    ],
+    fr: [
+      '1. Va dans la salle de bain et allume la lumière',
+      '2. Prends ta brosse à dents et le dentifrice',
+      '3. Applique une noisette de dentifrice',
+      '4. Brosse minutieusement toutes les dents pendant 2 minutes',
+      '5. Rince bien ta bouche et ta brosse',
+      '6. Rafraîchis ton visage à l\'eau froide et sèche-le'
+    ],
+    it: [
+      '1. Vai in bagno e accendi la luce',
+      '2. Prendi lo spazzolino e il dentifricio',
+      '3. Applica una quantità di dentifricio grande come un pisello',
+      '4. Lava accuratamente tutti i denti per 2 minuti',
+      '5. Risciacqua bene la bocca e lo spazzolino',
+      '6. Rinfresca il viso con acqua fredda e asciugalo'
     ]
   },
   'Bett machen': {
@@ -126,6 +168,20 @@ const TASK_STEPS_DATABASE = {
       '3. Στρώσε το πάπλωμα ομοιόμορφα πάνω στο στρώμα',
       '4. Τοποθέτησε όμορφα διακοσμητικά μαξιλάρια ή κουβέρτες',
       '5. Απόλαυσε για μια στιγμή το τακτοποιημένο σου κρεβάτι'
+    ],
+    fr: [
+      '1. Secoue vigoureusement la couette',
+      '2. Tape les oreillers et place-les en haut du lit',
+      '3. Étale la couette bien à plat sur le matelas',
+      '4. Range joliment peluches ou coussins décoratifs',
+      '5. Prends un instant pour apprécier le lit bien fait'
+    ],
+    it: [
+      '1. Scuoti energicamente il piumone',
+      '2. Gonfia i cuscini e sistemali in testa al letto',
+      '3. Stendi il piumone in modo uniforme sul materasso',
+      '4. Sistema con cura eventuali cuscini decorativi o peluche',
+      '5. Goditi un attimo il letto in ordine'
     ]
   },
   'Durchlüften': {
@@ -156,6 +212,20 @@ const TASK_STEPS_DATABASE = {
       '3. Άνοιξε τα παράθυρα στα υπόλοιπα δωμάτια',
       '4. Ρύθμισε το χρονόμετρο για 5 έως 10 λεπτά',
       '5. Κλείσε καλά όλα τα παράθυρα'
+    ],
+    fr: [
+      '1. Ouvre grand la fenêtre de la première pièce',
+      '2. Ouvre les portes intérieures pour créer un courant d\'air',
+      '3. Ouvre les fenêtres des autres pièces',
+      '4. Règle une minuterie de 5 à 10 minutes',
+      '5. Une fois le temps écoulé, referme bien toutes les fenêtres'
+    ],
+    it: [
+      '1. Apri completamente la finestra della prima stanza',
+      '2. Apri le porte interne per far circolare l\'aria',
+      '3. Apri le finestre delle altre stanze',
+      '4. Imposta un timer da 5 a 10 minuti',
+      '5. Allo scadere, richiudi bene tutte le finestre'
     ]
   },
   'Kochen': {
@@ -198,6 +268,26 @@ const TASK_STEPS_DATABASE = {
       '6. Δοκίμασε και πρόσθεσε μπαχαρικά κατά προτίμηση',
       '7. Σερβίρισε το φαγητό στο πιάτο',
       '8. Σβήσε την εστία και μετακίνησε το σκεύος σε κρύο μάτι'
+    ],
+    fr: [
+      '1. Choisis une recette ou un plat',
+      '2. Rassemble tous les ingrédients nécessaires dans le placard et le frigo',
+      '3. Prépare ta planche à découper, un couteau et les casseroles',
+      '4. Lave, épluche et coupe les ingrédients',
+      '5. Allume la cuisinière/le four et commence la cuisson',
+      '6. Goûte et assaisonne selon ton goût',
+      '7. Dresse ton assiette',
+      '8. Éteins le feu et déplace la poêle chaude sur une zone froide'
+    ],
+    it: [
+      '1. Scegli una ricetta o un piatto',
+      '2. Prendi tutti gli ingredienti necessari da dispensa e frigo',
+      '3. Prepara il tagliere, un coltello e le pentole',
+      '4. Lava, pela e taglia gli ingredienti',
+      '5. Accendi i fornelli/il forno e inizia a cucinare',
+      '6. Assaggia e regola di sale e spezie',
+      '7. Impiatta la tua pietanza',
+      '8. Spegni i fornelli e sposta la padella su una zona fredda'
     ]
   },
   'Zähne abends': {
@@ -232,6 +322,22 @@ const TASK_STEPS_DATABASE = {
       '4. Βούρτσισε απαλά με κυκλικές κινήσεις για 2 λεπτά',
       '5. Ξέπλυνε το στόμα και καθάρισε απαλά τη γλώσσα',
       '6. Ξέπλυνε το ποτήρι και κρέμασε την πετσέτα'
+    ],
+    fr: [
+      '1. Va dans la salle de bain',
+      '2. Utilise d\'abord du fil dentaire ou une brossette interdentaire',
+      '3. Mets du dentifrice sur ta brosse à dents',
+      '4. Brosse doucement en mouvements circulaires pendant 2 minutes',
+      '5. Rince ta bouche et brosse doucement ta langue',
+      '6. Rince ton gobelet et suspends ta serviette'
+    ],
+    it: [
+      '1. Vai in bagno',
+      '2. Usa prima il filo interdentale o lo scovolino',
+      '3. Metti il dentifricio sullo spazzolino',
+      '4. Lava delicatamente con movimenti circolari per 2 minuti',
+      '5. Risciacqua la bocca e pulisci delicatamente la lingua',
+      '6. Risciacqua il bicchiere e appendi l\'asciugamano'
     ]
   },
   'Duschen': {
@@ -270,6 +376,24 @@ const TASK_STEPS_DATABASE = {
       '5. Σαπούνισε το σώμα με αφρόλουτρο και ξεπλύσου',
       '6. Κλείσε το νερό και σκουπίσου προσεκτικά',
       '7. Φόρεσε καθαρά ρούχα και πέρασε γρήγορα το τζάμι του ντους'
+    ],
+    fr: [
+      '1. Prépare une serviette propre et des vêtements frais',
+      '2. Allume la douche et vérifie la température de l\'eau',
+      '3. Entre et mouille bien ton corps et tes cheveux',
+      '4. Masse le shampoing dans tes cheveux et rince abondamment',
+      '5. Savonne ton corps avec du gel douche et rince',
+      '6. Coupe l\'eau et sèche-toi soigneusement avant de sortir',
+      '7. Enfile des vêtements propres et essuie rapidement la paroi de douche'
+    ],
+    it: [
+      '1. Prepara un asciugamano pulito e vestiti puliti',
+      '2. Accendi la doccia e controlla la temperatura dell\'acqua',
+      '3. Entra e bagna bene corpo e capelli',
+      '4. Massaggia lo shampoo sui capelli e risciacqua bene',
+      '5. Insapona il corpo con il bagnoschiuma e risciacqua',
+      '6. Chiudi l\'acqua e asciugati con cura prima di uscire',
+      '7. Indossa vestiti puliti e passa velocemente il tergivetro sul box doccia'
     ]
   },
   'Aufräumen': {
@@ -304,6 +428,22 @@ const TASK_STEPS_DATABASE = {
       '4. Μετάφερε τα πιάτα και τα ποτήρια στην κουζίνα',
       '5. Τοποθέτησε τα υπόλοιπα αντικείμενα στις θέσεις τους',
       '6. Πάρε μια βαθιά ανάσα: ο χώρος είναι πλέον ελεύθερος!'
+    ],
+    fr: [
+      '1. Place un panier à linge et un sac poubelle au centre de la pièce',
+      '2. Ramasse immédiatement les déchets visibles et jette-les',
+      '3. Jette les vêtements qui traînent dans le panier à linge',
+      '4. Rapporte assiettes et verres à la cuisine',
+      '5. Remets les autres objets à leur place habituelle',
+      '6. Respire un bon coup : ta pièce est de nouveau libre !'
+    ],
+    it: [
+      '1. Metti un cesto per i panni sporchi e un sacco della spazzatura al centro della stanza',
+      '2. Raccogli subito la spazzatura visibile e buttala',
+      '3. Getta i vestiti sparsi nel cesto della biancheria',
+      '4. Porta piatti e bicchieri in cucina',
+      '5. Rimetti gli altri oggetti al loro posto',
+      '6. Fai un bel respiro: la stanza è di nuovo libera!'
     ]
   },
 
@@ -332,6 +472,18 @@ const TASK_STEPS_DATABASE = {
       '2. Σκούπισε όλες τις ελεύθερες επιφάνειες',
       '3. Σήκωσε τα διακοσμητικά και σκούπισε από κάτω',
       '4. Τίναξε το πανί έξω'
+    ],
+    fr: [
+      '1. Prépare un chiffon ou un plumeau',
+      '2. Essuie toutes les surfaces accessibles',
+      '3. Soulève les objets décoratifs et essuie en dessous',
+      '4. Secoue le plumeau dehors ou lave le chiffon'
+    ],
+    it: [
+      '1. Prendi un panno o un piumino antipolvere',
+      '2. Spolvera tutte le superfici accessibili',
+      '3. Solleva gli oggetti decorativi e spolvera sotto di essi',
+      '4. Scuoti il piumino fuori o lava il panno'
     ]
   },
   'Staubsaugen': {
@@ -358,6 +510,18 @@ const TASK_STEPS_DATABASE = {
       '2. Βάλ\' την στην πρίζα',
       '3. Σκούπισε όλα τα δωμάτια συστηματικά',
       '4. Άδειασε το φίλτρο ή έλεγξε τη σακούλα'
+    ],
+    fr: [
+      '1. Sors l\'aspirateur et déroule le câble',
+      '2. Branche l\'aspirateur sur le secteur',
+      '3. Passe l\'aspirateur systématiquement dans toutes les pièces',
+      '4. Vide le bac ou vérifie le sac à poussière'
+    ],
+    it: [
+      '1. Prendi l\'aspirapolvere e srotola il cavo',
+      '2. Collega l\'aspirapolvere alla presa di corrente',
+      '3. Passa l\'aspirapolvere in tutte le stanze in modo sistematico',
+      '4. Svuota il contenitore o controlla il sacchetto'
     ]
   },
   'Boden wischen': {
@@ -384,6 +548,18 @@ const TASK_STEPS_DATABASE = {
       '2. Πρόσθεσε λίγο καθαριστικό πατώματος',
       '3. Βρέξε τη σφουγγαρίστρα και στύψε τη καλά',
       '4. Σφουγγάρισε τα πατώματα και άφησέ τα να στεγνώσουν'
+    ],
+    fr: [
+      '1. Remplis un seau d\'eau chaude',
+      '2. Ajoute un peu de nettoyant pour sol',
+      '3. Mouille la serpillière et essore-la bien',
+      '4. Passe la serpillière et laisse sécher'
+    ],
+    it: [
+      '1. Riempi un secchio con acqua calda',
+      '2. Aggiungi un po\' di detergente per pavimenti',
+      '3. Bagna lo straccio e strizzalo bene',
+      '4. Lava i pavimenti e lascia asciugare completamente'
     ]
   },
   'Geschirr spülen': {
@@ -410,6 +586,18 @@ const TASK_STEPS_DATABASE = {
       '2. Καθάρισε τα υπολείμματα φαγητού από τα πιάτα',
       '3. Τρίψε τα πιάτα σχολαστικά με ένα σφουγγάρι',
       '4. Ξέπλυνε, στέγνωσε και βάλε τα στη θέση τους'
+    ],
+    fr: [
+      '1. Remplis l\'évier d\'eau chaude et de liquide vaisselle',
+      '2. Débarrasse la vaisselle des gros résidus',
+      '3. Frotte soigneusement la vaisselle avec une éponge',
+      '4. Rince, sèche et range dans le placard'
+    ],
+    it: [
+      '1. Riempi il lavello con acqua calda e detersivo',
+      '2. Elimina i residui di cibo più grossi dai piatti',
+      '3. Lava accuratamente i piatti con una spugna',
+      '4. Risciacqua, asciuga e riponi nella credenza'
     ]
   },
   'Wäsche waschen': {
@@ -436,6 +624,18 @@ const TASK_STEPS_DATABASE = {
       '2. Γέμισε τον κάδο του πλυντηρίου και κλείσε την πόρτα',
       '3. Πρόσθεσε απορρυπαντικό και μαλακτικό',
       '4. Επίλεξε το κατάλληλο πρόγραμμα και ξεκίνα την πλύση'
+    ],
+    fr: [
+      '1. Trie le linge sale par couleurs et température',
+      '2. Remplis le tambour de la machine et ferme la porte',
+      '3. Ajoute la lessive et l\'adoucissant',
+      '4. Sélectionne le bon programme et lance la machine'
+    ],
+    it: [
+      '1. Dividi i panni sporchi per colore e temperatura',
+      '2. Riempi il cestello della lavatrice e chiudi lo sportello',
+      '3. Aggiungi detersivo e ammorbidente',
+      '4. Seleziona il programma giusto e avvia il lavaggio'
     ]
   },
   'Wäsche aufhängen': {
@@ -462,6 +662,18 @@ const TASK_STEPS_DATABASE = {
       '2. Τίναξε καλά κάθε ρούχο για να μειώσεις τις ζάρες',
       '3. Άπλωσε τα ρούχα και χρησιμοποίησε μανταλάκια αν χρειάζεται',
       '4. Άφησέ τα να στεγνώσουν τελείως πριν τα μαζέψεις'
+    ],
+    fr: [
+      '1. Installe l\'étendoir dans un endroit bien aéré',
+      '2. Secoue chaque vêtement pour réduire les faux plis',
+      '3. Étends le linge soigneusement, utilise des pinces si besoin',
+      '4. Laisse sécher complètement avant de le décrocher'
+    ],
+    it: [
+      '1. Posiziona lo stendino in un luogo ben ventilato',
+      '2. Scuoti bene ogni capo per ridurre le pieghe',
+      '3. Stendi i vestiti con cura usando le mollette se serve',
+      '4. Lascia asciugare completamente prima di ritirarli'
     ]
   },
   'Waschbecken & Spiegelschrank putzen': {
@@ -488,6 +700,18 @@ const TASK_STEPS_DATABASE = {
       '2. Ψέκασε τον νιπτήρα με καθαριστικό μπάνιου',
       '3. Τρίψε τον νιπτήρα και τις μπαταρίες με ένα σφουγγάρι',
       '4. Ξέπλυνε με νερό και γυάλισε με ένα πανί'
+    ],
+    fr: [
+      '1. Vaporise du nettoyant vitres sur le miroir et essuie',
+      '2. Vaporise du nettoyant salle de bain sur le lavabo',
+      '3. Frotte la vasque et la robinetterie avec une éponge',
+      '4. Rince à l\'eau et fais briller le tout'
+    ],
+    it: [
+      '1. Spruzza il detergente vetri sullo specchio e asciuga',
+      '2. Spruzza il detergente bagno sul lavandino',
+      '3. Strofina il lavandino e i rubinetti con una spugna',
+      '4. Risciacqua con acqua e lucida fino a farlo brillare'
     ]
   },
   'Fliesen & Badewanne': {
@@ -514,6 +738,18 @@ const TASK_STEPS_DATABASE = {
       '2. Άφησέ το να δράσει για λίγο για να λιώσουν τα υπολείμματα σαπουνιού',
       '3. Τρίψε όλες τις επιφάνειες σχολαστικά με ένα σφουγγάρι',
       '4. Ξέπλυνε με καθαρό, κρύο νερό και σκούπισε'
+    ],
+    fr: [
+      '1. Vaporise du détartrant sur la baignoire et les carreaux',
+      '2. Laisse agir un instant pour dissoudre les résidus de savon',
+      '3. Frotte soigneusement toutes les surfaces avec une éponge',
+      '4. Rince à l\'eau froide claire et essuie'
+    ],
+    it: [
+      '1. Spruzza l\'anticalcare sulla vasca e sulle piastrelle',
+      '2. Lascia agire un momento per sciogliere i residui di sapone',
+      '3. Strofina bene tutte le superfici con una spugna',
+      '4. Risciacqua con acqua fredda pulita e asciuga'
     ]
   },
   'Klo putzen': {
@@ -540,6 +776,18 @@ const TASK_STEPS_DATABASE = {
       '2. Τρίψε καλά το εσωτερικό της λεκάνης με το βουρτσάκι',
       '3. Απολύμανε το κάθισμα, το καπάκι και τις εξωτερικές επιφάνειες',
       '4. Σκούπισε το εξωτερικό για να στεγνώσει και τράβηξε το καζανάκι'
+    ],
+    fr: [
+      '1. Applique du nettoyant WC sous le rebord de la cuvette',
+      '2. Frotte soigneusement l\'intérieur avec la brosse',
+      '3. Désinfecte l\'abattant, le couvercle et les surfaces extérieures',
+      '4. Essuie l\'extérieur et tire la chasse'
+    ],
+    it: [
+      '1. Applica il detergente per WC sotto il bordo della tazza',
+      '2. Strofina bene l\'interno con lo scopino',
+      '3. Disinfetta sedile, coperchio e superfici esterne',
+      '4. Asciuga l\'esterno e tira lo sciacquone'
     ]
   },
   'Müll wegbringen': {
@@ -566,6 +814,18 @@ const TASK_STEPS_DATABASE = {
       '2. Μετάφερε τις σακούλες έξω στους κατάλληλους κάδους',
       '3. Σκούπισε γρήγορα το εσωτερικό του άδειου κάδου αν χρειάζεται',
       '4. Τοποθέτησε μια νέα, καθαρή σακούλα στον κάδο'
+    ],
+    fr: [
+      '1. Ferme bien les sacs poubelle pleins',
+      '2. Porte les sacs dehors dans les conteneurs appropriés',
+      '3. Essuie rapidement l\'intérieur de la poubelle vide si besoin',
+      '4. Place un nouveau sac propre dans la poubelle'
+    ],
+    it: [
+      '1. Chiudi bene i sacchi della spazzatura pieni',
+      '2. Porta i sacchi fuori nei bidoni appropriati',
+      '3. Pulisci velocemente l\'interno del bidone vuoto se necessario',
+      '4. Metti un sacco nuovo e pulito nel bidone'
     ]
   },
   'Pfandflaschen wegbringen': {
@@ -592,6 +852,18 @@ const TASK_STEPS_DATABASE = {
       '2. Πάρε την τσάντα μαζί σου στο πλησιέστερο σούπερ μάρκετ',
       '3. Βάλε τα μπουκάλια ένα-ένα στο μηχάνημα επιστροφής',
       '4. Δώσε την εκτυπωμένη απόδειξη στο ταμείο για να την εξαργυρώσεις'
+    ],
+    fr: [
+      '1. Rassemble toutes les bouteilles consignées vides dans un sac',
+      '2. Emporte le sac jusqu\'au supermarché le plus proche',
+      '3. Insère les bouteilles une par une dans la machine de reprise',
+      '4. Remets le ticket imprimé à la caisse pour être remboursé'
+    ],
+    it: [
+      '1. Raccogli tutte le bottiglie vuote con vuoto a rendere in una borsa',
+      '2. Porta la borsa al supermercato più vicino',
+      '3. Inserisci le bottiglie una alla volta nella macchina di reso',
+      '4. Consegna lo scontrino stampato alla cassa per il rimborso'
     ]
   },
 
@@ -620,6 +892,18 @@ const TASK_STEPS_DATABASE = {
       '2. Κάνε απαλό μασάζ με μια ποσότητα σαμπουάν στο τριχωτό της κεφαλής',
       '3. Ξέπλυνε τελείως τον αφρό με ζεστό νερό',
       '4. Βάλε κρέμα μαλλιών στις άκρες αν χρειάζεται και ξέπλυνε καλά'
+    ],
+    fr: [
+      '1. Mouille bien tes cheveux sous la douche',
+      '2. Masse doucement une noisette de shampoing sur le cuir chevelu',
+      '3. Rince entièrement la mousse à l\'eau tiède',
+      '4. Applique de l\'après-shampoing sur les pointes si besoin et rince bien'
+    ],
+    it: [
+      '1. Bagna bene i capelli sotto la doccia',
+      '2. Massaggia delicatamente una dose di shampoo sul cuoio capelluto',
+      '3. Risciacqua completamente la schiuma con acqua tiepida',
+      '4. Applica il balsamo sulle punte se necessario e risciacqua bene'
     ]
   },
   'Haare schneiden': {
@@ -646,6 +930,18 @@ const TASK_STEPS_DATABASE = {
       '2. Ετοίμασε ένα ψαλίδι κουρέματος και μια πετσέτα',
       '3. Κόψε προσεκτικά τις άκρες ή τα σημεία που θέλεις',
       '4. Καθάρισε τις τρίχες από τον λαιμό σου και σκούπισε το πάτωμα'
+    ],
+    fr: [
+      '1. Peigne et démêle bien tes cheveux',
+      '2. Prépare des ciseaux de coiffure et une serviette',
+      '3. Coupe prudemment les pointes ou les zones souhaitées',
+      '4. Enlève les cheveux du cou et balaie le sol'
+    ],
+    it: [
+      '1. Pettina e liscia bene i capelli',
+      '2. Prepara le forbici da taglio e un asciugamano',
+      '3. Taglia con attenzione le punte o le zone desiderate',
+      '4. Spazzola via i capelli dal collo e spazza il pavimento'
     ]
   },
   'Bettwäsche tauschen': {
@@ -672,6 +968,18 @@ const TASK_STEPS_DATABASE = {
       '2. Αφαίρεσε προσεκτικά το παλιό σεντόνι από το στρώμα',
       '3. Πήγαινε τα λερωμένα σεντόνια κατευθείαν για πλύσιμο',
       '4. Στρώσε καθαρά σεντόνια και βάλε καθαρές θήκες στα μαξιλάρια και το πάπλωμα'
+    ],
+    fr: [
+      '1. Retire les taies d\'oreiller et la housse de couette',
+      '2. Enlève délicatement l\'ancien drap du matelas',
+      '3. Apporte directement le linge sale à la machine à laver',
+      '4. Mets des draps et housses fraîchement lavés sur le lit'
+    ],
+    it: [
+      '1. Sfila le federe e il copripiumino',
+      '2. Rimuovi con cura il vecchio lenzuolo dal materasso',
+      '3. Porta le lenzuola sporche direttamente in lavatrice',
+      '4. Rifai il letto con lenzuola e federe pulite'
     ]
   },
   'Nägel schneiden': {
@@ -698,6 +1006,18 @@ const TASK_STEPS_DATABASE = {
       '2. Κόψε προσεκτικά τα νύχια των χεριών και των ποδιών σου',
       '3. Λίμαρε τις αιχμηρές άκρες με μια λίμα',
       '4. Βάλε ενυδατική κρέμα στα χέρια και στα πόδια σου'
+    ],
+    fr: [
+      '1. Prends ton coupe-ongles ou des ciseaux à ongles',
+      '2. Coupe soigneusement tes ongles de mains et de pieds',
+      '3. Lisse les bords tranchants avec une lime',
+      '4. Applique une crème hydratante sur tes mains et tes pieds'
+    ],
+    it: [
+      '1. Prendi il tagliaunghie o le forbicine',
+      '2. Taglia con cura le unghie di mani e piedi',
+      '3. Lima i bordi taglienti',
+      '4. Applica una crema idratante su mani e piedi'
     ]
   },
   'Türe/Fenster putzen': {
@@ -724,6 +1044,18 @@ const TASK_STEPS_DATABASE = {
       '2. Χρησιμοποίησε έναν υαλοκαθαριστήρα για να μην αφήσεις θαμπάδες',
       '3. Σκούπισε τα κουφώματα και τα πόμολα με ένα υγρό πανί',
       '4. Γύρισε τις άκρες με ένα καθαρό πανί μικροϊνών για να στεγνώσουν'
+    ],
+    fr: [
+      '1. Vaporise généreusement du nettoyant vitres sur les surfaces',
+      '2. Utilise une raclette pour un résultat sans traces',
+      '3. Essuie les cadres de fenêtre et les poignées avec un chiffon humide',
+      '4. Fais briller les bords avec un chiffon microfibre sec'
+    ],
+    it: [
+      '1. Spruzza generosamente il detergente vetri sulle superfici',
+      '2. Usa un tergivetro per un risultato senza aloni',
+      '3. Pulisci telai delle finestre e maniglie con un panno umido',
+      '4. Lucida i bordi con un panno in microfibra asciutto'
     ]
   },
   'Herd & Kühlschrank putzen': {
@@ -750,6 +1082,18 @@ const TASK_STEPS_DATABASE = {
       '2. Άδειασε το ψυγείο και πέταξε τα ληγμένα τρόφιμα',
       '3. Σκούπισε όλα τα ράφια και τις θήκες του ψυγείου με ένα υγρό πανί',
       '4. Τακτοποίησε τα τρόφιμα πάλι μέσα και σκούπισε το εξωτερικό μέρος'
+    ],
+    fr: [
+      '1. Vaporise la plaque de cuisson, laisse agir puis essuie',
+      '2. Vide le frigo et jette les aliments périmés',
+      '3. Essuie toutes les étagères et compartiments du frigo avec un chiffon humide',
+      '4. Range tout soigneusement et essuie l\'extérieur'
+    ],
+    it: [
+      '1. Spruzza il piano cottura, lascia agire e pulisci',
+      '2. Svuota il frigo e getta i cibi scaduti',
+      '3. Pulisci tutti i ripiani e gli scomparti del frigo con un panno umido',
+      '4. Rimetti tutto in ordine e pulisci l\'esterno'
     ]
   }
 };
@@ -782,6 +1126,20 @@ const FALLBACK_STEPS = {
     '3. Κάνε αμέσως το πρώτο μικρό βήμα για να ξεκινήσεις (2-5 λεπτά)',
     '4. Εστίασε στην ολοκλήρωση του κύριου μέρους της εργασίας "{task}"',
     '5. Καθάρισε τον χώρο εργασίας, μάζεψε τα υλικά και σημείωσε την ως ολοκληρωμένη! 🎉'
+  ],
+  fr: [
+    '1. Rassemble tout le matériel et les objets nécessaires pour "{task}"',
+    '2. Réduis les distractions et mets ton téléphone en silencieux',
+    '3. Fais immédiatement le premier petit pas pour commencer (2-5 min)',
+    '4. Concentre-toi pour avancer sur l\'essentiel de "{task}"',
+    '5. Range ton espace de travail, range le matériel et coche la tâche ! 🎉'
+  ],
+  it: [
+    '1. Raduna tutto il materiale e gli oggetti necessari per "{task}"',
+    '2. Riduci le distrazioni e silenzia il telefono',
+    '3. Fai subito il primo piccolo passo per iniziare (2-5 min)',
+    '4. Concentrati per portare avanti la parte principale di "{task}"',
+    '5. Riordina lo spazio di lavoro, riponi il materiale e spunta l\'attività! 🎉'
   ]
 };
 

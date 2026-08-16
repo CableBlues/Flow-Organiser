@@ -154,10 +154,17 @@ function t(key) {
   return TRANSLATIONS[currentLang]?.[key] || TRANSLATIONS.de[key] || key;
 }
 
+// Kleiner Helfer für lokale, funktionsnahe Textbausteine (Toasts, Inline-Labels),
+// die nicht Teil des globalen TRANSLATIONS-Wörterbuchs sind.
+// Nutzung: tr({ de: '...', en: '...', es: '...', el: '...', fr: '...', it: '...' })
+function tr(map) {
+  return map[currentLang] || map.de || map.en || '';
+}
+
 function getGermanStandardKey(taskName) {
   const cats = ['daily', 'weekly', 'occasionally'];
   for (const cat of cats) {
-    for (const lang of ['de', 'en', 'es', 'el']) {
+    for (const lang of ['de', 'en', 'es', 'el', 'fr', 'it']) {
       const list = DEFAULT_TASKS_BY_LANG[lang][cat];
       const idx = list.indexOf(taskName);
       if (idx !== -1) {

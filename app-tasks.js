@@ -29,7 +29,7 @@ function renderApp() {
           if (srcIdx !== -1 && targetIdx !== -1) {
             saveHistory(); const [removed] = categoriesOrder.splice(srcIdx, 1);
             categoriesOrder.splice(targetIdx, 0, removed); saveCategoriesOrder(); renderApp();
-            showToast(currentLang === 'de' ? 'Spalten-Reihenfolge aktualisiert ↕️' : 'Column order updated ↕️');
+            showToast(tr({ de: 'Spalten-Reihenfolge aktualisiert ↕️', en: 'Column order updated ↕️', es: 'Orden de columnas actualizado ↕️', el: 'Η σειρά στηλών ενημερώθηκε ↕️', fr: 'Ordre des colonnes mis à jour ↕️', it: 'Ordine delle colonne aggiornato ↕️' }));
           }
         }
         draggedColumnId = null;

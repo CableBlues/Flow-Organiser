@@ -45,6 +45,24 @@ const SPORT_TRANSLATIONS = {
     exercise_completed: "Υπέροχη κίνηση! 🎉 Το σώμα σου σε ευχαριστεί.",
     energy_label: "Απαιτούμενο επίπεδο: Κουτάλια",
     next_suggestion: "Επόμενη πρόταση 🔄"
+  },
+  fr: {
+    no_exercise: "Aucun exercice actif.",
+    exercise_started: "Minuteur d'exercice démarré ! ⏱️",
+    exercise_paused: "Minuteur d'exercice en pause. ⏸️",
+    exercise_skipped: "Exercice passé.",
+    exercise_completed: "Merveilleusement bougé ! 🎉 Ton corps te remercie.",
+    energy_label: "Niveau requis : Cuillères",
+    next_suggestion: "Autre suggestion 🔄"
+  },
+  it: {
+    no_exercise: "Nessun esercizio attivo.",
+    exercise_started: "Timer dell'esercizio avviato! ⏱️",
+    exercise_paused: "Timer dell'esercizio in pausa. ⏸️",
+    exercise_skipped: "Esercizio saltato.",
+    exercise_completed: "Ti sei mosso magnificamente! 🎉 Il tuo corpo ti ringrazia.",
+    energy_label: "Livello richiesto: Cucchiai",
+    next_suggestion: "Altro suggerimento 🔄"
   }
 };
 
@@ -176,6 +194,70 @@ const SPORT_EXERCISES = {
       { name: "Άγγιγμα Γόνατος με Αγκώνα 🧬", desc: "Στάσου όρθιος. Άγγιξε το αριστερό γόνατο με τον δεξί αγκώνα και μετά το δεξί γόνατο με τον αριστερό αγκώνα. Ενεργοποιεί τον κορμό.", duration: 60 }, // "Σταθείτε/Αγγίξτε" -> "Στάσου/Άγγιξε"
       { name: "Σταθερή Ισορροπία ⚖️", desc: "Κρατήσου από μια καρέκλα. Σήκωσε το ένα πόδι τεντωμένο προς τα πίσω και γείρε τον κορμό ελαφρώς μπροστά. Κράτα 30δ, μετά άλλαξε πλευρά.", duration: 60 }, // "Κρατηθείτε/Σηκώστε/γείρετε/Κράτήστε/αλλάξτε" -> "Κρατήσου/Σήκωσε/γείρε/Κράτα/άλλαξε"
       { name: "Σύσφιξη Ωμοπλατών 🏋️", desc: "Στάσου όρθιος, λύγισε τους αγκώνες σε γωνία 90 μοιρών. Σπρώξε τις ωμοπλάτες δυνατά πίσω, κράτα για 3δ και χαλάρωσε.", duration: 60 } // "Σταθείτε/λύγιστε/Σπρώξτε/κρατήστε/χαλαρώστε" -> "Στάσου/λύγισε/Σπρώξε/κράτα/χαλάρωσε"
+    ]
+  },
+  fr: {
+    1: [
+      { name: 'Relâchement de la nuque 🧘‍♀️', desc: 'Assieds-toi bien droit. Laisse doucement ta tête tomber vers l\'épaule droite. Maintiens 30s, puis change de côté. Respire profondément.', duration: 60 },
+      { name: 'Rotation des poignets 👐', desc: 'Fais tourner doucement tes poignets en cercles pendant 30s vers la gauche, puis 30s vers la droite. Parfait contre la fatigue du bureau.', duration: 60 },
+      { name: 'Cercles d\'épaules 🔄', desc: 'Monte doucement tes épaules vers les oreilles, fais-les tourner vers l\'arrière et laisse-les redescendre. Répète calmement pendant 1 minute.', duration: 60 },
+      { name: 'Chat-vache assis 🪑', desc: 'Pose les mains sur tes genoux. Inspire en poussant la poitrine vers l\'avant, expire en arrondissant complètement le dos.', duration: 60 },
+      { name: 'Relaxation des yeux (Palming) 👀', desc: 'Frotte tes paumes l\'une contre l\'autre jusqu\'à ce qu\'elles chauffent. Pose-les doucement sur tes yeux fermés. Respire profondément 5 fois.', duration: 60 },
+      { name: 'Cercles de chevilles en douceur 🦶', desc: 'Lève légèrement un pied en position assise. Fais-le tourner 30s vers la gauche, puis 30s vers la droite. Change de pied.', duration: 60 },
+      { name: 'Étirement de la poitrine (assis) 🫁', desc: 'Entrelace tes doigts derrière la tête, écarte bien les coudes et ouvre doucement ta poitrine vers le haut. Respire calmement.', duration: 60 },
+      { name: 'Coordination des doigts (Brain Gym) 🧠', desc: 'Touche ton pouce à chaque doigt de la même main, l\'un après l\'autre, puis dans l\'ordre inverse. Stimule doucement la concentration.', duration: 60 }
+    ],
+    2: [
+      { name: 'Ouverture de poitrine debout 👐', desc: 'Tiens-toi bien droit. Entrelace tes doigts derrière le dos et tire doucement vers le bas. Sens l\'étirement dans la poitrine et les épaules.', duration: 60 },
+      { name: 'Torsions douces de la colonne 🌿', desc: 'Tiens-toi debout, pieds écartés, bras relâchés. Fais tourner doucement ton buste de gauche à droite, en laissant les bras suivre librement.', duration: 60 },
+      { name: 'Attraper les étoiles 🌌', desc: 'Étire alternativement le bras gauche et le bras droit vers le haut, comme pour attraper des étoiles. Respire régulièrement.', duration: 60 },
+      { name: 'Cercles de hanches 🌀', desc: 'Tiens-toi debout, mains sur les hanches. Trace des cercles lents et doux avec ton bassin. Change de sens après 30 secondes.', duration: 60 },
+      { name: 'Étirement latéral du cou 📐', desc: 'Penche la tête vers l\'épaule gauche. Pousse activement la paume droite vers le sol pour étirer le bras. Change après 30s.', duration: 60 },
+      { name: 'Flexion latérale 🏹', desc: 'Étire un bras tout droit vers le haut et penche doucement le buste du côté opposé. Maintiens 30s, puis change de bras.', duration: 60 },
+      { name: 'Étirement du haut du dos 🛡️', desc: 'Entrelace tes doigts devant la poitrine, arrondis le haut du dos et pousse les paumes vers l\'avant. Maintiens et respire profondément.', duration: 60 },
+      { name: 'Bras d\'aigle 🦅', desc: 'Croise les bras devant toi, entrelace les avant-bras et pousse doucement les coudes vers le haut. Un merveilleux relâchement du haut du dos.', duration: 60 }
+    ],
+    3: [
+      { name: 'Squats au plan de travail 🪑', desc: 'Tiens-toi éventuellement à une chaise ou un plan de travail. Abaisse tes hanches vers l\'arrière de façon contrôlée, puis relève-toi.', duration: 60 },
+      { name: 'Montées sur pointes 🦵', desc: 'Tiens-toi bien droit. Monte lentement sur la pointe des pieds, garde l\'équilibre un instant, puis redescends lentement. Répète régulièrement.', duration: 60 },
+      { name: 'Pompes contre le mur 🧱', desc: 'Place-toi à un pas d\'un mur. Pose les mains à plat, abaisse ta poitrine vers le mur de façon contrôlée, puis repousse-toi doucement.', duration: 60 },
+      { name: 'Jumping Jack tranquille (faible impact) 🤸‍♂️', desc: 'Fais un pas de côté en levant le bras du même côté. Alterne les côtés rythmiquement sans sauter. Très doux pour les articulations.', duration: 60 },
+      { name: 'Boxe dans le vide 🥊', desc: 'Tiens-toi dans une position stable. Frappe l\'air doucement et rythmiquement, en alternant gauche et droite. Relâche les tensions des épaules.', duration: 60 },
+      { name: 'Genou-coude croisé 🧬', desc: 'Debout, touche ton genou gauche avec ton coude droit, puis ton genou droit avec ton coude gauche. Active tes muscles abdominaux.', duration: 60 },
+      { name: 'Guerrier 3 avec appui ⚖️', desc: 'Tiens-toi à une chaise pour t\'équilibrer. Lève une jambe tendue vers l\'arrière et penche légèrement le buste vers l\'avant. Maintiens 30s, change de côté.', duration: 60 },
+      { name: 'Rapprochement des omoplates 🏋️', desc: 'Tiens-toi bien droit, coudes pliés à 90 degrés. Rapproche fermement tes omoplates derrière toi, maintiens 3s, puis relâche.', duration: 60 }
+    ]
+  },
+  it: {
+    1: [
+      { name: 'Rilascio del collo 🧘‍♀️', desc: 'Siediti dritto. Lascia cadere delicatamente la testa verso la spalla destra. Mantieni per 30s, poi cambia lato. Respira profondamente.', duration: 60 },
+      { name: 'Rotazione dei polsi 👐', desc: 'Fai ruotare delicatamente i polsi in cerchio per 30s verso sinistra, poi 30s verso destra. Perfetto contro la stanchezza da scrivania.', duration: 60 },
+      { name: 'Cerchi con le spalle 🔄', desc: 'Solleva delicatamente le spalle verso le orecchie, falle ruotare all\'indietro e lasciale scendere. Ripeti con calma per 1 minuto.', duration: 60 },
+      { name: 'Gatto-mucca da seduti 🪑', desc: 'Appoggia le mani sulle ginocchia. Inspira spingendo il petto in avanti, espira arrotondando completamente la schiena.', duration: 60 },
+      { name: 'Rilassamento degli occhi (Palming) 👀', desc: 'Strofina le palme una contro l\'altra finché non si scaldano. Posale delicatamente sugli occhi chiusi. Respira profondamente 5 volte.', duration: 60 },
+      { name: 'Cerchi delicati con le caviglie 🦶', desc: 'Solleva leggermente un piede da seduto. Fallo ruotare per 30s verso sinistra, poi 30s verso destra. Cambia piede.', duration: 60 },
+      { name: 'Allungamento del petto (da seduti) 🫁', desc: 'Intreccia le dita dietro la testa, apri bene i gomiti e apri delicatamente il petto verso l\'alto. Respira con calma.', duration: 60 },
+      { name: 'Coordinazione delle dita (Brain Gym) 🧠', desc: 'Tocca il pollice con ogni dito della stessa mano, uno dopo l\'altro, poi al contrario. Stimola delicatamente la concentrazione.', duration: 60 }
+    ],
+    2: [
+      { name: 'Apertura del petto in piedi 👐', desc: 'Stai dritto in piedi. Intreccia le dita dietro la schiena e tira delicatamente verso il basso. Senti l\'allungamento nel petto e nelle spalle.', duration: 60 },
+      { name: 'Torsioni delicate della colonna 🌿', desc: 'Stai in piedi con i piedi larghi e le braccia rilassate. Ruota delicatamente il busto da sinistra a destra, lasciando le braccia libere di seguire.', duration: 60 },
+      { name: 'Afferra le stelle 🌌', desc: 'Allunga alternativamente il braccio sinistro e destro verso l\'alto, come per afferrare le stelle. Respira in modo regolare.', duration: 60 },
+      { name: 'Cerchi con i fianchi 🌀', desc: 'Stai in piedi con le mani sui fianchi. Disegna cerchi lenti e delicati con il bacino. Cambia direzione dopo 30 secondi.', duration: 60 },
+      { name: 'Allungamento laterale del collo 📐', desc: 'Inclina la testa verso la spalla sinistra. Spingi attivamente il palmo destro verso il pavimento per allungare il braccio. Cambia dopo 30s.', duration: 60 },
+      { name: 'Flessione laterale 🏹', desc: 'Allunga un braccio dritto verso l\'alto e inclina delicatamente il busto verso il lato opposto. Mantieni 30s, poi cambia braccio.', duration: 60 },
+      { name: 'Allungamento della parte alta della schiena 🛡️', desc: 'Intreccia le dita davanti al petto, arrotonda la parte alta della schiena e spingi i palmi in avanti. Mantieni e respira profondamente.', duration: 60 },
+      { name: 'Braccia d\'aquila 🦅', desc: 'Incrocia le braccia davanti a te, intreccia gli avambracci e spingi delicatamente i gomiti verso l\'alto. Un meraviglioso rilascio della parte alta della schiena.', duration: 60 }
+    ],
+    3: [
+      { name: 'Squat al bancone della cucina 🪑', desc: 'Se vuoi, tieniti a una sedia o al bancone. Abbassa i fianchi all\'indietro in modo controllato, poi rialzati.', duration: 60 },
+      { name: 'Sollevamento sui polpacci 🦵', desc: 'Stai dritto in piedi. Sali lentamente sulle punte dei piedi, mantieni l\'equilibrio un istante, poi riabbassa lentamente. Ripeti con costanza.', duration: 60 },
+      { name: 'Flessioni contro il muro 🧱', desc: 'Mettiti a un passo dal muro. Appoggia le mani piatte, abbassa il petto verso il muro in modo controllato, poi spingiti delicatamente indietro.', duration: 60 },
+      { name: 'Jumping jack tranquillo (basso impatto) 🤸‍♂️', desc: 'Fai un passo lateralmente sollevando il braccio dello stesso lato. Alterna i lati ritmicamente senza saltare. Molto delicato per le articolazioni.', duration: 60 },
+      { name: 'Pugilato immaginario (ombra) 🥊', desc: 'Mettiti in posizione stabile. Colpisci l\'aria delicatamente e ritmicamente, alternando sinistra e destra. Rilascia le tensioni delle spalle.', duration: 60 },
+      { name: 'Tocco ginocchio-gomito 🧬', desc: 'In piedi, tocca il ginocchio sinistro con il gomito destro, poi il ginocchio destro con il gomito sinistro. Attiva i muscoli addominali.', duration: 60 },
+      { name: 'Guerriero 3 con supporto ⚖️', desc: 'Tieniti a una sedia per l\'equilibrio. Solleva una gamba tesa all\'indietro e inclina leggermente il busto in avanti. Mantieni 30s, poi cambia lato.', duration: 60 },
+      { name: 'Contrazione delle scapole 🏋️', desc: 'Stai dritto in piedi, gomiti piegati a 90 gradi. Avvicina con forza le scapole dietro di te, mantieni 3s, poi rilascia.', duration: 60 }
     ]
   }
 };

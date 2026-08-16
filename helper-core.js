@@ -78,6 +78,133 @@ const PROCEDURAL_BREAKDOWNS = {
       "3. Write down 3 key questions you want to answer on a blank paper.",
       "4. Read your study material actively for 20 minutes to answer them.",
       "5. Summarize and explain what you learned out loud in your own words."
+    ],
+    "shopping": [
+      "1. Go to the kitchen and take a quick photo of what's in the fridge.",
+      "2. Write a structured shopping list sorted by store section.",
+      "3. Grab reusable bags and check your budget.",
+      "4. Move briskly through the store and stick to the list.",
+      "5. Put the groceries away neatly as soon as you get home."
+    ]
+  },
+  es: {
+    "cuarto": [
+      "1. Lleva la basura y los platos sucios a la cocina.",
+      "2. Recoge toda la ropa y clasifícala (lavar vs. armario).",
+      "3. Despeja completamente todas las superficies (escritorio, mesita).",
+      "4. Aspira, barre o friega el suelo a fondo.",
+      "5. Ventila 5 minutos y haz la cama para esa sensación de frescor."
+    ],
+    "impuesto": [
+      "1. Reúne todos los recibos, facturas y documentos del año en un solo lugar.",
+      "2. Ordena los documentos cronológicamente y por categorías.",
+      "3. Abre el programa de la declaración e introduce tus datos personales.",
+      "4. Registra tus ingresos y gastos deducibles paso a paso.",
+      "5. Revisa una vez más los datos y haz clic en enviar con tranquilidad."
+    ],
+    "estudiar": [
+      "1. Despeja completamente tu escritorio y silencia el móvil.",
+      "2. Ten una visión general y elige solo un tema concreto.",
+      "3. Escribe las 3 preguntas clave más importantes en una hoja en blanco.",
+      "4. Lee el material activamente durante 20 minutos y responde las preguntas.",
+      "5. Explica en voz alta lo aprendido con tus propias palabras (método Feynman)."
+    ],
+    "compra": [
+      "1. Ve a la cocina y haz una foto rápida del contenido de la nevera.",
+      "2. Escribe una lista de la compra estructurada por secciones.",
+      "3. Lleva bolsas reutilizables y revisa tu presupuesto.",
+      "4. Recorre el supermercado con agilidad y no te desvíes de la lista.",
+      "5. Guarda la compra ordenadamente nada más volver a casa."
+    ]
+  },
+  el: {
+    "δωμάτιο": [
+      "1. Πήγαινε τα σκουπίδια και τα λερωμένα πιάτα στην κουζίνα.",
+      "2. Μάζεψε όλα τα ρούχα και ταξινόμησέ τα (πλύσιμο vs ντουλάπα).",
+      "3. Άδειασε τελείως όλες τις επιφάνειες (γραφείο, κομοδίνο).",
+      "4. Σκούπισε ή σφουγγάρισε το πάτωμα σχολαστικά.",
+      "5. Αερίστε για 5 λεπτά και στρώσε το κρεβάτι για αίσθηση φρεσκάδας."
+    ],
+    "φόρο": [
+      "1. Συγκέντρωσε όλες τις αποδείξεις, τα τιμολόγια και τα έγγραφα του έτους σε ένα μέρος.",
+      "2. Ταξινόμησε τα έγγραφα χρονολογικά και ανά κατηγορία.",
+      "3. Άνοιξε το πρόγραμμα φορολογικής δήλωσης και συμπλήρωσε τα στοιχεία σου.",
+      "4. Καταχώρησε τα έσοδα και τις εκπιπτόμενες δαπάνες βήμα-βήμα.",
+      "5. Έλεγξε ξανά τα στοιχεία και πάτησε υποβολή με ηρεμία."
+    ],
+    "διάβασμα": [
+      "1. Άδειασε τελείως το γραφείο σου και βάλε το κινητό σε σίγαση.",
+      "2. Πάρε μια γενική εικόνα και επίλεξε μόνο ένα συγκεκριμένο θέμα.",
+      "3. Γράψε τις 3 πιο σημαντικές ερωτήσεις σε ένα λευκό χαρτί.",
+      "4. Διάβασε ενεργά το υλικό για 20 λεπτά και απάντησε στις ερωτήσεις.",
+      "5. Εξήγησε δυνατά όσα έμαθες με δικά σου λόγια (μέθοδος Feynman)."
+    ],
+    "ψώνια": [
+      "1. Πήγαινε στην κουζίνα και τράβηξε μια γρήγορη φωτογραφία του ψυγείου.",
+      "2. Γράψε μια οργανωμένη λίστα αγορών χωρισμένη σε τμήματα.",
+      "3. Πάρε μαζί σου τσάντες και έλεγξε τον προϋπολογισμό σου.",
+      "4. Κινήσου γρήγορα στο σούπερ μάρκετ και μείνε πιστός στη λίστα.",
+      "5. Τακτοποίησε τα ψώνια αμέσως μόλις επιστρέψεις."
+    ]
+  },
+  fr: {
+    "chambre": [
+      "1. Apporte les déchets et la vaisselle sale à la cuisine.",
+      "2. Ramasse tous les vêtements et trie-les (linge sale vs. placard).",
+      "3. Débarrasse complètement toutes les surfaces (bureau, table de chevet).",
+      "4. Aspire, balaie ou passe la serpillière sur le sol en profondeur.",
+      "5. Aère 5 minutes et fais ton lit pour cette sensation de fraîcheur."
+    ],
+    "impôt": [
+      "1. Rassemble tous les reçus, factures et documents de l'année au même endroit.",
+      "2. Trie les documents par ordre chronologique et par catégorie.",
+      "3. Ouvre ton logiciel de déclaration et saisis tes informations personnelles.",
+      "4. Renseigne tes revenus et frais déductibles étape par étape.",
+      "5. Vérifie une dernière fois les données et clique sereinement sur envoyer."
+    ],
+    "étudier": [
+      "1. Débarrasse complètement ton bureau et mets ton téléphone en silencieux.",
+      "2. Prends une vue d'ensemble et choisis un seul sujet précis.",
+      "3. Écris les 3 questions clés les plus importantes sur une feuille blanche.",
+      "4. Lis activement le contenu pendant 20 minutes et réponds aux questions.",
+      "5. Explique à voix haute ce que tu as appris avec tes propres mots (méthode Feynman)."
+    ],
+    "courses": [
+      "1. Va dans la cuisine et prends une photo rapide du contenu du frigo.",
+      "2. Écris une liste de courses structurée par rayons.",
+      "3. Prends des sacs réutilisables et vérifie ton budget.",
+      "4. Parcours le supermarché rapidement sans t'écarter de la liste.",
+      "5. Range les courses soigneusement dès ton retour."
+    ]
+  },
+  it: {
+    "camera": [
+      "1. Porta in cucina la spazzatura e i piatti sporchi.",
+      "2. Raccogli tutti i vestiti e smistali (bucato vs. armadio).",
+      "3. Libera completamente tutte le superfici (scrivania, comodino).",
+      "4. Aspira, spazza o lava il pavimento a fondo.",
+      "5. Arieggia per 5 minuti e rifai il letto per quella sensazione di pulito."
+    ],
+    "tasse": [
+      "1. Raccogli tutte le ricevute, fatture e documenti dell'anno in un unico posto.",
+      "2. Ordina i documenti cronologicamente e per categoria.",
+      "3. Apri il programma per la dichiarazione e inserisci i tuoi dati.",
+      "4. Inserisci passo dopo passo entrate e spese detraibili.",
+      "5. Ricontrolla i dati una volta e invia con tranquillità."
+    ],
+    "studiare": [
+      "1. Libera completamente la scrivania e metti il telefono in silenzioso.",
+      "2. Fatti un'idea generale e scegli un solo argomento specifico.",
+      "3. Scrivi le 3 domande chiave più importanti su un foglio bianco.",
+      "4. Leggi attivamente il materiale per 20 minuti e rispondi alle domande.",
+      "5. Spiega ad alta voce ciò che hai imparato con parole tue (metodo Feynman)."
+    ],
+    "spesa": [
+      "1. Vai in cucina e fai una foto veloce del contenuto del frigo.",
+      "2. Scrivi una lista della spesa organizzata per reparti.",
+      "3. Prendi le borse riutilizzabili e controlla il budget.",
+      "4. Attraversa il supermercato con decisione senza allontanarti dalla lista.",
+      "5. Riordina la spesa non appena torni a casa."
     ]
   }
 };
@@ -162,7 +289,7 @@ function speakText(text, index = 0) {
       try {
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
-        const langMap = { de: 'de-DE', en: 'en-US', es: 'es-ES', el: 'el-GR' };
+        const langMap = { de: 'de-DE', en: 'en-US', es: 'es-ES', el: 'el-GR', fr: 'fr-FR', it: 'it-IT' };
         const targetLang = langMap[currentLang] || 'de-DE';
         utterance.lang = targetLang;
         window.speechSynthesis.speak(utterance);
@@ -428,7 +555,7 @@ function generateTaskSteps(specificTask) {
   }
   if (!val) {
     const resBox = document.getElementById('helper-steps-result');
-    if (resBox) resBox.innerHTML = `<p class="text-xs text-gray-400 italic text-center py-4">${currentLang === 'de' ? 'Bitte wähle oben eine Aufgabe aus.' : 'Please select a task.'}</p>`;
+    if (resBox) resBox.innerHTML = `<p class="text-xs text-gray-400 italic text-center py-4">${tr({ de: 'Bitte wähle oben eine Aufgabe aus.', en: 'Please select a task.', es: 'Por favor, selecciona una tarea arriba.', el: 'Παρακαλώ επίλεξε μια εργασία παραπάνω.', fr: 'Merci de choisir une tâche ci-dessus.', it: "Seleziona un'attività qui sopra." })}</p>`;
     return;
   }
   if (!currentActiveTaskRef || currentActiveTaskRef.task !== val) currentActiveTaskRef = { task: val };
