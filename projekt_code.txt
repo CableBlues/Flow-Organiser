@@ -931,7 +931,7 @@ function setLanguage(lang) {
   if (!lang || !TRANSLATIONS[lang] || !DEFAULT_TASKS_BY_LANG[lang]) { lang = 'en'; }
   const oldLang = currentLang; currentLang = lang; localStorage.setItem('flowPlannerLanguage', lang);
   document.documentElement.lang = lang; translateUserTasks(oldLang, lang);
-  const flagMap = { de: '🇩🇪', en: '🇬🇧', es: '🇪🇸', el: '🇬🇷' };
+  const flagMap = { de: '🇩🇪', en: '🇬🇧', es: '🇪🇸', el: '🇬🇷', fr: '🇫🇷', it: '🇮🇹' };
   const flagEl = document.getElementById('active-lang-flag'); if (flagEl) flagEl.innerText = flagMap[lang] || '🇬🇧';
   translateUI(); const textEl = document.getElementById('minimal-mode-btn-text');
   if (textEl) { textEl.innerText = isMinimalist ? t('standard_mode') : t('minimal_mode'); }
@@ -1418,6 +1418,7 @@ function renderApp() {
     if (isDone) titleText += ` (${state.done.length})`; else if (!isNotes) titleText += ` (${doneInCat}/${totalInCat})`;
     const pct = (!isDone && !isNotes && totalInCat > 0) ? Math.round((doneInCat / totalInCat) * 100) : 0;
     const article = document.createElement('article');
+    article.dataset.category = id;
     article.className = 'min-h-[380px] h-full flex flex-col p-3 rounded-2xl border border-white/[0.08] bg-[#13131a]/75 backdrop-blur-md shadow-lg hover:border-[var(--accent)]/30 transition duration-300 cursor-default';
     article.draggable = true;
     article.ondragstart = (e) => {
@@ -1601,6 +1602,46 @@ function renderApp() {
     main.appendChild(article);
   });
   updateShoppingListPopup(true); renderCookingPanel(true); if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+  renderMobileCategoryTabs();
+}
+
+// Baut die untere Tab-Leiste für Mobilgeräte auf (eine Kategorie sichtbar statt Scroll-Spalten).
+// Läuft immer mit (auch am Desktop), bleibt dort aber unsichtbar (siehe styles-mobile.css).
+function renderMobileCategoryTabs() {
+  const bar = document.getElementById('mobile-category-tabs');
+  if (!bar) return;
+
+  let activeCat = localStorage.getItem('flowPlannerMobileCategory');
+  if (!activeCat || !categoriesOrder.some(([id]) => id === activeCat)) {
+    activeCat = categoriesOrder[0] ? categoriesOrder[0][0] : 'daily';
+  }
+  document.body.dataset.mobileCat = activeCat;
+
+  bar.innerHTML = categoriesOrder.map(([id, iconKey]) => {
+    const isActive = id === activeCat;
+    const shortLabel = t(id).replace(/\s*\(.*?\)\s*$/, '');
+    return `
+      <button onclick="setMobileCategory('${id}')" class="mobile-tab-btn ${isActive ? 'mobile-tab-active' : ''}" data-cat="${id}">
+        <i data-lucide="${iconKey}" class="w-[18px] h-[18px]"></i>
+        <span>${shortLabel}</span>
+      </button>
+    `;
+  }).join('');
+
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+// Wechselt die auf dem Handy sichtbare Kategorie (Bottom-Tab-Leiste). Rein visuell,
+// die Daten und Spalten selbst bleiben unverändert im Hintergrund bestehen.
+function setMobileCategory(id) {
+  document.body.dataset.mobileCat = id;
+  localStorage.setItem('flowPlannerMobileCategory', id);
+  document.querySelectorAll('.mobile-tab-btn').forEach(btn => {
+    btn.classList.toggle('mobile-tab-active', btn.dataset.cat === id);
+  });
+  const main = document.querySelector('main');
+  if (main) main.scrollIntoView({ behavior: 'instant', block: 'start' });
+  window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
 function animateTaskToDone(taskEl, targetSelector, onComplete) {
@@ -11306,6 +11347,226 @@ DATEI: styles-hover.css
  
  
 ========================================== 
+DATEI: styles-mobile.css 
+========================================== 
+ 
+/* ==========================================================================
+   MOBILE-OPTIMIERUNG
+   Alles in dieser Datei ist bewusst hinter (hover: none)/(pointer: coarse)
+   bzw. max-width Media Queries versteckt. Auf dem Desktop (Maus + großer
+   Screen) ändert sich dadurch NICHTS am bestehenden Verhalten oder Layout.
+   ========================================================================== */
+
+/* Auf dem Desktop (Standardfall) bleibt die Kategorie-Tab-Leiste unsichtbar
+   und wirkungslos – sie wird ausschließlich innerhalb der Touch-Media-Query
+   unten wieder eingeblendet. Das ist die einzige Regel in dieser Datei, die
+   nicht in der Media Query steckt, weil sie genau dafür sorgt, dass auf dem
+   Desktop garantiert nichts sichtbar wird. */
+.mobile-category-tabs {
+  display: none;
+}
+
+@media (hover: none), (pointer: coarse) {
+
+  /* Feinschliff für Touch-Antippen (Highlight-Flash, Doppel-Tap-Zoom) –
+     bewusst hier drin und nicht global, auch wenn die Wirkung auf Geräten
+     mit Maus ohnehin null wäre. */
+  button, a, [onclick] {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button, a, [onclick], input, select, textarea {
+    touch-action: manipulation; /* verhindert Doppel-Tap-Zoom-Verzögerung */
+  }
+
+  html {
+    overscroll-behavior-y: none; /* kein "Gummiband"-Overscroll der ganzen Seite */
+  }
+
+  /* Verhindert, dass iOS Safari beim Fokussieren eines Inputs die Seite
+     hineinzoomt (passiert automatisch bei Schriftgrößen < 16px). */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
+  /* ---------------- DOCK: von "nur Hover" auf "immer sichtbar" ---------------- */
+  /* Der Dock-Reveal per :hover funktioniert auf Touch-Geräten nicht zuverlässig.
+     Auf Touch-Geräten wird der Dock daher dauerhaft eingeblendet und bei Bedarf
+     horizontal scrollbar gemacht, statt auf Hover zu warten. */
+
+  .mac-tools-trigger {
+    display: none !important; /* der "Flow / Tools"-Orb wird überflüssig, da der Dock direkt offen ist */
+  }
+
+  .mac-dock-container::before {
+    content: none !important; /* die unsichtbare Hover-Hotzone wird nicht mehr gebraucht */
+  }
+
+  .mac-dock {
+    transform: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    max-width: calc(100vw - 20px);
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    justify-content: flex-start !important;
+  }
+
+  .mac-dock::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mac-dock-item-wrapper {
+    flex-shrink: 0;
+  }
+
+  .mac-dock-item-wrapper:hover {
+    /* Die "schwebende" Hover-Animation ergibt auf Touch keinen Sinn und kann
+       nach einem Tap hängen bleiben (sticky hover). Deaktivieren, Tap-Feedback
+       kommt stattdessen über :active weiter unten. */
+    transform: none !important;
+    animation: none !important;
+  }
+
+  .mac-dock-item-wrapper:active {
+    transform: scale(0.92) !important;
+  }
+
+  .mac-floating-wrapper {
+    bottom: calc(66px + env(safe-area-inset-bottom)) !important;
+    left: 10px !important;
+    right: 10px !important;
+    transform: none !important;
+    width: auto !important;
+  }
+
+  .mac-dock-container {
+    width: 100% !important;
+  }
+
+  /* ---------------- KATEGORIE-TABS: nur eine Kategorie gleichzeitig sichtbar ---------------- */
+  /* Ersetzt das Untereinander-Scrollen der 7 Spalten durch eine echte
+     Bottom-Tab-Navigation, wie man sie von nativen Apps kennt. Die Spalten
+     selbst (Daten, Logik, Drag&Drop) bleiben exakt gleich – es wird nur
+     gesteuert, welche davon sichtbar ist. */
+  main > article { display: none !important; }
+  body[data-mobile-cat="daily"]         main > article[data-category="daily"],
+  body[data-mobile-cat="weekly"]        main > article[data-category="weekly"],
+  body[data-mobile-cat="todo"]          main > article[data-category="todo"],
+  body[data-mobile-cat="done"]          main > article[data-category="done"],
+  body[data-mobile-cat="termine"]       main > article[data-category="termine"],
+  body[data-mobile-cat="notes"]         main > article[data-category="notes"],
+  body[data-mobile-cat="occasionally"]  main > article[data-category="occasionally"] {
+    display: flex !important;
+  }
+
+  main > article {
+    width: 100% !important;
+    min-height: calc(100dvh - 260px) !important;
+  }
+
+  .mobile-category-tabs {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9998;
+    background: rgba(15, 15, 22, 0.94);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom)) 4px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 2px;
+  }
+  .mobile-category-tabs::-webkit-scrollbar { display: none; }
+
+  .mobile-tab-btn {
+    flex: 1 0 auto;
+    min-width: 58px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 6px 4px;
+    border-radius: 12px;
+    color: #71717a;
+    background: transparent;
+    border: none;
+    font-size: 9px;
+    font-weight: 700;
+    font-family: var(--font-family, inherit);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.2s ease, background 0.2s ease;
+  }
+  .mobile-tab-btn span {
+    max-width: 64px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mobile-tab-btn:active { transform: scale(0.94); }
+  .mobile-tab-active {
+    color: var(--accent-light, #c084fc) !important;
+    background: rgba(139, 92, 246, 0.14);
+  }
+
+  /* Platz am unteren Bildschirmrand reservieren: Tab-Leiste + Tools-Dock
+     dürfen nie den Spalteninhalt verdecken. */
+  main {
+    padding-bottom: calc(150px + env(safe-area-inset-bottom)) !important;
+  }
+
+  /* ---------------- MODALS: nie über den Bildschirmrand hinauswachsen ---------------- */
+  .mobile-modal-card {
+    max-height: calc(100dvh - 32px - env(safe-area-inset-bottom));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  }
+
+  /* ---------------- Sprachauswahl: größere, leichter zu treffende Tap-Ziele ---------------- */
+  #panel-language {
+    width: 56px !important;
+    gap: 4px !important;
+  }
+
+  #panel-language button {
+    font-size: 1.35rem !important;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Fach-Popups im Dock (Sounds, Musik etc.) sollen auf schmalen Screens nie
+     breiter als der Viewport werden und nicht seitlich abgeschnitten sein. */
+  #panel-soundscape, #panel-music, #panel-boost {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: calc(100vw - 24px) !important;
+    max-width: 410px !important;
+  }
+}
+
+/* Sehr kleine Screens (< 380px): Dock-Icons dezent verkleinern, damit
+   möglichst viele Werkzeuge ohne Scrollen sichtbar sind. */
+@media (hover: none) and (max-width: 380px), (pointer: coarse) and (max-width: 380px) {
+  .mac-dock-item-wrapper {
+    width: 50px !important;
+    height: 50px !important;
+  }
+}
+ 
+ 
+========================================== 
 DATEI: index.html 
 ========================================== 
  
@@ -11314,7 +11575,11 @@ DATEI: index.html
 <html lang="de" class="h-full bg-[#0a0a0f] text-[#f4f4f5]">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0a0a0f" />
   <title>Flow - Dein Alltagsbegleiter</title>
 
   <!-- Hochauflösendes Wellen-Favicon -->
@@ -11357,6 +11622,7 @@ DATEI: index.html
   <link rel="stylesheet" href="styles-animations.css?v=1">
   <link rel="stylesheet" href="styles-dock.css?v=1">
   <link rel="stylesheet" href="styles-hover.css?v=1">
+  <link rel="stylesheet" href="styles-mobile.css?v=1">
 
 </head>
 <body class="h-full antialiased flex flex-col font-sans select-none overflow-x-hidden text-[#f4f4f5] bg-[#12121a]">
@@ -11899,6 +12165,9 @@ DATEI: index.html
       <!-- Generated columns via JS -->
     </main>
 
+    <!-- MOBILE: Bottom-Tab-Leiste für Kategorie-Navigation (nur auf Touch/Mobile sichtbar, siehe styles-mobile.css) -->
+    <nav id="mobile-category-tabs" class="mobile-category-tabs" aria-label="Kategorien"></nav>
+
     <!-- ZEN CHILL VIEW -->
     <div id="zen-chill-view" class="hidden flex-col items-center justify-center flex-1 max-w-2xl mx-auto w-full text-center p-6 md:p-10 my-auto animate-fade-in select-none">
       <div class="relative bg-[#13131c]/80 border border-purple-500/20 rounded-3xl p-8 md:p-12 shadow-[0_0_50px_rgba(139,92,246,0.15)] backdrop-blur-2xl w-full flex flex-col items-center gap-6 transition-all duration-300">
@@ -12228,7 +12497,7 @@ DATEI: index.html
 
   <!-- NEUTRALES HELPER WAS NUN? MODAL -->
   <div id="helper-pick-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div id="helper-pick-card" class="w-full max-w-lg bg-[#111116]/95 border p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+    <div id="helper-pick-card" class="mobile-modal-card w-full max-w-lg bg-[#111116]/95 border p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeHelperModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
 
       <h3 class="text-white font-bold text-sm font-display mb-4 pb-2 border-b border-white/10 flex items-center gap-2">
@@ -12292,7 +12561,7 @@ DATEI: index.html
 
   <!-- SANFTER BEWEGUNGS-IMPULS MODAL -->
   <div id="helper-sport-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div id="helper-sport-card" class="w-full max-w-md bg-[#111116]/95 border border-orange-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+    <div id="helper-sport-card" class="mobile-modal-card w-full max-w-md bg-[#111116]/95 border border-orange-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeSportModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
 
       <h3 class="text-white font-bold text-sm font-display mb-4 pb-2 border-b border-white/10 flex items-center gap-2">
@@ -12339,7 +12608,7 @@ DATEI: index.html
 
   <!-- SENSORISCHE REIZPAUSE (SAFE SPACE) MODAL -->
   <div id="helper-safespace-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div id="helper-safespace-card" class="w-full max-w-md bg-[#111116]/95 border border-teal-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+    <div id="helper-safespace-card" class="mobile-modal-card w-full max-w-md bg-[#111116]/95 border border-teal-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeSafeSpaceModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
 
       <h3 class="text-white font-bold text-sm font-display mb-4 pb-2 border-b border-white/10 flex items-center gap-2">
@@ -12382,7 +12651,7 @@ DATEI: index.html
 
   <!-- ENTSCHEIDUNGSKOMPASS MODAL -->
   <div id="helper-compass-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div id="helper-compass-card" class="w-full max-w-lg bg-[#111116]/95 border border-rose-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+    <div id="helper-compass-card" class="mobile-modal-card w-full max-w-lg bg-[#111116]/95 border border-rose-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeCompassModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
 
       <h3 class="text-white font-bold text-sm font-display mb-4 pb-2 border-b border-white/10 flex items-center gap-2">
@@ -12637,7 +12906,7 @@ DATEI: index.html
 
   <!-- SOCIAL SCRIPTING MODAL -->
   <div id="helper-scripting-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div id="helper-scripting-card" class="w-full max-w-md bg-[#111116]/95 border border-indigo-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+    <div id="helper-scripting-card" class="mobile-modal-card w-full max-w-md bg-[#111116]/95 border border-indigo-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeScriptingModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
 
       <h3 class="text-white font-bold text-sm font-display mb-4 pb-2 border-b border-white/10 flex items-center gap-2">
@@ -12683,7 +12952,7 @@ DATEI: index.html
 
   <!-- HELPER STEP-BY-STEP MODAL -->
   <div id="helper-steps-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div class="w-full max-w-lg bg-[#111116]/95 border p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+    <div class="mobile-modal-card w-full max-w-lg bg-[#111116]/95 border p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeHelperModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
 
       <h3 class="text-white font-bold text-sm font-display mb-4 pb-2 border-b border-white/10 flex items-center gap-2">

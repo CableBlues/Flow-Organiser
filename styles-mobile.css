@@ -5,23 +5,20 @@
    Screen) ändert sich dadurch NICHTS am bestehenden Verhalten oder Layout.
    ========================================================================== */
 
+/* --- Grundlegendes Touch-Feingefühl (betrifft alle Bildschirmgrößen leicht,
+   aber nur kosmetisch: kein Layout-Impact, kein Verhaltens-Impact) --- */
+button, a, [onclick] {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* Auf dem Desktop (Standardfall) bleibt die Kategorie-Tab-Leiste unsichtbar
    und wirkungslos – sie wird ausschließlich innerhalb der Touch-Media-Query
-   unten wieder eingeblendet. Das ist die einzige Regel in dieser Datei, die
-   nicht in der Media Query steckt, weil sie genau dafür sorgt, dass auf dem
-   Desktop garantiert nichts sichtbar wird. */
+   unten wieder eingeblendet. */
 .mobile-category-tabs {
   display: none;
 }
 
 @media (hover: none), (pointer: coarse) {
-
-  /* Feinschliff für Touch-Antippen (Highlight-Flash, Doppel-Tap-Zoom) –
-     bewusst hier drin und nicht global, auch wenn die Wirkung auf Geräten
-     mit Maus ohnehin null wäre. */
-  button, a, [onclick] {
-    -webkit-tap-highlight-color: transparent;
-  }
 
   button, a, [onclick], input, select, textarea {
     touch-action: manipulation; /* verhindert Doppel-Tap-Zoom-Verzögerung */
