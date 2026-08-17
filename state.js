@@ -1,4 +1,3 @@
-
 // CONFIGURATION KEYS AND GLOBAL STATE DEFINITIONS
 let state = loadState();
 let historyStack = loadHistory();
@@ -140,14 +139,25 @@ function loadHistory() {
   return [];
 }
 
+// PERFORMANCE-FIX: saveState() wurde bisher bei JEDEM Aufruf (42 Stellen im Code) zusaetzlich
+// den kompletten historyStack (bis zu 20 volle State-Kopien) neu serialisiert und geschrieben,
+// obwohl sich die History in den allermeisten dieser Faelle gar nicht geaendert hatte. Das
+// blockierte den Main-Thread unnoetig bei jeder kleinen Aktion (Task abhaken, Item hinzufuegen...).
+// Jetzt wird die History nur noch dann persistiert, wenn sie sich tatsaechlich aendert
+// (saveHistory() / handleUndo()). Das Endergebnis in localStorage ist zu jedem Zeitpunkt exakt
+// identisch zu vorher - nur die Anzahl unnoetiger Schreibvorgaenge sinkt drastisch.
 function saveState() {
   localStorage.setItem(STORE_KEY, JSON.stringify(state));
+}
+
+function persistHistory() {
   localStorage.setItem(HISTORY_KEY, JSON.stringify(historyStack));
 }
 
 function saveHistory() {
   historyStack.push(JSON.parse(JSON.stringify(state)));
   if (historyStack.length > 20) historyStack.shift();
+  persistHistory();
 }
 
 function t(key) {
@@ -181,6 +191,7 @@ function handleUndo() {
     return;
   }
   state = historyStack.pop();
+  persistHistory();
   saveState();
   showToast(t('toast_undo_applied'));
   renderApp();
@@ -259,3 +270,5 @@ function handleOpenFile(e) {
   };
   reader.readAsText(file);
 } 
+ 
+ 

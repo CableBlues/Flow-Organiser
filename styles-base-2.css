@@ -1,0 +1,338 @@
+/* styles-base-2.css: Fortsetzung Theme-Overrides (Fortsetzung von styles-base-1.css) */
+
+body.theme-parchment,
+body.theme-minimalist-light,
+body.theme-terracotta-light {
+  font-size: 1.05rem !important;
+}
+
+body.theme-parchment .task-text-span,
+body.theme-minimalist-light .task-text-span,
+body.theme-terracotta-light .task-text-span {
+  font-size: 0.98rem !important;
+  font-weight: 700 !important;
+  color: var(--text-main) !important;
+}
+
+body.theme-parchment article h2 span {
+  font-size: 1.15rem !important;
+  font-weight: 800 !important;
+}
+
+body.theme-mono-hand article,
+body.theme-parchment article,
+body.theme-minimalist-light article,
+body.theme-terracotta-light article {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border-main) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
+}
+
+body.theme-mono-hand article:hover,
+body.theme-parchment article:hover,
+body.theme-minimalist-light article:hover,
+body.theme-terracotta-light article:hover {
+  background-color: var(--bg-card-hover) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 0 0 12px var(--accent-border) !important;
+}
+
+body.theme-mono-hand article div[draggable="true"],
+body.theme-parchment article div[draggable="true"],
+body.theme-minimalist-light article div[draggable="true"],
+body.theme-terracotta-light article div[draggable="true"] {
+  border-color: var(--border-main) !important;
+  background-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+body.theme-mono-hand article div[draggable="true"]:hover,
+body.theme-parchment article div[draggable="true"]:hover,
+body.theme-minimalist-light article div[draggable="true"]:hover,
+body.theme-terracotta-light article div[draggable="true"]:hover {
+  background-color: #ffffff !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.theme-mono-hand select,
+body.theme-mono-hand textarea,
+body.theme-mono-hand input,
+body.theme-parchment select,
+body.theme-parchment textarea,
+body.theme-parchment input,
+body.theme-minimalist-light select,
+body.theme-minimalist-light textarea,
+body.theme-minimalist-light input,
+body.theme-terracotta-light select,
+body.theme-terracotta-light textarea,
+body.theme-terracotta-light input {
+  background-color: #ffffff !important;
+  color: var(--text-main) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+}
+
+body.theme-mono-hand header,
+body.theme-parchment header,
+body.theme-minimalist-light header,
+body.theme-terracotta-light header {
+  background-color: var(--bg-header) !important;
+  border-color: var(--border-main) !important;
+}
+
+body.theme-mono-hand header *,
+body.theme-parchment header *,
+body.theme-minimalist-light header *,
+body.theme-terracotta-light header * {
+  color: var(--text-header) !important;
+}
+
+body.theme-mono-hand header button:not([id^="panel-"] button),
+body.theme-parchment header button:not([id^="panel-"] button),
+body.theme-minimalist-light header button:not([id^="panel-"] button),
+body.theme-terracotta-light header button:not([id^="panel-"] button) {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  color: var(--accent) !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03) !important;
+}
+
+body.theme-mono-hand header button:not([id^="panel-"] button) i,
+body.theme-parchment header button:not([id^="panel-"] button) i,
+body.theme-minimalist-light header button:not([id^="panel-"] button) i,
+body.theme-terracotta-light header button:not([id^="panel-"] button) i {
+  color: var(--accent) !important;
+}
+
+body.theme-mono-hand #date-container,
+body.theme-parchment #date-container,
+body.theme-minimalist-light #date-container,
+body.theme-terracotta-light #date-container {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03) !important;
+}
+
+body.theme-mono-hand #date-display,
+body.theme-parchment #date-display,
+body.theme-minimalist-light #date-display,
+body.theme-terracotta-light #date-display {
+  background: none !important;
+  -webkit-text-fill-color: var(--accent) !important;
+  color: var(--accent) !important;
+  text-shadow: none !important;
+}
+
+body.theme-mono-hand #date-icon,
+body.theme-parchment #date-icon,
+body.theme-minimalist-light #date-icon,
+body.theme-terracotta-light #date-icon {
+  color: var(--accent) !important;
+}
+
+#timer-trigger-container {
+  background-color: rgba(0, 0, 0, 0.35) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+#timer-preset-select-real {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  color: var(--accent-light) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+#timer-display {
+  color: var(--accent-light) !important;
+}
+
+body.theme-mono-hand #timer-trigger-container,
+body.theme-parchment #timer-trigger-container,
+body.theme-minimalist-light #timer-trigger-container,
+body.theme-terracotta-light #timer-trigger-container {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  border: 1.5px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02) !important;
+}
+
+body.theme-mono-hand #timer-display,
+body.theme-parchment #timer-display,
+body.theme-minimalist-light #timer-display,
+body.theme-terracotta-light #timer-display {
+  color: var(--accent) !important;
+}
+
+body.theme-mono-hand #timer-preset-select-real,
+body.theme-parchment #timer-preset-select-real,
+body.theme-minimalist-light #timer-preset-select-real,
+body.theme-terracotta-light #timer-preset-select-real {
+  background-color: #ffffff !important;
+  color: var(--accent) !important;
+  border: 1.5px solid rgba(0, 0, 0, 0.15) !important;
+}
+
+html body #app #timer-trigger-container button i {
+  transition: transform 0.2s ease !important;
+}
+
+html body #app #timer-trigger-container button#timer-play-btn i {
+  color: #10b981 !important;
+}
+
+html body #app #timer-trigger-container button#timer-pause-btn i {
+  color: var(--accent) !important;
+}
+
+html body #app #timer-trigger-container button#timer-stop-btn i {
+  color: #f43f5e !important;
+}
+
+html body #app #timer-trigger-container button#timer-mute-btn i {
+  color: #64748b !important;
+}
+
+body.theme-mono-hand #timer-trigger-container button#timer-mute-btn i,
+body.theme-parchment #timer-trigger-container button#timer-mute-btn i,
+body.theme-minimalist-light #timer-trigger-container button#timer-mute-btn i,
+body.theme-terracotta-light #timer-trigger-container button#timer-mute-btn i {
+  color: var(--accent) !important;
+}
+
+body.theme-mono-hand [id^="panel-"],
+body.theme-mono-hand #panel-calendar-dropdown,
+body.theme-mono-hand .mobile-modal-card,
+body.theme-mono-hand #praise-card,
+body.theme-mono-hand #toast-card,
+body.theme-mono-hand #report-export-target,
+body.theme-parchment [id^="panel-"],
+body.theme-parchment #panel-calendar-dropdown,
+body.theme-parchment .mobile-modal-card,
+body.theme-parchment #praise-card,
+body.theme-parchment #toast-card,
+body.theme-parchment #report-export-target,
+body.theme-minimalist-light [id^="panel-"],
+body.theme-minimalist-light #panel-calendar-dropdown,
+body.theme-minimalist-light .mobile-modal-card,
+body.theme-minimalist-light #praise-card,
+body.theme-minimalist-light #toast-card,
+body.theme-minimalist-light #report-export-target,
+body.theme-terracotta-light [id^="panel-"],
+body.theme-terracotta-light #panel-calendar-dropdown,
+body.theme-terracotta-light .mobile-modal-card,
+body.theme-terracotta-light #praise-card,
+body.theme-terracotta-light #toast-card,
+body.theme-terracotta-light #report-export-target {
+  background-color: var(--bg-panel) !important;
+  border: 1.5px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.theme-mono-hand [id^="panel-"] *,
+body.theme-mono-hand #panel-calendar-dropdown *,
+body.theme-mono-hand .mobile-modal-card *,
+body.theme-mono-hand #praise-card,
+body.theme-mono-hand #toast-card,
+body.theme-parchment [id^="panel-"] *,
+body.theme-parchment #panel-calendar-dropdown *,
+body.theme-parchment .mobile-modal-card *,
+body.theme-parchment #praise-card,
+body.theme-parchment #toast-card,
+body.theme-minimalist-light [id^="panel-"] *,
+body.theme-minimalist-light #panel-calendar-dropdown *,
+body.theme-minimalist-light .mobile-modal-card *,
+body.theme-minimalist-light #praise-card,
+body.theme-minimalist-light #toast-card,
+body.theme-terracotta-light [id^="panel-"] *,
+body.theme-terracotta-light #panel-calendar-dropdown *,
+body.theme-terracotta-light .mobile-modal-card *,
+body.theme-terracotta-light #praise-card,
+body.theme-terracotta-light #toast-card {
+  color: var(--text-main) !important;
+}
+
+*, button, span, label, h1, h2, h3, h4, header, footer {
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: none !important;
+}
+
+.whitespace-nowrap {
+  white-space: nowrap !important;
+}
+
+#date-container {
+  border: 1.5px solid color-mix(in srgb, var(--accent) 30%, rgba(255, 255, 255, 0.15));
+  border-bottom: 3.5px solid rgba(0, 0, 0, 0.45);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+  box-shadow: 
+    0 4px 10px rgba(0, 0, 0, 0.25), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform;
+}
+
+#date-container:hover {
+  border-color: var(--accent-light) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 
+    0 12px 25px color-mix(in srgb, var(--accent) 25%, transparent), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+  transform: scale(1.08) translateY(-3px) !important;
+  z-index: 10000 !important;
+}
+
+#date-display {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 900;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 55%, var(--text-header) 100%);
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+#date-icon {
+  color: var(--accent-light);
+  opacity: 0.8;
+}
+
+#cal-days-grid span:not(.text-transparent) {
+  cursor: pointer !important;
+  position: relative !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+              background-color 0.2s ease, 
+              color 0.2s ease, 
+              box-shadow 0.2s ease !important;
+  will-change: transform;
+}
+
+#cal-days-grid span:not(.text-transparent):hover {
+  transform: scale(1.25) translateY(-2px) !important;
+  background-color: var(--accent) !important;
+  color: #ffffff !important;
+  border-radius: 6px !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3), 
+              0 0 12px var(--accent-light, rgba(139, 92, 246, 0.4)) !important;
+  z-index: 50 !important;
+}
+
+html body #app .premium-glow-btn {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35), 0 0 10px var(--accent-border, rgba(139, 92, 246, 0.15)) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease !important;
+  will-change: transform;
+}
+
+html body #app .premium-glow-btn:hover {
+  border-color: var(--accent-light) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 18px var(--accent-light, rgba(139, 92, 246, 0.35)) !important;
+}
+
+html body #app .premium-glow-btn i {
+  animation: button-icon-move 3s ease-in-out infinite !important;
+  display: inline-block;
+  will-change: transform;
+}
+
+ 
+ 

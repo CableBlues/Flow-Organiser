@@ -1,0 +1,407 @@
+/* styles-base-1.css: CSS-Variablen & Themes (siehe auch styles-base-2.css) */
+
+/* --- GLOBALE CSS-VARIABLEN FÜR DYNAMISCHE HINTERGRÜNDE & KONTRASTE --- */
+:root {
+  --accent: #8b5cf6;
+  --accent-light: #c084fc;
+  --bg-app: #0e0e14;
+  --bg-header: rgba(22, 22, 35, 0.7);
+  --bg-card: rgba(28, 28, 44, 0.65);
+  --bg-card-hover: rgba(36, 36, 58, 0.8);
+  --bg-dock: rgba(22, 22, 35, 0.8);
+  --bg-panel: #161622;
+  --bg-modal: #161622;
+  --text-main: #f4f4f5;
+  --text-muted: #a1a1aa;
+  --text-header: #f4f4f5;
+  --text-dock: #f4f4f5;
+  --border-main: rgba(255, 255, 255, 0.12);
+  --font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+body {
+  background-color: var(--bg-app) !important;
+  color: var(--text-main) !important;
+  font-family: var(--font-family) !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Beim automatischen Farbwechsel nach einer erledigten Aufgabe: sehr sanfter, langsamer Verlauf
+   statt des schnellen manuellen Wechsels. Wird per JS kurzzeitig gesetzt und wieder entfernt. */
+body.theme-fade-slow,
+body.theme-fade-slow * {
+  transition: background-color 2.4s ease, border-color 2.4s ease, box-shadow 2.4s ease, color 1.6s ease !important;
+}
+
+body, body #app, body #app * {
+  font-family: var(--font-family) !important;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* 1. Aurora (Mystical Deep Purple-Slate) */
+body.theme-aurora {
+  --accent: #a855f7;
+  --accent-light: #d8b4fe;
+  --accent-border: rgba(168, 85, 247, 0.35);
+  --bg-app: #110f1a;
+  --bg-header: rgba(25, 21, 42, 0.75);
+  --bg-card: rgba(32, 26, 54, 0.65);
+  --bg-card-hover: rgba(44, 34, 74, 0.8);
+  --bg-dock: #19152a;
+  --bg-panel: #141021;
+  --bg-modal: #141021;
+  --text-main: #eae6f5;
+  --text-muted: #a78bfa;
+  --text-header: #f3f0fa;
+  --text-dock: #f3f0fa;
+  --border-main: rgba(168, 85, 247, 0.2);
+}
+
+/* 2. Sage (Beruhigendes, neutrales Salbeigrün-Grau) */
+body.theme-sage {
+  --accent: #86efac;
+  --accent-light: #bbf7d0;
+  --accent-border: rgba(134, 239, 172, 0.35);
+  --bg-app: #1c1f1d;
+  --bg-header: rgba(38, 48, 42, 0.75);
+  --bg-card: rgba(46, 56, 50, 0.65);
+  --bg-card-hover: rgba(58, 72, 62, 0.8);
+  --bg-dock: #26302a;
+  --bg-panel: #1a211c;
+  --bg-modal: #1a211c;
+  --text-main: #e2f0d9;
+  --text-muted: #86efac;
+  --text-header: #edf7e1;
+  --text-dock: #edf7e1;
+  --border-main: rgba(134, 239, 172, 0.2);
+}
+
+/* 3. Cozy (Warmes Kaffeebraun / Espresso) */
+body.theme-cozy {
+  --accent: #f59e0b;
+  --accent-light: #fbbf24;
+  --accent-border: rgba(245, 158, 11, 0.35);
+  --bg-app: #1c1511;
+  --bg-header: rgba(41, 30, 24, 0.75);
+  --bg-card: rgba(53, 40, 31, 0.65);
+  --bg-card-hover: rgba(68, 50, 40, 0.8);
+  --bg-dock: #291e18;
+  --bg-panel: #1a120e;
+  --bg-modal: #1a120e;
+  --text-main: #faede0;
+  --text-muted: #cca480;
+  --text-header: #fffbf5;
+  --text-dock: #fffbf5;
+  --border-main: rgba(245, 158, 11, 0.2);
+}
+
+/* 4. Forest (Tiefes Waldgrün) */
+body.theme-forest {
+  --accent: #10b981;
+  --accent-light: #6ee7b7;
+  --accent-border: rgba(16, 185, 129, 0.35);
+  --bg-app: #0e1511;
+  --bg-header: rgba(21, 36, 27, 0.75);
+  --bg-card: rgba(30, 48, 38, 0.65);
+  --bg-card-hover: rgba(38, 62, 48, 0.8);
+  --bg-dock: #15241b;
+  --bg-panel: #0a110a;
+  --bg-modal: #0a110a;
+  --text-main: #e6f4ea;
+  --text-muted: #81c784;
+  --text-header: #f1fcf4;
+  --text-dock: #f1fcf4;
+  --border-main: rgba(16, 185, 129, 0.2);
+}
+
+/* 5. Architect (Kühles Architektur-Slate / Blaugrau) */
+body.theme-architect {
+  --accent: #64748b;
+  --accent-light: #94a3b8;
+  --accent-border: rgba(100, 116, 139, 0.35);
+  --bg-app: #202632;
+  --bg-header: rgba(45, 55, 72, 0.75);
+  --bg-card: rgba(45, 55, 72, 0.65);
+  --bg-card-hover: rgba(56, 68, 88, 0.8);
+  --bg-dock: #2d3748;
+  --bg-panel: #1a202c;
+  --bg-modal: #1a202c;
+  --text-main: #edf2f7;
+  --text-muted: #a0aec0;
+  --text-header: #f7fafc;
+  --text-dock: #f7fafc;
+  --border-main: rgba(100, 116, 139, 0.22);
+}
+
+/* 6. Mono Hand (Klassisches Pergamentpapier) */
+body.theme-mono-hand {
+  --accent: #783e19;
+  --accent-light: #9a5324;
+  --accent-border: rgba(120, 62, 25, 0.45);
+  --bg-app: #f4efdf;
+  --bg-header: rgba(234, 227, 207, 0.85);
+  --bg-card: rgba(255, 255, 255, 0.65);
+  --bg-card-hover: rgba(255, 255, 255, 0.85);
+  --bg-dock: #eae3cf;
+  --bg-panel: #fcfbf7;
+  --bg-modal: #fcfbf7;
+  --text-main: #231207;
+  --text-muted: #783e19;
+  --text-header: #231207;
+  --text-dock: #231207;
+  --border-main: rgba(120, 62, 25, 0.25);
+  --font-family: 'Caveat', cursive, sans-serif;
+}
+
+/* 8. Glacier (Nordisches Eisblau-Slate) */
+body.theme-glacier {
+  --accent: #06b6d4;
+  --accent-light: #a5f3fc;
+  --accent-border: rgba(6, 182, 212, 0.35);
+  --bg-app: #0f141d;
+  --bg-header: rgba(26, 34, 47, 0.75);
+  --bg-card: rgba(30, 41, 59, 0.65);
+  --bg-card-hover: rgba(40, 56, 78, 0.8);
+  --bg-dock: #1a222f;
+  --bg-panel: #090d16;
+  --bg-modal: #090d16;
+  --text-main: #e2f1f6;
+  --text-muted: #38bdf8;
+  --text-header: #f0fafc;
+  --text-dock: #f0fafc;
+  --border-main: rgba(6, 182, 212, 0.18);
+}
+
+/* 9. Charcoal (Mattes Graphit-Grau) */
+body.theme-charcoal {
+  --accent: #475569;
+  --accent-light: #94a3b8;
+  --accent-border: rgba(71, 85, 105, 0.3);
+  --bg-app: #181a1f;
+  --bg-header: rgba(33, 37, 43, 0.75);
+  --bg-card: rgba(40, 44, 52, 0.65);
+  --bg-card-hover: rgba(50, 54, 64, 0.8);
+  --bg-dock: #21252b;
+  --bg-panel: #121417;
+  --bg-modal: #121417;
+  --text-main: #e1e2e6;
+  --text-muted: #abb2bf;
+  --text-header: #f0f1f4;
+  --text-dock: #f0f1f4;
+  --border-main: rgba(255, 255, 255, 0.1);
+}
+
+/* 10. Executive (Dunkles Business-Marineblau & Gold) */
+body.theme-executive {
+  --accent: #c5a880;
+  --accent-light: #e2d1b9;
+  --accent-border: rgba(197, 168, 128, 0.35);
+  --bg-app: #050a18;
+  --bg-header: rgba(11, 20, 45, 0.75);
+  --bg-card: rgba(23, 37, 66, 0.65);
+  --bg-card-hover: rgba(30, 48, 86, 0.8);
+  --bg-dock: #0b142d;
+  --bg-panel: #02040c;
+  --bg-modal: #02040c;
+  --text-main: #f1eae2;
+  --text-muted: #c5a880;
+  --text-header: #fffbf7;
+  --text-dock: #fffbf7;
+  --border-main: rgba(197, 168, 128, 0.22);
+}
+
+/* 11. Neon Cyber (Futuristisches Magenta-Cyberpunk) */
+body.theme-neon-cyber {
+  --accent: #ff2fd0;
+  --accent-light: #ff8de8;
+  --accent-border: rgba(255, 47, 208, 0.35);
+  --bg-app: #0b0512;
+  --bg-header: rgba(26, 12, 36, 0.75);
+  --bg-card: rgba(36, 16, 48, 0.65);
+  --bg-card-hover: rgba(50, 20, 66, 0.8);
+  --bg-dock: #1a0c24;
+  --bg-panel: #0e0616;
+  --bg-modal: #0e0616;
+  --text-main: #f7e6fb;
+  --text-muted: #e879c9;
+  --text-header: #fdf0fd;
+  --text-dock: #fdf0fd;
+  --border-main: rgba(255, 47, 208, 0.22);
+}
+
+/* 12. Carbon (Minimalistisches Carbon-Schwarz) */
+body.theme-carbon {
+  --accent: #cbd5e1;
+  --accent-light: #f8fafc;
+  --accent-border: rgba(203, 213, 225, 0.3);
+  --bg-app: #0d0e11;
+  --bg-header: rgba(18, 20, 22, 0.75);
+  --bg-card: rgba(26, 29, 32, 0.65);
+  --bg-card-hover: rgba(36, 40, 44, 0.8);
+  --bg-dock: #121416;
+  --bg-panel: #040405;
+  --bg-modal: #040405;
+  --text-main: #f3f4f6;
+  --text-muted: #9ca3af;
+  --text-header: #f9fafb;
+  --text-dock: #f9fafb;
+  --border-main: rgba(255, 255, 255, 0.08);
+}
+
+/* 13. Parchment (Warmer antiker Buch-Einband & Espresso-Tinte) */
+body.theme-parchment {
+  --accent: #5e3c23;
+  --accent-light: #8d5b34;
+  --accent-border: rgba(94, 60, 35, 0.45);
+  --bg-app: #f1ebd8;
+  --bg-header: rgba(228, 220, 184, 0.85);
+  --bg-card: rgba(255, 255, 255, 0.55);
+  --bg-card-hover: rgba(255, 255, 255, 0.75);
+  --bg-dock: #e4dcb8;
+  --bg-panel: #FAF7EF;
+  --bg-modal: #FAF7EF;
+  --text-main: #331e0f;
+  --text-muted: #5e3c23;
+  --text-header: #331e0f;
+  --text-dock: #331e0f;
+  --border-main: rgba(94, 60, 35, 0.25);
+  --font-family: 'Playfair Display', Georgia, serif;
+}
+
+/* 14. Minimalist Light (Kühler, reiner skandinavischer Weißraum) */
+body.theme-minimalist-light {
+  --accent: #0f172a;
+  --accent-light: #334155;
+  --accent-border: rgba(15, 23, 42, 0.35);
+  --bg-app: #f8fafc;
+  --bg-header: rgba(226, 232, 240, 0.85);
+  --bg-card: rgba(255, 255, 255, 0.85);
+  --bg-card-hover: #ffffff;
+  --bg-dock: #e2e8f0;
+  --bg-panel: #ffffff;
+  --bg-modal: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-header: #0f172a;
+  --text-dock: #0f172a;
+  --border-main: rgba(15, 23, 42, 0.18);
+  --font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+/* 15. Terracotta Light (Sanfter Wüstensand & Ziegelton) */
+body.theme-terracotta-light {
+  --accent: #9a4c24;
+  --accent-light: #bc724c;
+  --accent-border: rgba(154, 76, 36, 0.4);
+  --bg-app: #fcf7f2;
+  --bg-header: rgba(242, 227, 213, 0.85);
+  --bg-card: rgba(255, 255, 255, 0.65);
+  --bg-card-hover: rgba(255, 255, 255, 0.85);
+  --bg-dock: #f2e3d5;
+  --bg-panel: #fffbf8;
+  --bg-modal: #fffbf8;
+  --text-main: #4a1e0a;
+  --text-muted: #9a4c24;
+  --text-header: #4a1e0a;
+  --text-dock: #4a1e0a;
+  --border-main: rgba(154, 76, 36, 0.22);
+  --font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+/* 16. Holo Chrome (Futuristisches Cyan-Chrom-HUD) */
+body.theme-holo-chrome {
+  --accent: #22e5d4;
+  --accent-light: #a8fff5;
+  --accent-border: rgba(34, 229, 212, 0.35);
+  --bg-app: #060b12;
+  --bg-header: rgba(14, 26, 34, 0.75);
+  --bg-card: rgba(18, 36, 44, 0.65);
+  --bg-card-hover: rgba(24, 48, 58, 0.8);
+  --bg-dock: #0e1c22;
+  --bg-panel: #050c10;
+  --bg-modal: #050c10;
+  --text-main: #e4fdfb;
+  --text-muted: #5eead4;
+  --text-header: #f0fffd;
+  --text-dock: #f0fffd;
+  --border-main: rgba(34, 229, 212, 0.22);
+}
+
+/* 17. Synthwave (Futuristisches Retro-Sonnenuntergang-Neon) */
+body.theme-synthwave {
+  --accent: #ff5f9e;
+  --accent-light: #ffb3d1;
+  --accent-border: rgba(255, 95, 158, 0.35);
+  --bg-app: #150a24;
+  --bg-header: rgba(36, 16, 54, 0.75);
+  --bg-card: rgba(48, 20, 70, 0.65);
+  --bg-card-hover: rgba(62, 26, 90, 0.8);
+  --bg-dock: #2a1240;
+  --bg-panel: #100819;
+  --bg-modal: #100819;
+  --text-main: #fbe8f5;
+  --text-muted: #f0abfc;
+  --text-header: #fef2fa;
+  --text-dock: #fef2fa;
+  --border-main: rgba(255, 95, 158, 0.22);
+}
+
+body.theme-mono-hand {
+  font-size: 1.32rem !important;
+}
+
+body.theme-mono-hand .task-text-span {
+  font-size: 1.32rem !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+}
+
+body.theme-mono-hand article h2 span {
+  font-size: 1.4rem !important;
+  font-weight: 800 !important;
+}
+
+body.theme-mono-hand p,
+body.theme-mono-hand h1,
+body.theme-mono-hand h3,
+body.theme-mono-hand h4,
+body.theme-mono-hand textarea,
+body.theme-mono-hand input,
+body.theme-mono-hand select,
+body.theme-mono-hand button {
+  font-size: 1.22rem !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+}
+
+body.theme-mono-hand .dock-label {
+  font-size: 0.85rem !important;
+  font-weight: 800 !important;
+}
+
+body.theme-mono-hand span:not(.dock-label):not(#active-lang-flag) {
+  font-size: 1.12rem !important;
+  font-weight: 700 !important;
+}
+
+body.theme-mono-hand #timer-display {
+  font-size: 1.25rem !important;
+  font-weight: 900 !important;
+}
+
