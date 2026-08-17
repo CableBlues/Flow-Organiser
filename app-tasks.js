@@ -261,13 +261,8 @@ function handleCompleteTask(category, index, event) {
     state.done.push({ task: taskText, origin: category, date: todayStr, time: timeStr });
     state.streak = (state.streak || 0) + 1; if (state.completedSteps) delete state.completedSteps[taskText];
     
-    const themes = [
-      'sage', 'aurora', 'cozy', 'forest', 'architect', 'mono-hand', 'editorial', 'glacier', 
-      'charcoal', 'executive', 'terracotta', 'carbon', 'parchment', 'minimalist-light', 
-      'terracotta-light', 'slate-ivory'
-    ];
-    let nextTheme; do { nextTheme = themes[Math.floor(Math.random() * themes.length)]; } while (nextTheme === currentTheme);
-    setTheme(nextTheme); saveState(); showPraise(); renderApp(); updateZenView(); populateHelperTaskSelect();
+    // Beim Erledigen wechselt das Farbschema sanft zu einem verwandten, ähnlichen Schema
+    setThemeSlow(getSimilarTheme(currentTheme)); saveState(); showPraise(); renderApp(); updateZenView(); populateHelperTaskSelect();
   };
   if (taskEl) { animateTaskToDone(taskEl, '#list-done', onComplete); } else { onComplete(); }
 }

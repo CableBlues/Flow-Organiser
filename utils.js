@@ -5,6 +5,9 @@ let soundPool = [];
 let animationPool = [];
 
 // Abgestuftes Lob-System (Skaliert mit dem Fortschritt des Tages)
+// Merkt sich den zuletzt gezeigten Lob-Spruch, damit er nicht sofort wiederholt wird
+let lastPraiseMsg = null;
+
 const TIERED_PRAISES = {
   de: {
     // Stufe 1: Erster Einstieg (1 Aufgabe geschafft)
@@ -341,9 +344,15 @@ function showPraise() {
   
   const list = (TIERED_PRAISES[lang] || TIERED_PRAISES['de'])[activeTier];
   
-  // Hole einen zufälligen Spruch aus der gewählten Stufe
-  const praiseIdx = Math.floor(Math.random() * list.length);
+  // Hole einen zufälligen Spruch aus der gewählten Stufe, ohne den zuletzt gezeigten sofort zu wiederholen
+  let praiseIdx = Math.floor(Math.random() * list.length);
+  if (list.length > 1) {
+    while (list[praiseIdx] === lastPraiseMsg) {
+      praiseIdx = Math.floor(Math.random() * list.length);
+    }
+  }
   const msg = list[praiseIdx];
+  lastPraiseMsg = msg;
 
   const overlay = document.getElementById('praise-overlay');
   const card = document.getElementById('praise-card');
@@ -677,7 +686,7 @@ function renderMiniCalendar() {
 }
 
 function updateDateAndStreak() {
-  const locales = { de: 'de-DE', en: 'en-GB', el: 'el-GR', es: 'es-ES' };
+  const locales = { de: 'de-DE', en: 'en-GB', el: 'el-GR', es: 'es-ES', fr: 'fr-FR', it: 'it-IT' };
   try {
     const str = new Intl.DateTimeFormat(locales[currentLang] || 'en-GB', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
     const displayEl = document.getElementById('date-display');

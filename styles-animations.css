@@ -115,16 +115,16 @@ html body #app header #date-container:hover {
 #panel-theme button[onclick="setTheme('forest')"] { background-color: #22c55e !important; }
 #panel-theme button[onclick="setTheme('architect')"] { background-color: #64748b !important; }
 #panel-theme button[onclick="setTheme('mono-hand')"] { background-color: #d2b48c !important; }
-#panel-theme button[onclick="setTheme('editorial')"] { background-color: #eae6df !important; }
+#panel-theme button[onclick="setTheme('neon-cyber')"] { background-color: #ff2fd0 !important; }
 #panel-theme button[onclick="setTheme('glacier')"] { background-color: #a5f3fc !important; }
 #panel-theme button[onclick="setTheme('charcoal')"] { background-color: #475569 !important; }
 #panel-theme button[onclick="setTheme('executive')"] { background-color: #b5a642 !important; }
-#panel-theme button[onclick="setTheme('terracotta')"] { background-color: #cca480 !important; }
+#panel-theme button[onclick="setTheme('holo-chrome')"] { background-color: #22e5d4 !important; }
 #panel-theme button[onclick="setTheme('carbon')"] { background-color: #1e293b !important; }
 #panel-theme button[onclick="setTheme('parchment')"] { background-color: #8d5b34 !important; }
 #panel-theme button[onclick="setTheme('minimalist-light')"] { background-color: #f8fafc !important; }
 #panel-theme button[onclick="setTheme('terracotta-light')"] { background-color: #9a4c24 !important; }
-#panel-theme button[onclick="setTheme('slate-ivory')"] { background-color: #2e3b4e !important; }
+#panel-theme button[onclick="setTheme('synthwave')"] { background-color: #ff5f9e !important; }
 
 html body #app main article {
   background-color: var(--bg-card) !important;

@@ -37,45 +37,80 @@ const VOICE_PROFILES = [
   { id: 'modern_maennlich_1', pitch: 1.01, rate: 1.01, gender: 'male' }
 ];
 
-// Motivierende Sätze, passend zum Fortschritt der Fokussitzung
+// Motivierende Sätze, passend zum Fortschritt der Fokussitzung (6 Varianten je Phase, damit sich nichts zu schnell wiederholt)
 const MOTIVATIONAL_CHUNKS = {
   de: {
-    start: ["Super Start! Konzentriere dich auf diesen ersten Schritt.", "Sehr gut, der Anfang ist gemacht!", "Schritt für Schritt. Du hast das im Griff!"],
-    halfway: ["Schon die Hälfte geschafft! Du machst das fantastisch.", "Bleib im Rhythmus, du bist voll auf Kurs!", "Ausgezeichneter Fokus! Atme kurz durch und mach weiter."],
-    end: ["Fast geschafft! Jetzt kommt der Endspurt.", "Wunderbar! Die Ziellinie ist in Sicht.", "Hervorragend, nur noch ein kleiner Moment!"],
-    overdue: ["Zeit zu wechseln!", "Nimm dir eine Pause.", "Die Sitzung ist vorbei."]
+    start: ["Super Start! Konzentriere dich auf diesen ersten Schritt.", "Sehr gut, der Anfang ist gemacht!", "Schritt für Schritt. Du hast das im Griff!", "Los geht's, du hast die Kontrolle.", "Jeder Anfang zählt – weiter so!", "Dein Fokus ist bereit, leg los!"],
+    halfway: ["Schon die Hälfte geschafft! Du machst das fantastisch.", "Bleib im Rhythmus, du bist voll auf Kurs!", "Ausgezeichneter Fokus! Atme kurz durch und mach weiter.", "Die Mitte ist erreicht, dein Momentum trägt dich.", "Weiter so, du bist im Flow!", "Klasse Tempo, bleib dran!"],
+    end: ["Fast geschafft! Jetzt kommt der Endspurt.", "Wunderbar! Die Ziellinie ist in Sicht.", "Hervorragend, nur noch ein kleiner Moment!", "Gleich hast du es geschafft!", "Der letzte Abschnitt, gib nochmal alles!", "So kurz vorm Ziel, durchhalten!"],
+    overdue: ["Zeit zu wechseln!", "Nimm dir eine Pause.", "Die Sitzung ist vorbei.", "Kurze Pause gefällig?", "Du darfst jetzt loslassen.", "Zeit für einen Szenenwechsel."]
   },
   en: {
-    start: ["Great start! Focus on this initial step.", "Perfect, you've made the first move!", "One step at a time. You've got this!"],
-    halfway: ["Halfway there! You are doing absolutely amazing.", "Keep up this momentum, you are doing great!", "Superb progress! Take a breath and keep flowing."],
-    end: ["Almost done! Just a tiny final stretch.", "Brilliant! The finish line is within reach.", "Outstanding, just a moment left!"],
-    overdue: ["Time to switch!", "Take a quick break.", "Focus session completed."]
+    start: ["Great start! Focus on this initial step.", "Perfect, you've made the first move!", "One step at a time. You've got this!", "Let's go, you're in control.", "Every beginning counts – keep going!", "Your focus is ready, dive in!"],
+    halfway: ["Halfway there! You are doing absolutely amazing.", "Keep up this momentum, you are doing great!", "Superb progress! Take a breath and keep flowing.", "Midpoint reached, your momentum is carrying you.", "Keep it up, you're in the flow!", "Great pace, stay with it!"],
+    end: ["Almost done! Just a tiny final stretch.", "Brilliant! The finish line is within reach.", "Outstanding, just a moment left!", "You're almost there!", "Final stretch, give it your all!", "So close to the finish, hang in there!"],
+    overdue: ["Time to switch!", "Take a quick break.", "Focus session completed.", "Fancy a quick break?", "You're allowed to let go now.", "Time for a change of scenery."]
   },
   es: {
-    start: ["¡Buen comienzo! Concéntrate en este primer paso.", "¡Excelente, ya has dado el primer paso!", "Paso a paso. ¡Tú puedes!"],
-    halfway: ["¡Mitad de camino! Lo estás haciendo increíble.", "¡Sigue con este ritmo, vas por buen camino!", "¡Excelente progreso! Respira hondo y continúa."],
-    end: ["¡Casi terminado! Solo queda un último esfuerzo.", "¡Brillante! La meta está a la vista.", "¡Espectacular, ya casi lo logras!"],
-    overdue: ["¡Hora de cambiar!", "Tómate un descanso.", "Sesión terminada."]
+    start: ["¡Buen comienzo! Concéntrate en este primer paso.", "¡Excelente, ya has dado el primer paso!", "Paso a paso. ¡Tú puedes!", "Vamos, tú tienes el control.", "Cada comienzo cuenta, ¡sigue así!", "Tu enfoque está listo, ¡adelante!"],
+    halfway: ["¡Mitad de camino! Lo estás haciendo increíble.", "¡Sigue con este ritmo, vas por buen camino!", "¡Excelente progreso! Respira hondo y continúa.", "Punto medio alcanzado, tu impulso te lleva.", "¡Sigue así, estás en tu flow!", "¡Buen ritmo, no lo sueltes!"],
+    end: ["¡Casi terminado! Solo queda un último esfuerzo.", "¡Brillante! La meta está a la vista.", "¡Espectacular, ya casi lo logras!", "¡Ya casi lo consigues!", "Último tramo, ¡dalo todo!", "Tan cerca de la meta, ¡aguanta!"],
+    overdue: ["¡Hora de cambiar!", "Tómate un descanso.", "Sesión terminada.", "¿Te apetece una pausa rápida?", "Ahora puedes soltarlo.", "Hora de cambiar de escenario."]
   },
   el: {
-    start: ["Υπέροχη αρχή! Εστίασε σε αυτό το πρώτο βήμα.", "Τέλεια, έκανες το πρώτο βήμα!", "Ένα βήμα τη φορά. Μπορείς να τα καταφέρεις!"],
-    halfway: ["Στα μισά του δρόμου! Τα πηγαίνεις απολύτως φανταστικά.", "Κράτα αυτόν τον ρυθμό, είσαι σε τέλεια πορεία!", "Υπέροχη πρόοδος! Πάρε μια βαθιά ανάσα και συνέχισε."],
-    end: ["Σχεδόν έφτασες! Μόνο μια μικρή τελική προσπάθεια.", "Φανταστικά! Ο τερματισμός είναι πλέον ορατός.", "Εξαιρετικά, έμεινε μόνο μια στιγμή!"],
-    overdue: ["Ώρα για αλλαγή!", "Κάνε ένα διάλειμμα.", "Η συνεδρία ολοκληρώθηκε."]
+    start: ["Υπέροχη αρχή! Εστίασε σε αυτό το πρώτο βήμα.", "Τέλεια, έκανες το πρώτο βήμα!", "Ένα βήμα τη φορά. Μπορείς να τα καταφέρεις!", "Πάμε, έχεις τον έλεγχο.", "Κάθε αρχή μετράει – συνέχισε!", "Η συγκέντρωσή σου είναι έτοιμη, ξεκίνα!"],
+    halfway: ["Στα μισά του δρόμου! Τα πηγαίνεις απολύτως φανταστικά.", "Κράτα αυτόν τον ρυθμό, είσαι σε τέλεια πορεία!", "Υπέροχη πρόοδος! Πάρε μια βαθιά ανάσα και συνέχισε.", "Έφτασες στη μέση, η ορμή σε κρατάει.", "Συνέχισε έτσι, είσαι μέσα στη ροή!", "Υπέροχος ρυθμός, κράτα τον!"],
+    end: ["Σχεδόν έφτασες! Μόνο μια μικρή τελική προσπάθεια.", "Φανταστικά! Ο τερματισμός είναι πλέον ορατός.", "Εξαιρετικά, έμεινε μόνο μια στιγμή!", "Σχεδόν τα κατάφερες!", "Τελευταίο κομμάτι, δώσε τα όλα!", "Τόσο κοντά στο τέλος, κράτα γερά!"],
+    overdue: ["Ώρα για αλλαγή!", "Κάνε ένα διάλειμμα.", "Η συνεδρία ολοκληρώθηκε.", "Σου αρέσει η ιδέα ενός σύντομου διαλείμματος;", "Μπορείς τώρα να το αφήσεις.", "Ώρα για αλλαγή σκηνικού."]
   },
   fr: {
-    start: ["Beau départ ! Concentre-toi sur ce premier pas.", "Parfait, tu as fait le premier pas !", "Étape par étape. Tu gères ça !"],
-    halfway: ["Déjà à mi-chemin ! Tu t'en sors incroyablement bien.", "Garde ce rythme, tu es sur la bonne voie !", "Progrès superbe ! Respire un coup et continue."],
-    end: ["Presque fini ! Encore un tout petit effort.", "Brillant ! La ligne d'arrivée est en vue.", "Excellent, il ne reste qu'un instant !"],
-    overdue: ["Il est temps de changer !", "Accorde-toi une pause.", "La session est terminée."]
+    start: ["Beau départ ! Concentre-toi sur ce premier pas.", "Parfait, tu as fait le premier pas !", "Étape par étape. Tu gères ça !", "C'est parti, tu as le contrôle.", "Chaque début compte – continue !", "Ton focus est prêt, lance-toi !"],
+    halfway: ["Déjà à mi-chemin ! Tu t'en sors incroyablement bien.", "Garde ce rythme, tu es sur la bonne voie !", "Progrès superbe ! Respire un coup et continue.", "Mi-parcours atteint, ton élan te porte.", "Continue comme ça, tu es dans le flow !", "Superbe rythme, garde-le !"],
+    end: ["Presque fini ! Encore un tout petit effort.", "Brillant ! La ligne d'arrivée est en vue.", "Excellent, il ne reste qu'un instant !", "Tu y es presque !", "Dernière ligne droite, donne tout !", "Si près du but, tiens bon !"],
+    overdue: ["Il est temps de changer !", "Accorde-toi une pause.", "La session est terminée.", "Envie d'une petite pause ?", "Tu peux lâcher prise maintenant.", "Il est temps de changer de décor."]
   },
   it: {
-    start: ["Ottimo inizio! Concentrati su questo primo passo.", "Perfetto, hai fatto il primo passo!", "Un passo alla volta. Ce la puoi fare!"],
-    halfway: ["Sei già a metà strada! Stai andando alla grande.", "Mantieni questo ritmo, sei sulla strada giusta!", "Progresso eccellente! Fai un respiro e continua."],
-    end: ["Quasi fatto! Manca solo un ultimo piccolo sforzo.", "Fantastico! Il traguardo è ormai in vista.", "Straordinario, resta solo un attimo!"],
-    overdue: ["È ora di cambiare!", "Concediti una pausa.", "La sessione è terminata."]
+    start: ["Ottimo inizio! Concentrati su questo primo passo.", "Perfetto, hai fatto il primo passo!", "Un passo alla volta. Ce la puoi fare!", "Si parte, hai il controllo.", "Ogni inizio conta – continua così!", "Il tuo focus è pronto, tuffati!"],
+    halfway: ["Sei già a metà strada! Stai andando alla grande.", "Mantieni questo ritmo, sei sulla strada giusta!", "Progresso eccellente! Fai un respiro e continua.", "Metà strada raggiunta, il tuo slancio ti porta avanti.", "Continua così, sei nel flow!", "Ottimo ritmo, mantienilo!"],
+    end: ["Quasi fatto! Manca solo un ultimo piccolo sforzo.", "Fantastico! Il traguardo è ormai in vista.", "Straordinario, resta solo un attimo!", "Ci sei quasi!", "Ultimo tratto, dai tutto!", "Così vicino al traguardo, resisti!"],
+    overdue: ["È ora di cambiare!", "Concediti una pausa.", "La sessione è terminata.", "Ti va una breve pausa?", "Ora puoi lasciare andare.", "È ora di cambiare scenario."]
   }
 };
+
+// Kurze Ansagen beim Start einer frischen Fokus-Sitzung (mehrere Varianten, damit es nie stumpf gleich klingt)
+const SESSION_START_PHRASES = {
+  de: ["Fokus-Sitzung gestartet, {mins} Minuten. Los geht's!", "{mins} Minuten Fokuszeit beginnen jetzt. Viel Erfolg!", "Timer läuft, {mins} Minuten bis zur Pause. Bleib dran!", "Los geht's! {mins} Minuten volle Konzentration."],
+  en: ["Focus session started, {mins} minutes. Let's go!", "{mins} minutes of focus time begin now. Good luck!", "Timer running, {mins} minutes until your break. Stay with it!", "Here we go! {mins} minutes of full focus."],
+  es: ["Sesión de enfoque iniciada, {mins} minutos. ¡Vamos!", "Comienzan {mins} minutos de enfoque. ¡Mucho éxito!", "Temporizador en marcha, {mins} minutos hasta tu pausa. ¡No te rindas!", "¡Allá vamos! {mins} minutos de concentración total."],
+  el: ["Η συνεδρία εστίασης ξεκίνησε, {mins} λεπτά. Πάμε!", "Ξεκινούν {mins} λεπτά εστίασης. Καλή επιτυχία!", "Το χρονόμετρο τρέχει, {mins} λεπτά μέχρι το διάλειμμα. Κράτα γερά!", "Πάμε! {mins} λεπτά πλήρους συγκέντρωσης."],
+  fr: ["Session de focus démarrée, {mins} minutes. C'est parti !", "{mins} minutes de concentration commencent maintenant. Bonne réussite !", "Minuteur lancé, {mins} minutes avant ta pause. Tiens bon !", "C'est parti ! {mins} minutes de concentration totale."],
+  it: ["Sessione di focus avviata, {mins} minuti. Si parte!", "Iniziano {mins} minuti di concentrazione. Buon lavoro!", "Timer avviato, {mins} minuti fino alla pausa. Resisti!", "Si parte! {mins} minuti di piena concentrazione."]
+};
+
+// Ansagen für die Minuten, die über die eingestellte Zeit hinaus verstreichen ("Überzeit")
+const OVERDUE_MINUTE_LABELS = {
+  de: (n) => n === 1 ? "1 Minute drüber" : `${n} Minuten drüber`,
+  en: (n) => n === 1 ? "1 minute over" : `${n} minutes over`,
+  es: (n) => n === 1 ? "1 minuto de más" : `${n} minutos de más`,
+  el: (n) => n === 1 ? "1 λεπτό παραπάνω" : `${n} λεπτά παραπάνω`,
+  fr: (n) => n === 1 ? "1 minute de dépassement" : `${n} minutes de dépassement`,
+  it: (n) => n === 1 ? "1 minuto in più" : `${n} minuti in più`
+};
+
+// Zuletzt verwendete Sprüche merken, damit sich innerhalb einer Sitzung nichts unmittelbar wiederholt
+let lastMotivationByTier = {};
+let lastSessionStartPhrase = null;
+let lastChimePatternIndex = -1;
+
+function pickWithoutImmediateRepeat(list, lastValue) {
+  if (!list || list.length === 0) return "";
+  if (list.length === 1) return list[0];
+  let choice;
+  do {
+    choice = list[Math.floor(Math.random() * list.length)];
+  } while (choice === lastValue);
+  return choice;
+}
 
 function safeTranslate(key) {
   if (typeof TRANSLATIONS === 'undefined') return key;
@@ -231,18 +266,76 @@ function speakSoftlyDynamic(text, remSec, totSec) {
   speakWithProfile(text, minsLeft);
 }
 
-// Liefert kontextbezogene Motivationen basierend auf der vergangenen Zeit
+// Liefert kontextbezogene Motivationen basierend auf der vergangenen Zeit (ohne Sofort-Wiederholung)
 function getContextMotivation(remSec, totSec) {
   const lang = typeof currentLang !== 'undefined' ? currentLang : 'de';
   const list = MOTIVATIONAL_CHUNKS[lang] || MOTIVATIONAL_CHUNKS['de'];
   const pct = (remSec / totSec) * 100;
   
-  if (pct > 72) {
-    return list.start[Math.floor(Math.random() * list.start.length)];
-  } else if (pct > 28) {
-    return list.halfway[Math.floor(Math.random() * list.halfway.length)];
-  } else {
-    return list.end[Math.floor(Math.random() * list.end.length)];
+  let tier = 'end';
+  if (pct > 72) tier = 'start';
+  else if (pct > 28) tier = 'halfway';
+  
+  const chosen = pickWithoutImmediateRepeat(list[tier], lastMotivationByTier[tier]);
+  lastMotivationByTier[tier] = chosen;
+  return chosen;
+}
+
+// Angenehmer, dezenter Glockenton für die Minuten "dazwischen" (kein Sprechen, viel Klang-Varianz)
+function playMinuteChime() {
+  if (!timerSoundEnabled) return;
+  try {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+    const ctx = new AudioContextClass();
+    const now = ctx.currentTime;
+
+    // 5 unterschiedliche, sanfte Klangmuster – wechseln ohne Sofort-Wiederholung
+    let patternIdx;
+    do {
+      patternIdx = Math.floor(Math.random() * 5);
+    } while (patternIdx === lastChimePatternIndex && 5 > 1);
+    lastChimePatternIndex = patternIdx;
+
+    const playTone = (freq, startAt, dur, type, peakGain) => {
+      const osc = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, now + startAt);
+      gainNode.gain.setValueAtTime(0, now + startAt);
+      gainNode.gain.linearRampToValueAtTime(peakGain, now + startAt + 0.04);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, now + startAt + dur);
+      osc.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      osc.start(now + startAt);
+      osc.stop(now + startAt + dur + 0.05);
+    };
+
+    if (patternIdx === 0) {
+      // Sanfte Glocke, zwei Töne
+      playTone(523.25, 0, 1.1, 'sine', 0.045);
+      playTone(659.25, 0.1, 1.0, 'sine', 0.03);
+    } else if (patternIdx === 1) {
+      // Weicher Marimba-Pluck
+      playTone(392.00, 0, 0.6, 'triangle', 0.05);
+      playTone(587.33, 0.09, 0.5, 'triangle', 0.035);
+    } else if (patternIdx === 2) {
+      // Luftiger Funkeln-Akkord
+      playTone(783.99, 0, 0.9, 'sine', 0.025);
+      playTone(987.77, 0.05, 0.8, 'sine', 0.02);
+      playTone(1174.66, 0.11, 0.7, 'sine', 0.015);
+    } else if (patternIdx === 3) {
+      // Warmer, tiefer Blip
+      playTone(220.00, 0, 0.8, 'sine', 0.05);
+      playTone(329.63, 0.14, 0.65, 'triangle', 0.03);
+    } else {
+      // Windspiel-Flick
+      playTone(880.00, 0, 0.5, 'sine', 0.03);
+      playTone(1046.50, 0.07, 0.45, 'sine', 0.022);
+      playTone(1318.51, 0.14, 0.4, 'sine', 0.016);
+    }
+  } catch (e) {
+    console.error("Fehler beim Minuten-Glockenton:", e);
   }
 }
 
@@ -376,7 +469,9 @@ function showRingingModal() {
     de: 'Fokus-Sitzung beendet! 🎉',
     en: 'Focus Session Finished! 🎉',
     es: '¡Sesión de enfoque terminada! 🎉',
-    el: 'Η συνεδρία εστίασης ολοκληρώθηκε! 🎉'
+    el: 'Η συνεδρία εστίασης ολοκληρώθηκε! 🎉',
+    fr: 'Session de focus terminée ! 🎉',
+    it: 'Sessione di focus terminata! 🎉'
   }[lang] || 'Session Finished! 🎉';
 
   const initialMins = Math.floor(timerInitialSeconds / 60);
@@ -387,14 +482,27 @@ function showRingingModal() {
     de: `Gesamte Fokusdauer: ${totalDurationStr} Min.`,
     en: `Total focus duration: ${totalDurationStr} Min.`,
     es: `Duración total de enfoque: ${totalDurationStr} Min.`,
-    el: `Συνολική διάρκεια εστίασης: ${totalDurationStr} λεπτά.`
+    el: `Συνολική διάρκεια εστίασης: ${totalDurationStr} λεπτά.`,
+    fr: `Durée totale de concentration : ${totalDurationStr} min.`,
+    it: `Durata totale della concentrazione: ${totalDurationStr} min.`
   }[lang];
+
+  const overdueHint = {
+    de: 'Läuft weiter mit, bis du stoppst',
+    en: 'Keeps counting until you stop it',
+    es: 'Sigue contando hasta que lo detengas',
+    el: 'Συνεχίζει να μετρά μέχρι να το σταματήσεις',
+    fr: 'Continue de compter jusqu\'à ce que tu l\'arrêtes',
+    it: 'Continua a contare finché non lo fermi'
+  }[lang] || 'Keeps counting until you stop it';
 
   const btnText = {
     de: 'Timer stoppen 🔕',
     en: 'Stop Alarm 🔕',
     es: 'Detener Alarma 🔕',
-    el: 'Διακοπή Ξυπνητηριού 🔕'
+    el: 'Διακοπή Ξυπνητηριού 🔕',
+    fr: 'Arrêter l\'alarme 🔕',
+    it: 'Ferma la sveglia 🔕'
   }[lang] || 'Stop Alarm 🔕';
 
   modal.innerHTML = `
@@ -404,9 +512,13 @@ function showRingingModal() {
       </div>
       <h2 class="font-display font-black text-lg tracking-tight text-white">${title}</h2>
       
-      <div class="space-y-1 my-1">
+      <div class="space-y-1.5 my-1">
         <p class="text-xs text-purple-300 font-bold tracking-wide">${durationLabel}</p>
-        <p id="ringing-live-counter" class="text-[11px] text-gray-400 font-medium">Überfällig seit: -00:00</p>
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/30">
+          <span class="h-1.5 w-1.5 rounded-full bg-rose-400 animate-pulse"></span>
+          <p id="ringing-live-counter" class="text-[11px] text-rose-300 font-bold font-mono tracking-wide">-00:00</p>
+        </div>
+        <p class="text-[10px] text-gray-500">${overdueHint}</p>
       </div>
 
       <button onclick="stopPleasantRinging()" class="w-full py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-lg transition duration-150 transform active:scale-95 cursor-pointer">
@@ -483,6 +595,8 @@ function setTimerPreset(mins) {
 function startTimer() {
   if (timerRunning) return;
   
+  const isFreshStart = timerSeconds <= 0 || timerSeconds === timerInitialSeconds;
+  
   if (timerSeconds <= 0) {
     const mins = getCurrentPresetMinutes();
     timerSeconds = mins * 60;
@@ -495,6 +609,17 @@ function startTimer() {
   updateMuteButtonsUI();
   
   playRandomTimerAmbient();
+
+  // Zeitansage zu Beginn einer frischen Sitzung (nicht beim Fortsetzen nach Pause), je nach Sound-Einstellung
+  if (isFreshStart && timerSoundEnabled) {
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'de';
+    const startMins = Math.round(timerInitialSeconds / 60);
+    const phraseList = SESSION_START_PHRASES[lang] || SESSION_START_PHRASES.de;
+    const phrase = pickWithoutImmediateRepeat(phraseList, lastSessionStartPhrase);
+    lastSessionStartPhrase = phrase;
+    const startText = phrase.replace('{mins}', startMins);
+    setTimeout(() => speakSoftlyDynamic(startText, timerSeconds, timerInitialSeconds), 400);
+  }
   
   timerInterval = setInterval(() => {
     timerSeconds--;
@@ -509,34 +634,55 @@ function startTimer() {
       }
     }
     
+    // Countdown-Phase: bei jeder vollen Minute abwechselnd sprechen oder einen sanften Glockenton spielen
     if (timerSeconds > 0 && timerSeconds % 60 === 0 && timerSeconds !== timerInitialSeconds) {
       const minsLeft = timerSeconds / 60;
-      let speechText = "";
-      const lang = typeof currentLang !== 'undefined' ? currentLang : 'de';
-      
-      if (minsLeft === 1) {
-        if (lang === 'de') speechText = "Noch eine Minute";
-        else if (lang === 'es') speechText = "Queda un minuto";
-        else if (lang === 'el') speechText = "Απομένει ένα λεπτό";
-        else if (lang === 'fr') speechText = "Il reste une minute";
-        else if (lang === 'it') speechText = "Resta un minuto";
-        else speechText = "One minute remaining";
+      const shouldSpeak = (minsLeft % 2 === 1); // jede zweite Minute wird gesprochen
+
+      if (shouldSpeak) {
+        let speechText = "";
+        const lang = typeof currentLang !== 'undefined' ? currentLang : 'de';
+        
+        if (minsLeft === 1) {
+          if (lang === 'de') speechText = "Noch eine Minute";
+          else if (lang === 'es') speechText = "Queda un minuto";
+          else if (lang === 'el') speechText = "Απομένει ένα λεπτό";
+          else if (lang === 'fr') speechText = "Il reste une minute";
+          else if (lang === 'it') speechText = "Resta un minuto";
+          else speechText = "One minute remaining";
+        } else {
+          if (lang === 'de') speechText = `Noch ${minsLeft} Minuten`;
+          else if (lang === 'es') speechText = `Quedan ${minsLeft} minutos`;
+          else if (lang === 'el') speechText = `Απομένουν ${minsLeft} λεπτά`;
+          else if (lang === 'fr') speechText = `Il reste ${minsLeft} minutes`;
+          else if (lang === 'it') speechText = `Restano ${minsLeft} minuti`;
+          else speechText = `${minsLeft} minutes remaining`;
+        }
+        
+        if (Math.random() < 0.55) {
+          const motiv = getContextMotivation(timerSeconds, timerInitialSeconds);
+          speechText += `. ${motiv}`;
+        }
+        
+        speakSoftlyDynamic(speechText, timerSeconds, timerInitialSeconds);
       } else {
-        if (lang === 'de') speechText = `Noch ${minsLeft} Minuten`;
-        else if (lang === 'es') speechText = `Quedan ${minsLeft} minutos`;
-        else if (lang === 'el') speechText = `Απομένουν ${minsLeft} λεπτά`;
-        else if (lang === 'fr') speechText = `Il reste ${minsLeft} minutes`;
-        else if (lang === 'it') speechText = `Restano ${minsLeft} minuti`;
-        else speechText = `${minsLeft} minutes remaining`;
+        playMinuteChime();
       }
       
-      if (Math.random() < 0.40) {
-        const motiv = getContextMotivation(timerSeconds, timerInitialSeconds);
-        speechText += `. ${motiv}`;
-      }
-      
-      speakSoftlyDynamic(speechText, timerSeconds, timerInitialSeconds);
       playRandomTimerAmbient(true);
+    }
+
+    // Überzeit-Phase: jede volle Minute über die eingestellte Zeit hinaus wird zuverlässig angesagt
+    if (timerSeconds < 0 && timerSeconds % 60 === 0) {
+      const lang = typeof currentLang !== 'undefined' ? currentLang : 'de';
+      const overdueMins = Math.abs(timerSeconds) / 60;
+      const labelFn = OVERDUE_MINUTE_LABELS[lang] || OVERDUE_MINUTE_LABELS.de;
+      let speechText = labelFn(overdueMins);
+      const overdueList = (MOTIVATIONAL_CHUNKS[lang] || MOTIVATIONAL_CHUNKS.de).overdue;
+      const motiv = pickWithoutImmediateRepeat(overdueList, lastMotivationByTier['overdue']);
+      lastMotivationByTier['overdue'] = motiv;
+      speechText += `. ${motiv}`;
+      speakSoftlyDynamic(speechText, timerSeconds, timerInitialSeconds);
     }
     
     updateTimerDisplay();
@@ -634,28 +780,29 @@ function updateTimerDisplay() {
   const sign = isNegative ? '-' : '';
   const str = `${sign}${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   
+  // Überzeit wird nicht nur im Modal, sondern überall wo der Timer sichtbar ist, klar farblich hervorgehoben
   const displays = ['timer-display', 'helper-pick-timer-display', 'helper-steps-timer-display', 'zen-timer-display'];
   displays.forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.innerText = str;
+    if (el) {
+      el.innerText = str;
+      el.classList.toggle('text-rose-400', isNegative);
+      el.classList.toggle('animate-pulse', isNegative);
+    }
   });
   
   const pct = timerInitialSeconds > 0 ? Math.max(0, (timerSeconds / timerInitialSeconds) * 100) : 100;
   const progressBars = ['timer-progress-bar', 'helper-pick-timer-progress-bar', 'helper-steps-timer-progress-bar'];
   progressBars.forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.style.width = `${pct}%`;
+    if (el) {
+      el.style.width = `${pct}%`;
+      el.classList.toggle('bg-rose-500', isNegative);
+    }
   });
 
   const countEl = document.getElementById('ringing-live-counter');
   if (countEl && isNegative) {
-    const lang = typeof currentLang !== 'undefined' ? currentLang : 'de';
-    const activeText = {
-      de: `Überfällig seit: ${str}`,
-      en: `Overdue by: ${str}`,
-      es: `Atrasado por: ${str}`,
-      el: `Καθυστέρηση κατά: ${str}`
-    }[lang] || `Overdue by: ${str}`;
-    countEl.innerText = activeText;
+    countEl.innerText = str;
   }
 } 

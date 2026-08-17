@@ -4,6 +4,7 @@ if (typeof window.TRANSLATIONS === 'undefined') { window.TRANSLATIONS = {}; }
 const customTranslations = {
   de: {
     minimal_mode: "Fokus-Modus",
+    pause_btn: "Pause",
     standard_mode: "Standard-Modus",
     next_rec: "Deine Empfehlung für jetzt",
     complete_btn: "Erledigt",
@@ -63,6 +64,7 @@ const customTranslations = {
   },
   en: {
     minimal_mode: "Focus Mode",
+    pause_btn: "Pause",
     standard_mode: "Standard Mode",
     next_rec: "Your recommendation for now",
     complete_btn: "Done",
@@ -122,6 +124,7 @@ const customTranslations = {
   },
   es: {
     minimal_mode: "Modo enfoque",
+    pause_btn: "Pausa",
     standard_mode: "Modo estándar",
     next_rec: "Te recomendamos hacer esto ahora",
     complete_btn: "Hecho",
@@ -181,6 +184,7 @@ const customTranslations = {
   },
   el: {
     minimal_mode: "Λειτουργία συγκέντρωσης",
+    pause_btn: "Παύση",
     standard_mode: "Κανονική λειτουργία",
     next_rec: "Η πρότασή σου για τώρα",
     complete_btn: "Έγινε",
@@ -240,6 +244,7 @@ const customTranslations = {
   },
   fr: {
     minimal_mode: "Mode Focus",
+    pause_btn: "Pause",
     standard_mode: "Mode Standard",
     next_rec: "Ta recommandation pour maintenant",
     complete_btn: "Fait",
@@ -299,6 +304,7 @@ const customTranslations = {
   },
   it: {
     minimal_mode: "Modalità Focus",
+    pause_btn: "Pausa",
     standard_mode: "Modalità Standard",
     next_rec: "Il tuo consiglio per ora",
     complete_btn: "Fatto",
@@ -572,9 +578,46 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof lucide !== 'undefined') lucide.createIcons();
 });
 
+// Gruppiert alle Farbschemata nach visueller Verwandtschaft, damit der automatische
+// Wechsel nach erledigten Aufgaben immer zwischen ähnlichen Stimmungen bleibt.
+const THEME_FAMILIES = {
+  'purple-dreams': ['aurora', 'neon-cyber', 'synthwave'],
+  'green-nature': ['sage', 'forest'],
+  'warm-earthy': ['cozy', 'mono-hand', 'parchment', 'terracotta-light'],
+  'cool-icy': ['architect', 'glacier', 'charcoal', 'minimalist-light', 'holo-chrome'],
+  'luxury-mono': ['executive', 'carbon']
+};
+
+function getThemeFamily(theme) {
+  for (const family in THEME_FAMILIES) {
+    if (THEME_FAMILIES[family].includes(theme)) return family;
+  }
+  return null;
+}
+
+// Wählt ein zufälliges, aber verwandtes Farbschema zum aktuell aktiven aus
+function getSimilarTheme(current) {
+  const family = getThemeFamily(current);
+  const allThemes = Object.values(THEME_FAMILIES).flat();
+  const pool = family ? THEME_FAMILIES[family].filter(t => t !== current) : allThemes.filter(t => t !== current);
+  if (pool.length === 0) return current;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
 function setTheme(theme) {
   currentTheme = theme; document.body.className = `h-full antialiased flex flex-col font-sans select-none overflow-x-hidden text-[#f4f4f5] theme-${theme}`;
   if (isMinimalist) document.body.classList.add('minimalist'); localStorage.setItem('flowPlannerTheme', theme);
+}
+
+// Sanfter, langsamer Farbwechsel (z.B. nach dem Erledigen einer Aufgabe): aktiviert kurzzeitig
+// eine deutlich langsamere Übergangsdauer für den gesamten Seitenbaum und wechselt dann das Theme.
+function setThemeSlow(theme) {
+  setTheme(theme);
+  // Erst NACH setTheme() hinzufügen, da setTheme() den kompletten className ersetzt
+  document.body.classList.add('theme-fade-slow');
+  setTimeout(() => {
+    document.body.classList.remove('theme-fade-slow');
+  }, 2600);
 }
 
 function setLanguage(lang) {
