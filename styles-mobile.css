@@ -29,6 +29,45 @@
 
   html {
     overscroll-behavior-y: none; /* kein "Gummiband"-Overscroll der ganzen Seite */
+    /* BUGFIX: Ohne dies kann zu breiter, nicht umbrechender Inhalt (siehe Header-Fix
+       weiter unten) auf manchen Mobil-Browsern dazu führen, dass der komplette
+       Layout-Viewport aufgebläht wird - mit der Folge, dass alle fest positionierten
+       Elemente (Dock, Tab-Leiste) weit unterhalb des sichtbaren Bildschirms landen und
+       dadurch unerreichbar werden. Auf dem Desktop ändert diese Regel nichts (dort greift
+       die Media Query gar nicht). */
+    overflow-x: hidden;
+  }
+
+  /* BUGFIX: Die Kopfzeile (Feedback, Timer, Datum, Statistik, Anmelden, Aktionen,
+     Farbschemas & Sprache ...) war für alle Bildschirmgrößen als eine einzige, niemals
+     umbrechende Zeile ("flex-nowrap") gebaut. Auf schmalen Mobil-Screens ergab das eine
+     riesige, nicht umbrochene Reihe, die u.a. die o.g. Viewport-Aufblähung auslöste und
+     mehrere Bedienelemente de facto unerreichbar machte. Auf Mobile wird die Kopfzeile
+     daher jetzt zweizeilig/mehrzeilig umgebrochen - alle Elemente bleiben sichtbar und
+     antippbar, nichts verschwindet mehr. Betrifft ausschließlich Touch-Geräte; am
+     Desktop-Layout (flex-nowrap) ändert sich dadurch nichts. */
+  header {
+    flex-wrap: wrap !important;
+    row-gap: 6px !important;
+    justify-content: center !important;
+  }
+
+  header > div {
+    flex: 0 1 auto;
+  }
+
+  /* BUGFIX: Der pinke "3D-Spielmodus"-Button war fix "bottom-4 right-4" positioniert und
+     überlappte dadurch auf Mobile die neue Bottom-Tab-Leiste (unerreichbar/verdeckte Tabs).
+     Wird jetzt wie das Tools-Dock über die Tab-Leiste angehoben. */
+  #game-mode-toggle-wrapper {
+    top: calc(8px + env(safe-area-inset-top)) !important;
+    bottom: auto !important;
+    right: 8px !important;
+  }
+
+  #game-mode-toggle-wrapper #game-mode-toggle {
+    height: 40px !important;
+    width: 40px !important;
   }
 
   /* Verhindert, dass iOS Safari beim Fokussieren eines Inputs die Seite
@@ -212,3 +251,5 @@
     height: 50px !important;
   }
 }
+ 
+ 

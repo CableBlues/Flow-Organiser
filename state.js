@@ -5,6 +5,9 @@ let currentLang = localStorage.getItem('flowPlannerLanguage') || 'en';
 let currentTheme = localStorage.getItem('flowPlannerTheme') || 'aurora';
 let isMinimalist = localStorage.getItem('flowPlannerMinimalist') === 'true';
 let isTerminFormOpen = false;
+// Merkt sich pro Kategorie (id), ob gerade das Eingabefeld fuer "Aufgabe hinzufuegen" offen ist
+// (statt eines Buttons mit klarem Text) - analog zu isTerminFormOpen bei Terminen.
+let openTaskAddColumns = {};
 
 // Dynamische und persistente Verwaltung der Spaltenreihenfolge
 let categoriesOrder = loadCategoriesOrder();

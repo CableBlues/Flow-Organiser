@@ -14,6 +14,10 @@ let noiseBuffers = {};
 let playlistTracks = [];
 let currentTrackIndex = 0;
 let isPlayerShuffleEnabled = true; // standardmäßig aktiv (zufällige Wiedergabe)
+let playerRepeatMode = 'all'; // 'off' | 'all' | 'one'
+let isPlayerMuted = false;
+let volumeBeforeMute = 0.5;
+let draggedTrackIndex = null;
 
 function initAudioContext() {
   try {

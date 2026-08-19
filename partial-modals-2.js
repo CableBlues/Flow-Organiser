@@ -241,7 +241,7 @@ document.write(`        <!-- ADHD-Prioritizer (NEUES MODUL 1) -->
   <canvas id="confetti-canvas" class="fixed inset-0 z-[99999] pointer-events-none w-full h-full"></canvas>
 
   <!-- GAMIFICATION TOGGLE BUTTON -->
-  <div class="fixed bottom-4 right-4 z-[100001] flex items-center gap-2">
+  <div id="game-mode-toggle-wrapper" class="fixed bottom-4 right-4 z-[100001] flex items-center gap-2">
     <button id="game-mode-toggle" onclick="toggleGameMode()" class="h-12 w-12 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 border border-white/20 shadow-[0_0_20px_rgba(236,72,153,0.4)] flex items-center justify-center text-white cursor-pointer transition-all duration-300 hover:scale-110 active:scale-95" title="Spielmodus (3D) starten / beenden">
       <i data-lucide="gamepad-2" id="game-mode-icon" class="w-6 h-6 animate-pulse text-white"></i>
     </button>

@@ -70,7 +70,7 @@ document.write(`    <!-- CENTRAL DOCK (macOS 3D Floating-Stil) -->
 
                 <div class="flex items-center gap-2 pt-1.5 border-t border-white/10 text-xs">
                   <i data-lucide="volume-2" class="w-3.5 h-3.5 text-zinc-400 shrink-0"></i>
-                  <input type="range" min="0" max="1" step="0.05" value="0.5" oninput="setSoundVolume(this.value)" class="w-full accent-[var(--accent)] cursor-pointer h-1 bg-black/50 rounded-xl">
+                  <input type="range" min="0" max="1" step="0.05" value="0.5" oninput="setSoundVolume(this.value)" class="master-volume-slider w-full accent-[var(--accent)] cursor-pointer h-1 bg-black/50 rounded-xl">
                   <button onclick="stopAmbientSound()" class="px-2 py-0.5 bg-red-500/15 hover:bg-red-500/25 border border-red-500/30 text-red-300 rounded text-[10px] font-bold transition shrink-0 cursor-pointer" data-i18n="stop">Stop</button>
                 </div>
               </div>
@@ -83,47 +83,66 @@ document.write(`    <!-- CENTRAL DOCK (macOS 3D Floating-Stil) -->
                 <span class="dock-label">Musik</span>
               </button>
               
-              <div id="panel-music" class="hidden absolute left-0 bottom-[calc(100%+10px)] z-[110] w-[300px] bg-[#111116]/95 border border-purple-500/40 p-4 rounded-2xl shadow-2xl backdrop-blur-md flex flex-col gap-3">
+              <div id="panel-music" class="hidden absolute left-0 bottom-[calc(100%+10px)] z-[110] w-[380px] bg-[#111116]/95 border border-purple-500/40 p-4 rounded-2xl shadow-2xl backdrop-blur-md flex flex-col gap-3">
                 <div class="flex flex-col gap-3">
                   <div class="flex items-center justify-between border-b border-white/10 pb-2">
                     <h4 class="font-bold text-sm font-display text-white flex items-center gap-2">
                       <i data-lucide="disc-3" class="w-4 h-4 text-purple-400 animate-spin"></i>
                       <span>Audio-Tracks</span>
+                      <span id="player-track-count" class="text-[9px] text-gray-500 font-mono font-normal"></span>
                     </h4>
                     <span id="player-shuffle-badge" class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold uppercase tracking-wider font-mono">Shuffle On</span>
                   </div>
-                  
-                  <button onclick="document.getElementById('sound-file-input').click()" class="w-full py-2.5 bg-purple-500/10 hover:bg-purple-500/20 border border-dashed border-purple-400/30 text-purple-300 hover:text-white rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">
-                    <i data-lucide="folder-symlink" class="w-3.5 h-3.5"></i>
-                    <span>Tracks laden</span>
-                  </button>
+
+                  <div class="flex items-center gap-2">
+                    <button onclick="document.getElementById('sound-file-input').click()" class="flex-1 py-2.5 bg-purple-500/10 hover:bg-purple-500/20 border border-dashed border-purple-400/30 text-purple-300 hover:text-white rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">
+                      <i data-lucide="folder-symlink" class="w-3.5 h-3.5"></i>
+                      <span>Tracks laden</span>
+                    </button>
+                    <button onclick="clearPlaylist()" title="Playlist leeren" class="shrink-0 p-2.5 bg-white/5 hover:bg-red-500/20 border border-white/10 hover:border-red-500/30 text-gray-400 hover:text-red-300 rounded-xl transition cursor-pointer">
+                      <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>
+                  </div>
                   <input type="file" id="sound-file-input" accept="audio/*" onchange="handleUserSoundFile(event)" class="hidden" multiple />
-                  
-                  <div id="custom-playlist-player" class="hidden p-3 bg-black/60 border border-white/10 rounded-xl flex flex-col gap-2">
+
+                  <div id="custom-playlist-player" class="hidden p-3 bg-black/60 border border-white/10 rounded-xl flex flex-col gap-2.5">
                     <div class="flex flex-col gap-0.5">
                       <div id="user-sound-name" class="text-[11px] text-purple-300 font-bold truncate tracking-wide italic text-center">Keine Titel geladen</div>
-                      <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden mt-1.5 relative cursor-pointer" onclick="handleProgressBarClick(event)">
-                        <div id="player-progress-bar" class="h-full bg-purple-400 transition-all duration-150" style="width: 0%"></div>
+                      <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden mt-1.5 relative cursor-pointer group" onclick="handleProgressBarClick(event)">
+                        <div id="player-progress-bar" class="h-full bg-purple-400 group-hover:bg-purple-300 transition-all duration-150" style="width: 0%"></div>
                       </div>
                       <div class="flex justify-between items-center text-[8px] text-gray-500 font-mono mt-0.5">
                         <span id="player-time-current">00:00</span>
                         <span id="player-time-duration">00:00</span>
                       </div>
                     </div>
-                    
-                    <div class="flex items-center justify-center gap-4 mt-1">
-                      <button onclick="togglePlayerShuffle()" id="player-shuffle-toggle-btn" class="p-1.5 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 rounded-xl cursor-pointer transition">
+
+                    <div class="flex items-center justify-center gap-2.5 mt-1">
+                      <button onclick="togglePlayerShuffle()" id="player-shuffle-toggle-btn" title="Zufällige Wiedergabe" class="p-1.5 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 rounded-lg cursor-pointer transition">
                         <i data-lucide="shuffle" class="w-3.5 h-3.5"></i>
                       </button>
-                      <button id="player-play-pause-btn" onclick="togglePlaylistPlayback()" class="p-2.5 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-purple-300 rounded-xl cursor-pointer transition shadow-md">
+                      <button onclick="playPreviousTrack()" title="Vorheriger Track" class="p-1.5 bg-white/5 hover:bg-white/10 text-purple-400 rounded-lg cursor-pointer transition">
+                        <i data-lucide="skip-back" class="w-3.5 h-3.5"></i>
+                      </button>
+                      <button id="player-play-pause-btn" onclick="togglePlaylistPlayback()" title="Abspielen/Pause" class="p-2.5 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-purple-300 rounded-xl cursor-pointer transition shadow-md">
                         <i data-lucide="pause" class="w-4 h-4"></i>
                       </button>
-                      <button onclick="playNextTrackWithCrossfade()" class="p-1.5 bg-white/5 hover:bg-white/10 text-purple-400 rounded-xl cursor-pointer transition">
+                      <button onclick="playNextTrackWithCrossfade()" title="Nächster Track" class="p-1.5 bg-white/5 hover:bg-white/10 text-purple-400 rounded-lg cursor-pointer transition">
                         <i data-lucide="skip-forward" class="w-3.5 h-3.5"></i>
+                      </button>
+                      <button onclick="cyclePlayerRepeatMode()" id="player-repeat-toggle-btn" title="Wiederholen: Playlist" class="p-1.5 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 rounded-lg cursor-pointer transition">
+                        <i id="player-repeat-icon" data-lucide="repeat" class="w-3.5 h-3.5"></i>
                       </button>
                     </div>
 
-                    <div id="track-list-container" class="mt-2 text-left flex flex-col gap-1 max-h-[120px] overflow-y-auto pr-1 border-t border-white/5 pt-2"></div>
+                    <div class="flex items-center gap-2 pt-1 border-t border-white/5 mt-0.5">
+                      <button onclick="togglePlayerMute()" id="player-mute-toggle-btn" title="Stumm schalten" class="shrink-0 p-1 text-gray-400 hover:text-white transition cursor-pointer">
+                        <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+                      </button>
+                      <input type="range" min="0" max="1" step="0.05" value="0.5" oninput="setSoundVolume(this.value)" class="master-volume-slider w-full accent-purple-400 cursor-pointer h-1 bg-black/50 rounded-xl">
+                    </div>
+
+                    <div id="track-list-container" class="mt-1 text-left flex flex-col gap-1 max-h-[260px] overflow-y-auto pr-1 border-t border-white/5 pt-2"></div>
                   </div>
                 </div>
               </div>

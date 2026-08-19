@@ -179,15 +179,27 @@ function renderApp() {
         `;
         listEl.appendChild(itemDiv);
       });
-      const addInput = document.createElement('input'); addInput.type = 'text'; addInput.placeholder = '＋';
-      addInput.className = 'w-full min-h-[38px] p-2 rounded-lg border border-white/10 bg-[#0a0a0e] hover:bg-[#111118] text-center text-xs placeholder:text-gray-500 focus:outline-none focus:border-[var(--accent)] transition cursor-text font-semibold text-gray-300';
+      const addBtn = document.createElement('button'); addBtn.onclick = () => { openTaskAddColumns[id] = true; renderApp(); };
+      addBtn.className = 'w-full min-h-[38px] p-2 rounded-lg border border-dashed border-white/15 bg-[#0a0a0e] hover:bg-[#13131e] text-center text-xs text-gray-400 hover:text-white font-semibold transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm';
+      addBtn.innerHTML = `<i data-lucide="plus" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i><span>${t('add')}</span>`;
+      const addInput = document.createElement('input'); addInput.type = 'text';
+      addInput.placeholder = t('add');
+      addInput.className = 'w-full min-h-[38px] p-2 px-3 rounded-lg border border-[var(--accent)]/60 bg-[#0a0a0e] text-left text-xs placeholder:text-gray-500 focus:outline-none focus:border-[var(--accent)] transition cursor-text font-semibold text-gray-300 shadow-inner';
       addInput.onkeydown = (e) => {
         if (e.key === 'Enter' && addInput.value.trim()) {
-          saveHistory(); state.items[id].push(addInput.value.trim()); addInput.value = ''; saveState(); renderApp(); populateHelperTaskSelect();
+          saveHistory(); state.items[id].push(addInput.value.trim()); addInput.value = '';
+          openTaskAddColumns[id] = false;
+          saveState(); renderApp(); populateHelperTaskSelect();
           if (typeof lucide !== 'undefined') lucide.createIcons();
         }
+        if (e.key === 'Escape') { openTaskAddColumns[id] = false; renderApp(); }
       };
-      listEl.appendChild(addInput);
+      if (openTaskAddColumns[id]) {
+        listEl.appendChild(addInput);
+        setTimeout(() => addInput.focus(), 0);
+      } else {
+        listEl.appendChild(addBtn);
+      }
     }
     main.appendChild(article);
   });
@@ -195,8 +207,6 @@ function renderApp() {
   renderMobileCategoryTabs();
 }
 
-// Baut die untere Tab-Leiste für Mobilgeräte auf (eine Kategorie sichtbar statt Scroll-Spalten).
-// Läuft immer mit (auch am Desktop), bleibt dort aber unsichtbar (siehe styles-mobile.css).
 function renderMobileCategoryTabs() {
   const bar = document.getElementById('mobile-category-tabs');
   if (!bar) return;
@@ -221,8 +231,6 @@ function renderMobileCategoryTabs() {
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
-// Wechselt die auf dem Handy sichtbare Kategorie (Bottom-Tab-Leiste). Rein visuell,
-// die Daten und Spalten selbst bleiben unverändert im Hintergrund bestehen.
 function setMobileCategory(id) {
   document.body.dataset.mobileCat = id;
   localStorage.setItem('flowPlannerMobileCategory', id);
@@ -260,8 +268,6 @@ function handleCompleteTask(category, index, event) {
     }
     state.done.push({ task: taskText, origin: category, date: todayStr, time: timeStr });
     state.streak = (state.streak || 0) + 1; if (state.completedSteps) delete state.completedSteps[taskText];
-    
-    // Beim Erledigen wechselt das Farbschema sanft zu einem verwandten, ähnlichen Schema
     setThemeSlow(getSimilarTheme(currentTheme)); saveState(); showPraise(); renderApp(); updateZenView(); populateHelperTaskSelect();
   };
   if (taskEl) { animateTaskToDone(taskEl, '#list-done', onComplete); } else { onComplete(); }
@@ -326,5 +332,5 @@ function hidePanelHover(panelName) {
     const el = document.getElementById(`panel-${panelName}`); if (el) el.classList.add('hidden');
     if (currentlyOpenPanel === panelName) currentlyOpenPanel = null;
   }, 250);
-}
-
+} 
+ 
