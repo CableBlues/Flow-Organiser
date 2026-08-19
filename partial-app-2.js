@@ -80,7 +80,7 @@ document.write(`      <!-- BEHÄLTER 8: Statistik -->
             <p class="text-[10px] text-gray-400 leading-normal mb-1">Methoden zur sensorischen Pause:</p>
             
             <!-- Option 1: Atemtakt -->
-            <button onclick="openSafeSpaceWithTab('breath')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2">
+            <button onclick="openBreakModal('breath')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2 cursor-pointer">
               <i data-lucide="wind" class="w-4 h-4 shrink-0 text-teal-400"></i>
               <div>
                 <div class="leading-none mb-0.5">Atemtakt-Übung 🧘‍♀️</div>
@@ -89,7 +89,7 @@ document.write(`      <!-- BEHÄLTER 8: Statistik -->
             </button>
 
             <!-- Option 2: Box Breathing -->
-            <button onclick="triggerBoxBreathing()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2">
+            <button onclick="openBreakModal('box')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2 cursor-pointer">
               <i data-lucide="box" class="w-4 h-4 shrink-0 text-teal-400"></i>
               <div>
                 <div class="leading-none mb-0.5">Box-Breathing (Atembox) 📦</div>
@@ -98,7 +98,7 @@ document.write(`      <!-- BEHÄLTER 8: Statistik -->
             </button>
             
             <!-- Option 3: Erdungs-Anker -->
-            <button onclick="openSafeSpaceWithTab('anchor')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2">
+            <button onclick="openBreakModal('anchor')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2 cursor-pointer">
               <i data-lucide="anchor" class="w-4 h-4 shrink-0 text-teal-400"></i>
               <div>
                 <div class="leading-none mb-0.5">Erdungs-Anker ⚓</div>
@@ -107,7 +107,7 @@ document.write(`      <!-- BEHÄLTER 8: Statistik -->
             </button>
 
             <!-- Option 4: Augen-Entspannung -->
-            <button onclick="triggerEyeRelaxation()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2">
+            <button onclick="openBreakModal('eyes')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2 cursor-pointer">
               <i data-lucide="eye" class="w-4 h-4 shrink-0 text-teal-400"></i>
               <div>
                 <div class="leading-none mb-0.5">Augen-Entspannung 👀</div>
@@ -116,7 +116,7 @@ document.write(`      <!-- BEHÄLTER 8: Statistik -->
             </button>
             
             <!-- Option 5: Schneller Stretch -->
-            <button onclick="triggerQuickStretch()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2">
+            <button onclick="openBreakModal('stretch')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2 cursor-pointer">
               <i data-lucide="dumbbell" class="w-4 h-4 shrink-0 text-teal-400"></i>
               <div>
                 <div class="leading-none mb-0.5">Schneller Stretch 🧘</div>
@@ -125,8 +125,8 @@ document.write(`      <!-- BEHÄLTER 8: Statistik -->
             </button>
 
             <!-- Option 6: Schulter-Squeeze -->
-            <button onclick="triggerShoulderSqueeze()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2">
-              <i data-lucide="dumbbell" class="w-4 h-4 shrink-0 text-teal-400 animate-pulse"></i>
+            <button onclick="openBreakModal('squeeze')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2 cursor-pointer">
+              <i data-lucide="shield" class="w-4 h-4 shrink-0 text-teal-400 animate-pulse"></i>
               <div>
                 <div class="leading-none mb-0.5">Nacken-Squeeze (1 Min) 🏋️</div>
                 <div class="text-[9px] text-gray-400 font-normal">Muskeln anspannen & befreien</div>
@@ -134,7 +134,7 @@ document.write(`      <!-- BEHÄLTER 8: Statistik -->
             </button>
             
             <!-- Option 7: 5-Minuten Teepause -->
-            <button onclick="triggerFiveMinTeaBreak()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2">
+            <button onclick="openBreakModal('tea')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2 cursor-pointer">
               <i data-lucide="coffee" class="w-4 h-4 shrink-0 text-teal-400"></i>
               <div>
                 <div class="leading-none mb-0.5">5-Minuten Teepause ☕</div>
@@ -143,7 +143,7 @@ document.write(`      <!-- BEHÄLTER 8: Statistik -->
             </button>
 
             <!-- Option 8: Wald-Auszeit -->
-            <button onclick="triggerNatureBirds()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2">
+            <button onclick="openBreakModal('nature')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2 cursor-pointer">
               <i data-lucide="trees" class="w-4 h-4 shrink-0 text-teal-400"></i>
               <div>
                 <div class="leading-none mb-0.5">Wald-Auszeit (3 Min) 🐦</div>
@@ -174,8 +174,8 @@ document.write(`      <!-- BEHÄLTER 8: Statistik -->
           <div id="panel-sync" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] w-[200px] bg-[#111116] border border-emerald-500/40 p-3 rounded-2xl shadow-2xl flex flex-col gap-2">
             <div class="text-[10px] uppercase font-bold tracking-wider text-emerald-400 font-mono" data-i18n="sync_title">Geräte-Sync</div>
             <p class="text-[10px] text-gray-400 leading-normal mb-1" data-i18n="sync_desc">Übertrage deinen Plan nahtlos auf all deine Geräte.</p>
-            <button onclick="showToast('Schnittstelle folgt in Kürze... 🔒')" class="w-full py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold rounded-xl transition">Einloggen</button>
-            <button onclick="showToast('Schnittstelle folgt in Kürze... 🔒')" class="w-full py-1.5 bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold rounded-xl transition">Registrieren</button>
+            <button onclick="openSyncModal()" class="w-full py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold rounded-xl transition cursor-pointer">Einloggen</button>
+            <button onclick="openSyncModal()" class="w-full py-1.5 bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold rounded-xl transition cursor-pointer">Registrieren</button>
           </div>
         </div>
       </div>

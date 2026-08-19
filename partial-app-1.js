@@ -26,12 +26,31 @@ document.write(`  <div id="app" class="min-h-screen max-w-[1920px] w-full mx-aut
 
         <!-- Logo & Hover Popup -->
         <div class="relative inline-block" onmouseenter="showPanelHover('logo-guide')" onmouseleave="hidePanelHover('logo-guide')">
-          <div onclick="location.reload()" class="logo-dance logo-shiver relative inline-flex items-center gap-2 px-3 py-1.5 border border-purple-500/30 rounded-xl bg-gradient-to-br from-[#1c1c2b] to-[#12121c] text-sm font-bold font-display text-white transition-all duration-500 hover:scale-105 hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:border-purple-400 group cursor-pointer" title="Flow-Anwendung neu laden">
-            <svg class="w-5 h-5 text-purple-300 transition-transform duration-700 group-hover:rotate-[360deg] shrink-0" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round">
-              <path d="M15 50 C 35 20, 65 80, 85 50" />
-              <path d="M15 50 C 35 80, 65 20, 85 50" opacity="0.3" stroke-width="6" stroke-dasharray="2 15" />
+          <div onclick="triggerLogoReloadFlow(this)" class="logo-dance logo-idle-float relative inline-flex items-center gap-2.5 px-3.5 py-1.5 border border-cyan-500/35 rounded-xl bg-gradient-to-r from-[#0a1922] via-[#051118] to-[#0a0a16] bg-[length:200%_auto] text-sm font-bold font-display text-white transition-all duration-500 hover:scale-105 hover:shadow-[0_0_25px_rgba(6,182,212,0.55)] hover:border-cyan-400 group cursor-pointer overflow-hidden animate-logo-gradient-flow" title="Flow-Anwendung neu laden (mit Wellen-Effekt)">
+            <!-- Bubble Particles on Hover -->
+            <div class="logo-bubble logo-bubble-1"></div>
+            <div class="logo-bubble logo-bubble-2"></div>
+            <div class="logo-bubble logo-bubble-3"></div>
+
+            <!-- Individualisierte Fluid Wave SVG mit animierten Energie-Partikeln -->
+            <svg class="w-6 h-6 shrink-0 transition-transform duration-700 group-hover:scale-110" viewBox="0 0 120 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="flow-grad-1" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#06b6d4" />
+                  <stop offset="50%" stop-color="#14b8a6" />
+                  <stop offset="100%" stop-color="#10b981" />
+                </linearGradient>
+                <linearGradient id="flow-grad-2" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#0891b2" stop-opacity="0.25" />
+                  <stop offset="50%" stop-color="#0d9488" stop-opacity="0.7" />
+                  <stop offset="100%" stop-color="#059669" stop-opacity="0.25" />
+                </linearGradient>
+              </defs>
+              <path class="animate-wave-flow-reverse" d="M10 50 C 30 15, 60 85, 90 50 C 100 38, 110 38, 115 50" stroke="url(#flow-grad-2)" stroke-width="8" stroke-linecap="round" />
+              <path class="animate-wave-flow-main" d="M10 50 C 30 15, 60 85, 90 50 C 100 38, 110 38, 115 50" stroke="url(#flow-grad-1)" stroke-width="11" stroke-linecap="round" />
+              <path class="animate-wave-flow-particles" d="M10 50 C 30 15, 60 85, 90 50 C 100 38, 110 38, 115 50" stroke="#ccfbf1" stroke-width="4" stroke-linecap="round" stroke-dasharray="6 20" />
             </svg>
-            <span class="tracking-tight leading-none text-gray-100 select-none text-sm md:text-base">Flow</span>
+            <span class="tracking-tight leading-none text-gray-100 group-hover:text-cyan-200 select-none text-sm md:text-base transition-colors duration-300">Flow</span>
           </div>
 
           <!-- DYNAMISCHES HOVER POPUP (SCHNELLSTART-GUIDE & TASTENKÜRZEL) -->

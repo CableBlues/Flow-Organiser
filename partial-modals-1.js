@@ -120,6 +120,122 @@ document.write(`  <div id="praise-overlay" class="hidden fixed inset-0 z-[100000
     </div>
   </div>
 
+  <!-- INTERAKTIVES PAUSEN- & ENTSPANNUNGS-MODAL (MIT TIMER & ANLEITUNG) -->
+  <div id="helper-break-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+    <div id="helper-break-card" class="mobile-modal-card w-full max-w-md bg-[#111116]/95 border border-teal-500/40 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+      <span onclick="closeBreakModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
+
+      <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/10">
+        <div id="break-modal-icon-wrap" class="w-9 h-9 rounded-xl bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-300">
+          <i id="break-modal-lucide" data-lucide="shield" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 id="break-modal-title" class="text-white font-bold text-sm md:text-base font-display">Pause & Erholung</h3>
+          <p id="break-modal-subtitle" class="text-[11px] text-teal-300 font-medium">Nimm dir einen Moment für dich selbst</p>
+        </div>
+      </div>
+
+      <!-- Modal Body / Timer Section -->
+      <div class="flex flex-col items-center justify-center py-5 space-y-6">
+        <!-- Friendly Guidance Text -->
+        <div id="break-modal-desc" class="text-xs text-gray-300 text-center px-2 leading-relaxed">
+          Atme tief ein und lass den Alltagsstress für einen kurzen Augenblick los. Du machst das großartig! 🌿
+        </div>
+
+        <!-- Animated Breathing / Relaxation Circle with Timer inside -->
+        <div class="relative flex items-center justify-center">
+          <div id="break-pulse-ring" class="absolute w-40 h-40 rounded-full border border-teal-500/30 animate-ping opacity-25 pointer-events-none"></div>
+          <div class="w-36 h-36 rounded-full bg-gradient-to-br from-teal-500/20 via-[#132228] to-[#111116] border-2 border-teal-500/50 shadow-[0_0_30px_rgba(20,184,166,0.3)] flex flex-col items-center justify-center p-2 text-center">
+            <span id="break-timer-display" class="text-2xl md:text-3xl font-black font-mono text-teal-300 tracking-tight">02:00</span>
+            <span id="break-status-text" class="text-[10px] text-teal-400 font-bold uppercase tracking-wider mt-1">Bereit</span>
+          </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="w-full bg-black/50 h-2 rounded-full overflow-hidden border border-white/10">
+          <div id="break-progress-bar" class="h-full bg-gradient-to-r from-teal-500 to-emerald-400 transition-all duration-300" style="width: 0%"></div>
+        </div>
+
+        <!-- Timer Control Buttons -->
+        <div class="flex items-center gap-2.5 w-full pt-1">
+          <button id="break-toggle-btn" onclick="toggleBreakTimer()" class="flex-1 py-2.5 bg-teal-500 hover:bg-teal-400 text-black font-bold text-xs rounded-xl shadow-lg shadow-teal-500/20 transition flex items-center justify-center gap-1.5 cursor-pointer">
+            <i data-lucide="play" class="w-4 h-4"></i> <span id="break-toggle-label">Pause starten</span>
+          </button>
+          <button onclick="resetBreakTimer()" class="px-3.5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1 cursor-pointer" title="Zurücksetzen">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+          </button>
+          <button onclick="finishBreakEarly()" class="px-3.5 py-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1 cursor-pointer" title="Frühzeitig beenden & belohnen">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i> Fertig
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- KOSTENLOSES GERÄTE-SYNC & ANMELDEN MODAL -->
+  <div id="helper-sync-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+    <div id="helper-sync-card" class="mobile-modal-card w-full max-w-md bg-[#111116]/95 border border-emerald-500/40 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+      <span onclick="closeSyncModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
+
+      <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/10">
+        <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300">
+          <i data-lucide="cloud" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="text-white font-bold text-sm md:text-base font-display">Kostenloser Geräte-Sync 🔒</h3>
+          <p class="text-[11px] text-emerald-300 font-medium">100% privat, ohne Abo & ohne Serverkosten</p>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Friendly status banner -->
+        <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-xs shrink-0">✓</div>
+          <div>
+            <div id="sync-user-status-text" class="text-xs font-bold text-emerald-300">Als Gast auf diesem Gerät aktiv</div>
+            <div class="text-[10px] text-gray-400">Deine Daten werden sicher im Browser-Speicher gehalten.</div>
+          </div>
+        </div>
+
+        <!-- Section 1: Name / Profile -->
+        <div class="space-y-1.5">
+          <label class="text-xs font-bold text-gray-300 flex items-center gap-1.5">
+            <i data-lucide="user" class="w-3.5 h-3.5 text-emerald-400"></i> Dein Profil-Name
+          </label>
+          <input type="text" id="sync-profile-name-input" placeholder="z.B. Mein Laptop / Handy" class="w-full p-2.5 bg-black/40 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-emerald-500" />
+        </div>
+
+        <!-- Section 2: Sync Passphrase -->
+        <div class="space-y-1.5">
+          <label class="text-xs font-bold text-gray-300 flex items-center gap-1.5">
+            <i data-lucide="key" class="w-3.5 h-3.5 text-emerald-400"></i> Geheimer Sync-Code (Passphrase)
+          </label>
+          <div class="flex gap-2">
+            <input type="text" id="sync-passphrase-input" placeholder="z.B. flow-secret-xyz-2026" class="flex-1 p-2.5 bg-black/40 border border-white/10 rounded-xl text-xs text-white outline-none font-mono focus:border-emerald-500" />
+            <button onclick="generateSyncPassphrase()" class="px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-gray-300 rounded-xl transition cursor-pointer" title="Zufälligen Code generieren">Generieren</button>
+          </div>
+          <p class="text-[10px] text-gray-400">Verwende exakt denselben Sync-Code auf deinen anderen Geräten, um deine To-Dos & Statistiken sofort abzugleichen.</p>
+        </div>
+
+        <!-- Actions -->
+        <div class="grid grid-cols-2 gap-2.5 pt-2">
+          <button onclick="exportDataForSync()" class="py-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+            <i data-lucide="upload" class="w-4 h-4"></i> Sync-Code kopieren
+          </button>
+          <button onclick="importDataFromSync()" class="py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-emerald-500/20">
+            <i data-lucide="download" class="w-4 h-4"></i> Daten einlesen
+          </button>
+        </div>
+
+        <div class="text-[10px] text-center text-gray-400 pt-1">
+          💡 Tipp: Du kannst auch den <button onclick="handleSaveJson(); closeSyncModal();" class="text-emerald-400 underline font-semibold cursor-pointer">JSON-Export</button> nutzen, um deine Daten auf ein anderes Gerät zu senden.
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
   <!-- SENSORISCHE REIZPAUSE (SAFE SPACE) MODAL -->
   <div id="helper-safespace-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
     <div id="helper-safespace-card" class="mobile-modal-card w-full max-w-md bg-[#111116]/95 border border-teal-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
