@@ -222,7 +222,7 @@ function completeDopamineKick() {
   const todayStr = now.toISOString().split('T')[0];
   const logText = `${safeTranslate('dopamine_kick_success_log')} ${currentDopamineTask}`;
     
-  state.done.push({ task: logText, origin: 'adhd', date: todayStr, time: timeStr });
+  state.done.push({ task: logText, origin: 'boost', date: todayStr, time: timeStr });
   saveState();
   if (typeof playProceduralSound === 'function') playProceduralSound(3);
   if (typeof triggerConfetti === 'function') triggerConfetti();

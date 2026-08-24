@@ -107,7 +107,7 @@ const DOPAMINE_TASKS = {
   ]
 };
 
-// 40 psychologische und abwechslungsreiche ADHD-Kurzaktivitäten für den Dopamin-Funken
+// 40 motivierende Kurzaktivitäten für neuen Schwung & Fokus
 const BOOST_ACTIVITIES = {
   de: [
     "Atme 3-mal tief durch deine Nase ein und gaaaaanz langsam durch deinen Mund wieder aus. 🌬️",

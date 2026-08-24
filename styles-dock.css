@@ -3,7 +3,7 @@
   left: 50% !important;
   bottom: 20px !important;
   transform: translateX(-50%) !important;
-  z-index: 9999;
+  z-index: 40;
   pointer-events: none;
 }
 
@@ -192,67 +192,7 @@
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 10px rgba(249, 115, 22, 0.06), inset 0 -1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 
-body.theme-mono-hand .mac-dock,
-body.theme-editorial .mac-dock,
-body.theme-parchment .mac-dock,
-body.theme-minimalist-light .mac-dock,
-body.theme-terracotta-light .mac-dock,
-body.theme-slate-ivory .mac-dock {
-  background: rgba(255, 255, 255, 0.8) !important;
-  border: 1px solid rgba(0, 0, 0, 0.15) !important;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
-}
 
-body.theme-mono-hand .mac-dock-btn,
-body.theme-editorial .mac-dock-btn,
-body.theme-parchment .mac-dock-btn,
-body.theme-minimalist-light .mac-dock-btn,
-body.theme-terracotta-light .mac-dock-btn,
-body.theme-slate-ivory .mac-dock-btn {
-  background: #ffffff !important;
-  border: 1.5px solid var(--accent) !important;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important;
-}
-
-body.theme-mono-hand .mac-dock-btn i,
-body.theme-editorial .mac-dock-btn i,
-body.theme-parchment .mac-dock-btn i,
-body.theme-minimalist-light .mac-dock-btn i,
-body.theme-terracotta-light .mac-dock-btn i,
-body.theme-slate-ivory .mac-dock-btn i {
-  color: var(--accent) !important;
-  filter: none !important;
-}
-
-body.theme-mono-hand .dock-label,
-body.theme-editorial .dock-label,
-body.theme-parchment .dock-label,
-body.theme-minimalist-light .dock-label,
-body.theme-terracotta-light .dock-label,
-body.theme-slate-ivory .dock-label {
-  color: var(--accent) !important;
-  text-shadow: none !important;
-  font-weight: 800 !important;
-}
-
-body.theme-mono-hand .mac-dock-btn:hover,
-body.theme-editorial .mac-dock-btn:hover,
-body.theme-parchment .mac-dock-btn:hover,
-body.theme-minimalist-light .mac-dock-btn:hover,
-body.theme-terracotta-light .mac-dock-btn:hover,
-body.theme-slate-ivory .mac-dock-btn:hover {
-  background-color: var(--bg-app) !important;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08) !important;
-}
-
-body.theme-mono-hand .mac-dock div[class*="bg-white/10"],
-body.theme-editorial .mac-dock div[class*="bg-white/10"],
-body.theme-parchment .mac-dock div[class*="bg-white/10"],
-body.theme-minimalist-light .mac-dock div[class*="bg-white/10"],
-body.theme-terracotta-light .mac-dock div[class*="bg-white/10"],
-body.theme-slate-ivory .mac-dock div[class*="bg-white/10"] {
-  background-color: rgba(0, 0, 0, 0.15) !important;
-}
 
 .dock-label {
   font-size: 8px !important;
@@ -361,35 +301,7 @@ body.theme-slate-ivory .mac-dock div[class*="bg-white/10"] {
   pointer-events: none !important;
 }
 
-body.theme-mono-hand .mac-tools-trigger,
-body.theme-editorial .mac-tools-trigger,
-body.theme-parchment .mac-tools-trigger,
-body.theme-minimalist-light .mac-tools-trigger,
-body.theme-terracotta-light .mac-tools-trigger,
-body.theme-slate-ivory .mac-tools-trigger {
-  background: var(--accent) !important;
-  border: 1px solid var(--accent-light) !important;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
-}
 
-body.theme-mono-hand .mac-tools-trigger span:first-child,
-body.theme-editorial .mac-tools-trigger span:first-child,
-body.theme-parchment .mac-tools-trigger span:first-child,
-body.theme-minimalist-light .mac-tools-trigger span:first-child,
-body.theme-terracotta-light .mac-tools-trigger span:first-child,
-body.theme-slate-ivory .mac-tools-trigger span:first-child {
-  color: var(--bg-app) !important;
-}
-
-body.theme-mono-hand .mac-tools-trigger span:last-child,
-body.theme-editorial .mac-tools-trigger span:last-child,
-body.theme-parchment .mac-tools-trigger span:last-child,
-body.theme-minimalist-light .mac-tools-trigger span:last-child,
-body.theme-terracotta-light .mac-tools-trigger span:last-child,
-body.theme-slate-ivory .mac-tools-trigger span:last-child {
-  color: #ffffff !important;
-  text-shadow: none !important;
-}
 
 /* --- 3D GAMIFICATION SYSTEM INTEGRATIONS --- */
 #game-mode-container {
@@ -420,4 +332,49 @@ body.theme-slate-ivory .mac-tools-trigger span:last-child {
 
 .game-neon-active {
   animation: gameNeonFlicker 3s infinite alternate;
-} 
+}
+
+/* Kompakter vertikaler DJ-Lautstärkeregler */
+.vertical-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  transform: rotate(-90deg);
+  transform-origin: center center;
+  margin: 0;
+  outline: none;
+}
+.vertical-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #c084fc;
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(192, 132, 252, 0.6);
+}
+.vertical-slider::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #c084fc;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 6px rgba(192, 132, 252, 0.6);
+}
+
+/* --- DOCK POPOVER PANELS POSITIONING & ANTI-OVERLAP PROTECTION --- */
+.dock-popover-panel {
+  bottom: calc(100% + 14px) !important;
+  max-height: calc(100vh - 170px) !important;
+  z-index: 120 !important;
+  overflow-y: auto !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+}
+
+@media (max-height: 740px) {
+  .dock-popover-panel {
+    max-height: calc(100vh - 140px) !important;
+    bottom: calc(100% + 8px) !important;
+  }
+}

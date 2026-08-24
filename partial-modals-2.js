@@ -1,8 +1,8 @@
 // Ausgelagert aus index.html: Wird per document.write an der Original-Position eingefuegt
-document.write(`        <!-- ADHD-Prioritizer (NEUES MODUL 1) -->
+document.write(`        <!-- Smart-Prioritizer (MODUL 1) -->
         <div id="compass-pane-prioritizer" class="hidden space-y-3">
           <p class="text-[10px] text-gray-400 leading-normal">
-            Bewerte Vorhaben nach Spaß (Dopamin) & Aufwand (Effort), um deine "Easy Wins" (leichte Erfolge) zur Überwindung von Blockaden zu identifizieren.
+            Bewerte Vorhaben nach Motivation & Aufwand, um deine schnellsten Erfolge („Quick Wins“) zur Überwindung von Hürden zu identifizieren.
           </p>
           <div class="flex gap-1.5 items-end">
             <div class="flex-1">
@@ -395,4 +395,606 @@ document.write(`        <!-- ADHD-Prioritizer (NEUES MODUL 1) -->
       </div>
     </div>
   </div>
+
+  <!-- BERICHT-EXPORT MODAL (WOCHE & MONAT) -->
+  <div id="report-export-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+    <div class="mobile-modal-card animate-spring-modal w-full max-w-2xl bg-[#111116]/95 border border-purple-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+      <span onclick="closeReportExportModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
+
+      <div class="flex items-center justify-between mb-3 pb-2 border-b border-white/10">
+        <h3 class="text-white font-bold text-sm md:text-base font-display flex items-center gap-2">
+          <i data-lucide="file-text" class="w-4 h-4 text-purple-400"></i>
+          <span>Statistik- & Fortschrittsbericht</span>
+          <span class="text-xs text-purple-300 font-mono font-normal">(Woche & Monat)</span>
+        </h3>
+      </div>
+
+      <div class="space-y-3.5">
+        <div class="relative">
+          <textarea id="report-export-text-area" rows="12" readonly class="w-full p-4 bg-black/60 border border-white/10 rounded-xl text-xs font-mono text-gray-200 leading-relaxed outline-none focus:border-purple-400 select-all resize-none"></textarea>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+          <div class="flex items-center gap-2">
+            <button onclick="copyReportText()" class="px-4 py-2 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-purple-200 text-xs font-bold rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-sm">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Text kopieren</span>
+            </button>
+            <button onclick="downloadReportFile()" class="px-4 py-2 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white rounded-xl text-xs font-semibold transition cursor-pointer flex items-center gap-1.5">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>
+              <span>Als .txt herunterladen</span>
+            </button>
+            <button onclick="printReport()" class="px-4 py-2 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white rounded-xl text-xs font-semibold transition cursor-pointer flex items-center gap-1.5">
+              <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+              <span>Drucken / PDF</span>
+            </button>
+          </div>
+
+          <button onclick="closeReportExportModal()" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-semibold transition cursor-pointer">
+            Schließen
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NATIVES MOBILE MENÜ DRAWER -->
+  <div id="mobile-menu-drawer" class="hidden fixed inset-0 z-[100002] flex items-end justify-center bg-black/75 backdrop-blur-md animate-fade-in" onclick="if(event.target === this) closeMobileMenuDrawer();">
+    <div class="mobile-modal-card w-full max-w-lg bg-[#14141e] border-t border-white/15 rounded-t-3xl p-5 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <h3 class="font-display font-bold text-base text-white flex items-center gap-2">
+          <i data-lucide="menu" class="w-4 h-4 text-purple-400"></i>
+          <span>Menü & Einstellungen</span>
+        </h3>
+        <button onclick="closeMobileMenuDrawer()" class="p-1 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="space-y-2">
+        <div class="text-[10px] uppercase font-bold tracking-wider text-gray-400 font-mono">Synchronisation & Kopplung</div>
+        <button onclick="closeMobileMenuDrawer(); openSyncModal();" class="w-full p-3 bg-emerald-500/15 border border-emerald-500/30 rounded-2xl text-left hover:bg-emerald-500/25 transition flex items-center justify-between text-xs font-bold text-emerald-300 cursor-pointer">
+          <div class="flex items-center gap-2.5">
+            <i data-lucide="smartphone" class="w-4 h-4 text-emerald-400"></i>
+            <span>PC & Handy verbinden ☁️</span>
+          </div>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono">1-Klick</span>
+        </button>
+      </div>
+
+      <div class="space-y-2">
+        <div class="text-[10px] uppercase font-bold tracking-wider text-gray-400 font-mono">Ansicht & Auswertung</div>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="closeMobileMenuDrawer(); togglePanel('report');" class="p-3 bg-purple-500/10 border border-purple-500/20 rounded-2xl text-left hover:bg-purple-500/20 transition flex items-center gap-2.5 text-xs font-bold text-purple-200">
+            <i data-lucide="bar-chart-3" class="w-4 h-4 shrink-0 text-purple-400"></i>
+            <span>Statistik / Bericht</span>
+          </button>
+          <button onclick="closeMobileMenuDrawer(); togglePanel('theme');" class="p-3 bg-white/[0.04] border border-white/10 rounded-2xl text-left hover:bg-white/[0.08] transition flex items-center gap-2.5 text-xs font-bold text-gray-200">
+            <i data-lucide="palette" class="w-4 h-4 shrink-0 text-purple-300"></i>
+            <span>Farbschemas</span>
+          </button>
+          <button onclick="closeMobileMenuDrawer(); togglePanel('language');" class="p-3 bg-white/[0.04] border border-white/10 rounded-2xl text-left hover:bg-white/[0.08] transition flex items-center gap-2.5 text-xs font-bold text-gray-200">
+            <i data-lucide="globe" class="w-4 h-4 shrink-0 text-blue-400"></i>
+            <span>Sprache</span>
+          </button>
+          <button onclick="closeMobileMenuDrawer(); togglePanel('pause-dropdown');" class="p-3 bg-teal-500/10 border border-teal-500/20 rounded-2xl text-left hover:bg-teal-500/20 transition flex items-center gap-2.5 text-xs font-bold text-teal-300">
+            <i data-lucide="shield" class="w-4 h-4 shrink-0 text-teal-400"></i>
+            <span>Reizpause</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <div class="text-[10px] uppercase font-bold tracking-wider text-gray-400 font-mono">Aktionen & Daten</div>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="closeMobileMenuDrawer(); handleUndo();" class="p-2.5 bg-white/[0.04] border border-white/10 rounded-xl text-left hover:bg-white/[0.08] transition flex items-center gap-2 text-xs font-semibold text-gray-200">
+            <i data-lucide="undo" class="w-3.5 h-3.5 text-amber-400"></i>
+            <span>Rückgängig</span>
+          </button>
+          <button onclick="closeMobileMenuDrawer(); handleSaveJson();" class="p-2.5 bg-white/[0.04] border border-white/10 rounded-xl text-left hover:bg-white/[0.08] transition flex items-center gap-2 text-xs font-semibold text-gray-200">
+            <i data-lucide="save" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span>Plan sichern</span>
+          </button>
+          <button onclick="closeMobileMenuDrawer(); document.getElementById('file-input').click();" class="p-2.5 bg-white/[0.04] border border-white/10 rounded-xl text-left hover:bg-white/[0.08] transition flex items-center gap-2 text-xs font-semibold text-gray-200">
+            <i data-lucide="folder-open" class="w-3.5 h-3.5 text-amber-300"></i>
+            <span>Plan laden</span>
+          </button>
+          <button onclick="closeMobileMenuDrawer(); handleReset();" class="p-2.5 bg-rose-500/10 border border-rose-500/20 rounded-xl text-left hover:bg-rose-500/20 transition flex items-center gap-2 text-xs font-semibold text-rose-300">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-rose-400"></i>
+            <span>Zurücksetzen</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="pt-2 border-t border-white/10 flex gap-2">
+        <button onclick="closeMobileMenuDrawer(); togglePanel('feedback');" class="flex-1 py-2.5 bg-pink-500/15 hover:bg-pink-500/25 border border-pink-500/30 text-pink-300 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
+          <i data-lucide="message-square-heart" class="w-3.5 h-3.5"></i>
+          <span>Feedback senden</span>
+        </button>
+        <button onclick="closeMobileMenuDrawer(); togglePanel('logo-guide');" class="py-2.5 px-4 bg-white/5 hover:bg-white/10 text-gray-300 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
+          <i data-lucide="help-circle" class="w-3.5 h-3.5"></i>
+          <span>Guide</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NATIVES MOBILE TOOLS SHEET -->
+  <div id="mobile-tools-sheet" class="hidden fixed inset-0 z-[100002] flex items-end justify-center bg-black/75 backdrop-blur-md animate-fade-in" onclick="if(event.target === this) closeMobileToolsSheet();">
+    <div class="mobile-modal-card w-full max-w-lg bg-[#14141e] border-t border-white/15 rounded-t-3xl p-5 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <h3 class="font-display font-bold text-base text-white flex items-center gap-2">
+          <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+          <span>Werkzeuge & Flow-Helfer</span>
+        </h3>
+        <button onclick="closeMobileToolsSheet()" class="p-1 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2.5">
+        <button onclick="closeMobileToolsSheet(); togglePanel('soundscape');" class="p-3 bg-white/[0.03] border border-white/10 rounded-2xl text-left hover:bg-white/[0.08] active:scale-95 transition flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-300 shrink-0">
+            <i data-lucide="volume-2" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-white leading-tight">Soundscapes</div>
+            <div class="text-[10px] text-gray-400">Regen, Café, Kamin</div>
+          </div>
+        </button>
+
+        <button onclick="closeMobileToolsSheet(); togglePanel('music');" class="p-3 bg-white/[0.03] border border-white/10 rounded-2xl text-left hover:bg-white/[0.08] active:scale-95 transition flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-pink-500/20 border border-pink-500/30 flex items-center justify-center text-pink-300 shrink-0">
+            <i data-lucide="music" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-white leading-tight">Musik</div>
+            <div class="text-[10px] text-gray-400">Lofi & Ambient</div>
+          </div>
+        </button>
+
+        <button onclick="closeMobileToolsSheet(); togglePanel('alarm');" class="p-3 bg-white/[0.03] border border-white/10 rounded-2xl text-left hover:bg-white/[0.08] active:scale-95 transition flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-300 shrink-0">
+            <i data-lucide="alarm-clock" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-white leading-tight">Wecker</div>
+            <div class="text-[10px] text-gray-400">Termine & Alarme</div>
+          </div>
+        </button>
+
+        <button onclick="closeMobileToolsSheet(); togglePanel('cooking');" class="p-3 bg-white/[0.03] border border-white/10 rounded-2xl text-left hover:bg-white/[0.08] active:scale-95 transition flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-orange-300 shrink-0">
+            <i data-lucide="cooking-pot" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-white leading-tight">Kochen</div>
+            <div class="text-[10px] text-gray-400">Vorrat & Rezepte</div>
+          </div>
+        </button>
+
+        <button onclick="closeMobileToolsSheet(); togglePanel('shopping');" class="p-3 bg-white/[0.03] border border-white/10 rounded-2xl text-left hover:bg-white/[0.08] active:scale-95 transition flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-300 shrink-0">
+            <i data-lucide="shopping-basket" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-white leading-tight">Einkauf</div>
+            <div class="text-[10px] text-gray-400">Einkaufsliste</div>
+          </div>
+        </button>
+
+        <button onclick="closeMobileToolsSheet(); openCompassModal();" class="p-3 bg-white/[0.03] border border-white/10 rounded-2xl text-left hover:bg-white/[0.08] active:scale-95 transition flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-rose-500/20 border border-rose-500/30 flex items-center justify-center text-rose-300 shrink-0">
+            <i data-lucide="compass" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-white leading-tight">Kompass</div>
+            <div class="text-[10px] text-gray-400">Entscheidungshilfe</div>
+          </div>
+        </button>
+
+        <button onclick="closeMobileToolsSheet(); togglePanel('boost');" class="p-3 bg-white/[0.03] border border-white/10 rounded-2xl text-left hover:bg-white/[0.08] active:scale-95 transition flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-yellow-500/20 border border-yellow-500/30 flex items-center justify-center text-yellow-300 shrink-0">
+            <i data-lucide="zap" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-white leading-tight">Schwung-Impuls</div>
+            <div class="text-[10px] text-gray-400">30s Überwindung</div>
+          </div>
+        </button>
+
+        <button onclick="closeMobileToolsSheet(); openClarityModal();" class="p-3 bg-white/[0.03] border border-white/10 rounded-2xl text-left hover:bg-white/[0.08] active:scale-95 transition flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-300 shrink-0">
+            <i data-lucide="anchor" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-white leading-tight" data-i18n="dock_clarity">Klarheit</div>
+            <div class="text-[10px] text-gray-400" data-i18n="clarity_subtitle">Impulskontrolle & Reflexion</div>
+          </div>
+        </button>
+
+        <button onclick="closeMobileToolsSheet(); openSportModal();" class="p-3 bg-white/[0.03] border border-white/10 rounded-2xl text-left hover:bg-white/[0.08] active:scale-95 transition flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-300 shrink-0">
+            <i data-lucide="dumbbell" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-white leading-tight">Sport & Körper</div>
+            <div class="text-[10px] text-gray-400">1-Minuten Workouts</div>
+          </div>
+        </button>
+
+        <button onclick="closeMobileToolsSheet(); togglePanel('weather'); fetchLocalWeather();" class="p-3 bg-white/[0.03] border border-white/10 rounded-2xl text-left hover:bg-white/[0.08] active:scale-95 transition flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-sky-500/20 border border-sky-500/30 flex items-center justify-center text-sky-300 shrink-0">
+            <i data-lucide="cloud-sun" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-white leading-tight" data-i18n="dock_weather">Wetter</div>
+            <div class="text-[10px] text-gray-400">Live & 5-Tage Trend</div>
+          </div>
+        </button>
+
+        <button onclick="closeMobileToolsSheet(); togglePanel('news'); renderNewsBriefing();" class="p-3 bg-white/[0.03] border border-white/10 rounded-2xl text-left hover:bg-white/[0.08] active:scale-95 transition flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-300 shrink-0">
+            <i data-lucide="newspaper" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-white leading-tight" data-i18n="dock_news">Nachrichten</div>
+            <div class="text-[10px] text-gray-400">Daily Digest & Positives</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- KLARHEIT & IMPULSKONTROLLE MODAL -->
+  <div id="clarity-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+    <div class="bg-[#111118] border border-teal-500/40 rounded-3xl max-w-lg w-full p-5 shadow-2xl relative text-white flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-300">
+            <i data-lucide="anchor" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-base font-display text-white flex items-center gap-1.5" data-i18n="clarity_title">
+              Klarheit & Impulskontrolle
+            </h3>
+            <p class="text-[10px] text-gray-400" data-i18n="clarity_subtitle">
+              Muster durchbrechen, Drang meistern & gesunde Gewohnheiten stärken
+            </p>
+          </div>
+        </div>
+        <button onclick="closeClarityModal()" class="text-gray-400 hover:text-white p-1 rounded-lg transition cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="grid grid-cols-5 gap-1 bg-black/40 p-1 rounded-2xl border border-white/5 text-[10px] font-bold text-center">
+        <button onclick="switchClarityTab('urge')" id="clarity-tab-urge" class="py-1.5 px-1 rounded-xl transition cursor-pointer flex flex-col items-center gap-0.5">
+          <span>🌊</span>
+          <span class="truncate">Urge Surfing</span>
+        </button>
+        <button onclick="switchClarityTab('halt')" id="clarity-tab-halt" class="py-1.5 px-1 rounded-xl transition cursor-pointer flex flex-col items-center gap-0.5">
+          <span>🔍</span>
+          <span class="truncate">HALT</span>
+        </button>
+        <button onclick="switchClarityTab('shift')" id="clarity-tab-shift" class="py-1.5 px-1 rounded-xl transition cursor-pointer flex flex-col items-center gap-0.5">
+          <span>⚡</span>
+          <span class="truncate">Shift</span>
+        </button>
+        <button onclick="switchClarityTab('future')" id="clarity-tab-future" class="py-1.5 px-1 rounded-xl transition cursor-pointer flex flex-col items-center gap-0.5">
+          <span>🧭</span>
+          <span class="truncate">Zukunft</span>
+        </button>
+        <button onclick="switchClarityTab('tracker')" id="clarity-tab-tracker" class="py-1.5 px-1 rounded-xl transition cursor-pointer flex flex-col items-center gap-0.5">
+          <span>🛡️</span>
+          <span class="truncate">Tracker</span>
+        </button>
+      </div>
+
+      <!-- TAB 1: URGE SURFING (90-SEKUNDEN-WELLE) -->
+      <div id="clarity-pane-urge" class="space-y-3.5 text-center">
+        <div class="p-4 bg-teal-500/10 border border-teal-500/20 rounded-2xl space-y-2">
+          <div class="text-3xl font-black font-mono text-teal-300" id="clarity-urge-time">1:30</div>
+          <div class="w-full bg-black/50 h-2 rounded-full overflow-hidden border border-white/10">
+            <div id="clarity-urge-bar" class="bg-gradient-to-r from-teal-400 to-cyan-400 h-full w-0 transition-all duration-300"></div>
+          </div>
+          <div id="clarity-urge-breath-guide" class="text-xs font-bold text-teal-300">💨 Langsam einatmen (4s)...</div>
+        </div>
+
+        <div class="p-3 bg-black/40 border border-white/5 rounded-2xl min-h-[54px] flex items-center justify-center">
+          <p id="clarity-urge-phrase" class="text-xs text-gray-300 italic leading-relaxed">
+            Ein Verlangen ist wie eine Meereswelle: Es steigt an, erreicht seinen Scheitelpunkt und flacht ganz von allein ab. Du musst ihm nicht nachgeben.
+          </p>
+        </div>
+
+        <button onclick="toggleClarityUrgeTimer()" id="clarity-urge-toggle-btn" class="w-full py-2.5 bg-teal-500 hover:bg-teal-400 text-black text-xs font-bold rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5 shadow-md">
+          <i data-lucide="play" class="w-4 h-4"></i>
+          <span>90s Welle reiten 🌊</span>
+        </button>
+      </div>
+
+      <!-- TAB 2: HALT-CHECK (BEDÜRFNIS-DIAGNOSE) -->
+      <div id="clarity-pane-halt" class="hidden space-y-3">
+        <p class="text-xs text-gray-400 text-left">
+          Der Drang ist fast immer ein Deckmantel für ein unbefriedigtes Grundbedürfnis. Welcher Zustand trifft gerade am ehesten zu?
+        </p>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="selectHaltCategory('hungry')" class="p-3 bg-white/[0.03] hover:bg-amber-500/15 border border-white/10 hover:border-amber-500/40 rounded-2xl text-left transition cursor-pointer flex items-center gap-2.5">
+            <span class="text-lg">🍎</span>
+            <div>
+              <div class="text-xs font-bold text-amber-300">Hunger</div>
+              <div class="text-[9px] text-gray-400">Unterzuckert / leer</div>
+            </div>
+          </button>
+
+          <button onclick="selectHaltCategory('angry')" class="p-3 bg-white/[0.03] hover:bg-rose-500/15 border border-white/10 hover:border-rose-500/40 rounded-2xl text-left transition cursor-pointer flex items-center gap-2.5">
+            <span class="text-lg">🔥</span>
+            <div>
+              <div class="text-xs font-bold text-rose-300">Frust & Wut</div>
+              <div class="text-[9px] text-gray-400">Stress / Anspannung</div>
+            </div>
+          </button>
+
+          <button onclick="selectHaltCategory('lonely')" class="p-3 bg-white/[0.03] hover:bg-purple-500/15 border border-white/10 hover:border-purple-500/40 rounded-2xl text-left transition cursor-pointer flex items-center gap-2.5">
+            <span class="text-lg">💜</span>
+            <div>
+              <div class="text-xs font-bold text-purple-300">Einsamkeit</div>
+              <div class="text-[9px] text-gray-400">Langeweile / Leere</div>
+            </div>
+          </button>
+
+          <button onclick="selectHaltCategory('tired')" class="p-3 bg-white/[0.03] hover:bg-blue-500/15 border border-white/10 hover:border-blue-500/40 rounded-2xl text-left transition cursor-pointer flex items-center gap-2.5">
+            <span class="text-lg">🌙</span>
+            <div>
+              <div class="text-xs font-bold text-blue-300">Müdigkeit</div>
+              <div class="text-[9px] text-gray-400">Mentale Erschöpfung</div>
+            </div>
+          </button>
+        </div>
+
+        <div id="clarity-halt-result" class="hidden"></div>
+      </div>
+
+      <!-- TAB 3: DOPAMIN-SHIFT & GESUNDE ALTERNATIVEN -->
+      <div id="clarity-pane-shift" class="hidden space-y-3 text-center">
+        <p class="text-xs text-gray-400 text-left">
+          Dein Gehirn will gerade eine Handlung ausführen. Lenke diesen Impuls in eine sofortige, gesunde Ersatzhandlung um:
+        </p>
+
+        <div id="clarity-shift-content" class="min-h-[100px] flex items-center justify-center">
+          <div class="p-4 bg-teal-500/10 border border-teal-500/30 rounded-2xl text-left space-y-2 w-full">
+            <div class="flex items-center gap-2 font-bold text-sm text-teal-300">
+              <i data-lucide="snowflake" class="w-5 h-5 text-teal-400"></i>
+              <span>Kaltwasser-Reiz (Tauchreflex)</span>
+            </div>
+            <p class="text-xs text-gray-200 leading-relaxed">
+              Wasche dein Gesicht 20 Sekunden mit eiskaltem Wasser. Das aktiviert den Vagusnerv, senkt die Herzfrequenz und dämpft den Drang sofort ab.
+            </p>
+          </div>
+        </div>
+
+        <button onclick="suggestClarityShift()" class="w-full py-2 bg-white/10 hover:bg-white/15 border border-white/20 text-white text-xs font-bold rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+          <span>Andere Alternative vorschlagen 🔄</span>
+        </button>
+      </div>
+
+      <!-- TAB 4: ZUKUNFTS-ICH (PERSPEKTIVEN-FILTER) -->
+      <div id="clarity-pane-future" class="hidden space-y-3 text-left">
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="p-3 bg-red-500/10 border border-red-500/20 rounded-2xl space-y-1">
+            <div class="font-bold text-red-300 flex items-center gap-1">
+              <span>⏳</span> 10 Minuten DANACH:
+            </div>
+            <p class="text-[11px] text-gray-300 leading-relaxed">
+              Kurzer Dopamin-Flash ist verpufft. Gefühle von Erschöpfung, Bedauern, Kontrollverlust und innerer Leere.
+            </p>
+          </div>
+
+          <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl space-y-1">
+            <div class="font-bold text-emerald-300 flex items-center gap-1">
+              <span>🌅</span> Morgen früh:
+            </div>
+            <p class="text-[11px] text-gray-300 leading-relaxed">
+              Stolz, gestärkte Willenskraft, klare Gedanken und das erhebende Gefühl, selbstbestimmt geblieben zu sein.
+            </p>
+          </div>
+        </div>
+
+        <div class="space-y-2 pt-1 border-t border-white/10">
+          <label class="text-[10px] text-gray-400 font-bold block">Dein persönlicher Ankergrund (Warum lohnt es sich standhaft zu bleiben?):</label>
+          <div class="flex gap-1.5">
+            <input type="text" id="clarity-reason-input" placeholder="Z.B. Meine Gesundheit, mentale Freiheit, Stolz..." class="flex-1 p-2 bg-black/50 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-teal-500 font-semibold" />
+            <button onclick="saveClarityReason()" class="px-3 bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 rounded-xl text-xs font-bold border border-teal-500/30 transition cursor-pointer">Sichern 💾</button>
+          </div>
+          <div id="clarity-reasons-list" class="space-y-1.5 pt-1"></div>
+        </div>
+      </div>
+
+      <!-- TAB 5: TAGE DER KLARHEIT (FREIHEITS-TRACKER) -->
+      <div id="clarity-pane-tracker" class="hidden space-y-3 text-center">
+        <div class="p-5 bg-gradient-to-b from-teal-500/20 via-teal-500/5 to-transparent border border-teal-500/30 rounded-3xl space-y-2">
+          <div class="text-[10px] uppercase font-bold tracking-widest text-teal-400 font-mono">Deine Tage in bewusster Klarheit</div>
+          <div class="text-5xl font-black font-display text-white drop-shadow-md" id="clarity-streak-count">0</div>
+          <div class="text-xs text-gray-300">Tage der Freiheit & Selbstbestimmung</div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-1.5 text-[10px] font-bold text-left">
+          <div class="p-2 bg-white/[0.02] border border-white/5 rounded-xl">
+            <span class="text-teal-400 block mb-0.5">🌱 Tag 1</span>
+            <span class="text-gray-400 font-normal text-[9px]">Erster Sieg</span>
+          </div>
+          <div class="p-2 bg-white/[0.02] border border-white/5 rounded-xl">
+            <span class="text-teal-400 block mb-0.5">⚡ Tag 7</span>
+            <span class="text-gray-400 font-normal text-[9px]">Neuer Rhythmus</span>
+          </div>
+          <div class="p-2 bg-white/[0.02] border border-white/5 rounded-xl">
+            <span class="text-teal-400 block mb-0.5">🏆 Tag 30</span>
+            <span class="text-gray-400 font-normal text-[9px]">Starke Freiheit</span>
+          </div>
+        </div>
+
+        <div class="flex gap-2 pt-1">
+          <button onclick="incrementClarityStreak()" class="flex-1 py-2 bg-teal-500 hover:bg-teal-400 text-black text-xs font-bold rounded-xl transition cursor-pointer shadow-md">
+            +1 Tag geschafft! 🎉
+          </button>
+          <button onclick="resetClarityStreak()" class="px-3 py-2 bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-300 rounded-xl text-xs font-semibold border border-white/10 hover:border-red-500/30 transition cursor-pointer" title="Schamfreier Neustart">
+            Neustart 🌱
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SAMPLE TASK MANAGER MODAL -->
+  <div id="sample-manager-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+    <div class="bg-[#111118] border border-purple-500/40 rounded-3xl max-w-xl w-full p-5 shadow-2xl relative text-white flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-300">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-base font-display text-white flex items-center gap-1.5" data-i18n="sample_modal_title">
+              Beispiel-Aufgaben anpassen
+            </h3>
+            <p class="text-[10px] text-gray-400" data-i18n="sample_modal_subtitle">
+              Wähle aus, welche Beispiel-Aufgaben du in dein Board übernehmen möchtest.
+            </p>
+          </div>
+        </div>
+        <button onclick="closeSampleManagerModal()" class="text-gray-400 hover:text-white p-1 rounded-lg transition cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center justify-between text-xs pt-1">
+        <div class="flex items-center gap-2">
+          <button onclick="toggleAllSampleCheckboxes(true)" class="px-2.5 py-1 bg-white/5 hover:bg-white/10 text-purple-300 rounded-lg font-semibold text-[11px] border border-white/10 transition cursor-pointer">
+            ✓ Alle anwählen
+          </button>
+          <button onclick="toggleAllSampleCheckboxes(false)" class="px-2.5 py-1 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-lg font-semibold text-[11px] border border-white/10 transition cursor-pointer">
+            ✕ Alle abwählen
+          </button>
+        </div>
+        <span id="sample-selected-counter" class="text-[11px] text-gray-400 font-mono">0 ausgewählt</span>
+      </div>
+
+      <!-- Categories Container -->
+      <div id="sample-manager-content" class="space-y-4 max-h-[50vh] overflow-y-auto pr-1"></div>
+
+      <!-- Footer Buttons -->
+      <div class="flex gap-2 border-t border-white/10 pt-3">
+        <button onclick="applySampleManagerSelection()" class="flex-1 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl transition cursor-pointer shadow-lg flex items-center justify-center gap-2">
+          <i data-lucide="check" class="w-4 h-4"></i>
+          <span data-i18n="sample_apply_btn">Auswahl ins Board übernehmen ✨</span>
+        </button>
+        <button onclick="closeSampleManagerModal()" class="px-4 py-2.5 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-xl text-xs font-semibold transition cursor-pointer" data-i18n="cancel">
+          Abbrechen
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SUPERMARKT MODUS MODAL (Vollbild / Touch-Fokus Ansicht) -->
+  <div id="supermarket-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-3 md:p-6 bg-black/85 backdrop-blur-lg animate-fade-in">
+    <div class="bg-[#111118] border border-emerald-500/40 rounded-3xl max-w-2xl w-full p-4 md:p-6 shadow-2xl relative text-white flex flex-col gap-4 max-h-[92vh] overflow-hidden">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300">
+            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg font-display text-white flex items-center gap-2" data-i18n="supermarket_title">
+              Supermarkt-Modus 🛒
+            </h3>
+            <p class="text-xs text-gray-400" id="supermarket-progress-text">
+              Lade Einkaufsliste...
+            </p>
+          </div>
+        </div>
+        <button onclick="closeSupermarketModal()" class="text-gray-400 hover:text-white p-2 rounded-xl bg-white/5 hover:bg-white/10 transition cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="w-full bg-black/50 h-2 rounded-full overflow-hidden border border-white/10">
+        <div id="supermarket-progress-bar" class="h-full bg-gradient-to-r from-emerald-400 to-teal-400 transition-all duration-300" style="width: 0%"></div>
+      </div>
+
+      <!-- Quick Add Input -->
+      <div class="flex gap-2">
+        <input type="text" id="supermarket-add-input" placeholder="Schnell hinzufügen (z.B. 2x Hafermilch, Tomaten)..." class="flex-1 p-2.5 bg-black/50 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-emerald-500 font-semibold" onkeydown="if(event.key==='Enter') handleAddShoppingItem();" />
+        <button onclick="handleAddShoppingItem()" class="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-xs rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-md">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+          <span data-i18n="add">Hinzufügen</span>
+        </button>
+      </div>
+
+      <!-- Supermarket Content (Scrollable) -->
+      <div id="supermarket-content" class="flex-1 overflow-y-auto pr-1 space-y-3"></div>
+
+      <!-- Footer Buttons -->
+      <div class="flex items-center justify-between border-t border-white/10 pt-3 text-xs">
+        <button onclick="clearShoppingList()" class="px-3 py-2 bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-300 rounded-xl border border-white/10 hover:border-red-500/30 transition cursor-pointer">
+          Liste leeren 🗑️
+        </button>
+        <button onclick="closeSupermarketModal()" class="px-5 py-2 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 font-bold rounded-xl transition cursor-pointer">
+          Fertig / Schließen ✓
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Feierabend & Tagesabschluss-Celebration-Modal -->
+  <div id="feierabend-celebration-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center p-4 z-[10000] animate-fadeIn">
+    <div class="bg-gradient-to-b from-[#1c182a] to-[#12101c] border border-amber-500/40 p-6 md:p-8 rounded-3xl max-w-md w-full shadow-2xl relative flex flex-col items-center text-center space-y-4">
+      <button onclick="closeFeierabendModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-xl bg-white/5 hover:bg-white/10 transition cursor-pointer">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <!-- Feier-Icon / Badge mit sanftem Pulsieren -->
+      <div class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-amber-500/30 to-rose-500/30 border border-amber-400/50 flex items-center justify-center text-4xl shadow-xl shadow-amber-500/20">
+        🍹
+      </div>
+
+      <div class="space-y-1.5">
+        <span class="text-[10px] font-mono font-bold tracking-widest text-amber-400 uppercase bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+          Tagesziel Erreicht 🌟
+        </span>
+        <h3 class="text-2xl font-black font-display text-white" data-i18n="celebration_title">
+          Du hast heute alles gerockt! 🎉
+        </h3>
+        <p class="text-xs text-gray-300 leading-relaxed max-w-xs mx-auto" data-i18n="celebration_desc">
+          Alle heutigen Aufgaben sind vollständig erledigt. Gönn dir was Schönes, schalte ab und genieße deinen wohlverdienten Feierabend!
+        </p>
+      </div>
+
+      <!-- Schnelle Feierabend-Aktionen -->
+      <div class="w-full pt-2 flex flex-col gap-2">
+        <button onclick="startFeierabendChillMode()" class="w-full py-3 px-4 bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-400 hover:to-rose-400 text-black font-black text-xs rounded-2xl transition cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          <span data-i18n="celebration_btn_chill">Feierabend-Modus & Relax-Sounds 🎶</span>
+        </button>
+
+        <button onclick="closeFeierabendModal()" class="w-full py-2.5 px-4 bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold rounded-xl border border-white/10 transition cursor-pointer">
+          <span data-i18n="celebration_btn_later">Planer weiter ansehen ✓</span>
+        </button>
+      </div>
+    </div>
+  </div>
 `);
+

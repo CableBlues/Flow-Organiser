@@ -1,5 +1,7 @@
 // timer.js Teil 2/3: Klingel-/Chime-Logik & Ringing-Modal
 
+let lastChimePatternIndex = -1;
+
 function playMinuteChime() {
   if (!timerSoundEnabled) return;
   try {
@@ -8,20 +10,20 @@ function playMinuteChime() {
     const ctx = new AudioContextClass();
     const now = ctx.currentTime;
 
-    // 5 unterschiedliche, sanfte Klangmuster – wechseln ohne Sofort-Wiederholung
+    // 8 unterschiedliche, sanfte Klangmuster – wechseln zufällig ohne Sofort-Wiederholung
     let patternIdx;
     do {
-      patternIdx = Math.floor(Math.random() * 5);
-    } while (patternIdx === lastChimePatternIndex && 5 > 1);
+      patternIdx = Math.floor(Math.random() * 8);
+    } while (patternIdx === lastChimePatternIndex && 8 > 1);
     lastChimePatternIndex = patternIdx;
 
-    const playTone = (freq, startAt, dur, type, peakGain) => {
+    const playTone = (freq, startAt, dur, type = 'sine', peakGain = 0.05) => {
       const osc = ctx.createOscillator();
       const gainNode = ctx.createGain();
       osc.type = type;
       osc.frequency.setValueAtTime(freq, now + startAt);
       gainNode.gain.setValueAtTime(0, now + startAt);
-      gainNode.gain.linearRampToValueAtTime(peakGain, now + startAt + 0.04);
+      gainNode.gain.linearRampToValueAtTime(peakGain, now + startAt + 0.03);
       gainNode.gain.exponentialRampToValueAtTime(0.0001, now + startAt + dur);
       osc.connect(gainNode);
       gainNode.connect(ctx.destination);
@@ -30,39 +32,54 @@ function playMinuteChime() {
     };
 
     if (patternIdx === 0) {
-      // Sanfte Glocke, zwei Töne
+      // 1. Sanfte Glocke (C5 -> E5)
       playTone(523.25, 0, 1.1, 'sine', 0.045);
       playTone(659.25, 0.1, 1.0, 'sine', 0.03);
     } else if (patternIdx === 1) {
-      // Weicher Marimba-Pluck
+      // 2. Weicher Marimba-Pluck (G4 -> D5)
       playTone(392.00, 0, 0.6, 'triangle', 0.05);
       playTone(587.33, 0.09, 0.5, 'triangle', 0.035);
     } else if (patternIdx === 2) {
-      // Luftiger Funkeln-Akkord
+      // 3. Luftiger Funkeln-Akkord (G5 -> B5 -> D6)
       playTone(783.99, 0, 0.9, 'sine', 0.025);
       playTone(987.77, 0.05, 0.8, 'sine', 0.02);
       playTone(1174.66, 0.11, 0.7, 'sine', 0.015);
     } else if (patternIdx === 3) {
-      // Warmer, tiefer Blip
+      // 4. Warmer Rhodes-Blip (A3 -> E4)
       playTone(220.00, 0, 0.8, 'sine', 0.05);
       playTone(329.63, 0.14, 0.65, 'triangle', 0.03);
-    } else {
-      // Windspiel-Flick
+    } else if (patternIdx === 4) {
+      // 5. Windspiel-Flick (A5 -> C6 -> E6)
       playTone(880.00, 0, 0.5, 'sine', 0.03);
       playTone(1046.50, 0.07, 0.45, 'sine', 0.022);
       playTone(1318.51, 0.14, 0.4, 'sine', 0.016);
+    } else if (patternIdx === 5) {
+      // 6. Zarte Harfen-Noten (D5 -> F#5 -> A5)
+      playTone(587.33, 0, 0.7, 'sine', 0.035);
+      playTone(739.99, 0.08, 0.7, 'sine', 0.03);
+      playTone(880.00, 0.16, 0.9, 'sine', 0.025);
+    } else if (patternIdx === 6) {
+      // 7. Tibetische Klangschalen-Harmonik (432Hz Resonanz)
+      playTone(432.00, 0, 1.8, 'sine', 0.04);
+      playTone(864.00, 0.02, 1.2, 'sine', 0.015);
+    } else {
+      // 8. Hauchzarte Spieluhr (E6 -> G6 -> C7)
+      playTone(1318.51, 0, 0.6, 'sine', 0.025);
+      playTone(1567.98, 0.09, 0.6, 'sine', 0.02);
+      playTone(2093.00, 0.18, 0.8, 'sine', 0.015);
     }
   } catch (e) {
     console.error("Fehler beim Minuten-Glockenton:", e);
   }
 }
 
-// Weckruf mit prozeduralen Synthesizer-Mustern
+// Weckruf mit prozeduralen Synthesizer-Mustern (wechselt zufällig)
 function startPleasantRinging() {
   stopPleasantRinging();
   if (!timerSoundEnabled) return;
   
-  currentEndingPatternIndex = (currentEndingPatternIndex + 1) % 3;
+  // Wechselt durch 6 sanfte Melodien
+  currentEndingPatternIndex = (currentEndingPatternIndex + 1) % 6;
   const patternId = currentEndingPatternIndex;
 
   const playSynthPattern = () => {
@@ -74,6 +91,7 @@ function startPleasantRinging() {
       const now = ctx.currentTime;
 
       if (patternId === 0) {
+        // 1. Sanfter Fmaj7-Akkord (Rhodes Tape Style)
         const notes = [174.61, 220.00, 261.63, 329.63];
         notes.forEach((freq, i) => {
           const osc = ctx.createOscillator();
@@ -92,6 +110,7 @@ function startPleasantRinging() {
           osc.stop(now + 3.0);
         });
       } else if (patternId === 1) {
+        // 2. Pentatonisches Glockenspiel (G4, A4, C5, D5, E5)
         const notes = [392.00, 440.00, 523.25, 587.33, 659.25];
         notes.forEach((freq, i) => {
           const osc = ctx.createOscillator();
@@ -109,8 +128,9 @@ function startPleasantRinging() {
           osc.start(now);
           osc.stop(now + 1.5);
         });
-      } else {
-        const notes = [110.00, 220.00, 330.00];
+      } else if (patternId === 2) {
+        // 3. Warmer Ambient-Pad Swell mit Filter (432Hz)
+        const notes = [108.00, 216.00, 324.00, 432.00];
         notes.forEach((freq, i) => {
           const osc = ctx.createOscillator();
           const filter = ctx.createBiquadFilter();
@@ -124,7 +144,7 @@ function startPleasantRinging() {
           filter.frequency.exponentialRampToValueAtTime(750, now + 1.2);
 
           gainNode.gain.setValueAtTime(0, now);
-          gainNode.gain.linearRampToValueAtTime(0.1, now + 0.8);
+          gainNode.gain.linearRampToValueAtTime(0.07, now + 0.8);
           gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 3.0);
 
           osc.connect(filter);
@@ -133,6 +153,68 @@ function startPleasantRinging() {
 
           osc.start(now);
           osc.stop(now + 3.0);
+        });
+      } else if (patternId === 3) {
+        // 4. Spieluhr & Celesta Arpeggios (C-Dur / F-Dur)
+        const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+        notes.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gainNode = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + i * 0.1);
+          
+          gainNode.gain.setValueAtTime(0, now + i * 0.1);
+          gainNode.gain.linearRampToValueAtTime(0.04, now + i * 0.1 + 0.02);
+          gainNode.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.1 + 1.8);
+          
+          osc.connect(gainNode);
+          gainNode.connect(ctx.destination);
+          
+          osc.start(now + i * 0.1);
+          osc.stop(now + i * 0.1 + 2.0);
+        });
+      } else if (patternId === 4) {
+        // 5. Tibetische Gong- & Klangschalen-Harmonie
+        const notes = [216.00, 432.00, 648.00];
+        notes.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gainNode = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now);
+          
+          gainNode.gain.setValueAtTime(0, now);
+          gainNode.gain.linearRampToValueAtTime(0.06 / (i + 1), now + 0.1);
+          gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 3.5);
+          
+          osc.connect(gainNode);
+          gainNode.connect(ctx.destination);
+          
+          osc.start(now);
+          osc.stop(now + 3.6);
+        });
+      } else {
+        // 6. Zartes Neo-Klassik Piano-Motiv (Am7 / Cmaj7)
+        const notes = [220.00, 261.63, 329.63, 392.00, 523.25];
+        notes.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const filter = ctx.createBiquadFilter();
+          const gainNode = ctx.createGain();
+
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + i * 0.09);
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(600, now);
+
+          gainNode.gain.setValueAtTime(0, now + i * 0.09);
+          gainNode.gain.linearRampToValueAtTime(0.05, now + i * 0.09 + 0.04);
+          gainNode.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.09 + 2.4);
+
+          osc.connect(filter);
+          filter.connect(gainNode);
+          gainNode.connect(ctx.destination);
+
+          osc.start(now + i * 0.09);
+          osc.stop(now + i * 0.09 + 2.5);
         });
       }
     } catch (e) {

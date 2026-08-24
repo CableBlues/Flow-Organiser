@@ -1,280 +1,180 @@
-// Ausgelagert aus audio-core.js: startet die klangerzeugenden Nodes je nach Sound-Typ
+// audio-generators.js: Startet die sanften Klangerzeuger & Melodie-Generatoren je nach Sound-Typ
+
 function startAmbientGeneratorForType(type) {
-  if (type === 'rain') { 
-    const source = audioCtx.createBufferSource();
-    source.buffer = getNoiseBuffer('pink');
-    source.loop = true;
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(1400, audioCtx.currentTime);
-    source.connect(filter);
-    filter.connect(soundGainNode);
-    source.start();
-    activeNodes.push(source);
+  if (!audioCtx) return;
 
-  } else if (type === 'ocean') { 
+  if (type === 'piano') {
+    // Sanftes, warmes generatives Piano
+    scheduleGentlePianoMelody();
+
+  } else if (type === 'lofi') {
+    // Entspannte Lofi 7th-Chords & Tape-Atmosphäre
+    scheduleLofiTapeChords();
+
+  } else if (type === 'chimes') {
+    // Sanftes Windspiel im Wind
+    scheduleZenWindChimes();
+
+  } else if (type === 'space') {
+    // Warmer 432Hz Cosmic Synth Pad Drone
+    startCosmicSpaceDrone();
+
+  } else if (type === 'guitar') {
+    // Zart gezupfte Akustik-Gitarre
+    scheduleAcousticGuitarMelody();
+
+  } else if (type === 'singingbowl') {
+    // Tiefe tibetische Klangschalen mit binauralem Schwebungston
+    scheduleSingingBowls();
+
+  } else if (type === 'musicbox') {
+    // Verträumte Spieluhr-Melodie
+    scheduleMusicBoxLullaby();
+
+  } else if (type === 'breeze') {
+    // Warmes Blättersäuseln im Sommerwind (kein Regen/Wasser!)
+    startForestBreezeSound();
+
+  } else if (type === 'campfire') {
+    // Warmes, sanftes Kaminfeuer
     const source = audioCtx.createBufferSource();
     source.buffer = getNoiseBuffer('brown');
     source.loop = true;
-    const waveGain = audioCtx.createGain();
-    waveGain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-    const lfo = audioCtx.createOscillator();
-    lfo.frequency.setValueAtTime(0.08, audioCtx.currentTime);
-    const lfoGain = audioCtx.createGain();
-    lfoGain.gain.setValueAtTime(0.35, audioCtx.currentTime);
-    lfo.connect(lfoGain);
-    lfoGain.connect(waveGain.gain);
-    source.connect(waveGain);
-    waveGain.connect(soundGainNode);
-    lfo.start();
-    source.start();
-    activeNodes.push(lfo, source);
-
-  } else if (type === 'campfire') { 
-    const source = audioCtx.createBufferSource();
-    source.buffer = getNoiseBuffer('brown');
-    source.loop = true;
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(180, audioCtx.currentTime);
+    filter.frequency.setValueAtTime(140, audioCtx.currentTime);
     source.connect(filter);
     filter.connect(soundGainNode);
     source.start();
     activeNodes.push(source);
     scheduleCampfireCrackles();
 
-  } else if (type === 'birds') { 
+  } else if (type === 'birds') {
+    // Morgenwald mit sanfter Brise und zartem Zwitschern
     const source = audioCtx.createBufferSource();
     source.buffer = getNoiseBuffer('pink');
     source.loop = true;
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(550, audioCtx.currentTime);
+    filter.frequency.setValueAtTime(320, audioCtx.currentTime);
     source.connect(filter);
     filter.connect(soundGainNode);
     source.start();
     activeNodes.push(source);
     scheduleForestBirds();
 
-  } else if (type === 'stream') { 
+  } else if (type === 'cafe') {
+    // Sanftes, gemütliches Hintergrund-Café
     const source = audioCtx.createBufferSource();
     source.buffer = getNoiseBuffer('pink');
     source.loop = true;
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(850, audioCtx.currentTime);
-    source.connect(filter);
-    filter.connect(soundGainNode);
-    source.start();
-    activeNodes.push(source);
-    scheduleStreamWaterGurgles();
-
-  } else if (type === 'temple') { 
-    const source = audioCtx.createBufferSource();
-    source.buffer = getNoiseBuffer('pink');
-    source.loop = true;
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(380, audioCtx.currentTime);
-    source.connect(filter);
-    filter.connect(soundGainNode);
-    source.start();
-    activeNodes.push(source);
-    scheduleTempleElements();
-
-  } else if (type === 'cafe') { 
-    const source = audioCtx.createBufferSource();
-    source.buffer = getNoiseBuffer('pink');
-    source.loop = true;
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(350, audioCtx.currentTime);
+    filter.frequency.setValueAtTime(280, audioCtx.currentTime);
     source.connect(filter);
     filter.connect(soundGainNode);
     source.start();
     activeNodes.push(source);
     scheduleCafeCupClinks();
 
-  } else if (type === 'clock') { 
+  } else if (type === 'clock') {
+    // Gleichmäßiges, beruhigendes Pendel-Ticken
     scheduleTickTockRhythm();
 
-  } else if (type === 'purr') { 
-    const lfo = audioCtx.createOscillator();
-    const lfoGain = audioCtx.createGain();
-    const purrGain = audioCtx.createGain();
-    const osc1 = audioCtx.createOscillator();
-    const osc2 = audioCtx.createOscillator();
-    
-    osc1.type = 'sawtooth';
-    osc1.frequency.setValueAtTime(45, audioCtx.currentTime);
-    osc2.type = 'triangle';
-    osc2.frequency.setValueAtTime(90, audioCtx.currentTime);
-    
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(95, audioCtx.currentTime);
-    
-    lfo.frequency.setValueAtTime(0.24, audioCtx.currentTime);
-    lfoGain.gain.setValueAtTime(0.45, audioCtx.currentTime);
-    purrGain.gain.setValueAtTime(1.2, audioCtx.currentTime);
-    
-    lfo.connect(lfoGain);
-    lfoGain.connect(purrGain.gain);
-    osc1.connect(filter);
-    osc2.connect(filter);
-    filter.connect(purrGain);
-    purrGain.connect(soundGainNode);
-    
-    lfo.start();
-    osc1.start();
-    osc2.start();
-    activeNodes.push(lfo, osc1, osc2);
+  } else if (type === 'lofi_sunshine') {
+    // Fröhliche Lofi Sunshine Chords & Vibes
+    scheduleLofiSunshineMusic();
 
-  } else if (type === 'train') { 
-    const source = audioCtx.createBufferSource();
-    source.buffer = getNoiseBuffer('brown');
-    source.loop = true;
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(140, audioCtx.currentTime);
-    source.connect(filter);
-    filter.connect(soundGainNode);
-    source.start();
-    activeNodes.push(source);
-    scheduleTrainSteamChuffs();
-
-  } else if (type === 'space') { 
-    const osc = audioCtx.createOscillator();
-    const osc2 = audioCtx.createOscillator();
-    const filter = audioCtx.createBiquadFilter();
-    const waveGain = audioCtx.createGain();
-    const lfo = audioCtx.createOscillator();
-    const lfoGain = audioCtx.createGain();
-
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(60, audioCtx.currentTime);
-    osc2.type = 'triangle';
-    osc2.frequency.setValueAtTime(90, audioCtx.currentTime);
-
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(140, audioCtx.currentTime);
-    waveGain.gain.setValueAtTime(0.95, audioCtx.currentTime);
-
-    lfo.frequency.setValueAtTime(0.1, audioCtx.currentTime);
-    lfoGain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-
-    lfo.connect(lfoGain);
-    lfoGain.connect(waveGain.gain);
-    osc.connect(filter);
-    osc2.connect(filter);
-    filter.connect(waveGain);
-    waveGain.connect(soundGainNode);
-
-    lfo.start();
-    osc.start();
-    osc2.start();
-    activeNodes.push(lfo, osc, osc2);
-
-  } else if (type === 'arcade') { 
-    scheduleArcadeChiptunes();
-
-  } else if (type === 'waterfall') { 
-    const source1 = audioCtx.createBufferSource();
-    source1.buffer = getNoiseBuffer('brown');
-    source1.loop = true;
-    const filter1 = audioCtx.createBiquadFilter();
-    filter1.type = 'lowpass';
-    filter1.frequency.setValueAtTime(120, audioCtx.currentTime);
-
-    const source2 = audioCtx.createBufferSource();
-    source2.buffer = getNoiseBuffer('pink');
-    source2.loop = true;
-    const filter2 = audioCtx.createBiquadFilter();
-    filter2.type = 'lowpass';
-    filter2.frequency.setValueAtTime(1000, audioCtx.currentTime);
-
-    const gain1 = audioCtx.createGain();
-    const gain2 = audioCtx.createGain();
-    gain1.gain.setValueAtTime(1.0, audioCtx.currentTime);
-    gain2.gain.setValueAtTime(0.55, audioCtx.currentTime);
-
-    source1.connect(filter1);
-    filter1.connect(gain1);
-    gain1.connect(soundGainNode);
-
-    source2.connect(filter2);
-    filter2.connect(gain2);
-    gain2.connect(soundGainNode);
-
-    source1.start();
-    source2.start();
-    activeNodes.push(source1, source2);
-
-  } else if (type === 'guitarpad') { 
+  } else if (type === 'summer_meadow') {
+    // Sommerwiese mit Waldvögeln & lauer Sommerbrise
     const source = audioCtx.createBufferSource();
     source.buffer = getNoiseBuffer('pink');
     source.loop = true;
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(220, audioCtx.currentTime);
+    filter.frequency.setValueAtTime(260, audioCtx.currentTime);
     source.connect(filter);
     filter.connect(soundGainNode);
     source.start();
     activeNodes.push(source);
-    scheduleGuitarPadMelody();
+    scheduleSummerMeadowNature();
 
-  } else if (type === 'monastery') { 
-    const source = audioCtx.createBufferSource();
-    source.buffer = getNoiseBuffer('brown');
-    source.loop = true;
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(90, audioCtx.currentTime);
-    source.connect(filter);
-    filter.connect(soundGainNode);
-    source.start();
-    activeNodes.push(source);
-    scheduleMonasteryElements();
-
-  } else if (type === 'keyboard') { 
-    scheduleTypewriterClicks();
-
-  } else if (type === 'storm') { 
-    const source = audioCtx.createBufferSource();
-    source.buffer = getNoiseBuffer('pink');
-    source.loop = true;
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.Q.setValueAtTime(2.5, audioCtx.currentTime);
-    
-    const lfo = audioCtx.createOscillator();
-    lfo.frequency.setValueAtTime(0.05, audioCtx.currentTime);
-    const lfoGain = audioCtx.createGain();
-    lfoGain.gain.setValueAtTime(350, audioCtx.currentTime);
-
-    lfo.connect(lfoGain);
-    lfoGain.connect(filter.frequency);
-    filter.frequency.setValueAtTime(550, audioCtx.currentTime);
-
-    source.connect(filter);
-    filter.connect(soundGainNode);
-
-    lfo.start();
-    source.start();
-    activeNodes.push(lfo, source);
-    scheduleStormThunderRumbles();
-
-  } else if (type === 'frogs') { 
-    const source = audioCtx.createBufferSource();
-    source.buffer = getNoiseBuffer('pink');
-    source.loop = true;
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(300, audioCtx.currentTime);
-    source.connect(filter);
-    filter.connect(soundGainNode);
-    source.start();
-    activeNodes.push(source);
-    scheduleFrogsChirpsAndCroaks();
+  } else if (type === 'bossa_nova') {
+    // Sommerliche Bossa Nova Akkorde & Rhythmus
+    scheduleBossaNovaGuitar();
   }
+}
+
+// -------------------------------------------------------------
+// SOUNDSCAPE HILFSGENERATOREN (DRONES & WINDE)
+// -------------------------------------------------------------
+
+function startCosmicSpaceDrone() {
+  if (!audioCtx || currentSoundType !== 'space') return;
+  const now = audioCtx.currentTime;
+
+  const freqs = [65.4, 98.0, 130.8, 196.0]; // C2, G2, C3, G3 (harmonisch & erdend)
+  const masterFilter = audioCtx.createBiquadFilter();
+  masterFilter.type = 'lowpass';
+  masterFilter.frequency.setValueAtTime(280, now);
+
+  const lfo = audioCtx.createOscillator();
+  const lfoGain = audioCtx.createGain();
+  lfo.frequency.setValueAtTime(0.06, now); // Sehr langsames Atmen
+  lfoGain.gain.setValueAtTime(90, now);
+  lfo.connect(lfoGain);
+  lfoGain.connect(masterFilter.frequency);
+  lfo.start(now);
+  activeNodes.push(lfo);
+
+  masterFilter.connect(soundGainNode);
+
+  freqs.forEach((freq, idx) => {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
+    osc.frequency.setValueAtTime(freq + (Math.random() * 0.4 - 0.2), now); // Leichte Schwebung
+
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.18 / freqs.length, now + 3.0);
+
+    osc.connect(gain);
+    gain.connect(masterFilter);
+    osc.start(now);
+    activeNodes.push(osc);
+  });
+}
+
+function startForestBreezeSound() {
+  if (!audioCtx || currentSoundType !== 'breeze') return;
+  const now = audioCtx.currentTime;
+
+  const source = audioCtx.createBufferSource();
+  source.buffer = getNoiseBuffer('pink');
+  source.loop = true;
+
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.frequency.setValueAtTime(320, now);
+  filter.Q.setValueAtTime(1.8, now);
+
+  const lfo = audioCtx.createOscillator();
+  const lfoGain = audioCtx.createGain();
+  lfo.frequency.setValueAtTime(0.09, now); // Sanftes Blätterschwanken
+  lfoGain.gain.setValueAtTime(160, now);
+
+  lfo.connect(lfoGain);
+  lfoGain.connect(filter.frequency);
+
+  const gain = audioCtx.createGain();
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.35, now + 2.5);
+
+  source.connect(filter);
+  filter.connect(gain);
+  gain.connect(soundGainNode);
+
+  lfo.start(now);
+  source.start(now);
+  activeNodes.push(lfo, source);
 }

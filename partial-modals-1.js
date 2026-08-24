@@ -214,104 +214,118 @@ document.write(`  <div id="praise-overlay" class="hidden fixed inset-0 z-[100000
   </div>
   <!-- KOSTENLOSE CLOUD-SYNC & NUTZER-ANMELDUNG -->
   <div id="helper-sync-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div id="helper-sync-card" class="mobile-modal-card animate-spring-modal w-full max-w-md bg-[#111116]/95 border border-emerald-500/40 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
-      <span onclick="closeSyncModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
+    <div id="helper-sync-card" class="mobile-modal-card animate-spring-modal w-full max-w-md bg-[#111116]/95 border border-emerald-500/40 p-6 rounded-3xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+      <button onclick="closeSyncModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-xl bg-white/5 hover:bg-white/10 transition cursor-pointer">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
       
-      <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/10">
-        <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300"><i data-lucide="cloud" class="w-5 h-5"></i></div>
+      <!-- Header -->
+      <div class="flex items-center gap-3 mb-5 pb-3 border-b border-white/10">
+        <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300 shadow-md">
+          <i data-lucide="smartphone" class="w-5 h-5"></i>
+        </div>
         <div>
-          <h3 class="text-white font-bold text-sm md:text-base font-display">Geräte-Synchronisation ☁️</h3>
-          <p class="text-[11px] text-emerald-400 font-medium">100% kostenlos & live auf allen Geräten</p>
+          <h3 class="text-white font-bold text-base font-display flex items-center gap-2">
+            <span>PC & Handy Synchronisation</span>
+          </h3>
+          <p class="text-xs text-emerald-400 font-medium">Nahtloser Datenabgleich in Echtzeit</p>
         </div>
       </div>
 
-      <!-- Sync Tabs -->
-      <div class="flex bg-black/50 p-1 rounded-xl border border-white/10 text-xs font-bold mb-4">
-        <button id="sync-tab-btn-account" onclick="switchSyncModalTab('account')" class="flex-1 py-1.5 rounded-lg text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 transition flex items-center justify-center gap-1.5">
-          <i data-lucide="user" class="w-3.5 h-3.5"></i>
-          <span>Benutzerkonto</span>
+      <!-- STATUS: WENN BEREITS VERBUNDEN -->
+      <div id="sync-modal-logged-box" class="space-y-4 hidden">
+        <div class="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-lg font-bold">
+              ✓
+            </div>
+            <div>
+              <div id="sync-modal-user-text" class="text-xs font-bold text-white">Verbundenes Gerät</div>
+              <div id="sync-modal-status-badge" class="text-[10px] text-emerald-300 font-mono mt-0.5">🟢 Live-Sync aktiv</div>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-[9px] text-gray-400 block">Zuletzt:</span>
+            <span id="sync-modal-last-time" class="font-mono text-emerald-300 text-xs font-bold">Gerade eben</span>
+          </div>
+        </div>
+
+        <button onclick="syncEngine.syncNow();" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold rounded-2xl transition cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+          <span>Jetzt manuell abgleichen 🔄</span>
         </button>
-        <button id="sync-tab-btn-pair" onclick="switchSyncModalTab('pair')" class="flex-1 py-1.5 rounded-lg text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5">
-          <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
-          <span>Gerät koppeln</span>
+
+        <button onclick="syncEngine.signOut();" class="w-full py-2 bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-300 text-xs font-semibold rounded-xl border border-white/5 hover:border-red-500/30 transition cursor-pointer">
+          Verbindung trennen
         </button>
       </div>
 
-      <!-- TAB 1: BENUTZERKONTO -->
-      <div id="sync-pane-account" class="space-y-3.5">
-        <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center gap-3">
-          <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-xs shrink-0">✓</div>
-          <div class="min-w-0 flex-1">
-            <div id="sync-modal-user-text" class="text-xs font-bold text-emerald-300 truncate">Nicht angemeldet (Lokaler Modus)</div>
-            <div class="text-[10px] text-gray-400">Automatische Live-Synchronisation im Hintergrund.</div>
-          </div>
-        </div>
-
-        <!-- AUTH FORM (wenn nicht eingeloggt) -->
-        <div id="sync-modal-auth-box" class="space-y-2.5">
-          <div>
-            <label class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Benutzername oder E-Mail</label>
-            <input type="text" id="sync-username-input" placeholder="z. B. Max oder dein Name" class="w-full p-2.5 bg-black/50 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-emerald-400 font-medium" />
-          </div>
-          <div>
-            <label class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Passwort</label>
-            <input type="password" id="sync-password-input" placeholder="Mindestens 4 Zeichen" class="w-full p-2.5 bg-black/50 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-emerald-400 font-medium" />
-          </div>
-          <div class="grid grid-cols-2 gap-2 pt-1.5">
-            <button onclick="handleSyncSignIn()" class="py-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold rounded-xl transition cursor-pointer flex items-center justify-center gap-1">
-              <i data-lucide="log-in" class="w-3.5 h-3.5"></i>
-              <span>Anmelden</span>
-            </button>
-            <button onclick="handleSyncSignUp()" class="py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold rounded-xl transition cursor-pointer font-bold shadow-lg flex items-center justify-center gap-1">
-              <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
-              <span>Konto erstellen</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- LOGGED IN ACTIONS (wenn eingeloggt) -->
-        <div id="sync-modal-logged-box" class="space-y-3 hidden">
-          <div class="text-[11px] text-gray-300 flex items-center justify-between p-2.5 bg-white/5 rounded-xl border border-white/5">
-            <span>Zuletzt abgeglichen:</span>
-            <span id="sync-modal-last-time" class="font-mono text-emerald-400 font-bold">Vor wenigen Sekunden</span>
-          </div>
-          <button onclick="syncEngine.syncNow();" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5 shadow-lg">
-            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-            <span>Jetzt manuell abgleichen</span>
+      <!-- STATUS: WENN NOCH NICHT VERBUNDEN -->
+      <div id="sync-modal-not-logged-box" class="space-y-4">
+        <!-- Sync Tabs -->
+        <div class="flex bg-black/50 p-1 rounded-2xl border border-white/10 text-xs font-bold">
+          <button id="sync-tab-btn-pair" onclick="switchSyncModalTab('pair')" class="flex-1 py-2 rounded-xl text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 transition flex items-center justify-center gap-1.5 cursor-pointer">
+            <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
+            <span>1-Klick Kopplung (Code / QR)</span>
           </button>
-          <button onclick="syncEngine.signOut();" class="w-full py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-semibold rounded-xl transition cursor-pointer">
-            Abmelden
+          <button id="sync-tab-btn-account" onclick="switchSyncModalTab('account')" class="flex-1 py-2 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer">
+            <i data-lucide="user" class="w-3.5 h-3.5"></i>
+            <span>Benutzerkonto</span>
           </button>
         </div>
-      </div>
 
-      <!-- TAB 2: GERÄTE-KOPPLUNG (CODE & QR) -->
-      <div id="sync-pane-pair" class="space-y-3.5 hidden">
-        <p class="text-xs text-gray-300 leading-relaxed">
-          Verbinde dein Smartphone oder Tablet in Sekundenschnelle ohne Passwort:
-        </p>
-
-        <!-- Current device code display -->
-        <div class="p-3.5 bg-black/60 border border-emerald-500/30 rounded-xl text-center flex flex-col items-center gap-2">
-          <div class="text-[10px] text-gray-400 uppercase tracking-widest font-mono">Dein Kopplungs-Code</div>
-          <div id="sync-pairing-code-display" class="font-mono font-black text-xl text-emerald-400 tracking-widest px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-lg select-all">FLOW-7492</div>
-          
-          <div class="my-1 p-2 bg-white rounded-xl shadow-md">
-            <img id="sync-qr-code-img" src="" alt="QR Code" class="w-28 h-28 mx-auto" />
+        <!-- TAB 1: 1-KLICK KOPPLUNG (CODE & QR) -->
+        <div id="sync-pane-pair" class="space-y-4">
+          <!-- Code Anzeige für dieses Gerät -->
+          <div class="p-4 bg-black/60 border border-emerald-500/30 rounded-2xl text-center flex flex-col items-center gap-2.5">
+            <span class="text-[10px] text-gray-400 uppercase tracking-widest font-mono font-semibold">Kopplungs-Code für dein Handy</span>
+            <div id="sync-pairing-code-display" class="font-mono font-black text-2xl text-emerald-400 tracking-widest px-4 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl select-all">FLOW-7492</div>
+            
+            <div class="p-2 bg-white rounded-2xl shadow-lg mt-1">
+              <img id="sync-qr-code-img" src="" alt="QR Code" class="w-32 h-32 mx-auto" />
+            </div>
+            <span class="text-[10px] text-gray-400">📷 Mit Handykamera scannen zum direkten Öffnen & Koppeln</span>
           </div>
-          <span class="text-[9px] text-gray-400">QR-Code mit der Handykamera scannen zum direkten Öffnen & Koppeln</span>
-        </div>
 
-        <!-- Pair with another code -->
-        <div class="space-y-1.5 pt-1">
-          <label class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Anderen Code verbinden</label>
-          <div class="flex items-center gap-2">
-            <input type="text" id="sync-pair-input" placeholder="z. B. FLOW-7492" class="flex-1 p-2.5 bg-black/50 border border-white/10 rounded-xl text-xs text-white outline-none font-mono uppercase font-bold text-center" />
-            <button onclick="handlePairWithCodeInput()" class="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold rounded-xl transition cursor-pointer shrink-0">
-              Verbinden
-            </button>
+          <!-- Code eingeben vom anderen Gerät -->
+          <div class="p-3 bg-white/[0.03] border border-white/10 rounded-2xl space-y-2">
+            <label class="text-[10px] text-gray-300 font-bold uppercase tracking-wider block">Oder Code von deinem anderen Gerät eingeben:</label>
+            <div class="flex items-center gap-2">
+              <input type="text" id="sync-pair-input" placeholder="z. B. FLOW-7492" class="flex-1 p-2.5 bg-black/60 border border-white/15 rounded-xl text-xs text-white outline-none focus:border-emerald-400 font-mono uppercase font-bold text-center" onkeydown="if(event.key==='Enter') handlePairWithCodeInput();" />
+              <button onclick="handlePairWithCodeInput()" class="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold rounded-xl transition cursor-pointer shrink-0 shadow-md">
+                Verbinden 🔗
+              </button>
+            </div>
           </div>
         </div>
+
+        <!-- TAB 2: BENUTZERKONTO -->
+        <div id="sync-pane-account" class="space-y-3 hidden">
+          <p class="text-xs text-gray-400 leading-normal">
+            Melde dich mit einem festen Namen an, um deine Daten auf beliebigen Geräten abzurufen:
+          </p>
+          <div class="space-y-2.5">
+            <div>
+              <label class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Benutzername</label>
+              <input type="text" id="sync-username-input" placeholder="z. B. Max" class="w-full p-2.5 bg-black/50 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-emerald-400 font-medium" />
+            </div>
+            <div>
+              <label class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Passwort</label>
+              <input type="password" id="sync-password-input" placeholder="Mindestens 4 Zeichen" class="w-full p-2.5 bg-black/50 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-emerald-400 font-medium" onkeydown="if(event.key==='Enter') handleSyncSignIn();" />
+            </div>
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <button onclick="handleSyncSignIn()" class="py-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5">
+                <i data-lucide="log-in" class="w-3.5 h-3.5"></i>
+                <span>Anmelden</span>
+              </button>
+              <button onclick="handleSyncSignUp()" class="py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold rounded-xl transition cursor-pointer font-bold shadow-lg flex items-center justify-center gap-1.5">
+                <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+                <span>Konto erstellen</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -394,7 +408,7 @@ document.write(`  <div id="praise-overlay" class="hidden fixed inset-0 z-[100000
           <button id="tab-btn-coin" onclick="switchCompassTab('coin')" class="py-1 rounded text-rose-300 bg-rose-500/10 border border-rose-500/20">Bauchgefühl</button>
           <button id="tab-btn-scale" onclick="switchCompassTab('scale')" class="py-1 rounded text-gray-400 hover:text-white">Werte-Waage</button>
           <button id="tab-btn-spoon" onclick="switchCompassTab('spoon')" class="py-1 rounded text-gray-400 hover:text-white">Löffel-Check</button>
-          <button id="tab-btn-prioritizer" onclick="switchCompassTab('prioritizer')" class="py-1 rounded text-gray-400 hover:text-white">ADHD-Priorität</button>
+          <button id="tab-btn-prioritizer" onclick="switchCompassTab('prioritizer')" class="py-1 rounded text-gray-400 hover:text-white">Smart-Priorität</button>
           <button id="tab-btn-splitter" onclick="switchCompassTab('splitter')" class="py-1 rounded text-gray-400 hover:text-white">Zerteiler</button>
           <button id="tab-btn-braindump" onclick="switchCompassTab('braindump')" class="py-1 rounded text-gray-400 hover:text-white">Brain-Dump</button>
           <button id="tab-btn-ten" onclick="switchCompassTab('ten')" class="py-1 rounded text-gray-400 hover:text-white">10-10-10</button>

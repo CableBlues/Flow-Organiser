@@ -2,7 +2,8 @@
 let state = loadState();
 let historyStack = loadHistory();
 let currentLang = localStorage.getItem('flowPlannerLanguage') || 'en';
-let currentTheme = localStorage.getItem('flowPlannerTheme') || 'aurora';
+let rawTheme = localStorage.getItem('flowPlannerTheme') || 'aurora';
+let currentTheme = ['mono-hand', 'parchment', 'minimalist-light', 'terracotta-light'].includes(rawTheme) ? 'aurora' : rawTheme;
 let isMinimalist = localStorage.getItem('flowPlannerMinimalist') === 'true';
 let isTerminFormOpen = false;
 // Merkt sich pro Kategorie (id), ob gerade das Eingabefeld fuer "Aufgabe hinzufuegen" offen ist
@@ -86,6 +87,7 @@ function loadState() {
         if (parsed.streak === undefined) parsed.streak = 0;
         if (!parsed.completedSteps) parsed.completedSteps = {};
         if (!parsed.customSteps) parsed.customSteps = {};
+        if (parsed.sampleBannerDismissed === undefined) parsed.sampleBannerDismissed = false;
         
         // Absicherung für Einkaufsliste & Protokoll im geladenen Zustand
         if (!parsed.shoppingList) parsed.shoppingList = [];
@@ -131,6 +133,7 @@ function loadState() {
     version: 3, lastDate: todayStr,
     items: { daily: [...localizedDefaults.daily], weekly: [...localizedDefaults.weekly], occasionally: [...localizedDefaults.occasionally], todo: [], termine: [], notes: [] },
     done: [], archive: [], streak: 0, completedSteps: {},
+    sampleBannerDismissed: false,
     shoppingList: [], shoppingHistory: [],
     cooking: createDefaultCookingState()
   };
@@ -173,14 +176,14 @@ function saveHistory() {
 }
 
 function t(key) {
-  return TRANSLATIONS[currentLang]?.[key] || TRANSLATIONS.de[key] || key;
+  return TRANSLATIONS[currentLang]?.[key] || TRANSLATIONS['en']?.[key] || TRANSLATIONS['de']?.[key] || key;
 }
 
 // Kleiner Helfer für lokale, funktionsnahe Textbausteine (Toasts, Inline-Labels),
 // die nicht Teil des globalen TRANSLATIONS-Wörterbuchs sind.
-// Nutzung: tr({ de: '...', en: '...', es: '...', el: '...', fr: '...', it: '...' })
+// Nutzung: tr({ en: '...', de: '...', fr: '...', it: '...', es: '...', el: '...' })
 function tr(map) {
-  return map[currentLang] || map.de || map.en || '';
+  return map[currentLang] || map.en || map.de || Object.values(map)[0] || '';
 }
 
 function getGermanStandardKey(taskName) {
@@ -211,22 +214,25 @@ function handleUndo() {
 }
 
 function handleReset() {
-  const confirmMsg = {
+  const confirmMsg = tr({
     de: 'Möchtest du den gesamten Plan wirklich zurücksetzen?',
     en: 'Do you really want to reset your entire plan?',
+    fr: 'Veux-tu vraiment réinitialiser tout le plan ?',
+    it: 'Vuoi davvero reimpostare l\'intero piano?',
     es: '¿Seguro que quieres reiniciar todo el plan?',
     el: 'Θέλεις πραγματικά να επαναφέρεις ολόκληρο το πλάνο σου;'
-  }[currentLang] || 'Reset?';
+  });
   
   if (confirm(confirmMsg)) {
     saveHistory();
-    const localizedDefaults = DEFAULT_TASKS_BY_LANG[currentLang] || DEFAULT_TASKS_BY_LANG['de'];
+    const localizedDefaults = DEFAULT_TASKS_BY_LANG[currentLang] || DEFAULT_TASKS_BY_LANG['en'] || DEFAULT_TASKS_BY_LANG['de'];
     state = {
       version: 3, lastDate: new Date().toISOString().split('T')[0],
       items: { daily: [...localizedDefaults.daily], weekly: [...localizedDefaults.weekly], occasionally: [...localizedDefaults.occasionally], todo: [], termine: [], notes: [] },
       done: [], archive: [], streak: 0, completedSteps: {}, customSteps: {},
       shoppingList: [], shoppingHistory: [],
-      cooking: createDefaultCookingState()
+      cooking: createDefaultCookingState(),
+      clarity: { streakDays: 0, lastCheckinDate: null, history: [], savedReasons: [] }
     };
     
     categoriesOrder = [
@@ -248,10 +254,19 @@ function handleReset() {
 }
 
 function handleSaveJson() {
+  const today = state.lastDate || new Date().toISOString().split('T')[0];
   const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = `flow-plan-${state.lastDate}.json`; a.click();
+  const a = document.createElement('a'); a.href = url; a.download = `flow-backup-${today}.json`; a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+  showToast(tr({
+    de: 'Backup erfolgreich heruntergeladen 💾',
+    en: 'Backup successfully exported 💾',
+    fr: 'Sauvegarde exportée avec succès 💾',
+    it: 'Backup esportato con successo 💾',
+    es: 'Copia de seguridad exportada con éxito 💾',
+    el: 'Το αντίγραφο ασφαλείας εξήχθη επιτυχώς 💾'
+  }));
 }
 
 function handleOpenFile(e) {
@@ -270,6 +285,8 @@ function handleOpenFile(e) {
         if (!state.completedSteps) state.completedSteps = {};
         if (!state.shoppingList) state.shoppingList = [];
         if (!state.shoppingHistory) state.shoppingHistory = [];
+        if (!state.cooking) state.cooking = createDefaultCookingState();
+        if (!state.clarity) state.clarity = { streakDays: 0, lastCheckinDate: null, history: [], savedReasons: [] };
         saveState(); showToast(t('toast_import_success')); renderApp(); populateHelperTaskSelect();
       }
     } catch(err) { alert(t('toast_import_error')); }

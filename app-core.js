@@ -1,6 +1,6 @@
 // app-core.js: Kernlogik (Theme, Sprache, Icons, UI-Verhalten). Uebersetzungsdaten siehe data-custom-translations.js
 
-let currentZenTaskInfo = null; let lastSelectedSound = 'rain'; let draggedColumnId = null; let selectedCalendarDate = null; 
+let currentZenTaskInfo = null; let lastSelectedSound = 'birds'; let draggedColumnId = null; let selectedCalendarDate = null; 
 
 const HOVER_COLOR_PAIRS = [
   { hoverIcon: 'group-hover/task:text-emerald-400', text: 'group-hover/task:text-emerald-300' },
@@ -72,30 +72,10 @@ function suggestBoostActivity() {
   const box = document.getElementById('boost-activity-box'); if (box) box.innerText = randomActivity;
 }
 
-function handleSoundsMainClick() { if (currentSoundType) stopAmbientSound(); else playAmbientSound(lastSelectedSound); }
-function handleMusicMainClick() { if (playlistTracks.length === 0) document.getElementById('sound-file-input').click(); else togglePlaylistPlayback(); }
+function handleSoundsMainClick() { togglePanel('soundscape'); }
+function handleMusicMainClick() { togglePanel('music'); }
 
-// PERFORMANCE-FIX: Dieser Observer lief bisher bei JEDER einzelnen DOM-Aenderung im gesamten
-// <body> (z.B. jede Sekunde waehrend ein Timer laeuft, oder bei jedem Re-Render einer Liste)
-// und durchsuchte dabei jedes Mal das komplette Dokument nach Buttons. Das ist der haeufigste
-// Grund fuer spuerbare Ruckler bei Interaktionen. Jetzt werden mehrere Mutationen, die kurz
-// hintereinander auftreten, zu maximal einem Scan pro Frame gebuendelt (per requestAnimationFrame).
-// Das Ergebnis (welche Buttons am Ende "Erledigt" heissen) ist exakt identisch - es wird nur nicht
-// mehr bei jeder einzelnen Mutation sofort und redundant neu gescannt.
-let buttonSanitizerScanScheduled = false;
-function runButtonSanitizerScan() {
-  buttonSanitizerScanScheduled = false;
-  document.querySelectorAll('button, [role="button"], .task-complete-btn span, #helper-pick-box button, #zen-chill-view button span').forEach(el => {
-    const txt = el.innerText.trim();
-    if (txt === 'Erledigen' || txt === 'Als erledigt markieren' || txt === 'als erledigt markieren') { el.innerText = 'Erledigt'; }
-  });
-}
-const buttonSanitizerObserver = new MutationObserver(() => {
-  if (buttonSanitizerScanScheduled) return;
-  buttonSanitizerScanScheduled = true;
-  requestAnimationFrame(runButtonSanitizerScan);
-});
-buttonSanitizerObserver.observe(document.body, { childList: true, subtree: true });
+// Performance: MutationObserver komplett entfernt, da redundant und Hauptursache für UI-Verzögerungen.
 
 let activeDancingSpecialButton = 'whatnow'; let currentPremiumDanceIndex = 0;
 const premiumDances = ['premium-glow-btn', 'animate-premium-heartbeat', 'animate-premium-orbit', 'animate-premium-float', 'animate-premium-shimmer'];
@@ -223,18 +203,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   updateDateAndStreak(); renderApp(); updateZenView(); populateHelperTaskSelect(); suggestBoostActivity(); suggestInspirationQuote(); checkAndGenerateAutomaticReports();
   const btnHeader = document.getElementById('timer-toggle-btn'); if (btnHeader) { btnHeader.innerHTML = '<i data-lucide="play" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>'; }
-  startGlobalButtonDanceParty(); rotatePremiumDance(); setInterval(rotatePremiumDance, 10000);
-  setInterval(() => { activeDancingSpecialButton = activeDancingSpecialButton === 'whatnow' ? 'focus' : 'whatnow'; rotatePremiumDance(); }, 180000);
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  renderLucideIcons();
 });
 
 // Gruppiert alle Farbschemata nach visueller Verwandtschaft, damit der automatische
-// Wechsel nach erledigten Aufgaben immer zwischen ähnlichen Stimmungen bleibt.
+// Gruppiert alle Farbschemata nach visueller Verwandtschaft
 const THEME_FAMILIES = {
-  'purple-dreams': ['aurora', 'neon-cyber', 'synthwave'],
-  'green-nature': ['sage', 'forest'],
-  'warm-earthy': ['cozy', 'mono-hand', 'parchment', 'terracotta-light'],
-  'cool-icy': ['architect', 'glacier', 'charcoal', 'minimalist-light', 'holo-chrome'],
+  'purple-dreams': ['aurora', 'neon-cyber', 'synthwave', 'sakura'],
+  'green-nature': ['sage', 'forest', 'matcha'],
+  'warm-earthy': ['cozy', 'citrus'],
+  'cool-icy': ['architect', 'glacier', 'charcoal', 'holo-chrome', 'lagoon'],
   'luxury-mono': ['executive', 'carbon']
 };
 
@@ -255,6 +233,8 @@ function getSimilarTheme(current) {
 }
 
 function setTheme(theme) {
+  const validThemes = ['aurora', 'sage', 'cozy', 'forest', 'architect', 'neon-cyber', 'glacier', 'synthwave', 'charcoal', 'executive', 'holo-chrome', 'carbon'];
+  if (!validThemes.includes(theme)) theme = 'aurora';
   currentTheme = theme; document.body.className = `h-full antialiased flex flex-col font-sans select-none overflow-x-hidden text-[#f4f4f5] theme-${theme}`;
   if (isMinimalist) document.body.classList.add('minimalist'); localStorage.setItem('flowPlannerTheme', theme);
 }
@@ -275,7 +255,8 @@ function setLanguage(lang) {
   const oldLang = currentLang; currentLang = lang; localStorage.setItem('flowPlannerLanguage', lang);
   document.documentElement.lang = lang; translateUserTasks(oldLang, lang);
   const flagMap = { de: '🇩🇪', en: '🇬🇧', es: '🇪🇸', el: '🇬🇷', fr: '🇫🇷', it: '🇮🇹' };
-  const flagEl = document.getElementById('active-lang-flag'); if (flagEl) flagEl.innerText = flagMap[lang] || '🇬🇧';
+  const flagEl = document.getElementById('current-lang-flag') || document.getElementById('active-lang-flag');
+  if (flagEl) flagEl.innerText = flagMap[lang] || '🇬🇧';
   translateUI(); const textEl = document.getElementById('minimal-mode-btn-text');
   if (textEl) { textEl.innerText = isMinimalist ? t('standard_mode') : t('minimal_mode'); }
   updateDateAndStreak(); renderApp(); updateZenView(); populateHelperTaskSelect();
@@ -283,13 +264,19 @@ function setLanguage(lang) {
 
 function translateUI() {
   document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n'); if (targetTranslations[currentLang]?.[key]) el.innerText = targetTranslations[currentLang][key];
+    const key = el.getAttribute('data-i18n');
+    const translated = TRANSLATIONS[currentLang]?.[key] || TRANSLATIONS['en']?.[key] || TRANSLATIONS['de']?.[key];
+    if (translated) el.innerText = translated;
   });
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-    const key = el.getAttribute('data-i18n-placeholder'); if (targetTranslations[currentLang]?.[key]) el.setAttribute('placeholder', targetTranslations[currentLang][key]);
+    const key = el.getAttribute('data-i18n-placeholder');
+    const translated = TRANSLATIONS[currentLang]?.[key] || TRANSLATIONS['en']?.[key] || TRANSLATIONS['de']?.[key];
+    if (translated) el.setAttribute('placeholder', translated);
   });
   document.querySelectorAll('[data-i18n-title]').forEach(el => {
-    const key = el.getAttribute('data-i18n-title'); if (targetTranslations[currentLang]?.[key]) el.setAttribute('title', targetTranslations[currentLang][key]);
+    const key = el.getAttribute('data-i18n-title');
+    const translated = TRANSLATIONS[currentLang]?.[key] || TRANSLATIONS['en']?.[key] || TRANSLATIONS['de']?.[key];
+    if (translated) el.setAttribute('title', translated);
   });
 }
 
@@ -338,7 +325,7 @@ function toggleMinimalist() {
     if (zenView) { zenView.classList.add('hidden'); zenView.classList.remove('flex'); }
     if (mainEl) { mainEl.classList.remove('hidden'); }
   }
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  renderLucideIcons();
   showToast(isMinimalist ? t('toast_zen_active') : t('toast_zen_inactive'));
 }
 

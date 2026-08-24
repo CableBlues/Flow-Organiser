@@ -1,145 +1,82 @@
 /* ==========================================================================
-   MOBILE-OPTIMIERUNG
-   Alles in dieser Datei ist bewusst hinter (hover: none)/(pointer: coarse)
-   bzw. max-width Media Queries versteckt. Auf dem Desktop (Maus + großer
-   Screen) ändert sich dadurch NICHTS am bestehenden Verhalten oder Layout.
+   MOBILE-OPTIMIERUNG (Echte native App-Experience auf Smartphones & Tablets)
+   Gilt AUSSCHLIESSLICH auf Mobilgeräten (max-width: 768px oder Touch-Geräte).
+   Auf Desktop-PCs (> 768px mit Maus) ändert sich rein gar nichts am Layout!
    ========================================================================== */
 
-/* Auf dem Desktop (Standardfall) bleibt die Kategorie-Tab-Leiste unsichtbar
-   und wirkungslos – sie wird ausschließlich innerhalb der Touch-Media-Query
-   unten wieder eingeblendet. Das ist die einzige Regel in dieser Datei, die
-   nicht in der Media Query steckt, weil sie genau dafür sorgt, dass auf dem
-   Desktop garantiert nichts sichtbar wird. */
 .mobile-category-tabs {
   display: none;
 }
 
-@media (hover: none), (pointer: coarse) {
+.mobile-only {
+  display: none !important;
+}
 
-  /* Feinschliff für Touch-Antippen (Highlight-Flash, Doppel-Tap-Zoom) –
-     bewusst hier drin und nicht global, auch wenn die Wirkung auf Geräten
-     mit Maus ohnehin null wäre. */
+@media (max-width: 768px), (hover: none) and (pointer: coarse) {
+
+  .mobile-only {
+    display: flex !important;
+  }
+
+  .desktop-only-header {
+    display: none !important;
+  }
+
   button, a, [onclick] {
     -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
 
-  button, a, [onclick], input, select, textarea {
-    touch-action: manipulation; /* verhindert Doppel-Tap-Zoom-Verzögerung */
-  }
-
-  html {
-    overscroll-behavior-y: none; /* kein "Gummiband"-Overscroll der ganzen Seite */
-    /* BUGFIX: Ohne dies kann zu breiter, nicht umbrechender Inhalt (siehe Header-Fix
-       weiter unten) auf manchen Mobil-Browsern dazu führen, dass der komplette
-       Layout-Viewport aufgebläht wird - mit der Folge, dass alle fest positionierten
-       Elemente (Dock, Tab-Leiste) weit unterhalb des sichtbaren Bildschirms landen und
-       dadurch unerreichbar werden. Auf dem Desktop ändert diese Regel nichts (dort greift
-       die Media Query gar nicht). */
-    overflow-x: hidden;
-  }
-
-  /* BUGFIX: Die Kopfzeile (Feedback, Timer, Datum, Statistik, Anmelden, Aktionen,
-     Farbschemas & Sprache ...) war für alle Bildschirmgrößen als eine einzige, niemals
-     umbrechende Zeile ("flex-nowrap") gebaut. Auf schmalen Mobil-Screens ergab das eine
-     riesige, nicht umbrochene Reihe, die u.a. die o.g. Viewport-Aufblähung auslöste und
-     mehrere Bedienelemente de facto unerreichbar machte. Auf Mobile wird die Kopfzeile
-     daher jetzt zweizeilig/mehrzeilig umgebrochen - alle Elemente bleiben sichtbar und
-     antippbar, nichts verschwindet mehr. Betrifft ausschließlich Touch-Geräte; am
-     Desktop-Layout (flex-nowrap) ändert sich dadurch nichts. */
-  header {
-    flex-wrap: wrap !important;
-    row-gap: 6px !important;
-    justify-content: center !important;
-  }
-
-  header > div {
-    flex: 0 1 auto;
-  }
-
-  /* BUGFIX: Der pinke "3D-Spielmodus"-Button war fix "bottom-4 right-4" positioniert und
-     überlappte dadurch auf Mobile die neue Bottom-Tab-Leiste (unerreichbar/verdeckte Tabs).
-     Wird jetzt wie das Tools-Dock über die Tab-Leiste angehoben. */
-  #game-mode-toggle-wrapper {
-    top: calc(8px + env(safe-area-inset-top)) !important;
-    bottom: auto !important;
-    right: 8px !important;
-  }
-
-  #game-mode-toggle-wrapper #game-mode-toggle {
-    height: 40px !important;
-    width: 40px !important;
-  }
-
-  /* Verhindert, dass iOS Safari beim Fokussieren eines Inputs die Seite
-     hineinzoomt (passiert automatisch bei Schriftgrößen < 16px). */
   input, select, textarea {
-    font-size: 16px !important;
+    touch-action: manipulation;
+    font-size: 16px !important; /* Verhindert automatisches iOS-Zoom */
   }
 
-  /* ---------------- DOCK: von "nur Hover" auf "immer sichtbar" ---------------- */
-  /* Der Dock-Reveal per :hover funktioniert auf Touch-Geräten nicht zuverlässig.
-     Auf Touch-Geräten wird der Dock daher dauerhaft eingeblendet und bei Bedarf
-     horizontal scrollbar gemacht, statt auf Hover zu warten. */
-
-  .mac-tools-trigger {
-    display: none !important; /* der "Flow / Tools"-Orb wird überflüssig, da der Dock direkt offen ist */
+  html, body {
+    overscroll-behavior-y: none;
+    overflow-x: hidden !important;
+    width: 100vw;
+    position: relative;
   }
 
-  .mac-dock-container::before {
-    content: none !important; /* die unsichtbare Hover-Hotzone wird nicht mehr gebraucht */
+  #app {
+    padding: 8px 8px calc(80px + env(safe-area-inset-bottom)) 8px !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
   }
 
-  .mac-dock {
-    transform: none !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-    max-width: calc(100vw - 20px);
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    justify-content: flex-start !important;
+  /* ---------------- 1. SCHLANKER, NATIV EINZEILIGER HEADER (48px) ---------------- */
+  header {
+    flex-wrap: nowrap !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    padding: 4px 10px !important;
+    margin-bottom: 8px !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-radius: 18px !important;
+    background: rgba(18, 18, 28, 0.95) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
   }
 
-  .mac-dock::-webkit-scrollbar {
-    display: none;
-  }
-
-  .mac-dock-item-wrapper {
-    flex-shrink: 0;
-  }
-
-  .mac-dock-item-wrapper:hover {
-    /* Die "schwebende" Hover-Animation ergibt auf Touch keinen Sinn und kann
-       nach einem Tap hängen bleiben (sticky hover). Deaktivieren, Tap-Feedback
-       kommt stattdessen über :active weiter unten. */
-    transform: none !important;
-    animation: none !important;
-  }
-
-  .mac-dock-item-wrapper:active {
-    transform: scale(0.92) !important;
-  }
-
-  .mac-floating-wrapper {
-    bottom: calc(66px + env(safe-area-inset-bottom)) !important;
-    left: 10px !important;
-    right: 10px !important;
-    transform: none !important;
-    width: auto !important;
-  }
-
-  .mac-dock-container {
+  /* ---------------- 2. SPALTEN-ANSICHT (Immer nur 1 aktive Kategorie vollformatig) ---------------- */
+  main {
+    padding-bottom: calc(75px + env(safe-area-inset-bottom)) !important;
     width: 100% !important;
+    overflow-x: hidden !important;
   }
 
-  /* ---------------- KATEGORIE-TABS: nur eine Kategorie gleichzeitig sichtbar ---------------- */
-  /* Ersetzt das Untereinander-Scrollen der 7 Spalten durch eine echte
-     Bottom-Tab-Navigation, wie man sie von nativen Apps kennt. Die Spalten
-     selbst (Daten, Logik, Drag&Drop) bleiben exakt gleich – es wird nur
-     gesteuert, welche davon sichtbar ist. */
-  main > article { display: none !important; }
+  main > article {
+    display: none !important;
+    width: 100% !important;
+    min-height: calc(100dvh - 150px) !important;
+    max-height: calc(100dvh - 150px) !important;
+    margin: 0 !important;
+    border-radius: 20px !important;
+  }
+
   body[data-mobile-cat="daily"]         main > article[data-category="daily"],
   body[data-mobile-cat="weekly"]        main > article[data-category="weekly"],
   body[data-mobile-cat="todo"]          main > article[data-category="todo"],
@@ -150,106 +87,122 @@
     display: flex !important;
   }
 
-  main > article {
-    width: 100% !important;
-    min-height: calc(100dvh - 260px) !important;
+  /* Auf Mobile: Aktionsleiste auf Aufgabenkarten immer zugänglich */
+  main article div[draggable="true"] .opacity-0 {
+    opacity: 1 !important;
   }
 
+  /* ---------------- 3. NATIVE BOTTOM-NAVIGATION (5-Tab Bar) ---------------- */
   .mobile-category-tabs {
-    display: flex;
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 9998;
-    background: rgba(15, 15, 22, 0.94);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 6px 4px calc(6px + env(safe-area-inset-bottom)) 4px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    gap: 2px;
+    display: flex !important;
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 9998 !important;
+    height: calc(64px + env(safe-area-inset-bottom)) !important;
+    background: rgba(15, 15, 24, 0.96) !important;
+    backdrop-filter: blur(24px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom)) 6px !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5) !important;
   }
-  .mobile-category-tabs::-webkit-scrollbar { display: none; }
 
   .mobile-tab-btn {
-    flex: 1 0 auto;
-    min-width: 58px;
+    flex: 1 1 0;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2px;
-    padding: 6px 4px;
-    border-radius: 12px;
-    color: #71717a;
+    gap: 3px;
+    padding: 4px 2px;
+    border-radius: 14px;
+    color: #8e8e93;
     background: transparent;
     border: none;
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 700;
-    font-family: var(--font-family, inherit);
+    font-family: inherit;
     white-space: nowrap;
     cursor: pointer;
-    transition: color 0.2s ease, background 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .mobile-tab-btn span {
-    max-width: 64px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+
+  .mobile-tab-btn i {
+    width: 20px;
+    height: 20px;
   }
-  .mobile-tab-btn:active { transform: scale(0.94); }
+
+  .mobile-tab-btn:active {
+    transform: scale(0.92);
+  }
+
   .mobile-tab-active {
+    color: #ffffff !important;
+    background: rgba(139, 92, 246, 0.2) !important;
+    border: 1px solid rgba(139, 92, 246, 0.3) !important;
+  }
+
+  .mobile-tab-active i {
     color: var(--accent-light, #c084fc) !important;
-    background: rgba(139, 92, 246, 0.14);
   }
 
-  /* Platz am unteren Bildschirmrand reservieren: Tab-Leiste + Tools-Dock
-     dürfen nie den Spalteninhalt verdecken. */
-  main {
-    padding-bottom: calc(150px + env(safe-area-inset-bottom)) !important;
+  /* ---------------- 4. DOCK AUF MOBILE: Als integriertes Tools-Sheet ---------------- */
+  .mac-floating-wrapper {
+    display: none !important; /* Dock wird auf Mobile über den Tools-Tab als natives Sheet geöffnet */
   }
 
-  /* ---------------- MODALS: nie über den Bildschirmrand hinauswachsen ---------------- */
-  .mobile-modal-card {
-    max-height: calc(100dvh - 32px - env(safe-area-inset-bottom));
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  #game-mode-toggle-wrapper {
+    display: none !important;
   }
 
-  /* ---------------- Sprachauswahl: größere, leichter zu treffende Tap-Ziele ---------------- */
-  #panel-language {
-    width: 56px !important;
-    gap: 4px !important;
-  }
-
-  #panel-language button {
-    font-size: 1.35rem !important;
-    min-height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* Fach-Popups im Dock (Sounds, Musik etc.) sollen auf schmalen Screens nie
-     breiter als der Viewport werden und nicht seitlich abgeschnitten sein. */
-  #panel-soundscape, #panel-music, #panel-boost {
+  /* ---------------- 5. NATIVE BOTTOM-SHEETS FÜR ALLE POPUPS & MENÜS ---------------- */
+  [id^="panel-"]:not(.hidden) {
+    position: fixed !important;
     left: 50% !important;
+    top: auto !important;
+    bottom: calc(72px + env(safe-area-inset-bottom)) !important;
     transform: translateX(-50%) !important;
-    width: calc(100vw - 24px) !important;
-    max-width: 410px !important;
+    width: calc(100vw - 16px) !important;
+    max-width: 440px !important;
+    max-height: calc(82dvh - env(safe-area-inset-bottom)) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    z-index: 100000 !important;
+    border-radius: 26px !important;
+    padding: 1.25rem !important;
+    box-shadow: 
+      0 20px 50px rgba(0, 0, 0, 0.9),
+      0 0 0 100vw rgba(0, 0, 0, 0.65) !important; /* Nativer Backdrop-Effekt */
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    animation: mobileSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
   }
-}
 
-/* Sehr kleine Screens (< 380px): Dock-Icons dezent verkleinern, damit
-   möglichst viele Werkzeuge ohne Scrollen sichtbar sind. */
-@media (hover: none) and (max-width: 380px), (pointer: coarse) and (max-width: 380px) {
-  .mac-dock-item-wrapper {
-    width: 50px !important;
-    height: 50px !important;
+  @keyframes mobileSlideUp {
+    from { opacity: 0; transform: translate(-50%, 20px) scale(0.96); }
+    to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  }
+
+  /* ---------------- 6. MODALS: PERFEKT RESPONSIBEL & TOUCH-OPTIMIERT ---------------- */
+  .mobile-modal-card {
+    width: calc(100vw - 20px) !important;
+    max-width: 460px !important;
+    max-height: calc(88dvh - env(safe-area-inset-bottom)) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 1.25rem !important;
+    border-radius: 24px !important;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9) !important;
+  }
+
+  .modal-close-btn {
+    top: 1rem !important;
+    right: 1rem !important;
+    padding: 8px !important;
+    font-size: 1.25rem !important;
   }
 }
- 
- 

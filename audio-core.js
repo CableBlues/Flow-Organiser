@@ -35,6 +35,21 @@ function initAudioContext() {
   }
 }
 
+// Mobiler Audio-Unlock für iOS Safari & Android beim ersten Benutzerkontakt
+if (typeof window !== 'undefined') {
+  const unlockMobileAudio = () => {
+    initAudioContext();
+    window.removeEventListener('touchstart', unlockMobileAudio);
+    window.removeEventListener('touchend', unlockMobileAudio);
+    window.removeEventListener('pointerdown', unlockMobileAudio);
+    window.removeEventListener('click', unlockMobileAudio);
+  };
+  window.addEventListener('touchstart', unlockMobileAudio, { passive: true, once: true });
+  window.addEventListener('touchend', unlockMobileAudio, { passive: true, once: true });
+  window.addEventListener('pointerdown', unlockMobileAudio, { passive: true, once: true });
+  window.addEventListener('click', unlockMobileAudio, { passive: true, once: true });
+}
+
 // Hilfsfunktion: Erzeugt lückenlose Rausch-Loops im Arbeitsspeicher
 function getNoiseBuffer(type) {
   initAudioContext();
@@ -196,5 +211,40 @@ function fadeOutAmbientSound(durationSeconds = 4.5) {
   }, durationSeconds * 1000 + 100);
 }
 
- 
- 
+// Fröhliche Dur-Erfolgs-Jingles (C-Dur / F-Dur / G-Dur Arpeggios mit glockenreinem Kalimba- / Marimba-Charakter)
+function playCheerfulSuccessJingle() {
+  initAudioContext();
+  if (!audioCtx || isPlayerMuted) return;
+  try {
+    const now = audioCtx.currentTime;
+    // Harmonische Dur-Akkordfolgen zur Auswahl
+    const chordProgressions = [
+      [523.25, 659.25, 783.99, 1046.50], // C5, E5, G5, C6 (C-Dur)
+      [587.33, 739.99, 880.00, 1174.66], // D5, F#5, A5, D6 (D-Dur)
+      [698.46, 880.00, 1046.50, 1396.91], // F5, A5, C6, F6 (F-Dur)
+      [783.99, 987.77, 1174.66, 1567.98]  // G5, B5, D6, G6 (G-Dur)
+    ];
+    const notes = chordProgressions[Math.floor(Math.random() * chordProgressions.length)];
+    
+    notes.forEach((freq, i) => {
+      const startTime = now + (i * 0.065);
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      
+      osc.type = i % 2 === 0 ? 'sine' : 'triangle';
+      osc.frequency.setValueAtTime(freq, startTime);
+      
+      const vol = 0.22 * (soundMasterVolume || 0.5);
+      gain.gain.setValueAtTime(0.0001, startTime);
+      gain.gain.linearRampToValueAtTime(vol, startTime + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.45);
+      
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      osc.start(startTime);
+      osc.stop(startTime + 0.5);
+    });
+  } catch (e) {}
+}
+window.playCheerfulSuccessJingle = playCheerfulSuccessJingle;

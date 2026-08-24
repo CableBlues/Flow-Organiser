@@ -1,4 +1,16 @@
 // utils.js Teil 1/2: State, Toast/Konfetti/Praise-Anzeige, Sound-Effekte
+// Hochperformantes RAF-Debouncing für Icon-Rendering
+let _lucideRaf = null;
+function renderLucideIcons() {
+  if (typeof lucide === 'undefined') return;
+  if (_lucideRaf) cancelAnimationFrame(_lucideRaf);
+  _lucideRaf = requestAnimationFrame(() => {
+    try { lucide.createIcons(); } catch (e) {}
+    _lucideRaf = null;
+  });
+}
+window.renderLucideIcons = renderLucideIcons;
+
 // Shuffler-Pools zur vollständigen Absicherung gegen Wiederholungen
 let praisePool = [];
 let soundPool = [];
@@ -28,8 +40,32 @@ function showToast(msg) {
   }
 }
 
-// Integrierte performante Canvas-Konfetti-Engine
-function triggerConfetti() {
+// Integrierte performante Canvas-Celebration-Engine mit 5 wechselnden Partikel-Effekten
+let celebrationParticleIndex = 0;
+
+function drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius) {
+  let rot = Math.PI / 2 * 3;
+  let x = cx;
+  let y = cy;
+  let step = Math.PI / spikes;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - outerRadius);
+  for (let i = 0; i < spikes; i++) {
+    x = cx + Math.cos(rot) * outerRadius;
+    y = cy + Math.sin(rot) * outerRadius;
+    ctx.lineTo(x, y);
+    rot += step;
+    x = cx + Math.cos(rot) * innerRadius;
+    y = cy + Math.sin(rot) * innerRadius;
+    ctx.lineTo(x, y);
+    rot += step;
+  }
+  ctx.lineTo(cx, cy - outerRadius);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function triggerCelebrationParticles(customX, customY) {
   const canvas = document.getElementById('confetti-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
@@ -38,20 +74,44 @@ function triggerConfetti() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
-  const colors = ['#8b5cf6', '#38bdf8', '#10b981', '#ec4899', '#f59e0b', '#fb7185'];
-  const particles = [];
+  const effectType = celebrationParticleIndex % 5;
+  celebrationParticleIndex++;
 
-  for (let i = 0; i < 110; i++) {
+  const startX = (typeof customX === 'number' && customX > 0) ? customX : canvas.width / 2;
+  const startY = (typeof customY === 'number' && customY > 0) ? customY : (effectType === 3 ? canvas.height * 0.85 : canvas.height * 0.45);
+
+  const particles = [];
+  const particleCount = effectType === 3 ? 45 : 85; // Ballons etwas weniger, sonst zu voll
+
+  const colorPalettes = {
+    0: ['#8b5cf6', '#38bdf8', '#10b981', '#ec4899', '#f59e0b', '#fb7185', '#facc15'], // Konfetti
+    1: ['#f472b6', '#fbcfe8', '#fb7185', '#fda4af', '#f43f5e', '#fff1f2', '#e879f9'], // Sakura-Blüten
+    2: ['#facc15', '#fde047', '#fef08a', '#fbbf24', '#f59e0b', '#ffffff', '#e2e8f0'], // Goldene Sterne
+    3: ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'], // Bunte Ballons
+    4: ['#38bdf8', '#818cf8', '#c084fc', '#f472b6', '#67e8f9', '#a7f3d0', '#fde047']  // Schillernde Seifenblasen
+  };
+  const colors = colorPalettes[effectType];
+
+  for (let i = 0; i < particleCount; i++) {
+    let vx = (Math.random() - 0.5) * (effectType === 3 ? 10 : 22);
+    let vy = effectType === 3 
+      ? -(Math.random() * 8 + 6) // Ballons steigen nach oben
+      : ((Math.random() - 0.5) * 20 - 10);
+
     particles.push({
-      x: canvas.width / 2,
-      y: canvas.height / 2,
-      vx: (Math.random() - 0.5) * 22,
-      vy: (Math.random() - 0.5) * 22 - 12,
+      x: startX + (Math.random() - 0.5) * 60,
+      y: startY + (Math.random() - 0.5) * 40,
+      vx: vx,
+      vy: vy,
+      gravity: effectType === 3 ? -0.06 : (effectType === 1 ? 0.22 : 0.42),
+      friction: effectType === 3 ? 0.99 : 0.975,
       color: colors[Math.floor(Math.random() * colors.length)],
-      size: Math.random() * 8 + 4,
+      size: effectType === 3 ? Math.random() * 12 + 14 : (effectType === 1 ? Math.random() * 8 + 6 : Math.random() * 8 + 4),
       rotation: Math.random() * 360,
-      rotationSpeed: (Math.random() - 0.5) * 10,
-      opacity: 1
+      rotationSpeed: (Math.random() - 0.5) * (effectType === 3 ? 2 : 10),
+      opacity: 1,
+      sway: Math.random() * 10,
+      swaySpeed: Math.random() * 0.08 + 0.03
     });
   }
 
@@ -60,22 +120,66 @@ function triggerConfetti() {
     let active = false;
 
     particles.forEach(p => {
-      if (p.opacity > 0) {
-        p.x += p.vx;
+      if (p.opacity > 0 && p.y > -80 && p.y < canvas.height + 80) {
+        p.sway += p.swaySpeed;
+        p.x += p.vx + Math.sin(p.sway) * (effectType === 1 ? 1.5 : 0.6);
         p.y += p.vy;
-        p.vy += 0.45; 
-        p.vx *= 0.98; 
-        p.opacity -= 0.012;
+        p.vy += p.gravity;
+        p.vx *= p.friction;
+        p.opacity -= (effectType === 3 ? 0.007 : 0.011);
         p.rotation += p.rotationSpeed;
 
         ctx.save();
         ctx.translate(p.x, p.y);
         ctx.rotate((p.rotation * Math.PI) / 180);
         ctx.globalAlpha = Math.max(0, p.opacity);
-        ctx.fillStyle = p.color;
-        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-        ctx.restore();
 
+        if (effectType === 0) {
+          // 1. Konfetti (Rechteckig)
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+        } else if (effectType === 1) {
+          // 2. Sakura-Blütenblatt (Geschwungene Blüte)
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.moveTo(0, -p.size);
+          ctx.bezierCurveTo(p.size * 0.8, -p.size * 0.5, p.size * 0.8, p.size * 0.5, 0, p.size);
+          ctx.bezierCurveTo(-p.size * 0.8, p.size * 0.5, -p.size * 0.8, -p.size * 0.5, 0, -p.size);
+          ctx.fill();
+        } else if (effectType === 2) {
+          // 3. Sterne (Gold/Funkeln)
+          ctx.fillStyle = p.color;
+          drawStar(ctx, 0, 0, 5, p.size, p.size * 0.5);
+        } else if (effectType === 3) {
+          // 4. Bunte Mini-Ballons
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.ellipse(0, 0, p.size * 0.75, p.size, 0, 0, Math.PI * 2);
+          ctx.fill();
+          // Schnur
+          ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(0, p.size);
+          ctx.lineTo(Math.sin(p.sway) * 4, p.size + 14);
+          ctx.stroke();
+        } else if (effectType === 4) {
+          // 5. Schillernde Seifenblasen
+          ctx.strokeStyle = p.color;
+          ctx.lineWidth = 1.5;
+          ctx.fillStyle = 'rgba(255,255,255,0.06)';
+          ctx.beginPath();
+          ctx.arc(0, 0, p.size, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          // Lichtglanz
+          ctx.fillStyle = 'rgba(255,255,255,0.6)';
+          ctx.beginPath();
+          ctx.arc(-p.size * 0.35, -p.size * 0.35, p.size * 0.25, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.restore();
         active = true;
       }
     });
@@ -88,6 +192,13 @@ function triggerConfetti() {
   }
   animate();
 }
+
+function triggerConfetti(x, y) {
+  triggerCelebrationParticles(x, y);
+}
+window.triggerCelebrationParticles = triggerCelebrationParticles;
+window.triggerConfetti = triggerConfetti;
+
 
 function showPraise() {
   const lang = typeof currentLang !== 'undefined' ? currentLang : 'de';
@@ -140,13 +251,23 @@ function showPraise() {
   triggerPraiseAnimation(animIdx);
 }
 
-// Erzeugt 12 mathematisch unterschiedliche Belohnungsklänge über die Web Audio API
-function playProceduralSound(idx = 0) {
+let lastProceduralSoundIndex = -1;
+
+// Erzeugt 12 mathematisch unterschiedliche Belohnungsklänge über die Web Audio API (wechselt zufällig)
+function playProceduralSound(idx = null) {
   try {
     initAudioContext();
     if (!audioCtx) return;
     const now = audioCtx.currentTime;
     const ctx = audioCtx;
+
+    // Wenn kein Index übergeben oder 'random', wechsle zufällig ohne direkte Wiederholung
+    if (idx === null || idx === undefined || idx === 'random') {
+      do {
+        idx = Math.floor(Math.random() * 12);
+      } while (idx === lastProceduralSoundIndex && 12 > 1);
+    }
+    lastProceduralSoundIndex = idx;
 
     const playNode = (freq, type, duration, delay = 0, vol = 0.08) => {
       const osc = ctx.createOscillator();
@@ -789,7 +910,7 @@ function triggerCloudAutoSave() {
   }, 1500);
 }
 
-function openSyncModal(initialTab = 'account') {
+function openSyncModal(initialTab = 'pair') {
   const modal = document.getElementById('helper-sync-modal');
   if (modal) modal.classList.remove('hidden');
   const panel = document.getElementById('panel-sync');
@@ -797,9 +918,9 @@ function openSyncModal(initialTab = 'account') {
   switchSyncModalTab(initialTab);
   if (typeof syncEngine !== 'undefined') {
     syncEngine.updateUI();
-    if (initialTab === 'pair') syncEngine.publishPairingCode();
+    syncEngine.publishPairingCode();
   }
-  if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
+  renderLucideIcons();
 }
 
 function closeSyncModal() {
@@ -814,18 +935,18 @@ function switchSyncModalTab(tab) {
   const panePair = document.getElementById('sync-pane-pair');
 
   if (tab === 'account') {
-    if (btnAcc) { btnAcc.className = 'flex-1 py-1.5 rounded-lg text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 transition flex items-center justify-center gap-1.5'; }
-    if (btnPair) { btnPair.className = 'flex-1 py-1.5 rounded-lg text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5'; }
+    if (btnAcc) { btnAcc.className = 'flex-1 py-2 rounded-xl text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 transition flex items-center justify-center gap-1.5 cursor-pointer'; }
+    if (btnPair) { btnPair.className = 'flex-1 py-2 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer'; }
     if (paneAcc) paneAcc.classList.remove('hidden');
     if (panePair) panePair.classList.add('hidden');
   } else {
-    if (btnPair) { btnPair.className = 'flex-1 py-1.5 rounded-lg text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 transition flex items-center justify-center gap-1.5'; }
-    if (btnAcc) { btnAcc.className = 'flex-1 py-1.5 rounded-lg text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5'; }
+    if (btnPair) { btnPair.className = 'flex-1 py-2 rounded-xl text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 transition flex items-center justify-center gap-1.5 cursor-pointer'; }
+    if (btnAcc) { btnAcc.className = 'flex-1 py-2 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer'; }
     if (panePair) panePair.classList.remove('hidden');
     if (paneAcc) paneAcc.classList.add('hidden');
     if (typeof syncEngine !== 'undefined') syncEngine.publishPairingCode();
   }
-  if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
+  renderLucideIcons();
 }
 
 async function handleSyncSignIn() {
@@ -861,3 +982,31 @@ async function handlePairWithCodeInput() {
     }
   }
 }
+
+/* --- NATIVE MOBILE DRAWER & TOOLS SHEET HANDLERS --- */
+function openMobileMenuDrawer() {
+  const drawer = document.getElementById('mobile-menu-drawer');
+  if (drawer) {
+    drawer.classList.remove('hidden');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+}
+
+function closeMobileMenuDrawer() {
+  const drawer = document.getElementById('mobile-menu-drawer');
+  if (drawer) drawer.classList.add('hidden');
+}
+
+function openMobileToolsSheet() {
+  const sheet = document.getElementById('mobile-tools-sheet');
+  if (sheet) {
+    sheet.classList.remove('hidden');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+}
+
+function closeMobileToolsSheet() {
+  const sheet = document.getElementById('mobile-tools-sheet');
+  if (sheet) sheet.classList.add('hidden');
+}
+

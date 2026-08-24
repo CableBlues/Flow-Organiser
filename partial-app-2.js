@@ -1,8 +1,8 @@
 // Ausgelagert aus index.html: Wird per document.write an der Original-Position eingefuegt
-document.write(`      <!-- BEHÄLTER 8: Statistik -->
-      <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0 zen-hide">
-        <div class="relative group cursor-pointer" onmouseenter="showPanelHover('report')" onmouseleave="hidePanelHover('report')">
-          <button onclick="togglePanel('report')" class="h-8 px-2 md:px-3 border border-white/10 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] hover:border-purple-500/30 text-gray-200 flex items-center gap-1 text-[10px] md:text-xs font-semibold cursor-pointer transition whitespace-nowrap shadow-sm" title="Erledigungsstatistiken und Diagramme einsehen">
+document.write(`      <!-- BEHÄLTER 8: Statistik & Pause (Insights & Recovery) -->
+      <div class="desktop-only-header flex items-center gap-1.5 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0 zen-hide">
+        <div class="relative group cursor-pointer">
+          <button onclick="togglePanel('report')" class="h-8 px-2.5 border border-white/10 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] hover:border-purple-500/30 text-gray-200 flex items-center gap-1.5 text-xs font-semibold cursor-pointer transition whitespace-nowrap shadow-sm" title="Erledigungsstatistiken und Diagramme einsehen">
             <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>
             <span class="hidden 2xl:inline" id="btn-label-report" data-i18n="report">Statistik</span>
           </button>
@@ -18,28 +18,28 @@ document.write(`      <!-- BEHÄLTER 8: Statistik -->
                 <!-- Timeframe Tabs -->
                 <div class="flex items-center bg-black/50 p-0.5 rounded-xl border border-white/10 text-[11px] font-bold">
                   <button onclick="setTheme(currentTheme)" class="hidden"></button>
-                  <button onclick="setReportTimeframe('today')" id="report-tab-today" class="px-2 py-1 rounded text-[var(--accent-light)] bg-[var(--accent)]/25 cursor-pointer transition">Heute</button>
-                  <button onclick="setReportTimeframe('week')" id="report-tab-week" class="px-2 py-1 rounded text-gray-400 hover:text-white cursor-pointer transition">Woche</button>
-                  <button onclick="setReportTimeframe('month')" id="report-tab-month" class="px-2 py-1 rounded text-gray-400 hover:text-white cursor-pointer transition">Monat</button>
+                  <button onclick="setReportTimeframe('today')" id="report-tab-today" class="px-2 py-1 rounded text-[var(--accent-light)] bg-[var(--accent)]/25 cursor-pointer transition" data-i18n="today">Today</button>
+                  <button onclick="setReportTimeframe('week')" id="report-tab-week" class="px-2 py-1 rounded text-gray-400 hover:text-white cursor-pointer transition" data-i18n="week">Week</button>
+                  <button onclick="setReportTimeframe('month')" id="report-tab-month" class="px-2 py-1 rounded text-gray-400 hover:text-white cursor-pointer transition" data-i18n="month">Month</button>
                 </div>
               </div>
 
               <!-- Stats Grid -->
               <div class="grid grid-cols-2 gap-2 mb-3">
                 <div class="p-2.5 bg-white/[0.03] border border-white/10 rounded-xl text-center shadow-inner">
-                  <div class="text-[10px] text-gray-400 mb-0.5 whitespace-nowrap" data-i18n="completed_stat">Erledigt</div>
-                  <div id="report-today-count" class="text-lg font-bold font-display text-[var(--accent-light)]">0</div>
+                  <div class="text-[10px] text-gray-400 mb-0.5 whitespace-nowrap" data-i18n="completed_stat">Completed</div>
+                  <div id="report-today-count" class="text-lg font-bold font-display text-emerald-400">0</div>
                 </div>
                 <div class="p-2.5 bg-white/[0.03] border border-white/10 rounded-xl text-center shadow-inner">
-                  <div class="text-[10px] text-gray-400 mb-0.5 whitespace-nowrap" data-i18n="rate_stat">Erfolgsquote</div>
-                  <div id="report-rate-pct" class="text-lg font-bold font-display text-emerald-400">100%</div>
+                  <div class="text-[10px] text-gray-400 mb-0.5 whitespace-nowrap" data-i18n="pending_stat">Remaining</div>
+                  <div id="report-pending-count" class="text-lg font-bold font-display text-amber-400">0</div>
                 </div>
               </div>
 
               <!-- 7-Tage-Aktivität -->
-              <div id="report-chart-container" class="mb-3 p-3 bg-white/[0.02] border border-white/10 rounded-xl hidden">
+              <div id="report-chart-container" class="mb-3 p-3 bg-white/[0.02] border border-white/10 rounded-xl">
                 <h5 class="text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-2 flex items-center justify-between">
-                  <span data-i18n="weekly_activity">7-Tage-Aktivität (Mo-So)</span>
+                  <span data-i18n="weekly_activity">7-Day Activity (Mon-Sun)</span>
                   <span id="report-total-week-tasks" class="font-mono text-purple-300 font-bold">0 Tasks</span>
                 </h5>
                 <div id="report-weekly-chart" class="flex items-end justify-between h-16 pt-2 px-1 animate-fade-in"></div>
@@ -49,33 +49,31 @@ document.write(`      <!-- BEHÄLTER 8: Statistik -->
               <div id="report-category-bars" class="space-y-2.5 mb-3 text-xs"></div>
 
               <!-- Intelligent Insights Tip -->
-              <div id="report-insight-box" class="p-2.5 border rounded-xl text-xs text-purple-200 flex items-start gap-2 bg-[#1c1c28]">
+              <div id="report-insight-box" class="p-2.5 border border-purple-500/20 rounded-xl text-xs text-purple-200 flex items-start gap-2 bg-[#1c1c28]">
                 <i data-lucide="lightbulb" class="w-4 h-4 text-purple-400 shrink-0 mt-0.5"></i>
-                <span id="report-insight-text" data-i18n="loading_stats">Lade deine Statistiken...</span>
+                <span id="report-insight-text" data-i18n="loading_stats">Loading your achievements...</span>
               </div>
             </div>
 
             <!-- Export Button -->
-            <button onclick="exportReportAsImage()" class="w-full mt-3 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-md transition cursor-pointer">
-              <i data-lucide="image" class="w-3.5 h-3.5"></i>
-              <span data-i18n="export">Export</span>
+            <button onclick="openReportExportModal()" class="w-full mt-3 py-2.5 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-md transition cursor-pointer">
+              <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+              <span data-i18n="stat_export_btn">Export Report (Week & Month) 📑</span>
             </button>
 
             <!-- Completed Items Log -->
             <div id="report-list" class="mt-3 space-y-1.5 max-h-[150px] overflow-y-auto text-xs pr-1 border-t border-white/5 pt-3"></div>
           </div>
         </div>
-      </div>
 
-      <!-- BEHÄLTER 3.5: Pause -->
-      <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
-        <div class="relative group cursor-pointer" onmouseenter="showPanelHover('pause-dropdown')" onmouseleave="hidePanelHover('pause-dropdown')">
-          <button onclick="togglePanel('pause-dropdown')" class="h-8 px-2.5 md:h-10 md:px-3.5 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 hover:border-teal-500/60 rounded-xl text-teal-200 flex items-center gap-1.5 text-[10px] md:text-xs font-bold cursor-pointer transition shadow-sm" title="Reizpause & Entspannungs-Optionen öffnen">
+        <!-- Pause -->
+        <div class="relative group cursor-pointer">
+          <button onclick="togglePanel('pause-dropdown')" class="h-8 px-2.5 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 hover:border-teal-500/60 rounded-xl text-teal-200 flex items-center gap-1.5 text-xs font-bold cursor-pointer transition shadow-sm" title="Reizpause & Entspannungs-Optionen öffnen">
             <i data-lucide="shield" class="w-3.5 h-3.5 text-teal-400"></i>
             <span class="hidden 2xl:inline" data-i18n="pause_btn">Pause</span>
           </button>
           
-          <div id="panel-pause-dropdown" class="hidden absolute left-1/2 -translate-x-1/2 md:left-auto md:right-0 md:translate-x-0 top-[calc(100%+8px)] z-[110] w-[290px] bg-[#111116] border border-teal-500/40 p-3 rounded-2xl shadow-2xl flex flex-col gap-2 max-h-[440px] overflow-y-auto scrollbar-thin">
+          <div id="panel-pause-dropdown" class="hidden absolute left-1/2 -translate-x-1/2 md:left-auto md:right-0 md:translate-x-0 top-[calc(100%+8px)] z-[110] w-[290px] bg-[#111116] border border-teal-500/40 p-3.5 rounded-2xl shadow-2xl flex flex-col gap-2 max-h-[440px] overflow-y-auto scrollbar-thin">
             <div class="text-[10px] uppercase font-bold tracking-wider text-teal-400 font-mono flex items-center gap-1"><i data-lucide="shield" class="w-3.5 h-3.5"></i> Reizpause & Erholung</div>
             <p class="text-[10px] text-gray-400 leading-normal mb-1">Methoden zur sensorischen Pause:</p>
             
@@ -119,14 +117,14 @@ document.write(`      <!-- BEHÄLTER 8: Statistik -->
             <button onclick="openBreakModal('stretch')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2 cursor-pointer">
               <i data-lucide="dumbbell" class="w-4 h-4 shrink-0 text-teal-400"></i>
               <div>
-                <div class="leading-none mb-0.5">Schneller Stretch 🧘</div>
-                <div class="text-[9px] text-gray-400 font-normal">1 Minute entspannt lockern</div>
+                <div class="leading-none mb-0.5">Schneller Stretch 🙆‍♂️</div>
+                <div class="text-[9px] text-gray-400 font-normal">Sanfte Dehnung für Schultern & Rücken</div>
               </div>
             </button>
-
-            <!-- Option 6: Schulter-Squeeze -->
-            <button onclick="openBreakModal('squeeze')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2 cursor-pointer">
-              <i data-lucide="shield" class="w-4 h-4 shrink-0 text-teal-400 animate-pulse"></i>
+            
+            <!-- Option 6: Nacken-Squeeze -->
+            <button onclick="openBreakModal('neck')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2 cursor-pointer">
+              <i data-lucide="activity" class="w-4 h-4 shrink-0 text-teal-400"></i>
               <div>
                 <div class="leading-none mb-0.5">Nacken-Squeeze (1 Min) 🏋️</div>
                 <div class="text-[9px] text-gray-400 font-normal">Muskeln anspannen & befreien</div>
@@ -163,65 +161,33 @@ document.write(`      <!-- BEHÄLTER 8: Statistik -->
         </div>
       </div>
 
-      <!-- BEHÄLTER 6: Anmelden & Geräte-Sync -->
-      <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
-        <div class="relative group cursor-pointer zen-hide" onmouseenter="showPanelHover('sync')" onmouseleave="hidePanelHover('sync')">
-          <button onclick="togglePanel('sync')" class="h-8 px-2 md:px-3 border border-emerald-500/30 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 flex items-center gap-1.5 text-[10px] md:text-xs font-bold cursor-pointer transition shadow-sm" title="Geräte-Synchronisierung einrichten">
-            <i data-lucide="user-round" id="header-sync-btn-icon" class="w-3.5 h-3.5 text-emerald-400"></i>
-            <span class="hidden 2xl:inline" id="header-sync-btn-text" data-i18n="login_btn">Anmelden</span>
-          </button>
-          
-          <div id="panel-sync" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] w-[220px] bg-[#111116] border border-emerald-500/40 p-3.5 rounded-2xl shadow-2xl flex flex-col gap-2.5">
-            <div class="flex items-center justify-between pb-1 border-b border-white/10">
-              <span class="text-[10px] uppercase font-bold tracking-wider text-emerald-400 font-mono" id="panel-sync-status">Geräte-Sync</span>
-              <span class="text-[9px] text-gray-400 font-medium" id="panel-sync-username">Kostenlos</span>
-            </div>
-            <p class="text-[10px] text-gray-400 leading-normal" data-i18n="sync_desc">Übertrage deinen Plan nahtlos auf PC, Smartphone & Tablet.</p>
-            <div class="flex flex-col gap-1.5 pt-1">
-              <button onclick="openSyncModal('account')" class="w-full py-1.5 px-3 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5">
-                <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
-                <span>Konto / Anmelden</span>
-              </button>
-              <button onclick="openSyncModal('pair')" class="w-full py-1.5 px-3 bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5">
-                <i data-lucide="smartphone" class="w-3.5 h-3.5 text-emerald-400"></i>
-                <span>📱 Gerät koppeln (Code)</span>
-              </button>
-              <button onclick="syncEngine.syncNow()" class="w-full py-1.5 px-3 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-[11px] font-semibold rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5">
-                <i data-lucide="refresh-cw" class="w-3 h-3"></i>
-                <span>Jetzt abgleichen ☁️</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- BEHÄLTER 7: Aktionen -->
-      <div class="flex items-center gap-1 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
-        <button onclick="handleUndo()" class="h-8 w-8 flex items-center justify-center bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 rounded-xl text-gray-300 cursor-pointer transition shadow-sm" title="Letzte Aktion rückgängig machen">
-          <i data-lucide="undo" class="w-4 h-4"></i>
+      <!-- BEHÄLTER 7: Aktionen (Undo, Open, Save, Reset) -->
+      <div class="desktop-only-header flex items-center gap-1 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0">
+        <button onclick="handleUndo()" class="h-8 w-8 flex items-center justify-center bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 rounded-xl text-gray-300 hover:text-white cursor-pointer transition shadow-sm" title="Letzte Aktion rückgängig machen">
+          <i data-lucide="undo" class="w-3.5 h-3.5"></i>
         </button>
-        <button onclick="document.getElementById('file-input').click()" class="h-8 w-8 flex items-center justify-center bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 rounded-xl text-amber-400 cursor-pointer transition shadow-sm zen-hide" title="Gespeicherten Plan aus einer .json-Datei laden">
-          <i data-lucide="folder-open" class="w-4 h-4"></i>
+        <button onclick="document.getElementById('file-input').click()" class="h-8 w-8 flex items-center justify-center bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 rounded-xl text-amber-400 hover:text-amber-300 cursor-pointer transition shadow-sm zen-hide" title="Gespeicherten Plan aus einer .json-Datei laden">
+          <i data-lucide="folder-open" class="w-3.5 h-3.5"></i>
         </button>
         <input type="file" id="file-input" onchange="handleOpenFile(event)" accept="application/json" class="hidden" />
-        <button onclick="handleSaveJson()" class="h-8 w-8 flex items-center justify-center bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 rounded-xl text-emerald-400 cursor-pointer transition shadow-sm" title="Aktuellen Plan als .json-Datei auf dem Gerät sichern">
-          <i data-lucide="save" class="w-4 h-4"></i>
+        <button onclick="handleSaveJson()" class="h-8 w-8 flex items-center justify-center bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 rounded-xl text-emerald-400 hover:text-emerald-300 cursor-pointer transition shadow-sm" title="Aktuellen Plan als .json-Datei auf dem Gerät sichern">
+          <i data-lucide="save" class="w-3.5 h-3.5"></i>
         </button>
-        <button onclick="handleReset()" class="h-8 w-8 flex items-center justify-center bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-xl text-red-300 cursor-pointer transition shadow-sm zen-hide" title="Gesamten Plan auf die Standardeinstellungen zurücksetzen">
-          <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+        <button onclick="handleReset()" class="h-8 w-8 flex items-center justify-center bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-xl text-red-300 hover:text-red-200 cursor-pointer transition shadow-sm zen-hide" title="Gesamten Plan auf die Standardeinstellungen zurücksetzen">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
         </button>
       </div>
 
-      <!-- BEHÄLTER 9: Farbschemas & Sprache -->
-      <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm bg-black/40 shrink-0">
+      <!-- BEHÄLTER 9: Preferences & Sync -->
+      <div class="desktop-only-header flex items-center gap-1 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0">
 
         <!-- Theme Selector Dropdown (4x4 Grid - 16 Themes) -->
-        <div class="relative group cursor-pointer" onmouseenter="showPanelHover('theme')" onmouseleave="hidePanelHover('theme')">
-          <button onclick="togglePanel('theme')" class="h-8 w-8 flex items-center justify-center border border-white/5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-gray-200 cursor-pointer transition shadow-sm" title="Farbschema und Hintergrund der App ändern">
-            <i data-lucide="palette" class="w-4 h-4 text-purple-300"></i>
+        <div class="relative group cursor-pointer">
+          <button onclick="togglePanel('theme')" class="h-8 w-8 flex items-center justify-center border border-white/10 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-gray-200 cursor-pointer transition shadow-sm" title="Farbschema und Hintergrund der App ändern">
+            <i data-lucide="palette" class="w-3.5 h-3.5 text-purple-300"></i>
           </button>
           
-          <div id="panel-theme" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] bg-[#111116] border border-purple-500/40 p-2.5 rounded-xl shadow-2xl grid grid-cols-4 gap-2 w-[120px] origin-top">
+          <div id="panel-theme" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] bg-[#111116] border border-purple-500/40 p-2.5 rounded-2xl shadow-2xl grid grid-cols-4 gap-2 w-[120px] origin-top">
             <!-- Reihe 1 -->
             <button onclick="setTheme('aurora')" class="w-3.5 h-3.5 rounded-full bg-[#a855f7] border border-white/10 hover:scale-125 transition" title="Aurora (Mystical Purple)"></button>
             <button onclick="setTheme('sage')" class="w-3.5 h-3.5 rounded-full bg-[#86efac] border border-white/10 hover:scale-125 transition" title="Sage (Earthy Sage Green)"></button>
@@ -229,40 +195,79 @@ document.write(`      <!-- BEHÄLTER 8: Statistik -->
             <button onclick="setTheme('forest')" class="w-3.5 h-3.5 rounded-full bg-[#22c55e] border border-white/10 hover:scale-125 transition" title="Forest (Pine Green)"></button>
             <!-- Reihe 2 -->
             <button onclick="setTheme('architect')" class="w-3.5 h-3.5 rounded-full bg-[#64748b] border border-white/10 hover:scale-125 transition" title="Architect (Steel Grey)"></button>
-            <button onclick="setTheme('mono-hand')" class="w-3.5 h-3.5 rounded-full bg-[#d2b48c] border border-stone-800 hover:scale-125 transition" title="Mono Hand (Antique Paper)"></button>
             <button onclick="setTheme('neon-cyber')" class="w-3.5 h-3.5 rounded-full bg-[#ff2fd0] border border-white/10 hover:scale-125 transition" title="Neon Cyber (Futuristic Magenta)"></button>
             <button onclick="setTheme('glacier')" class="w-3.5 h-3.5 rounded-full bg-[#a5f3fc] border border-white/10 hover:scale-125 transition" title="Glacier (Nordic Ice)"></button>
+            <button onclick="setTheme('synthwave')" class="w-3.5 h-3.5 rounded-full bg-[#ff5f9e] border border-white/10 hover:scale-125 transition" title="Synthwave (Futuristic Retro Sunset)"></button>
             <!-- Reihe 3 -->
             <button onclick="setTheme('charcoal')" class="w-3.5 h-3.5 rounded-full bg-[#475569] border border-white/10 hover:scale-125 transition" title="Charcoal (Pure Graphite)"></button>
             <button onclick="setTheme('executive')" class="w-3.5 h-3.5 rounded-full bg-[#b5a642] border border-white/10 hover:scale-125 transition" title="Executive (Navy & Gold)"></button>
             <button onclick="setTheme('holo-chrome')" class="w-3.5 h-3.5 rounded-full bg-[#22e5d4] border border-white/10 hover:scale-125 transition" title="Holo Chrome (Futuristic Cyan HUD)"></button>
             <button onclick="setTheme('carbon')" class="w-3.5 h-3.5 rounded-full bg-[#1e293b] border border-white/10 hover:scale-125 transition" title="Carbon (Ultra-Minimal)"></button>
-            <!-- Reihe 4 (Neue Premium Paper-Themen) -->
-            <button onclick="setTheme('parchment')" class="w-3.5 h-3.5 rounded-full bg-[#8d5b34] border border-stone-800 hover:scale-125 transition" title="Parchment (Espresso & Parchment)"></button>
-            <button onclick="setTheme('minimalist-light')" class="w-3.5 h-3.5 rounded-full bg-[#f8fafc] border border-stone-400 hover:scale-125 transition" title="Minimalist Light (Scandinavian White)"></button>
-            <button onclick="setTheme('terracotta-light')" class="w-3.5 h-3.5 rounded-full bg-[#9a4c24] border border-stone-800 hover:scale-125 transition" title="Terracotta Light (Sand & Clay)"></button>
-            <button onclick="setTheme('synthwave')" class="w-3.5 h-3.5 rounded-full bg-[#ff5f9e] border border-white/10 hover:scale-125 transition" title="Synthwave (Futuristic Retro Sunset)"></button>
+            <!-- Reihe 4 (Fröhlich & Vital) -->
+            <button onclick="setTheme('citrus')" class="w-3.5 h-3.5 rounded-full bg-[#facc15] border border-white/10 hover:scale-125 transition" title="Citrus Sunshine (Sonnengelb)"></button>
+            <button onclick="setTheme('sakura')" class="w-3.5 h-3.5 rounded-full bg-[#f472b6] border border-white/10 hover:scale-125 transition" title="Sakura Spring (Kirschblüte)"></button>
+            <button onclick="setTheme('lagoon')" class="w-3.5 h-3.5 rounded-full bg-[#06b6d4] border border-white/10 hover:scale-125 transition" title="Tropical Lagoon (Türkis)"></button>
+            <button onclick="setTheme('matcha')" class="w-3.5 h-3.5 rounded-full bg-[#84cc16] border border-white/10 hover:scale-125 transition" title="Matcha Latte (Matcha-Grün)"></button>
           </div>
         </div>
 
-        <!-- Language Dropdown Menu -->
-        <div class="relative group cursor-pointer" onmouseenter="showPanelHover('language')" onmouseleave="hidePanelHover('language')">
-          <button onclick="togglePanel('language')" class="h-8 w-8 flex items-center justify-center border border-white/5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-gray-200 cursor-pointer transition shadow-sm" title="Sprache ändern / Change language">
-            <span id="active-lang-flag" class="text-sm">🇬🇧</span>
+        <!-- Language Selector Dropdown -->
+        <div class="relative group cursor-pointer">
+          <button onclick="togglePanel('language')" class="h-8 w-8 flex items-center justify-center border border-white/10 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-gray-200 cursor-pointer transition shadow-sm" title="Sprache ändern / Change Language">
+            <span id="current-lang-flag" class="text-xs">🇬🇧</span>
           </button>
           
-          <div id="panel-language" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] w-[48px] bg-[#111116] border border-purple-500/40 p-1.5 rounded-xl shadow-2xl flex flex-col gap-1.5 items-center origin-top">
-            <button onclick="setLanguage('de')" class="text-sm hover:scale-110 active:scale-95 transition cursor-pointer">🇩🇪</button>
-            <button onclick="setLanguage('en')" class="text-sm hover:scale-110 active:scale-95 transition cursor-pointer">🇬🇧</button>
-            <button onclick="setLanguage('es')" class="text-sm hover:scale-110 active:scale-95 transition cursor-pointer">🇪🇸</button>
-            <button onclick="setLanguage('el')" class="text-sm hover:scale-110 active:scale-95 transition cursor-pointer">🇬🇷</button>
-            <button onclick="setLanguage('fr')" class="text-sm hover:scale-110 active:scale-95 transition cursor-pointer">🇫🇷</button>
-            <button onclick="setLanguage('it')" class="text-sm hover:scale-110 active:scale-95 transition cursor-pointer">🇮🇹</button>
+          <div id="panel-language" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] bg-[#111116] border border-purple-500/40 p-1.5 rounded-2xl shadow-2xl flex flex-col gap-1 w-[46px]">
+            <button onclick="setLanguage('de')" class="p-1 hover:bg-white/10 rounded-lg text-sm flex items-center justify-center transition cursor-pointer" title="Deutsch">🇩🇪</button>
+            <button onclick="setLanguage('en')" class="p-1 hover:bg-white/10 rounded-lg text-sm flex items-center justify-center transition cursor-pointer" title="English">🇬🇧</button>
+            <button onclick="setLanguage('es')" class="p-1 hover:bg-white/10 rounded-lg text-sm flex items-center justify-center transition cursor-pointer" title="Español">🇪🇸</button>
+            <button onclick="setLanguage('el')" class="p-1 hover:bg-white/10 rounded-lg text-sm flex items-center justify-center transition cursor-pointer" title="Ελληνικά">🇬🇷</button>
+            <button onclick="setLanguage('fr')" class="p-1 hover:bg-white/10 rounded-lg text-sm flex items-center justify-center transition cursor-pointer" title="Français">🇫🇷</button>
+            <button onclick="setLanguage('it')" class="p-1 hover:bg-white/10 rounded-lg text-sm flex items-center justify-center transition cursor-pointer" title="Italiano">🇮🇹</button>
           </div>
         </div>
+
+        <!-- Sync (1-Klick Öffnen) -->
+        <div class="relative group cursor-pointer zen-hide">
+          <button onclick="openSyncModal()" class="h-8 w-8 flex items-center justify-center border border-emerald-500/30 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 cursor-pointer transition shadow-sm" title="Geräte-Synchronisation & Handy koppeln">
+            <i data-lucide="cloud" id="header-sync-btn-icon" class="w-3.5 h-3.5 text-emerald-400"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- MOBILE-ONLY MENÜ-TRIGGER -->
+      <div class="mobile-only flex items-center shrink-0">
+        <button onclick="openMobileMenuDrawer()" class="h-8 w-8 flex items-center justify-center border border-white/10 rounded-xl bg-white/[0.06] text-white active:scale-95 transition" title="Menü & Einstellungen">
+          <i data-lucide="menu" class="w-4 h-4 text-purple-400"></i>
+        </button>
       </div>
 
     </header>
+
+    <!-- SAMPLE-TASKS BANNER (Wird rein über Hover auf Heute/Haushalt eingeblendet) -->
+    <div id="sample-tasks-banner" onmouseenter="showSampleBannerOnHover(true)" onmouseleave="showSampleBannerOnHover(false)" class="bg-gradient-to-r from-purple-950/50 via-[#161622]/95 to-cyan-950/50 border border-purple-500/30 rounded-2xl backdrop-blur-md shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs zen-hide">
+      <div class="flex items-center gap-2.5">
+        <div class="w-7 h-7 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-300 shrink-0">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+        </div>
+        <div>
+          <span class="font-bold text-white block text-xs" data-i18n="sample_banner_title">💡 Dies sind Beispiel-Aufgaben zur Inspiration.</span>
+          <span class="text-[11px] text-gray-400" data-i18n="sample_banner_desc">Du kannst sie anpassen, nur gewünschte behalten oder mit einem leeren Plan starten.</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 w-full md:w-auto flex-wrap">
+        <button onclick="dismissSampleBanner(true)" class="px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 rounded-xl font-bold transition cursor-pointer flex-1 md:flex-none text-center" data-i18n="sample_keep_all">
+          Alle behalten ✓
+        </button>
+        <button onclick="openSampleManagerModal()" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-bold transition cursor-pointer flex-1 md:flex-none text-center" data-i18n="sample_customize_btn">
+          Auswählen & Anpassen ✏️
+        </button>
+        <button onclick="clearAllSampleTasks()" class="px-3 py-1.5 bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-300 border border-white/10 hover:border-red-500/30 rounded-xl font-semibold transition cursor-pointer flex-1 md:flex-none text-center" data-i18n="sample_clear_all">
+          Leer starten 🗑️
+        </button>
+      </div>
+    </div>
 
     <!-- DASHBOARD 7-COLUMN GRID -->
     <main class="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-3.5 flex-1 w-full min-h-0 items-start">
@@ -326,10 +331,11 @@ document.write(`      <!-- BEHÄLTER 8: Statistik -->
 
           <!-- Timer Presets -->
           <div class="flex items-center gap-1.5 pt-2 border-t border-white/5 w-full justify-center flex-wrap">
+            <button onclick="setTimerPreset(1)" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-[10px] font-bold transition cursor-pointer hover:text-white">1m Micro</button>
+            <button onclick="setTimerPreset(5)" class="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 text-[10px] font-bold transition cursor-pointer border border-emerald-500/20">5m Pause</button>
+            <button onclick="setTimerPreset(15)" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-[10px] font-bold transition cursor-pointer hover:text-white">15m Sprint</button>
             <button onclick="setTimerPreset(25)" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-[10px] font-bold transition cursor-pointer hover:text-white">25m Fokus</button>
             <button onclick="setTimerPreset(50)" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-[10px] font-bold transition cursor-pointer hover:text-white">50m Deep Work</button>
-            <button onclick="setTimerPreset(15)" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-[10px] font-bold transition cursor-pointer hover:text-white">15m Sprint</button>
-            <button onclick="setTimerPreset(5)" class="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 text-[10px] font-bold transition cursor-pointer border border-emerald-500/20">5m Pause</button>
           </div>
         </div>
 
@@ -340,8 +346,8 @@ document.write(`      <!-- BEHÄLTER 8: Statistik -->
             Sound:
           </span>
           <div class="flex items-center gap-1 overflow-x-auto py-0.5">
-            <button onclick="playAmbientSound('rain')" class="px-2 py-1 bg-white/5 hover:bg-cyan-500/20 text-gray-300 hover:text-cyan-300 rounded-lg text-[10px] font-semibold transition cursor-pointer flex items-center gap-1 shrink-0">🌧️ Regen</button>
-            <button onclick="playAmbientSound('ocean')" class="px-2 py-1 bg-white/5 hover:bg-blue-500/20 text-gray-300 hover:text-blue-300 rounded-lg text-[10px] font-semibold transition cursor-pointer flex items-center gap-1 shrink-0">🌊 Ozean</button>
+            <button onclick="playAmbientSound('birds')" class="px-2 py-1 bg-white/5 hover:bg-emerald-500/20 text-gray-300 hover:text-emerald-300 rounded-lg text-[10px] font-semibold transition cursor-pointer flex items-center gap-1 shrink-0">🐦 Vögel</button>
+            <button onclick="playAmbientSound('campfire')" class="px-2 py-1 bg-white/5 hover:bg-amber-500/20 text-gray-300 hover:text-amber-300 rounded-lg text-[10px] font-semibold transition cursor-pointer flex items-center gap-1 shrink-0">🔥 Feuer</button>
             <button onclick="playAmbientSound('binaural_alpha')" class="px-2 py-1 bg-white/5 hover:bg-purple-500/20 text-gray-300 hover:text-purple-300 rounded-lg text-[10px] font-semibold transition cursor-pointer flex items-center gap-1 shrink-0">🧠 Alpha Beats</button>
             <button onclick="playAmbientSound('whitenoise')" class="px-2 py-1 bg-white/5 hover:bg-zinc-500/20 text-gray-300 hover:text-white rounded-lg text-[10px] font-semibold transition cursor-pointer flex items-center gap-1 shrink-0">📻 White Noise</button>
             <button onclick="stopAmbientSound()" class="p-1 text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition cursor-pointer shrink-0" title="Sound stoppen">

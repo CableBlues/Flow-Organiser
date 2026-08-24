@@ -26,11 +26,28 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Beim automatischen Farbwechsel nach einer erledigten Aufgabe: sehr sanfter, langsamer Verlauf
-   statt des schnellen manuellen Wechsels. Wird per JS kurzzeitig gesetzt und wieder entfernt. */
+/* Modals, Overlays & Dialoge liegen IMMER über dem Floating-Dock (z-40) */
+[id$="-modal"],
+[id$="-overlay"],
+.fixed.inset-0:not(.pointer-events-none) {
+  z-index: 10000 !important;
+}
+
+/* Sanfter Farbwechsel nur auf Hauptcontainern statt extrem teurem Wildcard-Selektor (*) */
 body.theme-fade-slow,
-body.theme-fade-slow * {
-  transition: background-color 2.4s ease, border-color 2.4s ease, box-shadow 2.4s ease, color 1.6s ease !important;
+body.theme-fade-slow main,
+body.theme-fade-slow article,
+body.theme-fade-slow header,
+body.theme-fade-slow .mac-dock {
+  transition: background-color 0.8s ease, border-color 0.8s ease, color 0.8s ease !important;
+}
+
+/* GPU-Beschleunigung & Layout-Containment für butterweiche 120 FPS */
+main article {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: layout style;
+  will-change: transform;
 }
 
 body, body #app, body #app * {
@@ -165,25 +182,6 @@ body.theme-architect {
   --border-main: rgba(100, 116, 139, 0.22);
 }
 
-/* 6. Mono Hand (Klassisches Pergamentpapier) */
-body.theme-mono-hand {
-  --accent: #783e19;
-  --accent-light: #9a5324;
-  --accent-border: rgba(120, 62, 25, 0.45);
-  --bg-app: #f4efdf;
-  --bg-header: rgba(234, 227, 207, 0.85);
-  --bg-card: rgba(234, 227, 207, 0.92);
-  --bg-card-hover: rgba(220, 208, 168, 0.97);
-  --bg-dock: #eae3cf;
-  --bg-panel: #f2ead3;
-  --bg-modal: #f2ead3;
-  --text-main: #231207;
-  --text-muted: #783e19;
-  --text-header: #231207;
-  --text-dock: #231207;
-  --border-main: rgba(120, 62, 25, 0.25);
-  --font-family: 'Caveat', cursive, sans-serif;
-}
 
 /* 8. Glacier (Nordisches Eisblau-Slate) */
 body.theme-glacier {
@@ -280,66 +278,6 @@ body.theme-carbon {
   --border-main: rgba(255, 255, 255, 0.08);
 }
 
-/* 13. Parchment (Warmer antiker Buch-Einband & Espresso-Tinte) */
-body.theme-parchment {
-  --accent: #5e3c23;
-  --accent-light: #8d5b34;
-  --accent-border: rgba(94, 60, 35, 0.45);
-  --bg-app: #f1ebd8;
-  --bg-header: rgba(228, 220, 184, 0.85);
-  --bg-card: rgba(255, 255, 255, 0.55);
-  --bg-card-hover: rgba(255, 255, 255, 0.75);
-  --bg-dock: #e4dcb8;
-  --bg-panel: #FAF7EF;
-  --bg-modal: #FAF7EF;
-  --text-main: #331e0f;
-  --text-muted: #5e3c23;
-  --text-header: #331e0f;
-  --text-dock: #331e0f;
-  --border-main: rgba(94, 60, 35, 0.25);
-  --font-family: 'Playfair Display', Georgia, serif;
-}
-
-/* 14. Minimalist Light (Kühler, reiner skandinavischer Weißraum) */
-body.theme-minimalist-light {
-  --accent: #0f172a;
-  --accent-light: #334155;
-  --accent-border: rgba(15, 23, 42, 0.35);
-  --bg-app: #f8fafc;
-  --bg-header: rgba(226, 232, 240, 0.85);
-  --bg-card: rgba(255, 255, 255, 0.85);
-  --bg-card-hover: #ffffff;
-  --bg-dock: #e2e8f0;
-  --bg-panel: #ffffff;
-  --bg-modal: #ffffff;
-  --text-main: #0f172a;
-  --text-muted: #475569;
-  --text-header: #0f172a;
-  --text-dock: #0f172a;
-  --border-main: rgba(15, 23, 42, 0.18);
-  --font-family: "Plus Jakarta Sans", sans-serif;
-}
-
-/* 15. Terracotta Light (Sanfter Wüstensand & Ziegelton) */
-body.theme-terracotta-light {
-  --accent: #9a4c24;
-  --accent-light: #bc724c;
-  --accent-border: rgba(154, 76, 36, 0.4);
-  --bg-app: #fcf7f2;
-  --bg-header: rgba(242, 227, 213, 0.85);
-  --bg-card: rgba(255, 255, 255, 0.65);
-  --bg-card-hover: rgba(255, 255, 255, 0.85);
-  --bg-dock: #f2e3d5;
-  --bg-panel: #fffbf8;
-  --bg-modal: #fffbf8;
-  --text-main: #4a1e0a;
-  --text-muted: #9a4c24;
-  --text-header: #4a1e0a;
-  --text-dock: #4a1e0a;
-  --border-main: rgba(154, 76, 36, 0.22);
-  --font-family: "Plus Jakarta Sans", sans-serif;
-}
-
 /* 16. Holo Chrome (Futuristisches Cyan-Chrom-HUD) */
 body.theme-holo-chrome {
   --accent: #22e5d4;
@@ -378,46 +316,79 @@ body.theme-synthwave {
   --border-main: rgba(255, 95, 158, 0.22);
 }
 
-body.theme-mono-hand {
-  font-size: 1.32rem !important;
+/* 18. Citrus Sunshine (Sonnengelb & Warm-Orange) */
+body.theme-citrus {
+  --accent: #facc15;
+  --accent-light: #fef08a;
+  --accent-border: rgba(250, 204, 21, 0.4);
+  --bg-app: #191206;
+  --bg-header: rgba(45, 32, 12, 0.8);
+  --bg-card: rgba(58, 42, 16, 0.7);
+  --bg-card-hover: rgba(78, 56, 20, 0.85);
+  --bg-dock: #2d200c;
+  --bg-panel: #140d04;
+  --bg-modal: #140d04;
+  --text-main: #fef9c3;
+  --text-muted: #fbbf24;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(250, 204, 21, 0.25);
 }
 
-body.theme-mono-hand .task-text-span {
-  font-size: 1.32rem !important;
-  font-weight: 800 !important;
-  line-height: 1.25 !important;
-  color: var(--text-main) !important;
+/* 19. Sakura Spring (Kirschblüten-Rosa & Flieder) */
+body.theme-sakura {
+  --accent: #f472b6;
+  --accent-light: #fbcfe8;
+  --accent-border: rgba(244, 114, 182, 0.4);
+  --bg-app: #1a0f18;
+  --bg-header: rgba(45, 22, 40, 0.8);
+  --bg-card: rgba(58, 28, 52, 0.7);
+  --bg-card-hover: rgba(78, 38, 70, 0.85);
+  --bg-dock: #2d1628;
+  --bg-panel: #140812;
+  --bg-modal: #140812;
+  --text-main: #fdf2f8;
+  --text-muted: #f472b6;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(244, 114, 182, 0.25);
 }
 
-body.theme-mono-hand article h2 span {
-  font-size: 1.4rem !important;
-  font-weight: 800 !important;
+/* 20. Tropical Lagoon (Türkisblau & Koralle) */
+body.theme-lagoon {
+  --accent: #06b6d4;
+  --accent-light: #67e8f9;
+  --accent-border: rgba(6, 182, 212, 0.4);
+  --bg-app: #08161e;
+  --bg-header: rgba(14, 38, 52, 0.8);
+  --bg-card: rgba(18, 50, 68, 0.7);
+  --bg-card-hover: rgba(24, 68, 92, 0.85);
+  --bg-dock: #0e2634;
+  --bg-panel: #051016;
+  --bg-modal: #051016;
+  --text-main: #ecfeff;
+  --text-muted: #22d3ee;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(6, 182, 212, 0.25);
 }
 
-body.theme-mono-hand p,
-body.theme-mono-hand h1,
-body.theme-mono-hand h3,
-body.theme-mono-hand h4,
-body.theme-mono-hand textarea,
-body.theme-mono-hand input,
-body.theme-mono-hand select,
-body.theme-mono-hand button {
-  font-size: 1.22rem !important;
-  font-weight: 700 !important;
-  line-height: 1.3 !important;
+/* 21. Matcha Latte (Matcha-Grün & Vanille) */
+body.theme-matcha {
+  --accent: #84cc16;
+  --accent-light: #bef264;
+  --accent-border: rgba(132, 204, 22, 0.4);
+  --bg-app: #111a0c;
+  --bg-header: rgba(28, 44, 20, 0.8);
+  --bg-card: rgba(38, 58, 28, 0.7);
+  --bg-card-hover: rgba(50, 78, 36, 0.85);
+  --bg-dock: #1c2c14;
+  --bg-panel: #0b1207;
+  --bg-modal: #0b1207;
+  --text-main: #f7fee7;
+  --text-muted: #a3e635;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(132, 204, 22, 0.25);
 }
 
-body.theme-mono-hand .dock-label {
-  font-size: 0.85rem !important;
-  font-weight: 800 !important;
-}
-
-body.theme-mono-hand span:not(.dock-label):not(#active-lang-flag) {
-  font-size: 1.12rem !important;
-  font-weight: 700 !important;
-}
-
-body.theme-mono-hand #timer-display {
-  font-size: 1.25rem !important;
-  font-weight: 900 !important;
-}

@@ -118,7 +118,7 @@ function renderAlarmPanel() {
       </div>
     </div>
   `;
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  renderLucideIcons();
 }
 
 function handleAddAlarm() {
@@ -228,7 +228,7 @@ function triggerAlarmModal(title, time) {
     </div>
   `;
   document.body.appendChild(d);
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  renderLucideIcons();
 }
 
 function snoozeAlarm() {
@@ -243,11 +243,15 @@ function snoozeAlarm() {
   if (typeof showToast === 'function') showToast('Wecker für 5 Minuten pausiert (Snooze) 💤');
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+let alarmLoopStarted = false;
+function startAlarmLoopOnce() {
+  if (alarmLoopStarted) return;
+  alarmLoopStarted = true;
   initAlarmReminder();
-  setInterval(checkAlarmsLoop, 1000);
-});
+  setInterval(checkAlarmsLoop, 10000);
+}
+
+document.addEventListener('DOMContentLoaded', startAlarmLoopOnce);
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
-  initAlarmReminder();
-  setInterval(checkAlarmsLoop, 1000);
+  startAlarmLoopOnce();
 }

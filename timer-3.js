@@ -58,6 +58,30 @@ function setTimerPreset(mins) {
   showToast(`⏱️ ${mins}m`);
 }
 
+let timerTargetEndTime = null;
+
+function syncTimerWithTimestamp() {
+  if (!timerRunning || !timerTargetEndTime) return;
+  const now = Date.now();
+  if (timerSeconds > 0) {
+    const calculatedSecs = Math.max(0, Math.round((timerTargetEndTime - now) / 1000));
+    timerSeconds = calculatedSecs;
+    updateTimerDisplay();
+  }
+}
+
+// Hintergrund-Synchronisierung bei Tab-Fokus / Display-Entsperrung
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      syncTimerWithTimestamp();
+    }
+  });
+  window.addEventListener('focus', () => {
+    syncTimerWithTimestamp();
+  });
+}
+
 function startTimer() {
   if (timerRunning) return;
   
@@ -71,6 +95,7 @@ function startTimer() {
   }
   
   timerRunning = true;
+  timerTargetEndTime = Date.now() + (timerSeconds * 1000);
   updateTimerUI();
   updateMuteButtonsUI();
   
@@ -83,14 +108,25 @@ function startTimer() {
     const phraseList = SESSION_START_PHRASES[lang] || SESSION_START_PHRASES.de;
     const phrase = pickWithoutImmediateRepeat(phraseList, lastSessionStartPhrase);
     lastSessionStartPhrase = phrase;
-    const startText = phrase.replace('{mins}', startMins);
+    let startText = phrase.replace('{mins}', startMins);
+    if (startMins === 1) {
+      startText = startText.replace('Minuten', 'Minute').replace('minutes', 'minute').replace('minutos', 'minuto').replace('λεπτά', 'λεπτό');
+    }
     setTimeout(() => speakSoftlyDynamic(startText, timerSeconds, timerInitialSeconds), 400);
   }
   
+  clearInterval(timerInterval);
   timerInterval = setInterval(() => {
-    timerSeconds--;
+    const prevSecs = timerSeconds;
     
-    if (timerSeconds === 0) {
+    if (timerTargetEndTime && timerSeconds > 0) {
+      const now = Date.now();
+      timerSeconds = Math.max(0, Math.round((timerTargetEndTime - now) / 1000));
+    } else {
+      timerSeconds--;
+    }
+    
+    if (timerSeconds === 0 && prevSecs > 0) {
       if (typeof playProceduralSound === 'function') playProceduralSound();
       
       startPleasantRinging();
@@ -188,6 +224,8 @@ function startTimer() {
 function pauseTimer() {
   if (!timerRunning) return;
   clearInterval(timerInterval);
+  timerInterval = null;
+  timerTargetEndTime = null;
   timerRunning = false;
   updateTimerUI();
   
@@ -199,6 +237,7 @@ function pauseTimer() {
 function stopTimer() {
   clearInterval(timerInterval);
   timerInterval = null;
+  timerTargetEndTime = null;
   timerRunning = false;
   timerSeconds = timerInitialSeconds; 
   activeTimerTask = null;

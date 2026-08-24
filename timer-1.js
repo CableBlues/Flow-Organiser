@@ -19,24 +19,22 @@ let currentEndingPatternIndex = 0;
 let ringingSeconds = 0;
 let ringingSecondsInterval = null;
 
-// Konstante Liste aller integrierten Ambient-Sounds zum Durchmischen
-const TIMER_AMBIENTS = ['rain', 'ocean', 'campfire', 'birds', 'stream', 'temple', 'cafe', 'clock', 'purr', 'train', 'space', 'arcade', 'waterfall', 'guitarpad', 'monastery', 'keyboard', 'storm', 'frogs'];
+// Konstante Liste aller integrierten sanften Ambient-Sounds & Melodien zum Durchmischen
+const TIMER_AMBIENTS = ['piano', 'lofi', 'chimes', 'space', 'guitar', 'singingbowl', 'musicbox', 'breeze', 'campfire', 'birds', 'cafe', 'clock', 'lofi_sunshine', 'summer_meadow', 'bossa_nova'];
 
-// VERBESSERUNG: Junge, sympathische, warme und freundliche Profile mit natürlichem Sprechtempo (keine Extreme)
+// VIELFÄLTIGE NATÜRLICHE STIMMPROFILE: Weiblich, Männlich, Kindlich/Lebhaft, Achtsam & Coach
 const VOICE_PROFILES = [
-  { id: 'freundlich_weiblich_1', pitch: 1.12, rate: 0.98, gender: 'female' },
-  { id: 'warm_maennlich_1', pitch: 1.02, rate: 1.00, gender: 'male' },
-  { id: 'jung_weiblich_1', pitch: 1.18, rate: 1.02, gender: 'female' },
-  { id: 'sympathisch_maennlich_1', pitch: 0.98, rate: 0.98, gender: 'male' },
-  { id: 'sanft_weiblich_1', pitch: 1.10, rate: 0.96, gender: 'female' },
-  { id: 'herzlich_maennlich_1', pitch: 1.05, rate: 1.00, gender: 'male' },
-  { id: 'frisch_weiblich_1', pitch: 1.16, rate: 1.01, gender: 'female' },
-  { id: 'ruhig_maennlich_1', pitch: 0.96, rate: 0.97, gender: 'male' },
-  { id: 'hell_weiblich_1', pitch: 1.22, rate: 1.02, gender: 'female' },
-  { id: 'klar_maennlich_1', pitch: 1.04, rate: 0.99, gender: 'male' },
-  { id: 'milde_weiblich_1', pitch: 1.08, rate: 0.98, gender: 'female' },
-  { id: 'modern_maennlich_1', pitch: 1.01, rate: 1.01, gender: 'male' }
+  { id: 'female_warm', name: 'Warm Friendly Female', pitch: 1.04, rate: 0.96, gender: 'female' },
+  { id: 'male_calm', name: 'Calm Grounded Male', pitch: 0.90, rate: 0.94, gender: 'male' },
+  { id: 'child_cheerful', name: 'Cheerful Lively Child', pitch: 1.36, rate: 1.04, gender: 'child' },
+  { id: 'female_gentle', name: 'Gentle Mindful Female', pitch: 1.08, rate: 0.92, gender: 'female' },
+  { id: 'male_coach', name: 'Inspiring Coach Male', pitch: 0.94, rate: 0.98, gender: 'male' },
+  { id: 'child_playful', name: 'Sunny Playful Child', pitch: 1.40, rate: 1.06, gender: 'child' },
+  { id: 'female_fresh', name: 'Upbeat Young Female', pitch: 1.15, rate: 1.00, gender: 'female' },
+  { id: 'male_warm', name: 'Friendly Warm Male', pitch: 0.98, rate: 0.96, gender: 'male' }
 ];
+
+let globalVoiceTurnIndex = 0;
 
 // Motivierende Sätze, passend zum Fortschritt der Fokussitzung (6 Varianten je Phase, damit sich nichts zu schnell wiederholt)
 const MOTIVATIONAL_CHUNKS = {
@@ -219,10 +217,11 @@ function playRandomTimerAmbient(crossfade = false) {
   }
 }
 
-// Globale Sprach-Synthese mit variierenden, schnellen Profilen
-function speakWithProfile(text, profileIndex = 0) {
+// Globale, hochqualitative Sprach-Synthese mit abwechselnden weiblichen, männlichen und kindlich-lebhaften Profilen
+function speakWithProfile(text, profileIndex = null) {
   if (!timerSoundEnabled) return;
   if (!('speechSynthesis' in window)) return;
+  if (!text || typeof text !== 'string') return;
 
   try {
     if (window.speechSynthesis.paused) {
@@ -230,30 +229,52 @@ function speakWithProfile(text, profileIndex = 0) {
     }
     window.speechSynthesis.cancel();
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    const lang = typeof currentLang !== 'undefined' ? currentLang : 'de';
-    const langMap = { de: 'de-DE', en: 'en-US', es: 'es-ES', el: 'el-GR', fr: 'fr-FR', it: 'it-IT' };
-    const targetLang = langMap[lang] || 'de-DE';
+    // 1. Text für natürliche Intonation und Redefluss aufbereiten (Pausen & saubere Satzzeichen)
+    let naturalText = text
+      .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '') // Emojis entfernen
+      .replace(/^\s*\d+[\s.:)\-]+\s*/i, '') // Schrittnummern am Anfang entfernen
+      .replace(/^[•\-\*]+\s*/, '')
+      .replace(/([!?.])\s+/g, '$1, ') // Sanftere Atempausen zwischen Sätzen
+      .trim();
+
+    if (!naturalText) naturalText = text;
+
+    const utterance = new SpeechSynthesisUtterance(naturalText);
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'en';
+    const langMap = { en: 'en-US', de: 'de-DE', es: 'es-ES', el: 'el-GR', fr: 'fr-FR', it: 'it-IT' };
+    const targetLang = langMap[lang] || 'en-US';
     utterance.lang = targetLang;
     utterance.volume = 1.0;
 
-    const allVoices = window.speechSynthesis.getVoices();
-    const matchingVoices = allVoices.filter(v => v.lang && v.lang.replace('_', '-').startsWith(targetLang.split('-')[0]));
+    // 2. Stimmen-Rotation bestimmen
+    if (profileIndex === null || profileIndex === undefined) {
+      profileIndex = globalVoiceTurnIndex++;
+    }
+    const profile = VOICE_PROFILES[Math.abs(profileIndex) % VOICE_PROFILES.length] || VOICE_PROFILES[0];
 
-    const index = Math.abs(profileIndex) % VOICE_PROFILES.length;
-    const profile = VOICE_PROFILES[index] || VOICE_PROFILES[0];
-
-    utterance.rate = profile.rate || 1.0;
+    utterance.rate = profile.rate || 0.98;
     utterance.pitch = profile.pitch || 1.0;
 
-    const femaleKeywords = ['hedda', 'anna', 'zira', 'petra', 'elena', 'hazel', 'susan', 'samantha', 'moira', 'tessa', 'deutsch', 'female', 'google'];
-    const maleKeywords = ['stefan', 'yannick', 'markus', 'david', 'george', 'ravi', 'stefanos', 'male'];
+    // 3. Verfügbare Systemstimmen abfragen und nach Qualität & Geschlecht filtern
+    const allVoices = window.speechSynthesis.getVoices();
+    const langPrefix = targetLang.split('-')[0].toLowerCase();
+    const matchingVoices = allVoices.filter(v => v.lang && v.lang.toLowerCase().replace('_', '-').startsWith(langPrefix));
 
-    const femaleVoices = matchingVoices.filter(v => 
+    // Bevorzuge hochqualitative "Natural", "Neural", "Google", "Apple", "Premium" Stimmen
+    const premiumVoices = matchingVoices.filter(v => 
+      /natural|neural|online|google|siri|apple|premium|enhanced/i.test(v.name)
+    );
+
+    const pool = premiumVoices.length > 0 ? premiumVoices : matchingVoices;
+
+    const femaleKeywords = ['hedda', 'anna', 'zira', 'petra', 'elena', 'hazel', 'susan', 'samantha', 'moira', 'tessa', 'deutsch', 'female', 'julie', 'hortense', 'clara', 'paola', 'lucia', 'monica', 'victoria', 'audrey', 'alice', 'federica'];
+    const maleKeywords = ['stefan', 'yannick', 'markus', 'david', 'george', 'ravi', 'stefanos', 'male', 'paul', 'henri', 'alvaro', 'jorge', 'cosimo', 'thomas', 'daniel', 'oliver', 'arthur'];
+
+    const femaleVoices = pool.filter(v => 
       femaleKeywords.some(kw => v.name.toLowerCase().includes(kw)) &&
       !maleKeywords.some(kw => v.name.toLowerCase().includes(kw))
     );
-    const maleVoices = matchingVoices.filter(v => 
+    const maleVoices = pool.filter(v => 
       maleKeywords.some(kw => v.name.toLowerCase().includes(kw))
     );
 
@@ -262,8 +283,13 @@ function speakWithProfile(text, profileIndex = 0) {
       selectedVoice = femaleVoices[Math.abs(profileIndex) % femaleVoices.length];
     } else if (profile.gender === 'male' && maleVoices.length > 0) {
       selectedVoice = maleVoices[Math.abs(profileIndex) % maleVoices.length];
-    } else if (matchingVoices.length > 0) {
-      selectedVoice = matchingVoices[Math.abs(profileIndex) % matchingVoices.length];
+    } else if (profile.gender === 'child') {
+      // Kindlich: Bevorzuge helle/weibliche Stimme mit erhöhtem Pitch
+      selectedVoice = femaleVoices.length > 0 
+        ? femaleVoices[Math.abs(profileIndex) % femaleVoices.length]
+        : (pool[Math.abs(profileIndex) % pool.length] || null);
+    } else if (pool.length > 0) {
+      selectedVoice = pool[Math.abs(profileIndex) % pool.length];
     }
 
     if (selectedVoice) {

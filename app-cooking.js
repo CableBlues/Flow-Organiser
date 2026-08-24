@@ -33,72 +33,215 @@ function buildDynamicRecipeFromPantry(pantry) {
   const items = pantry.map(i => i.trim().toLowerCase()).filter(Boolean);
   if (items.length === 0) return null;
 
-  const carbs = items.filter(i => /(pasta|nudel|reis|kartoffel|brot|wrap|toast|fladen|grieß|hafer|baguette)/i.test(i));
-  const proteins = items.filter(i => /(hähnchen|huhn|fleisch|rind|schwein|fisch|lachs|tuna|thunfisch|ei|tofu|bohnen|linsen|kichererbsen|quark)/i.test(i));
-  const veggies = items.filter(i => /(tomate|gurke|paprika|zucchini|aubergine|spinat|pilz|champignon|zwiebel|knoblauch|karotte|möhre|brokkoli)/i.test(i));
-  const dairy = items.filter(i => /(käse|feta|parmesan|mozzarella|butter|sahne|joghurt|frischkäse|schmand)/i.test(i));
+  const carbs = items.filter(i => /(pasta|nudel|reis|kartoffel|brot|wrap|toast|fladen|grieß|hafer|baguette|rice|potato|bread|oats)/i.test(i));
+  const proteins = items.filter(i => /(hähnchen|huhn|fleisch|rind|schwein|fisch|lachs|tuna|thunfisch|ei|tofu|bohnen|linsen|kichererbsen|quark|chicken|meat|beef|pork|fish|salmon|egg|beans|lentils)/i.test(i));
+  const veggies = items.filter(i => /(tomate|gurke|paprika|zucchini|aubergine|spinat|pilz|champignon|zwiebel|knoblauch|karotte|möhre|brokkoli|tomato|cucumber|pepper|spinach|mushroom|onion|garlic|carrot|broccoli)/i.test(i));
+  const dairy = items.filter(i => /(käse|feta|parmesan|mozzarella|butter|sahne|joghurt|frischkäse|schmand|cheese|cream|yogurt)/i.test(i));
 
-  let title = "Kreative Restepfanne";
-  let steps = [];
-  let duration = "15 Min";
+  let duration = tr({ en: "15 min", de: "15 Min", fr: "15 min", it: "15 min", es: "15 min", el: "15 λεπ" });
 
   const primaryCarb = carbs[0] || null;
   const primaryProtein = proteins[0] || null;
   const primaryVeggie = veggies[0] || null;
   const primaryDairy = dairy[0] || null;
 
+  let title = tr({
+    en: "Creative Skillet Dish",
+    de: "Kreative Restepfanne",
+    fr: "Poêlée créative maison",
+    it: "Padellata creativa",
+    es: "Salteado creativo casero",
+    el: "Δημιουργικό τηγανητό πιάτο"
+  });
+
   if (primaryCarb && primaryProtein && primaryVeggie) {
-    title = `Herzhafte ${capitalize(primaryCarb)}-Pfanne mit ${capitalize(primaryProtein)} und ${capitalize(primaryVeggie)}`;
+    title = tr({
+      en: `Savory ${capitalize(primaryCarb)} Skillet with ${capitalize(primaryProtein)} & ${capitalize(primaryVeggie)}`,
+      de: `Herzhafte ${capitalize(primaryCarb)}-Pfanne mit ${capitalize(primaryProtein)} und ${capitalize(primaryVeggie)}`,
+      fr: `Poêlée de ${capitalize(primaryCarb)} avec ${capitalize(primaryProtein)} et ${capitalize(primaryVeggie)}`,
+      it: `Padellata di ${capitalize(primaryCarb)} con ${capitalize(primaryProtein)} e ${capitalize(primaryVeggie)}`,
+      es: `Salteado de ${capitalize(primaryCarb)} con ${capitalize(primaryProtein)} y ${capitalize(primaryVeggie)}`,
+      el: `Πιάτο ${capitalize(primaryCarb)} με ${capitalize(primaryProtein)} και ${capitalize(primaryVeggie)}`
+    });
   } else if (primaryCarb && primaryDairy) {
-    title = `Cremiges ${capitalize(primaryCarb)}-Gericht mit geschmolzenem ${capitalize(primaryDairy)}`;
+    title = tr({
+      en: `Creamy ${capitalize(primaryCarb)} Bowl with Melted ${capitalize(primaryDairy)}`,
+      de: `Cremiges ${capitalize(primaryCarb)}-Gericht mit geschmolzenem ${capitalize(primaryDairy)}`,
+      fr: `Plat crémeux de ${capitalize(primaryCarb)} au ${capitalize(primaryDairy)} fondu`,
+      it: `Piatto cremoso di ${capitalize(primaryCarb)} con ${capitalize(primaryDairy)} fuso`,
+      es: `Plato cremoso de ${capitalize(primaryCarb)} con ${capitalize(primaryDairy)} fundido`,
+      el: `Κρεμώδες πιάτο ${capitalize(primaryCarb)} με λιωμένο ${capitalize(primaryDairy)}`
+    });
   } else if (primaryProtein && primaryVeggie) {
-    title = `Pfannengerührtes ${capitalize(primaryProtein)} mit frischem ${capitalize(primaryVeggie)}`;
+    title = tr({
+      en: `Stir-fried ${capitalize(primaryProtein)} with Fresh ${capitalize(primaryVeggie)}`,
+      de: `Pfannengerührtes ${capitalize(primaryProtein)} mit frischem ${capitalize(primaryVeggie)}`,
+      fr: `Sauté de ${capitalize(primaryProtein)} aux ${capitalize(primaryVeggie)} frais`,
+      it: `Saltato di ${capitalize(primaryProtein)} con ${capitalize(primaryVeggie)} freschi`,
+      es: `Salteado de ${capitalize(primaryProtein)} con ${capitalize(primaryVeggie)} frescos`,
+      el: `Σοταρισμένο ${capitalize(primaryProtein)} με φρέσκα ${capitalize(primaryVeggie)}`
+    });
   } else if (primaryCarb && primaryVeggie) {
-    title = `${capitalize(primaryCarb)} mit gedünstetem ${capitalize(primaryVeggie)}`;
+    title = tr({
+      en: `${capitalize(primaryCarb)} with Steamed ${capitalize(primaryVeggie)}`,
+      de: `${capitalize(primaryCarb)} mit gedünstetem ${capitalize(primaryVeggie)}`,
+      fr: `${capitalize(primaryCarb)} aux ${capitalize(primaryVeggie)} vapeur`,
+      it: `${capitalize(primaryCarb)} con ${capitalize(primaryVeggie)} stufati`,
+      es: `${capitalize(primaryCarb)} con ${capitalize(primaryVeggie)} al vapor`,
+      el: `${capitalize(primaryCarb)} με λαχανικά ${capitalize(primaryVeggie)}`
+    });
   } else if (primaryProtein && primaryDairy) {
-    title = `Herzhaftes ${capitalize(primaryProtein)} überbacken mit ${capitalize(primaryDairy)}`;
+    title = tr({
+      en: `Savory ${capitalize(primaryProtein)} Gratin with ${capitalize(primaryDairy)}`,
+      de: `Herzhaftes ${capitalize(primaryProtein)} überbacken mit ${capitalize(primaryDairy)}`,
+      fr: `Gratin de ${capitalize(primaryProtein)} au ${capitalize(primaryDairy)}`,
+      it: `Gratinato di ${capitalize(primaryProtein)} con ${capitalize(primaryDairy)}`,
+      es: `Gratinado de ${capitalize(primaryProtein)} con ${capitalize(primaryDairy)}`,
+      el: `Ογκρατέν ${capitalize(primaryProtein)} με ${capitalize(primaryDairy)}`
+    });
   } else if (primaryProtein) {
-    title = `Schnelles Protein-Gericht (${capitalize(primaryProtein)})`;
+    title = tr({
+      en: `Quick Protein Plate (${capitalize(primaryProtein)})`,
+      de: `Schnelles Protein-Gericht (${capitalize(primaryProtein)})`,
+      fr: `Assiette rapide de protéines (${capitalize(primaryProtein)})`,
+      it: `Piatto veloce di proteine (${capitalize(primaryProtein)})`,
+      es: `Plato rápido de proteínas (${capitalize(primaryProtein)})`,
+      el: `Γρήγορο πιάτο πρωτεΐνης (${capitalize(primaryProtein)})`
+    });
   } else if (primaryCarb) {
-    title = `Sättigende ${capitalize(primaryCarb)}-Kreation`;
+    title = tr({
+      en: `Satisfying ${capitalize(primaryCarb)} Creation`,
+      de: `Sättigende ${capitalize(primaryCarb)}-Kreation`,
+      fr: `Plat réconfortant de ${capitalize(primaryCarb)}`,
+      it: `Creazione nutriente di ${capitalize(primaryCarb)}`,
+      es: `Creación nutritiva de ${capitalize(primaryCarb)}`,
+      el: `Χορταστικό πιάτο ${capitalize(primaryCarb)}`
+    });
   } else if (primaryVeggie) {
-    title = `Bunte ${capitalize(primaryVeggie)}-Pfanne`;
+    title = tr({
+      en: `Fresh Colorful ${capitalize(primaryVeggie)} Medley`,
+      de: `Bunte ${capitalize(primaryVeggie)}-Pfanne`,
+      fr: `Poêlée colorée de ${capitalize(primaryVeggie)}`,
+      it: `Padellata colorata di ${capitalize(primaryVeggie)}`,
+      es: `Salteado colorido de ${capitalize(primaryVeggie)}`,
+      el: `Πολύχρωμο πιάτο λαχανικών ${capitalize(primaryVeggie)}`
+    });
   } else {
-    title = `Zutaten-Kombination: ${items.map(capitalize).join(' & ')}`;
+    title = tr({
+      en: `Ingredient Medley: ${items.map(capitalize).join(' & ')}`,
+      de: `Zutaten-Kombination: ${items.map(capitalize).join(' & ')}`,
+      fr: `Méli-mélo d'ingrédients : ${items.map(capitalize).join(' & ')}`,
+      it: `Combinazione di ingredienti: ${items.map(capitalize).join(' & ')}`,
+      es: `Combinación de ingredientes: ${items.map(capitalize).join(' & ')}`,
+      el: `Συνδυασμός υλικών: ${items.map(capitalize).join(' & ')}`
+    });
   }
 
-  steps.push("Vorbereitung: Reinige deine Arbeitsfläche und wasche frische Zutaten gründlich ab.");
+  let steps = [];
+  steps.push(tr({
+    en: "Preparation: Clean your prep area and rinse all fresh ingredients thoroughly.",
+    de: "Vorbereitung: Reinige deine Arbeitsfläche und wasche frische Zutaten gründlich ab.",
+    fr: "Préparation : Nettoie ton plan de travail et rince soigneusement les ingrédients frais.",
+    it: "Preparazione: Pulisci la superficie di lavoro e lava accuratamente gli ingredienti freschi.",
+    es: "Preparación: Limpia tu espacio de trabajo y lava bien todos los ingredientes frescos.",
+    el: "Προετοιμασία: Καθάρισε τον πάγκο εργασίας και πλύνε καλά όλα τα φρέσκα υλικά."
+  }));
 
-  let prepIngredients = [...veggies, ...proteins].filter(i => !/(ei|linsen|bohnen)/i.test(i));
+  let prepIngredients = [...veggies, ...proteins].filter(i => !/(ei|linsen|bohnen|egg|lentil|bean)/i.test(i));
   if (prepIngredients.length > 0) {
-    steps.push(`Schneide ${prepIngredients.map(i => `${capitalize(i)}`).join(', ')} in gleichmäßige, mundgerechte Stücke.`);
+    steps.push(tr({
+      en: `Chop ${prepIngredients.map(capitalize).join(', ')} into even bite-sized pieces.`,
+      de: `Schneide ${prepIngredients.map(capitalize).join(', ')} in gleichmäßige, mundgerechte Stücke.`,
+      fr: `Coupe ${prepIngredients.map(capitalize).join(', ')} en morceaux réguliers.`,
+      it: `Taglia ${prepIngredients.map(capitalize).join(', ')} in bocconcini regolari.`,
+      es: `Corta ${prepIngredients.map(capitalize).join(', ')} en trozos regulares.`,
+      el: `Κόψε ${prepIngredients.map(capitalize).join(', ')} σε ομοιόμορφα κομμάτια.`
+    }));
   }
 
   if (primaryCarb) {
-    if (/(pasta|nudel|reis|grieß|linsen)/i.test(primaryCarb)) {
-      steps.push(`Bringe gesalzenes Wasser zum Kochen und bereite ${capitalize(primaryCarb)} bissfest nach Packungsanleitung zu.`);
-    } else if (/(kartoffel)/i.test(primaryCarb)) {
-      steps.push(`Vorkoche die ${capitalize(primaryCarb)} kurz oder brate sie direkt in feinen Spalten mit etwas Öl goldgelb an.`);
-    } else if (/(brot|wrap|toast|fladen|baguette)/i.test(primaryCarb)) {
-      steps.push(`Erwärme ${capitalize(primaryCarb)} kurz in einer trockenen Pfanne oder im Toaster für das beste Aroma.`);
+    if (/(pasta|nudel|reis|grieß|linsen|rice|lentil)/i.test(primaryCarb)) {
+      steps.push(tr({
+        en: `Bring salted water to a boil and cook ${capitalize(primaryCarb)} al dente according to instructions.`,
+        de: `Bringe gesalzenes Wasser zum Kochen und bereite ${capitalize(primaryCarb)} bissfest nach Packungsanleitung zu.`,
+        fr: `Porte de l'eau salée à ébullition et cuis ${capitalize(primaryCarb)} al dente selon les indications.`,
+        it: `Porta a ebollizione l'acqua salata e cuoci ${capitalize(primaryCarb)} al dente.`,
+        es: `Lleva agua con sal a ebullición y cocina ${capitalize(primaryCarb)} al dente.`,
+        el: `Βράσε αλατισμένο νερό και μαγείρεψε ${capitalize(primaryCarb)} al dente.`
+      }));
+    } else if (/(kartoffel|potato)/i.test(primaryCarb)) {
+      steps.push(tr({
+        en: `Precook ${capitalize(primaryCarb)} or sauté sliced in oil until golden brown.`,
+        de: `Vorkoche die ${capitalize(primaryCarb)} kurz oder brate sie direkt in feinen Spalten mit etwas Öl goldgelb an.`,
+        fr: `Précuis les ${capitalize(primaryCarb)} ou fais-les dorer en tranches avec un filet d'huile.`,
+        it: `Precuoci le ${capitalize(primaryCarb)} o falle dorare a spicchi con un filo d'olio.`,
+        es: `Precocina las ${capitalize(primaryCarb)} o dóralas en gajos con un poco de aceite.`,
+        el: `Προβράσε τις ${capitalize(primaryCarb)} ή σόταρε τες σε φέτες με λίγο λάδι μέχρι να ροδίσουν.`
+      }));
+    } else if (/(brot|wrap|toast|fladen|baguette|bread)/i.test(primaryCarb)) {
+      steps.push(tr({
+        en: `Warm ${capitalize(primaryCarb)} briefly in a dry pan or toaster for the best aroma.`,
+        de: `Erwärme ${capitalize(primaryCarb)} kurz in einer trockenen Pfanne oder im Toaster für das beste Aroma.`,
+        fr: `Réchauffe ${capitalize(primaryCarb)} dans une poêle sèche ou au grille-pain pour exhaler les arômes.`,
+        it: `Scalda ${capitalize(primaryCarb)} in una padella asciutta o nel tostapane per esaltarne il profumo.`,
+        es: `Calienta ${capitalize(primaryCarb)} en una sartén seca o tostadora para un gran aroma.`,
+        el: `Ζέστανε ${capitalize(primaryCarb)} σε ένα στεγνό τηγάνι ή τοστιέρα για τέλειο άρωμα.`
+      }));
     }
   }
 
-  let panItems = [...proteins, ...veggies].filter(i => !/(pasta|nudel|reis|brot|wrap|toast|fladen|baguette)/i.test(i));
+  let panItems = [...proteins, ...veggies].filter(i => !/(pasta|nudel|reis|brot|wrap|toast|fladen|baguette|rice|bread)/i.test(i));
   if (panItems.length > 0) {
-    let verb = proteins.length > 0 ? "Brate zuerst die Proteinquelle scharf an und füge kurz darauf das Gemüse hinzu" : "Dünste das Gemüse mit etwas gutem Öl in einer heißen Pfanne an";
+    let verb = proteins.length > 0 
+      ? tr({
+          en: "Sear the protein first, then add the vegetables",
+          de: "Brate zuerst die Proteinquelle scharf an und füge kurz darauf das Gemüse hinzu",
+          fr: "Saisis d'abord la source de protéines, puis ajoute les légumes",
+          it: "Scotta prima la proteina, poi aggiungi le verdure",
+          es: "Dora primero la proteína y luego añade las verduras",
+          el: "Σοτάρισε πρώτα την πρωτεΐνη και μετά πρόσθεσε τα λαχανικά"
+        })
+      : tr({
+          en: "Sauté the vegetables with some quality oil in a hot pan",
+          de: "Dünste das Gemüse mit etwas gutem Öl in einer heißen Pfanne an",
+          fr: "Fais revenir les légumes avec un filet d'huile dans une poêle chaude",
+          it: "Salta le verdure con un filo d'olio in una padella calda",
+          es: "Saltea las verduras con un poco de buen aceite en una sartén caliente",
+          el: "Σοτάρισε τα λαχανικά με λίγο ελαιόλαδο σε ζεστό τηγάνι"
+        });
     steps.push(`${verb} (${panItems.map(capitalize).join(', ')}).`);
   }
 
   if (primaryCarb && panItems.length > 0) {
-    steps.push(`Vermenge das Gekochte (${capitalize(primaryCarb)}) direkt in der warmen Pfanne mit den übrigen Zutaten.`);
+    steps.push(tr({
+      en: `Combine the cooked ${capitalize(primaryCarb)} directly in the warm pan with all ingredients.`,
+      de: `Vermenge das Gekochte (${capitalize(primaryCarb)}) direkt in der warmen Pfanne mit den übrigen Zutaten.`,
+      fr: `Mélange les ${capitalize(primaryCarb)} directement dans la poêle chaude avec le reste.`,
+      it: `Unisci ${capitalize(primaryCarb)} direttamente nella padella calda con gli altri ingredienti.`,
+      es: `Mezcla ${capitalize(primaryCarb)} directamente en la sartén caliente con el resto de ingredientes.`,
+      el: `Ανάμειξε ${capitalize(primaryCarb)} απευθείας στο ζεστό τηγάνι με τα υπόλοιπα υλικά.`
+    }));
   }
 
   if (primaryDairy) {
-    steps.push(`Füge ${capitalize(primaryDairy)} hinzu. Lasse ihn kurz mitschmelzen oder ziehe ihn sanft unter die heiße Masse.`);
+    steps.push(tr({
+      en: `Add ${capitalize(primaryDairy)} and let it melt gently into the dish.`,
+      de: `Füge ${capitalize(primaryDairy)} hinzu. Lasse ihn kurz mitschmelzen oder ziehe ihn sanft unter die heiße Masse.`,
+      fr: `Ajoute ${capitalize(primaryDairy)} et laisse-le fondre doucement.`,
+      it: `Aggiungi ${capitalize(primaryDairy)} e lascialo fondere dolcemente.`,
+      es: `Añade ${capitalize(primaryDairy)} y deja que se funda suavemente.`,
+      el: `Πρόσθεσε ${capitalize(primaryDairy)} και άφησέ το να λιώσει απαλά.`
+    }));
   }
 
-  steps.push("Abschluss: Schmecke dein Gericht mit Salz, Pfeffer und Kräutern ab. Frisch servieren!");
+  steps.push(tr({
+    en: "Finish: Season with salt, pepper, and fresh herbs. Serve warm and enjoy!",
+    de: "Abschluss: Schmecke dein Gericht mit Salz, Pfeffer und Kräutern ab. Frisch servieren!",
+    fr: "Finition : Assaisonne avec sel, poivre et herbes. Sers chaud et régale-toi !",
+    it: "Completamento: Condisci con sale, pepe ed erbe aromatiche. Servi caldo e buon appetito!",
+    es: "Final: Sazona con sal, pimienta y hierbas. ¡Sirve caliente y disfruta!",
+    el: "Ολοκλήρωση: Καρύκευσε με αλάτι, πιπέρι και βότανα. Σέρβιρε ζεστό και καλή απόλαυση!"
+  }));
 
   return {
     id: 'dynamic-generated',
@@ -306,6 +449,11 @@ function renderCookingPanel(skipLucide = false) {
                 </label>
               `).join('')}
             </div>
+            
+            <button onclick="addRecipeMissingIngredientsToShopping()" class="w-full mt-2.5 py-1.5 px-3 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 rounded-xl text-[11px] font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+              <i data-lucide="shopping-basket" class="w-3.5 h-3.5"></i>
+              <span data-i18n="cook_add_to_shop">Zutaten auf Einkaufsliste setzen 🛒</span>
+            </button>
           </div>
         ` : `
           <div class="text-xs text-gray-400 italic text-center py-4">Gib deine Zutaten ein, um eine passende Anleitung zu erhalten.</div>
@@ -324,8 +472,7 @@ function renderCookingPanel(skipLucide = false) {
       }
     };
   }
-
-  if (!skipLucide && typeof lucide !== 'undefined') lucide.createIcons();
+  if (!skipLucide) renderLucideIcons();
 }
 
 function resetCookingPantry() {
@@ -337,4 +484,20 @@ function resetCookingPantry() {
   renderCookingPanel(true);
   if (typeof playProceduralSound === 'function') playProceduralSound(11);
 }
+
+function addRecipeMissingIngredientsToShopping() {
+  const cooking = getCookingState();
+  const activeRecipe = cooking.activeRecipe;
+  if (!activeRecipe || !Array.isArray(activeRecipe.ingredients)) return;
+  const pantry = (cooking.pantryItems || []).map(p => p.toLowerCase());
+  const missing = activeRecipe.ingredients.filter(ing => {
+    const norm = ing.toLowerCase();
+    return !pantry.some(p => p.includes(norm) || norm.includes(p));
+  });
+  const itemsToAdd = missing.length > 0 ? missing : activeRecipe.ingredients;
+  if (typeof addIngredientsToShoppingList === 'function') {
+    addIngredientsToShoppingList(itemsToAdd, activeRecipe.title);
+  }
+}
+
 

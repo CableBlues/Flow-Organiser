@@ -1,4 +1,4 @@
-// helper-tools.js Teil 2/3: Loeffel-Check, ADHD-Prioritizer, Projekt-Zerteiler
+// helper-tools.js Teil 2/3: Loeffel-Check, Smart-Prioritizer, Projekt-Zerteiler
 
 function renderSpoonOptions() {
   const container = document.getElementById('spoon-options-list');

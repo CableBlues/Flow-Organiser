@@ -12,53 +12,25 @@ document.write(`  <div id="app" class="min-h-screen max-w-[1920px] w-full mx-aut
       </div>
 
       
-      <!-- BEHÄLTER 1: Feedback & Logo -->
-      <div class="flex items-center gap-1.5 md:gap-2 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
-        <!-- Feedback Icon Button -->
-        <div class="relative group zen-hide" onmouseenter="showPanelHover('feedback')" onmouseleave="hidePanelHover('feedback')">
-          <button onclick="togglePanel('feedback')" class="h-7 w-7 flex items-center justify-center border border-pink-500/30 rounded-xl bg-pink-500/10 hover:bg-pink-500/20 text-pink-300 cursor-pointer transition shadow-sm" title="Feedback & Verbesserungsvorschläge an den Entwickler senden">
-            <i data-lucide="message-square-heart" class="w-3.5 h-3.5 text-pink-400"></i>
-          </button>
-          
-          <div id="panel-feedback" class="hidden absolute left-0 top-[calc(100%+8px)] z-[110] w-[280px] sm:w-[320px] bg-[#111116] border border-purple-500/40 p-4 rounded-2xl shadow-2xl">
-            <h4 class="font-bold text-sm font-display mb-1 text-white" data-i18n="feedback_greet">Hey, ich bin Jannis! 👋</h4>
-            <p class="text-[11px] text-gray-400 mb-3 leading-relaxed" data-i18n="feedback_prompt">
-              Hast du Feedback, Kritik oder neue Ideen für Flow? Schreib mir gerne eine kurze Nachricht – ich freue mich über jeden Impuls!
-            </p>
-            <textarea id="feedback-text" rows="3" class="w-full p-2.5 bg-black/40 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-[var(--accent)] mb-3 leading-relaxed placeholder:text-gray-600" data-i18n-placeholder="feedback_placeholder" placeholder="Deine Gedanken..."></textarea>
-            
-            <button onclick="submitFeedback()" class="w-full py-2 bg-purple-600 text-white text-xs font-bold rounded-xl hover:opacity-90 transition whitespace-nowrap cursor-pointer" data-i18n="send">Senden</button>
-            <div class="text-[11px] text-gray-400/80 text-center mt-2.5 font-medium leading-relaxed" data-i18n="feedback_alt">oder sende mir eine E-Mail an <span class="text-gray-200 font-semibold underline">jmonke@gmail.com</span></div>
-          </div>
-        </div>
-
+      <!-- BEHÄLTER 1: Flow Logo & Feedback -->
+      <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
+        
         <!-- Logo & Hover Popup -->
-        <div class="relative inline-block" onmouseenter="showPanelHover('logo-guide')" onmouseleave="hidePanelHover('logo-guide')">
-          <div onclick="triggerLogoReloadFlow(this)" class="logo-dance logo-idle-float relative inline-flex items-center gap-2.5 px-3.5 py-1.5 border border-cyan-500/35 rounded-xl bg-gradient-to-r from-[#0a1922] via-[#051118] to-[#0a0a16] bg-[length:200%_auto] text-sm font-bold font-display text-white transition-all duration-500 hover:scale-105 hover:shadow-[0_0_25px_rgba(6,182,212,0.55)] hover:border-cyan-400 group cursor-pointer overflow-hidden animate-logo-gradient-flow" title="Flow-Anwendung neu laden (mit Wellen-Effekt)">
-            <!-- Bubble Particles on Hover -->
-            <div class="logo-bubble logo-bubble-1"></div>
-            <div class="logo-bubble logo-bubble-2"></div>
-            <div class="logo-bubble logo-bubble-3"></div>
-
-            <!-- Individualisierte Fluid Wave SVG mit animierten Energie-Partikeln -->
-            <svg class="w-6 h-6 shrink-0 transition-transform duration-700 group-hover:scale-110" viewBox="0 0 120 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <div class="relative inline-block">
+          <div onclick="triggerLogoReloadFlow(this)" class="logo-dance logo-idle-float relative inline-flex items-center gap-2 px-2.5 py-1 border border-cyan-500/30 rounded-xl bg-gradient-to-r from-[#0a1820] via-[#06121a] to-[#0a0d18] text-xs md:text-sm font-bold font-display text-white transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_16px_rgba(6,182,212,0.4)] hover:border-cyan-400/60 group cursor-pointer overflow-hidden" title="Flow-Anwendung neu laden (mit Wellen-Effekt)">
+            <!-- Fluid Wave SVG Icon -->
+            <svg class="w-4 h-4 shrink-0 transition-transform duration-500 group-hover:scale-110" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
               <defs>
-                <linearGradient id="flow-grad-1" x1="0%" y1="0%" x2="100%" y2="0%">
+                <linearGradient id="flow-mini-grad" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stop-color="#06b6d4" />
                   <stop offset="50%" stop-color="#14b8a6" />
                   <stop offset="100%" stop-color="#10b981" />
                 </linearGradient>
-                <linearGradient id="flow-grad-2" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="#0891b2" stop-opacity="0.25" />
-                  <stop offset="50%" stop-color="#0d9488" stop-opacity="0.7" />
-                  <stop offset="100%" stop-color="#059669" stop-opacity="0.25" />
-                </linearGradient>
               </defs>
-              <path class="animate-wave-flow-reverse" d="M10 50 C 30 15, 60 85, 90 50 C 100 38, 110 38, 115 50" stroke="url(#flow-grad-2)" stroke-width="8" stroke-linecap="round" />
-              <path class="animate-wave-flow-main" d="M10 50 C 30 15, 60 85, 90 50 C 100 38, 110 38, 115 50" stroke="url(#flow-grad-1)" stroke-width="11" stroke-linecap="round" />
-              <path class="animate-wave-flow-particles" d="M10 50 C 30 15, 60 85, 90 50 C 100 38, 110 38, 115 50" stroke="#ccfbf1" stroke-width="4" stroke-linecap="round" stroke-dasharray="6 20" />
+              <path d="M15 50 C 32 20, 68 80, 85 50" stroke="url(#flow-mini-grad)" stroke-width="12" stroke-linecap="round" fill="none" />
+              <circle cx="50" cy="50" r="4" fill="#ccfbf1" class="animate-ping" opacity="0.6" />
             </svg>
-            <span class="tracking-tight leading-none text-gray-100 group-hover:text-cyan-200 select-none text-sm md:text-base transition-colors duration-300">Flow</span>
+            <span class="tracking-tight leading-none text-gray-100 group-hover:text-cyan-200 select-none transition-colors duration-300">Flow</span>
           </div>
 
           <!-- DYNAMISCHES HOVER POPUP (SCHNELLSTART-GUIDE & TASTENKÜRZEL) -->
@@ -227,24 +199,44 @@ document.write(`  <div id="app" class="min-h-screen max-w-[1920px] w-full mx-aut
             </div>
           </div>
         </div>
+
+        <!-- Feedback Icon Button (Dezent, rechts neben Flow-Logo) -->
+        <div class="relative group zen-hide">
+          <button onclick="togglePanel('feedback')" class="h-6 w-6 flex items-center justify-center border border-white/10 hover:border-pink-500/40 rounded-lg bg-white/[0.03] hover:bg-pink-500/15 text-gray-400 hover:text-pink-300 cursor-pointer transition-all shadow-none" title="Feedback & Ideen senden">
+            <i data-lucide="message-square-heart" class="w-3 h-3 text-gray-400 group-hover:text-pink-300 transition-colors"></i>
+          </button>
+          
+          <div id="panel-feedback" class="hidden absolute left-0 top-[calc(100%+8px)] z-[110] w-[280px] sm:w-[320px] bg-[#111116] border border-purple-500/40 p-4 rounded-2xl shadow-2xl">
+            <h4 class="font-bold text-sm font-display mb-1 text-white" data-i18n="feedback_greet">Hey, schön dass du da bist! 👋</h4>
+            <p class="text-[11px] text-gray-400 mb-3 leading-relaxed" data-i18n="feedback_prompt">
+              Hast du Feedback, Kritik oder neue Ideen für Flow? Schreib uns gerne eine kurze Nachricht!
+            </p>
+            <textarea id="feedback-text" rows="3" class="w-full p-2.5 bg-black/40 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-[var(--accent)] mb-3 leading-relaxed placeholder:text-gray-600" data-i18n-placeholder="feedback_placeholder" placeholder="Deine Gedanken..."></textarea>
+            
+            <button onclick="submitFeedback()" class="w-full py-2 bg-purple-600 text-white text-xs font-bold rounded-xl hover:opacity-90 transition whitespace-nowrap cursor-pointer" data-i18n="send">Senden</button>
+            <div class="text-[11px] text-gray-400/80 text-center mt-2.5 font-medium leading-relaxed" data-i18n="feedback_alt">oder sende eine E-Mail an <span class="text-gray-200 font-semibold underline">support@flow-planner.app</span></div>
+          </div>
+        </div>
+
       </div>
 
-      <!-- BEHÄLTER 2: Timer -->
-      <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
-        <div id="timer-trigger-container" class="flex items-center gap-1 h-8 md:h-10 px-1 bg-white/[0.02] border border-white/5 rounded-xl">
-          <div class="flex flex-col items-center justify-center min-w-[36px] md:min-w-[42px]">
-            <span id="timer-display" class="font-display font-black text-[10px] md:text-xs tracking-wider text-[var(--accent-light)] leading-none">02:00</span>
-            <div class="w-full h-0.5 md:h-1 bg-white/10 rounded-full mt-1 overflow-hidden">
+      <!-- BEHÄLTER 2: Timer (Zentral & Elegant) -->
+      <div class="flex items-center gap-1.5 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0">
+        <div id="timer-trigger-container" class="flex items-center gap-2 h-8 px-2 bg-black/30 border border-white/5 rounded-xl">
+          <div class="flex flex-col items-center justify-center min-w-[36px]">
+            <span id="timer-display" class="font-display font-black text-xs tracking-wider text-[var(--accent-light)] leading-none">02:00</span>
+            <div class="w-full h-1 bg-white/10 rounded-full mt-1 overflow-hidden">
               <div id="timer-progress-bar" class="h-full bg-[var(--accent)] transition-all duration-300" style="width: 100%"></div>
             </div>
           </div>
           
           <select id="timer-preset-select" onchange="setTheme(currentTheme)" class="hidden"></select>
-          <select id="timer-preset-select-real" onchange="setTimerPreset(parseInt(this.value))" class="px-1 py-0.5 bg-black/60 border border-white/15 hover:border-[var(--accent)]/50 rounded text-[9px] font-bold text-[var(--accent-light)] outline-none cursor-pointer transition shrink-0" title="Voreingestellte Timer-Minuten auswählen">
+          <select id="timer-preset-select-real" onchange="setTimerPreset(parseInt(this.value))" class="px-1.5 py-0.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-[10px] font-bold text-[var(--accent-light)] outline-none cursor-pointer transition shrink-0" title="Voreingestellte Timer-Minuten auswählen">
+            <option value="1">1m</option>
             <option value="2" selected>2m</option>
             <option value="5">5m</option>
             <option value="10">10m</option>
-              <option value="12">12m</option>
+            <option value="12">12m</option>
             <option value="15">15m</option>
             <option value="20">20m</option>
             <option value="25">25m</option>
@@ -254,43 +246,43 @@ document.write(`  <div id="app" class="min-h-screen max-w-[1920px] w-full mx-aut
           </select>
 
           <!-- Start / Pause / Stop / Mute Buttons -->
-          <div class="flex items-center gap-0.5 shrink-0 pr-1.5 border-r border-white/10">
-            <button id="timer-play-btn" onclick="startTimer()" class="p-0.5 hover:bg-white/10 rounded transition cursor-pointer" title="Fokus-Timer starten">
-              <i data-lucide="play" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <div class="flex items-center gap-1 shrink-0 pl-1 border-l border-white/10">
+            <button id="timer-play-btn" onclick="startTimer()" class="p-1 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition cursor-pointer" title="Fokus-Timer starten">
+              <i data-lucide="play" class="w-3.5 h-3.5"></i>
             </button>
-            <button id="timer-pause-btn" onclick="pauseTimer()" class="p-0.5 hover:bg-white/10 rounded transition cursor-pointer hidden" title="Fokus-Timer pausieren">
-              <i data-lucide="pause" class="w-3.5 h-3.5 text-[var(--accent-light)] animate-pulse"></i>
+            <button id="timer-pause-btn" onclick="pauseTimer()" class="p-1 hover:bg-white/10 text-[var(--accent-light)] rounded-lg transition cursor-pointer hidden" title="Fokus-Timer pausieren">
+              <i data-lucide="pause" class="w-3.5 h-3.5 animate-pulse"></i>
             </button>
-            <button id="timer-stop-btn" onclick="stopTimer()" class="p-0.5 hover:bg-white/10 rounded transition text-rose-400 hover:text-rose-300 cursor-pointer" title="Timer stoppen und Zeit zurücksetzen">
+            <button id="timer-stop-btn" onclick="stopTimer()" class="p-1 hover:bg-rose-500/20 text-rose-400 rounded-lg transition cursor-pointer" title="Timer stoppen und Zeit zurücksetzen">
               <i data-lucide="square" class="w-3.5 h-3.5"></i>
             </button>
-            <button id="timer-mute-btn" onclick="toggleTimerSound()" class="p-0.5 hover:bg-white/10 rounded transition text-gray-400 hover:text-white cursor-pointer" title="Timer-Töne ein- oder ausschalten">
+            <button id="timer-mute-btn" onclick="toggleTimerSound()" class="p-1 hover:bg-white/10 text-gray-400 hover:text-white rounded-lg transition cursor-pointer" title="Timer-Töne ein- oder ausschalten">
               <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
             </button>
           </div>
-          <span id="active-timer-badge" class="hidden text-[9px] text-[var(--accent-light)] font-semibold border-l border-white/15 pl-1.5 truncate max-w-[50px]"></span>
+          <span id="active-timer-badge" class="hidden text-[9px] text-[var(--accent-light)] font-semibold border-l border-white/15 pl-1.5 truncate max-w-[60px]"></span>
         </div>
       </div>
 
       <!-- BEHÄLTER 3: Focus Mode Toggle -->
-      <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
-        <button id="btn-focus-mode" onclick="toggleMinimalist()" class="h-8 px-2 md:h-10 md:px-3.5 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 hover:border-purple-500/60 rounded-xl text-purple-200 flex items-center gap-1.5 text-[10px] md:text-xs font-bold cursor-pointer transition-all duration-300 shadow-[0_0_12px_rgba(139,92,246,0.15)] hover:shadow-[0_0_20px_rgba(139,92,246,0.3)]" title="Minimalistischen Fokus-Modus ein- oder ausschalten">
+      <div class="flex items-center gap-1.5 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0">
+        <button id="btn-focus-mode" onclick="toggleMinimalist()" class="h-8 px-3 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 hover:border-purple-500/60 rounded-xl text-purple-200 flex items-center gap-1.5 text-xs font-bold cursor-pointer transition-all duration-300 shadow-sm" title="Minimalistischen Fokus-Modus ein- oder ausschalten">
           <i id="zen-btn-icon" data-lucide="eye" class="w-3.5 h-3.5 text-purple-400 animate-pulse"></i>
           <span class="hidden 2xl:inline" id="minimal-mode-btn-text" data-i18n="minimal_mode">Focus Mode</span>
         </button>
       </div>
 
       <!-- BEHÄLTER 4: Datum -->
-      <div id="date-container" class="hidden 2xl:flex items-center justify-center p-0.5 border rounded-xl shadow-sm shrink-0 mx-1 transition-all duration-300 relative group cursor-pointer" onmouseenter="showPanelHover('calendar-dropdown')" onmouseleave="hidePanelHover('calendar-dropdown')">
-        <div class="flex items-center gap-1.5 px-2 py-1 h-8">
-          <button onclick="togglePanel('calendar-dropdown')" id="date-calendar-btn" class="group/date h-7 w-7 flex items-center justify-center rounded-xl hover:bg-white/10 transition-all duration-300" title="Monatskalender und Termine anzeigen">
-            <i id="date-icon" data-lucide="calendar-days" class="w-4 h-4 shrink-0 transition-all duration-300"></i>
+      <div id="date-container" class="hidden 2xl:flex items-center justify-center p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0 transition-all duration-300 relative group cursor-pointer">
+        <div class="flex items-center gap-1.5 px-2.5 h-8">
+          <button onclick="togglePanel('calendar-dropdown')" id="date-calendar-btn" class="h-6 w-6 flex items-center justify-center rounded-lg hover:bg-white/10 transition-all duration-300" title="Monatskalender und Termine anzeigen">
+            <i id="date-icon" data-lucide="calendar-days" class="w-3.5 h-3.5 shrink-0"></i>
           </button>
-          <span id="date-display" class="whitespace-nowrap"></span>
+          <span id="date-display" class="whitespace-nowrap text-xs font-semibold text-gray-200"></span>
         </div>
 
         <!-- MINIMAL MONTH CALENDAR PANEL -->
-        <div id="panel-calendar-dropdown" class="hidden absolute top-[calc(100%+8px)] left-0 z-[110] w-[220px] bg-[#111116] border border-white/10 p-3 rounded-2xl shadow-2xl flex flex-col gap-2 animate-fade-in">
+        <div id="panel-calendar-dropdown" class="hidden absolute top-[calc(100%+8px)] left-0 z-[110] w-[230px] bg-[#111116] border border-white/10 p-3.5 rounded-2xl shadow-2xl flex flex-col gap-2 animate-fade-in">
           <div class="flex items-center justify-between text-xs font-bold text-gray-200 border-b border-white/5 pb-1.5">
             <span id="cal-month-title" class="font-display">August 2026</span>
           </div>
@@ -302,9 +294,9 @@ document.write(`  <div id="app" class="min-h-screen max-w-[1920px] w-full mx-aut
       </div>
 
       <!-- BEHÄLTER 5: Was nun? -->
-      <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
-        <button id="btn-whatnow-dance" onclick="openHelperModal('pick')" class="h-8 px-2 md:h-10 md:px-4 rounded-xl text-white flex items-center gap-2 text-xs md:text-sm font-bold cursor-pointer transition-all duration-300 shrink-0 premium-glow-btn" title="Zufällige Aufgabe basierend auf deiner Tagespriorität vorschlagen lassen">
-          <i data-lucide="lightbulb" class="w-4 h-4 text-[var(--accent-light)]"></i>
+      <div class="desktop-only-header flex items-center gap-1.5 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0">
+        <button id="btn-whatnow-dance" onclick="openHelperModal('pick')" class="h-8 px-3 rounded-xl text-white flex items-center gap-1.5 text-xs font-bold cursor-pointer transition-all duration-300 shrink-0 premium-glow-btn" title="Zufällige Aufgabe basierend auf deiner Tagespriorität vorschlagen lassen">
+          <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>
           <span class="hidden 2xl:inline" id="btn-label-whatnow" data-i18n="whatnow">Was nun?</span>
         </button>
       </div>

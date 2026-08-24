@@ -4,6 +4,6 @@ const TRANSLATIONS = Object.assign({},
 );
 
 
-// Warmherzige Pausen-Empfehlungen für ADHD (Ablenkung & Bewegung)
+// Warmherzige Pausen-Empfehlungen (Entlastung & Bewegung)
  
  

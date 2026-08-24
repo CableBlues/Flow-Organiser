@@ -302,12 +302,12 @@ function onScenarioSelectChange() {
     fieldsContainer.innerHTML = `
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="text-[9px] text-gray-500 font-bold block mb-1">Fachrichtung / Grund</label>
-          <input type="text" id="field-doc-specialty" placeholder="Zahnarzt, Hausarzt..." value="Hausarzt" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+          <label class="text-[9px] text-gray-400 font-bold block mb-1">${tr({ en: 'Specialty / Reason', de: 'Fachrichtung / Grund', fr: 'Spécialité / Motif', it: 'Specialità / Motivo', es: 'Especialidad / Motivo', el: 'Ειδικότητα / Αιτία' })}</label>
+          <input type="text" id="field-doc-specialty" placeholder="${tr({ en: 'GP, Dentist...', de: 'Hausarzt, Zahnarzt...', fr: 'Généraliste, Dentiste...', it: 'Medico di base, Dentista...', es: 'Médico de cabecera, Dentista...', el: 'Παθολόγος, Οδοντίατρος...' })}" value="${tr({ en: 'GP', de: 'Hausarzt', fr: 'Médecin généraliste', it: 'Medico di base', es: 'Médico de cabecera', el: 'Παθολόγος' })}" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
         </div>
         <div>
-          <label class="text-[9px] text-gray-500 font-bold block mb-1">Bevorzugter Zeitraum</label>
-          <input type="text" id="field-doc-time" placeholder="Morgens, Nächste Woche..." value="Nächste Woche Montag" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+          <label class="text-[9px] text-gray-400 font-bold block mb-1">${tr({ en: 'Preferred timeframe', de: 'Bevorzugter Zeitraum', fr: 'Période souhaitée', it: 'Periodo preferito', es: 'Periodo preferido', el: 'Επιθυμητό διάστημα' })}</label>
+          <input type="text" id="field-doc-time" placeholder="${tr({ en: 'Next week, Morning...', de: 'Nächste Woche, Vormittags...', fr: 'La semaine prochaine, Matin...', it: 'La prossima settimana, Mattina...', es: 'La próxima semana, Mañana...', el: 'Την επόμενη εβδομάδα, Πρωί...' })}" value="${tr({ en: 'Next Monday morning', de: 'Nächste Woche Montag', fr: 'Lundi prochain', it: 'Lunedì prossimo', es: 'El próximo lunes', el: 'Την επόμενη Δευτέρα' })}" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
         </div>
       </div>
     `;
@@ -315,12 +315,12 @@ function onScenarioSelectChange() {
     fieldsContainer.innerHTML = `
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="text-[9px] text-gray-500 font-bold block mb-1">Welcher Termin? (Name/Ort)</label>
-          <input type="text" id="field-cancel-name" placeholder="Zahnarzttermin" value="Termin am Montag" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+          <label class="text-[9px] text-gray-400 font-bold block mb-1">${tr({ en: 'Which appointment?', de: 'Welcher Termin?', fr: 'Quel rendez-vous ?', it: 'Quale appuntamento?', es: '¿Qué cita?', el: 'Ποιο ραντεβού;' })}</label>
+          <input type="text" id="field-cancel-name" placeholder="${tr({ en: 'Dentist appointment', de: 'Zahnarzttermin', fr: 'Rendez-vous dentiste', it: 'Visita dentistica', es: 'Cita con el dentista', el: 'Ραντεβού οδοντιάτρου' })}" value="${tr({ en: 'Appointment on Monday', de: 'Termin am Montag', fr: 'Rendez-vous de lundi', it: 'Appuntamento di lunedì', es: 'Cita del lunes', el: 'Ραντεβού της Δευτέρας' })}" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
         </div>
         <div>
-          <label class="text-[9px] text-gray-500 font-bold block mb-1">Grund (z.B. Krank, Verschiebung)</label>
-          <input type="text" id="field-cancel-reason" placeholder="Krankheit, Terminüberschneidung..." value="akuter Krankheit" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+          <label class="text-[9px] text-gray-400 font-bold block mb-1">${tr({ en: 'Reason (e.g. Sickness)', de: 'Grund (z.B. Krank)', fr: 'Motif (ex. Maladie)', it: 'Motivo (es. Malattia)', es: 'Motivo (ej. Enfermedad)', el: 'Αιτία (π.χ. Ασθένεια)' })}</label>
+          <input type="text" id="field-cancel-reason" placeholder="${tr({ en: 'Illness, schedule conflict...', de: 'Krankheit, Überschneidung...', fr: 'Maladie, empêchement...', it: 'Malattia, contrattempo...', es: 'Enfermedad, imprevisto...', el: 'Ασθένεια, σύγκρουση προγράμματος...' })}" value="${tr({ en: 'sudden illness', de: 'akuter Krankheit', fr: 'maladie soudaine', it: 'malattia improvvisa', es: 'enfermedad repentina', el: 'ξαφνικής ασθένειας' })}" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
         </div>
       </div>
     `;
@@ -328,12 +328,12 @@ function onScenarioSelectChange() {
     fieldsContainer.innerHTML = `
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="text-[9px] text-gray-500 font-bold block mb-1">Deine Bestellung (z.B. Pizza Salami)</label>
-          <input type="text" id="field-food-order" value="1x Pizza Margherita und ein Spezi" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+          <label class="text-[9px] text-gray-400 font-bold block mb-1">${tr({ en: 'Your order', de: 'Deine Bestellung', fr: 'Ta commande', it: 'Il tuo ordine', es: 'Tu pedido', el: 'Η παραγγελία σου' })}</label>
+          <input type="text" id="field-food-order" value="${tr({ en: '1x Pizza Margherita and a Soda', de: '1x Pizza Margherita und ein Spezi', fr: '1x Pizza Margherita et une boisson', it: '1x Pizza Margherita e una bibita', es: '1x Pizza Margarita y un refresco', el: '1x Πίτσα Μαργαρίτα και ένα αναψυκτικό' })}" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
         </div>
         <div>
-          <label class="text-[9px] text-gray-500 font-bold block mb-1">Lieferadresse</label>
-          <input type="text" id="field-food-address" placeholder="Musterstraße 1, 2. Stock..." value="Musterstraße 1" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+          <label class="text-[9px] text-gray-400 font-bold block mb-1">${tr({ en: 'Delivery address', de: 'Lieferadresse', fr: 'Adresse de livraison', it: 'Indirizzo di consegna', es: 'Dirección de entrega', el: 'Διεύθυνση παράδοσης' })}</label>
+          <input type="text" id="field-food-address" placeholder="${tr({ en: '123 Main Street, Apt 4...', de: 'Musterstraße 1, 2. Stock...', fr: '12 Rue de la Paix...', it: 'Via Roma 10...', es: 'Calle Mayor 1...', el: 'Οδός Ειρήνης 10...' })}" value="${tr({ en: '123 Main Street', de: 'Musterstraße 1', fr: '12 Rue de la Paix', it: 'Via Roma 10', es: 'Calle Mayor 1', el: 'Οδός Ειρήνης 10' })}" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
         </div>
       </div>
     `;
@@ -341,20 +341,20 @@ function onScenarioSelectChange() {
     fieldsContainer.innerHTML = `
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="text-[9px] text-gray-500 font-bold block mb-1">Was ist defekt?</label>
-          <input type="text" id="field-handyman-issue" placeholder="Tropfender Wasserhahn, Heizung kalt..." value="Tropfender Wasserhahn im Bad" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+          <label class="text-[9px] text-gray-400 font-bold block mb-1">${tr({ en: 'What needs fixing?', de: 'Was ist defekt?', fr: 'Quel est le problème ?', it: 'Cosa è guasto?', es: '¿Qué avería hay?', el: 'Τι έχει χαλάσει;' })}</label>
+          <input type="text" id="field-handyman-issue" placeholder="${tr({ en: 'Dripping tap, heater off...', de: 'Tropfender Wasserhahn...', fr: 'Robinet qui fuit...', it: 'Rubinetto che perde...', es: 'Grifo goteando...', el: 'Βρύση που στάζει...' })}" value="${tr({ en: 'Dripping tap in the bathroom', de: 'Tropfender Wasserhahn im Bad', fr: 'Robinet qui fuit dans la salle de bain', it: 'Rubinetto che perde in bagno', es: 'Grifo que gotea en el baño', el: 'Βρύση που στάζει στο μπάνιο' })}" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
         </div>
         <div>
-          <label class="text-[9px] text-gray-500 font-bold block mb-1">Dringlichkeit</label>
-          <input type="text" id="field-handyman-urgency" placeholder="Dringend, diese Woche..." value="diese Woche" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+          <label class="text-[9px] text-gray-400 font-bold block mb-1">${tr({ en: 'Urgency', de: 'Dringlichkeit', fr: 'Urgence', it: 'Urgenza', es: 'Urgencia', el: 'Επείγον' })}</label>
+          <input type="text" id="field-handyman-urgency" placeholder="${tr({ en: 'Urgent, this week...', de: 'Dringend, diese Woche...', fr: 'Urgent, cette semaine...', it: 'Urgente, questa settimana...', es: 'Urgente, esta semana...', el: 'Επείγον, αυτή την εβδομάδα...' })}" value="${tr({ en: 'this week', de: 'diese Woche', fr: 'cette semaine', it: 'questa settimana', es: 'esta semana', el: 'αυτή την εβδομάδα' })}" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
         </div>
       </div>
     `;
   } else if (scenario === 'custom') {
     fieldsContainer.innerHTML = `
       <div>
-        <label class="text-[9px] text-gray-500 font-bold block mb-1">Eigene Stichpunkte / Anliegen</label>
-        <textarea id="field-custom-text" placeholder="Schreibe hier die wichtigsten Punkte auf..." class="w-full h-16 p-2 bg-black/60 border border-white/10 rounded text-xs text-white outline-none resize-none">Ich rufe an wegen der Rückfrage zu meiner Bestellung.</textarea>
+        <label class="text-[9px] text-gray-400 font-bold block mb-1">${tr({ en: 'Your key points / notes', de: 'Eigene Stichpunkte / Anliegen', fr: 'Points clés / Message', it: 'Punti chiave / Note', es: 'Puntos clave / Mensaje', el: 'Βασικά σημεία / Σημειώσεις' })}</label>
+        <textarea id="field-custom-text" placeholder="${tr({ en: 'Write down key bullet points...', de: 'Schreibe hier die wichtigsten Punkte auf...', fr: 'Note les points clés ici...', it: 'Scrivi qui i punti principali...', es: 'Apunta los puntos clave aquí...', el: 'Γράψε εδώ τα βασικά σημεία...' })}" class="w-full h-16 p-2 bg-black/60 border border-white/10 rounded text-xs text-white outline-none resize-none">${tr({ en: 'I am calling regarding a question about my order.', de: 'Ich rufe an wegen der Rückfrage zu meiner Bestellung.', fr: 'Je vous appelle au sujet d\'une question sur ma commande.', it: 'Chiamo per avere informazioni sul mio ordine.', es: 'Llamo para consultar una duda sobre mi pedido.', el: 'Καλώ σχετικά με μια ερώτηση για την παραγγελία μου.' })}</textarea>
       </div>
     `;
   }
@@ -364,7 +364,7 @@ function generateSocialScript() {
   const scenarioSelect = document.getElementById('script-scenario-select');
   const nameInput = document.getElementById('script-user-name');
   const scenario = scenarioSelect ? scenarioSelect.value : 'doctor';
-  const userName = nameInput ? (nameInput.value.trim() || "Jannis") : "Jannis";
+  const userName = nameInput ? (nameInput.value.trim() || "Alex") : "Alex";
   const textContainer = document.getElementById('script-text-container');
   if (!textContainer) return;
 
@@ -373,31 +373,71 @@ function generateSocialScript() {
   if (scenario === 'doctor') {
     const specEl = document.getElementById('field-doc-specialty');
     const timeEl = document.getElementById('field-doc-time');
-    const spec = specEl ? (specEl.value.trim() || "Arzt") : "Arzt";
-    const time = timeEl ? (timeEl.value.trim() || "demnächst") : "demnächst";
-    scriptText = `„Guten Tag, mein Name ist ${userName}.\nIch würde gerne einen Termin bei Ihnen im Bereich ${spec} vereinbaren.\nHaben Sie freie Termine für ${time}?\n(Warte auf Antwort)\nMeine Daten lauten: ${userName}. Vielen Dank.“`;
+    const spec = specEl ? (specEl.value.trim() || "Doctor") : "Doctor";
+    const time = timeEl ? (timeEl.value.trim() || "soon") : "soon";
+    
+    scriptText = tr({
+      en: `“Hello, my name is ${userName}.\nI would like to schedule an appointment with you for ${spec}.\nDo you have any availability for ${time}?\n(Pause for reply)\nMy contact information is ${userName}. Thank you very much.”`,
+      de: `„Guten Tag, mein Name ist ${userName}.\nIch würde gerne einen Termin bei Ihnen im Bereich ${spec} vereinbaren.\nHaben Sie freie Termine für ${time}?\n(Warte auf Antwort)\nMeine Daten lauten: ${userName}. Vielen Dank.“`,
+      fr: `« Bonjour, je m'appelle ${userName}.\nJe souhaiterais prendre rendez-vous pour ${spec}.\nAuriez-vous des disponibilités pour ${time} ?\n(Attendre la réponse)\nMes coordonnées sont ${userName}. Merci beaucoup. »`,
+      it: `“Buongiorno, sono ${userName}.\nVorrei fissare un appuntamento con voi per ${spec}.\nAvete disponibilità per ${time}?\n(Attendi la risposta)\nI miei recapiti sono ${userName}. Grazie mille.”`,
+      es: `«Hola, me llamo ${userName}.\nMe gustaría concertar una cita para ${spec}.\n¿Tienen disponibilidad para ${time}?\n(Pausa para escuchar respuesta)\nMis datos son ${userName}. Muchas gracias.»`,
+      el: `«Γεια σας, ονομάζομαι ${userName}.\nΘα ήθελα να κλείσω ένα ραντεβού για ${spec}.\nΈχετε διαθεσιμότητα για ${time};\n(Περιμένετε απάντηση)\nΤα στοιχεία μου είναι ${userName}. Σας ευχαριστώ πολύ.»`
+    });
   } else if (scenario === 'cancel') {
     const nameEl = document.getElementById('field-cancel-name');
     const reasonEl = document.getElementById('field-cancel-reason');
-    const name = nameEl ? (nameEl.value.trim() || "meinem Termin") : "meinem Termin";
-    const reason = reasonEl ? (reasonEl.value.trim() || "wichtigen Gründen") : "wichtigen Gründen";
-    scriptText = `„Guten Tag, mein Name ist ${userName}.\nIch rufe an, weil ich leider ${name} absagen muss.\nDer Grund dafür ist eine ${reason}.\nWäre es möglich, den Termin stattdessen zu verschieben?\n(Warte auf Antwort)\nDanke für Ihr Verständnis.“`;
+    const name = nameEl ? (nameEl.value.trim() || "my appointment") : "my appointment";
+    const reason = reasonEl ? (reasonEl.value.trim() || "unforeseen circumstances") : "unforeseen circumstances";
+    
+    scriptText = tr({
+      en: `“Hello, my name is ${userName}.\nI am calling because I unfortunately need to cancel ${name}.\nThe reason is due to ${reason}.\nWould it be possible to reschedule for another time?\n(Pause for reply)\nThank you for your understanding.”`,
+      de: `„Guten Tag, mein Name ist ${userName}.\nIch rufe an, weil ich leider ${name} absagen muss.\nDer Grund dafür ist eine ${reason}.\nWäre es möglich, den Termin stattdessen zu verschieben?\n(Warte auf Antwort)\nDanke für Ihr Verständnis.“`,
+      fr: `« Bonjour, je m'appelle ${userName}.\nJe vous appelle car je dois malheureusement annuler ${name}.\nLa raison est ${reason}.\nSerait-il possible de reporter le rendez-vous à une autre date ?\n(Attendre la réponse)\nMerci de votre compréhension. »`,
+      it: `“Buongiorno, sono ${userName}.\nVi chiamo perché purtroppo devo annullare ${name}.\nIl motivo è ${reason}.\nSarebbe possibile riprogrammare per un'altra data?\n(Attendi la risposta)\nGrazie per la comprensione.”`,
+      es: `«Hola, me llamo ${userName}.\nLlamo porque lamentablemente tengo que cancelar ${name}.\nEl motivo es por ${reason}.\n¿Sería posible reprogramar la cita para otra fecha?\n(Pausa para escuchar respuesta)\nGracias por su comprensión.»`,
+      el: `«Γεια σας, ονομάζομαι ${userName}.\nΚαλώ γιατί δυστυχώς πρέπει να ακυρώσω ${name}.\nΟ λόγος είναι ${reason}.\nΘα ήταν δυνατό να μεταφέρουμε το ραντεβού σε άλλη ημερομηνία;\n(Περιμένετε απάντηση)\nΕυχαριστώ για την κατανόηση.»`
+    });
   } else if (scenario === 'food') {
     const orderEl = document.getElementById('field-food-order');
     const addrEl = document.getElementById('field-food-address');
-    const order = orderEl ? (orderEl.value.trim() || "etwas Essen") : "etwas Essen";
-    const addr = addrEl ? (addrEl.value.trim() || "meine Adresse") : "meine Adresse";
-    scriptText = `„Hallo, ich würde gerne eine Bestellung zur Lieferung aufgeben.\nUnd zwar: ${order}.\n(Warte auf Bestätigung)\nGeliefert werden soll das an die folgende Adresse: ${addr}.\nKönnen Sie mir sagen, wie lange es ungefähr dauert?\n(Warte auf Antwort)\nSuper, vielen Dank. Auf Wiederhören.“`;
+    const order = orderEl ? (orderEl.value.trim() || "food delivery") : "food delivery";
+    const addr = addrEl ? (addrEl.value.trim() || "my address") : "my address";
+    
+    scriptText = tr({
+      en: `“Hello, I would like to place a delivery order.\nI'd like: ${order}.\n(Pause for confirmation)\nDelivery address: ${addr}.\nCould you let me know estimated time?\n(Pause for reply)\nAwesome, thank you very much.”`,
+      de: `„Hallo, ich würde gerne eine Bestellung zur Lieferung aufgeben.\nUnd zwar: ${order}.\n(Warte auf Bestätigung)\nGeliefert werden soll das an die folgende Adresse: ${addr}.\nKönnen Sie mir sagen, wie lange es ungefähr dauert?\n(Warte auf Antwort)\nSuper, vielen Dank. Auf Wiederhören.“`,
+      fr: `« Bonjour, je souhaiterais passer une commande en livraison.\nCe sera : ${order}.\n(Attendre confirmation)\nÀ livrer à l'adresse suivante : ${addr}.\nPouvez-vous me dire combien de temps cela prendra environ ?\n(Attendre la réponse)\nSuper, merci beaucoup. Au revoir. »`,
+      it: `“Salve, vorrei fare un ordine a domicilio.\nVorrei: ${order}.\n(Attendi conferma)\nL'indirizzo di consegna è: ${addr}.\nSaprebbe dirmi all'incirca quanto tempo ci vorrà?\n(Attendi risposta)\nPerfetto, grazie mille. Arrivederci.”`,
+      es: `«Hola, me gustaría hacer un pedido a domicilio.\nSería: ${order}.\n(Pausa para confirmación)\nLa dirección de entrega es: ${addr}.\n¿Podrían decirme cuánto tardará aproximadamente?\n(Pausa para respuesta)\nGenial, muchas gracias. Adiós.»`,
+      el: `«Γεια σας, θα ήθελα να κάνω μια παραγγελία για διανομή.\nΘα ήθελα: ${order}.\n(Περιμένετε επιβεβαίωση)\nΔιεύθυνση παράδοσης: ${addr}.\nΜπορείτε να μου πείτε περίπου πόση ώρα θα χρειαστεί;\n(Περιμένετε απάντηση)\nΤέλεια, ευχαριστώ πολύ. Γεια σας.»`
+    });
   } else if (scenario === 'handyman') {
     const issueEl = document.getElementById('field-handyman-issue');
     const urgEl = document.getElementById('field-handyman-urgency');
-    const issue = issueEl ? (issueEl.value.trim() || "einem Defekt") : "einem Defekt";
-    const urgency = urgEl ? (urgEl.value.trim() || "demnächst") : "demnächst";
-    scriptText = `„Guten Tag, mein Name ist ${userName}.\nIn meiner Wohnung gibt es ein Problem: ${issue}.\nKönnten Sie einen Handwerker schicken, der sich das ansieht?\nEs wäre gut, wenn das ${urgency} klappen könnte.\n(Warte auf Antwort)\nMeine Telefonnummer für Rückfragen ist im System hinterlegt. Vielen Dank.“`;
+    const issue = issueEl ? (issueEl.value.trim() || "a maintenance issue") : "a maintenance issue";
+    const urgency = urgEl ? (urgEl.value.trim() || "soon") : "soon";
+    
+    scriptText = tr({
+      en: `“Hello, my name is ${userName}.\nThere is a maintenance issue at my apartment: ${issue}.\nCould you send a technician to inspect it?\nIt would be wonderful if this could be scheduled ${urgency}.\n(Pause for reply)\nMy phone number is on file. Thank you very much.”`,
+      de: `„Guten Tag, mein Name ist ${userName}.\nIn meiner Wohnung gibt es ein Problem: ${issue}.\nKönnten Sie einen Handwerker schicken, der sich das ansieht?\nEs wäre gut, wenn das ${urgency} klappen könnte.\n(Warte auf Antwort)\nMeine Telefonnummer für Rückfragen ist im System hinterlegt. Vielen Dank.“`,
+      fr: `« Bonjour, je m'appelle ${userName}.\nIl y a un problème dans mon logement : ${issue}.\nPourriez-vous envoyer un technicien pour vérifier ?\nCe serait parfait si cela pouvait se faire ${urgency}.\n(Attendre la réponse)\nMes coordonnées sont enregistrées. Merci beaucoup. »`,
+      it: `“Buongiorno, sono ${userName}.\nNel mio appartamento c'è un problema: ${issue}.\nPotreste inviare un tecnico a verificare?\nSarebbe ottimo se fosse possibile ${urgency}.\n(Attendi risposta)\nI miei recapiti sono registrati. Grazie mille.”`,
+      es: `«Hola, me llamo ${userName}.\nEn mi vivienda hay una avería: ${issue}.\n¿Podrían enviar a un técnico para revisarlo?\nSería estupendo si pudiera ser ${urgency}.\n(Pausa para respuesta)\nMis datos de contacto están en el sistema. Muchas gracias.»`,
+      el: `«Γεια σας, ονομάζομαι ${userName}.\nΥπάρχει μια βλάβη στο σπίτι μου: ${issue}.\nΘα μπορούσατε να στείλετε έναν τεχνικό να το ελέγξει;\nΘα ήταν εξαιρετικό αν μπορούσε να γίνει ${urgency}.\n(Περιμένετε απάντηση)\nΤα στοιχεία επικοινωνίας μου είναι καταχωρημένα. Σας ευχαριστώ πολύ.»`
+    });
   } else if (scenario === 'custom') {
     const customEl = document.getElementById('field-custom-text');
-    const custom = customEl ? (customEl.value.trim() || "Keine Vorgaben.") : "Keine Vorgaben.";
-    scriptText = `„Guten Tag, mein Name ist ${userName}.\n\n[DEINE STICHPUNKTE FÜR DAS TELEFONAT]:\n${custom}“`;
+    const custom = customEl ? (customEl.value.trim() || "") : "";
+    
+    scriptText = tr({
+      en: `“Hello, my name is ${userName}.\n\n[KEY POINTS FOR YOUR CALL]:\n${custom}”`,
+      de: `„Guten Tag, mein Name ist ${userName}.\n\n[DEINE STICHPUNKTE FÜR DAS TELEFONAT]:\n${custom}“`,
+      fr: `« Bonjour, je m'appelle ${userName}.\n\n[POINTS CLÉS DE VOTRE APPEL] :\n${custom} »`,
+      it: `“Buongiorno, sono ${userName}.\n\n[PUNTI CHIAVE PER LA CHIAMATA]:\n${custom}”`,
+      es: `«Hola, me llamo ${userName}.\n\n[PUNTOS CLAVE PARA LA LLAMADA]:\n${custom}»`,
+      el: `«Γεια σας, ονομάζομαι ${userName}.\n\n[ΒΑΣΙΚΑ ΣΗΜΕΙΑ ΓΙΑ ΤΗ ΣΥΝΟΜΙΛΙΑ ΣΑΣ]:\n${custom}»`
+    });
   }
 
   textContainer.innerText = scriptText;
@@ -412,7 +452,7 @@ function copyGeneratedScript() {
   if (!container) return;
 
   navigator.clipboard.writeText(container.innerText).then(() => {
-    showToast(currentLang === 'de' ? "Skript kopiert! 📋" : "Script copied! 📋");
+    showToast(t('toast_copied'));
   }).catch(err => {
     console.error("Fehler beim Kopieren:", err);
   });

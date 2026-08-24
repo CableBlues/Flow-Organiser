@@ -367,13 +367,13 @@ function toggleSafeSpaceNoise() {
   const btn = document.getElementById('safespace-noise-btn');
   if (!btn) return;
   if (safeSpaceNoiseActive) {
-    btn.innerText = currentLang === 'de' ? "Regen-Sound aus" : "Stop Rain Sound";
+    btn.innerText = currentLang === 'de' ? "Bach-Sound aus" : "Stop Stream Sound";
     btn.className = "px-3.5 py-1.5 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-300 text-xs font-bold rounded-lg transition";
     if (typeof playAmbientSound === 'function') {
-      playAmbientSound('rain', true);
+      playAmbientSound('stream', true);
     }
   } else {
-    btn.innerText = currentLang === 'de' ? "Regen-Sound ein" : "Start Rain Sound";
+    btn.innerText = currentLang === 'de' ? "Bach-Sound ein" : "Start Stream Sound";
     btn.className = "px-3.5 py-1.5 bg-teal-500/20 hover:bg-teal-500/30 border border-teal-500/30 text-teal-300 text-xs font-bold rounded-lg transition";
     if (typeof stopAmbientSound === 'function') {
       stopAmbientSound(true);
