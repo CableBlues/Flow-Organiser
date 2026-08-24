@@ -213,38 +213,36 @@ document.write(`  <div id="praise-overlay" class="hidden fixed inset-0 z-[100000
     </div>
   </div>
   <!-- KOSTENLOSE CLOUD-SYNC & NUTZER-ANMELDUNG -->
-  <div id="helper-sync-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div id="helper-sync-card" class="mobile-modal-card animate-spring-modal w-full max-w-md bg-[#111116]/95 border border-emerald-500/40 p-6 rounded-3xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
-      <button onclick="closeSyncModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-xl bg-white/5 hover:bg-white/10 transition cursor-pointer">
+  <div id="helper-sync-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md">
+    <div id="helper-sync-card" class="mobile-modal-card animate-spring-modal w-full max-w-md max-h-[88vh] overflow-y-auto bg-[#111116]/95 border border-emerald-500/40 p-4 sm:p-6 rounded-3xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+      <button onclick="closeSyncModal()" class="absolute top-3 right-3 sm:top-4 sm:right-4 text-gray-400 hover:text-white p-2 rounded-xl bg-white/5 hover:bg-white/10 transition cursor-pointer">
         <i data-lucide="x" class="w-4 h-4"></i>
       </button>
       
       <!-- Header -->
-      <div class="flex items-center gap-3 mb-5 pb-3 border-b border-white/10">
-        <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300 shadow-md">
+      <div class="flex items-center gap-3 mb-4 pb-3 border-b border-white/10">
+        <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300 shadow-md shrink-0">
           <i data-lucide="smartphone" class="w-5 h-5"></i>
         </div>
         <div>
-          <h3 class="text-white font-bold text-base font-display flex items-center gap-2">
-            <span>PC & Handy Synchronisation</span>
-          </h3>
-          <p class="text-xs text-emerald-400 font-medium">Nahtloser Datenabgleich in Echtzeit</p>
+          <h3 class="text-white font-bold text-base font-display">PC & Handy Synchronisation</h3>
+          <p class="text-[11px] text-emerald-400 font-medium">Live & ohne Registrierungszwang</p>
         </div>
       </div>
 
       <!-- STATUS: WENN BEREITS VERBUNDEN -->
       <div id="sync-modal-logged-box" class="space-y-4 hidden">
-        <div class="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-lg font-bold">
+        <div class="p-3.5 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center justify-between">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-8 h-8 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-base font-bold shrink-0">
               ✓
             </div>
-            <div>
-              <div id="sync-modal-user-text" class="text-xs font-bold text-white">Verbundenes Gerät</div>
+            <div class="min-w-0">
+              <div id="sync-modal-user-text" class="text-xs font-bold text-white truncate">Verbundenes Gerät</div>
               <div id="sync-modal-status-badge" class="text-[10px] text-emerald-300 font-mono mt-0.5">🟢 Live-Sync aktiv</div>
             </div>
           </div>
-          <div class="text-right">
+          <div class="text-right shrink-0">
             <span class="text-[9px] text-gray-400 block">Zuletzt:</span>
             <span id="sync-modal-last-time" class="font-mono text-emerald-300 text-xs font-bold">Gerade eben</span>
           </div>
@@ -255,7 +253,7 @@ document.write(`  <div id="praise-overlay" class="hidden fixed inset-0 z-[100000
           <span>Jetzt manuell abgleichen 🔄</span>
         </button>
 
-        <button onclick="syncEngine.signOut();" class="w-full py-2 bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-300 text-xs font-semibold rounded-xl border border-white/5 hover:border-red-500/30 transition cursor-pointer">
+        <button onclick="syncEngine.signOut();" class="w-full py-2.5 bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-300 text-xs font-semibold rounded-xl border border-white/5 hover:border-red-500/30 transition cursor-pointer">
           Verbindung trennen
         </button>
       </div>
@@ -266,7 +264,7 @@ document.write(`  <div id="praise-overlay" class="hidden fixed inset-0 z-[100000
         <div class="flex bg-black/50 p-1 rounded-2xl border border-white/10 text-xs font-bold">
           <button id="sync-tab-btn-pair" onclick="switchSyncModalTab('pair')" class="flex-1 py-2 rounded-xl text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 transition flex items-center justify-center gap-1.5 cursor-pointer">
             <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
-            <span>1-Klick Kopplung (Code / QR)</span>
+            <span>1-Klick Kopplung</span>
           </button>
           <button id="sync-tab-btn-account" onclick="switchSyncModalTab('account')" class="flex-1 py-2 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer">
             <i data-lucide="user" class="w-3.5 h-3.5"></i>
@@ -275,23 +273,31 @@ document.write(`  <div id="praise-overlay" class="hidden fixed inset-0 z-[100000
         </div>
 
         <!-- TAB 1: 1-KLICK KOPPLUNG (CODE & QR) -->
-        <div id="sync-pane-pair" class="space-y-4">
+        <div id="sync-pane-pair" class="space-y-3.5">
           <!-- Code Anzeige für dieses Gerät -->
-          <div class="p-4 bg-black/60 border border-emerald-500/30 rounded-2xl text-center flex flex-col items-center gap-2.5">
-            <span class="text-[10px] text-gray-400 uppercase tracking-widest font-mono font-semibold">Kopplungs-Code für dein Handy</span>
-            <div id="sync-pairing-code-display" class="font-mono font-black text-2xl text-emerald-400 tracking-widest px-4 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl select-all">FLOW-7492</div>
+          <div class="p-3.5 bg-black/60 border border-emerald-500/30 rounded-2xl text-center flex flex-col items-center gap-2">
+            <span class="text-[10px] text-gray-400 uppercase tracking-widest font-mono font-semibold">Kopplungs-Code für dein Smartphone</span>
+            <div id="sync-pairing-code-display" class="font-mono font-black text-xs sm:text-sm text-emerald-400 tracking-wider px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl select-all break-all max-w-full">
+              Lade Sync-Code...
+            </div>
             
-            <div class="p-2 bg-white rounded-2xl shadow-lg mt-1">
-              <img id="sync-qr-code-img" src="" alt="QR Code" class="w-32 h-32 mx-auto" />
+            <div class="p-2 bg-white rounded-2xl shadow-lg my-1">
+              <img id="sync-qr-code-img" src="" alt="QR Code" class="w-28 h-28 mx-auto" />
             </div>
             <span class="text-[10px] text-gray-400">📷 Mit Handykamera scannen zum direkten Öffnen & Koppeln</span>
+
+            <input type="hidden" id="sync-copy-link-input" />
+            <button onclick="navigator.clipboard.writeText(document.getElementById('sync-copy-link-input').value); showToast('Link in Zwischenablage kopiert! 📋');" class="py-1.5 px-3 bg-white/5 hover:bg-white/10 text-emerald-400 text-[11px] font-semibold rounded-xl border border-white/10 transition cursor-pointer flex items-center gap-1.5 mt-0.5">
+              <i data-lucide="copy" class="w-3 h-3"></i>
+              <span>Link kopieren</span>
+            </button>
           </div>
 
           <!-- Code eingeben vom anderen Gerät -->
           <div class="p-3 bg-white/[0.03] border border-white/10 rounded-2xl space-y-2">
-            <label class="text-[10px] text-gray-300 font-bold uppercase tracking-wider block">Oder Code von deinem anderen Gerät eingeben:</label>
+            <label class="text-[10px] text-gray-300 font-bold uppercase tracking-wider block">Oder Code / Link vom PC hier eingeben:</label>
             <div class="flex items-center gap-2">
-              <input type="text" id="sync-pair-input" placeholder="z. B. FLOW-7492" class="flex-1 p-2.5 bg-black/60 border border-white/15 rounded-xl text-xs text-white outline-none focus:border-emerald-400 font-mono uppercase font-bold text-center" onkeydown="if(event.key==='Enter') handlePairWithCodeInput();" />
+              <input type="text" id="sync-pair-input" placeholder="Code oder Link einfügen" class="flex-1 p-2.5 bg-black/60 border border-white/15 rounded-xl text-xs text-white outline-none focus:border-emerald-400 font-mono font-bold text-center" onkeydown="if(event.key==='Enter') handlePairWithCodeInput();" />
               <button onclick="handlePairWithCodeInput()" class="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold rounded-xl transition cursor-pointer shrink-0 shadow-md">
                 Verbinden 🔗
               </button>
@@ -302,7 +308,7 @@ document.write(`  <div id="praise-overlay" class="hidden fixed inset-0 z-[100000
         <!-- TAB 2: BENUTZERKONTO -->
         <div id="sync-pane-account" class="space-y-3 hidden">
           <p class="text-xs text-gray-400 leading-normal">
-            Melde dich mit einem festen Namen an, um deine Daten auf beliebigen Geräten abzurufen:
+            Erstelle ein Benutzerkonto, um deine Aufgaben mit Benutzername & Passwort zu sichern:
           </p>
           <div class="space-y-2.5">
             <div>

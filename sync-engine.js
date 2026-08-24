@@ -1,19 +1,18 @@
-// sync-engine.js: Zuverlässige, kostenlose Multi-Device Synchronisation & Smartphone-Kopplung
+// sync-engine.js: Zuverlässige, permanente Multi-Device Synchronisation & Smartphone-Kopplung
 
 const SYNC_STORAGE_KEY = 'flowPlannerSyncAccount';
-const CLOUD_SYNC_ENDPOINT = 'https://ntfy.sh/';
+const CLOUD_API_BASE = 'https://api.restful-api.dev/objects';
 
 const syncEngine = {
-  account: null,
+  account: null, // { id, username, pin, lastSync, passHash }
   autoSyncTimer: null,
   syncInProgress: false,
-  lastSyncTime: null,
   lastSavedTimestamp: null,
 
   init() {
     this.loadAccount();
     this.updateUI();
-    if (this.account && this.account.key) {
+    if (this.account && this.account.id) {
       this.startAutoSync();
       setTimeout(() => this.pullFromCloud(true), 800);
     }
@@ -49,47 +48,89 @@ const syncEngine = {
     return Math.abs(hash).toString(36);
   },
 
-  getUserStorageKey(username, password) {
-    const raw = `flow_v4_${username.toLowerCase().trim()}_${password}`;
-    return 'u_' + this.hashCode(raw) + '_' + this.hashCode(raw + '_salt99');
+  async apiFetch(url, options = {}, timeoutMs = 8000) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const resp = await fetch(url, { ...options, credentials: 'omit', signal: controller.signal });
+      clearTimeout(timer);
+      return resp;
+    } catch (e) {
+      clearTimeout(timer);
+      return null;
+    }
   },
+
+  // -------------------------------------------------------------
+  // KONTO REGISTRIERUNG & ANMELDUNG (MIT ECHTER PRÜFUNG)
+  // -------------------------------------------------------------
 
   async signUp(username, password) {
     username = (username || '').trim();
-    if (!username || !password || password.length < 4) {
+    password = (password || '').trim();
+
+    if (!username || username.length < 2) {
       showToast(tr({
-        de: 'Bitte Benutzername und mind. 4-stelliges Passwort eingeben!',
-        en: 'Please enter username and min. 4-character password!',
-        fr: 'Veuillez saisir un nom et mot de passe (min. 4 car.) !',
-        it: 'Inserisci nome utente e password (min. 4 car.)!',
-        es: '¡Introduce nombre de usuario y contraseña (mín. 4 car.)!',
-        el: 'Εισάγετε όνομα χρήστη και κωδικό πρόσβασης (τουλ. 4 χαρακτήρες)!'
+        de: 'Bitte einen gültigen Benutzernamen eingeben (mind. 2 Zeichen)!',
+        en: 'Please enter a valid username (min. 2 characters)!'
+      }));
+      return false;
+    }
+    if (!password || password.length < 4) {
+      showToast(tr({
+        de: 'Passwort muss mindestens 4 Zeichen lang sein!',
+        en: 'Password must be at least 4 characters long!'
       }));
       return false;
     }
 
-    const key = this.getUserStorageKey(username, password);
-    const pairingCode = 'FLOW-' + Math.floor(1000 + Math.random() * 9000);
+    const passHash = this.hashCode(password + '_flow_salt2026');
+    const userSlug = 'flow_acc_' + username.toLowerCase().replace(/[^a-z0-9]/g, '_');
 
+    showToast(tr({ de: 'Erstelle Konto in der Cloud... ☁️', en: 'Creating cloud account... ☁️' }));
+
+    // Bestehende Cloud-ID erneuern oder erstellen
+    const payload = {
+      name: userSlug,
+      data: {
+        username: username,
+        passHash: passHash,
+        state: state,
+        categoriesOrder: categoriesOrder,
+        updatedAt: new Date().toISOString()
+      }
+    };
+
+    const resp = await this.apiFetch(CLOUD_API_BASE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!resp || !resp.ok) {
+      showToast(tr({
+        de: 'Verbindung zur Cloud fehlgeschlagen. Bitte erneut versuchen!',
+        en: 'Cloud connection failed. Please try again!'
+      }));
+      return false;
+    }
+
+    const data = await resp.json();
     this.account = {
-      username,
-      key,
-      pairingCode,
+      id: data.id,
+      username: username,
+      passHash: passHash,
+      pin: 'FLOW-' + Math.floor(1000 + Math.random() * 9000),
       createdAt: new Date().toISOString(),
       lastSync: new Date().toISOString()
     };
 
     this.saveAccount();
     showToast(tr({
-      de: `✅ Konto für "${username}" erstellt & angemeldet!`,
-      en: `✅ Account created & signed in as "${username}"!`,
-      fr: `✅ Compte créé et connecté pour "${username}" !`,
-      it: `✅ Account creato e connesso come "${username}"!`,
-      es: `✅ ¡Cuenta creada y conectada como "${username}"!`,
-      el: `✅ Ο λογαριασμός δημιουργήθηκε για "${username}"!`
+      de: `✅ Konto für "${username}" erfolgreich erstellt & synchronisiert!`,
+      en: `✅ Account created & synchronized as "${username}"!`
     }));
 
-    await this.pushToCloud();
     this.startAutoSync();
     this.updateUI();
     return true;
@@ -97,63 +138,42 @@ const syncEngine = {
 
   async signIn(username, password) {
     username = (username || '').trim();
+    password = (password || '').trim();
+
     if (!username || !password) {
       showToast(tr({
         de: 'Bitte Benutzername und Passwort eingeben!',
-        en: 'Please enter username and password!',
-        fr: 'Veuillez saisir votre nom et mot de passe !',
-        it: 'Inserisci nome utente e password!',
-        es: '¡Introduce nombre de usuario y contraseña!',
-        el: 'Εισάγετε όνομα χρήστη και κωδικό πρόσβασης!'
+        en: 'Please enter username and password!'
       }));
       return false;
     }
 
-    const key = this.getUserStorageKey(username, password);
-    const pairingCode = 'FLOW-' + Math.floor(1000 + Math.random() * 9000);
+    const passHash = this.hashCode(password + '_flow_salt2026');
+    showToast(tr({ de: 'Prüfe Anmeldedaten... 🔄', en: 'Verifying credentials... 🔄' }));
 
-    this.account = {
-      username,
-      key,
-      pairingCode,
-      lastSync: new Date().toISOString()
-    };
-
-    this.saveAccount();
-    showToast(tr({
-      de: `Verbinde mit Konto "${username}"... 🔄`,
-      en: `Connecting to account "${username}"... 🔄`,
-      fr: `Connexion au compte "${username}"... 🔄`,
-      it: `Connessione all'account "${username}"... 🔄`,
-      es: `Conectando con la cuenta "${username}"... 🔄`,
-      el: `Σύνδεση με το λογαριασμό "${username}"... 🔄`
-    }));
-
-    const pulled = await this.pullFromCloud();
-    if (pulled) {
-      showToast(tr({
-        de: `✅ Willkommen zurück, ${username}! Daten synchronisiert.`,
-        en: `✅ Welcome back, ${username}! Data synchronized.`,
-        fr: `✅ Bon retour, ${username} ! Données synchronisées.`,
-        it: `✅ Bentornato, ${username}! Dati sincronizzati.`,
-        es: `✅ ¡Bienvenido de nuevo, ${username}! Datos sincronizados.`,
-        el: `✅ Καλώς ήρθατε πίσω, ${username}! Τα δεδομένα συγχρονίστηκαν.`
-      }));
-    } else {
-      await this.pushToCloud();
-      showToast(tr({
-        de: `✅ Angemeldet als "${username}"!`,
-        en: `✅ Signed in as "${username}"!`,
-        fr: `✅ Connecté en tant que "${username}" !`,
-        it: `✅ Connesso come "${username}"!`,
-        es: `✅ Conectado como "${username}"!`,
-        el: `✅ Συνδεδεμένος ως "${username}"!`
-      }));
+    // Wenn lokale Account-ID vorhanden ist, direkt prüfen
+    if (this.account && this.account.id && this.account.username.toLowerCase() === username.toLowerCase()) {
+      if (this.account.passHash === passHash) {
+        await this.pullFromCloud();
+        showToast(tr({
+          de: `✅ Willkommen zurück, ${username}! Daten synchronisiert.`,
+          en: `✅ Welcome back, ${username}! Data synchronized.`
+        }));
+        this.startAutoSync();
+        this.updateUI();
+        return true;
+      } else {
+        showToast(tr({ de: '❌ Falsches Passwort!', en: '❌ Incorrect password!' }));
+        return false;
+      }
     }
 
-    this.startAutoSync();
-    this.updateUI();
-    return true;
+    // Falls auf neuem Gerät (z. B. Smartphone): Prüfe über Kopplungs-Code / ID
+    showToast(tr({
+      de: 'Tipp: Nutze auf dem Smartphone einfach den 1-Klick Kopplungs-Code!',
+      en: 'Tip: On mobile, simply use the 1-Click Pairing Code!'
+    }));
+    return false;
   },
 
   signOut() {
@@ -166,77 +186,65 @@ const syncEngine = {
     this.updateUI();
     showToast(tr({
       de: 'Erfolgreich abgemeldet. (Lokaler Modus)',
-      en: 'Successfully signed out. (Local mode)',
-      fr: 'Déconnecté avec succès. (Mode local)',
-      it: 'Disconnesso con successo. (Modalità locale)',
-      es: 'Desconectado con éxito. (Modo local)',
-      el: 'Αποσυνδεθήκατε επιτυχώς. (Τοπική λειτουργία)'
+      en: 'Successfully signed out. (Local mode)'
     }));
   },
 
+  // -------------------------------------------------------------
+  // CLOUD PUSH & PULL
+  // -------------------------------------------------------------
+
   async pushToCloud() {
-    if (!this.account || !this.account.key) return false;
+    if (!this.account || !this.account.id) return false;
     try {
       const nowIso = new Date().toISOString();
       this.lastSavedTimestamp = nowIso;
+
       const payload = {
-        state: state,
-        categoriesOrder: categoriesOrder,
-        savedAt: nowIso,
-        account: { username: this.account.username, key: this.account.key }
+        name: 'flow_user_data',
+        data: {
+          username: this.account.username || 'Mein Gerät',
+          state: state,
+          categoriesOrder: categoriesOrder,
+          updatedAt: nowIso
+        }
       };
 
-      const channel = 'flow_sync_' + this.account.key;
-      const resp = await fetch(CLOUD_SYNC_ENDPOINT + channel, {
-        method: 'POST',
-        headers: { 'Title': 'FlowSync' },
+      const resp = await this.apiFetch(`${CLOUD_API_BASE}/${this.account.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
 
-      if (resp.ok) {
+      if (resp && resp.ok) {
         this.lastSyncTime = new Date();
         this.account.lastSync = this.lastSyncTime.toISOString();
         this.saveAccount();
         return true;
       }
     } catch (e) {
-      console.warn('Sync push notice:', e);
+      console.warn('Push error:', e);
     }
     return false;
   },
 
   async pullFromCloud(silent = false) {
-    if (!this.account || !this.account.key) return false;
+    if (!this.account || !this.account.id) return false;
     try {
-      const channel = 'flow_sync_' + this.account.key;
-      const resp = await fetch(CLOUD_SYNC_ENDPOINT + channel + '/json?poll=1&since=all');
-      if (!resp.ok) return false;
+      const resp = await this.apiFetch(`${CLOUD_API_BASE}/${this.account.id}`);
+      if (!resp || !resp.ok) return false;
 
-      const text = await resp.text();
-      const lines = text.trim().split('\n').filter(Boolean);
-      let latestPayload = null;
+      const data = await resp.json();
+      if (data && data.data && data.data.state) {
+        const remoteState = data.data.state;
+        const remoteTime = data.data.updatedAt;
 
-      for (const line of lines) {
-        try {
-          const msgObj = JSON.parse(line);
-          if (msgObj.event === 'message' && msgObj.message) {
-            const data = JSON.parse(msgObj.message);
-            if (data && data.state && data.savedAt) {
-              if (!latestPayload || new Date(data.savedAt) > new Date(latestPayload.savedAt)) {
-                latestPayload = data;
-              }
-            }
-          }
-        } catch (err) {}
-      }
-
-      if (latestPayload && latestPayload.state) {
-        if (!this.lastSavedTimestamp || new Date(latestPayload.savedAt) > new Date(this.lastSavedTimestamp)) {
-          this.lastSavedTimestamp = latestPayload.savedAt;
+        if (!this.lastSavedTimestamp || (remoteTime && new Date(remoteTime) > new Date(this.lastSavedTimestamp))) {
+          this.lastSavedTimestamp = remoteTime || new Date().toISOString();
           saveHistory();
-          state = latestPayload.state;
-          if (Array.isArray(latestPayload.categoriesOrder) && latestPayload.categoriesOrder.length) {
-            categoriesOrder = latestPayload.categoriesOrder;
+          state = remoteState;
+          if (Array.isArray(data.data.categoriesOrder) && data.data.categoriesOrder.length) {
+            categoriesOrder = data.data.categoriesOrder;
             saveCategoriesOrder();
           }
           saveState();
@@ -249,28 +257,21 @@ const syncEngine = {
         }
       }
     } catch (e) {
-      console.warn('Sync pull notice:', e);
+      console.warn('Pull error:', e);
     }
     return false;
   },
 
   async syncNow(silent = false) {
-    if (!this.account) {
-      if (!silent) openSyncModal();
+    if (!this.account || !this.account.id) {
+      if (!silent) openSyncModal('pair');
       return;
     }
     if (this.syncInProgress) return;
     this.syncInProgress = true;
 
     if (!silent) {
-      showToast(tr({
-        de: 'Synchronisiere mit Cloud... ☁️',
-        en: 'Syncing with cloud... ☁️',
-        fr: 'Synchronisation dans le cloud... ☁️',
-        it: 'Sincronizzazione in corso... ☁️',
-        es: 'Sincronizando con la nube... ☁️',
-        el: 'Συγχρονισμός στο cloud... ☁️'
-      }));
+      showToast(tr({ de: 'Synchronisiere mit Cloud... ☁️', en: 'Syncing with cloud... ☁️' }));
     }
 
     const pulled = await this.pullFromCloud(silent);
@@ -281,23 +282,9 @@ const syncEngine = {
 
     if (!silent) {
       if (pushed || pulled) {
-        showToast(tr({
-          de: '✅ Erfolgreich synchronisiert!',
-          en: '✅ Successfully synced!',
-          fr: '✅ Synchronisé avec succès !',
-          it: '✅ Sincronizzato con successo!',
-          es: '✅ ¡Sincronizado con éxito!',
-          el: '✅ Ο συγχρονισμός ολοκληρώθηκε επιτυχώς!'
-        }));
+        showToast(tr({ de: '✅ Erfolgreich synchronisiert!', en: '✅ Successfully synced!' }));
       } else {
-        showToast(tr({
-          de: 'Sync-Verbindung bereit & aktuell ✓',
-          en: 'Sync connection ready & updated ✓',
-          fr: 'Connexion de sync à jour ✓',
-          it: 'Connessione di sincronizzazione pronta ✓',
-          es: 'Conexión de sincronización lista ✓',
-          el: 'Η σύνδεση συγχρονισμού είναι έτοιμη ✓'
-        }));
+        showToast(tr({ de: 'Sync-Verbindung bereit & aktuell ✓', en: 'Sync connection ready & updated ✓' }));
       }
     }
   },
@@ -305,155 +292,144 @@ const syncEngine = {
   startAutoSync() {
     if (this.autoSyncTimer) clearInterval(this.autoSyncTimer);
     this.autoSyncTimer = setInterval(() => {
-      if (this.account && !this.syncInProgress) {
+      if (this.account && this.account.id && !this.syncInProgress) {
         this.pullFromCloud(true);
       }
     }, 15000);
   },
 
   // -------------------------------------------------------------
-  // 1-KLICK KOPPLUNG (CODE & QR-CODE)
+  // 1-KLICK KOPPLUNG (PC ↔ HANDY)
   // -------------------------------------------------------------
 
-  async publishPairingCode() {
-    let code = this.account?.pairingCode;
-    if (!code) {
-      code = 'FLOW-' + Math.floor(1000 + Math.random() * 9000);
-      if (!this.account) {
-        const tempKey = 'pair_' + this.hashCode(code + '_' + Date.now());
-        this.account = {
-          username: 'Mein Gerät',
-          key: tempKey,
-          pairingCode: code,
-          createdAt: new Date().toISOString(),
-          lastSync: new Date().toISOString()
-        };
-        this.saveAccount();
-      } else {
-        this.account.pairingCode = code;
-        this.saveAccount();
-      }
+  async ensureCloudSyncObject() {
+    if (this.account && this.account.id) {
+      await this.pushToCloud();
+      return this.account.id;
     }
 
-    const codeClean = code.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-    const pairChannel = 'flow_pair_' + codeClean;
-
+    // Neues Cloud-Objekt für dieses Gerät erstellen
+    const pin = 'FLOW-' + Math.floor(1000 + Math.random() * 9000);
     const payload = {
-      account: this.account,
-      state: state,
-      categoriesOrder: categoriesOrder,
-      savedAt: new Date().toISOString()
+      name: 'flow_device_sync',
+      data: {
+        pin: pin,
+        username: 'Mein Gerät',
+        state: state,
+        categoriesOrder: categoriesOrder,
+        updatedAt: new Date().toISOString()
+      }
     };
 
-    try {
-      await fetch(CLOUD_SYNC_ENDPOINT + pairChannel, {
-        method: 'POST',
-        headers: { 'Title': 'FlowPair' },
-        body: JSON.stringify(payload)
-      });
-    } catch (e) {}
+    const resp = await this.apiFetch(CLOUD_API_BASE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
 
+    if (resp && resp.ok) {
+      const data = await resp.json();
+      this.account = {
+        id: data.id,
+        username: 'Mein Gerät',
+        pin: pin,
+        createdAt: new Date().toISOString(),
+        lastSync: new Date().toISOString()
+      };
+      this.saveAccount();
+      this.startAutoSync();
+      return data.id;
+    }
+    return null;
+  },
+
+  async publishPairingCode() {
+    const cloudId = await this.ensureCloudSyncObject();
     const codeDisplay = document.getElementById('sync-pairing-code-display');
-    if (codeDisplay) codeDisplay.innerText = code;
+    const qrImg = document.getElementById('sync-qr-code-img');
+    const linkInput = document.getElementById('sync-copy-link-input');
+
+    if (!cloudId) {
+      if (codeDisplay) codeDisplay.innerText = 'Verbindung wird aufgebaut...';
+      return;
+    }
+
+    if (codeDisplay) {
+      codeDisplay.innerText = cloudId;
+    }
 
     const currentUrl = window.location.href.split('?')[0];
-    const pairUrl = `${currentUrl}?pair=${encodeURIComponent(code)}`;
-    const qrImg = document.getElementById('sync-qr-code-img');
+    const pairUrl = `${currentUrl}?sync=${encodeURIComponent(cloudId)}`;
+
+    if (linkInput) linkInput.value = pairUrl;
+
     if (qrImg) {
-      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(pairUrl)}&color=10b981&bgcolor=111116`;
+      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(pairUrl)}&color=10b981&bgcolor=111116`;
     }
   },
 
-  async pairWithCode(code) {
-    code = (code || '').trim().toUpperCase();
-    if (!code || code.length < 4) {
+  async pairWithCode(inputVal) {
+    inputVal = (inputVal || '').trim();
+    if (!inputVal) {
       showToast(tr({
-        de: 'Bitte einen gültigen Kopplungs-Code eingeben (z. B. FLOW-7492)!',
-        en: 'Please enter a valid pairing code (e.g. FLOW-7492)!',
-        fr: 'Veuillez saisir un code valide (ex. FLOW-7492) !',
-        it: 'Inserisci un codice valido (es. FLOW-7492)!',
-        es: '¡Introduce un código de vinculación válido (ej. FLOW-7492)!',
-        el: 'Εισάγετε έγκυρο κωδικό ζεύξης (π.χ. FLOW-7492)!'
+        de: 'Bitte einen Kopplungs-Code oder Link eingeben!',
+        en: 'Please enter a pairing code or link!'
       }));
       return false;
     }
 
-    const codeClean = code.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-    const pairChannel = 'flow_pair_' + codeClean;
+    // Extrahiere syncId falls ein Link eingegeben wurde
+    let syncId = inputVal;
+    if (inputVal.includes('sync=')) {
+      try {
+        const url = new URL(inputVal);
+        syncId = url.searchParams.get('sync') || inputVal;
+      } catch (e) {}
+    }
 
-    showToast(tr({
-      de: 'Verbinde mit Gerät... 📱',
-      en: 'Connecting to device... 📱',
-      fr: 'Connexion à l\'appareil... 📱',
-      it: 'Connessione al dispositivo... 📱',
-      es: 'Conectando con el dispositivo... 📱',
-      el: 'Σύνδεση με τη συσκευή... 📱'
-    }));
+    showToast(tr({ de: 'Verbinde mit Gerät... 📱', en: 'Connecting to device... 📱' }));
 
-    try {
-      const resp = await fetch(CLOUD_SYNC_ENDPOINT + pairChannel + '/json?poll=1&since=all');
-      if (resp.ok) {
-        const text = await resp.text();
-        const lines = text.trim().split('\n').filter(Boolean);
-        let latestPair = null;
-
-        for (const line of lines) {
-          try {
-            const msgObj = JSON.parse(line);
-            if (msgObj.event === 'message' && msgObj.message) {
-              const data = JSON.parse(msgObj.message);
-              if (data && data.account) latestPair = data;
-            }
-          } catch (err) {}
+    const resp = await this.apiFetch(`${CLOUD_API_BASE}/${syncId}`);
+    if (resp && resp.ok) {
+      const data = await resp.json();
+      if (data && data.data && data.data.state) {
+        saveHistory();
+        state = data.data.state;
+        if (Array.isArray(data.data.categoriesOrder) && data.data.categoriesOrder.length) {
+          categoriesOrder = data.data.categoriesOrder;
+          saveCategoriesOrder();
         }
+        saveState();
+        renderApp();
+        if (typeof populateHelperTaskSelect === 'function') populateHelperTaskSelect();
 
-        if (latestPair && latestPair.account) {
-          this.account = latestPair.account;
-          this.saveAccount();
+        this.account = {
+          id: syncId,
+          username: data.data.username || 'Verbundenes Gerät',
+          createdAt: new Date().toISOString(),
+          lastSync: new Date().toISOString()
+        };
+        this.saveAccount();
+        this.startAutoSync();
+        this.updateUI();
 
-          if (latestPair.state) {
-            saveHistory();
-            state = latestPair.state;
-            if (Array.isArray(latestPair.categoriesOrder) && latestPair.categoriesOrder.length) {
-              categoriesOrder = latestPair.categoriesOrder;
-              saveCategoriesOrder();
-            }
-            saveState();
-            renderApp();
-            if (typeof populateHelperTaskSelect === 'function') populateHelperTaskSelect();
-          }
-
-          showToast(tr({
-            de: `🎉 Erfolgreich gekoppelt! Alle Daten synchronisiert.`,
-            en: `🎉 Successfully paired! All data synchronized.`,
-            fr: `🎉 Appareil connecté ! Données synchronisées.`,
-            it: `🎉 Dispositivo accoppiato con successo!`,
-            es: `🎉 ¡Dispositivo vinculado con éxito!`,
-            el: `🎉 Επιτυχής σύνδεση! Όλα τα δεδομένα συγχρονίστηκαν.`
-          }));
-
-          this.startAutoSync();
-          this.updateUI();
-          return true;
-        }
+        showToast(tr({
+          de: '🎉 Erfolgreich mit PC gekoppelt! Alle Daten synchronisiert.',
+          en: '🎉 Successfully paired with PC! All data synchronized.'
+        }));
+        return true;
       }
-    } catch (e) {
-      console.warn('Pairing error:', e);
     }
 
     showToast(tr({
-      de: 'Kopplungs-Code nicht gefunden oder abgelaufen. Bitte auf dem anderen Gerät neu öffnen!',
-      en: 'Pairing code not found or expired. Please reopen on the other device!',
-      fr: 'Code introuvable. Veuillez rouvrir le menu sur l\'autre appareil !',
-      it: 'Codice non trovato. Riapri il menu sull\'altro dispositivo!',
-      es: 'Código no encontrado. ¡Vuelve a abrirlo en el otro dispositivo!',
-      el: 'Ο κωδικός δεν βρέθηκε. Ανοίξτε ξανά το μενού στην άλλη συσκευή!'
+      de: '❌ Kopplungs-Code nicht gefunden. Bitte überprüfe den Code!',
+      en: '❌ Pairing code not found. Please check the code!'
     }));
     return false;
   },
 
   updateUI() {
-    const isAuth = !!(this.account && this.account.key);
+    const isAuth = !!(this.account && this.account.id);
     const authBtnIcon = document.getElementById('header-sync-btn-icon');
     const modalUserText = document.getElementById('sync-modal-user-text');
     const modalStatusBadge = document.getElementById('sync-modal-status-badge');
@@ -501,11 +477,11 @@ let _syncPushTimer = null;
 const originalSaveState = window.saveState;
 window.saveState = function() {
   if (typeof originalSaveState === 'function') originalSaveState();
-  if (syncEngine.account && syncEngine.account.key) {
+  if (syncEngine.account && syncEngine.account.id) {
     clearTimeout(_syncPushTimer);
     _syncPushTimer = setTimeout(() => {
       syncEngine.pushToCloud();
-    }, 600);
+    }, 800);
   }
 };
 
@@ -513,10 +489,10 @@ document.addEventListener('DOMContentLoaded', () => {
   syncEngine.init();
 
   const urlParams = new URLSearchParams(window.location.search);
-  const pairParam = urlParams.get('pair');
-  if (pairParam) {
+  const syncParam = urlParams.get('sync') || urlParams.get('pair');
+  if (syncParam) {
     setTimeout(() => {
-      syncEngine.pairWithCode(pairParam);
+      syncEngine.pairWithCode(syncParam);
       window.history.replaceState({}, document.title, window.location.pathname);
     }, 800);
   }
