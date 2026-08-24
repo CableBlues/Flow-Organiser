@@ -89,16 +89,66 @@ const TASK_STEPS_DATABASE_PART1 = {
       '2. Prends ta brosse à dents et le dentifrice',
       '3. Applique une noisette de dentifrice',
       '4. Brosse minutieusement toutes les dents pendant 2 minutes',
-      '5. Rince bien ta bouche et ta brosse',
-      '6. Rafraîchis ton visage à l\'eau froide et sèche-le'
+      '5. Rince bien ta bouche et ta brosse à dents',
+      '6. Rafraîchis ton visage à l\'eau froide et sèche-toi'
     ],
     it: [
       '1. Vai in bagno e accendi la luce',
       '2. Prendi lo spazzolino e il dentifricio',
-      '3. Applica una quantità di dentifricio grande come un pisello',
-      '4. Lava accuratamente tutti i denti per 2 minuti',
-      '5. Risciacqua bene la bocca e lo spazzolino',
-      '6. Rinfresca il viso con acqua fredda e asciugalo'
+      '3. Applica una noce di dentifricio',
+      '4. Spazzola bene tutti i denti per 2 minuti',
+      '5. Sciacqua bene la bocca e lo spazzolino',
+      '6. Rinfresca il viso con acqua fredda e asciugati'
+    ]
+  },
+  'Gesicht waschen': {
+    de: [
+      '1. Wasserhahn auf lauwarmes Wasser einstellen',
+      '2. Gesicht sanft mit Wasser befeuchten',
+      '3. Mildes Reinigungsgel oder Seife in den Händen aufschäumen',
+      '4. Gesicht in sanften Kreisbewegungen reinigen',
+      '5. Gründlich mit klarem, frischem Wasser abspülen',
+      '6. Mit einem sauberen Handtuch sanft trocken tupfen'
+    ],
+    en: [
+      '1. Turn on the tap to lukewarm water',
+      '2. Gently splash water onto your face',
+      '3. Lather mild cleanser or soap in your hands',
+      '4. Cleanse face in gentle circular motions',
+      '5. Rinse thoroughly with clear, fresh water',
+      '6. Pat dry gently with a clean towel'
+    ],
+    es: [
+      '1. Ajustar el grifo con agua tibia',
+      '2. Humedecer suavemente la cara con agua',
+      '3. Hacer espuma con un limpiador suave en las manos',
+      '4. Limpiar la cara con suaves movimientos circulares',
+      '5. Aclarar abundantemente con agua fresca',
+      '6. Secar suavemente con una toalla limpia'
+    ],
+    el: [
+      '1. Ρύθμισε τη βρύση σε χλιαρό νερό',
+      '2. Βρέξε απαλά το πρόσωπό σου με νερό',
+      '3. Κάνε αφρό με ένα απαλό καθαριστικό στα χέρια σου',
+      '4. Καθάρισε το πρόσωπο με απαλές κυκλικές κινήσεις',
+      '5. Ξέπλυνε σχολαστικά με καθαρό, φρέσκο νερό',
+      '6. Ταμπονάρισε απαλά με μια καθαρή πετσέτα'
+    ],
+    fr: [
+      '1. Règle le robinet sur de l\'eau tiède',
+      '2. Humidifie doucement ton visage avec de l\'eau',
+      '3. Fais mousser un nettoyant doux dans tes mains',
+      '4. Nettoie le visage par légers mouvements circulaires',
+      '5. Rince abondamment à l\'eau fraîche et claire',
+      '6. Tamponne doucement avec une serviette propre'
+    ],
+    it: [
+      '1. Regola il rubinetto su acqua tiepida',
+      '2. Inumidisci delicatamente il viso con l\'acqua',
+      '3. Fai schiumare un detergente delicato tra le mani',
+      '4. Detergi il viso con delicati movimenti circolari',
+      '5. Risciacqua abbondantemente con acqua fresca',
+      '6. Tampona delicatamente con un asciugamano pulito'
     ]
   },
   'Bett machen': {

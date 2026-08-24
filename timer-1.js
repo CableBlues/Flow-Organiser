@@ -88,14 +88,34 @@ const SESSION_START_PHRASES = {
   it: ["Sessione di focus avviata, {mins} minuti. Si parte!", "Iniziano {mins} minuti di concentrazione. Buon lavoro!", "Timer avviato, {mins} minuti fino alla pausa. Resisti!", "Si parte! {mins} minuti di piena concentrazione."]
 };
 
+// Ansagen beim Erreichen von 00:00
+const TIME_UP_PHRASES = {
+  de: "Die Zeit ist abgelaufen!",
+  en: "Time is up!",
+  es: "¡El tiempo ha terminado!",
+  el: "Ο χρόνος τελείωσε!",
+  fr: "Le temps est écoulé !",
+  it: "Il tempo è scaduto!"
+};
+
+// Ansagen bei 30 Sekunden Überzeit
+const OVERDUE_30S_LABELS = {
+  de: "30 Sekunden über der Zeit.",
+  en: "30 seconds overtime.",
+  es: "30 segundos de exceso.",
+  el: "30 δευτερόλεπτα καθυστέρηση.",
+  fr: "30 secondes de dépassement.",
+  it: "30 secondi di ritardo."
+};
+
 // Ansagen für die Minuten, die über die eingestellte Zeit hinaus verstreichen ("Überzeit")
 const OVERDUE_MINUTE_LABELS = {
-  de: (n) => n === 1 ? "1 Minute drüber" : `${n} Minuten drüber`,
-  en: (n) => n === 1 ? "1 minute over" : `${n} minutes over`,
-  es: (n) => n === 1 ? "1 minuto de más" : `${n} minutos de más`,
-  el: (n) => n === 1 ? "1 λεπτό παραπάνω" : `${n} λεπτά παραπάνω`,
+  de: (n) => n === 1 ? "1 Minute überzogen" : `${n} Minuten überzogen`,
+  en: (n) => n === 1 ? "1 minute overtime" : `${n} minutes overtime`,
+  es: (n) => n === 1 ? "1 minuto de exceso" : `${n} minutos de exceso`,
+  el: (n) => n === 1 ? "1 λεπτό καθυστέρηση" : `${n} λεπτά καθυστέρηση`,
   fr: (n) => n === 1 ? "1 minute de dépassement" : `${n} minutes de dépassement`,
-  it: (n) => n === 1 ? "1 minuto in più" : `${n} minuti in più`
+  it: (n) => n === 1 ? "1 minuto di ritardo" : `${n} minuti di ritardo`
 };
 
 // Zuletzt verwendete Sprüche merken, damit sich innerhalb einer Sitzung nichts unmittelbar wiederholt
@@ -200,26 +220,31 @@ function playRandomTimerAmbient(crossfade = false) {
 }
 
 // Globale Sprach-Synthese mit variierenden, schnellen Profilen
-function speakWithProfile(text, profileIndex) {
+function speakWithProfile(text, profileIndex = 0) {
   if (!timerSoundEnabled) return;
   if (!('speechSynthesis' in window)) return;
 
   try {
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
     window.speechSynthesis.cancel();
+
     const utterance = new SpeechSynthesisUtterance(text);
     const lang = typeof currentLang !== 'undefined' ? currentLang : 'de';
     const langMap = { de: 'de-DE', en: 'en-US', es: 'es-ES', el: 'el-GR', fr: 'fr-FR', it: 'it-IT' };
     const targetLang = langMap[lang] || 'de-DE';
     utterance.lang = targetLang;
+    utterance.volume = 1.0;
 
     const allVoices = window.speechSynthesis.getVoices();
-    const matchingVoices = allVoices.filter(v => v.lang.startsWith(targetLang));
+    const matchingVoices = allVoices.filter(v => v.lang && v.lang.replace('_', '-').startsWith(targetLang.split('-')[0]));
 
     const index = Math.abs(profileIndex) % VOICE_PROFILES.length;
-    const profile = VOICE_PROFILES[index];
+    const profile = VOICE_PROFILES[index] || VOICE_PROFILES[0];
 
-    utterance.rate = profile.rate;
-    utterance.pitch = profile.pitch;
+    utterance.rate = profile.rate || 1.0;
+    utterance.pitch = profile.pitch || 1.0;
 
     const femaleKeywords = ['hedda', 'anna', 'zira', 'petra', 'elena', 'hazel', 'susan', 'samantha', 'moira', 'tessa', 'deutsch', 'female', 'google'];
     const maleKeywords = ['stefan', 'yannick', 'markus', 'david', 'george', 'ravi', 'stefanos', 'male'];
@@ -234,11 +259,11 @@ function speakWithProfile(text, profileIndex) {
 
     let selectedVoice = null;
     if (profile.gender === 'female' && femaleVoices.length > 0) {
-      selectedVoice = femaleVoices[profileIndex % femaleVoices.length];
+      selectedVoice = femaleVoices[Math.abs(profileIndex) % femaleVoices.length];
     } else if (profile.gender === 'male' && maleVoices.length > 0) {
-      selectedVoice = maleVoices[profileIndex % maleVoices.length];
+      selectedVoice = maleVoices[Math.abs(profileIndex) % maleVoices.length];
     } else if (matchingVoices.length > 0) {
-      selectedVoice = matchingVoices[profileIndex % matchingVoices.length];
+      selectedVoice = matchingVoices[Math.abs(profileIndex) % matchingVoices.length];
     }
 
     if (selectedVoice) {
@@ -255,7 +280,16 @@ function speakWithProfile(text, profileIndex) {
       };
     }
 
-    window.speechSynthesis.speak(utterance);
+    setTimeout(() => {
+      try {
+        if (window.speechSynthesis.paused) {
+          window.speechSynthesis.resume();
+        }
+        window.speechSynthesis.speak(utterance);
+      } catch (err) {
+        console.warn("speechSynthesis.speak error:", err);
+      }
+    }, 60);
   } catch (e) {
     console.error("Fehler bei der speakWithProfile Ausführung:", e);
   }

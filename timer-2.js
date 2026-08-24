@@ -141,17 +141,16 @@ function startPleasantRinging() {
   };
   
   playSynthPattern();
-  ringInterval = setInterval(playSynthPattern, 3800);
-  
-  ringTimeout = setTimeout(() => {
-    stopPleasantRinging();
-  }, 120000);
+  // Zweites kurzes Signal nach 3.5 Sekunden, danach Ton beenden (damit Sprache frei ist)
+  ringInterval = setTimeout(playSynthPattern, 3500);
   
   showRingingModal();
 }
 
-function stopPleasantRinging() {
+// Schließt nur das Modal und stoppt den Alarmton – Timer läuft im Minus weiter
+function dismissRingingModalOnly() {
   if (ringInterval) {
+    clearTimeout(ringInterval);
     clearInterval(ringInterval);
     ringInterval = null;
   }
@@ -160,18 +159,18 @@ function stopPleasantRinging() {
     ringTimeout = null;
   }
   hideRingingModal();
+}
 
-  if (timerInterval) {
-    clearInterval(timerInterval);
-    timerInterval = null;
+// Stoppt Alarmton, Modal UND setzt Timer-Audio zurück (KEIN stopTimer-Aufruf!)
+function stopPleasantRinging() {
+  dismissRingingModalOnly();
+  // Sound stoppen – KEIN stopTimer() hier um Endlosschleife zu vermeiden
+  if (typeof fadeOutAmbientSound === 'function') {
+    fadeOutAmbientSound(1.5);
   }
-  timerRunning = false;
-  timerSeconds = timerInitialSeconds;
-  activeTimerTask = null;
-  updateActiveTimerLabels();
-  updateTimerDisplay();
-  updateTimerUI();
-  if (typeof renderApp === 'function') renderApp();
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
 }
 
 function showRingingModal() {
@@ -179,7 +178,7 @@ function showRingingModal() {
   
   const modal = document.createElement('div');
   modal.id = 'timer-ringing-modal';
-  modal.className = 'fixed inset-0 z-[200000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md';
+  modal.className = 'fixed inset-0 z-[200000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in';
   
   const lang = typeof currentLang !== 'undefined' ? currentLang : 'de';
   
@@ -197,51 +196,67 @@ function showRingingModal() {
   const totalDurationStr = `${initialMins}:${String(initialSecs).padStart(2, '0')}`;
 
   const durationLabel = {
-    de: `Gesamte Fokusdauer: ${totalDurationStr} Min.`,
-    en: `Total focus duration: ${totalDurationStr} Min.`,
-    es: `Duración total de enfoque: ${totalDurationStr} Min.`,
-    el: `Συνολική διάρκεια εστίασης: ${totalDurationStr} λεπτά.`,
-    fr: `Durée totale de concentration : ${totalDurationStr} min.`,
-    it: `Durata totale della concentrazione: ${totalDurationStr} min.`
-  }[lang];
+    de: `Geplante Fokusdauer: ${totalDurationStr} Min.`,
+    en: `Target focus duration: ${totalDurationStr} Min.`,
+    es: `Duración prevista: ${totalDurationStr} Min.`,
+    el: `Προβλεπόμενη διάρκεια: ${totalDurationStr} λεπτά.`,
+    fr: `Durée prévue : ${totalDurationStr} min.`,
+    it: `Durata prevista: ${totalDurationStr} min.`
+  }[lang] || `Focus: ${totalDurationStr}`;
 
   const overdueHint = {
-    de: 'Läuft weiter mit, bis du stoppst',
-    en: 'Keeps counting until you stop it',
-    es: 'Sigue contando hasta que lo detengas',
-    el: 'Συνεχίζει να μετρά μέχρι να το σταματήσεις',
-    fr: 'Continue de compter jusqu\'à ce que tu l\'arrêtes',
-    it: 'Continua a contare finché non lo fermi'
-  }[lang] || 'Keeps counting until you stop it';
+    de: 'Timer zählt im Minus weiter & erinnert dich regelmäßig',
+    en: 'Timer keeps counting in overtime & reminds you',
+    es: 'El temporizador sigue contando en exceso y te recuerda',
+    el: 'Το χρονόμετρο συνεχίζει να μετρά και σε υπενθυμίζει',
+    fr: 'Le minuteur continue en dépassement et te rappelle',
+    it: 'Il timer continua in straordinario e ti ricorda'
+  }[lang] || 'Timer keeps counting in overtime';
 
-  const btnText = {
-    de: 'Timer stoppen 🔕',
-    en: 'Stop Alarm 🔕',
-    es: 'Detener Alarma 🔕',
-    el: 'Διακοπή Ξυπνητηριού 🔕',
-    fr: 'Arrêter l\'alarme 🔕',
-    it: 'Ferma la sveglia 🔕'
-  }[lang] || 'Stop Alarm 🔕';
+  const keepWorkingText = {
+    de: 'Weiterarbeiten (Überzeit zählen ⏳)',
+    en: 'Keep working (count overtime ⏳)',
+    es: 'Seguir trabajando (contar exceso ⏳)',
+    el: 'Συνέχιση εργασίας (μέτρηση καθυστέρησης ⏳)',
+    fr: 'Continuer à travailler (compter le surplus ⏳)',
+    it: 'Continua a lavorare (conta straordinario ⏳)'
+  }[lang] || 'Keep working (count overtime ⏳)';
+
+  const stopBtnText = {
+    de: 'Timer stoppen & Reset 🔕',
+    en: 'Stop & Reset Timer 🔕',
+    es: 'Detener y reiniciar 🔕',
+    el: 'Διακοπή & Επαναφορά 🔕',
+    fr: 'Arrêter et réinitialiser 🔕',
+    it: 'Ferma e ripristina 🔕'
+  }[lang] || 'Stop & Reset Timer 🔕';
 
   modal.innerHTML = `
-    <div class="w-full max-w-sm bg-[#111116] border border-[var(--accent)] p-6 rounded-2xl shadow-[0_0_50px_rgba(139,92,246,0.3)] text-center text-white flex flex-col items-center gap-4">
-      <div class="h-16 w-16 bg-[var(--accent)]/10 rounded-full flex items-center justify-center text-3xl animate-bounce">
+    <div class="relative w-full max-w-sm bg-[#111116] border border-purple-500/50 p-6 rounded-2xl shadow-[0_0_50px_rgba(139,92,246,0.3)] text-center text-white flex flex-col items-center gap-4 animate-scale-up">
+      <button onclick="dismissRingingModalOnly()" class="absolute top-3 right-3 text-gray-400 hover:text-white text-base font-bold p-1 cursor-pointer" title="Schließen (Timer läuft im Minus weiter)">✕</button>
+      
+      <div class="h-16 w-16 bg-purple-500/10 border border-purple-500/30 rounded-full flex items-center justify-center text-3xl animate-bounce">
         ✨
       </div>
       <h2 class="font-display font-black text-lg tracking-tight text-white">${title}</h2>
       
-      <div class="space-y-1.5 my-1">
+      <div class="space-y-1.5 my-1 w-full">
         <p class="text-xs text-purple-300 font-bold tracking-wide">${durationLabel}</p>
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/30">
-          <span class="h-1.5 w-1.5 rounded-full bg-rose-400 animate-pulse"></span>
-          <p id="ringing-live-counter" class="text-[11px] text-rose-300 font-bold font-mono tracking-wide">-00:00</p>
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-500/15 border border-rose-500/40">
+          <span class="h-2 w-2 rounded-full bg-rose-400 animate-ping"></span>
+          <p id="ringing-live-counter" class="text-xs text-rose-300 font-bold font-mono tracking-widest">-00:00</p>
         </div>
-        <p class="text-[10px] text-gray-500">${overdueHint}</p>
+        <p class="text-[10px] text-gray-400 mt-1">${overdueHint}</p>
       </div>
 
-      <button onclick="stopPleasantRinging()" class="w-full py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-lg transition duration-150 transform active:scale-95 cursor-pointer">
-        ${btnText}
-      </button>
+      <div class="w-full flex flex-col gap-2 pt-1">
+        <button onclick="dismissRingingModalOnly()" class="w-full py-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white text-xs font-bold rounded-xl shadow-lg transition duration-150 transform active:scale-95 cursor-pointer">
+          ${keepWorkingText}
+        </button>
+        <button onclick="stopTimer()" class="w-full py-2 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-rose-300 border border-white/10 text-xs font-semibold rounded-xl transition cursor-pointer">
+          ${stopBtnText}
+        </button>
+      </div>
     </div>
   `;
   document.body.appendChild(modal);

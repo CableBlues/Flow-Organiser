@@ -129,7 +129,7 @@ document.write(`        <!-- ADHD-Prioritizer (NEUES MODUL 1) -->
 
   <!-- SOCIAL SCRIPTING MODAL -->
   <div id="helper-scripting-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div id="helper-scripting-card" class="mobile-modal-card w-full max-w-md bg-[#111116]/95 border border-indigo-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+    <div id="helper-scripting-card" class="mobile-modal-card animate-spring-modal w-full max-w-md bg-[#111116]/95 border border-indigo-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeScriptingModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
 
       <h3 class="text-white font-bold text-sm font-display mb-4 pb-2 border-b border-white/10 flex items-center gap-2">
@@ -173,67 +173,104 @@ document.write(`        <!-- ADHD-Prioritizer (NEUES MODUL 1) -->
     </div>
   </div>
 
-  <!-- HELPER STEP-BY-STEP MODAL -->
+  <!-- HELPER STEP-BY-STEP & CUSTOM SUBTASKS MODAL -->
   <div id="helper-steps-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div class="mobile-modal-card w-full max-w-lg bg-[#111116]/95 border p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+    <div class="mobile-modal-card animate-spring-modal w-full max-w-lg bg-[#111116]/95 border border-[var(--accent)]/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeHelperModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
 
-      <h3 class="text-white font-bold text-sm font-display mb-4 pb-2 border-b border-white/10 flex items-center gap-2">
-        <i data-lucide="footprints" class="w-4 h-4 text-purple-400 animate-pulse"></i>
-        <span>Schritt-für-Schritt-Anleitung</span>
-      </h3>
+      <div class="flex items-center justify-between mb-3 pb-2 border-b border-white/10">
+        <h3 class="text-white font-bold text-sm font-display flex items-center gap-2">
+          <i data-lucide="footprints" class="w-4 h-4 text-[var(--accent-light)]"></i>
+          <span>Teilschritte & Checkliste</span>
+        </h3>
+        <button onclick="loadDefaultStepSuggestions()" class="text-[10px] px-2.5 py-1 bg-white/5 hover:bg-white/10 hover:text-[var(--accent-light)] border border-white/10 rounded-lg font-semibold transition cursor-pointer flex items-center gap-1" title="Vordefinierte Flow-Vorschläge laden">
+          <i data-lucide="sparkles" class="w-3 h-3 text-amber-400"></i>
+          <span>Vorschläge laden</span>
+        </button>
+      </div>
 
-      <div class="space-y-4">
-        <!-- Dopamin-Ablenkungskiste -->
-        <div id="dopamine-task-box" class="p-3 bg-pink-500/5 border border-pink-500/20 rounded-xl text-center flex flex-col gap-1.5 transition-all duration-300"></div>
-
+      <div class="space-y-3">
+        <!-- Selected Task Selector -->
         <div>
-          <label class="text-[9px] text-gray-500 font-bold block mb-1">Ausgewählte Aufgabe</label>
-          <select id="helper-task-select" onchange="onHelperSelectTask()" class="w-full p-2.5 bg-[#12121e]/80 border border-white/10 rounded-xl text-xs text-purple-300 font-semibold outline-none focus:border-purple-500 cursor-pointer"></select>
+          <label class="text-[9px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Aufgabe</label>
+          <select id="helper-task-select" onchange="onHelperSelectTask()" class="w-full p-2.5 bg-[#12121e]/90 border border-white/10 rounded-xl text-xs text-purple-200 font-semibold outline-none focus:border-[var(--accent)] cursor-pointer"></select>
         </div>
 
-        <div id="helper-steps-result" class="max-h-[190px] overflow-y-auto pr-1 space-y-2"></div>
+        <!-- Custom Steps List Container -->
+        <div id="helper-steps-result" class="max-h-[220px] overflow-y-auto pr-1 space-y-1.5 min-h-[60px]"></div>
 
-        <div id="helper-steps-timer-widget" class="mx-auto max-w-[270px] w-full p-1.5 bg-white/[0.03] border border-white/10 rounded-xl flex items-center justify-center gap-2.5 shadow-md">
-          <span id="helper-steps-timer-task" class="hidden"></span>
-          <div class="flex items-center gap-2 shrink-0">
-            <div class="flex flex-col items-center justify-center min-w-[38px]">
-              <span id="helper-steps-timer-display" class="font-display font-black text-xs tracking-wider leading-none">02:00</span>
-              <div class="w-full h-0.5 bg-white/10 rounded-full mt-1 overflow-hidden">
-                <div id="helper-steps-timer-progress-bar" class="h-full bg-[var(--accent)] transition-all duration-300" style="width: 100%"></div>
-              </div>
-            </div>
+        <!-- Add Custom Step Input -->
+        <div class="flex items-center gap-2 pt-1">
+          <input type="text" id="helper-new-step-input" placeholder="Eigenen Teilschritt eingeben (Enter)..." onkeydown="if(event.key==='Enter') addCustomStepToActiveTask()" class="flex-1 p-2.5 bg-black/50 border border-white/10 rounded-xl text-xs text-gray-200 outline-none focus:border-[var(--accent)] placeholder:text-gray-500 font-medium" />
+          <button onclick="addCustomStepToActiveTask()" class="px-3.5 py-2.5 bg-[var(--accent)] hover:opacity-90 text-white rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1 shrink-0 shadow-md">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+            <span>Schritt</span>
+          </button>
+        </div>
 
-            <select id="helper-steps-timer-preset-select-real" onchange="setTimerPreset(parseInt(this.value))" class="px-1 py-0.5 bg-black/60 border border-white/30 rounded text-[10px] font-bold text-gray-300 outline-none cursor-pointer transition shrink-0">
-              <option value="2" selected>2m</option>
-              <option value="5">5m</option>
-              <option value="10">10m</option>
-              <option value="12">12m</option>
-              <option value="15">15m</option>
-              <option value="20">20m</option>
-              <option value="25">25m</option>
-              <option value="30">30m</option>
-              <option value="45">45m</option>
-              <option value="60">60m</option>
-            </select>
-
-            <div class="flex items-center gap-1 shrink-0">
-              <button id="helper-steps-timer-play" onclick="startTimer()" class="p-1 hover:bg-emerald-500/10 rounded transition cursor-pointer">
-                <i data-lucide="play" class="w-3.5 h-3.5 text-emerald-400"></i>
-              </button>
-              <button id="helper-steps-timer-pause" onclick="pauseTimer()" class="p-1 hover:bg-amber-500/10 rounded transition cursor-pointer hidden animate-pulse">
-                <i data-lucide="pause" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>
-              </button>
-              <button id="helper-steps-timer-stop" onclick="stopTimer()" class="p-1 hover:bg-rose-500/10 text-rose-400 hover:text-rose-300 transition cursor-pointer">
-                <i data-lucide="square" class="w-3.5 h-3.5"></i>
-              </button>
-              <button id="helper-steps-timer-mute" onclick="toggleTimerSound()" class="p-1 hover:bg-white/10 text-gray-400 rounded transition cursor-pointer">
-                <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
-              </button>
-            </div>
+        <!-- Focus Mode & Timer Actions -->
+        <div class="flex items-center justify-between gap-2 pt-2 border-t border-white/10">
+          <button onclick="startZenFromStepsModal()" class="px-3 py-1.5 bg-gradient-to-r from-[var(--accent)] to-indigo-600 hover:opacity-90 text-white text-xs font-bold rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-md">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-300"></i>
+            <span>Im Fokus-Modus starten</span>
+          </button>
+          
+          <div id="helper-steps-timer-widget" class="flex items-center gap-1.5 bg-black/40 border border-white/10 px-2 py-1 rounded-xl">
+            <span id="helper-steps-timer-task" class="hidden"></span>
+            <span id="helper-steps-timer-display" class="font-mono font-bold text-xs text-gray-300">02:00</span>
+            <button id="helper-steps-timer-play" onclick="startTimer()" class="p-1 hover:bg-emerald-500/20 text-emerald-400 rounded transition cursor-pointer">
+              <i data-lucide="play" class="w-3.5 h-3.5"></i>
+            </button>
+            <button id="helper-steps-timer-pause" onclick="pauseTimer()" class="p-1 hover:bg-amber-500/20 text-amber-400 rounded transition cursor-pointer hidden">
+              <i data-lucide="pause" class="w-3.5 h-3.5"></i>
+            </button>
+            <button id="helper-steps-timer-stop" onclick="stopTimer()" class="p-1 hover:bg-rose-500/20 text-rose-400 rounded transition cursor-pointer">
+              <i data-lucide="square" class="w-3 h-3"></i>
+            </button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- NOTIZ-DETAIL / BEARBEITEN MODAL -->
+  <div id="note-detail-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+    <div class="mobile-modal-card animate-spring-modal w-full max-w-lg bg-[#111116]/95 border border-amber-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+      <span onclick="closeNoteDetailModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
+
+      <div class="flex items-center justify-between mb-3 pb-2 border-b border-white/10">
+        <h3 class="text-white font-bold text-sm font-display flex items-center gap-2">
+          <i data-lucide="sticky-note" class="w-4 h-4 text-amber-400"></i>
+          <span>Notiz bearbeiten</span>
+        </h3>
+      </div>
+
+      <div class="space-y-3.5">
+        <input type="hidden" id="note-detail-index" value="-1" />
+        <textarea id="note-detail-textarea" rows="7" placeholder="Notiztext hier bearbeiten..." class="w-full p-3.5 bg-black/50 border border-amber-500/30 rounded-xl text-xs text-amber-100 outline-none focus:border-amber-400 font-medium leading-relaxed resize-none shadow-inner"></textarea>
+
+        <div class="flex items-center justify-between gap-2 pt-1">
+          <div class="flex items-center gap-1.5">
+            <button onclick="convertCurrentNoteDetailToTask()" class="px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 rounded-xl text-xs font-semibold transition cursor-pointer flex items-center gap-1">
+              <i data-lucide="arrow-right-circle" class="w-3.5 h-3.5"></i>
+              <span>In To-Do umwandeln</span>
+            </button>
+            <button onclick="copyCurrentNoteDetailText()" class="p-2 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white rounded-xl transition cursor-pointer" title="Kopieren">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            </button>
+            <button onclick="deleteCurrentNoteDetail()" class="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-xl transition cursor-pointer" title="Löschen">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button onclick="closeNoteDetailModal()" class="px-4 py-2 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-xl text-xs font-semibold transition cursor-pointer">Abbrechen</button>
+            <button onclick="saveNoteDetailModal()" class="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs rounded-xl shadow-lg transition cursor-pointer flex items-center gap-1">
+              <i data-lucide="check" class="w-4 h-4"></i>
+              <span>Speichern</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -313,4 +350,49 @@ document.write(`        <!-- ADHD-Prioritizer (NEUES MODUL 1) -->
     </div>
   </div>
 
+  <!-- SAMMEL-IMPORT MODAL (FÜR TO-DO, NOTIZEN & CO) -->
+  <div id="text-import-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+    <div class="mobile-modal-card animate-spring-modal w-full max-w-lg bg-[#111116]/95 border border-[var(--accent)]/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+      <span onclick="closeTextImportModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
+
+      <div class="flex items-center justify-between mb-3 pb-2 border-b border-white/10">
+        <h3 class="text-white font-bold text-sm font-display flex items-center gap-2">
+          <i data-lucide="file-text" class="w-4 h-4 text-[var(--accent-light)]"></i>
+          <span>Sammel-Import</span>
+          <span class="text-xs text-gray-400 font-normal">➔ Ziel:</span>
+          <span id="text-import-cat-label" class="px-2 py-0.5 rounded-full bg-[var(--accent)]/20 text-[var(--accent-light)] text-[10px] font-bold uppercase tracking-wider font-mono">To-Do</span>
+        </h3>
+      </div>
+
+      <div class="space-y-3.5">
+        <p class="text-xs text-gray-400 leading-relaxed">
+          Wähle eine <strong>.txt-Datei</strong> aus oder füge deinen Text direkt ein. Mehrere Aufgaben / Notizen (getrennt durch Zeilenumbrüche oder Leerzeilen) werden automatisch als separate Einträge angelegt:
+        </p>
+
+        <!-- FILE UPLOAD TRIGGER -->
+        <div class="flex items-center gap-2">
+          <label class="flex-1 py-2 px-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[var(--accent)]/40 rounded-xl text-xs font-semibold text-gray-300 hover:text-white transition cursor-pointer flex items-center justify-center gap-2">
+            <i data-lucide="upload-cloud" class="w-4 h-4 text-[var(--accent-light)]"></i>
+            <span>.txt / Textdatei laden</span>
+            <input type="file" id="text-import-file-input" accept=".txt,.text,.md,.csv" onchange="handleTextFileSelected(event)" class="hidden" />
+          </label>
+          <span id="text-import-count-badge" class="px-3 py-2 bg-black/40 border border-white/10 rounded-xl text-[10px] font-mono text-emerald-400 font-bold shrink-0">0 Einträge</span>
+        </div>
+
+        <!-- PASTE TEXTAREA -->
+        <div>
+          <textarea id="text-import-textarea" oninput="updateTextImportPreview()" rows="6" placeholder="Aufgaben oder Notizen hier einfügen...&#10;&#10;Beispiel:&#10;Milch und Obst einkaufen&#10;Steuerunterlagen sortieren&#10;Fahrrad aufpumpen" class="w-full p-3 bg-black/50 border border-white/10 rounded-xl text-xs text-gray-200 outline-none focus:border-[var(--accent)] font-medium leading-relaxed resize-none"></textarea>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="flex items-center justify-end gap-2 pt-1">
+          <button onclick="closeTextImportModal()" class="px-4 py-2 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-xl text-xs font-semibold transition cursor-pointer">Abbrechen</button>
+          <button onclick="executeTextImport()" class="px-5 py-2 bg-[var(--accent)] hover:opacity-90 text-white font-bold text-xs rounded-xl shadow-lg transition cursor-pointer flex items-center gap-1.5">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>Importieren</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 `);

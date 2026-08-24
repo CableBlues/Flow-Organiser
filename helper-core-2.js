@@ -1,4 +1,20 @@
-// helper-core.js Teil 2/2: Schritt-Generierung & Dopamin-Kick-Logik
+// helper-core.js Teil 2/2: Eigene Schritte / Teilschritt-Zerlegung & Dopamin-Kick-Logik
+function getTaskStepsList(taskName) {
+  if (!taskName) return [];
+  if (state.customSteps && state.customSteps[taskName] && state.customSteps[taskName].length > 0) {
+    return state.customSteps[taskName];
+  }
+  const deKey = (typeof getGermanStandardKey === 'function') ? getGermanStandardKey(taskName) : taskName;
+  const dbExists = typeof TASK_STEPS_DATABASE !== 'undefined' && TASK_STEPS_DATABASE[deKey];
+  let steps = dbExists ? TASK_STEPS_DATABASE[deKey][currentLang] : null;
+  if (!steps || steps.length === 0) {
+    const templates = (typeof FALLBACK_STEPS !== 'undefined') ? FALLBACK_STEPS : null;
+    const template = templates ? (templates[currentLang] || templates['en']) : ["1. {task} vorbereiten", "2. Den ersten Minischritt ausführen", "3. Hauptteil erledigen", "4. Fertigstellen & abhaken!"];
+    steps = template.map(step => step.replace('{task}', taskName));
+  }
+  return steps;
+}
+
 function generateTaskSteps(specificTask) {
   let val = specificTask;
   if (!val) {
@@ -12,59 +28,62 @@ function generateTaskSteps(specificTask) {
   if (!currentActiveTaskRef || currentActiveTaskRef.task !== val) currentActiveTaskRef = { task: val };
   const resBox = document.getElementById('helper-steps-result'); if (!resBox) return;
   
-  const deKey = (typeof getGermanStandardKey === 'function') ? getGermanStandardKey(val) : val;
-  const dbExists = typeof TASK_STEPS_DATABASE !== 'undefined' && TASK_STEPS_DATABASE[deKey];
-  let steps = dbExists ? TASK_STEPS_DATABASE[deKey][currentLang] : null;
-  
-  if (!steps || steps.length === 0) {
-    const templates = (typeof FALLBACK_STEPS !== 'undefined') ? FALLBACK_STEPS : null;
-    const template = templates ? (templates[currentLang] || templates['en']) : ["Step 1: {task}"];
-    steps = template.map(step => step.replace('{task}', val));
-  }
-  
+  const steps = getTaskStepsList(val);
   currentGeneratedSteps = steps; resBox.innerHTML = '';
   if (!state.completedSteps) state.completedSteps = {};
   const completedIndices = state.completedSteps[val] || [];
   
-  const clickToCompleteText = {
-    de: 'Klicken zum Erledigen',
-    en: 'Click to complete',
-    es: 'Clic para completar',
-    el: 'Κλικ για ολοκλήρωση'
-  }[currentLang] || 'Click to complete';
-  
-  steps.forEach((stepText, idx) => {
-    const isChecked = completedIndices.includes(idx);
-    
-    if (isChecked) return;
-    
-    const cleanedText = cleanStepText(stepText);
-    
-    const stepDiv = document.createElement('div');
-    const activeClasses = 'border-l-2 border-l-[var(--accent)] bg-white/[0.02] border-y border-r border-white/5 text-gray-200 hover:bg-[var(--accent)]/5 hover:border-[var(--accent)]/20';
+  if (steps.length === 0) {
+    resBox.innerHTML = `<div class="text-center py-3 text-xs text-gray-400">Noch keine Teilschritte vorhanden. Füge unten eigene Schritte hinzu oder klicke auf "Vorschläge laden".</div>`;
+  } else {
+    steps.forEach((stepText, idx) => {
+      const isChecked = completedIndices.includes(idx);
+      const cleanedText = cleanStepText(stepText);
       
-    stepDiv.className = `group relative flex items-center justify-between gap-3 p-3.5 rounded-r-lg rounded-l-sm border-0 transition-all duration-200 ${activeClasses} my-2 cursor-pointer`;
-    
-    stepDiv.onclick = () => {
-      stopSpeaking();
-      handleStepClick(idx);
-    };
-    
-    stepDiv.onmouseenter = () => speakText(cleanedText, idx);
-    stepDiv.onmouseleave = () => stopSpeaking();
-    
-    stepDiv.innerHTML = `
-      <span class="step-text flex-1 text-xs leading-snug break-words">${cleanedText}</span>
-      <span class="opacity-0 group-hover:opacity-100 text-[10px] font-bold text-[var(--accent-light)] select-none transition-all duration-150 shrink-0 pr-1 tracking-wide font-sans">
-        ${clickToCompleteText}
-      </span>
-    `;
-    resBox.appendChild(stepDiv);
-  });
+      const stepDiv = document.createElement('div');
+      stepDiv.className = `group flex items-center justify-between gap-2.5 p-2.5 rounded-xl border transition-all duration-200 ${isChecked ? 'bg-white/[0.02] border-white/5 opacity-60' : 'bg-white/[0.04] border-white/10 hover:border-[var(--accent)]/30'} cursor-pointer`;
+      
+      stepDiv.innerHTML = `
+        <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleCustomStepCheck('${val.replace(/'/g, "\\'")}', ${idx}, event)" class="w-4 h-4 rounded text-[var(--accent)] cursor-pointer accent-[var(--accent)] shrink-0" />
+        <span class="step-text flex-1 text-xs leading-snug break-words font-medium ${isChecked ? 'line-through text-gray-400' : 'text-gray-200'}" onclick="toggleCustomStepCheck('${val.replace(/'/g, "\\'")}', ${idx}, event)">${cleanedText}</span>
+        <button onclick="deleteCustomStep('${val.replace(/'/g, "\\'")}', ${idx}, event)" class="opacity-0 group-hover:opacity-100 p-1 text-gray-500 hover:text-red-400 rounded transition cursor-pointer shrink-0" title="Schritt entfernen">
+          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+        </button>
+      `;
+      resBox.appendChild(stepDiv);
+    });
+  }
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
-function handleStepClick(stepIndex) {
+function addCustomStepToActiveTask() {
+  const input = document.getElementById('helper-new-step-input');
+  if (!input || !input.value.trim()) return;
+  const newStep = input.value.trim();
+  
+  let targetTask = currentActiveTaskRef?.task;
+  if (!targetTask) {
+    const select = document.getElementById('helper-task-select'); 
+    targetTask = select ? select.value : '';
+  }
+  if (!targetTask) {
+    showToast(tr({ de: 'Bitte wähle zuerst eine Aufgabe aus!', en: 'Please select a task first!' }));
+    return;
+  }
+  
+  if (!state.customSteps) state.customSteps = {};
+  if (!state.customSteps[targetTask]) {
+    state.customSteps[targetTask] = [...getTaskStepsList(targetTask)];
+  }
+  
+  state.customSteps[targetTask].push(newStep);
+  input.value = '';
+  saveState();
+  generateTaskSteps(targetTask);
+  showToast(tr({ de: 'Teilschritt hinzugefügt! 🪜', en: 'Substep added! 🪜' }));
+}
+
+function loadDefaultStepSuggestions() {
   let targetTask = currentActiveTaskRef?.task;
   if (!targetTask) {
     const select = document.getElementById('helper-task-select'); 
@@ -72,11 +91,45 @@ function handleStepClick(stepIndex) {
   }
   if (!targetTask) return;
   
+  const deKey = (typeof getGermanStandardKey === 'function') ? getGermanStandardKey(targetTask) : targetTask;
+  const dbExists = typeof TASK_STEPS_DATABASE !== 'undefined' && TASK_STEPS_DATABASE[deKey];
+  let defaultList = dbExists ? TASK_STEPS_DATABASE[deKey][currentLang] : null;
+  if (!defaultList || defaultList.length === 0) {
+    const templates = (typeof FALLBACK_STEPS !== 'undefined') ? FALLBACK_STEPS : null;
+    const template = templates ? (templates[currentLang] || templates['en']) : ["1. {task} vorbereiten", "2. Minischritt ausführen", "3. Hauptteil erledigen", "4. Fertigstellen"];
+    defaultList = template.map(step => step.replace('{task}', targetTask));
+  }
+  
+  if (!state.customSteps) state.customSteps = {};
+  state.customSteps[targetTask] = [...defaultList];
+  if (state.completedSteps) delete state.completedSteps[targetTask];
+  saveState();
+  generateTaskSteps(targetTask);
+  showToast(tr({ de: 'Standard-Vorschläge geladen! 💡', en: 'Default suggestions loaded! 💡' }));
+}
+
+function deleteCustomStep(taskName, stepIndex, event) {
+  if (event) event.stopPropagation();
+  if (!state.customSteps) state.customSteps = {};
+  if (!state.customSteps[taskName]) {
+    state.customSteps[taskName] = [...getTaskStepsList(taskName)];
+  }
+  state.customSteps[taskName].splice(stepIndex, 1);
+  if (state.completedSteps && state.completedSteps[taskName]) {
+    state.completedSteps[taskName] = state.completedSteps[taskName].filter(i => i !== stepIndex).map(i => i > stepIndex ? i - 1 : i);
+  }
+  saveState();
+  generateTaskSteps(taskName);
+}
+
+function toggleCustomStepCheck(targetTask, stepIndex, event) {
+  if (event) event.stopPropagation();
+  if (!targetTask) return;
+  
   if (!state.completedSteps) state.completedSteps = {};
   if (!state.completedSteps[targetTask]) state.completedSteps[targetTask] = [];
   
   const isCompleted = state.completedSteps[targetTask].includes(stepIndex);
-  
   if (!isCompleted) {
     state.completedSteps[targetTask].push(stepIndex);
     if (typeof playProceduralSound === 'function') playProceduralSound(3);
@@ -87,51 +140,51 @@ function handleStepClick(stepIndex) {
   saveState();
   generateTaskSteps(targetTask);
   
-  const deKey = (typeof getGermanStandardKey === 'function') ? getGermanStandardKey(targetTask) : targetTask;
-  const dbExists = typeof TASK_STEPS_DATABASE !== 'undefined' && TASK_STEPS_DATABASE[deKey];
-  let steps = dbExists ? TASK_STEPS_DATABASE[deKey][currentLang] : null;
-  
-  if (!steps || steps.length === 0) {
-    const templates = (typeof FALLBACK_STEPS !== 'undefined') ? FALLBACK_STEPS : null;
-    const template = templates ? (templates[currentLang] || templates['en']) : ["Step 1: {task}"];
-    steps = template.map(step => step.replace('{task}', targetTask));
-  }
-  
+  const steps = getTaskStepsList(targetTask);
   const completedCount = state.completedSteps[targetTask].length;
   if (steps.length > 0 && completedCount === steps.length) {
-    let targetCat = currentActiveTaskRef?.category;
-    let catToUse = targetCat; 
-    let idxToUse = -1;
-    
-    if (catToUse && state.items[catToUse]) {
-      idxToUse = state.items[catToUse].indexOf(targetTask);
-    }
-    
-    if (idxToUse === -1) {
-      for (const cat of ['daily', 'weekly', 'todo', 'occasionally', 'termine']) {
-        const idx = (state?.items?.[cat] || []).indexOf(targetTask);
-        if (idx !== -1) { catToUse = cat; idxToUse = idx; break; }
-      }
-    }
-    
     setTimeout(() => {
       closeHelperModal(); 
       delete state.completedSteps[targetTask]; 
       saveState();
+      
+      let targetCat = currentActiveTaskRef?.category;
+      let catToUse = targetCat; let idxToUse = -1;
+      if (catToUse && state.items[catToUse]) {
+        idxToUse = state.items[catToUse].indexOf(targetTask);
+      }
+      if (idxToUse === -1) {
+        for (const cat of ['daily', 'weekly', 'todo', 'occasionally', 'termine']) {
+          const idx = (state?.items?.[cat] || []).indexOf(targetTask);
+          if (idx !== -1) { catToUse = cat; idxToUse = idx; break; }
+        }
+      }
       if (catToUse && idxToUse !== -1) {
         handleCompleteTask(catToUse, idxToUse);
       } else {
         if (typeof playProceduralSound === 'function') playProceduralSound(3); 
         if (typeof triggerConfetti === 'function') triggerConfetti();
         if (typeof showPraise === 'function') showPraise();
-        showToast({
+        showToast(tr({
           de: `🎉 Alle Schritte gelöst! "${targetTask}" ist erledigt!`,
-          en: `🎉 All steps completed! "${targetTask}" is done!`,
-          es: `🎉 ¡Todos los steps completed! ¡"${targetTask}" ist erledigt!`,
-          el: `🎉 Όλα τα βήματα ολοκληρώθηκαν! Η εργασία "${targetTask}" έγινε!`
-        }[currentLang]);
+          en: `🎉 All steps completed! "${targetTask}" is done!`
+        }));
       }
-    }, 350);
+    }, 400);
+  }
+}
+
+function startZenFromStepsModal() {
+  let targetTask = currentActiveTaskRef?.task;
+  if (!targetTask) {
+    const select = document.getElementById('helper-task-select'); 
+    targetTask = select ? select.value : '';
+  }
+  closeHelperModal();
+  if (targetTask && typeof startZenWithTask === 'function') {
+    startZenWithTask(targetTask);
+  } else if (typeof toggleZenMode === 'function') {
+    toggleZenMode();
   }
 }
 

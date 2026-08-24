@@ -358,3 +358,63 @@ html body .animate-party-swing {
   pointer-events: none !important;
 }
 
+
+/* ========================================== */
+/* NEW MOVEMENT & ZEN ZEN-ANIMATIONS          */
+/* ========================================== */
+
+@keyframes zenBreathe {
+  0%, 100% {
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.12), inset 0 0 20px rgba(139, 92, 246, 0.05);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 60px rgba(139, 92, 246, 0.28), inset 0 0 35px rgba(139, 92, 246, 0.12);
+    transform: scale(1.015);
+  }
+}
+#zen-chill-view > div {
+  animation: zenBreathe 6s ease-in-out infinite !important;
+}
+
+@keyframes bubbleRiseUp {
+  0% {
+    transform: translateY(0) scale(0.6) rotate(0deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-120px) scale(1.4) rotate(45deg);
+    opacity: 0;
+  }
+}
+.floating-success-bubble {
+  position: fixed;
+  z-index: 999999;
+  pointer-events: none;
+  width: 14px;
+  height: 14px;
+  background: radial-gradient(circle at 30% 30%, #38bdf8 0%, #10b981 60%, #8b5cf6 100%);
+  border: 1.5px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+  animation: bubbleRiseUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes waveWaterDrift {
+  0% { transform: translateX(0) translateZ(0) scaleY(1); }
+  50% { transform: translateX(-15px) translateZ(0) scaleY(1.05); }
+  100% { transform: translateX(0) translateZ(0) scaleY(1); }
+}
+.water-wave-element {
+  animation: waveWaterDrift 7s ease-in-out infinite;
+}
+
+@keyframes modalSpringIn {
+  0% { transform: scale(0.85) translateY(25px); opacity: 0; }
+  60% { transform: scale(1.03) translateY(-5px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+.animate-spring-modal {
+  animation: modalSpringIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+

@@ -78,11 +78,14 @@ function loadState() {
     if (saved) {
       const parsed = JSON.parse(saved);
       if (parsed && parsed.items) {
-        if (!parsed.items.notes || Array.isArray(parsed.items.notes)) {
-          parsed.items.notes = Array.isArray(parsed.items.notes) ? parsed.items.notes.join('\n') : '';
+        if (typeof parsed.items.notes === 'string') {
+          parsed.items.notes = parsed.items.notes.split('\n').map(s => s.trim()).filter(Boolean);
+        } else if (!Array.isArray(parsed.items.notes)) {
+          parsed.items.notes = [];
         }
         if (parsed.streak === undefined) parsed.streak = 0;
         if (!parsed.completedSteps) parsed.completedSteps = {};
+        if (!parsed.customSteps) parsed.customSteps = {};
         
         // Absicherung für Einkaufsliste & Protokoll im geladenen Zustand
         if (!parsed.shoppingList) parsed.shoppingList = [];
@@ -98,16 +101,22 @@ function loadState() {
           };
         }
         
-        // Dynamische Injektion: Gesicht waschen direkt nach Zähne morgens platzieren
-        if (parsed.items.daily) {
-          const dentalGerman = parsed.items.daily.indexOf("Zähne morgens");
-          if (dentalGerman !== -1 && !parsed.items.daily.includes("Gesicht waschen")) {
-            parsed.items.daily.splice(dentalGerman + 1, 0, "Gesicht waschen");
-          }
-          const dentalEnglish = parsed.items.daily.indexOf("Brush teeth (morning)");
-          if (dentalEnglish !== -1 && !parsed.items.daily.includes("Wash face")) {
-            parsed.items.daily.splice(dentalEnglish + 1, 0, "Wash face");
-          }
+        // Deduplizierung: Falls sowohl 'Gesicht waschen' als auch 'Wash face' oder andere Sprachvarianten in daily liegen
+        if (parsed.items && Array.isArray(parsed.items.daily)) {
+          const faceWashingTerms = [
+            'Gesicht waschen', 'Wash face', 'Lavarse la cara', 
+            'Πλύσιμο προσώπου', 'Se laver le visage', 'Lavarsi la faccia'
+          ];
+          let foundFace = false;
+          parsed.items.daily = parsed.items.daily.filter(item => {
+            const taskName = typeof item === 'object' ? item.task : item;
+            if (faceWashingTerms.includes(taskName)) {
+              if (foundFace) return false; // Duplikat entfernen
+              foundFace = true;
+              return true;
+            }
+            return true;
+          });
         }
         
         return parsed;
@@ -115,19 +124,12 @@ function loadState() {
     }
   } catch (e) {}
   const todayStr = new Date().toISOString().split('T')[0];
-  const initialLang = 'en';
-  const localizedDefaults = DEFAULT_TASKS_BY_LANG[initialLang];
-  
-  // Ersteinspielung der täglichen Aufgaben inklusive Gesicht waschen
-  const initialDaily = [...localizedDefaults.daily];
-  const dentalEnglish = initialDaily.indexOf("Brush teeth (morning)");
-  if (dentalEnglish !== -1) {
-    initialDaily.splice(dentalEnglish + 1, 0, "Wash face");
-  }
+  const initialLang = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'de';
+  const localizedDefaults = DEFAULT_TASKS_BY_LANG[initialLang] || DEFAULT_TASKS_BY_LANG['de'];
 
   return {
     version: 3, lastDate: todayStr,
-    items: { daily: initialDaily, weekly: [...localizedDefaults.weekly], occasionally: [...localizedDefaults.occasionally], todo: [], termine: [], notes: '' },
+    items: { daily: [...localizedDefaults.daily], weekly: [...localizedDefaults.weekly], occasionally: [...localizedDefaults.occasionally], todo: [], termine: [], notes: [] },
     done: [], archive: [], streak: 0, completedSteps: {},
     shoppingList: [], shoppingHistory: [],
     cooking: createDefaultCookingState()
@@ -149,8 +151,15 @@ function loadHistory() {
 // Jetzt wird die History nur noch dann persistiert, wenn sie sich tatsaechlich aendert
 // (saveHistory() / handleUndo()). Das Endergebnis in localStorage ist zu jedem Zeitpunkt exakt
 // identisch zu vorher - nur die Anzahl unnoetiger Schreibvorgaenge sinkt drastisch.
+let syncEngineDebounceTimer = null;
+
 function saveState() {
   localStorage.setItem(STORE_KEY, JSON.stringify(state));
+  if (typeof triggerCloudAutoSave === 'function') triggerCloudAutoSave();
+  if (typeof syncEngine !== 'undefined' && syncEngine.account) {
+    if (syncEngineDebounceTimer) clearTimeout(syncEngineDebounceTimer);
+    syncEngineDebounceTimer = setTimeout(() => syncEngine.pushToCloud(), 1200);
+  }
 }
 
 function persistHistory() {
@@ -211,22 +220,11 @@ function handleReset() {
   
   if (confirm(confirmMsg)) {
     saveHistory();
-    const localizedDefaults = DEFAULT_TASKS_BY_LANG[currentLang];
-    
-    const dailyList = [...localizedDefaults.daily];
-    const dentalGerman = dailyList.indexOf("Zähne morgens");
-    if (dentalGerman !== -1 && !dailyList.includes("Gesicht waschen")) {
-      dailyList.splice(dentalGerman + 1, 0, "Gesicht waschen");
-    }
-    const dentalEnglish = dailyList.indexOf("Brush teeth (morning)");
-    if (dentalEnglish !== -1 && !dailyList.includes("Wash face")) {
-      dailyList.splice(dentalEnglish + 1, 0, "Wash face");
-    }
-
+    const localizedDefaults = DEFAULT_TASKS_BY_LANG[currentLang] || DEFAULT_TASKS_BY_LANG['de'];
     state = {
       version: 3, lastDate: new Date().toISOString().split('T')[0],
-      items: { daily: dailyList, weekly: [...localizedDefaults.weekly], occasionally: [...localizedDefaults.occasionally], todo: [], termine: [], notes: '' },
-      done: [], archive: [], streak: 0, completedSteps: {},
+      items: { daily: [...localizedDefaults.daily], weekly: [...localizedDefaults.weekly], occasionally: [...localizedDefaults.occasionally], todo: [], termine: [], notes: [] },
+      done: [], archive: [], streak: 0, completedSteps: {}, customSteps: {},
       shoppingList: [], shoppingHistory: [],
       cooking: createDefaultCookingState()
     };
@@ -264,6 +262,11 @@ function handleOpenFile(e) {
       const imported = JSON.parse(reader.result);
       if (imported && imported.items) {
         saveHistory(); state = imported; 
+        if (typeof state.items.notes === 'string') {
+          state.items.notes = state.items.notes.split('\n').map(s => s.trim()).filter(Boolean);
+        } else if (!Array.isArray(state.items.notes)) {
+          state.items.notes = [];
+        }
         if (!state.completedSteps) state.completedSteps = {};
         if (!state.shoppingList) state.shoppingList = [];
         if (!state.shoppingHistory) state.shoppingHistory = [];
@@ -272,6 +275,42 @@ function handleOpenFile(e) {
     } catch(err) { alert(t('toast_import_error')); }
   };
   reader.readAsText(file);
+}
+
+function convertNoteToTask(noteIndex, targetCategory = 'todo', event) {
+  if (event) event.stopPropagation();
+  if (!state.items.notes || !state.items.notes[noteIndex]) return;
+  saveHistory();
+  const [noteItem] = state.items.notes.splice(noteIndex, 1);
+  const noteText = typeof noteItem === 'object' ? noteItem.task : noteItem;
+  if (!state.items[targetCategory]) state.items[targetCategory] = [];
+  state.items[targetCategory].push(noteText);
+  saveState();
+  showToast(tr({
+    de: `Notiz in "${t(targetCategory)}" umgewandelt! ✨`,
+    en: `Note converted to "${t(targetCategory)}"! ✨`,
+    es: `¡Nota convertida a "${t(targetCategory)}"! ✨`,
+    el: `Η σημείωση μετατράπηκε σε "${t(targetCategory)}"! ✨`,
+    fr: `Note convertie en "${t(targetCategory)}" ! ✨`,
+    it: `Nota convertita in "${t(targetCategory)}"! ✨`
+  }));
+  renderApp();
+  populateHelperTaskSelect();
+}
+
+function copyNoteText(noteIndex, event) {
+  if (event) event.stopPropagation();
+  if (!state.items.notes || !state.items.notes[noteIndex]) return;
+  const noteItem = state.items.notes[noteIndex];
+  const noteText = typeof noteItem === 'object' ? noteItem.task : noteItem;
+  navigator.clipboard?.writeText(noteText).then(() => {
+    showToast(tr({
+      de: 'Notiz in Zwischenablage kopiert! 📋',
+      en: 'Note copied to clipboard! 📋',
+      es: '¡Nota copiada al portapapeles! 📋',
+      el: 'Η σημείωση αντιγράφηκε στο πρόχειρο! 📋',
+      fr: 'Note copiée dans le presse-papiers ! 📋',
+      it: 'Nota copiata negli appunti! 📋'
+    }));
+  }).catch(() => {});
 } 
- 
- 

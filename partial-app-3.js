@@ -222,6 +222,26 @@ document.write(`    <!-- CENTRAL DOCK (macOS 3D Floating-Stil) -->
                 <span class="dock-label">Skripte</span>
               </button>
             </div>
+
+            <!-- Wecker & Reminder -->
+            <div class="relative group cursor-pointer mac-dock-item-wrapper" onmouseenter="showPanelHover('alarm')" onmouseleave="hidePanelHover('alarm')">
+              <button onclick="togglePanel('alarm')" class="mac-dock-btn balloon-alarm h-12 w-12 md:h-14 md:w-14 border border-cyan-500/30 rounded-2xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Wecker & Reminder: Verwalte Alarme und zeitbasierte Erinnerungen mit Alarm-Ton">
+                <i data-lucide="alarm-clock" class="w-5 h-5 text-cyan-400"></i>
+                <span class="dock-label">Wecker</span>
+                <span id="alarm-active-badge" class="hidden w-2 h-2 rounded-full bg-cyan-400 animate-ping absolute top-1 right-1"></span>
+              </button>
+
+              <div id="panel-alarm" class="hidden absolute left-1/2 -translate-x-1/2 bottom-[calc(100%+10px)] z-[110] w-[340px] bg-[#111116]/95 border border-cyan-500/40 p-4 rounded-3xl shadow-2xl backdrop-blur-md flex flex-col gap-3 text-left">
+                <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                  <h4 class="font-bold text-sm font-display text-white flex items-center gap-1.5">
+                    <i data-lucide="alarm-clock" class="w-4 h-4 text-cyan-400"></i>
+                    <span>Wecker & Reminder</span>
+                  </h4>
+                  <button onclick="togglePanel('alarm')" class="text-gray-400 hover:text-white text-xs font-bold p-1 cursor-pointer">✕</button>
+                </div>
+              </div>
+            </div>
+
           </div>
 
           <div class="h-8 w-[1px] bg-white/10 mx-1 align-middle self-center"></div>

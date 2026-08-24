@@ -2,7 +2,15 @@
 document.write(`  <div id="app" class="min-h-screen max-w-[1920px] w-full mx-auto flex flex-col p-3 md:p-5 select-none justify-between">
     
     <!-- HEADER BAR -->
-    <header class="relative z-[9999] flex flex-nowrap items-center justify-between gap-x-1 md:gap-x-1.5 mb-6 w-full bg-[#13131c]/90 p-1.5 md:p-2 border border-white/10 rounded-2xl backdrop-blur-xl shadow-2xl">
+    <header class="relative z-[9999] flex flex-nowrap items-center justify-between gap-x-1 md:gap-x-1.5 mb-2 w-full bg-[#13131c]/90 p-1.5 md:p-2 border border-white/10 rounded-2xl backdrop-blur-xl shadow-2xl">
+      
+      <!-- Subtile Wave-Bewegung im Hintergrund -->
+      <div class="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none opacity-20 zen-hide">
+        <svg class="absolute bottom-[-10px] left-0 w-[200%] h-[40px] water-wave-element" viewBox="0 0 1200 120" preserveAspectRatio="none">
+          <path d="M0,60 C150,90 350,30 600,60 C850,90 1050,30 1200,60 L1200,120 L0,120 Z" fill="rgba(56, 189, 248, 0.2)"></path>
+        </svg>
+      </div>
+
       
       <!-- BEHÄLTER 1: Feedback & Logo -->
       <div class="flex items-center gap-1.5 md:gap-2 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
@@ -266,7 +274,7 @@ document.write(`  <div id="app" class="min-h-screen max-w-[1920px] w-full mx-aut
 
       <!-- BEHÄLTER 3: Focus Mode Toggle -->
       <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
-        <button onclick="toggleMinimalist()" class="h-8 px-2 md:h-10 md:px-3.5 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 hover:border-purple-500/60 rounded-xl text-purple-200 flex items-center gap-1.5 text-[10px] md:text-xs font-bold cursor-pointer transition-all duration-300 shadow-[0_0_12px_rgba(139,92,246,0.15)] hover:shadow-[0_0_20px_rgba(139,92,246,0.3)]" title="Minimalistischen Fokus-Modus ein- oder ausschalten">
+        <button id="btn-focus-mode" onclick="toggleMinimalist()" class="h-8 px-2 md:h-10 md:px-3.5 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 hover:border-purple-500/60 rounded-xl text-purple-200 flex items-center gap-1.5 text-[10px] md:text-xs font-bold cursor-pointer transition-all duration-300 shadow-[0_0_12px_rgba(139,92,246,0.15)] hover:shadow-[0_0_20px_rgba(139,92,246,0.3)]" title="Minimalistischen Fokus-Modus ein- oder ausschalten">
           <i id="zen-btn-icon" data-lucide="eye" class="w-3.5 h-3.5 text-purple-400 animate-pulse"></i>
           <span class="hidden 2xl:inline" id="minimal-mode-btn-text" data-i18n="minimal_mode">Focus Mode</span>
         </button>
@@ -302,3 +310,5 @@ document.write(`  <div id="app" class="min-h-screen max-w-[1920px] w-full mx-aut
       </div>
 
 `);
+
+

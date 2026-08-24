@@ -5,32 +5,32 @@ const HISTORY_KEY = 'flowPlannerV3History';
 // 4-LANGUAGE DEFAULT LIST DICTIONARY
 const DEFAULT_TASKS_BY_LANG = {
   en: {
-    daily: ['Meds', 'Brush teeth (morning)', 'Make bed', 'Air out room', 'Cook a meal', 'Brush teeth (evening)', 'Take a shower', 'Tidy up'],
+    daily: ['Meds', 'Brush teeth (morning)', 'Wash face', 'Make bed', 'Air out room', 'Cook a meal', 'Brush teeth (evening)', 'Take a shower', 'Tidy up'],
     weekly: ['Dusting', 'Vacuuming', 'Mopping', 'Washing dishes', 'Washing laundry', 'Hanging up laundry', 'Cleaning sink & mirror cabinet', 'Tiles & bathtub', 'Cleaning the toilet', 'Taking out the trash', 'Returning deposit bottles'],
     occasionally: ['Washing hair', 'Cutting hair', 'Changing bedsheets', 'Clipping nails', 'Cleaning doors & windows', 'Cleaning stove & fridge']
   },
   de: {
-    daily: ['Medis', 'Zähne morgens', 'Bett machen', 'Durchlüften', 'Kochen', 'Zähne abends', 'Duschen', 'Aufräumen'],
+    daily: ['Medis', 'Zähne morgens', 'Gesicht waschen', 'Bett machen', 'Durchlüften', 'Kochen', 'Zähne abends', 'Duschen', 'Aufräumen'],
     weekly: ['Staub wischen', 'Staubsaugen', 'Boden wischen', 'Geschirr spülen', 'Wäsche waschen', 'Wäsche aufhängen', 'Waschbecken & Spiegelschrank putzen', 'Fliesen & Badewanne', 'Klo putzen', 'Müll wegbringen', 'Pfandflaschen wegbringen'],
     occasionally: ['Haare waschen', 'Haare schneiden', 'Bettwäsche tauschen', 'Nägel schneiden', 'Türe/Fenster putzen', 'Herd & Kühlschrank putzen']
   },
   es: {
-    daily: ['Medicación', 'Cepillarse los dientes (mañana)', 'Hacer la cama', 'Ventilar', 'Cocinar', 'Cepillarse los dientes (noche)', 'Ducharse', 'Ordenar'],
+    daily: ['Medicación', 'Cepillarse los dientes (mañana)', 'Lavarse la cara', 'Hacer la cama', 'Ventilar', 'Cocinar', 'Cepillarse los dientes (noche)', 'Ducharse', 'Ordenar'],
     weekly: ['Quitar el polvo', 'Pasar la aspiradora', 'Fregar el suelo', 'Lavar los platos', 'Hacer la colada', 'Colgar la ropa', 'Limpiar el lavabo y espejo', 'Azulejos y bañera', 'Limpiar el váter', 'Sacar la basura', 'Llevar botellas retornables'],
     occasionally: ['Lavarse el pelo', 'Cortarse el pelo', 'Cambiar las sábanas', 'Cortarse las uñas', 'Limpiar puertas y ventanas', 'Limpiar cocina y nevera']
   },
   el: {
-    daily: ['Φάρμακα', 'Πλύσιμο δοντιών (πρωί)', 'Στρώσιμο κρεβατιού', 'Αερισμός χώρου', 'Μαγειρική', 'Πλύσιμο δοντιών (βράδυ)', 'Ντους', 'Τακτοποίηση'],
+    daily: ['Φάρμακα', 'Πλύσιμο δοντιών (πρωί)', 'Πλύσιμο προσώπου', 'Στρώσιμο κρεβατιού', 'Αερισμός χώρου', 'Μαγειρική', 'Πλύσιμο δοντιών (βράδυ)', 'Ντους', 'Τακτοποίηση'],
     weekly: ['Ξεσκόνισμα', 'Σκούπισμα', 'Σφουγγάρισμα', 'Πλύσιμο πιάτων', 'Πλύσιμο ρούχων', 'Άπλωμα ρούχων', 'Καθαρισμός νιπτήρα & καθρέφτη', 'Πλακάκια & μπανιέρα', 'Καθαρισμός λεκάνης', 'Πέταμα σκουπιδιών', 'Επιστροφή άδειων μπουκαλιών'],
     occasionally: ['Λούσιμο', 'Κούρεμα', 'Αλλαγή σεντονιών', 'Κόψιμο νυχιών', 'Καθαρισμός πορτών & παραθύρων', 'Καθαρισμός κουζίνας & ψυγείου']
   },
   fr: {
-    daily: ['Médicaments', 'Brossage des dents (matin)', 'Faire le lit', 'Aérer la pièce', 'Préparer un repas', 'Brossage des dents (soir)', 'Prendre une douche', 'Ranger'],
+    daily: ['Médicaments', 'Brossage des dents (matin)', 'Se laver le visage', 'Faire le lit', 'Aérer la pièce', 'Préparer un repas', 'Brossage des dents (soir)', 'Prendre une douche', 'Ranger'],
     weekly: ['Épousseter', 'Passer l\'aspirateur', 'Laver le sol', 'Faire la vaisselle', 'Faire une lessive', 'Étendre le linge', 'Nettoyer lavabo & armoire à miroir', 'Carrelage & baignoire', 'Nettoyer les toilettes', 'Sortir les poubelles', 'Rapporter les bouteilles consignées'],
     occasionally: ['Se laver les cheveux', 'Se couper les cheveux', 'Changer les draps', 'Se couper les ongles', 'Nettoyer portes & fenêtres', 'Nettoyer cuisinière & réfrigérateur']
   },
   it: {
-    daily: ['Farmaci', 'Lavare i denti (mattina)', 'Rifare il letto', 'Arieggiare la stanza', 'Preparare un pasto', 'Lavare i denti (sera)', 'Fare la doccia', 'Riordinare'],
+    daily: ['Farmaci', 'Lavare i denti (mattina)', 'Lavarsi la faccia', 'Rifare il letto', 'Arieggiare la stanza', 'Preparare un pasto', 'Lavare i denti (sera)', 'Fare la doccia', 'Riordinare'],
     weekly: ['Spolverare', 'Passare l\'aspirapolvere', 'Lavare i pavimenti', 'Lavare i piatti', 'Fare il bucato', 'Stendere il bucato', 'Pulire lavandino e armadietto specchio', 'Piastrelle e vasca', 'Pulire il WC', 'Portare fuori la spazzatura', 'Riportare le bottiglie con vuoto a rendere'],
     occasionally: ['Lavare i capelli', 'Tagliare i capelli', 'Cambiare le lenzuola', 'Tagliare le unghie', 'Pulire porte e finestre', 'Pulire fornelli e frigorifero']
   }

@@ -273,6 +273,148 @@ function clearFearSetting() {
   
   state.compassFearSetting = {};
   saveState();
-} 
- 
- 
+}
+
+// ==========================================
+// SOCIAL-SKRIPTER LOGIK & MODAL-HANDLING
+// ==========================================
+
+function openScriptingModal() {
+  const modal = document.getElementById('helper-scripting-modal');
+  if (modal) modal.classList.remove('hidden');
+  onScenarioSelectChange();
+}
+
+function closeScriptingModal() {
+  const modal = document.getElementById('helper-scripting-modal');
+  if (modal) modal.classList.add('hidden');
+}
+
+function onScenarioSelectChange() {
+  const select = document.getElementById('script-scenario-select');
+  const fieldsContainer = document.getElementById('script-fields-container');
+  const resultBox = document.getElementById('script-result-box');
+  if (!select || !fieldsContainer) return;
+  if (resultBox) resultBox.classList.add('hidden');
+
+  const scenario = select.value;
+  if (scenario === 'doctor') {
+    fieldsContainer.innerHTML = `
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-[9px] text-gray-500 font-bold block mb-1">Fachrichtung / Grund</label>
+          <input type="text" id="field-doc-specialty" placeholder="Zahnarzt, Hausarzt..." value="Hausarzt" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+        </div>
+        <div>
+          <label class="text-[9px] text-gray-500 font-bold block mb-1">Bevorzugter Zeitraum</label>
+          <input type="text" id="field-doc-time" placeholder="Morgens, Nächste Woche..." value="Nächste Woche Montag" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+        </div>
+      </div>
+    `;
+  } else if (scenario === 'cancel') {
+    fieldsContainer.innerHTML = `
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-[9px] text-gray-500 font-bold block mb-1">Welcher Termin? (Name/Ort)</label>
+          <input type="text" id="field-cancel-name" placeholder="Zahnarzttermin" value="Termin am Montag" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+        </div>
+        <div>
+          <label class="text-[9px] text-gray-500 font-bold block mb-1">Grund (z.B. Krank, Verschiebung)</label>
+          <input type="text" id="field-cancel-reason" placeholder="Krankheit, Terminüberschneidung..." value="akuter Krankheit" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+        </div>
+      </div>
+    `;
+  } else if (scenario === 'food') {
+    fieldsContainer.innerHTML = `
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-[9px] text-gray-500 font-bold block mb-1">Deine Bestellung (z.B. Pizza Salami)</label>
+          <input type="text" id="field-food-order" value="1x Pizza Margherita und ein Spezi" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+        </div>
+        <div>
+          <label class="text-[9px] text-gray-500 font-bold block mb-1">Lieferadresse</label>
+          <input type="text" id="field-food-address" placeholder="Musterstraße 1, 2. Stock..." value="Musterstraße 1" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+        </div>
+      </div>
+    `;
+  } else if (scenario === 'handyman') {
+    fieldsContainer.innerHTML = `
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-[9px] text-gray-500 font-bold block mb-1">Was ist defekt?</label>
+          <input type="text" id="field-handyman-issue" placeholder="Tropfender Wasserhahn, Heizung kalt..." value="Tropfender Wasserhahn im Bad" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+        </div>
+        <div>
+          <label class="text-[9px] text-gray-500 font-bold block mb-1">Dringlichkeit</label>
+          <input type="text" id="field-handyman-urgency" placeholder="Dringend, diese Woche..." value="diese Woche" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+        </div>
+      </div>
+    `;
+  } else if (scenario === 'custom') {
+    fieldsContainer.innerHTML = `
+      <div>
+        <label class="text-[9px] text-gray-500 font-bold block mb-1">Eigene Stichpunkte / Anliegen</label>
+        <textarea id="field-custom-text" placeholder="Schreibe hier die wichtigsten Punkte auf..." class="w-full h-16 p-2 bg-black/60 border border-white/10 rounded text-xs text-white outline-none resize-none">Ich rufe an wegen der Rückfrage zu meiner Bestellung.</textarea>
+      </div>
+    `;
+  }
+}
+
+function generateSocialScript() {
+  const scenarioSelect = document.getElementById('script-scenario-select');
+  const nameInput = document.getElementById('script-user-name');
+  const scenario = scenarioSelect ? scenarioSelect.value : 'doctor';
+  const userName = nameInput ? (nameInput.value.trim() || "Jannis") : "Jannis";
+  const textContainer = document.getElementById('script-text-container');
+  if (!textContainer) return;
+
+  let scriptText = "";
+
+  if (scenario === 'doctor') {
+    const specEl = document.getElementById('field-doc-specialty');
+    const timeEl = document.getElementById('field-doc-time');
+    const spec = specEl ? (specEl.value.trim() || "Arzt") : "Arzt";
+    const time = timeEl ? (timeEl.value.trim() || "demnächst") : "demnächst";
+    scriptText = `„Guten Tag, mein Name ist ${userName}.\nIch würde gerne einen Termin bei Ihnen im Bereich ${spec} vereinbaren.\nHaben Sie freie Termine für ${time}?\n(Warte auf Antwort)\nMeine Daten lauten: ${userName}. Vielen Dank.“`;
+  } else if (scenario === 'cancel') {
+    const nameEl = document.getElementById('field-cancel-name');
+    const reasonEl = document.getElementById('field-cancel-reason');
+    const name = nameEl ? (nameEl.value.trim() || "meinem Termin") : "meinem Termin";
+    const reason = reasonEl ? (reasonEl.value.trim() || "wichtigen Gründen") : "wichtigen Gründen";
+    scriptText = `„Guten Tag, mein Name ist ${userName}.\nIch rufe an, weil ich leider ${name} absagen muss.\nDer Grund dafür ist eine ${reason}.\nWäre es möglich, den Termin stattdessen zu verschieben?\n(Warte auf Antwort)\nDanke für Ihr Verständnis.“`;
+  } else if (scenario === 'food') {
+    const orderEl = document.getElementById('field-food-order');
+    const addrEl = document.getElementById('field-food-address');
+    const order = orderEl ? (orderEl.value.trim() || "etwas Essen") : "etwas Essen";
+    const addr = addrEl ? (addrEl.value.trim() || "meine Adresse") : "meine Adresse";
+    scriptText = `„Hallo, ich würde gerne eine Bestellung zur Lieferung aufgeben.\nUnd zwar: ${order}.\n(Warte auf Bestätigung)\nGeliefert werden soll das an die folgende Adresse: ${addr}.\nKönnen Sie mir sagen, wie lange es ungefähr dauert?\n(Warte auf Antwort)\nSuper, vielen Dank. Auf Wiederhören.“`;
+  } else if (scenario === 'handyman') {
+    const issueEl = document.getElementById('field-handyman-issue');
+    const urgEl = document.getElementById('field-handyman-urgency');
+    const issue = issueEl ? (issueEl.value.trim() || "einem Defekt") : "einem Defekt";
+    const urgency = urgEl ? (urgEl.value.trim() || "demnächst") : "demnächst";
+    scriptText = `„Guten Tag, mein Name ist ${userName}.\nIn meiner Wohnung gibt es ein Problem: ${issue}.\nKönnten Sie einen Handwerker schicken, der sich das ansieht?\nEs wäre gut, wenn das ${urgency} klappen könnte.\n(Warte auf Antwort)\nMeine Telefonnummer für Rückfragen ist im System hinterlegt. Vielen Dank.“`;
+  } else if (scenario === 'custom') {
+    const customEl = document.getElementById('field-custom-text');
+    const custom = customEl ? (customEl.value.trim() || "Keine Vorgaben.") : "Keine Vorgaben.";
+    scriptText = `„Guten Tag, mein Name ist ${userName}.\n\n[DEINE STICHPUNKTE FÜR DAS TELEFONAT]:\n${custom}“`;
+  }
+
+  textContainer.innerText = scriptText;
+  const resultBox = document.getElementById('script-result-box');
+  if (resultBox) resultBox.classList.remove('hidden');
+  
+  if (typeof playProceduralSound === 'function') playProceduralSound(0);
+}
+
+function copyGeneratedScript() {
+  const container = document.getElementById('script-text-container');
+  if (!container) return;
+
+  navigator.clipboard.writeText(container.innerText).then(() => {
+    showToast(currentLang === 'de' ? "Skript kopiert! 📋" : "Script copied! 📋");
+  }).catch(err => {
+    console.error("Fehler beim Kopieren:", err);
+  });
+}
+

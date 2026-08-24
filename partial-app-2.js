@@ -163,19 +163,34 @@ document.write(`      <!-- BEHÄLTER 8: Statistik -->
         </div>
       </div>
 
-      <!-- BEHÄLTER 6: Anmelden -->
+      <!-- BEHÄLTER 6: Anmelden & Geräte-Sync -->
       <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
         <div class="relative group cursor-pointer zen-hide" onmouseenter="showPanelHover('sync')" onmouseleave="hidePanelHover('sync')">
           <button onclick="togglePanel('sync')" class="h-8 px-2 md:px-3 border border-emerald-500/30 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 flex items-center gap-1.5 text-[10px] md:text-xs font-bold cursor-pointer transition shadow-sm" title="Geräte-Synchronisierung einrichten">
-            <i data-lucide="user-round" class="w-3.5 h-3.5 text-emerald-400"></i>
-            <span class="hidden 2xl:inline" data-i18n="login_btn">Anmelden</span>
+            <i data-lucide="user-round" id="header-sync-btn-icon" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span class="hidden 2xl:inline" id="header-sync-btn-text" data-i18n="login_btn">Anmelden</span>
           </button>
           
-          <div id="panel-sync" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] w-[200px] bg-[#111116] border border-emerald-500/40 p-3 rounded-2xl shadow-2xl flex flex-col gap-2">
-            <div class="text-[10px] uppercase font-bold tracking-wider text-emerald-400 font-mono" data-i18n="sync_title">Geräte-Sync</div>
-            <p class="text-[10px] text-gray-400 leading-normal mb-1" data-i18n="sync_desc">Übertrage deinen Plan nahtlos auf all deine Geräte.</p>
-            <button onclick="openSyncModal()" class="w-full py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold rounded-xl transition cursor-pointer">Einloggen</button>
-            <button onclick="openSyncModal()" class="w-full py-1.5 bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold rounded-xl transition cursor-pointer">Registrieren</button>
+          <div id="panel-sync" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] w-[220px] bg-[#111116] border border-emerald-500/40 p-3.5 rounded-2xl shadow-2xl flex flex-col gap-2.5">
+            <div class="flex items-center justify-between pb-1 border-b border-white/10">
+              <span class="text-[10px] uppercase font-bold tracking-wider text-emerald-400 font-mono" id="panel-sync-status">Geräte-Sync</span>
+              <span class="text-[9px] text-gray-400 font-medium" id="panel-sync-username">Kostenlos</span>
+            </div>
+            <p class="text-[10px] text-gray-400 leading-normal" data-i18n="sync_desc">Übertrage deinen Plan nahtlos auf PC, Smartphone & Tablet.</p>
+            <div class="flex flex-col gap-1.5 pt-1">
+              <button onclick="openSyncModal('account')" class="w-full py-1.5 px-3 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5">
+                <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
+                <span>Konto / Anmelden</span>
+              </button>
+              <button onclick="openSyncModal('pair')" class="w-full py-1.5 px-3 bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5">
+                <i data-lucide="smartphone" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span>📱 Gerät koppeln (Code)</span>
+              </button>
+              <button onclick="syncEngine.syncNow()" class="w-full py-1.5 px-3 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-[11px] font-semibold rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5">
+                <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+                <span>Jetzt abgleichen ☁️</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -232,18 +247,17 @@ document.write(`      <!-- BEHÄLTER 8: Statistik -->
 
         <!-- Language Dropdown Menu -->
         <div class="relative group cursor-pointer" onmouseenter="showPanelHover('language')" onmouseleave="hidePanelHover('language')">
-          <button onclick="togglePanel('language')" class="h-8 px-2 border border-white/5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-gray-200 flex items-center gap-1 text-xs font-semibold cursor-pointer transition shadow-sm">
-            <span id="active-lang-flag" class="text-xs md:text-sm">🇬🇧</span>
-            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-gray-400"></i>
+          <button onclick="togglePanel('language')" class="h-8 w-8 flex items-center justify-center border border-white/5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-gray-200 cursor-pointer transition shadow-sm" title="Sprache ändern / Change language">
+            <span id="active-lang-flag" class="text-sm">🇬🇧</span>
           </button>
           
-          <div id="panel-language" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] w-[48px] bg-[#111116] border border-purple-500/40 p-1.5 rounded-xl shadow-2xl flex flex-col gap-1.5 items-center">
-            <button onclick="setLanguage('de')" class="text-sm hover:scale-110 active:scale-95 transition">🇩🇪</button>
-            <button onclick="setLanguage('en')" class="text-sm hover:scale-110 active:scale-95 transition">🇬🇧</button>
-            <button onclick="setLanguage('es')" class="text-sm hover:scale-110 active:scale-95 transition">🇪🇸</button>
-            <button onclick="setLanguage('el')" class="text-sm hover:scale-110 active:scale-95 transition">🇬🇷</button>
-            <button onclick="setLanguage('fr')" class="text-sm hover:scale-110 active:scale-95 transition">🇫🇷</button>
-            <button onclick="setLanguage('it')" class="text-sm hover:scale-110 active:scale-95 transition">🇮🇹</button>
+          <div id="panel-language" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] w-[48px] bg-[#111116] border border-purple-500/40 p-1.5 rounded-xl shadow-2xl flex flex-col gap-1.5 items-center origin-top">
+            <button onclick="setLanguage('de')" class="text-sm hover:scale-110 active:scale-95 transition cursor-pointer">🇩🇪</button>
+            <button onclick="setLanguage('en')" class="text-sm hover:scale-110 active:scale-95 transition cursor-pointer">🇬🇧</button>
+            <button onclick="setLanguage('es')" class="text-sm hover:scale-110 active:scale-95 transition cursor-pointer">🇪🇸</button>
+            <button onclick="setLanguage('el')" class="text-sm hover:scale-110 active:scale-95 transition cursor-pointer">🇬🇷</button>
+            <button onclick="setLanguage('fr')" class="text-sm hover:scale-110 active:scale-95 transition cursor-pointer">🇫🇷</button>
+            <button onclick="setLanguage('it')" class="text-sm hover:scale-110 active:scale-95 transition cursor-pointer">🇮🇹</button>
           </div>
         </div>
       </div>
@@ -258,44 +272,105 @@ document.write(`      <!-- BEHÄLTER 8: Statistik -->
     <!-- MOBILE: Bottom-Tab-Leiste für Kategorie-Navigation (nur auf Touch/Mobile sichtbar, siehe styles-mobile.css) -->
     <nav id="mobile-category-tabs" class="mobile-category-tabs" aria-label="Kategorien"></nav>
 
-    <!-- ZEN CHILL VIEW -->
-    <div id="zen-chill-view" class="hidden flex-col items-center justify-center flex-1 max-w-2xl mx-auto w-full text-center p-6 md:p-10 my-auto animate-fade-in select-none">
-      <div class="relative bg-[#13131c]/80 border border-purple-500/20 rounded-3xl p-8 md:p-12 shadow-[0_0_50px_rgba(139,92,246,0.15)] backdrop-blur-2xl w-full flex flex-col items-center gap-6 transition-all duration-300">
+    <!-- ZEN CHILL VIEW / DEEP WORK CANVAS -->
+    <div id="zen-chill-view" class="hidden flex-col items-center justify-center flex-1 max-w-3xl mx-auto w-full p-4 md:p-8 my-auto animate-fade-in select-none">
+      <div class="relative bg-[#13131c]/90 border border-purple-500/30 rounded-3xl p-6 md:p-10 shadow-[0_0_60px_rgba(139,92,246,0.2)] backdrop-blur-2xl w-full flex flex-col items-center gap-5 transition-all duration-300">
         
-        <span onclick="toggleMinimalist()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition" title="Focus Mode beenden (Esc)">✕</span>
-        
-        <div class="h-16 w-16 rounded-full bg-[var(--accent)]/10 border border-[var(--accent)]/30 flex items-center justify-center text-3xl shadow-[0_0_20px_rgba(139,92,246,0.15)] animate-pulse">
-          🧘
-        </div>
-        
-        <div id="zen-task-cat" class="text-xs uppercase font-bold tracking-widest text-[var(--accent-light)] font-mono px-3 py-1 bg-[var(--accent)]/10 border border-[var(--accent)]/20 rounded-full" data-i18n="recommendation_now">
-          Empfehlung - jetzt
-        </div>
-        
-        <h1 id="zen-task-text" class="font-display font-black text-2xl md:text-4xl text-white tracking-tight leading-relaxed max-w-lg min-h-[5rem] flex items-center justify-center">
-          Lade deine nächste Fokus-Aufgabe...
-        </h1>
-        
-        <div class="flex items-center gap-4 bg-black/40 border border-white/5 py-2.5 px-5 rounded-2xl shadow-inner mt-2">
-          <div class="flex flex-col items-center justify-center min-w-[50px]">
-            <span id="zen-timer-display" class="font-display font-black text-xl tracking-wider text-[var(--accent-light)] leading-none">02:00</span>
-          </div>
-          <div class="h-5 w-[1px] bg-white/10"></div>
+        <!-- TOP STATUS BAR -->
+        <div class="w-full flex items-center justify-between gap-2 border-b border-white/10 pb-3">
           <div class="flex items-center gap-2">
-            <button onclick="toggleTimer()" class="p-1.5 hover:bg-white/5 rounded-xl transition text-emerald-400" title="Start/Pause">
-              <i data-lucide="play" class="w-4 h-4"></i>
-            </button>
-            <button onclick="stopTimer()" class="p-1.5 hover:bg-white/5 rounded-xl transition text-rose-400" title="Stop">
-              <i data-lucide="square" class="w-4 h-4"></i>
+            <span class="px-2.5 py-0.5 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-300 font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+              Deep Work Focus
+            </span>
+            <span id="zen-task-cat" class="text-[10px] uppercase font-bold tracking-widest text-[var(--accent-light)] font-mono px-2.5 py-0.5 bg-[var(--accent)]/10 border border-[var(--accent)]/20 rounded-full">
+              Empfehlung
+            </span>
+          </div>
+          <button onclick="toggleMinimalist()" class="p-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition cursor-pointer text-xs flex items-center gap-1" title="Focus Mode beenden (Esc)">
+            <span class="text-[11px] font-semibold hidden sm:inline">Schließen</span>
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+        
+        <!-- FOCUSED TASK TITLE -->
+        <div class="w-full text-center my-1">
+          <h1 id="zen-task-text" class="font-display font-black text-2xl md:text-4xl text-white tracking-tight leading-tight max-w-xl mx-auto min-h-[3.5rem] flex items-center justify-center break-words">
+            Lade Fokus-Aufgabe...
+          </h1>
+        </div>
+
+        <!-- DYNAMIC SUBTASKS / CHECKLIST CONTAINER -->
+        <div id="zen-task-steps-container" class="w-full max-w-lg bg-black/30 border border-white/5 rounded-2xl p-3 text-left space-y-1.5 max-h-40 overflow-y-auto hidden"></div>
+        
+        <!-- POMODORO TIMER BAR -->
+        <div class="w-full max-w-lg flex flex-col items-center gap-2 bg-black/40 border border-white/10 p-3.5 rounded-2xl shadow-inner">
+          <div class="flex items-center justify-between w-full px-2">
+            <div class="flex items-center gap-3">
+              <span id="zen-timer-display" class="font-display font-black text-2xl md:text-3xl tracking-wider text-[var(--accent-light)] leading-none">25:00</span>
+              <span id="zen-timer-status" class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Bereit</span>
+            </div>
+            
+            <div class="flex items-center gap-1.5">
+              <button onclick="startTimer()" id="zen-play-btn" class="p-2 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 rounded-xl border border-emerald-500/40 transition cursor-pointer" title="Timer starten">
+                <i data-lucide="play" class="w-4 h-4"></i>
+              </button>
+              <button onclick="pauseTimer()" id="zen-pause-btn" class="p-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 rounded-xl border border-amber-500/40 transition cursor-pointer hidden" title="Timer pausieren">
+                <i data-lucide="pause" class="w-4 h-4"></i>
+              </button>
+              <button onclick="stopTimer()" class="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-xl border border-rose-500/30 transition cursor-pointer" title="Timer zurücksetzen">
+                <i data-lucide="square" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Timer Presets -->
+          <div class="flex items-center gap-1.5 pt-2 border-t border-white/5 w-full justify-center flex-wrap">
+            <button onclick="setTimerPreset(25)" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-[10px] font-bold transition cursor-pointer hover:text-white">25m Fokus</button>
+            <button onclick="setTimerPreset(50)" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-[10px] font-bold transition cursor-pointer hover:text-white">50m Deep Work</button>
+            <button onclick="setTimerPreset(15)" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-[10px] font-bold transition cursor-pointer hover:text-white">15m Sprint</button>
+            <button onclick="setTimerPreset(5)" class="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 text-[10px] font-bold transition cursor-pointer border border-emerald-500/20">5m Pause</button>
+          </div>
+        </div>
+
+        <!-- INTEGRATED AMBIENT SOUND BAR -->
+        <div class="w-full max-w-lg flex items-center justify-between gap-1 p-2 bg-white/[0.02] border border-white/5 rounded-2xl text-xs">
+          <span class="text-[10px] text-gray-400 font-bold px-2 flex items-center gap-1 shrink-0">
+            <i data-lucide="headphones" class="w-3.5 h-3.5 text-purple-400"></i>
+            Sound:
+          </span>
+          <div class="flex items-center gap-1 overflow-x-auto py-0.5">
+            <button onclick="playAmbientSound('rain')" class="px-2 py-1 bg-white/5 hover:bg-cyan-500/20 text-gray-300 hover:text-cyan-300 rounded-lg text-[10px] font-semibold transition cursor-pointer flex items-center gap-1 shrink-0">🌧️ Regen</button>
+            <button onclick="playAmbientSound('ocean')" class="px-2 py-1 bg-white/5 hover:bg-blue-500/20 text-gray-300 hover:text-blue-300 rounded-lg text-[10px] font-semibold transition cursor-pointer flex items-center gap-1 shrink-0">🌊 Ozean</button>
+            <button onclick="playAmbientSound('binaural_alpha')" class="px-2 py-1 bg-white/5 hover:bg-purple-500/20 text-gray-300 hover:text-purple-300 rounded-lg text-[10px] font-semibold transition cursor-pointer flex items-center gap-1 shrink-0">🧠 Alpha Beats</button>
+            <button onclick="playAmbientSound('whitenoise')" class="px-2 py-1 bg-white/5 hover:bg-zinc-500/20 text-gray-300 hover:text-white rounded-lg text-[10px] font-semibold transition cursor-pointer flex items-center gap-1 shrink-0">📻 White Noise</button>
+            <button onclick="stopAmbientSound()" class="p-1 text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition cursor-pointer shrink-0" title="Sound stoppen">
+              <i data-lucide="volume-x" class="w-3.5 h-3.5"></i>
             </button>
           </div>
         </div>
 
-        <button onclick="zenCompleteCurrentTask()" class="mt-4 px-8 py-3 bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 hover:border-purple-500/30 text-gray-300 hover:text-white font-semibold text-sm rounded-xl shadow-md transform active:scale-95 transition-all duration-300 flex items-center gap-2 cursor-pointer" title="Diese Aufgabe jetzt als erledigt markieren">
-          <i data-lucide="check" class="w-4.5 h-4.5 text-emerald-400"></i>
-          <span data-i18n="complete_btn">Als erledigt markieren</span>
-        </button>
+        <!-- DISTRACTION SCRATCHPAD / GEDANKEN-PARKPLATZ -->
+        <div class="w-full max-w-lg relative">
+          <div class="flex items-center gap-2 p-2 bg-amber-500/5 border border-amber-500/20 rounded-2xl">
+            <i data-lucide="lightbulb" class="w-4 h-4 text-amber-400 shrink-0 ml-1"></i>
+            <input type="text" id="zen-distraction-input" onkeydown="handleZenDistractionInput(event)" placeholder="Gedanken parken: Idee oder Ablenkung tippen (Enter) ➔ landet in Notizen..." class="flex-1 bg-transparent border-0 text-xs text-amber-100 placeholder:text-amber-300/40 outline-none font-medium" />
+            <button onclick="submitZenDistraction()" class="px-2.5 py-1 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-[10px] font-bold rounded-lg transition cursor-pointer shrink-0">Parken 📌</button>
+          </div>
+        </div>
+
+        <!-- BOTTOM ACTION BUTTONS -->
+        <div class="w-full max-w-lg flex items-center justify-between gap-3 pt-2">
+          <button onclick="zenCompleteCurrentTask()" class="flex-1 py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)] transform active:scale-95 transition flex items-center justify-center gap-2 cursor-pointer">
+            <i data-lucide="check-circle" class="w-4 h-4"></i>
+            <span data-i18n="complete_btn">Als erledigt markieren</span>
+          </button>
+          <button onclick="updateZenViewNextTask()" class="py-3 px-4 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-semibold text-xs rounded-xl border border-white/10 transition flex items-center justify-center gap-1.5 cursor-pointer">
+            <i data-lucide="skip-forward" class="w-4 h-4"></i>
+            <span>Nächste Aufgabe</span>
+          </button>
+        </div>
+
       </div>
     </div>
-
 `);

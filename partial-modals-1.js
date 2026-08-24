@@ -8,74 +8,115 @@ document.write(`  <div id="praise-overlay" class="hidden fixed inset-0 z-[100000
     <div id="toast-card" class="px-8 py-4 rounded-xl bg-[#111116]/95 border border-[var(--accent)] text-white text-base font-bold font-display text-center backdrop-blur-md shadow-2xl"></div>
   </div>
 
-  <!-- NEUTRALES HELPER WAS NUN? MODAL -->
+  <!-- NEUTRALES HELPER WAS NUN? MODAL / ENTSCHEIDUNGS- & START-ASSISTENT -->
   <div id="helper-pick-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div id="helper-pick-card" class="mobile-modal-card w-full max-w-lg bg-[#111116]/95 border p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+    <div id="helper-pick-card" class="mobile-modal-card animate-spring-modal w-full max-w-lg bg-[#111116]/95 border border-purple-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeHelperModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
 
-      <h3 class="text-white font-bold text-sm font-display mb-4 pb-2 border-b border-white/10 flex items-center gap-2">
-        <i id="helper-pick-icon" data-lucide="lightbulb" class="w-4 h-4 animate-pulse transition-all duration-300"></i>
-        <span data-i18n="whatnow">Was nun?</span>
-      </h3>
+      <div class="flex items-center justify-between mb-3 pb-2 border-b border-white/10">
+        <h3 class="text-white font-bold text-sm font-display flex items-center gap-2">
+          <i id="helper-pick-icon" data-lucide="compass" class="w-4 h-4 text-purple-400 animate-pulse"></i>
+          <span data-i18n="whatnow">Was nun?</span>
+          <span class="text-[10px] text-purple-300 font-mono font-normal">· Entscheidungs-Assistent</span>
+        </h3>
+      </div>
 
-      <div class="space-y-4">
-        <p class="text-xs text-gray-400 text-semibold" data-i18n="pick_desc">
-          Überfordert von zu vielen Aufgaben? Lass dir eine passende Aufgabe basierend auf deiner Tagespriorität vorschlagen:
-        </p>
-        
-        <div id="helper-pick-box" class="p-6 rounded-2xl transition-all duration-300"></div>
-
-        <!-- DAUERHAFT INTEGRIERTER TIMER IN "WAS NUN" -->
-        <div id="helper-pick-timer-widget" class="mx-auto max-w-[270px] w-full p-1.5 bg-white/[0.03] border border-white/10 rounded-xl flex items-center justify-center gap-2.5 shadow-md transition-all duration-300">
-          <span id="helper-pick-timer-task" class="hidden"></span>
-          <div class="flex items-center gap-2 shrink-0">
-            <div class="flex flex-col items-center justify-center min-w-[38px]">
-              <span id="helper-pick-timer-display" class="font-display font-black text-xs tracking-wider leading-none transition-all duration-300">02:00</span>
-              <div class="w-full h-0.5 bg-white/10 rounded-full mt-1 overflow-hidden">
-                <div id="helper-pick-timer-progress-bar" class="h-full bg-[var(--accent)] transition-all duration-300" style="width: 100%"></div>
-              </div>
-            </div>
-
-            <select id="helper-pick-timer-preset-select-real" onchange="setTimerPreset(parseInt(this.value))" class="px-1 py-0.5 bg-black/60 border border-white/30 rounded text-[10px] font-bold text-gray-300 outline-none cursor-pointer transition shrink-0" title="Preset-Minuten für die Zufallsaufgabe auswählen">
-              <option value="2" selected>2m</option>
-              <option value="5">5m</option>
-              <option value="10">10m</option>
-              <option value="12">12m</option>
-              <option value="15">15m</option>
-              <option value="20">20m</option>
-              <option value="25">25m</option>
-              <option value="30">30m</option>
-              <option value="45">45m</option>
-              <option value="60">60m</option>
-            </select>
-
-            <div class="flex items-center gap-1 shrink-0">
-              <button id="helper-pick-timer-play-btn" onclick="startTimer()" class="p-1 hover:bg-emerald-500/10 rounded transition cursor-pointer" title="Timer starten">
-                <i data-lucide="play" class="w-3.5 h-3.5 text-emerald-400"></i>
-              </button>
-              <button id="helper-pick-timer-pause-btn" onclick="pauseTimer()" class="p-1 hover:bg-amber-500/10 rounded transition cursor-pointer hidden" title="Timer pausieren">
-                <i data-lucide="pause" class="w-3.5 h-3.5 text-[var(--accent-light)] animate-pulse"></i>
-              </button>
-              <button id="helper-pick-timer-stop-btn" onclick="stopTimer()" class="p-1 hover:bg-rose-500/10 text-rose-400 hover:text-rose-300 transition cursor-pointer" title="Timer stoppen und zurücksetzen">
-                <i data-lucide="square" class="w-3.5 h-3.5"></i>
-              </button>
-              <button id="helper-pick-timer-mute-btn" onclick="toggleTimerSound()" class="p-1 hover:bg-white/10 text-gray-400 rounded transition cursor-pointer" title="Timer-Töne stummschalten oder aktivieren">
-                <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <button id="helper-pick-next-btn" onclick="pickRandomTask()" class="w-full py-3 text-white font-bold text-xs rounded-xl shadow-lg transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 transform active:scale-95">
-          <span data-i18n="next_suggestion">Nächster Vorschlag</span>
+      <!-- WAS NUN MODE TABS -->
+      <div class="grid grid-cols-4 gap-1 p-1 bg-black/40 border border-white/10 rounded-xl mb-4 text-[10px] font-bold">
+        <button id="whatnow-tab-energy" onclick="switchWhatNowTab('energy')" class="py-1.5 px-1 rounded-lg bg-purple-600 text-white text-center transition cursor-pointer flex items-center justify-center gap-1">
+          <span>⚡ Energie</span>
+        </button>
+        <button id="whatnow-tab-triple" onclick="switchWhatNowTab('triple')" class="py-1.5 px-1 rounded-lg text-gray-400 hover:text-white text-center transition cursor-pointer flex items-center justify-center gap-1">
+          <span>🎲 1-aus-3</span>
+        </button>
+        <button id="whatnow-tab-micro" onclick="switchWhatNowTab('micro')" class="py-1.5 px-1 rounded-lg text-gray-400 hover:text-white text-center transition cursor-pointer flex items-center justify-center gap-1">
+          <span>🪜 Kickstart</span>
+        </button>
+        <button id="whatnow-tab-coin" onclick="switchWhatNowTab('coin')" class="py-1.5 px-1 rounded-lg text-gray-400 hover:text-white text-center transition cursor-pointer flex items-center justify-center gap-1">
+          <span>🪙 Münze</span>
         </button>
       </div>
+
+      <!-- PANE 1: ENERGIE-FILTER -->
+      <div id="whatnow-pane-energy" class="space-y-3">
+        <div class="flex items-center justify-between gap-1.5 bg-white/[0.02] border border-white/5 p-1 rounded-xl">
+          <button onclick="setWhatNowEnergyLevel('low')" id="whatnow-energy-low" class="flex-1 py-1.5 px-2 rounded-lg text-[10px] font-bold text-gray-300 hover:text-white transition cursor-pointer bg-white/5 flex items-center justify-center gap-1">
+            <span>🔋 Wenig (2-5m)</span>
+          </button>
+          <button onclick="setWhatNowEnergyLevel('med')" id="whatnow-energy-med" class="flex-1 py-1.5 px-2 rounded-lg text-[10px] font-bold text-purple-200 transition cursor-pointer bg-purple-500/20 border border-purple-500/40 flex items-center justify-center gap-1">
+            <span>⚡ Normal</span>
+          </button>
+          <button onclick="setWhatNowEnergyLevel('high')" id="whatnow-energy-high" class="flex-1 py-1.5 px-2 rounded-lg text-[10px] font-bold text-gray-300 hover:text-white transition cursor-pointer bg-white/5 flex items-center justify-center gap-1">
+            <span>🔥 High Focus</span>
+          </button>
+        </div>
+        
+        <div id="helper-pick-box" class="p-5 rounded-2xl transition-all duration-300"></div>
+
+        <button id="helper-pick-next-btn" onclick="pickRandomTask()" class="w-full py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white font-bold text-xs rounded-xl shadow transition cursor-pointer flex items-center justify-center gap-2 transform active:scale-95">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+          <span data-i18n="next_suggestion">Anderer Vorschlag</span>
+        </button>
+      </div>
+
+      <!-- PANE 2: 1-AUS-3 AUSWAHL -->
+      <div id="whatnow-pane-triple" class="hidden space-y-3">
+        <p class="text-[11px] text-gray-400 text-center leading-relaxed">
+          Wähle intuitiv <strong>eine</strong> der 3 Aufgaben aus, um sofort zu starten:
+        </p>
+        <div id="whatnow-triple-cards" class="space-y-2"></div>
+        <button onclick="generateTripleTaskChoices()" class="w-full py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white font-semibold text-xs rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5">
+          <i data-lucide="shuffle" class="w-3.5 h-3.5"></i>
+          <span>Neu mischen</span>
+        </button>
+      </div>
+
+      <!-- PANE 3: MICRO-STEP KICKSTART -->
+      <div id="whatnow-pane-micro" class="hidden space-y-3">
+        <p class="text-[11px] text-gray-400 text-center leading-relaxed">
+          Große Hürde im Kopf? Zerteile die Aufgabe in ihren <strong>allerersten 30-Sekunden-Minischritt</strong>:
+        </p>
+        <div id="whatnow-micro-container" class="p-4 bg-white/[0.02] border border-white/10 rounded-2xl space-y-2.5">
+          <div class="text-[10px] text-purple-400 font-bold uppercase tracking-wider">Aktuelle Hürde</div>
+          <div id="whatnow-micro-task-title" class="font-display font-bold text-sm text-white">Lade Aufgabe...</div>
+          <div class="p-3 bg-purple-500/10 border border-purple-500/30 rounded-xl space-y-1">
+            <div class="text-[10px] text-purple-300 font-bold">✨ Dein erster Minischritt:</div>
+            <div id="whatnow-micro-first-step" class="text-xs text-white font-medium">Nur die Datei öffnen oder den Arbeitsplatz freiräumen.</div>
+          </div>
+          <button onclick="startMicroStepInFocus()" class="w-full py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer">
+            <i data-lucide="play" class="w-3.5 h-3.5"></i>
+            <span>Diesen Minischritt im Fokus-Modus starten</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- PANE 4: MÜNZWURF / DILEMMA -->
+      <div id="whatnow-pane-coin" class="hidden space-y-3">
+        <p class="text-[11px] text-gray-400 text-center leading-relaxed">
+          Kannst du dich nicht zwischen zwei Aufgaben entscheiden? Lass den Zufall entscheiden:
+        </p>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-[9px] text-gray-400 font-bold block mb-1">Option A</label>
+            <input type="text" id="whatnow-coin-a" placeholder="Aufgabe A..." class="w-full p-2 bg-black/50 border border-white/10 rounded-xl text-xs text-white outline-none font-semibold" />
+          </div>
+          <div>
+            <label class="text-[9px] text-gray-400 font-bold block mb-1">Option B</label>
+            <input type="text" id="whatnow-coin-b" placeholder="Aufgabe B..." class="w-full p-2 bg-black/50 border border-white/10 rounded-xl text-xs text-white outline-none font-semibold" />
+          </div>
+        </div>
+        <div id="whatnow-coin-result" class="p-3 bg-white/[0.02] border border-white/5 rounded-xl text-center text-xs text-gray-400 italic hidden"></div>
+        <button onclick="flipWhatNowCoin()" class="w-full py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs rounded-xl shadow transition cursor-pointer flex items-center justify-center gap-1.5">
+          <span>🪙 Münze werfen & entscheiden</span>
+        </button>
+      </div>
+
     </div>
   </div>
 
   <!-- SANFTER BEWEGUNGS-IMPULS MODAL -->
   <div id="helper-sport-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div id="helper-sport-card" class="mobile-modal-card w-full max-w-md bg-[#111116]/95 border border-orange-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+    <div id="helper-sport-card" class="mobile-modal-card animate-spring-modal w-full max-w-md bg-[#111116]/95 border border-orange-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeSportModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
 
       <h3 class="text-white font-bold text-sm font-display mb-4 pb-2 border-b border-white/10 flex items-center gap-2">
@@ -122,7 +163,7 @@ document.write(`  <div id="praise-overlay" class="hidden fixed inset-0 z-[100000
 
   <!-- INTERAKTIVES PAUSEN- & ENTSPANNUNGS-MODAL (MIT TIMER & ANLEITUNG) -->
   <div id="helper-break-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div id="helper-break-card" class="mobile-modal-card w-full max-w-md bg-[#111116]/95 border border-teal-500/40 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+    <div id="helper-break-card" class="mobile-modal-card animate-spring-modal w-full max-w-md bg-[#111116]/95 border border-teal-500/40 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeBreakModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
 
       <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/10">
@@ -171,65 +212,108 @@ document.write(`  <div id="praise-overlay" class="hidden fixed inset-0 z-[100000
       </div>
     </div>
   </div>
-  <!-- KOSTENLOSES GERÄTE-SYNC & ANMELDEN MODAL -->
+  <!-- KOSTENLOSE CLOUD-SYNC & NUTZER-ANMELDUNG -->
   <div id="helper-sync-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div id="helper-sync-card" class="mobile-modal-card w-full max-w-md bg-[#111116]/95 border border-emerald-500/40 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+    <div id="helper-sync-card" class="mobile-modal-card animate-spring-modal w-full max-w-md bg-[#111116]/95 border border-emerald-500/40 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeSyncModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
-
+      
       <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-white/10">
-        <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300">
-          <i data-lucide="cloud" class="w-5 h-5"></i>
-        </div>
+        <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300"><i data-lucide="cloud" class="w-5 h-5"></i></div>
         <div>
-          <h3 class="text-white font-bold text-sm md:text-base font-display">Kostenloser Geräte-Sync 🔒</h3>
-          <p class="text-[11px] text-emerald-300 font-medium">100% privat, ohne Abo & ohne Serverkosten</p>
+          <h3 class="text-white font-bold text-sm md:text-base font-display">Geräte-Synchronisation ☁️</h3>
+          <p class="text-[11px] text-emerald-400 font-medium">100% kostenlos & live auf allen Geräten</p>
         </div>
       </div>
 
-      <div class="space-y-4">
-        <!-- Friendly status banner -->
+      <!-- Sync Tabs -->
+      <div class="flex bg-black/50 p-1 rounded-xl border border-white/10 text-xs font-bold mb-4">
+        <button id="sync-tab-btn-account" onclick="switchSyncModalTab('account')" class="flex-1 py-1.5 rounded-lg text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 transition flex items-center justify-center gap-1.5">
+          <i data-lucide="user" class="w-3.5 h-3.5"></i>
+          <span>Benutzerkonto</span>
+        </button>
+        <button id="sync-tab-btn-pair" onclick="switchSyncModalTab('pair')" class="flex-1 py-1.5 rounded-lg text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5">
+          <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
+          <span>Gerät koppeln</span>
+        </button>
+      </div>
+
+      <!-- TAB 1: BENUTZERKONTO -->
+      <div id="sync-pane-account" class="space-y-3.5">
         <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center gap-3">
           <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-xs shrink-0">✓</div>
+          <div class="min-w-0 flex-1">
+            <div id="sync-modal-user-text" class="text-xs font-bold text-emerald-300 truncate">Nicht angemeldet (Lokaler Modus)</div>
+            <div class="text-[10px] text-gray-400">Automatische Live-Synchronisation im Hintergrund.</div>
+          </div>
+        </div>
+
+        <!-- AUTH FORM (wenn nicht eingeloggt) -->
+        <div id="sync-modal-auth-box" class="space-y-2.5">
           <div>
-            <div id="sync-user-status-text" class="text-xs font-bold text-emerald-300">Als Gast auf diesem Gerät aktiv</div>
-            <div class="text-[10px] text-gray-400">Deine Daten werden sicher im Browser-Speicher gehalten.</div>
+            <label class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Benutzername oder E-Mail</label>
+            <input type="text" id="sync-username-input" placeholder="z. B. Max oder dein Name" class="w-full p-2.5 bg-black/50 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-emerald-400 font-medium" />
+          </div>
+          <div>
+            <label class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Passwort</label>
+            <input type="password" id="sync-password-input" placeholder="Mindestens 4 Zeichen" class="w-full p-2.5 bg-black/50 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-emerald-400 font-medium" />
+          </div>
+          <div class="grid grid-cols-2 gap-2 pt-1.5">
+            <button onclick="handleSyncSignIn()" class="py-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold rounded-xl transition cursor-pointer flex items-center justify-center gap-1">
+              <i data-lucide="log-in" class="w-3.5 h-3.5"></i>
+              <span>Anmelden</span>
+            </button>
+            <button onclick="handleSyncSignUp()" class="py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold rounded-xl transition cursor-pointer font-bold shadow-lg flex items-center justify-center gap-1">
+              <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+              <span>Konto erstellen</span>
+            </button>
           </div>
         </div>
 
-        <!-- Section 1: Name / Profile -->
-        <div class="space-y-1.5">
-          <label class="text-xs font-bold text-gray-300 flex items-center gap-1.5">
-            <i data-lucide="user" class="w-3.5 h-3.5 text-emerald-400"></i> Dein Profil-Name
-          </label>
-          <input type="text" id="sync-profile-name-input" placeholder="z.B. Mein Laptop / Handy" class="w-full p-2.5 bg-black/40 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-emerald-500" />
-        </div>
-
-        <!-- Section 2: Sync Passphrase -->
-        <div class="space-y-1.5">
-          <label class="text-xs font-bold text-gray-300 flex items-center gap-1.5">
-            <i data-lucide="key" class="w-3.5 h-3.5 text-emerald-400"></i> Geheimer Sync-Code (Passphrase)
-          </label>
-          <div class="flex gap-2">
-            <input type="text" id="sync-passphrase-input" placeholder="z.B. flow-secret-xyz-2026" class="flex-1 p-2.5 bg-black/40 border border-white/10 rounded-xl text-xs text-white outline-none font-mono focus:border-emerald-500" />
-            <button onclick="generateSyncPassphrase()" class="px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-gray-300 rounded-xl transition cursor-pointer" title="Zufälligen Code generieren">Generieren</button>
+        <!-- LOGGED IN ACTIONS (wenn eingeloggt) -->
+        <div id="sync-modal-logged-box" class="space-y-3 hidden">
+          <div class="text-[11px] text-gray-300 flex items-center justify-between p-2.5 bg-white/5 rounded-xl border border-white/5">
+            <span>Zuletzt abgeglichen:</span>
+            <span id="sync-modal-last-time" class="font-mono text-emerald-400 font-bold">Vor wenigen Sekunden</span>
           </div>
-          <p class="text-[10px] text-gray-400">Verwende exakt denselben Sync-Code auf deinen anderen Geräten, um deine To-Dos & Statistiken sofort abzugleichen.</p>
-        </div>
-
-        <!-- Actions -->
-        <div class="grid grid-cols-2 gap-2.5 pt-2">
-          <button onclick="exportDataForSync()" class="py-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
-            <i data-lucide="upload" class="w-4 h-4"></i> Sync-Code kopieren
+          <button onclick="syncEngine.syncNow();" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5 shadow-lg">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+            <span>Jetzt manuell abgleichen</span>
           </button>
-          <button onclick="importDataFromSync()" class="py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-emerald-500/20">
-            <i data-lucide="download" class="w-4 h-4"></i> Daten einlesen
+          <button onclick="syncEngine.signOut();" class="w-full py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-semibold rounded-xl transition cursor-pointer">
+            Abmelden
           </button>
-        </div>
-
-        <div class="text-[10px] text-center text-gray-400 pt-1">
-          💡 Tipp: Du kannst auch den <button onclick="handleSaveJson(); closeSyncModal();" class="text-emerald-400 underline font-semibold cursor-pointer">JSON-Export</button> nutzen, um deine Daten auf ein anderes Gerät zu senden.
         </div>
       </div>
+
+      <!-- TAB 2: GERÄTE-KOPPLUNG (CODE & QR) -->
+      <div id="sync-pane-pair" class="space-y-3.5 hidden">
+        <p class="text-xs text-gray-300 leading-relaxed">
+          Verbinde dein Smartphone oder Tablet in Sekundenschnelle ohne Passwort:
+        </p>
+
+        <!-- Current device code display -->
+        <div class="p-3.5 bg-black/60 border border-emerald-500/30 rounded-xl text-center flex flex-col items-center gap-2">
+          <div class="text-[10px] text-gray-400 uppercase tracking-widest font-mono">Dein Kopplungs-Code</div>
+          <div id="sync-pairing-code-display" class="font-mono font-black text-xl text-emerald-400 tracking-widest px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-lg select-all">FLOW-7492</div>
+          
+          <div class="my-1 p-2 bg-white rounded-xl shadow-md">
+            <img id="sync-qr-code-img" src="" alt="QR Code" class="w-28 h-28 mx-auto" />
+          </div>
+          <span class="text-[9px] text-gray-400">QR-Code mit der Handykamera scannen zum direkten Öffnen & Koppeln</span>
+        </div>
+
+        <!-- Pair with another code -->
+        <div class="space-y-1.5 pt-1">
+          <label class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Anderen Code verbinden</label>
+          <div class="flex items-center gap-2">
+            <input type="text" id="sync-pair-input" placeholder="z. B. FLOW-7492" class="flex-1 p-2.5 bg-black/50 border border-white/10 rounded-xl text-xs text-white outline-none font-mono uppercase font-bold text-center" />
+            <button onclick="handlePairWithCodeInput()" class="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold rounded-xl transition cursor-pointer shrink-0">
+              Verbinden
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -238,7 +322,7 @@ document.write(`  <div id="praise-overlay" class="hidden fixed inset-0 z-[100000
 
   <!-- SENSORISCHE REIZPAUSE (SAFE SPACE) MODAL -->
   <div id="helper-safespace-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div id="helper-safespace-card" class="mobile-modal-card w-full max-w-md bg-[#111116]/95 border border-teal-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+    <div id="helper-safespace-card" class="mobile-modal-card animate-spring-modal w-full max-w-md bg-[#111116]/95 border border-teal-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeSafeSpaceModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
 
       <h3 class="text-white font-bold text-sm font-display mb-4 pb-2 border-b border-white/10 flex items-center gap-2">
@@ -281,7 +365,7 @@ document.write(`  <div id="praise-overlay" class="hidden fixed inset-0 z-[100000
 
   <!-- ENTSCHEIDUNGSKOMPASS MODAL -->
   <div id="helper-compass-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-    <div id="helper-compass-card" class="mobile-modal-card w-full max-w-lg bg-[#111116]/95 border border-rose-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
+    <div id="helper-compass-card" class="mobile-modal-card animate-spring-modal w-full max-w-lg bg-[#111116]/95 border border-rose-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeCompassModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
 
       <h3 class="text-white font-bold text-sm font-display mb-4 pb-2 border-b border-white/10 flex items-center gap-2">

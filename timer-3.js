@@ -98,9 +98,17 @@ function startTimer() {
       if (typeof fadeOutAmbientSound === 'function') {
         fadeOutAmbientSound(5.0);
       }
+
+      if (timerSoundEnabled) {
+        const lang = typeof currentLang !== 'undefined' ? currentLang : 'de';
+        const timeUp = (typeof TIME_UP_PHRASES !== 'undefined' && TIME_UP_PHRASES[lang]) 
+          ? TIME_UP_PHRASES[lang] 
+          : "Die Zeit ist abgelaufen!";
+        setTimeout(() => speakSoftlyDynamic(timeUp, 0, timerInitialSeconds), 800);
+      }
     }
     
-    // Countdown-Phase: bei jeder vollen Minute abwechselnd sprechen oder einen sanften Glockenton spielen
+    // Countdown-Phase (positive Restzeit)
     if (timerSeconds > 0 && timerSeconds % 60 === 0 && timerSeconds !== timerInitialSeconds) {
       const minsLeft = timerSeconds / 60;
       const shouldSpeak = (minsLeft % 2 === 1); // jede zweite Minute wird gesprochen
@@ -138,17 +146,39 @@ function startTimer() {
       playRandomTimerAmbient(true);
     }
 
-    // Überzeit-Phase: jede volle Minute über die eingestellte Zeit hinaus wird zuverlässig angesagt
-    if (timerSeconds < 0 && timerSeconds % 60 === 0) {
+    // Überzeit-Phase (negative Zeit läuft weiter & erinnert den Nutzer regelmäßig)
+    if (timerSeconds < 0) {
+      const absSec = Math.abs(timerSeconds);
       const lang = typeof currentLang !== 'undefined' ? currentLang : 'de';
-      const overdueMins = Math.abs(timerSeconds) / 60;
-      const labelFn = OVERDUE_MINUTE_LABELS[lang] || OVERDUE_MINUTE_LABELS.de;
-      let speechText = labelFn(overdueMins);
-      const overdueList = (MOTIVATIONAL_CHUNKS[lang] || MOTIVATIONAL_CHUNKS.de).overdue;
-      const motiv = pickWithoutImmediateRepeat(overdueList, lastMotivationByTier['overdue']);
-      lastMotivationByTier['overdue'] = motiv;
-      speechText += `. ${motiv}`;
-      speakSoftlyDynamic(speechText, timerSeconds, timerInitialSeconds);
+
+      // Erste Ansage nach 30 Sekunden Überzeit
+      if (absSec === 30) {
+        const text30 = (typeof OVERDUE_30S_LABELS !== 'undefined' && OVERDUE_30S_LABELS[lang]) 
+          ? OVERDUE_30S_LABELS[lang] 
+          : "30 Sekunden über der Zeit.";
+        speakSoftlyDynamic(text30, timerSeconds, timerInitialSeconds);
+      }
+      // Jede volle Minute Überzeit (-60s, -120s, -180s...)
+      else if (absSec % 60 === 0) {
+        const overdueMins = absSec / 60;
+        const labelFn = (typeof OVERDUE_MINUTE_LABELS !== 'undefined' && OVERDUE_MINUTE_LABELS[lang]) 
+          ? OVERDUE_MINUTE_LABELS[lang] 
+          : ((n) => `${n} Minuten überzogen`);
+        let speechText = labelFn(overdueMins);
+        const overdueList = (typeof MOTIVATIONAL_CHUNKS !== 'undefined' && (MOTIVATIONAL_CHUNKS[lang] || MOTIVATIONAL_CHUNKS.de)) 
+          ? (MOTIVATIONAL_CHUNKS[lang] || MOTIVATIONAL_CHUNKS.de).overdue 
+          : [];
+        if (overdueList && overdueList.length > 0) {
+          const motiv = pickWithoutImmediateRepeat(overdueList, lastMotivationByTier['overdue']);
+          lastMotivationByTier['overdue'] = motiv;
+          if (motiv) speechText += `. ${motiv}`;
+        }
+        speakSoftlyDynamic(speechText, timerSeconds, timerInitialSeconds);
+      }
+      // Zwischen-Signalton alle 30s bei halben Minuten (-90s, -150s, -210s...)
+      else if (absSec % 30 === 0) {
+        playMinuteChime();
+      }
     }
     
     updateTimerDisplay();
@@ -168,11 +198,15 @@ function pauseTimer() {
 
 function stopTimer() {
   clearInterval(timerInterval);
+  timerInterval = null;
   timerRunning = false;
   timerSeconds = timerInitialSeconds; 
   activeTimerTask = null;
   
-  stopPleasantRinging();
+  // Nur Modal + Alarm-Sound stoppen – KEIN stopPleasantRinging() (würde Endlosschleife auslösen)
+  if (typeof dismissRingingModalOnly === 'function') dismissRingingModalOnly();
+  document.title = 'Flow - Dein Alltagsbegleiter';
+  
   updateActiveTimerLabels();
   updateTimerDisplay();
   updateTimerUI();
@@ -180,6 +214,9 @@ function stopTimer() {
   
   if (typeof fadeOutAmbientSound === 'function') {
     fadeOutAmbientSound(1.5);
+  }
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
   }
 }
 
@@ -213,7 +250,6 @@ function updateTimerUI() {
     }
   });
   
-  // Zeige die Lautstärketasten (Sound-Buttons) NUR dann, wenn der Timer aktiv läuft
   muteBtns.forEach(id => {
     const el = document.getElementById(id);
     if (el) {
@@ -222,7 +258,6 @@ function updateTimerUI() {
     }
   });
   
-  // Steuerung des gemeinsamen Start/Pause-Buttons in der Zen-Ansicht
   const zenPlayPauseBtn = document.querySelector('#zen-chill-view button[onclick="toggleTimer()"]');
   if (zenPlayPauseBtn) {
     if (timerRunning) {
@@ -246,7 +281,7 @@ function updateTimerDisplay() {
   const sign = isNegative ? '-' : '';
   const str = `${sign}${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   
-  // Überzeit wird nicht nur im Modal, sondern überall wo der Timer sichtbar ist, klar farblich hervorgehoben
+  // Überzeit in allen Displays farblich und animiert hervorheben
   const displays = ['timer-display', 'helper-pick-timer-display', 'helper-steps-timer-display', 'zen-timer-display'];
   displays.forEach(id => {
     const el = document.getElementById(id);
@@ -257,18 +292,29 @@ function updateTimerDisplay() {
     }
   });
   
+  // Browser-Tab-Titel bei laufendem Timer & Überzeit aktualisieren
+  if (timerRunning) {
+    if (isNegative) {
+      document.title = `(${str}) ⚠️ Überzeit - Flow`;
+    } else {
+      document.title = `(${str}) Flow`;
+    }
+  } else {
+    document.title = 'Flow - Dein Alltagsbegleiter';
+  }
+  
   const pct = timerInitialSeconds > 0 ? Math.max(0, (timerSeconds / timerInitialSeconds) * 100) : 100;
   const progressBars = ['timer-progress-bar', 'helper-pick-timer-progress-bar', 'helper-steps-timer-progress-bar'];
   progressBars.forEach(id => {
     const el = document.getElementById(id);
     if (el) {
-      el.style.width = `${pct}%`;
+      el.style.width = isNegative ? '100%' : `${pct}%`;
       el.classList.toggle('bg-rose-500', isNegative);
     }
   });
 
   const countEl = document.getElementById('ringing-live-counter');
-  if (countEl && isNegative) {
+  if (countEl) {
     countEl.innerText = str;
   }
 } 

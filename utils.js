@@ -370,6 +370,13 @@ const BREAK_CONFIGS = {
     desc: 'Schließe die Augen, lausche den inneren Naturklängen und stelle dir vor, du sitzt auf einer ruhigen Lichtung im Wald.',
     duration: 180,
     icon: 'trees'
+  },
+  nap: {
+    title: 'Power Nap (20 Min) 😴',
+    subtitle: 'Kurzschlaf zur Regeneration',
+    desc: 'Schließe die Augen, entspanne deinen Körper und gleite für 20 Minuten in einen erholsamen Kurzschlaf.',
+    duration: 1200,
+    icon: 'bed'
   }
 };
 
@@ -378,6 +385,10 @@ let breakTotalSecs = 120;
 let breakRemainingSecs = 120;
 let breakTimerInterval = null;
 let isBreakRunning = false;
+
+function triggerPowerNap() {
+  openBreakModal('nap');
+}
 
 function openBreakModal(breakId) {
   const config = BREAK_CONFIGS[breakId] || BREAK_CONFIGS.breath;
@@ -504,30 +515,290 @@ function updateBreakTimerDisplay() {
 
 
 // ==========================================
-// KOSTENLOSES GERÄTE-SYNC & ANMELDEN SYSTEM
+// SUPABASE CLOUD & LIVE SYNC SYSTEM
 // ==========================================
 
-function openSyncModal() {
-  const modal = document.getElementById('helper-sync-modal');
-  if (modal) modal.classList.remove('hidden');
+let supabaseClient = null;
+let realtimeChannel = null;
+let cloudSaveTimeout = null;
 
-  const savedName = localStorage.getItem('flow_sync_profile_name') || 'Mein Flow-Gerät';
-  const savedCode = localStorage.getItem('flow_sync_passphrase') || 'flow-' + Math.random().toString(36).substring(2, 8);
+function getSupabase() {
+  if (window.__flowSupabaseClient) {
+    supabaseClient = window.__flowSupabaseClient;
+    return supabaseClient;
+  }
+  if (supabaseClient) return supabaseClient;
+
+  const urlInput = document.getElementById('supabase-url-input');
+  const keyInput = document.getElementById('supabase-key-input');
   
-  const nameInput = document.getElementById('sync-profile-name-input');
-  const codeInput = document.getElementById('sync-passphrase-input');
-  if (nameInput) nameInput.value = savedName;
-  if (codeInput && !codeInput.value) codeInput.value = savedCode;
+  let url = (urlInput && urlInput.value.trim()) || localStorage.getItem('flow_supabase_url') || '';
+  let key = (keyInput && keyInput.value.trim()) || localStorage.getItem('flow_supabase_key') || '';
 
-  const statusText = document.getElementById('sync-user-status-text');
-  const isLoggedIn = localStorage.getItem('flow_sync_logged_in') === 'true';
-  if (statusText) {
-    statusText.innerText = isLoggedIn ? `Angemeldet als "${savedName}" (Kostenlos aktiv 🔒)` : 'Als Gast auf diesem Gerät aktiv';
+  if (url) {
+    url = url.replace(/\/$/, '');
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'https://' + url;
+    }
   }
 
+  if (url && key) {
+    localStorage.setItem('flow_supabase_url', url);
+    localStorage.setItem('flow_supabase_key', key);
+  }
+
+  if (url && key && window.supabase && typeof window.supabase.createClient === 'function') {
+    try {
+      supabaseClient = window.supabase.createClient(url, key);
+      window.__flowSupabaseClient = supabaseClient;
+    } catch (e) {
+      console.error('Supabase init error:', e);
+    }
+  }
+  return supabaseClient;
+}
+
+function toggleSupabaseConfig() {
+  const fields = document.getElementById('supabase-config-fields');
+  if (fields) fields.classList.toggle('hidden');
+}
+
+function saveSupabaseConfig() {
+  const urlInput = document.getElementById('supabase-url-input');
+  const keyInput = document.getElementById('supabase-key-input');
+  if (urlInput && keyInput) {
+    let url = urlInput.value.trim().replace(/\/$/, '');
+    if (url && !url.startsWith('http')) url = 'https://' + url;
+    localStorage.setItem('flow_supabase_url', url);
+    localStorage.setItem('flow_supabase_key', keyInput.value.trim());
+    supabaseClient = null;
+    window.__flowSupabaseClient = null;
+    if (typeof showToast === 'function') showToast('Supabase Konfiguration gespeichert! ⚙️');
+    checkCloudAuthStatus();
+  }
+}
+
+async function checkCloudAuthStatus() {
+  const client = getSupabase();
+  const statusText = document.getElementById('sync-user-status-text');
+  const subText = document.getElementById('sync-user-subtext');
+  const authForm = document.getElementById('auth-form-container');
+  const loggedInDiv = document.getElementById('logged-in-container');
+  const urlInput = document.getElementById('supabase-url-input');
+  const keyInput = document.getElementById('supabase-key-input');
+
+  if (urlInput) urlInput.value = localStorage.getItem('flow_supabase_url') || '';
+  if (keyInput) keyInput.value = localStorage.getItem('flow_supabase_key') || '';
+
+  if (!client) {
+    if (statusText) statusText.innerText = 'Supabase nicht konfiguriert';
+    if (subText) subText.innerText = 'Bitte trage oben deine Supabase URL & Key ein.';
+    if (authForm) authForm.classList.remove('hidden');
+    if (loggedInDiv) loggedInDiv.classList.add('hidden');
+    return;
+  }
+
+  try {
+    const { data: { session } } = await client.auth.getSession();
+    if (session && session.user) {
+      if (statusText) statusText.innerText = `Angemeldet als ${session.user.email} (Live-Sync aktiv 🟢)`;
+      if (subText) subText.innerText = 'Deine To-Dos werden in Echtzeit synchronisiert.';
+      if (authForm) authForm.classList.add('hidden');
+      if (loggedInDiv) loggedInDiv.classList.remove('hidden');
+      setupRealtimeSubscription(session.user.id);
+    } else {
+      if (statusText) statusText.innerText = 'Bereit zur Anmeldung';
+      if (subText) subText.innerText = 'Gib E-Mail und Passwort ein, um dich zu verbinden.';
+      if (authForm) authForm.classList.remove('hidden');
+      if (loggedInDiv) loggedInDiv.classList.add('hidden');
+    }
+  } catch (e) {
+    console.error('Auth check error:', e);
+  }
+}
+
+async function cloudSignUp() {
+  const client = getSupabase();
+  if (!client) {
+    alert('Bitte gib deine Supabase URL (z.B. https://xyz.supabase.co) und den Anon Key ein und klicke auf Konfiguration.');
+    const fields = document.getElementById('supabase-config-fields');
+    if (fields) fields.classList.remove('hidden');
+    return;
+  }
+  const emailInput = document.getElementById('cloud-email-input');
+  const passwordInput = document.getElementById('cloud-password-input');
+  const email = emailInput ? emailInput.value.trim() : '';
+  const password = passwordInput ? passwordInput.value.trim() : '';
+
+  if (!email || !password) {
+    alert('Bitte E-Mail und Passwort eingeben.');
+    return;
+  }
+
+  const { data, error } = await client.auth.signUp({ 
+    email, 
+    password
+  });
+  if (error) {
+    alert('Registrierungsfehler: ' + error.message);
+  } else {
+    const session = data?.session;
+    if (session) {
+      if (typeof showToast === 'function') showToast('Erfolgreich registriert & angemeldet! 🎉');
+    } else {
+      if (typeof showToast === 'function') showToast('Registriert! Bitte prüfe deine E-Mails zur Bestätigung. 📧');
+    }
+    checkCloudAuthStatus();
+    pushToCloudManual();
+  }
+}
+
+async function cloudSignIn() {
+  const client = getSupabase();
+  if (!client) {
+    alert('Bitte gib deine Supabase URL (z.B. https://xyz.supabase.co) und den Anon Key ein und klicke auf Konfiguration.');
+    const fields = document.getElementById('supabase-config-fields');
+    if (fields) fields.classList.remove('hidden');
+    return;
+  }
+  const emailInput = document.getElementById('cloud-email-input');
+  const passwordInput = document.getElementById('cloud-password-input');
+  const email = emailInput ? emailInput.value.trim() : '';
+  const password = passwordInput ? passwordInput.value.trim() : '';
+
+  if (!email || !password) {
+    alert('Bitte E-Mail und Passwort eingeben.');
+    return;
+  }
+
+  const { data, error } = await client.auth.signInWithPassword({ email, password });
+  if (error) {
+    alert('Anmeldefehler: ' + error.message);
+  } else {
+    if (typeof showToast === 'function') showToast('Erfolgreich angemeldet! 🚀');
+    checkCloudAuthStatus();
+    pullFromCloudManual();
+  }
+}
+
+async function cloudSignOut() {
+  const client = getSupabase();
+  if (client) {
+    await client.auth.signOut();
+    if (realtimeChannel) {
+      client.removeChannel(realtimeChannel);
+      realtimeChannel = null;
+    }
+  }
+  if (typeof showToast === 'function') showToast('Erfolgreich abgemeldet.');
+  checkCloudAuthStatus();
+}
+async function pushToCloudManual() {
+  const client = getSupabase();
+  if (!client) return;
+  const { data: { session } } = await client.auth.getSession();
+  if (!session || !session.user) return;
+
+  const payload = {
+    user_id: session.user.id,
+    data: {
+      tasks: typeof tasks !== 'undefined' ? tasks : [],
+      completedToday: typeof completedToday !== 'undefined' ? completedToday : 0,
+      storeState: localStorage.getItem('flowPlannerState') || '{}'
+    },
+    updated_at: new Date().toISOString()
+  };
+
+  const { error } = await client.from('flow_planner_data').upsert(payload, { onConflict: 'user_id' });
+  if (error) {
+    console.error('Cloud save error:', error);
+    if (typeof showToast === 'function') showToast('Fehler beim Cloud-Speichern: ' + error.message);
+  } else {
+    if (typeof showToast === 'function') showToast('Erfolgreich in Cloud gespeichert! ☁️');
+  }
+}
+
+async function pullFromCloudManual() {
+  const client = getSupabase();
+  if (!client) return;
+  const { data: { session } } = await client.auth.getSession();
+  if (!session || !session.user) return;
+
+  const { data, error } = await client.from('flow_planner_data').select('*').eq('user_id', session.user.id).single();
+  if (error) {
+    console.error('Cloud load error:', error);
+    return;
+  }
+
+  if (data && data.data) {
+    if (data.data.tasks && typeof tasks !== 'undefined') {
+      tasks = data.data.tasks;
+    }
+    if (data.data.storeState) {
+      localStorage.setItem('flowPlannerState', data.data.storeState);
+    }
+    if (typeof saveState === 'function') saveState();
+    if (typeof renderApp === 'function') renderApp();
+    if (typeof showToast === 'function') showToast('Daten aus Cloud geladen & synchronisiert! 🔄');
+  }
+}
+
+function setupRealtimeSubscription(userId) {
+  const client = getSupabase();
+  if (!client) return;
+  if (realtimeChannel) client.removeChannel(realtimeChannel);
+
+  realtimeChannel = client
+    .channel('public:flow_planner_data')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'flow_planner_data', filter: `user_id=eq.${userId}` }, payload => {
+      console.log('Realtime sync event received:', payload);
+      if (payload.new && payload.new.data) {
+        const newData = payload.new.data;
+        if (newData.tasks && typeof tasks !== 'undefined') {
+          tasks = newData.tasks;
+        }
+        if (newData.storeState) {
+          localStorage.setItem('flowPlannerState', newData.storeState);
+        }
+        if (typeof saveState === 'function') saveState();
+        if (typeof renderApp === 'function') renderApp();
+        if (typeof showToast === 'function') showToast('Live-Sync: Daten aktualisiert! ⚡');
+      }
+    })
+    .subscribe();
+}
+
+function triggerCloudAutoSave() {
+  const client = getSupabase();
+  if (!client) return;
+  if (cloudSaveTimeout) clearTimeout(cloudSaveTimeout);
+  cloudSaveTimeout = setTimeout(async () => {
+    const { data: { session } } = await client.auth.getSession();
+    if (session && session.user) {
+      const payload = {
+        user_id: session.user.id,
+        data: {
+          tasks: typeof tasks !== 'undefined' ? tasks : [],
+          completedToday: typeof completedToday !== 'undefined' ? completedToday : 0,
+          storeState: localStorage.getItem('flowPlannerState') || '{}'
+        },
+        updated_at: new Date().toISOString()
+      };
+      await client.from('flow_planner_data').upsert(payload, { onConflict: 'user_id' });
+    }
+  }, 1500);
+}
+
+function openSyncModal(initialTab = 'account') {
+  const modal = document.getElementById('helper-sync-modal');
+  if (modal) modal.classList.remove('hidden');
   const panel = document.getElementById('panel-sync');
   if (panel) panel.classList.add('hidden');
-
+  switchSyncModalTab(initialTab);
+  if (typeof syncEngine !== 'undefined') {
+    syncEngine.updateUI();
+    if (initialTab === 'pair') syncEngine.publishPairingCode();
+  }
   if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
 }
 
@@ -536,80 +807,57 @@ function closeSyncModal() {
   if (modal) modal.classList.add('hidden');
 }
 
-function generateSyncPassphrase() {
-  const codeInput = document.getElementById('sync-passphrase-input');
-  if (codeInput) {
-    const randomCode = 'flow-' + Math.random().toString(36).substring(2, 9) + '-' + Math.random().toString(36).substring(2, 6);
-    codeInput.value = randomCode;
-    if (typeof showToast === 'function') {
-      showToast('Neuer geheimer Sync-Code generiert! 🔑');
+function switchSyncModalTab(tab) {
+  const btnAcc = document.getElementById('sync-tab-btn-account');
+  const btnPair = document.getElementById('sync-tab-btn-pair');
+  const paneAcc = document.getElementById('sync-pane-account');
+  const panePair = document.getElementById('sync-pane-pair');
+
+  if (tab === 'account') {
+    if (btnAcc) { btnAcc.className = 'flex-1 py-1.5 rounded-lg text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 transition flex items-center justify-center gap-1.5'; }
+    if (btnPair) { btnPair.className = 'flex-1 py-1.5 rounded-lg text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5'; }
+    if (paneAcc) paneAcc.classList.remove('hidden');
+    if (panePair) panePair.classList.add('hidden');
+  } else {
+    if (btnPair) { btnPair.className = 'flex-1 py-1.5 rounded-lg text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 transition flex items-center justify-center gap-1.5'; }
+    if (btnAcc) { btnAcc.className = 'flex-1 py-1.5 rounded-lg text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5'; }
+    if (panePair) panePair.classList.remove('hidden');
+    if (paneAcc) paneAcc.classList.add('hidden');
+    if (typeof syncEngine !== 'undefined') syncEngine.publishPairingCode();
+  }
+  if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
+}
+
+async function handleSyncSignIn() {
+  const user = document.getElementById('sync-username-input')?.value;
+  const pass = document.getElementById('sync-password-input')?.value;
+  if (typeof syncEngine !== 'undefined') {
+    const ok = await syncEngine.signIn(user, pass);
+    if (ok) {
+      document.getElementById('sync-password-input').value = '';
     }
   }
 }
 
-function exportDataForSync() {
-  const nameInput = document.getElementById('sync-profile-name-input');
-  const codeInput = document.getElementById('sync-passphrase-input');
-  
-  const profileName = nameInput ? nameInput.value.trim() : 'Mein Flow-Gerät';
-  const passphrase = codeInput ? codeInput.value.trim() : '';
-
-  localStorage.setItem('flow_sync_profile_name', profileName);
-  localStorage.setItem('flow_sync_passphrase', passphrase);
-  localStorage.setItem('flow_sync_logged_in', 'true');
-
-  const appState = {
-    profile: profileName,
-    passphrase: passphrase,
-    timestamp: new Date().toISOString(),
-    tasks: typeof tasks !== 'undefined' ? tasks : [],
-    completedToday: typeof completedToday !== 'undefined' ? completedToday : 0,
-    storeState: localStorage.getItem('flowPlannerState') || '{}'
-  };
-
-  const jsonString = JSON.stringify(appState);
-  const syncToken = btoa(encodeURIComponent(jsonString));
-
-  navigator.clipboard.writeText(syncToken).then(() => {
-    if (typeof showToast === 'function') {
-      showToast('Sync-Code in Zwischenablage kopiert! 📋 Auf anderem Gerät einfügen.');
+async function handleSyncSignUp() {
+  const user = document.getElementById('sync-username-input')?.value;
+  const pass = document.getElementById('sync-password-input')?.value;
+  if (typeof syncEngine !== 'undefined') {
+    const ok = await syncEngine.signUp(user, pass);
+    if (ok) {
+      document.getElementById('sync-password-input').value = '';
     }
-    const statusText = document.getElementById('sync-user-status-text');
-    if (statusText) statusText.innerText = `Angemeldet als "${profileName}" (Sync aktiv 🔒)`;
-  }).catch(() => {
-    prompt('Dein kostenloser Sync-Code:', syncToken);
-  });
+  }
 }
 
-function importDataFromSync() {
-  const token = prompt('Bitte füge hier den Sync-Code von deinem anderen Gerät ein:');
-  if (!token || !token.trim()) return;
-
-  try {
-    const jsonString = decodeURIComponent(atob(token.trim()));
-    const data = JSON.parse(jsonString);
-
-    if (data && data.tasks) {
-      if (typeof tasks !== 'undefined') {
-        tasks = data.tasks;
-      }
-      if (data.storeState) {
-        localStorage.setItem('flowPlannerState', data.storeState);
-      }
-      if (typeof saveState === 'function') saveState();
-      if (typeof renderApp === 'function') renderApp();
-
-      if (typeof showToast === 'function') {
-        showToast('Erfolgreich mit anderem Gerät synchronisiert! 🎉');
-      }
-      if (typeof triggerConfetti === 'function') triggerConfetti();
+async function handlePairWithCodeInput() {
+  const input = document.getElementById('sync-pair-input');
+  const code = input ? input.value : '';
+  if (typeof syncEngine !== 'undefined') {
+    const ok = await syncEngine.pairWithCode(code);
+    if (ok) {
+      if (input) input.value = '';
       closeSyncModal();
-    } else {
-      alert('Ungültiger Sync-Code.');
     }
-  } catch (e) {
-    alert('Fehler beim Einlesen des Sync-Codes. Bitte überprüfe die Eingabe.');
   }
 }
-
-// Führt 10 verschiedene visuelle Belohnungs-Animationen aus

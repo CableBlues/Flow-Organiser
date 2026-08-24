@@ -75,7 +75,8 @@ function openHelperModal(type) {
 
 function openTaskStepsModal(category, index, event) {
   if (event) event.stopPropagation();
-  const task = state?.items?.[category]?.[index]; if (!task) return;
+  const raw = state?.items?.[category]?.[index]; if (!raw) return;
+  const task = typeof raw === 'object' ? raw.task : raw;
   currentActiveTaskRef = { category, index, task };
   openHelperModal('steps');
   const select = document.getElementById('helper-task-select');
@@ -144,6 +145,168 @@ function isHouseworkTask(taskText) {
   return /saugen|wischen|spül|wasch|müll|aufräum|tidy|clean|dust|laundry|dish|cook|trash|staub|freg|aspir|sfoug|skoupi|piat|roux|organi|clean/.test(text);
 }
 
+let currentWhatNowEnergyLevel = 'med';
+let currentWhatNowChosen = null;
+
+function switchWhatNowTab(tabName) {
+  ['energy', 'triple', 'micro', 'coin'].forEach(t => {
+    const pane = document.getElementById(`whatnow-pane-${t}`);
+    const tabBtn = document.getElementById(`whatnow-tab-${t}`);
+    if (pane) {
+      if (t === tabName) pane.classList.remove('hidden');
+      else pane.classList.add('hidden');
+    }
+    if (tabBtn) {
+      if (t === tabName) {
+        tabBtn.className = 'py-1.5 px-1 rounded-lg bg-purple-600 text-white text-center transition cursor-pointer flex items-center justify-center gap-1 font-bold';
+      } else {
+        tabBtn.className = 'py-1.5 px-1 rounded-lg text-gray-400 hover:text-white text-center transition cursor-pointer flex items-center justify-center gap-1 font-bold';
+      }
+    }
+  });
+
+  if (tabName === 'triple') {
+    generateTripleTaskChoices();
+  } else if (tabName === 'micro') {
+    if (currentWhatNowChosen) {
+      prepareWhatNowMicroStep(currentWhatNowChosen.task);
+    } else {
+      pickRandomTask();
+      if (currentWhatNowChosen) prepareWhatNowMicroStep(currentWhatNowChosen.task);
+    }
+  }
+}
+
+function setWhatNowEnergyLevel(level) {
+  currentWhatNowEnergyLevel = level;
+  ['low', 'med', 'high'].forEach(l => {
+    const btn = document.getElementById(`whatnow-energy-${l}`);
+    if (!btn) return;
+    if (l === level) {
+      btn.className = 'flex-1 py-1.5 px-2 rounded-lg text-[10px] font-bold text-purple-200 transition cursor-pointer bg-purple-500/20 border border-purple-500/40 flex items-center justify-center gap-1 shadow-sm';
+    } else {
+      btn.className = 'flex-1 py-1.5 px-2 rounded-lg text-[10px] font-bold text-gray-400 hover:text-white transition cursor-pointer bg-white/5 flex items-center justify-center gap-1';
+    }
+  });
+  suggestedTaskNamesInCurrentRun = [];
+  pickRandomTask();
+}
+
+function startZenWithTask(taskText, cat = 'todo') {
+  closeHelperModal();
+  if (!isMinimalist) {
+    toggleMinimalist();
+  }
+  currentZenTaskInfo = { cat, task: taskText };
+  const zenTaskText = document.getElementById('zen-task-text');
+  const zenCatEl = document.getElementById('zen-task-cat');
+  if (zenTaskText) zenTaskText.innerText = taskText;
+  if (zenCatEl) zenCatEl.innerText = `${t(cat)}`;
+  
+  setTimerPreset(25);
+  startTimer();
+  renderZenSubtasks(taskText);
+  
+  showToast(tr({
+    de: `Fokus gestartet: ${taskText} 🧘`,
+    en: `Focus started: ${taskText} 🧘`,
+    es: `Enfoque iniciado: ${taskText} 🧘`,
+    el: `Η εστίαση ξεκίνησε: ${taskText} 🧘`,
+    fr: `Focus démarré : ${taskText} 🧘`,
+    it: `Focus avviato: ${taskText} 🧘`
+  }));
+}
+
+function generateTripleTaskChoices() {
+  const container = document.getElementById('whatnow-triple-cards');
+  if (!container) return;
+  container.innerHTML = '';
+  
+  const allTasks = [];
+  ['daily', 'todo', 'weekly', 'occasionally', 'termine'].forEach(cat => {
+    (state?.items?.[cat] || []).filter(Boolean).forEach(t => {
+      const taskText = typeof t === 'object' ? t.task : t;
+      allTasks.push({ cat, task: taskText });
+    });
+  });
+  
+  if (allTasks.length === 0) {
+    container.innerHTML = `<div class="p-4 text-center text-emerald-400 text-xs font-bold bg-white/5 rounded-xl">🎉 Keine offenen Aufgaben vorhanden!</div>`;
+    return;
+  }
+  
+  const shuffled = [...allTasks].sort(() => 0.5 - Math.random());
+  const selected = shuffled.slice(0, 3);
+  
+  selected.forEach((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'group p-3 bg-white/[0.03] hover:bg-purple-950/20 border border-white/10 hover:border-purple-500/50 rounded-xl transition cursor-pointer flex items-center justify-between gap-2 shadow-sm';
+    card.onclick = () => {
+      startZenWithTask(item.task, item.cat);
+    };
+    card.innerHTML = `
+      <div class="flex items-center gap-2.5 flex-1 min-w-0">
+        <span class="w-6 h-6 rounded-lg bg-purple-500/20 text-purple-300 font-display font-bold text-xs flex items-center justify-center shrink-0">${idx + 1}</span>
+        <div class="flex flex-col min-w-0 flex-1">
+          <span class="text-xs font-bold text-white group-hover:text-purple-200 truncate transition">${item.task}</span>
+          <span class="text-[9px] text-gray-500 uppercase font-mono tracking-wider">${t(item.cat)}</span>
+        </div>
+      </div>
+      <button class="px-2.5 py-1 bg-purple-600/80 group-hover:bg-purple-500 text-white text-[10px] font-bold rounded-lg transition shrink-0 flex items-center gap-1">
+        <span>Starten</span>
+        <i data-lucide="arrow-right" class="w-3 h-3"></i>
+      </button>
+    `;
+    container.appendChild(card);
+  });
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function prepareWhatNowMicroStep(taskText) {
+  const titleEl = document.getElementById('whatnow-micro-task-title');
+  const stepEl = document.getElementById('whatnow-micro-first-step');
+  if (titleEl) titleEl.innerText = taskText;
+  
+  let firstStep = "Schritt 1: Bereite alles vor und starte mit nur 2 Minuten.";
+  const standardKey = typeof getGermanStandardKey === 'function' ? getGermanStandardKey(taskText) : taskText;
+  const predefinedSteps = (typeof TASK_STEPS_BY_TASK !== 'undefined' && TASK_STEPS_BY_TASK[standardKey]) || null;
+  if (predefinedSteps && predefinedSteps.length > 0) {
+    firstStep = `Schritt 1: ${predefinedSteps[0]}`;
+  }
+  if (stepEl) stepEl.innerText = firstStep;
+}
+
+function startMicroStepInFocus() {
+  if (currentWhatNowChosen) {
+    startZenWithTask(currentWhatNowChosen.task, currentWhatNowChosen.cat);
+  } else {
+    toggleMinimalist();
+  }
+}
+
+function flipWhatNowCoin() {
+  const optA = document.getElementById('whatnow-coin-a')?.value.trim() || 'Option A';
+  const optB = document.getElementById('whatnow-coin-b')?.value.trim() || 'Option B';
+  const resBox = document.getElementById('whatnow-coin-result');
+  if (!resBox) return;
+  resBox.classList.remove('hidden');
+  resBox.innerHTML = `<span class="animate-spin inline-block">🪙</span> Münze dreht sich...`;
+  
+  setTimeout(() => {
+    const winner = Math.random() < 0.5 ? optA : optB;
+    const safeWinner = winner.replace(/'/g, "\\'");
+    resBox.innerHTML = `
+      <div class="space-y-2">
+        <div class="text-amber-300 font-display font-black text-sm">Gewählt: ${winner} 🎉</div>
+        <button onclick="startZenWithTask('${safeWinner}', 'todo')" class="px-3 py-1 bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-500/40 rounded-lg text-xs font-bold transition cursor-pointer">
+          Jetzt mit ${winner} im Fokus-Modus starten ➔
+        </button>
+      </div>
+    `;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }, 600);
+}
+
 function pickRandomTask() {
   const box = document.getElementById('helper-pick-box');
   if (!box) return;
@@ -183,39 +346,31 @@ function pickRandomTask() {
 
   let chosen = null;
 
-  if (poolDailies.length === 0 && poolHousework.length === 0 && poolOthers.length === 0) {
-    chosen = null;
+  if (currentWhatNowEnergyLevel === 'low') {
+    if (poolDailies.length > 0) chosen = poolDailies[0];
+    else if (poolHousework.length > 0) chosen = poolHousework[0];
+    else if (poolOthers.length > 0) chosen = poolOthers[0];
+  } else if (currentWhatNowEnergyLevel === 'high') {
+    if (poolOthers.length > 0) chosen = poolOthers[0];
+    else if (poolHousework.length > 0) chosen = poolHousework[0];
+    else if (poolDailies.length > 0) chosen = poolDailies[0];
   } else {
-    if (suggestionCycleCount < 2) {
-      if (poolDailies.length > 0) {
-        chosen = poolDailies[0];
-        suggestionCycleCount++;
-      } else if (poolHousework.length > 0) {
-        chosen = poolHousework[0];
-        suggestionCycleCount = 0;
-      } else {
-        chosen = poolOthers[0];
-        suggestionCycleCount = 0;
-      }
+    if (poolHousework.length > 0 && Math.random() < 0.4) {
+      chosen = poolHousework[0];
+    } else if (poolDailies.length > 0) {
+      chosen = poolDailies[0];
     } else {
-      if (poolHousework.length > 0) {
-        chosen = poolHousework[0];
-        suggestionCycleCount = 0;
-      } else if (poolDailies.length > 0) {
-        chosen = poolDailies[0];
-        suggestionCycleCount = 1;
-      } else {
-        chosen = poolOthers[0];
-        suggestionCycleCount = 0;
-      }
+      chosen = poolOthers[0] || null;
     }
   }
+
+  currentWhatNowChosen = chosen;
 
   if (!chosen) {
     const doneMsg = { 
       de: '🎉 Alle Aufgaben erledigt! Fantastisch, genieß deinen Tag!', 
       en: '🎉 All tasks completed! Fantastic, enjoy your day!', 
-      es: '🎉 ¡Todas las Aufgaben erledigt! ¡Disfruta de tu día!', 
+      es: '🎉 ¡Todas las tareas completadas! ¡Disfruta de tu día!', 
       el: '🎉 Όλες οι εργασίες ολοκληρώθηκαν! Απολαύστε τη μέρα σας!' 
     }[currentLang] || '🎉 All tasks completed!';
 
@@ -233,59 +388,31 @@ function pickRandomTask() {
       return taskVal === chosen.task;
     });
 
-    const doneBtnLabel = {
-      de: 'Erledigen',
-      en: 'Complete',
-      es: 'Completar',
-      el: 'Ολοκλήρωση'
-    }[currentLang] || 'Complete';
-
     activeTimerTask = chosen.task;
     updateActiveTimerLabels();
     
     const theme = getNextNonRepeatingTheme();
+    box.className = `p-5 rounded-2xl border transition-all duration-300 helper-suggestion-card-active ${theme.box}`;
     
-    box.className = `p-6 rounded-2xl border transition-all duration-300 helper-suggestion-card-active ${theme.box}`;
-    
-    const card = document.getElementById('helper-pick-card');
-    if (card) {
-      card.className = `w-full max-w-lg bg-[#111116]/95 border p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300 ${theme.cardBorder}`;
-    }
-    
-    const icon = document.getElementById('helper-pick-icon');
-    if (icon) {
-      icon.className = `w-4 h-4 animate-pulse transition-all duration-300 ${theme.accentText}`;
-    }
-    
-    const display = document.getElementById('helper-pick-timer-display');
-    if (display) {
-      display.className = `font-display font-black text-xs tracking-wider leading-none transition-all duration-300 ${theme.accentText}`;
-    }
-    
-    const progressBar = document.getElementById('helper-pick-timer-progress-bar');
-    if (progressBar) {
-      progressBar.className = `h-full transition-all duration-300 ${theme.progressBarBg}`;
-    }
-    
-    const nextBtn = document.getElementById('helper-pick-next-btn');
-    if (nextBtn) {
-      nextBtn.className = `w-full py-3 text-white font-bold text-xs rounded-xl shadow-lg transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 transform active:scale-95 ${theme.btnNext}`;
-      const rawText = safeTranslate('next_suggestion') || 'Nächster Vorschlag';
-      const cleanText = rawText.replace('🎲', '').trim();
-      nextBtn.innerHTML = `<i data-lucide="arrow-right-circle" class="w-4 h-4"></i><span>${cleanText}</span>`;
-    }
-    
+    const safeTask = chosen.task.replace(/'/g, "\\'");
+
     box.innerHTML = `
-      <div class="flex flex-col items-center gap-3.5 w-full py-1">
-        <div class="text-2xl md:text-3xl font-display font-black px-2 break-words text-center leading-tight tracking-tight ${theme.text}">${chosen.task}</div>
-        <div class="flex items-center justify-between gap-2.5 mt-2 w-full">
-          <button onclick="openTaskStepsModal('${chosen.cat}', ${taskIdx})" class="px-3.5 py-1.5 rounded-lg text-[11px] font-semibold cursor-pointer transition duration-150 flex items-center gap-1.5 hover:scale-[1.02] ${theme.btnSteps}">
-            <i data-lucide="footprints" class="w-3.5 h-3.5 shrink-0"></i>
+      <div class="flex flex-col items-center gap-3 w-full py-1">
+        <span class="text-[9px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded-full bg-white/10 text-gray-300 font-mono">${t(chosen.cat)}</span>
+        <div class="text-xl md:text-2xl font-display font-black px-2 break-words text-center leading-tight tracking-tight text-white">${chosen.task}</div>
+        
+        <div class="flex flex-col sm:flex-row items-center gap-2 mt-2 w-full">
+          <button onclick="startZenWithTask('${safeTask}', '${chosen.cat}')" class="flex-1 w-full py-2.5 px-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-1.5 cursor-pointer">
+            <i data-lucide="play" class="w-3.5 h-3.5"></i>
+            <span>Im Fokus-Modus starten 🧘</span>
+          </button>
+          <button onclick="openTaskStepsModal('${chosen.cat}', ${taskIdx})" class="py-2.5 px-3 bg-white/10 hover:bg-white/15 text-gray-200 text-xs font-semibold rounded-xl transition flex items-center justify-center gap-1 cursor-pointer">
+            <i data-lucide="footprints" class="w-3.5 h-3.5"></i>
             <span>Steps</span>
           </button>
-          <button onclick="handleCompleteTask('${chosen.cat}', ${taskIdx}); pickRandomTask();" class="px-4 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer transition duration-150 flex items-center gap-1.5 hover:scale-[1.02] ${theme.btnDone}">
-            <i data-lucide="check" class="w-3.5 h-3.5 shrink-0"></i>
-            <span>${doneBtnLabel}</span>
+          <button onclick="handleCompleteTask('${chosen.cat}', ${taskIdx}); pickRandomTask();" class="py-2.5 px-3 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1 cursor-pointer">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+            <span>Erledigt</span>
           </button>
         </div>
       </div>
@@ -293,4 +420,5 @@ function pickRandomTask() {
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
 }
+
 

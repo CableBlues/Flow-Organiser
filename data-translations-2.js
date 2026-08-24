@@ -21,7 +21,7 @@ const TRANSLATIONS_PART2 = {
     add: 'Προσθήκη',
     report: 'Στατιστικά',
     settings: 'Επιλογές',
-    whatnow: 'Και τώρα τι;',
+    whatnow: 'και τώρα;',
     notesPlaceholder: 'Γράψε τις σημειώσεις σου...',
     give_feedback: 'Αποστολή Σχολίων',
     feedback: 'Σχόλια',

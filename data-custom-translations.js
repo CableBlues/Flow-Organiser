@@ -15,7 +15,7 @@ const customTranslations = {
     feedback_alt: "oder sende mir eine E-Mail an jmonke@gmail.com",
     feedback_placeholder: "Deine Gedanken, Wünsche oder Ideen...",
     send: "Senden",
-    whatnow: "Was jetzt?",
+    whatnow: "Was nun?",
     cooking: "Kochen",
     cook_add_ingredient: "Hinzufügen",
     cook_add_ingredient_placeholder: "Zutat eingeben...",
@@ -183,7 +183,7 @@ const customTranslations = {
     dopamine_kick_success_log: "Impulso de dopamina superado:"
   },
   el: {
-    minimal_mode: "Λειτουργία συγκέντρωσης",
+    minimal_mode: "Focus-Modus",
     pause_btn: "Παύση",
     standard_mode: "Κανονική λειτουργία",
     next_rec: "Η πρότασή σου για τώρα",
@@ -195,7 +195,7 @@ const customTranslations = {
     feedback_alt: "ή στείλε μου ένα email στο jmonke@gmail.com",
     feedback_placeholder: "Οι σκέψεις, οι επιθυμίες ή οι ιδέες σου...",
     send: "Αποστολή",
-    whatnow: "Τι κάνουμε τώρα;",
+    whatnow: "και τώρα;",
     cooking: "Μαγείρεμα",
     cook_add_ingredient: "Προσθήκη",
     cook_add_ingredient_placeholder: "Προσθέστε υλικό...",

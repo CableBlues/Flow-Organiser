@@ -207,12 +207,19 @@ document.addEventListener('keydown', (e) => {
 document.addEventListener('DOMContentLoaded', () => {
   setTheme(currentTheme); setLanguage(currentLang);
   const iconEl = document.getElementById('zen-btn-icon'); const textEl = document.getElementById('minimal-mode-btn-text');
+  const zenView = document.getElementById('zen-chill-view');
+  const mainEl = document.querySelector('main');
   if (isMinimalist) {
     document.body.classList.add('minimalist'); if (iconEl) iconEl.setAttribute('data-lucide', 'eye-off');
     if (textEl) textEl.innerText = t('standard_mode');
+    if (zenView) { zenView.classList.remove('hidden'); zenView.classList.add('flex'); }
+    if (mainEl) { mainEl.classList.add('hidden'); }
+    updateZenView();
   } else {
     document.body.classList.remove('minimalist'); if (iconEl) iconEl.setAttribute('data-lucide', 'eye');
     if (textEl) textEl.innerText = t('minimal_mode');
+    if (zenView) { zenView.classList.add('hidden'); zenView.classList.remove('flex'); }
+    if (mainEl) { mainEl.classList.remove('hidden'); }
   }
   updateDateAndStreak(); renderApp(); updateZenView(); populateHelperTaskSelect(); suggestBoostActivity(); suggestInspirationQuote(); checkAndGenerateAutomaticReports();
   const btnHeader = document.getElementById('timer-toggle-btn'); if (btnHeader) { btnHeader.innerHTML = '<i data-lucide="play" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>'; }
@@ -317,15 +324,41 @@ function translateUserTasks(fromLang, toLang) {
 function toggleMinimalist() {
   isMinimalist = !isMinimalist; localStorage.setItem('flowPlannerMinimalist', String(isMinimalist));
   const iconEl = document.getElementById('zen-btn-icon'); const textEl = document.getElementById('minimal-mode-btn-text');
+  const zenView = document.getElementById('zen-chill-view');
+  const mainEl = document.querySelector('main');
   if (isMinimalist) {
     document.body.classList.add('minimalist'); if (iconEl) iconEl.setAttribute('data-lucide', 'eye-off');
-    if (textEl) textEl.innerText = t('standard_mode'); updateZenView();
+    if (textEl) textEl.innerText = t('standard_mode'); 
+    if (zenView) { zenView.classList.remove('hidden'); zenView.classList.add('flex'); }
+    if (mainEl) { mainEl.classList.add('hidden'); }
+    updateZenView();
   } else {
     document.body.classList.remove('minimalist'); if (iconEl) iconEl.setAttribute('data-lucide', 'eye');
     if (textEl) textEl.innerText = t('minimal_mode');
+    if (zenView) { zenView.classList.add('hidden'); zenView.classList.remove('flex'); }
+    if (mainEl) { mainEl.classList.remove('hidden'); }
   }
   if (typeof lucide !== 'undefined') lucide.createIcons();
-  showToast(isMinimalist ? t('minimal_mode') + " aktiv" : t('standard_mode') + " aktiv");
+  showToast(isMinimalist ? t('toast_zen_active') : t('toast_zen_inactive'));
+}
+
+function zenCompleteCurrentTask() {
+  if (!currentZenTaskInfo || !currentZenTaskInfo.cat || !currentZenTaskInfo.task) {
+    showToast(tr({ de: 'Keine aktive Aufgabe ausgewählt', en: 'No active task selected', es: 'Ninguna tarea activa seleccionada', el: 'Δεν επιλέχθηκε ενεργή εργασία', fr: 'Aucune tâche active sélectionnée', it: 'Nessuna attività attiva selezionata' }));
+    return;
+  }
+  const cat = currentZenTaskInfo.cat;
+  const taskTextToFind = currentZenTaskInfo.task;
+  if (!state.items[cat]) return;
+  const index = state.items[cat].findIndex(item => {
+    const tStr = typeof item === 'object' ? item.task : item;
+    return tStr === taskTextToFind;
+  });
+  if (index !== -1) {
+    handleCompleteTask(cat, index);
+  } else if (state.items[cat].length > 0) {
+    handleCompleteTask(cat, 0);
+  }
 }
 
 function toggleTerminForm(open, prefilledDate) {

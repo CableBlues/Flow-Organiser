@@ -1,10 +1,16 @@
 function togglePanel(panelName) {
   clearTimeout(hoverPanelTimeout); const el = document.getElementById(`panel-${panelName}`); if (!el) return;
   const isCurrentlyHidden = el.classList.contains('hidden');
-  ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'sync', 'theme', 'calendar-dropdown', 'inspiration', 'shopping', 'cooking', 'pause-dropdown', 'logo-guide'].forEach(p => {
+  ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'sync', 'theme', 'calendar-dropdown', 'inspiration', 'shopping', 'cooking', 'alarm', 'pause-dropdown', 'logo-guide'].forEach(p => {
     if (p !== panelName) { const other = document.getElementById(`panel-${p}`); if (other) other.classList.add('hidden'); }
   });
-  if (isCurrentlyHidden) { el.classList.remove('hidden'); currentlyOpenPanel = panelName; if (panelName === 'report') updateReportPanel(); if (panelName === 'cooking') renderCookingPanel(true); } 
+  if (isCurrentlyHidden) { 
+    el.classList.remove('hidden'); 
+    currentlyOpenPanel = panelName; 
+    if (panelName === 'report') updateReportPanel(); 
+    if (panelName === 'cooking') renderCookingPanel(true); 
+    if (panelName === 'alarm' && typeof renderAlarmPanel === 'function') renderAlarmPanel();
+  } 
   else { el.classList.add('hidden'); if (currentlyOpenPanel === panelName) currentlyOpenPanel = null; }
 }
 
@@ -129,26 +135,128 @@ function submitFeedback() {
   }
 }
 
+function renderZenSubtasks(taskText) {
+  const container = document.getElementById('zen-task-steps-container');
+  if (!container) return;
+  if (!taskText) {
+    container.classList.add('hidden');
+    return;
+  }
+  const standardKey = typeof getGermanStandardKey === 'function' ? getGermanStandardKey(taskText) : taskText;
+  const steps = (typeof TASK_STEPS_BY_TASK !== 'undefined' && TASK_STEPS_BY_TASK[standardKey]) || [];
+  
+  if (!steps || steps.length === 0) {
+    container.classList.add('hidden');
+    return;
+  }
+  
+  container.classList.remove('hidden');
+  const completedMap = state.completedSteps?.[taskText] || [];
+  
+  container.innerHTML = `
+    <div class="text-[10px] text-purple-300 font-bold uppercase tracking-wider mb-1 flex items-center gap-1">
+      <i data-lucide="list-checks" class="w-3.5 h-3.5 text-purple-400"></i>
+      <span>Teilschritte / Checkliste:</span>
+    </div>
+  ` + steps.map((step, idx) => {
+    const isChecked = completedMap.includes(idx);
+    return `
+      <label class="flex items-start gap-2 p-1.5 rounded-lg hover:bg-white/5 cursor-pointer text-xs transition ${isChecked ? 'line-through text-gray-500 opacity-60' : 'text-gray-200'}">
+        <input type="checkbox" onchange="toggleZenStepCheck('${taskText.replace(/'/g, "\\'")}', ${idx})" ${isChecked ? 'checked' : ''} class="w-3.5 h-3.5 mt-0.5 rounded bg-black/60 border-white/20 text-purple-500 accent-purple-500 cursor-pointer" />
+        <span class="leading-tight font-medium">${step}</span>
+      </label>
+    `;
+  }).join('');
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function toggleZenStepCheck(taskText, stepIdx) {
+  if (!state.completedSteps) state.completedSteps = {};
+  if (!state.completedSteps[taskText]) state.completedSteps[taskText] = [];
+  const list = state.completedSteps[taskText];
+  const pos = list.indexOf(stepIdx);
+  if (pos === -1) list.push(stepIdx);
+  else list.splice(pos, 1);
+  saveState();
+  renderZenSubtasks(taskText);
+}
+
 function updateZenView() {
   const zenCatEl = document.getElementById('zen-task-cat'); const zenTextEl = document.getElementById('zen-task-text');
-  if (!zenTextEl) return; let chosen = null;
-  const dailyTasks = (state.items.daily || []).map(t => ({ cat: 'daily', task: typeof t === 'object' ? t.task : t }));
-  const weeklyTasks = (state.items.weekly || []).map(t => ({ cat: 'weekly', task: typeof t === 'object' ? t.task : t }));
-  const todoTasks = (state.items.todo || []).map(t => ({ cat: 'todo', task: typeof t === 'object' ? t.task : t }));
-  const occasionallyTasks = (state.items.occasionally || []).map(t => ({ cat: 'occasionally', task: typeof t === 'object' ? t.task : t }));
-  if (dailyTasks.length > 0) chosen = dailyTasks[0];
-  else if (weeklyTasks.length > 0 || todoTasks.length > 0) chosen = weeklyTasks[0] || todoTasks[0];
-  else if (occasionallyTasks.length > 0) chosen = occasionallyTasks[0];
-  currentZenTaskInfo = chosen;
+  if (!zenTextEl) return;
+  
+  let chosen = currentZenTaskInfo;
+  if (!chosen || !chosen.task) {
+    const dailyTasks = (state.items.daily || []).map(t => ({ cat: 'daily', task: typeof t === 'object' ? t.task : t }));
+    const weeklyTasks = (state.items.weekly || []).map(t => ({ cat: 'weekly', task: typeof t === 'object' ? t.task : t }));
+    const todoTasks = (state.items.todo || []).map(t => ({ cat: 'todo', task: typeof t === 'object' ? t.task : t }));
+    const occasionallyTasks = (state.items.occasionally || []).map(t => ({ cat: 'occasionally', task: typeof t === 'object' ? t.task : t }));
+    if (dailyTasks.length > 0) chosen = dailyTasks[0];
+    else if (weeklyTasks.length > 0 || todoTasks.length > 0) chosen = weeklyTasks[0] || todoTasks[0];
+    else if (occasionallyTasks.length > 0) chosen = occasionallyTasks[0];
+    currentZenTaskInfo = chosen;
+  }
+  
   if (!chosen) {
     if (zenCatEl) zenCatEl.innerText = t('completed');
     const endMsg = tr({ de: '🎉 Alle Aufgaben erledigt! Entspanne dich und genieße deine freie Zeit.', en: '🎉 All tasks completed! Relax and enjoy your free time.', es: '🎉 ¡Todas las tareas completadas! ¡Disfruta de tu tiempo libre!', el: '🎉 Όλες οι εργασίες ολοκληρώθηκαν! Χαλαρώστε και απολαύστε τον ελεύθερο χρόνο σας.', fr: '🎉 Toutes les tâches terminées ! Détends-toi et profite de ton temps libre.', it: '🎉 Tutte le attività completate! Rilassati e goditi il tuo tempo libero.' });
     zenTextEl.innerHTML = `<span class="text-emerald-400">${endMsg}</span>`;
+    renderZenSubtasks(null);
   } else {
     const catName = t(chosen.cat); if (zenCatEl) zenCatEl.innerText = `${t('next_rec')} · ${catName}`;
     zenTextEl.innerText = chosen.task;
+    renderZenSubtasks(chosen.task);
   }
   updateTimerDisplay(); if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function updateZenViewNextTask() {
+  const allTasks = [];
+  ['daily', 'todo', 'weekly', 'occasionally', 'termine'].forEach(cat => {
+    (state?.items?.[cat] || []).filter(Boolean).forEach(t => {
+      const taskText = typeof t === 'object' ? t.task : t;
+      if (!currentZenTaskInfo || currentZenTaskInfo.task !== taskText) {
+        allTasks.push({ cat, task: taskText });
+      }
+    });
+  });
+  if (allTasks.length > 0) {
+    currentZenTaskInfo = allTasks[Math.floor(Math.random() * allTasks.length)];
+  } else {
+    currentZenTaskInfo = null;
+  }
+  updateZenView();
+  showToast(tr({ de: 'Nächste Fokus-Aufgabe geladen ⏭️', en: 'Next focus task loaded ⏭️', es: 'Siguiente tarea de enfoque cargada ⏭️', el: 'Φορτώθηκε η επόμενη εργασία εστίασης ⏭️', fr: 'Tâche de focus suivante chargée ⏭️', it: 'Prossima attività di focus caricata ⏭️' }));
+}
+
+function handleZenDistractionInput(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    submitZenDistraction();
+  }
+}
+
+function submitZenDistraction() {
+  const input = document.getElementById('zen-distraction-input');
+  if (!input) return;
+  const val = input.value.trim();
+  if (!val) return;
+  
+  saveHistory();
+  if (!state.items.notes) state.items.notes = [];
+  state.items.notes.push(val);
+  saveState();
+  renderApp();
+  input.value = '';
+  
+  showToast(tr({
+    de: `Gedanke geparkt & in Notizen gesichert! 📌`,
+    en: `Thought parked & saved to Notes! 📌`,
+    es: `¡Pensamiento aparcado y guardado en Notas! 📌`,
+    el: `Η σκέψη αποθηκεύτηκε στις Σημειώσεις! 📌`,
+    fr: `Pensée notée et sauvegardée ! 📌`,
+    it: `Pensiero parcheggiato e salvato nelle Note! 📌`
+  }));
 }
 
 function updateShoppingListPopup(skipLucide = false) {
@@ -279,10 +387,55 @@ function updateMissedTasksList() {
   }
 }
 
+async function exportReportAsImage() {
+  const target = document.getElementById('report-export-target');
+  if (!target) return;
+  
+  if (typeof html2canvas === 'undefined') {
+    try {
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    } catch(e) {
+      console.error('Failed to load html2canvas:', e);
+      if (typeof showToast === 'function') showToast(tr({ de: "Export fehlgeschlagen.", en: "Export failed." }));
+      return;
+    }
+  }
+
+  html2canvas(target, {
+    backgroundColor: '#111116',
+    scale: 2, 
+    useCORS: true
+  }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = `flow-statistik-${new Date().toISOString().split('T')[0]}.png`;
+    link.href = canvas.toDataURL();
+    link.click();
+    if (typeof showToast === 'function') showToast(tr({ de: "Statistik als Bild exportiert! 📸", en: "Statistics exported as image! 📸" }));
+  }).catch(err => {
+    console.error("Export-Fehler:", err);
+    if (typeof showToast === 'function') showToast(tr({ de: "Export fehlgeschlagen.", en: "Export failed." }));
+  });
+}
+
 function triggerAutomaticDownload(reportText, filename) {
   const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' }); const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function getYearAndWeek(date) {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+  return `${d.getUTCFullYear()}-W${String(weekNo).padStart(2, '0')}`;
 }
 
 function checkAndGenerateAutomaticReports() {

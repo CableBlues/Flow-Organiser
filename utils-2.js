@@ -200,4 +200,213 @@ function updateDateAndStreak() {
   renderMiniCalendar();
 } 
  
- 
+
+/**
+ * Erzeugt schwebende Erfolgs-Bubbles an der Position des Events oder Elements.
+ */
+function spawnFloatingBubbles(e) {
+  const x = e && e.clientX ? e.clientX : window.innerWidth / 2;
+  const y = e && e.clientY ? e.clientY : window.innerHeight / 2;
+
+  for (let i = 0; i < 8; i++) {
+    const bubble = document.createElement('div');
+    bubble.className = 'floating-success-bubble';
+    
+    // Zufällige leichte Variation der Startposition
+    const offsetX = (Math.random() - 0.5) * 40;
+    const offsetY = (Math.random() - 0.5) * 40;
+    
+    bubble.style.left = `${x + offsetX}px`;
+    bubble.style.top = `${y + offsetY}px`;
+    
+    // Zufällige Verzögerung und Größe
+    const delay = Math.random() * 0.2;
+    const size = Math.random() * 10 + 8;
+    bubble.style.width = `${size}px`;
+    bubble.style.height = `${size}px`;
+    bubble.style.animationDelay = `${delay}s`;
+    
+    // Zufällige Farbe aus dem Brand-Spektrum
+    const colors = ['#38bdf8', '#10b981', '#8b5cf6', '#f472b6'];
+    bubble.style.background = `radial-gradient(circle at 30% 30%, #fff 0%, ${colors[Math.floor(Math.random() * colors.length)]} 70%)`;
+    
+    document.body.appendChild(bubble);
+    
+    // Nach Animation entfernen
+    setTimeout(() => bubble.remove(), 1200);
+  }
+}
+
+// ==========================================
+// SAFE-SPACE (ATEMTAKT & ERDUNGS-ANKER)
+// ==========================================
+
+const ANCHOR_STEPS = {
+  de: [
+    { title: "5 DINGE SEHEN 👀", text: "Blicke dich um und benenne 5 Gegenstände, die du in deiner Umgebung siehst." },
+    { title: "4 DINGE SPÜREN ✋", text: "Fühle 4 verschiedene Texturen (z.B. Kleidung, Tischplatte, Stuhllehne, Hände)." },
+    { title: "3 DINGE HÖREN 👂", text: "Lausche aufmerksam: Welche 3 unterschiedlichen Geräusche kannst du wahrnehmen?" },
+    { title: "2 DINGE RIECHEN 👃", text: "Atme tief durch die Nase: Nimm 2 verschiedene Gerüche wahr (Kaffee, Raumluft, Holz...)." },
+    { title: "1 DING SCHMECKEN 👅", text: "Konzentriere dich auf den Geschmack in deinem Mund oder nimm einen Schluck Wasser." }
+  ],
+  en: [
+    { title: "5 THINGS TO SEE 👀", text: "Look around and name 5 objects you can currently see in your room." },
+    { title: "4 THINGS TO FEEL ✋", text: "Touch 4 different textures (e.g. your clothes, desk, chair, fingertips)." },
+    { title: "3 THINGS TO HEAR 👂", text: "Listen carefully: What 3 distinct sounds can you hear around you?" },
+    { title: "2 THINGS TO SMELL 👃", text: "Breathe in: Notice 2 different scents (coffee, air, fabric, wood...)." },
+    { title: "1 THING TO TASTE 👅", text: "Focus on the taste inside your mouth or take a sip of water." }
+  ],
+  es: [
+    { title: "5 COSAS QUE VER 👀", text: "Mira a tu alrededor y nombra 5 objetos que puedas ver." },
+    { title: "4 COSAS QUE SENTIR ✋", text: "Toca 4 texturas diferentes (ej. tu ropa, la mesa, la silla)." },
+    { title: "3 COSAS QUE ESCUCHAR 👂", text: "Escucha atentamente: ¿Qué 3 sonidos distintos puedes percibir?" },
+    { title: "2 COSAS QUE OLER 👃", text: "Respira profundo: Percibe 2 olores diferentes." },
+    { title: "1 COSA QUE SABOREAR 👅", text: "Concéntrate en el sabor en tu boca o toma un sorbo de agua." }
+  ],
+  el: [
+    { title: "5 ΠΡΑΓΜΑΤΑ ΝΑ ΔΕΙΣ 👀", text: "Κοίταξε γύρω σου και ονόμασε 5 αντικείμενα που βλέπεις." },
+    { title: "4 ΠΡΑΓΜΑΤΑ ΝΑ ΑΓΓΙΞΕΙΣ ✋", text: "Νιώσε 4 διαφορετικές υφές (π.χ. ρούχα, γραφείο, καρέκλα)." },
+    { title: "3 ΠΡΑΓΜΑΤΑ ΝΑ ΑΚΟΥΣΕΙΣ 👂", text: "Άκουσε προσεκτικά: Ποιους 3 διαφορετικούς ήχους ακούς;" },
+    { title: "2 ΠΡΑΓΜΑΤΑ ΝΑ ΜΥΡΙΣΕΙΣ 👃", text: "Πάρε βαθιά ανάσα: Ανίχνευσε 2 διαφορετικές μυρωδιές." },
+    { title: "1 ΠΡΑΓΜΑ ΝΑ ΓΕΥΤΕΙΣ 👅", text: "Εστίασε στη γεύση στο στόμα σου ή πιες μια γουλιά νερό." }
+  ],
+  fr: [
+    { title: "5 CHOSES À VOIR 👀", text: "Regarde autour de toi et nomme 5 objets que tu vois." },
+    { title: "4 CHOSES À TOUCHER ✋", text: "Touche 4 textures différentes (vêtements, table, chaise...)." },
+    { title: "3 CHOSES À ÉCOUTER 👂", text: "Écoute attentivement : Quels 3 sons distincts entends-tu ?" },
+    { title: "2 CHOSES À SENTIR 👃", text: "Respire profondément : Repère 2 odeurs différentes." },
+    { title: "1 CHOSE À GOÛTER 👅", text: "Concentre-toi sur le goût dans ta bouche ou bois une gorgée d'eau." }
+  ],
+  it: [
+    { title: "5 COSE DA VEDERE 👀", text: "Guardati attorno e nomina 5 oggetti che vedi." },
+    { title: "4 COSE DA TOCCARE ✋", text: "Tocca 4 texture diverse (es. vestiti, scrivania, sedia)." },
+    { title: "3 COSE DA ASCOLTARE 👂", text: "Ascolta attentamente: Quali 3 suoni distinti percepisci?" },
+    { title: "2 COSE DA ODORARE 👃", text: "Fai un respiro profondo: Riconosci 2 odori diversi." },
+    { title: "1 COSA DA GUSTARE 👅", text: "Concentrati sul sapore nella tua bocca o bevi un sorso d'acqua." }
+  ]
+};
+
+let safeSpaceBreathInterval = null;
+let safeSpaceBreathStep = 0;
+let safeSpaceNoiseActive = false;
+let anchorStep = 1;
+
+function openSafeSpaceModal() {
+  const modal = document.getElementById('helper-safespace-modal');
+  if (modal) modal.classList.remove('hidden');
+  switchSafeSpaceTab('breath');
+}
+
+function closeSafeSpaceModal() {
+  const modal = document.getElementById('helper-safespace-modal');
+  if (modal) modal.classList.add('hidden');
+  stopSafeSpaceBreathCycle();
+  if (safeSpaceNoiseActive) {
+    toggleSafeSpaceNoise();
+  }
+}
+
+function switchSafeSpaceTab(tab) {
+  const breathTab = document.getElementById('safespace-tab-breath');
+  const anchorTab = document.getElementById('safespace-tab-anchor');
+  const breathPane = document.getElementById('safespace-pane-breath');
+  const anchorPane = document.getElementById('safespace-pane-anchor');
+  if (tab === 'breath') {
+    if (breathTab) breathTab.className = "flex-1 py-1.5 rounded text-teal-300 bg-teal-500/10 border border-teal-500/20";
+    if (anchorTab) anchorTab.className = "flex-1 py-1.5 rounded text-gray-400 hover:text-white";
+    if (breathPane) breathPane.classList.remove('hidden');
+    if (anchorPane) anchorPane.classList.add('hidden');
+    startSafeSpaceBreathCycle();
+  } else {
+    if (breathTab) breathTab.className = "flex-1 py-1.5 rounded text-gray-400 hover:text-white";
+    if (anchorTab) anchorTab.className = "flex-1 py-1.5 rounded text-teal-300 bg-teal-500/10 border border-teal-500/20";
+    if (breathPane) breathPane.classList.add('hidden');
+    if (anchorPane) anchorPane.classList.remove('hidden');
+    stopSafeSpaceBreathCycle();
+    resetAnchorSteps();
+  }
+}
+
+function startSafeSpaceBreathCycle() {
+  stopSafeSpaceBreathCycle();
+  const circle = document.getElementById('safespace-breath-circle');
+  const text = document.getElementById('safespace-breath-text');
+  if (!circle || !text) return;
+  safeSpaceBreathStep = 0;
+  const runCycle = () => {
+    if (safeSpaceBreathStep === 0) {
+      text.innerText = currentLang === 'de' ? "Einatmen... (4s)" : "Inhale... (4s)";
+      circle.style.transform = "scale(1.35)";
+      circle.style.borderColor = "rgba(20, 184, 166, 0.8)";
+      safeSpaceBreathStep = 1;
+    } else if (safeSpaceBreathStep === 1) {
+      text.innerText = currentLang === 'de' ? "Anhalten... (4s)" : "Hold... (4s)";
+      circle.style.transform = "scale(1.35)";
+      circle.style.borderColor = "rgba(245, 158, 11, 0.6)";
+      safeSpaceBreathStep = 2;
+    } else {
+      text.innerText = currentLang === 'de' ? "Ausatmen... (4s)" : "Exhale... (4s)";
+      circle.style.transform = "scale(0.95)";
+      circle.style.borderColor = "rgba(20, 184, 166, 0.4)";
+      safeSpaceBreathStep = 0;
+    }
+  };
+  runCycle();
+  safeSpaceBreathInterval = setInterval(runCycle, 4000);
+}
+
+function stopSafeSpaceBreathCycle() {
+  if (safeSpaceBreathInterval) {
+    clearInterval(safeSpaceBreathInterval);
+    safeSpaceBreathInterval = null;
+  }
+}
+
+function toggleSafeSpaceNoise() {
+  safeSpaceNoiseActive = !safeSpaceNoiseActive;
+  const btn = document.getElementById('safespace-noise-btn');
+  if (!btn) return;
+  if (safeSpaceNoiseActive) {
+    btn.innerText = currentLang === 'de' ? "Regen-Sound aus" : "Stop Rain Sound";
+    btn.className = "px-3.5 py-1.5 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-300 text-xs font-bold rounded-lg transition";
+    if (typeof playAmbientSound === 'function') {
+      playAmbientSound('rain', true);
+    }
+  } else {
+    btn.innerText = currentLang === 'de' ? "Regen-Sound ein" : "Start Rain Sound";
+    btn.className = "px-3.5 py-1.5 bg-teal-500/20 hover:bg-teal-500/30 border border-teal-500/30 text-teal-300 text-xs font-bold rounded-lg transition";
+    if (typeof stopAmbientSound === 'function') {
+      stopAmbientSound(true);
+    }
+  }
+}
+
+function resetAnchorSteps() {
+  anchorStep = 1;
+  updateAnchorStepUI();
+}
+
+function nextAnchorStep() {
+  anchorStep++;
+  if (anchorStep > 5) {
+    showToast(currentLang === 'de' ? "Erdung erfolgreich abgeschlossen! 🧘‍♂️" : "Grounding completed successfully! 🧘‍♂️");
+    closeSafeSpaceModal();
+  } else {
+    updateAnchorStepUI();
+    if (typeof playProceduralSound === 'function') {
+      playProceduralSound(3);
+    }
+  }
+}
+
+function updateAnchorStepUI() {
+  const titleEl = document.getElementById('anchor-step-title');
+  const textEl = document.getElementById('anchor-step-instruction');
+  const progressEl = document.getElementById('anchor-progress-bar');
+  if (!titleEl || !textEl || !progressEl) return;
+  const steps = ANCHOR_STEPS[currentLang] || ANCHOR_STEPS.de;
+  const stepData = steps[anchorStep - 1] || steps[0];
+  titleEl.innerText = stepData.title;
+  textEl.innerText = stepData.text;
+  progressEl.style.width = `${anchorStep * 20}%`;
+}
