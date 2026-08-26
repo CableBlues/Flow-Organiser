@@ -312,19 +312,19 @@ document.write(`        <!-- Smart-Prioritizer (MODUL 1) -->
 
         <!-- 5 QUALITATIVE 3D WORLDS & STORY RPG SELECTOR -->
         <div class="flex items-center gap-1 bg-black/60 p-1 rounded-xl border border-white/10 overflow-x-auto max-w-full">
-          <button onclick="switchGameWorld('orbit_deck')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition hover:bg-purple-600/30 text-purple-300 hover:text-white flex items-center gap-1 cursor-pointer" title="Sci-Fi Orbit-Deck & Holo-Zentrale">
+          <button data-world-tab="orbit_deck" onclick="switchGameWorld('orbit_deck')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition bg-purple-600 border border-purple-400 text-white flex items-center gap-1 cursor-pointer" title="Sci-Fi Orbit-Deck & Holo-Zentrale">
             <span>🌌</span> <span class="hidden md:inline">Orbit-Deck</span>
           </button>
-          <button onclick="switchGameWorld('floating_island')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition hover:bg-emerald-600/30 text-emerald-300 hover:text-white flex items-center gap-1 cursor-pointer" title="Cozy Floating Island & Zen-Garten">
+          <button data-world-tab="floating_island" onclick="switchGameWorld('floating_island')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition hover:bg-emerald-600/30 text-emerald-300 hover:text-white flex items-center gap-1 cursor-pointer" title="Cozy Floating Island & Zen-Garten">
             <span>🏝️</span> <span class="hidden md:inline">Zen-Insel</span>
           </button>
-          <button onclick="switchGameWorld('task_metropolis')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition hover:bg-blue-600/30 text-blue-300 hover:text-white flex items-center gap-1 cursor-pointer" title="3D Task-Metropole">
+          <button data-world-tab="task_metropolis" onclick="switchGameWorld('task_metropolis')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition hover:bg-blue-600/30 text-blue-300 hover:text-white flex items-center gap-1 cursor-pointer" title="3D Task-Metropole">
             <span>🏙️</span> <span class="hidden md:inline">Metropole</span>
           </button>
-          <button onclick="switchGameWorld('galaxy_runner')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition hover:bg-pink-600/30 text-pink-300 hover:text-white flex items-center gap-1 cursor-pointer" title="Galaxy Runner Cockpit">
+          <button data-world-tab="galaxy_runner" onclick="switchGameWorld('galaxy_runner')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition hover:bg-pink-600/30 text-pink-300 hover:text-white flex items-center gap-1 cursor-pointer" title="Galaxy Runner Cockpit">
             <span>🚀</span> <span class="hidden md:inline">Warp-Cockpit</span>
           </button>
-          <button onclick="switchGameWorld('quest_adventure')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-amber-500/20 border border-amber-400/40 text-amber-300 hover:text-white flex items-center gap-1 cursor-pointer" title="Chronicles of Flow 3D Action-RPG">
+          <button data-world-tab="quest_adventure" onclick="switchGameWorld('quest_adventure')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition bg-white/5 hover:bg-white/10 text-amber-300 hover:text-white flex items-center gap-1 cursor-pointer" title="Chronicles of Flow 3D Action-RPG">
             <span>⚔️</span> <span class="hidden md:inline">RPG-Abenteuer</span>
           </button>
         </div>

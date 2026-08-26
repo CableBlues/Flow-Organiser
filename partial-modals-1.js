@@ -163,24 +163,73 @@ document.write(`  <div id="praise-overlay" class="hidden fixed inset-0 z-[100000
         </div>
       </div>
 
-      <!-- QR-Code Card -->
-      <div class="p-3 bg-white rounded-2xl shadow-xl my-1 flex items-center justify-center">
-        <img id="p2p-qr-img" src="" alt="QR Code" class="w-44 h-44 rounded-lg select-none" />
+      <!-- Tab-Umschaltung: QR-Scan vs. Code-Eingabe -->
+      <div class="flex w-full bg-black/40 p-1 rounded-xl border border-white/5 text-xs">
+        <button id="p2p-tab-btn-qr" onclick="switchP2PTab('qr')" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 transition">
+          📷 QR-Scan
+        </button>
+        <button id="p2p-tab-btn-manual" onclick="switchP2PTab('manual')" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition">
+          🔢 Code / Import
+        </button>
       </div>
 
-      <div class="w-full space-y-2">
-        <div class="flex items-center justify-between px-3 py-1.5 rounded-xl bg-black/50 border border-white/10 text-xs">
-          <span class="text-[10px] text-gray-400 uppercase font-mono">Raum-Code:</span>
-          <span id="p2p-room-code" class="font-mono font-black text-emerald-400 text-xs tracking-wider">FLOW-...</span>
+      <!-- PANE 1: QR CODE -->
+      <div id="p2p-pane-qr" class="w-full flex flex-col items-center gap-2">
+        <div class="p-3.5 bg-white rounded-2xl shadow-2xl my-1 flex items-center justify-center border-4 border-emerald-500/30">
+          <img id="p2p-qr-img" src="" alt="Standard QR-Code" class="w-48 h-48 rounded-lg select-none" />
         </div>
 
+        <p class="text-[10px] text-gray-400">Halte einfach deine Smartphone-Kamera auf den QR-Code.</p>
+
+        <!-- IP-Helper für Localhost-Umgebungen -->
+        <div id="p2p-ip-helper" class="hidden w-full p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-left space-y-1.5">
+          <span class="text-[10px] font-bold text-amber-300 flex items-center gap-1">
+            <i data-lucide="wifi" class="w-3 h-3"></i> WLAN / Localhost-Hinweis:
+          </span>
+          <p class="text-[9px] text-gray-300 leading-tight">
+            Falls dein Smartphone <i>localhost</i> nicht erreichen kann, trage hier die lokale IP-Adresse deines PCs im WLAN ein:
+          </p>
+          <div class="flex gap-1.5">
+            <input id="p2p-custom-ip-input" type="text" placeholder="http://192.168.178.50:80/" class="flex-1 px-2 py-1 bg-black/50 border border-white/15 rounded-lg text-[10px] text-white outline-none" />
+            <button onclick="updateP2PCustomUrl(document.getElementById('p2p-custom-ip-input').value)" class="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-black text-[10px] font-bold rounded-lg transition cursor-pointer">
+              Neu generieren
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANE 2: MANUELLER CODE & IMPORT -->
+      <div id="p2p-pane-manual" class="hidden w-full space-y-3 py-2 text-left">
+        <div class="p-3 rounded-2xl bg-black/50 border border-white/10 space-y-1">
+          <span class="text-[10px] text-gray-400 uppercase font-mono">Dein Raum-Code:</span>
+          <div class="flex items-center justify-between">
+            <span id="p2p-room-code" class="font-mono font-black text-emerald-400 text-base tracking-wider">FLOW-...</span>
+            <button onclick="copyP2PShareLink()" class="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/15 text-[10px] font-bold text-emerald-300 transition">Link kopieren</button>
+          </div>
+        </div>
+
+        <div class="space-y-1.5">
+          <button onclick="importP2PCode()" class="w-full py-2.5 px-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            <span>Transfer-Code einfügen & Plan laden</span>
+          </button>
+          <button onclick="copyP2PRawPayload()" class="w-full py-2 px-3 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 text-xs font-semibold rounded-xl transition flex items-center justify-center gap-2">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <span>Plan als Text-Code kopieren</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="w-full space-y-2 pt-1 border-t border-white/10">
         <div id="p2p-status-badge" class="px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-medium font-mono flex items-center justify-center gap-2">
           <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-          <span>Warte auf QR-Scan...</span>
+          <span>Warte auf Verbindung...</span>
         </div>
 
         <input type="hidden" id="p2p-share-link-input" />
-        <div class="grid grid-cols-2 gap-2 pt-1">
+        <input type="hidden" id="p2p-raw-payload-input" />
+        <div class="grid grid-cols-2 gap-2">
           <button onclick="copyP2PShareLink()" class="py-2 px-3 bg-white/5 hover:bg-white/10 text-emerald-300 hover:text-emerald-200 border border-white/10 text-xs font-semibold rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5">
             <i data-lucide="copy" class="w-3.5 h-3.5"></i>
             <span>Link kopieren</span>

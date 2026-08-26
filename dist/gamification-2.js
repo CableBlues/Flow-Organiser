@@ -3,7 +3,7 @@
 
 var heroMesh = null;
 var heroTargetPos = null;
-var heroVelocity = new THREE.Vector3();
+var heroVelocity = null;
 var heroSpeed = 0.35;
 var heroKeys = { forward: false, backward: false, left: false, right: false };
 var heroMana = 100;
@@ -14,8 +14,14 @@ var isDungeonChanneling = false;
 // 5. WELT: 3D ACTION-RPG "CHRONICLES OF FLOW"
 // ----------------------------------------------------------------------------
 function buildQuestAdventureWorld() {
-  gameCamera.position.set(0, 12, 20);
-  gameControls.target.set(0, 1, 0);
+  if (gameCamera) {
+    gameCamera.position.set(0, 14, 22);
+    gameCamera.lookAt(0, 2, 4);
+  }
+  if (gameControls) {
+    gameControls.target.set(0, 2, 4);
+    gameControls.update();
+  }
 
   // 1. Burgplatz & Akademie-Hof (PBR Pflasterstein-Optik)
   const courtyardGeo = new THREE.CylinderGeometry(26, 26, 1.2, 32);
@@ -294,10 +300,15 @@ function spawn3DTasksAsQuestArtifacts() {
 
     const cardTex = (typeof create3DTaskCardTexture === 'function') ? create3DTaskCardTexture(t.text, t.cat) : null;
     if (cardTex) {
-      const cardGeo = new THREE.PlaneGeometry(3.6, 1.8);
-      const cardMat = new THREE.MeshBasicMaterial({ map: cardTex, transparent: true, side: THREE.DoubleSide });
+      const cardGeo = new THREE.PlaneGeometry(5.6, 2.8);
+      const cardMat = new THREE.MeshBasicMaterial({ 
+        map: cardTex, 
+        transparent: true, 
+        side: THREE.DoubleSide,
+        depthWrite: false
+      });
       const cardMesh = new THREE.Mesh(cardGeo, cardMat);
-      cardMesh.position.y = 1.8;
+      cardMesh.position.y = 2.4;
       group.add(cardMesh);
     }
 
@@ -305,7 +316,8 @@ function spawn3DTasksAsQuestArtifacts() {
       taskData: t,
       baseY: group.position.y,
       seed: i,
-      mainMesh: relicMesh
+      mainMesh: relicMesh,
+      cardMesh: cardMesh
     };
 
     gameScene.add(group);
