@@ -70,7 +70,15 @@ const MinimalQR = (function() {
     { total: 532, ec: 104, blocks: [[4, 107]] },
     { total: 581, ec: 120, blocks: [[3, 115], [1, 116]] },
     { total: 655, ec: 132, blocks: [[5, 87], [1, 88]] },
-    { total: 733, ec: 144, blocks: [[5, 98], [1, 99]] }
+    { total: 733, ec: 144, blocks: [[5, 98], [1, 99]] },
+    { total: 815, ec: 168, blocks: [[1, 107], [5, 108]] },
+    { total: 901, ec: 180, blocks: [[5, 120], [1, 121]] },
+    { total: 991, ec: 196, blocks: [[3, 113], [4, 114]] },
+    { total: 1085, ec: 224, blocks: [[3, 107], [5, 108]] },
+    { total: 1156, ec: 224, blocks: [[4, 116], [4, 117]] },
+    { total: 1258, ec: 252, blocks: [[2, 111], [7, 112]] },
+    { total: 1364, ec: 270, blocks: [[4, 121], [5, 122]] },
+    { total: 1474, ec: 300, blocks: [[6, 117], [4, 118]] }
   ];
 
   function getVersion(len) {
@@ -81,7 +89,7 @@ const MinimalQR = (function() {
       const headerBits = 4 + (v < 10 ? 8 : 16);
       if (len <= cap - Math.ceil(headerBits / 8)) return v;
     }
-    return 16;
+    return EC_PARAMS_L.length - 1;
   }
 
   function encodeData(text, version) {
@@ -292,17 +300,19 @@ const MinimalQR = (function() {
 const P2PDataCodec = {
   encodeState(stateObj) {
     try {
+      if (!stateObj) return '';
       const minimalState = {
-        v: 1,
-        ts: Date.now(),
-        ws: stateObj.activeWorkspace || 'private',
-        items: stateObj.items || {},
-        done: (stateObj.done || []).slice(0, 30),
-        workItems: stateObj.workItems || {},
-        workDone: (stateObj.workDone || []).slice(0, 30)
+        w: stateObj.activeWorkspace === 'work' ? 1 : 0,
+        i: stateObj.items || {},
+        d: (stateObj.done || []).slice(0, 15),
+        wi: stateObj.workItems || {},
+        wd: (stateObj.workDone || []).slice(0, 15)
       };
       const json = JSON.stringify(minimalState);
-      return encodeURIComponent(btoa(unescape(encodeURIComponent(json))));
+      return btoa(unescape(encodeURIComponent(json)))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
     } catch (e) {
       console.error('[P2P] Encode error:', e);
       return '';
@@ -311,8 +321,20 @@ const P2PDataCodec = {
 
   decodeState(encodedStr) {
     try {
-      const json = decodeURIComponent(escape(atob(decodeURIComponent(encodedStr))));
+      if (!encodedStr) return null;
+      let base64 = String(encodedStr).replace(/-/g, '+').replace(/_/g, '/');
+      while (base64.length % 4 !== 0) base64 += '=';
+      const json = decodeURIComponent(escape(atob(base64)));
       const parsed = JSON.parse(json);
+      if (parsed.w !== undefined || parsed.i !== undefined) {
+        return {
+          items: parsed.i || {},
+          done: parsed.d || [],
+          workItems: parsed.wi || {},
+          workDone: parsed.wd || [],
+          ws: parsed.w === 1 ? 'work' : 'private'
+        };
+      }
       return parsed;
     } catch (e) {
       console.error('[P2P] Decode error:', e);
@@ -334,9 +356,39 @@ const p2pSyncEngine = {
   signalingChannel: null,
   lastBroadcastTime: 0,
   customBaseUrl: '',
+  discoveredLanUrl: '',
 
   init() {
     this.checkUrlForIncomingSync();
+    this.detectLocalLanIp();
+  },
+
+  detectLocalLanIp() {
+    try {
+      if (typeof window === 'undefined' || typeof RTCPeerConnection === 'undefined') return;
+      const pc = new RTCPeerConnection({ iceServers: [] });
+      pc.createDataChannel('');
+      pc.createOffer().then(o => pc.setLocalDescription(o)).catch(() => {});
+      pc.onicecandidate = (e) => {
+        if (!e || !e.candidate || !e.candidate.candidate) return;
+        const match = /([0-9]{1,3}(\.[0-9]{1,3}){3})/.exec(e.candidate.candidate);
+        if (match && match[1] && !match[1].startsWith('127.')) {
+          const lanIp = match[1];
+          const port = window.location.port ? `:${window.location.port}` : '';
+          const path = window.location.pathname || '/';
+          const fullLan = `http://${lanIp}${port}${path}`;
+          this.discoveredLanUrl = fullLan;
+          
+          const ipInput = document.getElementById('p2p-custom-ip-input');
+          if (ipInput && !ipInput.value) {
+            ipInput.value = fullLan;
+          }
+          pc.onicecandidate = null;
+          try { pc.close(); } catch(err) {}
+        }
+      };
+      setTimeout(() => { try { pc.close(); } catch(err) {} }, 1800);
+    } catch (e) {}
   },
 
   isConnected() {
@@ -362,12 +414,15 @@ const p2pSyncEngine = {
     if (!baseUrl) {
       if (typeof window !== 'undefined') {
         if (window.location.protocol === 'file:') {
-          baseUrl = 'https://flow-organiser.local/';
+          // Valid HTTPS PWA Web Gateway when opened as local file
+          baseUrl = 'https://cableblues.github.io/Flow-Organiser/';
+        } else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+          baseUrl = this.discoveredLanUrl || (window.location.origin + window.location.pathname);
         } else {
           baseUrl = window.location.origin + window.location.pathname;
         }
       } else {
-        baseUrl = 'https://flow-organiser.local/';
+        baseUrl = 'https://cableblues.github.io/Flow-Organiser/';
       }
     }
 
@@ -380,14 +435,14 @@ const p2pSyncEngine = {
 
     const payload = P2PDataCodec.encodeState(state);
     const cleanBase = baseUrl.replace(/\/+$/, '');
-    const shareUrl = `${cleanBase}#sync=${this.roomId}&data=${payload}`;
+    const shareUrl = `${cleanBase}/#sync=${this.roomId}&data=${payload}`;
 
     const codeDisplay = document.getElementById('p2p-room-code');
     if (codeDisplay) codeDisplay.innerText = this.roomId;
 
     const qrImg = document.getElementById('p2p-qr-img');
     if (qrImg) {
-      qrImg.src = MinimalQR.generateQRCodeSVG(shareUrl, 240);
+      qrImg.src = MinimalQR.generateQRCodeSVG(shareUrl, 260);
     }
 
     const shareInput = document.getElementById('p2p-share-link-input');

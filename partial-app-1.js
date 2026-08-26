@@ -295,17 +295,21 @@ document.write(`
 
       </div>
 
-      <!-- MOBILE-ONLY HEADER ACTIONS (Workspace, Suche & Settings) -->
+      <!-- MOBILE-ONLY HEADER ACTIONS (Workspace, Suche, Live-Sync & Quick-Menü) -->
       <div class="flex md:hidden items-center gap-1.5 shrink-0">
         <button onclick="toggleWorkspace()" class="h-8 px-2.5 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 text-purple-200 rounded-xl flex items-center gap-1 text-xs font-bold transition cursor-pointer shadow-sm" title="Zwischen Privat und Arbeit umschalten">
           <span class="text-xs">🏠</span>
           <span class="text-[11px] font-bold text-purple-300">Privat</span>
         </button>
-        <button onclick="openCommandPalette()" class="h-8 w-8 bg-white/10 hover:bg-white/15 border border-white/15 text-gray-200 rounded-xl flex items-center justify-center transition cursor-pointer shadow-sm" title="Suche & Befehle">
+        <button onclick="openCommandPalette()" class="h-8 w-8 bg-white/10 hover:bg-white/15 border border-white/15 text-purple-300 rounded-xl flex items-center justify-center transition cursor-pointer shadow-sm" title="Suche & Befehle" aria-label="Suche">
           <i data-lucide="search" class="w-3.5 h-3.5"></i>
         </button>
-        <button onclick="openSettingsModal()" class="h-8 w-8 bg-white/10 hover:bg-white/15 border border-white/15 text-purple-300 rounded-xl flex items-center justify-center transition cursor-pointer shadow-sm" title="Einstellungen & Optionen">
-          <i data-lucide="settings" class="w-4 h-4"></i>
+        <button onclick="openP2PSyncModal()" class="h-8 w-8 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 rounded-xl flex items-center justify-center transition cursor-pointer shadow-sm relative" title="Handy Live-Verbindung ⚡" aria-label="Handy Live-Verbindung">
+          <i data-lucide="smartphone" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping absolute top-1 right-1 opacity-75"></span>
+        </button>
+        <button onclick="openMobileQuickMenu()" class="h-8 w-8 bg-white/10 hover:bg-white/15 border border-white/15 text-gray-200 rounded-xl flex items-center justify-center transition cursor-pointer shadow-sm" title="Schnellmenü" aria-label="Schnellmenü">
+          <i data-lucide="more-vertical" class="w-4 h-4 text-gray-300"></i>
         </button>
       </div>
 
@@ -391,14 +395,14 @@ document.write(`
       </div>
 
       <!-- BEHÄLTER 5: Was nun? (Kompakter Icon-Button mit Tooltip) -->
-      <div class="desktop-only-header flex items-center p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0">
+      <div class="hidden md:flex desktop-only-header items-center p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0">
         <button id="btn-whatnow-dance" onclick="openHelperModal('pick')" class="h-8 w-8 flex items-center justify-center rounded-xl text-amber-300 hover:text-amber-200 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 cursor-pointer transition-all duration-300 shrink-0 shadow-sm" title="Was nun? – Zufällige Aufgabe nach Energie-Level vorschlagen lassen" aria-label="Was nun? – Zufällige Aufgabe vorschlagen">
           <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-amber-300 animate-pulse"></i>
         </button>
       </div>
 
       <!-- BEHÄLTER 8: Statistik & Pause (Insights & Recovery) -->
-      <div class="desktop-only-header flex items-center gap-1.5 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0 zen-hide">
+      <div class="hidden md:flex desktop-only-header items-center gap-1.5 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0 zen-hide">
         <div class="relative group cursor-pointer">
           <button onclick="togglePanel('report')" class="h-8 px-2.5 border border-white/10 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] hover:border-purple-500/30 text-gray-200 flex items-center gap-1.5 text-xs font-semibold cursor-pointer transition whitespace-nowrap shadow-sm" title="Erledigungsstatistiken und Diagramme einsehen">
             <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>
@@ -557,7 +561,7 @@ document.write(`
       </div>
 
       <!-- BEHÄLTER 7: Aktionen (Undo, Open, Save, Reset) -->
-      <div class="desktop-only-header flex items-center gap-1 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0">
+      <div class="hidden md:flex desktop-only-header items-center gap-1 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0">
         <button onclick="handleUndo()" class="h-8 w-8 flex items-center justify-center bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 rounded-xl text-gray-300 hover:text-white cursor-pointer transition shadow-sm" title="Letzte Aktion rückgängig machen">
           <i data-lucide="undo" class="w-3.5 h-3.5"></i>
         </button>
@@ -574,7 +578,7 @@ document.write(`
       </div>
 
       <!-- BEHÄLTER 9: Preferences & Sync -->
-      <div class="desktop-only-header flex items-center gap-1 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0">
+      <div class="hidden md:flex desktop-only-header items-center gap-1 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0">
 
         <!-- Quick Search & Command Palette (Strg+K) -->
         <div class="relative group cursor-pointer zen-hide">

@@ -208,11 +208,28 @@ function closeAllPanelsAndModals() {
   if (typeof closeSettingsModal === 'function') closeSettingsModal();
   if (typeof closeCommandPalette === 'function') closeCommandPalette();
   if (typeof closeKeyboardShortcuts === 'function') closeKeyboardShortcuts();
+  if (typeof closeP2PSyncModal === 'function') closeP2PSyncModal();
+  if (typeof closeMobileQuickMenu === 'function') closeMobileQuickMenu();
 
   const allPanels = document.querySelectorAll('[id^="panel-"]');
   allPanels.forEach(p => p.classList.add('hidden'));
 }
 window.closeAllPanelsAndModals = closeAllPanelsAndModals;
+
+function openMobileQuickMenu() {
+  const modal = document.getElementById('modal-mobile-quick-menu');
+  if (modal) {
+    modal.classList.remove('hidden');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+}
+window.openMobileQuickMenu = openMobileQuickMenu;
+
+function closeMobileQuickMenu() {
+  const modal = document.getElementById('modal-mobile-quick-menu');
+  if (modal) modal.classList.add('hidden');
+}
+window.closeMobileQuickMenu = closeMobileQuickMenu;
 
 // SPARKLES & CELEBRATION CANVAS PARTICLES (PURE VANILLA JS)
 function triggerSparkleEffect(x, y) {

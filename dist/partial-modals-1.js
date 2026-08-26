@@ -8,6 +8,104 @@ document.write(`  <div id="praise-overlay" class="hidden fixed inset-0 z-[100000
     <div id="toast-card" class="px-8 py-4 rounded-xl bg-[#111116]/95 border border-[var(--accent)] text-white text-base font-bold font-display text-center backdrop-blur-md shadow-2xl"></div>
   </div>
 
+  <!-- MODAL: MOBILE QUICK-ACTION HUB (UNTERES ACTION SHEET / BOTTOM DRAWER) -->
+  <div id="modal-mobile-quick-menu" class="hidden fixed inset-0 z-[100000] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md animate-fade-in" onclick="if(event.target === this) closeMobileQuickMenu()">
+    <div class="w-full max-w-md bg-[#111116]/98 border-t sm:border border-purple-500/30 p-5 rounded-t-3xl sm:rounded-3xl shadow-2xl backdrop-blur-xl text-white space-y-4 max-h-[85vh] overflow-y-auto" onclick="event.stopPropagation()">
+      
+      <!-- Drag Handle for Mobile -->
+      <div class="w-12 h-1.5 bg-white/20 rounded-full mx-auto mb-1 sm:hidden"></div>
+
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">⚡</span>
+          <div>
+            <h3 class="text-white font-bold text-sm font-display">Schnellmenü & Optionen</h3>
+            <p class="text-[10px] text-gray-400">Alle Funktionen für unterwegs griffbereit</p>
+          </div>
+        </div>
+        <button onclick="closeMobileQuickMenu()" class="p-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition cursor-pointer">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Quick Action Grid (2x4) -->
+      <div class="grid grid-cols-2 gap-2.5 text-xs font-semibold">
+        <!-- 1. Handy Live-Sync -->
+        <button onclick="closeMobileQuickMenu(); openP2PSyncModal();" class="p-3 rounded-2xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 flex items-center gap-2.5 transition active:scale-95 text-left cursor-pointer">
+          <span class="text-xl">📱</span>
+          <div>
+            <div class="font-bold text-white leading-tight">Live-Sync</div>
+            <div class="text-[9px] text-emerald-400">QR & P2P Transfer</div>
+          </div>
+        </button>
+
+        <!-- 2. Statistik & Dashboard -->
+        <button onclick="closeMobileQuickMenu(); openReportDashboard();" class="p-3 rounded-2xl bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-purple-300 flex items-center gap-2.5 transition active:scale-95 text-left cursor-pointer">
+          <span class="text-xl">📊</span>
+          <div>
+            <div class="font-bold text-white leading-tight">Statistik</div>
+            <div class="text-[9px] text-purple-300">Wochenauswertung</div>
+          </div>
+        </button>
+
+        <!-- 3. Themes / Design -->
+        <button onclick="closeMobileQuickMenu(); togglePanel('theme');" class="p-3 rounded-2xl bg-fuchsia-500/10 hover:bg-fuchsia-500/20 border border-fuchsia-500/30 text-fuchsia-300 flex items-center gap-2.5 transition active:scale-95 text-left cursor-pointer">
+          <span class="text-xl">🎨</span>
+          <div>
+            <div class="font-bold text-white leading-tight">Farbschema</div>
+            <div class="text-[9px] text-fuchsia-300">16 Themes wählen</div>
+          </div>
+        </button>
+
+        <!-- 4. Sprache / Language -->
+        <button onclick="closeMobileQuickMenu(); togglePanel('language');" class="p-3 rounded-2xl bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 text-sky-300 flex items-center gap-2.5 transition active:scale-95 text-left cursor-pointer">
+          <span class="text-xl">🌐</span>
+          <div>
+            <div class="font-bold text-white leading-tight">Sprache</div>
+            <div class="text-[9px] text-sky-300">6 Sprachen (EN/DE/...)</div>
+          </div>
+        </button>
+
+        <!-- 5. Inspiration & Was nun? -->
+        <button onclick="closeMobileQuickMenu(); openHelperModal('pick');" class="p-3 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 flex items-center gap-2.5 transition active:scale-95 text-left cursor-pointer">
+          <span class="text-xl">💡</span>
+          <div>
+            <div class="font-bold text-white leading-tight">Was nun?</div>
+            <div class="text-[9px] text-amber-300">Impuls-Vorschlag</div>
+          </div>
+        </button>
+
+        <!-- 6. Reizpause & Erholung -->
+        <button onclick="closeMobileQuickMenu(); openBreakModal('breath');" class="p-3 rounded-2xl bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 text-teal-300 flex items-center gap-2.5 transition active:scale-95 text-left cursor-pointer">
+          <span class="text-xl">🧘</span>
+          <div>
+            <div class="font-bold text-white leading-tight">Reizpause</div>
+            <div class="text-[9px] text-teal-300">Atemübungen</div>
+          </div>
+        </button>
+
+        <!-- 7. Plan speichern (Backup) -->
+        <button onclick="closeMobileQuickMenu(); handleSaveJson();" class="p-3 rounded-2xl bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-300 flex items-center gap-2.5 transition active:scale-95 text-left cursor-pointer">
+          <span class="text-xl">💾</span>
+          <div>
+            <div class="font-bold text-white leading-tight">Plan sichern</div>
+            <div class="text-[9px] text-blue-300">JSON-Export</div>
+          </div>
+        </button>
+
+        <!-- 8. Einstellungen & Rechtliches -->
+        <button onclick="closeMobileQuickMenu(); openSettingsModal();" class="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/15 text-gray-200 flex items-center gap-2.5 transition active:scale-95 text-left cursor-pointer">
+          <span class="text-xl">⚙️</span>
+          <div>
+            <div class="font-bold text-white leading-tight">Einstellungen</div>
+            <div class="text-[9px] text-gray-400">Optionen & DSGVO</div>
+          </div>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- NEUTRALES HELPER WAS NUN? MODAL / ENTSCHEIDUNGS- & START-ASSISTENT -->
   <div id="helper-pick-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
     <div id="helper-pick-card" class="mobile-modal-card animate-spring-modal w-full max-w-lg bg-[#111116]/95 border border-purple-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">

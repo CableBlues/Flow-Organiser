@@ -1059,11 +1059,35 @@ document.write(`    <!-- CENTRAL DOCK (macOS 3D Floating-Stil) -->
 
         <div class="grid grid-cols-2 gap-3">
           
+          <!-- Live-Sync ⚡ -->
+          <div onclick="openP2PSyncModal()" class="p-4 rounded-2xl bg-gradient-to-br from-emerald-950/50 to-[#12121a] border border-emerald-500/40 shadow-lg cursor-pointer active:scale-95 transition flex flex-col justify-between h-28">
+            <div class="flex items-center justify-between">
+              <span class="text-2xl">📱</span>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">1-Klick</span>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-white leading-tight">Live-Sync & QR</h4>
+              <p class="text-[10px] text-emerald-400 mt-0.5">PC ↔ Smartphone</p>
+            </div>
+          </div>
+
+          <!-- Schnellmenü & Themes -->
+          <div onclick="openMobileQuickMenu()" class="p-4 rounded-2xl bg-gradient-to-br from-purple-950/50 to-[#12121a] border border-purple-500/40 shadow-lg cursor-pointer active:scale-95 transition flex flex-col justify-between h-28">
+            <div class="flex items-center justify-between">
+              <span class="text-2xl">⚡</span>
+              <span class="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-bold">Optionen</span>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-white leading-tight">Design & Sprache</h4>
+              <p class="text-[10px] text-purple-300 mt-0.5">Themes & Backup</p>
+            </div>
+          </div>
+
           <!-- Einkauf -->
-          <div onclick="openShoppingModal()" class="p-4 rounded-2xl bg-gradient-to-br from-emerald-950/50 to-[#12121a] border border-emerald-500/30 shadow-lg cursor-pointer active:scale-95 transition flex flex-col justify-between h-28">
+          <div onclick="openShoppingModal()" class="p-4 rounded-2xl bg-gradient-to-br from-teal-950/50 to-[#12121a] border border-teal-500/30 shadow-lg cursor-pointer active:scale-95 transition flex flex-col justify-between h-28">
             <div class="flex items-center justify-between">
               <span class="text-2xl">🛒</span>
-              <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">Loot</span>
+              <span class="px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 text-[10px] font-bold">Loot</span>
             </div>
             <div>
               <h4 class="text-xs font-bold text-white leading-tight">Einkaufsliste</h4>
@@ -1096,10 +1120,10 @@ document.write(`    <!-- CENTRAL DOCK (macOS 3D Floating-Stil) -->
           </div>
 
           <!-- Wecker & Erinnerung -->
-          <div onclick="openAlarmModal()" class="p-4 rounded-2xl bg-gradient-to-br from-purple-950/50 to-[#12121a] border border-purple-500/30 shadow-lg cursor-pointer active:scale-95 transition flex flex-col justify-between h-28">
+          <div onclick="openAlarmModal()" class="p-4 rounded-2xl bg-gradient-to-br from-pink-950/50 to-[#12121a] border border-pink-500/30 shadow-lg cursor-pointer active:scale-95 transition flex flex-col justify-between h-28">
             <div class="flex items-center justify-between">
               <span class="text-2xl">⏰</span>
-              <span class="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-bold">Alarm</span>
+              <span class="px-2 py-0.5 rounded-full bg-pink-500/20 text-pink-300 text-[10px] font-bold">Alarm</span>
             </div>
             <div>
               <h4 class="text-xs font-bold text-white leading-tight">Wecker & Timer</h4>

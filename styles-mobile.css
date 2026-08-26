@@ -20,7 +20,8 @@
     display: flex !important;
   }
 
-  .desktop-only {
+  .desktop-only,
+  .desktop-only-header {
     display: none !important;
   }
 
