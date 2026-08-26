@@ -752,6 +752,20 @@ function getYearAndWeek(date) {
   return `${d.getUTCFullYear()}-W${String(weekNo).padStart(2, '0')}`;
 }
 
+function generateReportContent(timeframe = 'comprehensive', targetDate = '') {
+  const reportText = typeof generateComprehensiveReportText === 'function' ? generateComprehensiveReportText() : '';
+  const now = new Date();
+  const dateStr = targetDate || now.toISOString().split('T')[0];
+  const filename = `Flow-Organiser-Report-${timeframe}-${dateStr}.txt`;
+  return { reportText, filename };
+}
+if (typeof window !== 'undefined') {
+  window.generateReportContent = generateReportContent;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.generateReportContent = generateReportContent;
+}
+
 function checkAndGenerateAutomaticReports() {
   const now = new Date(); const todayISO = now.toISOString().split('T')[0]; const lang = currentLang || 'de';
   if (state.lastDate && state.lastDate !== todayISO) {

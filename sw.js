@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flow-cache-v5';
+const CACHE_NAME = 'flow-cache-v7';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -6,6 +6,17 @@ const ASSETS_TO_CACHE = [
   './favicon.svg',
   './icon-192.svg',
   './icon-512.svg',
+  './fonts.css',
+  './fonts/plus-jakarta-sans-400.ttf',
+  './fonts/plus-jakarta-sans-500.ttf',
+  './fonts/plus-jakarta-sans-600.ttf',
+  './fonts/plus-jakarta-sans-700.ttf',
+  './fonts/space-grotesk-500.ttf',
+  './fonts/space-grotesk-700.ttf',
+  './fonts/caveat-400.ttf',
+  './fonts/caveat-700.ttf',
+  './fonts/playfair-display-400.ttf',
+  './fonts/playfair-display-700.ttf',
   './styles-base-1.css',
   './styles-base-2.css',
   './styles-dock.css',
@@ -16,6 +27,7 @@ const ASSETS_TO_CACHE = [
   './vendor/lucide.min.js',
   './vendor/three.min.js',
   './vendor/OrbitControls.js',
+  './vendor/qrcode.min.js',
   './vendor/html2canvas.min.js',
   './state.js',
   './data-translations-1.js',
@@ -58,12 +70,7 @@ const ASSETS_TO_CACHE = [
   './timer-3.js',
   './utils.js',
   './utils-2.js',
-  './utils-data.js',
-  './partial-app-1.js',
-  './partial-app-2.js',
-  './partial-app-3.js',
-  './partial-modals-1.js',
-  './partial-modals-2.js'
+  './utils-data.js'
 ];
 
 self.addEventListener('install', (event) => {

@@ -317,3 +317,22 @@ document.addEventListener('DOMContentLoaded', startAlarmLoopOnce);
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   startAlarmLoopOnce();
 }
+
+if (typeof window !== 'undefined') {
+  window.alarmState = alarmState;
+  window.initAlarmReminder = initAlarmReminder;
+  window.saveAlarmState = saveAlarmState;
+  window.renderAlarmPanel = renderAlarmPanel;
+  window.checkAlarmsLoop = checkAlarmsLoop;
+  window.triggerAlarmModal = triggerAlarmModal;
+  window.snoozeAlarm = snoozeAlarm;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.alarmState = alarmState;
+  globalThis.initAlarmReminder = initAlarmReminder;
+  globalThis.saveAlarmState = saveAlarmState;
+  globalThis.renderAlarmPanel = renderAlarmPanel;
+  globalThis.checkAlarmsLoop = checkAlarmsLoop;
+  globalThis.triggerAlarmModal = triggerAlarmModal;
+  globalThis.snoozeAlarm = snoozeAlarm;
+}

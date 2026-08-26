@@ -79,6 +79,8 @@ function getDepartmentForItem(name) {
   }
   return 'other';
 }
+window.SHOPPING_DEPARTMENTS = SHOPPING_DEPARTMENTS;
+window.getDepartmentForItem = getDepartmentForItem;
 
 function handleAddShoppingItem(explicitName = null) {
   let rawInput = explicitName;
@@ -553,4 +555,21 @@ function renderSupermarketModal() {
   html += '</div>';
   container.innerHTML = html;
   renderLucideIcons();
+}
+
+if (typeof window !== 'undefined') {
+  window.SHOPPING_DEPARTMENTS = SHOPPING_DEPARTMENTS;
+  window.getDepartmentForItem = getDepartmentForItem;
+  window.handleAddShoppingItem = handleAddShoppingItem;
+  window.openSupermarketModal = openSupermarketModal;
+  window.closeSupermarketModal = closeSupermarketModal;
+  window.renderSupermarketModal = renderSupermarketModal;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.SHOPPING_DEPARTMENTS = SHOPPING_DEPARTMENTS;
+  globalThis.getDepartmentForItem = getDepartmentForItem;
+  globalThis.handleAddShoppingItem = handleAddShoppingItem;
+  globalThis.openSupermarketModal = openSupermarketModal;
+  globalThis.closeSupermarketModal = closeSupermarketModal;
+  globalThis.renderSupermarketModal = renderSupermarketModal;
 }

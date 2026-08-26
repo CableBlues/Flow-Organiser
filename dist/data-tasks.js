@@ -1,6 +1,8 @@
 // CONFIGURATION KEYS FOR LOCALSTORAGE
 const STORE_KEY = 'flowPlannerV3';
 const HISTORY_KEY = 'flowPlannerV3History';
+window.STORE_KEY = STORE_KEY;
+window.HISTORY_KEY = HISTORY_KEY;
 
 // 4-LANGUAGE DEFAULT LIST DICTIONARY
 const DEFAULT_TASKS_BY_LANG = {
@@ -125,8 +127,23 @@ const TASK_ICONS = {
   'Bettwäsche tauschen': 'refresh-cw', 'Changing bedsheets': 'refresh-cw', 'Cambiar las sábanas': 'refresh-cw', 'Αλλαγή σεντονιών': 'refresh-cw', 'Changer les draps': 'refresh-cw', 'Cambiare le lenzuola': 'refresh-cw',
   'Nägel schneiden': 'scissors', 'Clipping nails': 'scissors', 'Cortarse las uñas': 'scissors', 'Κόψιμο νυχιών': 'scissors', 'Se couper les ongles': 'scissors', 'Tagliare le unghie': 'scissors',
   'Türe/Fenster putzen': 'sparkles', 'Cleaning doors & windows': 'sparkles', 'Limpiar puertas y ventanas': 'sparkles', 'Καθαρισμός πορτών & παραθύρων': 'sparkles', 'Nettoyer portes & fenêtres': 'sparkles', 'Pulire porte e finestre': 'sparkles',
-  'Herd & Kühlschrank putzen': 'sparkles', 'Cleaning stove & fridge': 'sparkles', 'Limpiar cocina y nevera': 'sparkles', 'Καθαρισμός κουζίνας & ψυγείου': 'sparkles', 'Nettoyer cuisinière & réfrigérateur': 'sparkles', 'Pulire fornelli e frigorifero': 'sparkles'
 };
+if (typeof window !== 'undefined') {
+  window.STORE_KEY = STORE_KEY;
+  window.HISTORY_KEY = HISTORY_KEY;
+  window.DEFAULT_TASKS_BY_LANG = DEFAULT_TASKS_BY_LANG;
+  window.TASK_ICONS = TASK_ICONS;
+  window.CATEGORIES = CATEGORIES;
+  window.FALLBACK_STEPS = FALLBACK_STEPS;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.STORE_KEY = STORE_KEY;
+  globalThis.HISTORY_KEY = HISTORY_KEY;
+  globalThis.DEFAULT_TASKS_BY_LANG = DEFAULT_TASKS_BY_LANG;
+  globalThis.TASK_ICONS = TASK_ICONS;
+  globalThis.CATEGORIES = CATEGORIES;
+  globalThis.FALLBACK_STEPS = FALLBACK_STEPS;
+}
 
 // COMPLETE HUMAN TRANSLATIONS DICTIONARY (UI & SYSTEM)
  

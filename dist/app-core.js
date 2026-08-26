@@ -930,6 +930,8 @@ function getTaskIconDetails(taskText, category = '') {
 }
 
 function getTaskIcon(taskText, category = '') { return getTaskIconDetails(taskText, category).icon; }
+window.getTaskIconDetails = getTaskIconDetails;
+window.getTaskIcon = getTaskIcon;
 
 // ===== KEYBOARD SHORTCUTS MODAL (?) =====
 function openKeyboardShortcuts() {
@@ -1305,5 +1307,30 @@ if (typeof document !== 'undefined') {
       switchMobileNavTab(savedTab);
     }
   });
+}
+
+if (typeof window !== 'undefined') {
+  window.setTheme = setTheme;
+  window.setLanguage = setLanguage;
+  window.toggleMinimalist = toggleMinimalist;
+  window.closeAllPanelsAndModals = closeAllPanelsAndModals;
+  window.getTaskIconDetails = getTaskIconDetails;
+  window.getTaskIcon = getTaskIcon;
+  window.openCommandPalette = openCommandPalette;
+  window.closeCommandPalette = closeCommandPalette;
+  window.switchMobileNavTab = switchMobileNavTab;
+  window.openMobileQuickAddModal = openMobileQuickAddModal;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.setTheme = setTheme;
+  globalThis.setLanguage = setLanguage;
+  globalThis.toggleMinimalist = toggleMinimalist;
+  globalThis.closeAllPanelsAndModals = closeAllPanelsAndModals;
+  globalThis.getTaskIconDetails = getTaskIconDetails;
+  globalThis.getTaskIcon = getTaskIcon;
+  globalThis.openCommandPalette = openCommandPalette;
+  globalThis.closeCommandPalette = closeCommandPalette;
+  globalThis.switchMobileNavTab = switchMobileNavTab;
+  globalThis.openMobileQuickAddModal = openMobileQuickAddModal;
 }
 

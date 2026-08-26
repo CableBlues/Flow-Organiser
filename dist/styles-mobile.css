@@ -1,0 +1,295 @@
+/* ==========================================================================
+   MOBILE DESIGN SYSTEM (5-Tab Ergonomie-Architektur & Native App Experience)
+   Gilt AUSSCHLIESSLICH auf Mobilgeräten (max-width: 768px / Touch).
+   Desktop-PCs (> 768px) bleiben zu 100% unberührt.
+   ========================================================================== */
+
+/* Auf Desktop standardmäßig ausblenden */
+#mobile-bottom-nav,
+#mobile-fab-add,
+.mobile-view-pane,
+.mobile-category-tabs,
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px), (hover: none) and (pointer: coarse) {
+
+  /* ---------------- 1. GLOBALE TOUCH- & VIEWPORT-STANDARDS ---------------- */
+  .mobile-only {
+    display: flex !important;
+  }
+
+  .desktop-only,
+  .desktop-only-header {
+    display: none !important;
+  }
+
+  button, a, [onclick], input, select, textarea {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  input, select, textarea {
+    font-size: 16px !important; /* Verhindert automatisches iOS-Zooming beim Tippen */
+  }
+
+  html, body {
+    overscroll-behavior-y: none;
+    overflow-x: hidden !important;
+    width: 100vw;
+    position: relative;
+    background-color: #0c0c14 !important;
+  }
+
+  #app {
+    padding: 8px 8px calc(76px + env(safe-area-inset-bottom)) 8px !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+
+  /* ---------------- 2. ULTRA-SCHLANKER MOBILER HEADER (46px) ---------------- */
+  header {
+    flex-wrap: nowrap !important;
+    height: 46px !important;
+    min-height: 46px !important;
+    padding: 4px 10px !important;
+    margin-bottom: 8px !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-radius: 18px !important;
+    background: rgba(18, 18, 28, 0.96) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  /* ---------------- 3. FESTE BOTTOM NAVIGATION BAR (DAUMENZONE) ---------------- */
+  #mobile-bottom-nav {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    height: calc(58px + env(safe-area-inset-bottom)) !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+    background: rgba(13, 13, 22, 0.94) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+    z-index: 99990 !important;
+    align-items: center !important;
+    justify-content: space-around !important;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.6) !important;
+    user-select: none !important;
+  }
+
+  .mobile-nav-item {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100% !important;
+    gap: 3px !important;
+    color: #94a3b8 !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em !important;
+    cursor: pointer !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    position: relative !important;
+  }
+
+  .mobile-nav-item i {
+    width: 20px !important;
+    height: 20px !important;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .mobile-nav-item:active {
+    transform: scale(0.92) !important;
+  }
+
+  .mobile-nav-item.active {
+    color: #ffffff !important;
+  }
+
+  .mobile-nav-item.active i {
+    color: var(--accent, #a855f7) !important;
+    transform: translateY(-2px) scale(1.1) !important;
+  }
+
+  .mobile-nav-item.active::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: calc(env(safe-area-inset-bottom) + 3px) !important;
+    width: 16px !important;
+    height: 3px !important;
+    background: var(--accent, #a855f7) !important;
+    border-radius: 9999px !important;
+    box-shadow: 0 0 10px var(--accent-border, rgba(168, 85, 247, 0.8)) !important;
+  }
+
+  /* ---------------- 4. FLOATING ACTION BUTTON (FAB: + NEUE AUFGABE) ---------------- */
+  #mobile-fab-add {
+    display: flex !important;
+    position: fixed !important;
+    bottom: calc(70px + env(safe-area-inset-bottom)) !important;
+    right: 18px !important;
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 9999px !important;
+    background: linear-gradient(135deg, var(--accent, #a855f7), #ec4899) !important;
+    color: #ffffff !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 10px 25px rgba(168, 85, 247, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.25) !important;
+    z-index: 99980 !important;
+    cursor: pointer !important;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s !important;
+  }
+
+  #mobile-fab-add:active {
+    transform: scale(0.9) !important;
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4) !important;
+  }
+
+  /* ---------------- 5. VIEW-SWITCHING LOGIK (5 HAUPT-PANELS) ---------------- */
+  body:not([data-mobile-nav]) main,
+  body[data-mobile-nav="planer"] main {
+    display: flex !important;
+  }
+
+  body[data-mobile-nav]:not([data-mobile-nav="planer"]) main,
+  body[data-mobile-nav]:not([data-mobile-nav="planer"]) .mobile-category-tabs,
+  body[data-mobile-nav]:not([data-mobile-nav="planer"]) #mobile-fab-add {
+    display: none !important;
+  }
+
+  .mobile-view-pane {
+    display: none;
+    width: 100% !important;
+    min-height: calc(100dvh - 140px) !important;
+    max-height: calc(100dvh - 140px) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 24px !important;
+    animation: mobileFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  }
+
+  body[data-mobile-nav="focus"] #mobile-view-focus,
+  body[data-mobile-nav="audio"] #mobile-view-audio,
+  body[data-mobile-nav="tools"] #mobile-view-tools {
+    display: block !important;
+  }
+
+  @keyframes mobileFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---------------- 6. SPALTEN-NAVIGATION IM PLANER (KATEGORIE-PILLS) ---------------- */
+  .mobile-category-tabs {
+    display: flex !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    white-space: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 2px 4px 8px 4px !important;
+    gap: 6px !important;
+    border: none !important;
+    background: transparent !important;
+    scrollbar-width: none;
+  }
+  .mobile-category-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mobile-tab-btn {
+    flex: 0 0 auto !important;
+    padding: 6px 13px !important;
+    border-radius: 9999px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #a1a1aa !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .mobile-tab-btn:active {
+    transform: scale(0.94);
+  }
+
+  .mobile-tab-active {
+    background: var(--accent, #a855f7) !important;
+    color: #ffffff !important;
+    border-color: var(--accent-light, #d8b4fe) !important;
+    box-shadow: 0 4px 14px var(--accent-border, rgba(168, 85, 247, 0.4)) !important;
+  }
+
+  .mobile-tab-active i {
+    color: #ffffff !important;
+  }
+
+  /* Aufgaben-Spalten Darstellung */
+  main {
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  main > article {
+    display: none !important;
+    width: 100% !important;
+    min-height: calc(100dvh - 165px) !important;
+    max-height: calc(100dvh - 165px) !important;
+    margin: 0 !important;
+    border-radius: 20px !important;
+  }
+
+  body[data-mobile-cat="daily"]         main > article[data-category="daily"],
+  body[data-mobile-cat="weekly"]        main > article[data-category="weekly"],
+  body[data-mobile-cat="todo"]          main > article[data-category="todo"],
+  body[data-mobile-cat="done"]          main > article[data-category="done"],
+  body[data-mobile-cat="termine"]       main > article[data-category="termine"],
+  body[data-mobile-cat="notes"]         main > article[data-category="notes"],
+  body[data-mobile-cat="occasionally"]  main > article[data-category="occasionally"] {
+    display: flex !important;
+  }
+
+  /* Desktop Mac-Dock auf Mobile ausblenden (wird durch Bottom-Nav & Views ersetzt) */
+  .mac-floating-wrapper {
+    display: none !important;
+  }
+
+  #game-mode-toggle-wrapper {
+    display: none !important;
+  }
+
+  /* ---------------- 7. NATIVE BOTTOM-SHEETS FÜR MODALS ---------------- */
+  .mobile-modal-card {
+    width: calc(100vw - 16px) !important;
+    max-width: 480px !important;
+    max-height: calc(88dvh - env(safe-area-inset-bottom)) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 1.25rem !important;
+    border-radius: 24px !important;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9) !important;
+  }
+
+  .modal-close-btn {
+    top: 1rem !important;
+    right: 1rem !important;
+    padding: 8px !important;
+    font-size: 1.25rem !important;
+  }
+}

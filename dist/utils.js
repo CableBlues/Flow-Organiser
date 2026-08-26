@@ -820,7 +820,19 @@ function closePrivacyModal() {
   if (modal) modal.classList.add('hidden');
 }
 
-window.openPrivacyModal = openPrivacyModal;
-window.closePrivacyModal = closePrivacyModal;
+if (typeof window !== 'undefined') {
+  window.escapeHtml = escapeHtml;
+  window.PanelManager = PanelManager;
+  window.ModalManager = ModalManager;
+  window.openPrivacyModal = openPrivacyModal;
+  window.closePrivacyModal = closePrivacyModal;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.escapeHtml = escapeHtml;
+  globalThis.PanelManager = PanelManager;
+  globalThis.ModalManager = ModalManager;
+  globalThis.openPrivacyModal = openPrivacyModal;
+  globalThis.closePrivacyModal = closePrivacyModal;
+}
 
 

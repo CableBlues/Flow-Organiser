@@ -169,82 +169,144 @@ function saveCategoriesOrder() {
   }
 }
 
+function migrateState(raw, lang) {
+  const currentL = lang || (typeof currentLang !== 'undefined' ? currentLang : 'de');
+  const localizedDefaults = (typeof DEFAULT_TASKS_BY_LANG !== 'undefined' && DEFAULT_TASKS_BY_LANG[currentL]) 
+    ? DEFAULT_TASKS_BY_LANG[currentL] 
+    : ((typeof DEFAULT_TASKS_BY_LANG !== 'undefined' && DEFAULT_TASKS_BY_LANG['de']) ? DEFAULT_TASKS_BY_LANG['de'] : { daily: [], weekly: [], occasionally: [] });
+  const todayStr = new Date().toISOString().split('T')[0];
+
+  if (!raw || typeof raw !== 'object') {
+    return {
+      version: 3,
+      lastDate: todayStr,
+      activeWorkspace: 'private',
+      items: {
+        daily: [...(localizedDefaults.daily || [])],
+        weekly: [...(localizedDefaults.weekly || [])],
+        occasionally: [...(localizedDefaults.occasionally || [])],
+        todo: [],
+        termine: [],
+        notes: []
+      },
+      done: [],
+      archive: [],
+      streak: 0,
+      completedSteps: {},
+      customSteps: {},
+      workItems: typeof createDefaultWorkItems === 'function' ? createDefaultWorkItems(currentL) : {},
+      workDone: [],
+      sampleBannerDismissed: false,
+      shoppingList: [],
+      shoppingHistory: [],
+      cooking: typeof createDefaultCookingState === 'function' ? createDefaultCookingState() : {},
+      clarity: { streakDays: 0, lastCheckinDate: null, history: [], savedReasons: [] }
+    };
+  }
+
+  const s = { ...raw };
+  s.version = 3;
+  if (!s.lastDate) s.lastDate = todayStr;
+
+  // 1. Items normalisieren
+  if (!s.items || typeof s.items !== 'object') {
+    s.items = {
+      daily: [...(localizedDefaults.daily || [])],
+      weekly: [...(localizedDefaults.weekly || [])],
+      occasionally: [...(localizedDefaults.occasionally || [])],
+      todo: [],
+      termine: [],
+      notes: []
+    };
+  } else {
+    ['daily', 'weekly', 'occasionally', 'todo', 'termine'].forEach(k => {
+      if (!Array.isArray(s.items[k])) s.items[k] = [];
+    });
+    if (typeof s.items.notes === 'string') {
+      s.items.notes = s.items.notes.split('\n').map(x => x.trim()).filter(Boolean);
+    } else if (!Array.isArray(s.items.notes)) {
+      s.items.notes = [];
+    }
+  }
+
+  // 2. Arrays & Basis-Eigenschaften
+  if (!Array.isArray(s.done)) s.done = [];
+  if (!Array.isArray(s.archive)) s.archive = [];
+  if (typeof s.streak !== 'number') s.streak = 0;
+  if (!s.completedSteps || typeof s.completedSteps !== 'object') s.completedSteps = {};
+  if (!s.customSteps || typeof s.customSteps !== 'object') s.customSteps = {};
+  if (s.sampleBannerDismissed === undefined) s.sampleBannerDismissed = false;
+
+  // 3. Workspaces
+  s.activeWorkspace = (s.activeWorkspace === 'work') ? 'work' : 'private';
+  if (!s.workItems || typeof s.workItems !== 'object') {
+    s.workItems = typeof createDefaultWorkItems === 'function' ? createDefaultWorkItems(currentL) : {};
+  } else {
+    ['work_focus', 'work_in_progress', 'work_waiting', 'work_backlog', 'termine', 'notes'].forEach(k => {
+      if (!Array.isArray(s.workItems[k])) s.workItems[k] = [];
+    });
+  }
+  if (!Array.isArray(s.workDone)) s.workDone = [];
+
+  // 4. Shopping & Cooking
+  if (!Array.isArray(s.shoppingList)) s.shoppingList = [];
+  if (!Array.isArray(s.shoppingHistory)) s.shoppingHistory = [];
+  if (!s.cooking || typeof s.cooking !== 'object') {
+    s.cooking = typeof createDefaultCookingState === 'function' ? createDefaultCookingState() : {};
+  } else {
+    s.cooking = {
+      pantryItems: Array.isArray(s.cooking.pantryItems) ? s.cooking.pantryItems : [],
+      recipes: Array.isArray(s.cooking.recipes) && s.cooking.recipes.length ? s.cooking.recipes : (typeof createDefaultCookingState === 'function' ? createDefaultCookingState().recipes : []),
+      activeRecipeId: s.cooking.activeRecipeId || null,
+      activeRecipe: s.cooking.activeRecipe || null
+    };
+  }
+
+  // 5. Clarity
+  if (!s.clarity || typeof s.clarity !== 'object') {
+    s.clarity = { streakDays: 0, lastCheckinDate: null, history: [], savedReasons: [] };
+  } else {
+    s.clarity.streakDays = s.clarity.streakDays || 0;
+    s.clarity.lastCheckinDate = s.clarity.lastCheckinDate || null;
+    s.clarity.history = Array.isArray(s.clarity.history) ? s.clarity.history : [];
+    s.clarity.savedReasons = Array.isArray(s.clarity.savedReasons) ? s.clarity.savedReasons : [];
+  }
+
+  // 6. Deduplizierung daily tasks (Face washing terms)
+  if (Array.isArray(s.items.daily)) {
+    const faceWashingTerms = [
+      'Gesicht waschen', 'Wash face', 'Lavarse la cara', 
+      'Πλύσιμο προσώπου', 'Se laver le visage', 'Lavarsi la faccia'
+    ];
+    let foundFace = false;
+    s.items.daily = s.items.daily.filter(item => {
+      const taskName = typeof item === 'object' ? item.task : item;
+      if (faceWashingTerms.includes(taskName)) {
+        if (foundFace) return false;
+        foundFace = true;
+        return true;
+      }
+      return true;
+    });
+  }
+
+  return s;
+}
+window.migrateState = migrateState;
+
 function loadState() {
   try {
     const saved = localStorage.getItem(STORE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (parsed && parsed.items) {
-        if (typeof parsed.items.notes === 'string') {
-          parsed.items.notes = parsed.items.notes.split('\n').map(s => s.trim()).filter(Boolean);
-        } else if (!Array.isArray(parsed.items.notes)) {
-          parsed.items.notes = [];
-        }
-        if (parsed.streak === undefined) parsed.streak = 0;
-        if (!parsed.completedSteps) parsed.completedSteps = {};
-        if (!parsed.customSteps) parsed.customSteps = {};
-        if (parsed.sampleBannerDismissed === undefined) parsed.sampleBannerDismissed = false;
-        
-        // Absicherung für Einkaufsliste & Protokoll im geladenen Zustand
-        if (!parsed.shoppingList) parsed.shoppingList = [];
-        if (!parsed.shoppingHistory) parsed.shoppingHistory = [];
-        if (!parsed.cooking) {
-          parsed.cooking = createDefaultCookingState();
-        } else {
-          parsed.cooking = {
-            pantryItems: Array.isArray(parsed.cooking.pantryItems) ? parsed.cooking.pantryItems : [],
-            recipes: Array.isArray(parsed.cooking.recipes) && parsed.cooking.recipes.length ? parsed.cooking.recipes : createDefaultCookingState().recipes,
-            activeRecipeId: parsed.cooking.activeRecipeId || null,
-            activeRecipe: parsed.cooking.activeRecipe || null
-          };
-        }
-        
-        // Deduplizierung: Falls sowohl 'Gesicht waschen' als auch 'Wash face' oder andere Sprachvarianten in daily liegen
-        if (parsed.items && Array.isArray(parsed.items.daily)) {
-          const faceWashingTerms = [
-            'Gesicht waschen', 'Wash face', 'Lavarse la cara', 
-            'Πλύσιμο προσώπου', 'Se laver le visage', 'Lavarsi la faccia'
-          ];
-          let foundFace = false;
-          parsed.items.daily = parsed.items.daily.filter(item => {
-            const taskName = typeof item === 'object' ? item.task : item;
-            if (faceWashingTerms.includes(taskName)) {
-              if (foundFace) return false; // Duplikat entfernen
-              foundFace = true;
-              return true;
-            }
-            return true;
-          });
-        }
-        
-        parsed.activeWorkspace = parsed.activeWorkspace || 'private';
-        if (!parsed.workItems) {
-          parsed.workItems = createDefaultWorkItems(typeof currentLang !== 'undefined' ? currentLang : 'de');
-        }
-        if (!parsed.workDone) {
-          parsed.workDone = [];
-        }
-        return parsed;
+      if (parsed) {
+        return migrateState(parsed, typeof currentLang !== 'undefined' ? currentLang : 'de');
       }
     }
   } catch (e) {
-    console.warn('[State] loadState parse warning, returning defaults:', e);
+    console.warn('[State] loadState parse warning, returning migrated defaults:', e);
   }
-  const todayStr = new Date().toISOString().split('T')[0];
-  const initialLang = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'de';
-  const localizedDefaults = DEFAULT_TASKS_BY_LANG[initialLang] || DEFAULT_TASKS_BY_LANG['de'];
-
-  return {
-    version: 3, lastDate: todayStr,
-    activeWorkspace: 'private',
-    items: { daily: [...localizedDefaults.daily], weekly: [...localizedDefaults.weekly], occasionally: [...localizedDefaults.occasionally], todo: [], termine: [], notes: [] },
-    done: [], archive: [], streak: 0, completedSteps: {},
-    workItems: createDefaultWorkItems(initialLang),
-    workDone: [],
-    sampleBannerDismissed: false,
-    shoppingList: [], shoppingHistory: [],
-    cooking: createDefaultCookingState()
-  };
+  return migrateState(null, typeof currentLang !== 'undefined' ? currentLang : 'de');
 }
 
 function setWorkspace(mode) {
@@ -344,7 +406,23 @@ historyStack = loadHistory();
 let syncEngineDebounceTimer = null;
 
 function saveState(skipP2PSync = false) {
-  localStorage.setItem(STORE_KEY, JSON.stringify(state));
+  const currentState = (typeof window !== 'undefined' && window.state) ? window.state : state;
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify(currentState));
+  } catch (e) {
+    console.warn('[State] Storage quota exceeded or write failed, attempting emergency trim:', e);
+    try {
+      if (currentState && Array.isArray(currentState.archive) && currentState.archive.length > 50) {
+        currentState.archive.splice(0, currentState.archive.length - 30);
+      }
+      if (currentState && Array.isArray(currentState.shoppingHistory) && currentState.shoppingHistory.length > 50) {
+        currentState.shoppingHistory.splice(0, currentState.shoppingHistory.length - 30);
+      }
+      localStorage.setItem(STORE_KEY, JSON.stringify(currentState));
+    } catch (err) {
+      console.error('[State] Critical failure writing state to localStorage:', err);
+    }
+  }
   if (!skipP2PSync && typeof p2pSyncEngine !== 'undefined' && p2pSyncEngine.isConnected()) {
     p2pSyncEngine.broadcastStateUpdate();
   }
@@ -460,19 +538,13 @@ function handleOpenFile(e) {
   reader.onload = () => {
     try {
       const imported = JSON.parse(reader.result);
-      if (imported && imported.items) {
-        saveHistory(); state = imported; 
-        if (typeof state.items.notes === 'string') {
-          state.items.notes = state.items.notes.split('\n').map(s => s.trim()).filter(Boolean);
-        } else if (!Array.isArray(state.items.notes)) {
-          state.items.notes = [];
-        }
-        if (!state.completedSteps) state.completedSteps = {};
-        if (!state.shoppingList) state.shoppingList = [];
-        if (!state.shoppingHistory) state.shoppingHistory = [];
-        if (!state.cooking) state.cooking = createDefaultCookingState();
-        if (!state.clarity) state.clarity = { streakDays: 0, lastCheckinDate: null, history: [], savedReasons: [] };
-        saveState(); showToast(t('toast_import_success')); renderApp(); populateHelperTaskSelect();
+      if (imported) {
+        saveHistory();
+        state = migrateState(imported, typeof currentLang !== 'undefined' ? currentLang : 'de');
+        saveState();
+        showToast(t('toast_import_success'));
+        renderApp();
+        populateHelperTaskSelect();
       }
     } catch(err) { alert(t('toast_import_error')); }
   };
@@ -515,4 +587,25 @@ function copyNoteText(noteIndex, event) {
       it: 'Nota copiata negli appunti! 📋'
     }));
   }).catch(() => {});
-} 
+}
+
+if (typeof window !== 'undefined') {
+  window.saveState = saveState;
+  window.loadState = loadState;
+  window.saveHistory = saveHistory;
+  window.loadHistory = loadHistory;
+  window.migrateState = migrateState;
+  window.handleUndo = handleUndo;
+  window.t = t;
+  window.tr = tr;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.saveState = saveState;
+  globalThis.loadState = loadState;
+  globalThis.saveHistory = saveHistory;
+  globalThis.loadHistory = loadHistory;
+  globalThis.migrateState = migrateState;
+  globalThis.handleUndo = handleUndo;
+  globalThis.t = t;
+  globalThis.tr = tr;
+}

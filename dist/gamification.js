@@ -73,6 +73,7 @@ const worldPresets = {
     groundColor: 0x1c1917
   }
 };
+window.worldPresets = worldPresets;
 
 let threeJsLoadPromise = null;
 function ensureThreeJsLoaded() {
@@ -1298,5 +1299,20 @@ function shutdownGameEngine() {
   gameHoveredObject = null;
   document.body.style.cursor = 'default';
 }
-window.shutdownGameEngine = shutdownGameEngine;
+if (typeof window !== 'undefined') {
+  window.worldPresets = worldPresets;
+  window.toggleGameMode = toggleGameMode;
+  window.switchGameWorld = switchGameWorld;
+  window.addGameXP = addGameXP;
+  window.updateGameHud = updateGameHud;
+  window.shutdownGameEngine = shutdownGameEngine;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.worldPresets = worldPresets;
+  globalThis.toggleGameMode = toggleGameMode;
+  globalThis.switchGameWorld = switchGameWorld;
+  globalThis.addGameXP = addGameXP;
+  globalThis.updateGameHud = updateGameHud;
+  globalThis.shutdownGameEngine = shutdownGameEngine;
+}
 

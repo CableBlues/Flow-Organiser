@@ -89,3 +89,7 @@ if (typeof window !== 'undefined') {
   window.AppStorage = AppStorage;
   window.showCrashRecoveryScreen = showCrashRecoveryScreen;
 }
+if (typeof globalThis !== 'undefined') {
+  globalThis.AppStorage = AppStorage;
+  globalThis.showCrashRecoveryScreen = showCrashRecoveryScreen;
+}

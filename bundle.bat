@@ -20,8 +20,8 @@ echo # Stand: %DATE% %TIME% >> %OUTPUT_FILE%
 echo # ============================================================================== >> %OUTPUT_FILE%
 echo. >> %OUTPUT_FILE%
 
-:: 1. HTML & Manifest
-for %%f in (index.html manifest.json api-sync.php) do (
+:: 1. HTML, Manifest, PHP & Configs
+for %%f in (index.html manifest.json api-sync.php package.json vitest.config.js data_sync\index.php data_sync\.htaccess data_sync\web.config) do (
     if exist "%%f" (
         echo [x] Fuege %%f hinzu...
         echo. >> %OUTPUT_FILE%
@@ -60,16 +60,18 @@ for %%f in (*.js) do (
     )
 )
 
-:: 4. Test-Suite
-if exist "tests\test-suite.js" (
-    echo [x] Fuege tests\test-suite.js hinzu...
-    echo. >> %OUTPUT_FILE%
-    echo ============================================================================== >> %OUTPUT_FILE%
-    echo DATEI: tests\test-suite.js >> %OUTPUT_FILE%
-    echo ============================================================================== >> %OUTPUT_FILE%
-    echo. >> %OUTPUT_FILE%
-    type "tests\test-suite.js" >> %OUTPUT_FILE%
-    echo. >> %OUTPUT_FILE%
+:: 4. Alle Test-Dateien in tests/
+for %%f in (tests\*.js) do (
+    if exist "%%f" (
+        echo [x] Fuege %%f hinzu...
+        echo. >> %OUTPUT_FILE%
+        echo ============================================================================== >> %OUTPUT_FILE%
+        echo DATEI: %%f >> %OUTPUT_FILE%
+        echo ============================================================================== >> %OUTPUT_FILE%
+        echo. >> %OUTPUT_FILE%
+        type "%%f" >> %OUTPUT_FILE%
+        echo. >> %OUTPUT_FILE%
+    )
 )
 
 echo.

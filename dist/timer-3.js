@@ -1,7 +1,5 @@
 // timer.js Teil 3/3: Timer-Start/Stop/Pause & UI-Updates
-
-let timerTargetEndTime = null;
-let timerHasTriggeredZero = false;
+var timerHasTriggeredZero = false;
 
 function startTaskTimer(taskName, event) {
   if (event) event.stopPropagation();
@@ -74,9 +72,11 @@ function setTimerPreset(mins) {
 }
 
 function syncTimerWithTimestamp() {
-  if (!timerRunning || !timerTargetEndTime) return;
+  const isRunning = typeof timerRunning !== 'undefined' ? timerRunning : (typeof window !== 'undefined' ? window.timerRunning : false);
+  const targetEnd = typeof timerTargetEndTime !== 'undefined' ? timerTargetEndTime : (typeof window !== 'undefined' ? window.timerTargetEndTime : null);
+  if (!isRunning || !targetEnd) return;
   const now = Date.now();
-  timerSeconds = Math.round((timerTargetEndTime - now) / 1000);
+  timerSeconds = Math.round((targetEnd - now) / 1000);
   updateTimerDisplay();
 }
 

@@ -1,17 +1,35 @@
 // timer.js Teil 1/3: State, Konstanten & Sound/Sprach-Hilfsfunktionen
 
-let timerSeconds = 2 * 60; // Standardmäßig auf 2 Minuten initialisiert
-let timerInitialSeconds = 2 * 60;
-let timerRunning = false;
-let timerInterval = null;
-let activeTimerTask = null;
+var timerSeconds = 2 * 60; // Standardmäßig auf 2 Minuten initialisiert
+var timerInitialSeconds = 2 * 60;
+var timerRunning = false;
+var timerInterval = null;
+var activeTimerTask = null;
+var timerTargetEndTime = null;
 
-let currentSpeechSessionId = 0;
-window.currentSpeechSessionId = currentSpeechSessionId;
+var currentSpeechSessionId = 0;
+if (typeof window !== 'undefined') {
+  window.timerSeconds = timerSeconds;
+  window.timerInitialSeconds = timerInitialSeconds;
+  window.timerRunning = timerRunning;
+  window.timerInterval = timerInterval;
+  window.activeTimerTask = activeTimerTask;
+  window.timerTargetEndTime = timerTargetEndTime;
+  window.currentSpeechSessionId = currentSpeechSessionId;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.timerSeconds = timerSeconds;
+  globalThis.timerInitialSeconds = timerInitialSeconds;
+  globalThis.timerRunning = timerRunning;
+  globalThis.timerInterval = timerInterval;
+  globalThis.activeTimerTask = activeTimerTask;
+  globalThis.timerTargetEndTime = timerTargetEndTime;
+  globalThis.currentSpeechSessionId = currentSpeechSessionId;
+}
 
-let timerSoundEnabled = localStorage.getItem('flowTimerSoundEnabled') !== 'false';
-let timerVoiceRotationIndex = 0;
-let lastSelectedTimerAmbient = null;
+var timerSoundEnabled = (typeof localStorage !== 'undefined' ? localStorage.getItem('flowTimerSoundEnabled') : null) !== 'false';
+var timerVoiceRotationIndex = 0;
+var lastSelectedTimerAmbient = null;
 
 // Audio-Intervalle für die harmonischen Synthesizer-Loops am Ende
 let ringInterval = null;
@@ -607,3 +625,16 @@ function getContextMotivation(remSec, totSec) {
 }
 
 // Angenehmer, dezenter Glockenton für die Minuten "dazwischen" (kein Sprechen, viel Klang-Varianz)
+
+if (typeof window !== 'undefined') {
+  window.toggleTimerSound = toggleTimerSound;
+  window.speakWithProfile = speakWithProfile;
+  window.speakSoftlyDynamic = speakSoftlyDynamic;
+  window.getContextMotivation = getContextMotivation;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.toggleTimerSound = toggleTimerSound;
+  globalThis.speakWithProfile = speakWithProfile;
+  globalThis.speakSoftlyDynamic = speakSoftlyDynamic;
+  globalThis.getContextMotivation = getContextMotivation;
+}

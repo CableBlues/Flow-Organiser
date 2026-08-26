@@ -333,5 +333,18 @@ function updateSoundscapeUI() {
     else indicator.classList.add('hidden');
   }
 }
-window.updateSoundscapeUI = updateSoundscapeUI;
+if (typeof window !== 'undefined') {
+  window.getMasterAudioDestination = getMasterAudioDestination;
+  window.initAudioContext = initAudioContext;
+  window.playCheerfulSuccessJingle = playCheerfulSuccessJingle;
+  window.triggerHapticFeedback = triggerHapticFeedback;
+  window.updateSoundscapeUI = updateSoundscapeUI;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.getMasterAudioDestination = getMasterAudioDestination;
+  globalThis.initAudioContext = initAudioContext;
+  globalThis.playCheerfulSuccessJingle = playCheerfulSuccessJingle;
+  globalThis.triggerHapticFeedback = triggerHapticFeedback;
+  globalThis.updateSoundscapeUI = updateSoundscapeUI;
+}
 

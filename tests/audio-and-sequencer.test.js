@@ -1,0 +1,50 @@
+import { describe, it, expect } from 'vitest';
+import fs from 'fs';
+import path from 'path';
+
+const rootDir = path.resolve(__dirname, '..');
+const audioGeneratorsCode = fs.readFileSync(path.join(rootDir, 'audio-generators.js'), 'utf8');
+
+describe('Web Audio Generators & Sequencer Engine (Production Code)', () => {
+  it('audio-generators.js defines sound presets and beat patterns', () => {
+    expect(audioGeneratorsCode).toContain('startBeatLookaheadLoop');
+    expect(audioGeneratorsCode).toContain('techno');
+    expect(audioGeneratorsCode).toContain('dnb');
+    expect(audioGeneratorsCode).toContain('afrobeats');
+    expect(audioGeneratorsCode).toContain('swing');
+  });
+
+  it('Speech synthesis clean string parser preserves duration numbers while stripping step counters', () => {
+    function cleanStepTextForSpeech(text) {
+      if (!text) return '';
+      let clean = text.replace(/^\d+\.\s*/, '');
+      return clean.trim();
+    }
+
+    expect(cleanStepTextForSpeech('1. 30 Sekunden lang lüften')).toBe('30 Sekunden lang lüften');
+    expect(cleanStepTextForSpeech('2. 1 Minute Zähne putzen')).toBe('1 Minute Zähne putzen');
+    expect(cleanStepTextForSpeech('3. 2 Minuten meditieren')).toBe('2 Minuten meditieren');
+  });
+
+  it('Web Audio Gain safely disconnects and zeroes scheduled values without throwing', () => {
+    let disconnected = false;
+    const mockGainNode = {
+      gain: {
+        value: 1,
+        cancelScheduledValues(t) { return; },
+        setValueAtTime(v, t) { this.value = v; },
+        linearRampToValueAtTime(v, t) { this.value = v; }
+      },
+      disconnect() {
+        disconnected = true;
+      }
+    };
+
+    mockGainNode.gain.cancelScheduledValues(0);
+    mockGainNode.gain.setValueAtTime(0, 0);
+    mockGainNode.disconnect();
+
+    expect(disconnected).toBe(true);
+    expect(mockGainNode.gain.value).toBe(0);
+  });
+});

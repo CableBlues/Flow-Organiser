@@ -904,6 +904,8 @@ function parseIcsCalendar(icsText) {
   }
   return events.length > 0 ? events : null;
 }
+window.parseTextIntoItems = parseTextIntoItems;
+window.parseIcsCalendar = parseIcsCalendar;
 
 function executeTextImport() {
   const textarea = document.getElementById('text-import-textarea');
@@ -1312,4 +1314,19 @@ function applySampleManagerSelection() {
     es: '¡Selección aplicada con éxito al tablero! ✨',
     el: 'Η επιλογή εφαρμόστηκε με επιτυχία στον πίνακα! ✨'
   }));
+}
+
+if (typeof window !== 'undefined') {
+  window.parseTextIntoItems = parseTextIntoItems;
+  window.parseIcsCalendar = parseIcsCalendar;
+  window.executeTextImport = executeTextImport;
+  window.deleteTask = deleteTask;
+  window.handleRestoreDoneTask = handleRestoreDoneTask;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.parseTextIntoItems = parseTextIntoItems;
+  globalThis.parseIcsCalendar = parseIcsCalendar;
+  globalThis.executeTextImport = executeTextImport;
+  globalThis.deleteTask = deleteTask;
+  globalThis.handleRestoreDoneTask = handleRestoreDoneTask;
 }

@@ -1,297 +1,31 @@
 // ============================================================================
-// 1. ECHTER, AUTONOMER ISO/IEC 18004 REED-SOLOMON QR-CODE GENERATOR
+// 1. ECHTER, AUTONOMER QR-CODE GENERATOR (Lokal vendort, ohne CDN)
 // ============================================================================
 const MinimalQR = (function() {
-  const EXP = new Uint8Array(512);
-  const LOG = new Uint8Array(256);
-  let x = 1;
-  for (let i = 0; i < 255; i++) {
-    EXP[i] = x;
-    EXP[i + 255] = x;
-    LOG[x] = i;
-    x = (x << 1) ^ (x >= 128 ? 0x11d : 0);
-  }
-
-  function gmul(a, b) {
-    if (a === 0 || b === 0) return 0;
-    return EXP[LOG[a] + LOG[b]];
-  }
-
-  function rsGenPoly(n) {
-    let poly = [1];
-    for (let i = 0; i < n; i++) {
-      const next = new Array(poly.length + 1).fill(0);
-      for (let j = 0; j < poly.length; j++) {
-        next[j] ^= gmul(poly[j], EXP[i]);
-        next[j + 1] ^= poly[j];
-      }
-      poly = next;
-    }
-    return poly;
-  }
-
-  function rsEncode(data, nsym) {
-    const gen = rsGenPoly(nsym);
-    const res = new Uint8Array(data.length + nsym);
-    res.set(data);
-    for (let i = 0; i < data.length; i++) {
-      const coef = res[i];
-      if (coef !== 0) {
-        for (let j = 0; j < gen.length; j++) {
-          res[i + j] ^= gmul(gen[j], coef);
-        }
-      }
-    }
-    return res.slice(data.length);
-  }
-
-  const ALIGNMENT_PATTERNS = [
-    [],
-    [], [6, 18], [6, 22], [6, 26], [6, 30], [6, 34],
-    [6, 22, 38], [6, 24, 42], [6, 26, 46], [6, 28, 50], [6, 30, 54], [6, 32, 58], [6, 34, 62],
-    [6, 26, 46, 66], [6, 26, 48, 70], [6, 26, 50, 74], [6, 30, 54, 78], [6, 30, 56, 82], [6, 30, 58, 86], [6, 34, 62, 90],
-    [6, 28, 50, 72, 94], [6, 26, 50, 74, 98], [6, 30, 54, 78, 102], [6, 28, 54, 80, 106], [6, 32, 58, 84, 110], [6, 30, 58, 86, 114], [6, 34, 62, 90, 118]
-  ];
-
-  const EC_PARAMS_L = [
-    null,
-    { total: 26, ec: 7, blocks: [[1, 19]] },
-    { total: 44, ec: 10, blocks: [[1, 34]] },
-    { total: 70, ec: 15, blocks: [[1, 55]] },
-    { total: 100, ec: 20, blocks: [[1, 80]] },
-    { total: 134, ec: 26, blocks: [[1, 108]] },
-    { total: 172, ec: 36, blocks: [[2, 68]] },
-    { total: 196, ec: 40, blocks: [[2, 78]] },
-    { total: 242, ec: 48, blocks: [[2, 97]] },
-    { total: 292, ec: 60, blocks: [[2, 116]] },
-    { total: 346, ec: 72, blocks: [[2, 68], [2, 69]] },
-    { total: 404, ec: 80, blocks: [[4, 81]] },
-    { total: 466, ec: 96, blocks: [[2, 92], [2, 93]] },
-    { total: 532, ec: 104, blocks: [[4, 107]] },
-    { total: 581, ec: 120, blocks: [[3, 115], [1, 116]] },
-    { total: 655, ec: 132, blocks: [[5, 87], [1, 88]] },
-    { total: 733, ec: 144, blocks: [[5, 98], [1, 99]] },
-    { total: 815, ec: 168, blocks: [[1, 107], [5, 108]] },
-    { total: 901, ec: 180, blocks: [[5, 120], [1, 121]] },
-    { total: 991, ec: 196, blocks: [[3, 113], [4, 114]] },
-    { total: 1085, ec: 224, blocks: [[3, 107], [5, 108]] },
-    { total: 1156, ec: 224, blocks: [[4, 116], [4, 117]] },
-    { total: 1258, ec: 252, blocks: [[2, 111], [7, 112]] },
-    { total: 1364, ec: 270, blocks: [[4, 121], [5, 122]] },
-    { total: 1474, ec: 300, blocks: [[6, 117], [4, 118]] }
-  ];
-
-  function getVersion(len) {
-    for (let v = 1; v < EC_PARAMS_L.length; v++) {
-      const p = EC_PARAMS_L[v];
-      let cap = 0;
-      p.blocks.forEach(b => { cap += b[0] * b[1]; });
-      const headerBits = 4 + (v < 10 ? 8 : 16);
-      if (len <= cap - Math.ceil(headerBits / 8)) return v;
-    }
-    return EC_PARAMS_L.length - 1;
-  }
-
-  function encodeData(text, version) {
-    const bytes = new TextEncoder().encode(text);
-    const p = EC_PARAMS_L[version];
-    let totalData = 0;
-    p.blocks.forEach(b => { totalData += b[0] * b[1]; });
-
-    const bits = [];
-    function pushBits(val, len) {
-      for (let i = len - 1; i >= 0; i--) bits.push((val >> i) & 1);
-    }
-
-    pushBits(0b0100, 4); // 8-bit Byte Mode
-    pushBits(bytes.length, version < 10 ? 8 : 16);
-    for (let i = 0; i < bytes.length; i++) pushBits(bytes[i], 8);
-
-    const capBits = totalData * 8;
-    const termLen = Math.min(4, capBits - bits.length);
-    pushBits(0, termLen);
-    while (bits.length % 8 !== 0) bits.push(0);
-
-    const padBytes = [0xec, 0x11];
-    let padIdx = 0;
-    while (bits.length < capBits) {
-      pushBits(padBytes[padIdx % 2], 8);
-      padIdx++;
-    }
-
-    const dataBytes = new Uint8Array(totalData);
-    for (let i = 0; i < totalData; i++) {
-      let b = 0;
-      for (let j = 0; j < 8; j++) b = (b << 1) | bits[i * 8 + j];
-      dataBytes[i] = b;
-    }
-
-    const blocksData = [];
-    const blocksEC = [];
-    let byteOffset = 0;
-    const ecPerBlock = Math.floor(p.ec / (p.blocks.reduce((acc, b) => acc + b[0], 0)));
-
-    p.blocks.forEach(b => {
-      const numBlocks = b[0];
-      const dataPerBlock = b[1];
-      for (let i = 0; i < numBlocks; i++) {
-        const blk = dataBytes.slice(byteOffset, byteOffset + dataPerBlock);
-        byteOffset += dataPerBlock;
-        blocksData.push(blk);
-        blocksEC.push(rsEncode(blk, ecPerBlock));
-      }
-    });
-
-    const finalBytes = [];
-    const maxDataLen = Math.max(...blocksData.map(b => b.length));
-    for (let i = 0; i < maxDataLen; i++) {
-      for (let b = 0; b < blocksData.length; b++) {
-        if (i < blocksData[b].length) finalBytes.push(blocksData[b][i]);
-      }
-    }
-    const maxEcLen = Math.max(...blocksEC.map(b => b.length));
-    for (let i = 0; i < maxEcLen; i++) {
-      for (let b = 0; b < blocksEC.length; b++) {
-        if (i < blocksEC[b].length) finalBytes.push(blocksEC[b][i]);
-      }
-    }
-    return finalBytes;
-  }
-
-  function createMatrix(version, dataBytes) {
-    const size = version * 4 + 17;
-    const matrix = Array.from({ length: size }, () => new Array(size).fill(null));
-    const reserved = Array.from({ length: size }, () => new Array(size).fill(false));
-
-    function setModule(r, c, val, isRes = true) {
-      matrix[r][c] = val ? 1 : 0;
-      if (isRes) reserved[r][c] = true;
-    }
-
-    function addFinder(r0, c0) {
-      for (let r = 0; r < 7; r++) {
-        for (let c = 0; c < 7; c++) {
-          const isBlack = (r === 0 || r === 6 || c === 0 || c === 6 || (r >= 2 && r <= 4 && c >= 2 && c <= 4));
-          setModule(r0 + r, c0 + c, isBlack);
-        }
-      }
-      for (let r = -1; r <= 7; r++) {
-        for (let c = -1; c <= 7; c++) {
-          const row = r0 + r;
-          const col = c0 + c;
-          if (row >= 0 && row < size && col >= 0 && col < size) {
-            if (!reserved[row][col]) setModule(row, col, 0);
-          }
-        }
-      }
-    }
-    addFinder(0, 0);
-    addFinder(0, size - 7);
-    addFinder(size - 7, 0);
-
-    const alignPos = ALIGNMENT_PATTERNS[version] || [];
-    for (let i = 0; i < alignPos.length; i++) {
-      for (let j = 0; j < alignPos.length; j++) {
-        const r0 = alignPos[i];
-        const c0 = alignPos[j];
-        if (reserved[r0][c0]) continue;
-        for (let r = -2; r <= 2; r++) {
-          for (let c = -2; c <= 2; c++) {
-            const isBlack = (Math.abs(r) === 2 || Math.abs(c) === 2 || (r === 0 && c === 0));
-            setModule(r0 + r, c0 + c, isBlack);
-          }
-        }
-      }
-    }
-
-    for (let i = 8; i < size - 8; i++) {
-      if (!reserved[6][i]) setModule(6, i, i % 2 === 0);
-      if (!reserved[i][6]) setModule(i, 6, i % 2 === 0);
-    }
-    setModule(size - 8, 8, 1);
-
-    for (let i = 0; i < 9; i++) {
-      if (!reserved[8][i]) reserved[8][i] = true;
-      if (!reserved[i][8]) reserved[i][8] = true;
-      if (!reserved[8][size - 1 - i]) reserved[8][size - 1 - i] = true;
-      if (!reserved[size - 1 - i][8]) reserved[size - 1 - i][8] = true;
-    }
-
-    const bits = [];
-    dataBytes.forEach(b => {
-      for (let i = 7; i >= 0; i--) bits.push((b >> i) & 1);
-    });
-
-    let bitIdx = 0;
-    let upward = true;
-    for (let right = size - 1; right > 0; right -= 2) {
-      if (right === 6) right--;
-      const cols = [right, right - 1];
-      const rows = upward ? Array.from({ length: size }, (_, i) => size - 1 - i) : Array.from({ length: size }, (_, i) => i);
-      
-      for (const r of rows) {
-        for (const c of cols) {
-          if (!reserved[r][c]) {
-            const bit = bitIdx < bits.length ? bits[bitIdx++] : 0;
-            const mask = (r + c) % 2 === 0;
-            matrix[r][c] = (bit ^ (mask ? 1 : 0));
-          }
-        }
-      }
-      upward = !upward;
-    }
-
-    const formatBits = [1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0];
-    const formatMask = [1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0];
-    const maskedFormat = formatBits.map((b, i) => b ^ formatMask[i]);
-
-    for (let i = 0; i < 6; i++) matrix[8][i] = maskedFormat[i];
-    matrix[8][7] = maskedFormat[6];
-    matrix[8][8] = maskedFormat[7];
-    matrix[7][8] = maskedFormat[8];
-    for (let i = 9; i < 15; i++) matrix[14 - i][8] = maskedFormat[i];
-
-    for (let i = 0; i < 7; i++) matrix[size - 1 - i][8] = maskedFormat[i];
-    for (let i = 7; i < 15; i++) matrix[8][size - 15 + i] = maskedFormat[i];
-
-    return matrix;
-  }
-
   function generateQRCodeSVG(text, size = 220) {
     if (!text) return '';
     try {
-      const version = getVersion(text.length);
-      const dataBytes = encodeData(text, version);
-      const matrix = createMatrix(version, dataBytes);
-
-      const moduleCount = matrix.length;
-      const padding = 4; // Quiet Zone
-      const totalModules = moduleCount + padding * 2;
-      const cellSize = size / totalModules;
-
-      let path = '';
-      for (let r = 0; r < moduleCount; r++) {
-        for (let c = 0; c < moduleCount; c++) {
-          if (matrix[r][c]) {
-            const x = (c + padding) * cellSize;
-            const y = (r + padding) * cellSize;
-            path += `M${x.toFixed(2)},${y.toFixed(2)}h${cellSize.toFixed(2)}v${cellSize.toFixed(2)}h-${cellSize.toFixed(2)}z `;
-          }
+      const qrLib = (typeof QRCode !== 'undefined' ? QRCode : (typeof window !== 'undefined' ? window.QRCode : (typeof globalThis !== 'undefined' ? globalThis.QRCode : null)));
+      if (qrLib) {
+        let svgOut = '';
+        qrLib.toString(text, { type: 'svg', margin: 2, width: size, errorCorrectionLevel: 'M' }, (err, svg) => {
+          if (!err && svg) svgOut = svg;
+        });
+        if (svgOut) {
+          return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgOut)}`;
         }
       }
-
-      const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}"><rect width="${size}" height="${size}" fill="#ffffff"/><path fill="#0f172a" d="${path}"/></svg>`;
-      return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgString)}`;
     } catch (e) {
-      console.error('[QR Engine] Error generating QR:', e);
-      return '';
+      console.warn('[QR Engine] Error generating QR with QRCode vendor:', e);
     }
+    return '';
   }
 
   return {
     generateQRCodeSVG
   };
 })();
+
 
 
 // ============================================================================
@@ -342,6 +76,8 @@ const P2PDataCodec = {
     }
   }
 };
+window.MinimalQR = MinimalQR;
+window.P2PDataCodec = P2PDataCodec;
 
 
 // ============================================================================
@@ -718,11 +454,23 @@ function switchP2PTab(tab) {
       : 'flex-1 py-1.5 px-3 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition';
   }
 }
-window.switchP2PTab = switchP2PTab;
-
 if (typeof window !== 'undefined') {
+  window.MinimalQR = MinimalQR;
+  window.P2PDataCodec = P2PDataCodec;
+  window.p2pSyncEngine = p2pSyncEngine;
+  window.openP2PSyncModal = openP2PSyncModal;
+  window.closeP2PSyncModal = closeP2PSyncModal;
+  window.switchP2PTab = switchP2PTab;
   window.addEventListener('DOMContentLoaded', () => {
     p2pSyncEngine.init();
   });
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.MinimalQR = MinimalQR;
+  globalThis.P2PDataCodec = P2PDataCodec;
+  globalThis.p2pSyncEngine = p2pSyncEngine;
+  globalThis.openP2PSyncModal = openP2PSyncModal;
+  globalThis.closeP2PSyncModal = closeP2PSyncModal;
+  globalThis.switchP2PTab = switchP2PTab;
 }
 
