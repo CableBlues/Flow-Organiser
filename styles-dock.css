@@ -3,7 +3,7 @@
   left: 50% !important;
   bottom: 20px !important;
   transform: translateX(-50%) !important;
-  z-index: 40;
+  z-index: 200 !important;
   pointer-events: none;
 }
 
@@ -115,10 +115,23 @@
   50% { transform: translateY(-4px); }
 }
 
+.mac-dock-item-wrapper {
+  z-index: 20 !important;
+}
+
 .mac-dock-item-wrapper:hover {
+  z-index: 50 !important;
+}
+
+.mac-dock-item-wrapper:hover > .mac-dock-btn {
   transform: scale(1.15) translateY(-4px) !important;
   animation: subtleFloat 2s ease-in-out infinite !important;
-  z-index: 50 !important;
+}
+
+/* If a panel is open, keep dock button stable to preserve razor-sharp rendering */
+.mac-dock-item-wrapper:has(.dock-popover-panel:not(.hidden)) > .mac-dock-btn {
+  transform: none !important;
+  animation: none !important;
 }
 
 .mac-dock-btn {
@@ -135,6 +148,7 @@
   position: relative;
   aspect-ratio: 1 / 1 !important;
   padding: 8px !important;
+  transform-origin: center bottom;
 }
 
 .mac-dock-btn i {
@@ -366,15 +380,50 @@
 /* --- DOCK POPOVER PANELS POSITIONING & ANTI-OVERLAP PROTECTION --- */
 .dock-popover-panel {
   bottom: calc(100% + 14px) !important;
-  max-height: calc(100vh - 170px) !important;
-  z-index: 120 !important;
+  max-height: min(540px, calc(100vh - 175px)) !important;
+  z-index: 9999 !important;
   overflow-y: auto !important;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  overscroll-behavior: contain !important;
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.15) !important;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
+  image-rendering: -webkit-optimize-contrast;
+  transform: translateZ(0);
 }
 
-@media (max-height: 740px) {
+.dock-popover-panel * {
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
+}
+
+.dock-popover-panel::-webkit-scrollbar {
+  width: 5px;
+}
+.dock-popover-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+.dock-popover-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 9999px;
+}
+.dock-popover-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+@media (max-height: 800px) {
   .dock-popover-panel {
-    max-height: calc(100vh - 140px) !important;
-    bottom: calc(100% + 8px) !important;
+    max-height: calc(100vh - 145px) !important;
+    bottom: calc(100% + 10px) !important;
+  }
+}
+
+@media (max-height: 650px) {
+  .dock-popover-panel {
+    max-height: calc(100vh - 110px) !important;
+    bottom: calc(100% + 6px) !important;
   }
 }

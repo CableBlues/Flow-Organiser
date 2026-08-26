@@ -1,0 +1,126 @@
+const CACHE_NAME = 'flow-cache-v5';
+const ASSETS_TO_CACHE = [
+  './',
+  './index.html',
+  './manifest.json',
+  './favicon.svg',
+  './icon-192.svg',
+  './icon-512.svg',
+  './styles-base-1.css',
+  './styles-base-2.css',
+  './styles-dock.css',
+  './styles-hover.css',
+  './styles-animations.css',
+  './styles-mobile.css',
+  './vendor/tailwindcss.js',
+  './vendor/lucide.min.js',
+  './vendor/three.min.js',
+  './vendor/OrbitControls.js',
+  './vendor/html2canvas.min.js',
+  './state.js',
+  './data-translations-1.js',
+  './data-translations-2.js',
+  './data-translations.js',
+  './data-custom-translations.js',
+  './data-tasks-steps-1.js',
+  './data-tasks-steps-2.js',
+  './data-tasks-steps-3.js',
+  './data-tasks.js',
+  './data-extras.js',
+  './helper-core-data.js',
+  './helper-core.js',
+  './helper-core-2.js',
+  './helper-tools-1.js',
+  './helper-tools-2.js',
+  './helper-tools-3.js',
+  './helper-clarity.js',
+  './sport.js',
+  './gamification.js',
+  './gamification-2.js',
+  './app-core.js',
+  './app-tasks.js',
+  './app-shopping.js',
+  './app-cooking.js',
+  './app-reports.js',
+  './app-alarm.js',
+  './app-weather-news.js',
+  './app-dice.js',
+  './audio-core.js',
+  './audio-generators.js',
+  './audio-player.js',
+  './audio-scheduler-1.js',
+  './audio-scheduler-2.js',
+  './audio-scheduler-3.js',
+  './sync-engine.js',
+  './storage.js',
+  './timer-1.js',
+  './timer-2.js',
+  './timer-3.js',
+  './utils.js',
+  './utils-2.js',
+  './utils-data.js',
+  './partial-app-1.js',
+  './partial-app-2.js',
+  './partial-app-3.js',
+  './partial-modals-1.js',
+  './partial-modals-2.js'
+];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS_TO_CACHE).catch((err) => {
+        console.warn('Einige Assets konnten nicht vorab gecacht werden:', err);
+      });
+    }).then(() => self.skipWaiting())
+  );
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+      );
+    }).then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+
+  // Sync API & Wetter Aufrufe: Network-First mit Cache-Fallback
+  if (url.origin !== self.location.origin && !url.hostname.includes('cdn') && !url.hostname.includes('unpkg') && !url.hostname.includes('fonts')) {
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Statische Assets & App-Code: Cache-First für 0ms Ladezeit & Offline-Betrieb
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        // Optional im Hintergrund aktualisieren (Stale-While-Revalidate)
+        fetch(event.request).then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
+          }
+        }).catch(() => {});
+        return cachedResponse;
+      }
+
+      return fetch(event.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+        }
+        return networkResponse;
+      }).catch(() => {
+        if (event.request.mode === 'navigate') {
+          return caches.match('./index.html');
+        }
+      });
+    })
+  );
+});
