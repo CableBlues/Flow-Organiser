@@ -5680,10 +5680,11 @@
       }
     });
   }
-  function renderLucideIcons2() {
+  var lucideBatchScheduled = false;
+  function doRenderLucideIcons() {
     if (typeof lucide === "undefined" || !lucide.createIcons) {
       if (typeof window !== "undefined") {
-        [50, 150, 350, 800, 1500].forEach((delay) => {
+        [50, 150, 350, 800].forEach((delay) => {
           setTimeout(() => {
             if (typeof lucide !== "undefined" && lucide.createIcons) {
               try {
@@ -5715,6 +5716,25 @@
         });
       } catch (err2) {
       }
+    }
+  }
+  function renderLucideIcons2(immediate = false) {
+    if (immediate) {
+      doRenderLucideIcons();
+      return;
+    }
+    if (lucideBatchScheduled) return;
+    lucideBatchScheduled = true;
+    if (typeof requestAnimationFrame !== "undefined") {
+      requestAnimationFrame(() => {
+        lucideBatchScheduled = false;
+        doRenderLucideIcons();
+      });
+    } else {
+      setTimeout(() => {
+        lucideBatchScheduled = false;
+        doRenderLucideIcons();
+      }, 0);
     }
   }
   window.renderLucideIcons = renderLucideIcons2;

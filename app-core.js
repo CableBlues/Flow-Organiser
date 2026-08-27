@@ -1233,12 +1233,28 @@ function initAmbientFlowCanvas() {
     }
   }
 
+  const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) {
+    // Render static ambient frame once without continuous animation loop
+    for (let i = 0; i < particleCount; i++) particles.push(new FlowParticle());
+    particles.forEach(p => p.draw());
+    return;
+  }
+
   for (let i = 0; i < particleCount; i++) {
     particles.push(new FlowParticle());
   }
 
   let animId = null;
-  function renderAmbient() {
+  let lastFrameTime = 0;
+  const targetFrameInterval = 28; // ~35-36 FPS: visually identical for ambient dust, saves 60-75% CPU/GPU on 120Hz/144Hz displays
+
+  function renderAmbient(timestamp) {
+    animId = requestAnimationFrame(renderAmbient);
+
+    if (timestamp - lastFrameTime < targetFrameInterval) return;
+    lastFrameTime = timestamp;
+
     ctx.clearRect(0, 0, width, height);
 
     // Draw connecting faint energy lines between nearby nodes
@@ -1263,20 +1279,25 @@ function initAmbientFlowCanvas() {
       p.update();
       p.draw();
     });
-
-    animId = requestAnimationFrame(renderAmbient);
   }
 
+  let resizeTimeout = null;
   window.addEventListener('resize', () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-  });
+    if (resizeTimeout) clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }, 150);
+  }, { passive: true });
 
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
-      if (animId) cancelAnimationFrame(animId);
+      if (animId) { cancelAnimationFrame(animId); animId = null; }
     } else {
-      animId = requestAnimationFrame(renderAmbient);
+      if (!animId) {
+        lastFrameTime = performance.now();
+        animId = requestAnimationFrame(renderAmbient);
+      }
     }
   });
 
