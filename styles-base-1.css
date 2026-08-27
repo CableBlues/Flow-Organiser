@@ -123,37 +123,129 @@ body, body #app, body #app * {
   word-break: break-word;
 }
 
-/* 1. Aurora (Mystical Deep Purple-Slate) */
-body.theme-aurora {
-  --accent: #a855f7;
-  --accent-light: #d8b4fe;
-  --accent-border: rgba(168, 85, 247, 0.35);
-  --bg-app: #110f1a;
-  --bg-header: rgba(25, 21, 42, 0.75);
-  --bg-card: rgba(32, 26, 54, 0.65);
-  --bg-card-hover: rgba(44, 34, 74, 0.8);
-  --bg-dock: #19152a;
-  --bg-panel: #141021;
-  --bg-modal: #141021;
-  --text-main: #eae6f5;
-  --text-muted: #a78bfa;
-  --text-header: #f3f0fa;
-  --text-dock: #f3f0fa;
-  --border-main: rgba(168, 85, 247, 0.2);
+/* ========================================================================== */
+/* 15 KURATIERTE, HARMONISCHE & MENSCHLICHE FARBSCHEMATA (THEMES)            */
+/* ========================================================================== */
+
+/* -------------------------------------------------------------------------- */
+/* KATEGORIE 1: ☕ WARM, MENSCHLICH & COZY (5 Farbschemata)                   */
+/* -------------------------------------------------------------------------- */
+
+/* 1. 🍯 Honig & Kamille */
+body.theme-honey-chamomile {
+  --accent: #f59e0b;
+  --accent-light: #fde68a;
+  --accent-border: rgba(245, 158, 11, 0.4);
+  --bg-app: #15120c;
+  --bg-header: rgba(30, 24, 16, 0.9);
+  --bg-card: rgba(46, 38, 26, 0.72);
+  --bg-card-hover: rgba(58, 48, 34, 0.88);
+  --bg-dock: rgba(28, 23, 16, 0.94);
+  --bg-panel: #16120b;
+  --bg-modal: #16120b;
+  --text-main: #fffbeb;
+  --text-muted: #fcd34d;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(245, 158, 11, 0.22);
 }
 
-/* 2. Sage (Beruhigendes, neutrales Salbeigrün-Grau) */
+/* 2. 🍑 Pfirsich & Kaschmir */
+body.theme-peach-cashmere {
+  --accent: #fb7185;
+  --accent-light: #fecdd3;
+  --accent-border: rgba(251, 113, 133, 0.4);
+  --bg-app: #171012;
+  --bg-header: rgba(34, 22, 26, 0.9);
+  --bg-card: rgba(48, 30, 36, 0.72);
+  --bg-card-hover: rgba(62, 38, 46, 0.88);
+  --bg-dock: rgba(32, 20, 24, 0.94);
+  --bg-panel: #180e11;
+  --bg-modal: #180e11;
+  --text-main: #fff1f2;
+  --text-muted: #fda4af;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(251, 113, 133, 0.22);
+}
+
+/* 3. 🏺 Terrakotta & Abendrot */
+body.theme-terracotta-sun,
+body.theme-terracotta {
+  --accent: #f97316;
+  --accent-light: #fed7aa;
+  --accent-border: rgba(249, 115, 22, 0.4);
+  --bg-app: #17100b;
+  --bg-header: rgba(34, 22, 16, 0.9);
+  --bg-card: rgba(48, 30, 20, 0.72);
+  --bg-card-hover: rgba(64, 40, 26, 0.88);
+  --bg-dock: rgba(32, 20, 14, 0.94);
+  --bg-panel: #180d07;
+  --bg-modal: #180d07;
+  --text-main: #fff7ed;
+  --text-muted: #fdba74;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(249, 115, 22, 0.22);
+}
+
+/* 4. ☕ Cozy Sandelholz */
+body.theme-cozy-amber,
+body.theme-cozy {
+  --accent: #f59e0b;
+  --accent-light: #fbbf24;
+  --accent-border: rgba(245, 158, 11, 0.4);
+  --bg-app: #16120e;
+  --bg-header: rgba(36, 26, 18, 0.9);
+  --bg-card: rgba(48, 36, 26, 0.72);
+  --bg-card-hover: rgba(62, 46, 34, 0.88);
+  --bg-dock: rgba(36, 26, 18, 0.94);
+  --bg-panel: #18110c;
+  --bg-modal: #18110c;
+  --text-main: #faede0;
+  --text-muted: #d97706;
+  --text-header: #fffbf5;
+  --text-dock: #fffbf5;
+  --border-main: rgba(245, 158, 11, 0.2);
+}
+
+/* 5. 🍵 Matcha & Vanille */
+body.theme-matcha-latte,
+body.theme-matcha {
+  --accent: #84cc16;
+  --accent-light: #bef264;
+  --accent-border: rgba(132, 204, 22, 0.4);
+  --bg-app: #12160d;
+  --bg-header: rgba(28, 38, 20, 0.9);
+  --bg-card: rgba(36, 48, 26, 0.72);
+  --bg-card-hover: rgba(48, 64, 34, 0.88);
+  --bg-dock: rgba(28, 38, 20, 0.94);
+  --bg-panel: #10150a;
+  --bg-modal: #10150a;
+  --text-main: #f7fee7;
+  --text-muted: #bef264;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(132, 204, 22, 0.22);
+}
+
+/* -------------------------------------------------------------------------- */
+/* KATEGORIE 2: 🌿 SANFTE NATUR & ENTSPANNUNG (5 Farbschemata)                */
+/* -------------------------------------------------------------------------- */
+
+/* 6. 🍃 Salbei & Morgennebel */
+body.theme-sage-breeze,
 body.theme-sage {
   --accent: #86efac;
   --accent-light: #bbf7d0;
-  --accent-border: rgba(134, 239, 172, 0.35);
-  --bg-app: #1c1f1d;
-  --bg-header: rgba(38, 48, 42, 0.75);
-  --bg-card: rgba(46, 56, 50, 0.65);
-  --bg-card-hover: rgba(58, 72, 62, 0.8);
-  --bg-dock: #26302a;
-  --bg-panel: #1a211c;
-  --bg-modal: #1a211c;
+  --accent-border: rgba(134, 239, 172, 0.4);
+  --bg-app: #0e1411;
+  --bg-header: rgba(26, 38, 32, 0.9);
+  --bg-card: rgba(28, 44, 36, 0.72);
+  --bg-card-hover: rgba(38, 58, 48, 0.88);
+  --bg-dock: rgba(26, 38, 32, 0.94);
+  --bg-panel: #0b120f;
+  --bg-modal: #0b120f;
   --text-main: #e2f0d9;
   --text-muted: #86efac;
   --text-header: #edf7e1;
@@ -161,289 +253,121 @@ body.theme-sage {
   --border-main: rgba(134, 239, 172, 0.2);
 }
 
-/* 3. Cozy (Warmes Kaffeebraun / Espresso) */
-body.theme-cozy {
-  --accent: #f59e0b;
-  --accent-light: #fbbf24;
-  --accent-border: rgba(245, 158, 11, 0.35);
-  --bg-app: #1c1511;
-  --bg-header: rgba(41, 30, 24, 0.75);
-  --bg-card: rgba(53, 40, 31, 0.65);
-  --bg-card-hover: rgba(68, 50, 40, 0.8);
-  --bg-dock: #291e18;
-  --bg-panel: #1a120e;
-  --bg-modal: #1a120e;
-  --text-main: #faede0;
-  --text-muted: #cca480;
-  --text-header: #fffbf5;
-  --text-dock: #fffbf5;
-  --border-main: rgba(245, 158, 11, 0.2);
-}
-
-/* 4. Forest (Tiefes Waldgrün) */
+/* 7. 🌿 Eukalyptus & Morgentau */
+body.theme-eucalyptus-dew,
 body.theme-forest {
-  --accent: #10b981;
-  --accent-light: #6ee7b7;
-  --accent-border: rgba(16, 185, 129, 0.35);
-  --bg-app: #0e1511;
-  --bg-header: rgba(21, 36, 27, 0.75);
-  --bg-card: rgba(30, 48, 38, 0.65);
-  --bg-card-hover: rgba(38, 62, 48, 0.8);
-  --bg-dock: #15241b;
-  --bg-panel: #0a110a;
-  --bg-modal: #0a110a;
-  --text-main: #e6f4ea;
-  --text-muted: #81c784;
-  --text-header: #f1fcf4;
-  --text-dock: #f1fcf4;
-  --border-main: rgba(16, 185, 129, 0.2);
-}
-
-/* 5. Architect (Kühles Architektur-Slate / Blaugrau) */
-body.theme-architect {
-  --accent: #64748b;
-  --accent-light: #94a3b8;
-  --accent-border: rgba(100, 116, 139, 0.35);
-  --bg-app: #202632;
-  --bg-header: rgba(45, 55, 72, 0.75);
-  --bg-card: rgba(45, 55, 72, 0.65);
-  --bg-card-hover: rgba(56, 68, 88, 0.8);
-  --bg-dock: #2d3748;
-  --bg-panel: #1a202c;
-  --bg-modal: #1a202c;
-  --text-main: #edf2f7;
-  --text-muted: #a0aec0;
-  --text-header: #f7fafc;
-  --text-dock: #f7fafc;
-  --border-main: rgba(100, 116, 139, 0.22);
-}
-
-
-/* 8. Glacier (Nordisches Eisblau-Slate) */
-body.theme-glacier {
-  --accent: #06b6d4;
-  --accent-light: #a5f3fc;
-  --accent-border: rgba(6, 182, 212, 0.35);
-  --bg-app: #0f141d;
-  --bg-header: rgba(26, 34, 47, 0.75);
-  --bg-card: rgba(30, 41, 59, 0.65);
-  --bg-card-hover: rgba(40, 56, 78, 0.8);
-  --bg-dock: #1a222f;
-  --bg-panel: #090d16;
-  --bg-modal: #090d16;
-  --text-main: #e2f1f6;
-  --text-muted: #38bdf8;
-  --text-header: #f0fafc;
-  --text-dock: #f0fafc;
-  --border-main: rgba(6, 182, 212, 0.18);
-}
-
-/* 9. Charcoal (Mattes Graphit-Grau) */
-body.theme-charcoal {
-  --accent: #475569;
-  --accent-light: #94a3b8;
-  --accent-border: rgba(71, 85, 105, 0.3);
-  --bg-app: #181a1f;
-  --bg-header: rgba(33, 37, 43, 0.75);
-  --bg-card: rgba(40, 44, 52, 0.65);
-  --bg-card-hover: rgba(50, 54, 64, 0.8);
-  --bg-dock: #21252b;
-  --bg-panel: #121417;
-  --bg-modal: #121417;
-  --text-main: #e1e2e6;
-  --text-muted: #abb2bf;
-  --text-header: #f0f1f4;
-  --text-dock: #f0f1f4;
-  --border-main: rgba(255, 255, 255, 0.1);
-}
-
-/* 10. Executive (Dunkles Business-Marineblau & Gold) */
-body.theme-executive {
-  --accent: #c5a880;
-  --accent-light: #e2d1b9;
-  --accent-border: rgba(197, 168, 128, 0.35);
-  --bg-app: #050a18;
-  --bg-header: rgba(11, 20, 45, 0.75);
-  --bg-card: rgba(23, 37, 66, 0.65);
-  --bg-card-hover: rgba(30, 48, 86, 0.8);
-  --bg-dock: #0b142d;
-  --bg-panel: #02040c;
-  --bg-modal: #02040c;
-  --text-main: #f1eae2;
-  --text-muted: #c5a880;
-  --text-header: #fffbf7;
-  --text-dock: #fffbf7;
-  --border-main: rgba(197, 168, 128, 0.22);
-}
-
-/* 11. Neon Cyber (Futuristisches Magenta-Cyberpunk) */
-body.theme-neon-cyber {
-  --accent: #ff2fd0;
-  --accent-light: #ff8de8;
-  --accent-border: rgba(255, 47, 208, 0.35);
-  --bg-app: #0b0512;
-  --bg-header: rgba(26, 12, 36, 0.75);
-  --bg-card: rgba(36, 16, 48, 0.65);
-  --bg-card-hover: rgba(50, 20, 66, 0.8);
-  --bg-dock: #1a0c24;
-  --bg-panel: #0e0616;
-  --bg-modal: #0e0616;
-  --text-main: #f7e6fb;
-  --text-muted: #e879c9;
-  --text-header: #fdf0fd;
-  --text-dock: #fdf0fd;
-  --border-main: rgba(255, 47, 208, 0.22);
-}
-
-/* 12. Carbon (Minimalistisches Carbon-Schwarz) */
-body.theme-carbon {
-  --accent: #cbd5e1;
-  --accent-light: #f8fafc;
-  --accent-border: rgba(203, 213, 225, 0.3);
-  --bg-app: #0d0e11;
-  --bg-header: rgba(18, 20, 22, 0.75);
-  --bg-card: rgba(26, 29, 32, 0.65);
-  --bg-card-hover: rgba(36, 40, 44, 0.8);
-  --bg-dock: #121416;
-  --bg-panel: #040405;
-  --bg-modal: #040405;
-  --text-main: #f3f4f6;
-  --text-muted: #9ca3af;
-  --text-header: #f9fafb;
-  --text-dock: #f9fafb;
-  --border-main: rgba(255, 255, 255, 0.08);
-}
-
-/* 16. Holo Chrome (Futuristisches Cyan-Chrom-HUD) */
-body.theme-holo-chrome {
-  --accent: #22e5d4;
-  --accent-light: #a8fff5;
-  --accent-border: rgba(34, 229, 212, 0.35);
-  --bg-app: #060b12;
-  --bg-header: rgba(14, 26, 34, 0.75);
-  --bg-card: rgba(18, 36, 44, 0.65);
-  --bg-card-hover: rgba(24, 48, 58, 0.8);
-  --bg-dock: #0e1c22;
-  --bg-panel: #050c10;
-  --bg-modal: #050c10;
-  --text-main: #e4fdfb;
-  --text-muted: #5eead4;
-  --text-header: #f0fffd;
-  --text-dock: #f0fffd;
-  --border-main: rgba(34, 229, 212, 0.22);
-}
-
-/* 17. Synthwave (Futuristisches Retro-Sonnenuntergang-Neon) */
-body.theme-synthwave {
-  --accent: #ff5f9e;
-  --accent-light: #ffb3d1;
-  --accent-border: rgba(255, 95, 158, 0.35);
-  --bg-app: #150a24;
-  --bg-header: rgba(36, 16, 54, 0.75);
-  --bg-card: rgba(48, 20, 70, 0.65);
-  --bg-card-hover: rgba(62, 26, 90, 0.8);
-  --bg-dock: #2a1240;
-  --bg-panel: #100819;
-  --bg-modal: #100819;
-  --text-main: #fbe8f5;
-  --text-muted: #f0abfc;
-  --text-header: #fef2fa;
-  --text-dock: #fef2fa;
-  --border-main: rgba(255, 95, 158, 0.22);
-}
-
-/* 18. Citrus Sunshine (Sonnengelb & Warm-Orange) */
-body.theme-citrus {
-  --accent: #facc15;
-  --accent-light: #fef08a;
-  --accent-border: rgba(250, 204, 21, 0.4);
-  --bg-app: #191206;
-  --bg-header: rgba(45, 32, 12, 0.8);
-  --bg-card: rgba(58, 42, 16, 0.7);
-  --bg-card-hover: rgba(78, 56, 20, 0.85);
-  --bg-dock: #2d200c;
-  --bg-panel: #140d04;
-  --bg-modal: #140d04;
-  --text-main: #fef9c3;
-  --text-muted: #fbbf24;
+  --accent: #34d399;
+  --accent-light: #a7f3d0;
+  --accent-border: rgba(52, 211, 153, 0.4);
+  --bg-app: #0d1512;
+  --bg-header: rgba(20, 34, 28, 0.9);
+  --bg-card: rgba(26, 46, 38, 0.72);
+  --bg-card-hover: rgba(34, 60, 50, 0.88);
+  --bg-dock: rgba(20, 34, 28, 0.94);
+  --bg-panel: #09120e;
+  --bg-modal: #09120e;
+  --text-main: #f0fdf4;
+  --text-muted: #6ee7b7;
   --text-header: #ffffff;
   --text-dock: #ffffff;
-  --border-main: rgba(250, 204, 21, 0.25);
+  --border-main: rgba(52, 211, 153, 0.22);
 }
 
-/* 19. Sakura Spring (Kirschblüten-Rosa & Flieder) */
+/* 8. 🪻 Lavendel & Hafermilch */
+body.theme-lavender-cloud {
+  --accent: #a78bfa;
+  --accent-light: #ddd6fe;
+  --accent-border: rgba(167, 139, 250, 0.4);
+  --bg-app: #12111a;
+  --bg-header: rgba(26, 23, 40, 0.9);
+  --bg-card: rgba(36, 32, 54, 0.72);
+  --bg-card-hover: rgba(48, 42, 70, 0.88);
+  --bg-dock: rgba(26, 23, 40, 0.94);
+  --bg-panel: #100f18;
+  --bg-modal: #100f18;
+  --text-main: #faf5ff;
+  --text-muted: #c4b5fd;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(167, 139, 250, 0.22);
+}
+
+/* 9. 🌸 Sakura & Kirschblüte */
+body.theme-sakura-blossom,
 body.theme-sakura {
   --accent: #f472b6;
   --accent-light: #fbcfe8;
   --accent-border: rgba(244, 114, 182, 0.4);
-  --bg-app: #1a0f18;
-  --bg-header: rgba(45, 22, 40, 0.8);
-  --bg-card: rgba(58, 28, 52, 0.7);
-  --bg-card-hover: rgba(78, 38, 70, 0.85);
-  --bg-dock: #2d1628;
-  --bg-panel: #140812;
-  --bg-modal: #140812;
+  --bg-app: #160f14;
+  --bg-header: rgba(38, 22, 34, 0.9);
+  --bg-card: rgba(46, 28, 40, 0.72);
+  --bg-card-hover: rgba(60, 36, 52, 0.88);
+  --bg-dock: rgba(38, 22, 34, 0.94);
+  --bg-panel: #160d13;
+  --bg-modal: #160d13;
   --text-main: #fdf2f8;
   --text-muted: #f472b6;
   --text-header: #ffffff;
   --text-dock: #ffffff;
-  --border-main: rgba(244, 114, 182, 0.25);
+  --border-main: rgba(244, 114, 182, 0.22);
 }
 
-/* 20. Tropical Lagoon (Türkisblau & Koralle) */
+/* 10. 🌊 Lagune & Meeresbrise */
+body.theme-lagoon-serenity,
 body.theme-lagoon {
   --accent: #06b6d4;
   --accent-light: #67e8f9;
   --accent-border: rgba(6, 182, 212, 0.4);
-  --bg-app: #08161e;
-  --bg-header: rgba(14, 38, 52, 0.8);
-  --bg-card: rgba(18, 50, 68, 0.7);
-  --bg-card-hover: rgba(24, 68, 92, 0.85);
-  --bg-dock: #0e2634;
-  --bg-panel: #051016;
-  --bg-modal: #051016;
+  --bg-app: #0a141c;
+  --bg-header: rgba(18, 36, 48, 0.9);
+  --bg-card: rgba(18, 42, 58, 0.72);
+  --bg-card-hover: rgba(26, 56, 78, 0.88);
+  --bg-dock: rgba(18, 36, 48, 0.94);
+  --bg-panel: #071018;
+  --bg-modal: #071018;
   --text-main: #ecfeff;
   --text-muted: #22d3ee;
   --text-header: #ffffff;
   --text-dock: #ffffff;
-  --border-main: rgba(6, 182, 212, 0.25);
+  --border-main: rgba(6, 182, 212, 0.22);
 }
 
-/* 21. Matcha Latte (Matcha-Grün & Vanille) */
-body.theme-matcha {
-  --accent: #84cc16;
-  --accent-light: #bef264;
-  --accent-border: rgba(132, 204, 22, 0.4);
-  --bg-app: #111a0c;
-  --bg-header: rgba(28, 44, 20, 0.8);
-  --bg-card: rgba(38, 58, 28, 0.7);
-  --bg-card-hover: rgba(50, 78, 36, 0.85);
-  --bg-dock: #1c2c14;
-  --bg-panel: #0b1207;
-  --bg-modal: #0b1207;
-  --text-main: #f7fee7;
-  --text-muted: #a3e635;
-  --text-header: #ffffff;
-  --text-dock: #ffffff;
-  --border-main: rgba(132, 204, 22, 0.25);
+/* -------------------------------------------------------------------------- */
+/* KATEGORIE 3: 🌌 RÄUMLICHE TIEFE & NACHT (5 Farbschemata)                   */
+/* -------------------------------------------------------------------------- */
+
+/* 11. ✨ Aurora Violett */
+body.theme-aurora-violet,
+body.theme-aurora {
+  --accent: #a855f7;
+  --accent-light: #d8b4fe;
+  --accent-border: rgba(168, 85, 247, 0.4);
+  --bg-app: #100d18;
+  --bg-header: rgba(26, 20, 42, 0.9);
+  --bg-card: rgba(32, 24, 52, 0.72);
+  --bg-card-hover: rgba(44, 34, 70, 0.88);
+  --bg-dock: rgba(26, 20, 42, 0.94);
+  --bg-panel: #110d1c;
+  --bg-modal: #110d1c;
+  --text-main: #eae6f5;
+  --text-muted: #a78bfa;
+  --text-header: #f3f0fa;
+  --text-dock: #f3f0fa;
+  --border-main: rgba(168, 85, 247, 0.2);
 }
 
-/* ========================================================================== */
-/* 3D SPATIAL DEPTH THEMES (Übertragung der 3D-Welten in Farbschemata)       */
-/* ========================================================================== */
-
-/* 22. 🌌 3D Sci-Fi Orbit-Deck */
+/* 12. 🌌 3D Orbit-Deck */
 body.theme-spatial-orbit {
   --accent: #38bdf8;
   --accent-light: #a855f7;
   --accent-border: rgba(56, 189, 248, 0.5);
-  --bg-app: #03030c;
-  --bg-header: rgba(12, 14, 32, 0.88);
-  --bg-card: rgba(16, 19, 44, 0.72);
-  --bg-card-hover: rgba(24, 28, 62, 0.85);
-  --bg-dock: rgba(12, 14, 32, 0.92);
-  --bg-panel: #070816;
-  --bg-modal: #070816;
+  --bg-app: #060814;
+  --bg-header: rgba(14, 18, 38, 0.9);
+  --bg-card: rgba(18, 22, 50, 0.72);
+  --bg-card-hover: rgba(26, 32, 68, 0.88);
+  --bg-dock: rgba(14, 18, 38, 0.94);
+  --bg-panel: #070a1a;
+  --bg-modal: #070a1a;
   --text-main: #f0f9ff;
   --text-muted: #7dd3fc;
   --text-header: #ffffff;
@@ -451,18 +375,18 @@ body.theme-spatial-orbit {
   --border-main: rgba(56, 189, 248, 0.25);
 }
 
-/* 23. 🏝️ 3D Cozy Floating Island */
+/* 13. 🏝️ 3D Floating Island */
 body.theme-spatial-island {
   --accent: #10b981;
   --accent-light: #fde047;
   --accent-border: rgba(16, 185, 129, 0.5);
-  --bg-app: #0a192f;
-  --bg-header: rgba(14, 35, 62, 0.88);
-  --bg-card: rgba(18, 46, 78, 0.72);
-  --bg-card-hover: rgba(26, 62, 102, 0.85);
-  --bg-dock: rgba(14, 35, 62, 0.92);
-  --bg-panel: #061224;
-  --bg-modal: #061224;
+  --bg-app: #091626;
+  --bg-header: rgba(16, 36, 60, 0.9);
+  --bg-card: rgba(18, 44, 70, 0.72);
+  --bg-card-hover: rgba(26, 58, 92, 0.88);
+  --bg-dock: rgba(16, 36, 60, 0.94);
+  --bg-panel: #071526;
+  --bg-modal: #071526;
   --text-main: #ecfdf5;
   --text-muted: #6ee7b7;
   --text-header: #ffffff;
@@ -470,62 +394,49 @@ body.theme-spatial-island {
   --border-main: rgba(52, 211, 153, 0.25);
 }
 
-/* 24. 🏙️ 3D Cyber Metropolis */
-body.theme-spatial-metropolis {
-  --accent: #06b6d4;
-  --accent-light: #f43f5e;
-  --accent-border: rgba(6, 182, 212, 0.5);
-  --bg-app: #080914;
-  --bg-header: rgba(16, 18, 38, 0.88);
-  --bg-card: rgba(22, 25, 52, 0.72);
-  --bg-card-hover: rgba(32, 36, 72, 0.85);
-  --bg-dock: rgba(16, 18, 38, 0.92);
-  --bg-panel: #05060e;
-  --bg-modal: #05060e;
-  --text-main: #f8fafc;
-  --text-muted: #67e8f9;
-  --text-header: #ffffff;
-  --text-dock: #ffffff;
-  --border-main: rgba(6, 182, 212, 0.25);
-}
-
-/* 25. 🚀 3D Galaxy Warp */
-body.theme-spatial-galaxy {
-  --accent: #8b5cf6;
-  --accent-light: #f97316;
-  --accent-border: rgba(139, 92, 246, 0.5);
-  --bg-app: #020208;
-  --bg-header: rgba(14, 10, 26, 0.88);
-  --bg-card: rgba(20, 14, 38, 0.75);
-  --bg-card-hover: rgba(30, 22, 56, 0.88);
-  --bg-dock: rgba(14, 10, 26, 0.92);
-  --bg-panel: #05030b;
-  --bg-modal: #05030b;
-  --text-main: #faf5ff;
-  --text-muted: #c084fc;
-  --text-header: #ffffff;
-  --text-dock: #ffffff;
-  --border-main: rgba(139, 92, 246, 0.25);
-}
-
-/* 26. ⛩️ 3D Zen Crystal Sanctuary */
+/* 14. ⛩️ 3D Crystal Sanctuary */
 body.theme-spatial-sanctuary {
   --accent: #22d3ee;
   --accent-light: #c084fc;
   --accent-border: rgba(34, 211, 238, 0.5);
   --bg-app: #0a0c16;
-  --bg-header: rgba(18, 20, 38, 0.88);
+  --bg-header: rgba(20, 22, 40, 0.9);
   --bg-card: rgba(24, 27, 48, 0.72);
-  --bg-card-hover: rgba(34, 38, 66, 0.85);
-  --bg-dock: rgba(18, 20, 38, 0.92);
-  --bg-panel: #06070e;
-  --bg-modal: #06070e;
+  --bg-card-hover: rgba(34, 38, 66, 0.88);
+  --bg-dock: rgba(20, 22, 40, 0.94);
+  --bg-panel: #080a14;
+  --bg-modal: #080a14;
   --text-main: #f8fafc;
   --text-muted: #a5f3fc;
   --text-header: #ffffff;
   --text-dock: #ffffff;
   --border-main: rgba(34, 211, 238, 0.25);
 }
+
+/* 15. ❄️ Gletscher & Eiskristall */
+body.theme-glacier-frost,
+body.theme-glacier {
+  --accent: #38bdf8;
+  --accent-light: #e0f2fe;
+  --accent-border: rgba(56, 189, 248, 0.4);
+  --bg-app: #081018;
+  --bg-header: rgba(18, 30, 44, 0.9);
+  --bg-card: rgba(16, 34, 52, 0.72);
+  --bg-card-hover: rgba(24, 48, 72, 0.88);
+  --bg-dock: rgba(18, 30, 44, 0.94);
+  --bg-panel: #060e16;
+  --bg-modal: #060e16;
+  --text-main: #f0f9ff;
+  --text-muted: #7dd3fc;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(56, 189, 248, 0.22);
+}
+
+/* Ältere Theme-Aliase für nahtlose Abwärtskompatibilität */
+body.theme-citrus { --accent: #f59e0b; --accent-light: #fde68a; --accent-border: rgba(245, 158, 11, 0.4); --bg-app: #15120c; --bg-header: rgba(30, 24, 16, 0.9); --bg-card: rgba(46, 38, 26, 0.72); --bg-card-hover: rgba(58, 48, 34, 0.88); --bg-dock: rgba(28, 23, 16, 0.94); --bg-panel: #16120b; --bg-modal: #16120b; --text-main: #fffbeb; --text-muted: #fcd34d; --text-header: #ffffff; --text-dock: #ffffff; --border-main: rgba(245, 158, 11, 0.22); }
+body.theme-spatial-galaxy { --accent: #a855f7; --accent-light: #d8b4fe; --accent-border: rgba(168, 85, 247, 0.4); --bg-app: #100d18; --bg-header: rgba(26, 20, 42, 0.9); --bg-card: rgba(32, 24, 52, 0.72); --bg-card-hover: rgba(44, 34, 70, 0.88); --bg-dock: rgba(26, 20, 42, 0.94); --bg-panel: #110d1c; --bg-modal: #110d1c; --text-main: #eae6f5; --text-muted: #a78bfa; --text-header: #f3f0fa; --text-dock: #f3f0fa; --border-main: rgba(168, 85, 247, 0.2); }
+body.theme-spatial-metropolis { --accent: #38bdf8; --accent-light: #a855f7; --accent-border: rgba(56, 189, 248, 0.5); --bg-app: #060814; --bg-header: rgba(14, 18, 38, 0.9); --bg-card: rgba(18, 22, 50, 0.72); --bg-card-hover: rgba(26, 32, 68, 0.88); --bg-dock: rgba(14, 18, 38, 0.94); --bg-panel: #070a1a; --bg-modal: #070a1a; --text-main: #f0f9ff; --text-muted: #7dd3fc; --text-header: #ffffff; --text-dock: #ffffff; --border-main: rgba(56, 189, 248, 0.25); }
 
 /* --- 3D SPATIAL TIEFEN- & GLOW-EFFEKTE --- */
 body[class*="theme-spatial-"] main article {
@@ -543,102 +454,64 @@ body[class*="theme-spatial-"] #date-container {
 }
 
 /* ========================================================================== */
-/* EXTRA WEICHE, FREUNDLICHE & MENSCHLICHE FARBSCHEMATA                      */
-/* (Haupthintergrund & Aufgabenkarten mit warmer, organischer Harmonie)      */
+/* UNIFIED DESIGN SYSTEM ENGINE (App-weite Konsistenz aller Fenster & Tools)   */
 /* ========================================================================== */
 
-/* 27. 🍯 Honig & Kamille (Warm, sanft & beruhigend) */
-body.theme-honey-chamomile {
-  --accent: #f59e0b;
-  --accent-light: #fde68a;
-  --accent-border: rgba(245, 158, 11, 0.35);
-  --bg-app: #15120c;
-  --bg-header: rgba(30, 24, 16, 0.88);
-  --bg-card: rgba(46, 38, 26, 0.72);
-  --bg-card-hover: rgba(58, 48, 34, 0.88);
-  --bg-dock: #1c1710;
-  --bg-panel: #120e09;
-  --bg-modal: #120e09;
-  --text-main: #fffbeb;
-  --text-muted: #fcd34d;
-  --text-header: #ffffff;
-  --text-dock: #ffffff;
-  --border-main: rgba(245, 158, 11, 0.22);
+/* Einheitliche Modale, Dialoge, Floating Panels & Popovers */
+.dock-popover-panel,
+.mobile-modal-card,
+[id$="-modal"] > div,
+#panel-logo-guide,
+#panel-calendar-dropdown,
+#panel-report,
+#panel-pause-dropdown,
+#panel-settings-dropdown,
+#panel-audio,
+#panel-daily,
+#panel-alarm,
+#panel-weather,
+#panel-impulse,
+#modal-mobile-quick-menu > div,
+#modal-settings > div,
+#modal-privacy > div,
+#pwa-install-banner,
+#zen-chill-view > div {
+  background-color: var(--bg-modal, #14121a) !important;
+  border: 1px solid var(--border-main, rgba(255, 255, 255, 0.12)) !important;
+  border-top: 1.5px solid color-mix(in srgb, var(--accent-light, #c084fc) 45%, rgba(255, 255, 255, 0.3)) !important;
+  box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.8), 0 0 25px -5px var(--accent-border, rgba(168, 85, 247, 0.18)) !important;
+  color: var(--text-main, #f4f4f5) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
 }
 
-/* 28. 🍑 Pfirsich & Kaschmir (Menschlich, weich & geborgen) */
-body.theme-peach-cashmere {
-  --accent: #fb7185;
-  --accent-light: #fecdd3;
-  --accent-border: rgba(251, 113, 133, 0.35);
-  --bg-app: #171012;
-  --bg-header: rgba(34, 22, 26, 0.88);
-  --bg-card: rgba(48, 30, 36, 0.72);
-  --bg-card-hover: rgba(62, 38, 46, 0.88);
-  --bg-dock: #201418;
-  --bg-panel: #140c0e;
-  --bg-modal: #140c0e;
-  --text-main: #fff1f2;
-  --text-muted: #fda4af;
-  --text-header: #ffffff;
-  --text-dock: #ffffff;
-  --border-main: rgba(251, 113, 133, 0.22);
+/* Einheitliche Form-Elemente in allen Fenstern (Inputs, Selects, Textareas) */
+.dock-popover-panel input:not([type="checkbox"]):not([type="radio"]),
+.dock-popover-panel select,
+.dock-popover-panel textarea,
+[id$="-modal"] input:not([type="checkbox"]):not([type="radio"]),
+[id$="-modal"] select,
+[id$="-modal"] textarea,
+.mobile-modal-card input:not([type="checkbox"]):not([type="radio"]),
+.mobile-modal-card select,
+.mobile-modal-card textarea {
+  background-color: rgba(0, 0, 0, 0.35) !important;
+  border: 1px solid var(--border-main, rgba(255, 255, 255, 0.15)) !important;
+  color: var(--text-main, #f4f4f5) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
 }
 
-/* 29. 🪻 Lavendel & Hafermilch (Stressfrei, sanft & verträumt) */
-body.theme-lavender-cloud {
-  --accent: #a78bfa;
-  --accent-light: #ddd6fe;
-  --accent-border: rgba(167, 139, 250, 0.35);
-  --bg-app: #12111a;
-  --bg-header: rgba(26, 23, 40, 0.88);
-  --bg-card: rgba(36, 32, 54, 0.72);
-  --bg-card-hover: rgba(48, 42, 70, 0.88);
-  --bg-dock: #181526;
-  --bg-panel: #0e0d16;
-  --bg-modal: #0e0d16;
-  --text-main: #faf5ff;
-  --text-muted: #c4b5fd;
-  --text-header: #ffffff;
-  --text-dock: #ffffff;
-  --border-main: rgba(167, 139, 250, 0.22);
-}
-
-/* 30. 🌿 Eukalyptus & Morgentau (Botanisch, frisch & freundlich) */
-body.theme-eucalyptus-dew {
-  --accent: #34d399;
-  --accent-light: #a7f3d0;
-  --accent-border: rgba(52, 211, 153, 0.35);
-  --bg-app: #0d1512;
-  --bg-header: rgba(20, 34, 28, 0.88);
-  --bg-card: rgba(26, 46, 38, 0.72);
-  --bg-card-hover: rgba(34, 60, 50, 0.88);
-  --bg-dock: #12201a;
-  --bg-panel: #09100d;
-  --bg-modal: #09100d;
-  --text-main: #f0fdf4;
-  --text-muted: #6ee7b7;
-  --text-header: #ffffff;
-  --text-dock: #ffffff;
-  --border-main: rgba(52, 211, 153, 0.22);
-}
-
-/* 31. 🏺 Terrakotta & Abendsonne (Erdig, handwerklich & warm) */
-body.theme-terracotta-sun {
-  --accent: #f97316;
-  --accent-light: #fed7aa;
-  --accent-border: rgba(249, 115, 22, 0.35);
-  --bg-app: #17100b;
-  --bg-header: rgba(34, 22, 16, 0.88);
-  --bg-card: rgba(48, 30, 20, 0.72);
-  --bg-card-hover: rgba(64, 40, 26, 0.88);
-  --bg-dock: #20140e;
-  --bg-panel: #120a06;
-  --bg-modal: #120a06;
-  --text-main: #fff7ed;
-  --text-muted: #fdba74;
-  --text-header: #ffffff;
-  --text-dock: #ffffff;
-  --border-main: rgba(249, 115, 22, 0.22);
+.dock-popover-panel input:focus,
+.dock-popover-panel select:focus,
+.dock-popover-panel textarea:focus,
+[id$="-modal"] input:focus,
+[id$="-modal"] select:focus,
+[id$="-modal"] textarea:focus,
+.mobile-modal-card input:focus,
+.mobile-modal-card select:focus,
+.mobile-modal-card textarea:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 2px var(--accent-border, rgba(168, 85, 247, 0.25)) !important;
+  outline: none !important;
 }
 

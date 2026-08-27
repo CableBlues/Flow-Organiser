@@ -11206,35 +11206,46 @@ ${listStr}`;
     renderLucideIcons();
   });
   var ALL_VALID_THEMES = [
-    "aurora",
-    "sage",
-    "cozy",
-    "forest",
-    "architect",
-    "glacier",
-    "charcoal",
-    "executive",
-    "neon-cyber",
-    "carbon",
-    "holo-chrome",
-    "synthwave",
-    "citrus",
-    "sakura",
-    "lagoon",
-    "matcha",
-    "spatial-orbit",
-    "spatial-island",
-    "spatial-metropolis",
-    "spatial-galaxy",
-    "spatial-sanctuary",
     "honey-chamomile",
     "peach-cashmere",
-    "lavender-cloud",
+    "terracotta-sun",
+    "cozy-amber",
+    "matcha-latte",
+    "sage-breeze",
     "eucalyptus-dew",
-    "terracotta-sun"
+    "lavender-cloud",
+    "sakura-blossom",
+    "lagoon-serenity",
+    "aurora-violet",
+    "spatial-orbit",
+    "spatial-island",
+    "spatial-sanctuary",
+    "glacier-frost"
   ];
+  var THEME_ALIASES = {
+    "aurora": "aurora-violet",
+    "sage": "sage-breeze",
+    "cozy": "cozy-amber",
+    "forest": "eucalyptus-dew",
+    "architect": "glacier-frost",
+    "glacier": "glacier-frost",
+    "charcoal": "sage-breeze",
+    "executive": "spatial-island",
+    "neon-cyber": "peach-cashmere",
+    "carbon": "honey-chamomile",
+    "holo-chrome": "lagoon-serenity",
+    "synthwave": "lavender-cloud",
+    "citrus": "honey-chamomile",
+    "sakura": "sakura-blossom",
+    "lagoon": "lagoon-serenity",
+    "matcha": "matcha-latte",
+    "terracotta": "terracotta-sun",
+    "spatial-galaxy": "aurora-violet",
+    "spatial-metropolis": "spatial-orbit"
+  };
   function setTheme(theme) {
-    if (!ALL_VALID_THEMES.includes(theme)) theme = "aurora";
+    if (THEME_ALIASES[theme]) theme = THEME_ALIASES[theme];
+    if (!ALL_VALID_THEMES.includes(theme)) theme = "honey-chamomile";
     if (typeof window !== "undefined") window.currentTheme = theme;
     if (typeof globalThis !== "undefined") globalThis.currentTheme = theme;
     try {

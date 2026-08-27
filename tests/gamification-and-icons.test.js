@@ -9,17 +9,29 @@ import '../state.js';
 import '../utils.js';
 import '../app-core.js';
 
-describe('3D Spatial & Soft Human Themes (Production Code)', () => {
-  it('applies 3D spatial and soft human themes with depth and lighting classes', () => {
-    const allNewThemes = [
-      'spatial-orbit', 'spatial-island', 'spatial-metropolis', 'spatial-galaxy', 'spatial-sanctuary',
-      'honey-chamomile', 'peach-cashmere', 'lavender-cloud', 'eucalyptus-dew', 'terracotta-sun'
+describe('Curated 15 Human & Spatial Themes (Production Code)', () => {
+  it('applies all 15 curated themes with deep background harmony', () => {
+    const curatedThemes = [
+      'honey-chamomile', 'peach-cashmere', 'terracotta-sun', 'cozy-amber', 'matcha-latte',
+      'sage-breeze', 'eucalyptus-dew', 'lavender-cloud', 'sakura-blossom', 'lagoon-serenity',
+      'aurora-violet', 'spatial-orbit', 'spatial-island', 'spatial-sanctuary', 'glacier-frost'
     ];
-    allNewThemes.forEach(theme => {
+    curatedThemes.forEach(theme => {
       setTheme(theme);
       expect(document.body.classList.contains(`theme-${theme}`)).toBe(true);
       expect(localStorage.getItem('flowPlannerTheme')).toBe(theme);
     });
+  });
+
+  it('smoothly maps legacy theme aliases to the closest curated theme', () => {
+    setTheme('aurora');
+    expect(document.body.classList.contains('theme-aurora-violet')).toBe(true);
+
+    setTheme('sage');
+    expect(document.body.classList.contains('theme-sage-breeze')).toBe(true);
+
+    setTheme('cozy');
+    expect(document.body.classList.contains('theme-cozy-amber')).toBe(true);
   });
 });
 

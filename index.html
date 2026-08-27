@@ -565,57 +565,51 @@
                 </div>
               </div>
 
-              <!-- SECTION 2: THEMES (16 FARBEN) -->
-              <div class="space-y-1.5">
-                <div class="text-[9px] font-bold uppercase tracking-wider text-gray-400 font-mono flex items-center justify-between">
-                  <span data-i18n="settings_section_theme">🎨 Color Theme (16 Themes)</span>
+              <!-- SECTION 2: 15 KURATIERTE & MENSCHLICHE FARBSCHEMATA -->
+              <div class="space-y-2 pt-1 border-t border-white/5">
+                
+                <!-- 2A: WARM & MENSCHLICH -->
+                <div class="space-y-1">
+                  <div class="text-[9px] font-bold uppercase tracking-wider text-amber-300/90 font-mono flex items-center justify-between">
+                    <span>☕ Warm & Menschlich</span>
+                  </div>
+                  <div class="grid grid-cols-5 gap-1.5 p-1 bg-amber-950/20 border border-amber-500/20 rounded-2xl">
+                    <button onclick="setTheme('honey-chamomile')" class="h-6 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🍯 Honig & Kamille">🍯</button>
+                    <button onclick="setTheme('peach-cashmere')" class="h-6 rounded-xl bg-gradient-to-br from-rose-300 to-pink-500 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🍑 Pfirsich & Kaschmir">🍑</button>
+                    <button onclick="setTheme('terracotta-sun')" class="h-6 rounded-xl bg-gradient-to-br from-orange-400 to-amber-700 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🏺 Terrakotta & Abendrot">🏺</button>
+                    <button onclick="setTheme('cozy-amber')" class="h-6 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-600 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="☕ Cozy Sandelholz">☕</button>
+                    <button onclick="setTheme('matcha-latte')" class="h-6 rounded-xl bg-gradient-to-br from-lime-400 to-emerald-600 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🍵 Matcha & Vanille">🍵</button>
+                  </div>
                 </div>
-                <div class="grid grid-cols-8 gap-1.5 p-1.5 bg-black/40 border border-white/5 rounded-2xl">
-                  <button onclick="setTheme('aurora')" class="w-4 h-4 rounded-full bg-[#a855f7] border border-white/10 hover:scale-125 transition cursor-pointer" title="Aurora"></button>
-                  <button onclick="setTheme('sage')" class="w-4 h-4 rounded-full bg-[#86efac] border border-white/10 hover:scale-125 transition cursor-pointer" title="Sage"></button>
-                  <button onclick="setTheme('cozy')" class="w-4 h-4 rounded-full bg-[#f59e0b] border border-white/10 hover:scale-125 transition cursor-pointer" title="Cozy"></button>
-                  <button onclick="setTheme('forest')" class="w-4 h-4 rounded-full bg-[#22c55e] border border-white/10 hover:scale-125 transition cursor-pointer" title="Forest"></button>
-                  <button onclick="setTheme('architect')" class="w-4 h-4 rounded-full bg-[#64748b] border border-white/10 hover:scale-125 transition cursor-pointer" title="Architect"></button>
-                  <button onclick="setTheme('neon-cyber')" class="w-4 h-4 rounded-full bg-[#ff2fd0] border border-white/10 hover:scale-125 transition cursor-pointer" title="Neon Cyber"></button>
-                  <button onclick="setTheme('glacier')" class="w-4 h-4 rounded-full bg-[#a5f3fc] border border-white/10 hover:scale-125 transition cursor-pointer" title="Glacier"></button>
-                  <button onclick="setTheme('synthwave')" class="w-4 h-4 rounded-full bg-[#ff5f9e] border border-white/10 hover:scale-125 transition cursor-pointer" title="Synthwave"></button>
-                  <button onclick="setTheme('charcoal')" class="w-4 h-4 rounded-full bg-[#475569] border border-white/10 hover:scale-125 transition cursor-pointer" title="Charcoal"></button>
-                  <button onclick="setTheme('executive')" class="w-4 h-4 rounded-full bg-[#b5a642] border border-white/10 hover:scale-125 transition cursor-pointer" title="Executive"></button>
-                  <button onclick="setTheme('holo-chrome')" class="w-4 h-4 rounded-full bg-[#22e5d4] border border-white/10 hover:scale-125 transition cursor-pointer" title="Holo Chrome"></button>
-                  <button onclick="setTheme('carbon')" class="w-4 h-4 rounded-full bg-[#1e293b] border border-white/10 hover:scale-125 transition cursor-pointer" title="Carbon"></button>
-                  <button onclick="setTheme('citrus')" class="w-4 h-4 rounded-full bg-[#facc15] border border-white/10 hover:scale-125 transition cursor-pointer" title="Citrus"></button>
-                  <button onclick="setTheme('sakura')" class="w-4 h-4 rounded-full bg-[#f472b6] border border-white/10 hover:scale-125 transition cursor-pointer" title="Sakura"></button>
-                  <button onclick="setTheme('lagoon')" class="w-4 h-4 rounded-full bg-[#06b6d4] border border-white/10 hover:scale-125 transition cursor-pointer" title="Lagoon"></button>
-                  <button onclick="setTheme('matcha')" class="w-4 h-4 rounded-full bg-[#84cc16] border border-white/10 hover:scale-125 transition cursor-pointer" title="Matcha"></button>
-                </div>
-              </div>
 
-              <!-- SECTION 2B: 3D SPATIAL THEMES (5 RÄUMLICHE FARBSCHEMATA) -->
-              <div class="space-y-1.5 pt-1 border-t border-white/5">
-                <div class="text-[9px] font-bold uppercase tracking-wider text-cyan-300 font-mono flex items-center justify-between">
-                  <span>🌌 3D Spatial Themes (5 Welten)</span>
+                <!-- 2B: SANFTE NATUR & BERUHIGEND -->
+                <div class="space-y-1">
+                  <div class="text-[9px] font-bold uppercase tracking-wider text-emerald-300/90 font-mono flex items-center justify-between">
+                    <span>🌿 Sanfte Natur & Ruhe</span>
+                  </div>
+                  <div class="grid grid-cols-5 gap-1.5 p-1 bg-emerald-950/20 border border-emerald-500/20 rounded-2xl">
+                    <button onclick="setTheme('sage-breeze')" class="h-6 rounded-xl bg-gradient-to-br from-emerald-300 to-teal-600 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🍃 Salbei & Morgennebel">🍃</button>
+                    <button onclick="setTheme('eucalyptus-dew')" class="h-6 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-700 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🌿 Eukalyptus & Morgentau">🌿</button>
+                    <button onclick="setTheme('lavender-cloud')" class="h-6 rounded-xl bg-gradient-to-br from-purple-300 to-indigo-400 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🪻 Lavendel & Hafermilch">🪻</button>
+                    <button onclick="setTheme('sakura-blossom')" class="h-6 rounded-xl bg-gradient-to-br from-pink-300 to-rose-400 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🌸 Sakura & Kirschblüte">🌸</button>
+                    <button onclick="setTheme('lagoon-serenity')" class="h-6 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🌊 Lagune & Meeresbrise">🌊</button>
+                  </div>
                 </div>
-                <div class="grid grid-cols-5 gap-1.5 p-1.5 bg-cyan-950/30 border border-cyan-500/20 rounded-2xl">
-                  <button onclick="setTheme('spatial-orbit')" class="h-6 rounded-xl bg-gradient-to-br from-sky-400 to-purple-600 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer" title="🌌 3D Orbit-Deck">🌌</button>
-                  <button onclick="setTheme('spatial-island')" class="h-6 rounded-xl bg-gradient-to-br from-emerald-400 to-amber-400 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer" title="🏝️ 3D Floating Island">🏝️</button>
-                  <button onclick="setTheme('spatial-metropolis')" class="h-6 rounded-xl bg-gradient-to-br from-cyan-400 to-rose-500 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer" title="🏙️ 3D Cyber Metropolis">🏙️</button>
-                  <button onclick="setTheme('spatial-galaxy')" class="h-6 rounded-xl bg-gradient-to-br from-purple-600 to-orange-500 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer" title="🚀 3D Galaxy Warp">🚀</button>
-                  <button onclick="setTheme('spatial-sanctuary')" class="h-6 rounded-xl bg-gradient-to-br from-teal-400 to-fuchsia-400 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer" title="⛩️ 3D Crystal Sanctuary">⛩️</button>
-                </div>
-              </div>
 
-              <!-- SECTION 2C: EXTRA WEICHE, FREUNDLICHE & MENSCHLICHE THEMES -->
-              <div class="space-y-1.5 pt-1 border-t border-white/5">
-                <div class="text-[9px] font-bold uppercase tracking-wider text-amber-300 font-mono flex items-center justify-between">
-                  <span>☕ Weich, Freundlich & Warm (5 Themes)</span>
+                <!-- 2C: RÄUMLICHE TIEFE & NACHT -->
+                <div class="space-y-1">
+                  <div class="text-[9px] font-bold uppercase tracking-wider text-cyan-300/90 font-mono flex items-center justify-between">
+                    <span>🌌 Räumliche Tiefe & Nacht</span>
+                  </div>
+                  <div class="grid grid-cols-5 gap-1.5 p-1 bg-cyan-950/20 border border-cyan-500/20 rounded-2xl">
+                    <button onclick="setTheme('aurora-violet')" class="h-6 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="✨ Aurora Violett">✨</button>
+                    <button onclick="setTheme('spatial-orbit')" class="h-6 rounded-xl bg-gradient-to-br from-sky-400 to-purple-600 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🌌 3D Orbit-Deck">🌌</button>
+                    <button onclick="setTheme('spatial-island')" class="h-6 rounded-xl bg-gradient-to-br from-emerald-400 to-amber-400 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🏝️ 3D Floating Island">🏝️</button>
+                    <button onclick="setTheme('spatial-sanctuary')" class="h-6 rounded-xl bg-gradient-to-br from-teal-400 to-fuchsia-400 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="⛩️ 3D Crystal Zen">⛩️</button>
+                    <button onclick="setTheme('glacier-frost')" class="h-6 rounded-xl bg-gradient-to-br from-cyan-300 to-slate-500 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="❄️ Gletscher & Eiskristall">❄️</button>
+                  </div>
                 </div>
-                <div class="grid grid-cols-5 gap-1.5 p-1.5 bg-amber-950/25 border border-amber-500/20 rounded-2xl">
-                  <button onclick="setTheme('honey-chamomile')" class="h-6 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer" title="🍯 Honig & Kamille">🍯</button>
-                  <button onclick="setTheme('peach-cashmere')" class="h-6 rounded-xl bg-gradient-to-br from-rose-300 to-pink-500 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer" title="🍑 Pfirsich & Kaschmir">🍑</button>
-                  <button onclick="setTheme('lavender-cloud')" class="h-6 rounded-xl bg-gradient-to-br from-purple-300 to-indigo-400 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer" title="🪻 Lavendel & Hafermilch">🪻</button>
-                  <button onclick="setTheme('eucalyptus-dew')" class="h-6 rounded-xl bg-gradient-to-br from-emerald-300 to-teal-500 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer" title="🌿 Eukalyptus & Morgentau">🌿</button>
-                  <button onclick="setTheme('terracotta-sun')" class="h-6 rounded-xl bg-gradient-to-br from-orange-400 to-amber-700 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer" title="🏺 Terrakotta & Abendsonne">🏺</button>
-                </div>
+
               </div>
 
               <!-- SECTION 3: QUICK LINKS -->
