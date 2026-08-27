@@ -73,7 +73,7 @@
     </div>
 
     <!-- HEADER BAR -->
-    <header class="relative z-[9999] flex flex-nowrap items-center justify-between gap-3 md:gap-6 mb-3 w-full bg-[#13131c]/90 px-3.5 py-2 md:px-6 md:py-3 border border-white/10 rounded-2xl backdrop-blur-xl shadow-2xl">
+    <header class="relative z-[9999] flex flex-nowrap items-center justify-between gap-3 md:gap-4 mb-2.5 w-full bg-[#13131c]/90 px-2.5 py-1.5 md:px-4 md:py-2 border border-white/10 rounded-2xl backdrop-blur-xl shadow-2xl">
       
       <!-- Subtile Wave-Bewegung im Hintergrund -->
       <div class="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none opacity-20 zen-hide">
@@ -85,14 +85,14 @@
       <!-- ====================================================================== -->
       <!-- 1. LINKE ZONE: BRANDING & FOKUS-TIMER -->
       <!-- ====================================================================== -->
-      <div class="flex items-center gap-2.5 md:gap-3.5 shrink-0">
+      <div class="flex items-center gap-2 md:gap-2.5 shrink-0">
         
-        <!-- Logo & Hover Popup -->
+        <!-- Logo & Hover Popup (Kompakt, 36px Höhe genau wie Timer) -->
         <div class="relative inline-block group" onmouseenter="document.getElementById('panel-logo-guide').classList.remove('hidden')" onmouseleave="document.getElementById('panel-logo-guide').classList.add('hidden')">
-          <div onclick="triggerLogoReloadFlow(this)" class="flow-logo-container relative inline-flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-gradient-to-r from-[#0d1527] via-[#10101e] to-[#180d24] text-sm md:text-base font-bold font-display text-white transition-all duration-300 group cursor-pointer overflow-hidden border border-cyan-500/30 shadow-sm" title="Flow-Anwendung neu laden (mit Wellen-Effekt)">
+          <div onclick="triggerLogoReloadFlow(this)" class="flow-logo-container relative inline-flex items-center gap-2 h-9 px-3 rounded-xl bg-gradient-to-r from-[#0d1527] via-[#10101e] to-[#180d24] text-xs md:text-sm font-bold font-display text-white transition-all duration-300 group cursor-pointer overflow-hidden border border-cyan-500/30 shadow-sm shrink-0" title="Flow-Anwendung neu laden (mit Wellen-Effekt)">
             
-            <!-- Kinetic Infinity Ribbon SVG Icon -->
-            <svg class="w-5.5 h-5.5 shrink-0 flow-logo-svg" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Kinetic Infinity Ribbon SVG Icon (20x20px) -->
+            <svg class="w-5 h-5 shrink-0 flow-logo-svg" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <linearGradient id="flowGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stop-color="#00f2fe" />
@@ -137,10 +137,10 @@
             </svg>
 
             <!-- Holographic Shimmer Brand Text -->
-            <span class="tracking-tight leading-none flow-logo-text font-black select-none text-base md:text-lg tracking-wide">Flow</span>
+            <span class="tracking-tight leading-none flow-logo-text font-black select-none text-sm md:text-base tracking-wide">Flow</span>
             
             <!-- Subtle Live Sparkle Pill -->
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping opacity-75 shrink-0"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping opacity-75 shrink-0"></span>
           </div>
 
           <!-- DYNAMISCHES HOVER POPUP (SCHNELLSTART-GUIDE & TASTENKÜRZEL) -->
@@ -263,7 +263,7 @@
               </div>
 
               <!-- Item 11: Beispiel-Aufgaben verwalten -->
-              <div onclick="openSampleManagerModal(); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-amber-500/50 hover:bg-amber-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+              <div onclick="openSampleManagerModal(); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-amber-500/50 hover:bg-amber-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-white flex items-center gap-1.5">
                     <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i> Beispiel-Aufgaben verwalten
@@ -306,9 +306,9 @@
           </div>
         </div>
 
-        <!-- Fokus-Timer (Leicht vergrößert für optimale Bedienung) -->
-        <div class="hidden md:flex items-center p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm">
-          <div id="timer-trigger-container" class="flex items-center gap-2.5 h-9 px-2.5 bg-black/30 border border-white/5 rounded-xl">
+        <!-- Fokus-Timer (36px Höhe, exakt passend) -->
+        <div class="hidden md:flex items-center bg-transparent shrink-0">
+          <div id="timer-trigger-container" class="flex items-center gap-2.5 h-9 px-2.5 bg-black/30 border border-white/10 rounded-xl shadow-sm">
             <div class="flex flex-col items-center justify-center min-w-[40px]">
               <span id="timer-display" class="font-display font-black text-sm md:text-base tracking-wider text-[var(--accent-light)] leading-none">02:00</span>
               <div class="w-full h-1 bg-white/10 rounded-full mt-1 overflow-hidden">
@@ -372,7 +372,6 @@
 
       <!-- ====================================================================== -->
       <!-- 2. ZENTRALE ZONE: FOCUS-MODE + DATUM & KALENDER + WAS NUN? -->
-      <!-- (Exakt zentriert und ausgerichtet mit den Flow Tools) -->
       <!-- ====================================================================== -->
       <div class="hidden lg:flex items-center justify-center gap-2.5 md:gap-3 flex-1 min-w-0 mx-2 zen-hide">
         
@@ -383,9 +382,9 @@
         </button>
 
         <!-- Zentrales Datum & Monatskalender Dropdown -->
-        <div id="date-container" onmouseenter="openCalendarHover()" onmouseleave="closeCalendarHover()" class="flex items-center justify-center p-1 px-3.5 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.08] hover:border-purple-500/40 rounded-2xl shadow-sm shrink-0 transition-all duration-300 relative group cursor-pointer">
-          <div class="flex items-center gap-2.5 h-9 px-1">
-            <button onclick="togglePanel('calendar-dropdown')" id="date-calendar-btn" class="h-7 w-7 flex items-center justify-center rounded-lg bg-purple-500/15 text-purple-300 group-hover:bg-purple-500/25 group-hover:text-purple-200 transition-all duration-300" title="Monatskalender und Termine anzeigen" aria-label="Monatskalender und Termine anzeigen">
+        <div id="date-container" onmouseenter="openCalendarHover()" onmouseleave="closeCalendarHover()" class="flex items-center justify-center h-9 px-3.5 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.08] hover:border-purple-500/40 rounded-xl shadow-sm shrink-0 transition-all duration-300 relative group cursor-pointer">
+          <div class="flex items-center gap-2.5 px-1">
+            <button onclick="togglePanel('calendar-dropdown')" id="date-calendar-btn" class="h-6 w-6 flex items-center justify-center rounded-lg bg-purple-500/15 text-purple-300 group-hover:bg-purple-500/25 group-hover:text-purple-200 transition-all duration-300" title="Monatskalender und Termine anzeigen" aria-label="Monatskalender und Termine anzeigen">
               <i id="date-icon" data-lucide="calendar-days" class="w-4 h-4 shrink-0"></i>
             </button>
             <span id="date-display" class="whitespace-nowrap text-xs md:text-sm font-bold text-gray-100 group-hover:text-white tracking-wide"></span>
@@ -413,10 +412,10 @@
       <!-- ====================================================================== -->
       <!-- 3. RECHTE ZONE: STATISTIK, PAUSE, SUCHE, UNDO/RESET, PRIVAT/WORK & OPTIONEN -->
       <!-- ====================================================================== -->
-      <div class="hidden md:flex items-center gap-2.5 md:gap-3 shrink-0 zen-hide">
+      <div class="hidden md:flex items-center gap-2 md:gap-2.5 shrink-0 zen-hide">
         
-        <!-- Gruppe A: Statistik & Pause -->
-        <div class="flex items-center gap-1.5 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm">
+        <!-- Statistik & Pause -->
+        <div class="flex items-center gap-1.5 p-1 bg-white/[0.025] border border-white/[0.07] rounded-xl shadow-sm">
           <!-- Statistik -->
           <div class="relative group cursor-pointer">
             <button onclick="togglePanel('report')" class="h-9 px-3 border border-white/10 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] hover:border-purple-500/30 text-gray-200 flex items-center gap-2 text-xs md:text-sm font-semibold cursor-pointer transition whitespace-nowrap shadow-sm" title="Erledigungsstatistiken und Diagramme einsehen">
@@ -519,7 +518,7 @@
         </div>
 
         <!-- Gruppe B: Suche, Undo/Reset, Privat/Arbeit & Optionen -->
-        <div class="flex items-center gap-2 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm">
+        <div class="flex items-center gap-1.5 p-1 bg-white/[0.025] border border-white/[0.07] rounded-xl shadow-sm">
           <!-- 1. Quick Search (Strg+K) - Vor Undo -->
           <button onclick="openCommandPalette()" class="h-9 w-9 flex items-center justify-center border border-white/10 hover:border-purple-500/40 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-purple-300 hover:text-white cursor-pointer transition shadow-sm" title="Suche & Befehle (Strg+K)" aria-label="Suche & Befehle">
             <i data-lucide="search" class="w-4 h-4 text-purple-300"></i>
@@ -553,7 +552,7 @@
               <div class="flex items-center justify-between border-b border-white/10 pb-2">
                 <div class="flex items-center gap-2">
                   <div class="w-6 h-6 rounded-lg bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-300">
-                    <i data-lucide="settings" class="w-4 h-4"></i>
+                    <i data-lucide="settings" class="w-3.5 h-3.5"></i>
                   </div>
                   <h4 class="font-bold text-xs font-display text-white">Einstellungen</h4>
                 </div>
@@ -601,11 +600,11 @@
               <!-- SECTION 3: QUICK LINKS -->
               <div class="grid grid-cols-2 gap-1.5 pt-1 border-t border-white/10">
                 <button onclick="openP2PSyncModal(); document.getElementById('panel-settings-dropdown').classList.add('hidden');" class="p-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 rounded-xl text-emerald-300 text-left text-[10px] font-bold flex items-center gap-1.5 transition cursor-pointer">
-                  <i data-lucide="smartphone" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                  <i data-lucide="smartphone" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i>
                   <span>Handy Live-Sync</span>
                 </button>
                 <button onclick="openSettingsModal('impressum'); document.getElementById('panel-settings-dropdown').classList.add('hidden');" class="p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-gray-300 hover:text-white text-left text-[10px] font-semibold flex items-center gap-1.5 transition cursor-pointer">
-                  <i data-lucide="shield-check" class="w-4 h-4 text-purple-400 shrink-0"></i>
+                  <i data-lucide="shield-check" class="w-3.5 h-3.5 text-purple-400 shrink-0"></i>
                   <span>Datenschutz</span>
                 </button>
               </div>
