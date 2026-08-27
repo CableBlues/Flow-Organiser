@@ -412,7 +412,7 @@ function updateShoppingListPopup(skipLucide = false) {
     }
   }
 
-  const tipBox = document.getElementById('panel-shopping');
+  const tipBox = document.getElementById('panel-daily') || document.getElementById('panel-shopping');
   if (tipBox) { generateSmartShoppingTips(tipBox); }
   if (!skipLucide) { renderLucideIcons(); }
 }

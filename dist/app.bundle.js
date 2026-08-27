@@ -7872,6 +7872,55 @@ ${listStr}`;
     if (typeof lucide !== "undefined") lucide.createIcons();
   }
   window.switchImpulseTab = switchImpulseTab;
+  function switchAudioTab(tabName) {
+    const tabs = ["ambient", "beats", "music"];
+    tabs.forEach((t3) => {
+      const btn = document.getElementById(`audio-tab-btn-${t3}`);
+      const pane = document.getElementById(`audio-pane-${t3}`);
+      if (btn) {
+        if (t3 === tabName) {
+          btn.className = "flex-1 py-1.5 rounded-xl text-white bg-purple-600/30 border border-purple-500/50 transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-bold shadow-sm";
+        } else {
+          btn.className = "flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-medium";
+        }
+      }
+      if (pane) {
+        if (t3 === tabName) {
+          pane.classList.remove("hidden");
+        } else {
+          pane.classList.add("hidden");
+        }
+      }
+    });
+    if (typeof lucide !== "undefined") lucide.createIcons();
+  }
+  window.switchAudioTab = switchAudioTab;
+  function switchDailyTab(tabName) {
+    const tabs = ["shopping", "cooking"];
+    tabs.forEach((t3) => {
+      const btn = document.getElementById(`daily-tab-btn-${t3}`);
+      const pane = document.getElementById(`daily-pane-${t3}`);
+      if (btn) {
+        if (t3 === tabName) {
+          btn.className = "flex-1 py-1.5 rounded-xl text-white bg-emerald-600/30 border border-emerald-500/50 transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-bold shadow-sm";
+        } else {
+          btn.className = "flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-medium";
+        }
+      }
+      if (pane) {
+        if (t3 === tabName) {
+          pane.classList.remove("hidden");
+        } else {
+          pane.classList.add("hidden");
+        }
+      }
+    });
+    if (tabName === "cooking" && typeof renderCookingPanel === "function") {
+      renderCookingPanel(true);
+    }
+    if (typeof lucide !== "undefined") lucide.createIcons();
+  }
+  window.switchDailyTab = switchDailyTab;
   document.addEventListener("keydown", (e) => {
     const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : "";
     if (activeTag === "input" || activeTag === "textarea" || document.activeElement && document.activeElement.isContentEditable) {

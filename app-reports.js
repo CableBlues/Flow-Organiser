@@ -1,7 +1,7 @@
 function togglePanel(panelName) {
   clearTimeout(hoverPanelTimeout); const el = document.getElementById(`panel-${panelName}`); if (!el) return;
   const isCurrentlyHidden = el.classList.contains('hidden');
-  ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'theme', 'calendar-dropdown', 'inspiration', 'impulse', 'shopping', 'cooking', 'alarm', 'weather', 'news', 'pause-dropdown', 'logo-guide'].forEach(p => {
+  ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'theme', 'calendar-dropdown', 'inspiration', 'impulse', 'shopping', 'cooking', 'alarm', 'weather', 'news', 'pause-dropdown', 'logo-guide', 'audio', 'daily'].forEach(p => {
     if (p !== panelName) { const other = document.getElementById(`panel-${p}`); if (other) other.classList.add('hidden'); }
   });
   if (isCurrentlyHidden) { 
@@ -15,6 +15,9 @@ function togglePanel(panelName) {
     if (panelName === 'impulse') {
       if (typeof suggestBoostActivity === 'function') suggestBoostActivity();
       if (typeof suggestInspirationQuote === 'function') suggestInspirationQuote();
+    }
+    if (panelName === 'daily') {
+      if (typeof renderCookingPanel === 'function') renderCookingPanel(true);
     }
   } 
   else { el.classList.add('hidden'); if (currentlyOpenPanel === panelName) currentlyOpenPanel = null; }

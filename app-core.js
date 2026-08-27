@@ -106,8 +106,59 @@ function switchImpulseTab(tabName) {
 }
 window.switchImpulseTab = switchImpulseTab;
 
-function handleSoundsMainClick() { togglePanel('soundscape'); }
-function handleMusicMainClick() { togglePanel('music'); }
+function handleSoundsMainClick() { togglePanel('audio'); switchAudioTab('ambient'); }
+function handleMusicMainClick() { togglePanel('audio'); switchAudioTab('music'); }
+
+function switchAudioTab(tabName) {
+  const tabs = ['ambient', 'beats', 'music'];
+  tabs.forEach(t => {
+    const btn = document.getElementById(`audio-tab-btn-${t}`);
+    const pane = document.getElementById(`audio-pane-${t}`);
+    if (btn) {
+      if (t === tabName) {
+        btn.className = 'flex-1 py-1.5 rounded-xl text-white bg-purple-600/30 border border-purple-500/50 transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-bold shadow-sm';
+      } else {
+        btn.className = 'flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-medium';
+      }
+    }
+    if (pane) {
+      if (t === tabName) {
+        pane.classList.remove('hidden');
+      } else {
+        pane.classList.add('hidden');
+      }
+    }
+  });
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+window.switchAudioTab = switchAudioTab;
+
+function switchDailyTab(tabName) {
+  const tabs = ['shopping', 'cooking'];
+  tabs.forEach(t => {
+    const btn = document.getElementById(`daily-tab-btn-${t}`);
+    const pane = document.getElementById(`daily-pane-${t}`);
+    if (btn) {
+      if (t === tabName) {
+        btn.className = 'flex-1 py-1.5 rounded-xl text-white bg-emerald-600/30 border border-emerald-500/50 transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-bold shadow-sm';
+      } else {
+        btn.className = 'flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-medium';
+      }
+    }
+    if (pane) {
+      if (t === tabName) {
+        pane.classList.remove('hidden');
+      } else {
+        pane.classList.add('hidden');
+      }
+    }
+  });
+  if (tabName === 'cooking' && typeof renderCookingPanel === 'function') {
+    renderCookingPanel(true);
+  }
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+window.switchDailyTab = switchDailyTab;
 
 // Performance: MutationObserver komplett entfernt, da redundant und Hauptursache für UI-Verzögerungen.
 
