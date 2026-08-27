@@ -428,7 +428,7 @@ function updateTimerDisplay() {
   const str = `${sign}${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   
   // Überzeit in allen Displays farblich und animiert hervorheben
-  const displays = ['timer-display', 'helper-pick-timer-display', 'helper-steps-timer-display', 'zen-timer-display', 'game-hud-timer-display', 'mobile-timer-display'];
+  const displays = ['timer-display', 'helper-pick-timer-display', 'helper-steps-timer-display', 'zen-timer-display', 'game-hud-timer-display', 'mobile-timer-display', 'alarm-timer-display'];
   displays.forEach(id => {
     const el = document.getElementById(id);
     if (el) {

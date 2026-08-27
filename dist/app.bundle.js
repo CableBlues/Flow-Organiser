@@ -7863,7 +7863,7 @@ ${listStr}`;
     const secs = absoluteSeconds % 60;
     const sign = isNegative ? "-" : "";
     const str = `${sign}${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-    const displays = ["timer-display", "helper-pick-timer-display", "helper-steps-timer-display", "zen-timer-display", "game-hud-timer-display", "mobile-timer-display"];
+    const displays = ["timer-display", "helper-pick-timer-display", "helper-steps-timer-display", "zen-timer-display", "game-hud-timer-display", "mobile-timer-display", "alarm-timer-display"];
     displays.forEach((id) => {
       const el = document.getElementById(id);
       if (el) {
@@ -8681,83 +8681,94 @@ ${listStr}`;
     const hasNotif = "Notification" in window;
     const notifPerm = hasNotif ? Notification.permission : "unsupported";
     const alarmCount = (alarmState.alarms || []).filter((a) => a.active).length;
-    const reminderCount = (alarmState.reminders || []).filter((r) => !r.completed).length;
     const tabAlarmsText = typeof tr === "function" ? tr({
-      en: "Alarms",
-      de: "Wecker",
-      fr: "R\xE9veils",
-      it: "Sveglie",
-      es: "Alarmas",
-      el: "\u039E\u03C5\u03C0\u03BD\u03B7\u03C4\u03AE\u03C1\u03B9\u03B1"
-    }) : "Wecker";
-    const tabRemindersText = typeof tr === "function" ? tr({
-      en: "Reminders",
-      de: "Reminder",
-      fr: "Rappels",
-      it: "Promemoria",
-      es: "Recordatorios",
-      el: "\u03A5\u03C0\u03B5\u03BD\u03B8\u03C5\u03BC\u03AF\u03C3\u03B5\u03B9\u03C2"
-    }) : "Reminder";
+      en: "Alarms & Reminders",
+      de: "Wecker & Reminder",
+      fr: "R\xE9veils & Rappels",
+      it: "Sveglie & Promemoria",
+      es: "Alarmas & Recordatorios",
+      el: "\u039E\u03C5\u03C0\u03BD\u03B7\u03C4\u03AE\u03C1\u03B9\u03B1 & \u03A5\u03C0\u03B5\u03BD\u03B8\u03C5\u03BC\u03AF\u03C3\u03B5\u03B9\u03C2"
+    }) : "Wecker & Reminder";
+    const tabTimerText = typeof tr === "function" ? tr({
+      en: "Focus Timer",
+      de: "Fokus-Timer",
+      fr: "Minuteur",
+      it: "Timer Focus",
+      es: "Temporizador",
+      el: "\u03A7\u03C1\u03BF\u03BD\u03CC\u03BC\u03B5\u03C4\u03C1\u03BF"
+    }) : "Fokus-Timer";
+    const tSecs = typeof timerSeconds !== "undefined" ? timerSeconds : 25 * 60;
+    const tRunning = typeof timerRunning !== "undefined" ? timerRunning : false;
+    const tMins = Math.floor(Math.max(0, tSecs) / 60);
+    const tRemSecs = Math.max(0, tSecs) % 60;
+    const timerFormatted = `${String(tMins).padStart(2, "0")}:${String(tRemSecs).padStart(2, "0")}`;
+    const curTask = typeof activeTimerTask !== "undefined" ? activeTimerTask : "";
     panel.innerHTML = `
     <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
-      <h4 class="font-bold text-sm font-display text-white flex items-center gap-2">
-        <i data-lucide="${currentAlarmTab === "alarms" ? "alarm-clock" : "bell-ring"}" class="w-4 h-4 text-cyan-400"></i>
-        <span>${tabAlarmsText} & ${tabRemindersText}</span>
-      </h4>
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-300">
+          <i data-lucide="${currentAlarmTab === "alarms" ? "alarm-clock" : "timer"}" class="w-4 h-4 text-cyan-400"></i>
+        </div>
+        <div>
+          <h4 class="font-bold text-xs font-display text-white">Wecker & Timer Hub</h4>
+          <div class="text-[8px] text-gray-400 font-mono">Pr\xE4zise Zeit- & Fokus-Steuerung</div>
+        </div>
+      </div>
       <button onclick="togglePanel('alarm')" class="text-gray-400 hover:text-white text-xs font-bold p-1 cursor-pointer">\u2715</button>
     </div>
 
-    <!-- Segmented Tab Switcher (Wecker vs Reminder) -->
+    <!-- 2 Separate, Funktionale Tabs -->
     <div class="grid grid-cols-2 gap-1.5 p-1 bg-black/60 border border-white/10 rounded-2xl text-xs font-bold mt-1">
       <button onclick="switchAlarmTab('alarms')" class="py-2 px-3 rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5 ${currentAlarmTab === "alarms" ? "bg-cyan-600 text-white shadow-md" : "text-gray-400 hover:text-white"}">
         <i data-lucide="alarm-clock" class="w-3.5 h-3.5 ${currentAlarmTab === "alarms" ? "text-white" : "text-cyan-400"}"></i>
-        <span>\u23F0 ${tabAlarmsText}</span>
+        <span>\u23F0 Wecker</span>
         ${alarmCount > 0 ? `<span class="px-1.5 py-0.2 rounded-full text-[9px] bg-white/20 font-mono">${alarmCount}</span>` : ""}
       </button>
-      <button onclick="switchAlarmTab('reminders')" class="py-2 px-3 rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5 ${currentAlarmTab === "reminders" ? "bg-amber-600 text-white shadow-md" : "text-gray-400 hover:text-white"}">
-        <i data-lucide="bell" class="w-3.5 h-3.5 ${currentAlarmTab === "reminders" ? "text-white" : "text-amber-400"}"></i>
-        <span>\u{1F514} ${tabRemindersText}</span>
-        ${reminderCount > 0 ? `<span class="px-1.5 py-0.2 rounded-full text-[9px] bg-white/20 font-mono">${reminderCount}</span>` : ""}
+      <button onclick="switchAlarmTab('timer')" class="py-2 px-3 rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5 ${currentAlarmTab === "timer" ? "bg-purple-600 text-white shadow-md" : "text-gray-400 hover:text-white"}">
+        <i data-lucide="timer" class="w-3.5 h-3.5 ${currentAlarmTab === "timer" ? "text-white" : "text-purple-400"}"></i>
+        <span>\u23F1\uFE0F Fokus-Timer</span>
+        ${tRunning ? `<span class="px-1.5 py-0.2 rounded-full text-[9px] bg-emerald-400 text-black font-mono font-bold animate-pulse">L\xC4UFT</span>` : ""}
       </button>
     </div>
 
-    <!-- Tab 1: WECKER (Feste Uhrzeiten) -->
+    <!-- TAB 1: WECKER & ERINNERUNGEN -->
     <div id="alarm-subpane-alarms" class="${currentAlarmTab === "alarms" ? "block" : "hidden"} space-y-3 pt-2">
-      <!-- Ehrlicher Hinweis zur Browser-Funktionsweise & Benachrichtigungen -->
+      <!-- Info & Benachrichtigungen -->
       <div class="p-2 bg-cyan-950/20 border border-cyan-500/20 rounded-xl text-[10px] text-cyan-200/90 flex flex-col gap-1.5">
         <div class="flex items-center justify-between">
           <span class="flex items-center gap-1 font-semibold">
             <i data-lucide="info" class="w-3 h-3 text-cyan-400 shrink-0"></i>
-            <span>Aktiv bei ge\xF6ffnetem Tab</span>
+            <span>Akustische Wecksignale</span>
           </span>
           ${notifPerm === "granted" ? `
             <span class="text-emerald-400 font-mono text-[9px] font-bold">\u{1F514} Erlaubt</span>
           ` : hasNotif ? `
-            <button onclick="requestAlarmNotificationPermission()" class="px-2 py-0.5 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-400/30 rounded text-[9px] font-bold cursor-pointer transition">Erlauben</button>
+            <button onclick="requestAlarmNotificationPermission()" class="px-2 py-0.5 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-400/30 rounded text-[9px] font-bold cursor-pointer transition">Benachrichtigung erlauben</button>
           ` : ""}
         </div>
-        <div class="text-[9px] text-gray-400 leading-tight">
-          Spielt einen akustischen Weckton zur gew\xFCnschten Uhrzeit.
+      </div>
+
+      <!-- Neuer Wecker anlegen -->
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-cyan-400">\u23F0 Neuer Wecker</span>
+          <span class="text-[9px] text-gray-400 font-mono">Aktuell: <b class="text-white">${nowStr}</b></span>
+        </div>
+        <div class="flex gap-2 bg-black/40 p-2 rounded-2xl border border-white/5">
+          <input type="time" id="new-alarm-time" value="09:00" class="p-2 bg-[#12121c] border border-white/10 rounded-xl text-xs text-white outline-none focus:border-cyan-500 font-semibold cursor-pointer" />
+          <input type="text" id="new-alarm-label" placeholder="Bezeichnung (z.B. Aufstehen, Meeting)..." class="flex-1 p-2 bg-[#12121c] border border-white/10 rounded-xl text-xs text-white outline-none focus:border-cyan-500 font-semibold placeholder:text-gray-500" />
+          <button onclick="handleAddAlarm()" class="px-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center shadow-sm">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+          </button>
         </div>
       </div>
 
-      <div class="flex items-center justify-between">
-        <span class="text-[10px] font-bold uppercase tracking-wider text-cyan-400">\u23F0 Neuer Wecker</span>
-        <span class="text-[9px] text-gray-400 font-mono">Uhrzeit: <b class="text-white">${nowStr}</b></span>
-      </div>
-      <div class="flex gap-2 bg-black/40 p-2 rounded-2xl border border-white/5">
-        <input type="time" id="new-alarm-time" value="09:00" class="p-2 bg-[#12121c] border border-white/10 rounded-xl text-xs text-white outline-none focus:border-cyan-500 font-semibold cursor-pointer" />
-        <input type="text" id="new-alarm-label" placeholder="Bezeichnung (z.B. Fokus)..." class="flex-1 p-2 bg-[#12121c] border border-white/10 rounded-xl text-xs text-white outline-none focus:border-cyan-500 font-semibold placeholder:text-gray-500" />
-        <button onclick="handleAddAlarm()" class="px-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center shadow-sm">
-          <i data-lucide="plus" class="w-4 h-4"></i>
-        </button>
-      </div>
-
-      <div class="space-y-1.5 pt-1 max-h-[260px] overflow-y-auto pr-1">
+      <!-- Wecker-Liste -->
+      <div class="space-y-1.5 max-h-[160px] overflow-y-auto pr-1">
         ${!alarmState.alarms || alarmState.alarms.length === 0 ? `
-          <div class="text-center py-6 text-gray-500 text-xs font-medium">Keine Wecker gestellt</div>
+          <div class="text-center py-4 text-gray-500 text-xs font-medium">Keine Wecker gestellt</div>
         ` : (alarmState.alarms || []).map((a) => `
-          <div class="flex items-center justify-between p-2.5 bg-white/[0.02] border border-white/5 rounded-xl hover:border-cyan-500/30 transition">
+          <div class="flex items-center justify-between p-2 bg-white/[0.02] border border-white/5 rounded-xl hover:border-cyan-500/30 transition">
             <div class="flex items-center gap-2.5">
               <input type="checkbox" ${a.active ? "checked" : ""} onchange="handleToggleAlarm('${a.id}')" class="w-4 h-4 accent-cyan-500 cursor-pointer rounded" />
               <div>
@@ -8771,51 +8782,111 @@ ${listStr}`;
           </div>
         `).join("")}
       </div>
+
+      <!-- Schnelle Reminder / Countdown-Erinnerung -->
+      <div class="pt-2 border-t border-white/10 space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400">\u{1F514} Schnelle Erinnerung</span>
+          <span class="text-[9px] text-gray-400">Timer-Check-In</span>
+        </div>
+        <div class="flex gap-1.5 bg-black/40 p-1.5 rounded-2xl border border-white/5">
+          <input type="text" id="new-reminder-text" placeholder="Erinnerung (z.B. Wasser trinken \u{1F4A7})..." class="flex-1 p-1.5 bg-[#12121c] border border-white/10 rounded-xl text-xs text-white outline-none focus:border-amber-500 font-semibold placeholder:text-gray-500" />
+          <select id="new-reminder-mins" class="p-1.5 bg-[#12121c] border border-white/10 rounded-xl text-xs text-amber-300 font-bold outline-none cursor-pointer">
+            <option value="5">in 5m</option>
+            <option value="10" selected>in 10m</option>
+            <option value="15">in 15m</option>
+            <option value="20">in 20m</option>
+            <option value="30">in 30m</option>
+            <option value="45">in 45m</option>
+            <option value="60">in 60m</option>
+          </select>
+          <button onclick="handleAddReminder()" class="px-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center shadow-sm">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+
+        <div class="space-y-1 max-h-[120px] overflow-y-auto pr-1">
+          ${!alarmState.reminders || alarmState.reminders.length === 0 ? `
+            <div class="text-center py-2 text-gray-500 text-[10px]">Keine schnellen Erinnerungen aktiv</div>
+          ` : (alarmState.reminders || []).map((r) => {
+      const leftMin = Math.max(0, Math.round((r.time - Date.now()) / 6e4));
+      return `
+              <div class="flex items-center justify-between p-1.5 px-2 bg-white/[0.02] border border-white/5 rounded-lg ${r.completed ? "opacity-40 line-through" : ""}">
+                <div class="flex items-center gap-2 min-w-0">
+                  <input type="checkbox" ${r.completed ? "checked" : ""} onchange="handleToggleReminder('${r.id}')" class="w-3.5 h-3.5 accent-amber-500 cursor-pointer rounded" />
+                  <span class="text-xs font-semibold text-gray-200 truncate">${safeEscape(r.text)}</span>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <span class="text-[9px] font-mono text-amber-400 font-bold">${r.completed ? "Erledigt" : `${leftMin}m`}</span>
+                  <button onclick="handleDeleteReminder('${r.id}')" class="text-gray-500 hover:text-rose-400 p-0.5 transition cursor-pointer">
+                    <i data-lucide="trash-2" class="w-3 h-3"></i>
+                  </button>
+                </div>
+              </div>
+            `;
+    }).join("")}
+        </div>
+      </div>
     </div>
 
-    <!-- Tab 2: REMINDER (Timer / Countdown) -->
-    <div id="alarm-subpane-reminders" class="${currentAlarmTab === "reminders" ? "block" : "hidden"} space-y-3 pt-2">
-      <div class="flex items-center justify-between">
-        <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400">\u{1F514} Neue Erinnerung</span>
-        <span class="text-[9px] text-gray-400">Countdown-Timer</span>
+    <!-- TAB 2: SMART FOKUS-TIMER (ANGENEHM & FUNKTIONELL) -->
+    <div id="alarm-subpane-timer" class="${currentAlarmTab === "timer" ? "block" : "hidden"} space-y-3.5 pt-2">
+      
+      <!-- Zentrales Gro\xDFes Display mit animierter Fokus-Aura -->
+      <div class="relative p-5 rounded-3xl bg-gradient-to-b from-purple-950/30 to-black/60 border border-purple-500/30 flex flex-col items-center justify-center text-center shadow-inner overflow-hidden">
+        ${tRunning ? `<div class="absolute inset-0 bg-purple-500/10 animate-pulse pointer-events-none"></div>` : ""}
+        
+        <div class="text-[9px] font-mono uppercase tracking-widest text-purple-300 font-bold mb-1">
+          ${tRunning ? "\u26A1 FOKUS AKTIV" : "\u23F8\uFE0F BEREIT F\xDCR DIE N\xC4CHSTE SESSION"}
+        </div>
+        
+        <div id="alarm-timer-display" class="text-4xl sm:text-5xl font-mono font-black text-white tracking-widest my-1 drop-shadow-md">
+          ${timerFormatted}
+        </div>
+
+        ${curTask ? `
+          <div class="mt-2 px-3 py-1 bg-purple-500/20 border border-purple-500/40 rounded-full text-purple-200 text-[11px] font-semibold flex items-center gap-1.5 max-w-full truncate">
+            <i data-lucide="target" class="w-3.5 h-3.5 text-purple-400 shrink-0"></i>
+            <span class="truncate">${safeEscape(curTask)}</span>
+          </div>
+        ` : `
+          <div class="text-[10px] text-gray-400 mt-1">W\xE4hle eine Dauer & starte deinen Flow</div>
+        `}
       </div>
-      <div class="flex gap-2 bg-black/40 p-2 rounded-2xl border border-white/5">
-        <input type="text" id="new-reminder-text" placeholder="Erinnerung (z.B. Wasser trinken)..." class="flex-1 p-2 bg-[#12121c] border border-white/10 rounded-xl text-xs text-white outline-none focus:border-amber-500 font-semibold placeholder:text-gray-500" />
-        <select id="new-reminder-mins" class="p-2 bg-[#12121c] border border-white/10 rounded-xl text-xs text-amber-300 font-bold outline-none cursor-pointer">
-          <option value="5">in 5m</option>
-          <option value="10" selected>in 10m</option>
-          <option value="15">in 15m</option>
-          <option value="20">in 20m</option>
-          <option value="30">in 30m</option>
-          <option value="45">in 45m</option>
-          <option value="60">in 60m</option>
-        </select>
-        <button onclick="handleAddReminder()" class="px-3 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center shadow-sm">
-          <i data-lucide="plus" class="w-4 h-4"></i>
+
+      <!-- Presets (Schnell-Auswahl) -->
+      <div class="space-y-1">
+        <div class="flex items-center justify-between text-[10px] font-mono text-gray-400 font-bold uppercase">
+          <span>Dauer w\xE4hlen</span>
+          <span>Presets</span>
+        </div>
+        <div class="grid grid-cols-4 gap-1.5">
+          <button onclick="if(typeof setTimerPreset==='function') setTimerPreset(15); renderAlarmPanel();" class="py-2 rounded-xl bg-white/5 hover:bg-purple-500/20 border border-white/10 hover:border-purple-500/40 text-gray-200 text-xs font-mono font-bold transition cursor-pointer text-center">15m</button>
+          <button onclick="if(typeof setTimerPreset==='function') setTimerPreset(25); renderAlarmPanel();" class="py-2 rounded-xl bg-purple-500/20 border border-purple-500/40 text-purple-200 text-xs font-mono font-bold transition cursor-pointer text-center shadow-sm">25m \u{1F345}</button>
+          <button onclick="if(typeof setTimerPreset==='function') setTimerPreset(45); renderAlarmPanel();" class="py-2 rounded-xl bg-white/5 hover:bg-purple-500/20 border border-white/10 hover:border-purple-500/40 text-gray-200 text-xs font-mono font-bold transition cursor-pointer text-center">45m</button>
+          <button onclick="if(typeof setTimerPreset==='function') setTimerPreset(60); renderAlarmPanel();" class="py-2 rounded-xl bg-white/5 hover:bg-purple-500/20 border border-white/10 hover:border-purple-500/40 text-gray-200 text-xs font-mono font-bold transition cursor-pointer text-center">60m</button>
+        </div>
+      </div>
+
+      <!-- Steuerungs-Buttons (Start / Pause / Reset) -->
+      <div class="flex gap-2 pt-1">
+        ${tRunning ? `
+          <button onclick="if(typeof pauseTimer==='function') pauseTimer(); renderAlarmPanel();" class="flex-1 py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-2xl transition cursor-pointer flex items-center justify-center gap-2 text-xs shadow-md">
+            <i data-lucide="pause" class="w-4 h-4"></i>
+            <span>Pausieren</span>
+          </button>
+        ` : `
+          <button onclick="if(typeof startTimer==='function') startTimer(); renderAlarmPanel();" class="flex-1 py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-2xl transition cursor-pointer flex items-center justify-center gap-2 text-xs shadow-md">
+            <i data-lucide="play" class="w-4 h-4"></i>
+            <span>Timer starten</span>
+          </button>
+        `}
+        <button onclick="if(typeof resetTimer==='function') resetTimer(); renderAlarmPanel();" class="px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white font-bold rounded-2xl transition cursor-pointer flex items-center justify-center gap-1.5 text-xs">
+          <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          <span>Reset</span>
         </button>
       </div>
 
-      <div class="space-y-1.5 pt-1 max-h-[260px] overflow-y-auto pr-1">
-        ${!alarmState.reminders || alarmState.reminders.length === 0 ? `
-          <div class="text-center py-6 text-gray-500 text-xs font-medium">Keine Erinnerungen aktiv</div>
-        ` : (alarmState.reminders || []).map((r) => {
-      const leftMin = Math.max(0, Math.round((r.time - Date.now()) / 6e4));
-      return `
-            <div class="flex items-center justify-between p-2.5 bg-white/[0.02] border border-white/5 rounded-xl ${r.completed ? "opacity-40 line-through" : ""}">
-              <div class="flex items-center gap-2.5 min-w-0">
-                <input type="checkbox" ${r.completed ? "checked" : ""} onchange="handleToggleReminder('${r.id}')" class="w-4 h-4 accent-amber-500 cursor-pointer rounded" />
-                <span class="text-xs font-semibold text-gray-200 truncate">${safeEscape(r.text)}</span>
-              </div>
-              <div class="flex items-center gap-2 shrink-0">
-                <span class="text-[9px] font-mono text-amber-400 font-bold">${r.completed ? "Erledigt" : `${leftMin}m`}</span>
-                <button onclick="handleDeleteReminder('${r.id}')" class="text-gray-500 hover:text-rose-400 p-1 transition cursor-pointer" title="L\xF6schen">
-                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                </button>
-              </div>
-            </div>
-          `;
-    }).join("")}
-      </div>
     </div>
   `;
     renderLucideIcons();
@@ -10797,15 +10868,15 @@ ${listStr}`;
   }
   window.switchAudioTab = switchAudioTab;
   function switchDailyTab(tabName) {
-    const tabs = ["shopping", "cooking"];
+    const tabs = ["shopping", "cooking", "impulse", "sport"];
     tabs.forEach((t3) => {
       const btn = document.getElementById(`daily-tab-btn-${t3}`);
       const pane = document.getElementById(`daily-pane-${t3}`);
       if (btn) {
         if (t3 === tabName) {
-          btn.className = "flex-1 py-1.5 rounded-xl text-white bg-emerald-600/30 border border-emerald-500/50 transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-bold shadow-sm";
+          btn.className = "flex-1 py-1.5 rounded-xl text-white bg-emerald-600/30 border border-emerald-500/50 transition flex items-center justify-center gap-1 cursor-pointer text-[10px] sm:text-[11px] font-bold shadow-sm";
         } else {
-          btn.className = "flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-medium";
+          btn.className = "flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1 cursor-pointer text-[10px] sm:text-[11px] font-medium";
         }
       }
       if (pane) {
@@ -10818,6 +10889,10 @@ ${listStr}`;
     });
     if (tabName === "cooking" && typeof renderCookingPanel === "function") {
       renderCookingPanel(true);
+    }
+    if (tabName === "impulse") {
+      if (typeof suggestBoostActivity2 === "function") suggestBoostActivity2();
+      if (typeof suggestInspirationQuote2 === "function") suggestInspirationQuote2();
     }
     if (typeof lucide !== "undefined") lucide.createIcons();
   }
@@ -10870,17 +10945,18 @@ ${listStr}`;
         break;
       case "b":
         e.preventDefault();
-        togglePanel("impulse");
-        switchImpulseTab("spark");
+        togglePanel("daily");
+        switchDailyTab("impulse");
         break;
       case "i":
         e.preventDefault();
-        togglePanel("impulse");
-        switchImpulseTab("inspire");
+        togglePanel("daily");
+        switchDailyTab("impulse");
         break;
       case "o":
         e.preventDefault();
-        openSportModal();
+        togglePanel("daily");
+        switchDailyTab("sport");
         break;
       case "h":
         e.preventDefault();

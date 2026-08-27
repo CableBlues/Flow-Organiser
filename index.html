@@ -1134,40 +1134,48 @@
 
           <div class="h-8 w-[1px] bg-white/10 mx-1 align-middle self-center"></div>
 
-          <!-- FACH 2: Alltag & Utility -->
+          <!-- FACH 2: Alltag & Vitalität (Einkauf, Kochen, Schwung, Sport) -->
           <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
-            <!-- Alltags-Hub (Einkauf & Kochen) -->
+            <!-- Alltags- & Vitalitäts-Hub -->
             <div class="relative group cursor-pointer mac-dock-item-wrapper">
-              <button onclick="togglePanel('daily')" class="mac-dock-btn balloon-shopping h-12 w-12 md:h-14 md:w-14 rounded-2xl text-emerald-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Alltag & Ernährung: Einkaufsliste & Rezepte/Kochen">
-                <i data-lucide="shopping-bag" class="w-5 h-5 text-emerald-400"></i>
+              <button onclick="togglePanel('daily')" class="mac-dock-btn balloon-shopping h-12 w-12 md:h-14 md:w-14 rounded-2xl text-emerald-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Alltag & Vitalität: Einkaufsliste, Rezepte, Schwung-Impulse & Sport">
+                <i data-lucide="leaf" class="w-5 h-5 text-emerald-400"></i>
                 <span class="dock-label" data-i18n="dock_daily">Alltag</span>
                 <span id="shop-badge-count" class="hidden px-1 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[8px] font-bold absolute top-1 right-1">0</span>
               </button>
               
-              <div id="panel-daily" class="dock-popover-panel hidden absolute left-1/2 -translate-x-1/2 w-[340px] sm:w-[380px] bg-[#111116]/98 border border-emerald-500/40 p-4 rounded-3xl shadow-2xl backdrop-blur-xl flex flex-col gap-3 text-left">
+              <div id="panel-daily" class="dock-popover-panel hidden absolute left-1/2 -translate-x-1/2 w-[340px] sm:w-[400px] bg-[#111116]/98 border border-emerald-500/40 p-4 rounded-3xl shadow-2xl backdrop-blur-xl flex flex-col gap-3 text-left">
                 <!-- Header mit Titel & Close -->
                 <div class="flex items-center justify-between border-b border-white/10 pb-2">
                   <div class="flex items-center gap-2">
                     <div class="w-7 h-7 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-300">
-                      <i data-lucide="shopping-bag" class="w-4 h-4 text-emerald-400"></i>
+                      <i data-lucide="sparkles" class="w-4 h-4 text-emerald-400"></i>
                     </div>
                     <div>
-                      <h4 class="font-bold text-xs font-display text-white">Alltags-Center</h4>
-                      <div class="text-[8px] text-gray-400 font-mono">Einkaufsliste & Kochen</div>
+                      <h4 class="font-bold text-xs font-display text-white">Alltag & Vitalität</h4>
+                      <div class="text-[8px] text-gray-400 font-mono">Einkauf, Kochen, Schwung & Sport</div>
                     </div>
                   </div>
                   <button onclick="togglePanel('daily')" class="text-gray-400 hover:text-white text-xs font-bold p-1 cursor-pointer">✕</button>
                 </div>
 
-                <!-- 2 Tab Switchers -->
-                <div class="flex bg-black/60 p-1 rounded-2xl border border-white/10 text-xs font-bold gap-1 shadow-inner">
-                  <button id="daily-tab-btn-shopping" onclick="switchDailyTab('shopping')" class="flex-1 py-1.5 rounded-xl text-white bg-emerald-600/30 border border-emerald-500/50 transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-bold shadow-sm">
+                <!-- 4 Tab Switchers (Einkauf, Kochen, Schwung, Sport) -->
+                <div class="grid grid-cols-4 bg-black/60 p-1 rounded-2xl border border-white/10 text-xs font-bold gap-1 shadow-inner">
+                  <button id="daily-tab-btn-shopping" onclick="switchDailyTab('shopping')" class="py-1.5 rounded-xl text-white bg-emerald-600/30 border border-emerald-500/50 transition flex items-center justify-center gap-1 cursor-pointer text-[10px] sm:text-[11px] font-bold shadow-sm">
                     <i data-lucide="shopping-basket" class="w-3.5 h-3.5 text-emerald-400"></i>
                     <span>Einkauf</span>
                   </button>
-                  <button id="daily-tab-btn-cooking" onclick="switchDailyTab('cooking')" class="flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-medium">
+                  <button id="daily-tab-btn-cooking" onclick="switchDailyTab('cooking')" class="py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1 cursor-pointer text-[10px] sm:text-[11px] font-medium">
                     <i data-lucide="cooking-pot" class="w-3.5 h-3.5 text-orange-400"></i>
                     <span>Kochen</span>
+                  </button>
+                  <button id="daily-tab-btn-impulse" onclick="switchDailyTab('impulse')" class="py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1 cursor-pointer text-[10px] sm:text-[11px] font-medium">
+                    <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
+                    <span>Schwung</span>
+                  </button>
+                  <button id="daily-tab-btn-sport" onclick="switchDailyTab('sport')" class="py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1 cursor-pointer text-[10px] sm:text-[11px] font-medium">
+                    <i data-lucide="dumbbell" class="w-3.5 h-3.5 text-sky-400"></i>
+                    <span>Sport</span>
                   </button>
                 </div>
 
@@ -1219,76 +1227,9 @@
                 <div id="daily-pane-cooking" class="hidden space-y-2.5">
                   <div id="panel-cooking" class="space-y-3"></div>
                 </div>
-              </div>
-            </div>
 
-            <!-- Wecker & Reminder -->
-            <div class="relative group cursor-pointer mac-dock-item-wrapper">
-              <button onclick="togglePanel('alarm')" class="mac-dock-btn balloon-alarm h-12 w-12 md:h-14 md:w-14 border border-cyan-500/30 rounded-2xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Wecker & Reminder: Verwalte Alarme und zeitbasierte Erinnerungen mit Alarm-Ton">
-                <i data-lucide="alarm-clock" class="w-5 h-5 text-cyan-400"></i>
-                <span class="dock-label" data-i18n="dock_alarm">Wecker</span>
-                <span id="alarm-active-badge" class="hidden w-2 h-2 rounded-full bg-cyan-400 animate-ping absolute top-1 right-1"></span>
-              </button>
-
-              <div id="panel-alarm" class="dock-popover-panel hidden absolute left-1/2 -translate-x-1/2 w-[340px] bg-[#111116]/95 border border-cyan-500/40 p-4 rounded-3xl shadow-2xl backdrop-blur-md flex flex-col gap-3 text-left">
-                <div class="flex items-center justify-between border-b border-white/10 pb-2">
-                  <h4 class="font-bold text-sm font-display text-white flex items-center gap-1.5">
-                    <i data-lucide="alarm-clock" class="w-4 h-4 text-cyan-400"></i>
-                    <span data-i18n="alarm">Wecker & Reminder</span>
-                  </h4>
-                  <button onclick="togglePanel('alarm')" class="text-gray-400 hover:text-white text-xs font-bold p-1 cursor-pointer">✕</button>
-                </div>
-                <!-- Wecker Panel Content -->
-                <div id="alarm-panel-content" class="space-y-3"></div>
-              </div>
-            </div>
-
-          </div>
-
-          <div class="h-8 w-[1px] bg-white/10 mx-1 align-middle self-center"></div>
-
-          <!-- FACH 3: Impulse, Fokus & Aktivierung -->
-          <div class="flex items-center gap-1.5 px-1 bg-transparent relative">
-            <!-- Impuls & Klarheit Hub (Funke, Inspiration, Klarheit) -->
-            <div class="relative group cursor-pointer mac-dock-item-wrapper">
-              <button onclick="togglePanel('impulse');" class="mac-dock-btn balloon-boost h-12 w-12 md:h-14 md:w-14 rounded-2xl text-amber-300 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Impuls & Klarheit: 30s-Schwung, Gedanken-Impulse & Impulskontrolle">
-                <i data-lucide="zap" class="w-5 h-5 text-amber-400"></i>
-                <span class="dock-label" data-i18n="dock_impulse">Impuls</span>
-              </button>
-              
-              <div id="panel-impulse" class="dock-popover-panel hidden absolute bottom-[calc(100%+10px)] right-0 w-[320px] sm:w-[380px] bg-[#111116]/98 border border-amber-500/40 p-4 rounded-3xl shadow-2xl backdrop-blur-xl flex flex-col gap-3 text-left">
-                <!-- Header mit Titel & Close -->
-                <div class="flex items-center justify-between border-b border-white/10 pb-2">
-                  <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-300">
-                      <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
-                    </div>
-                    <div>
-                      <h4 class="font-bold text-xs font-display text-white">Impuls & Klarheit</h4>
-                      <div class="text-[8px] text-gray-400 font-mono">Fokus, Momentum & Ruhe</div>
-                    </div>
-                  </div>
-                  <button onclick="togglePanel('impulse')" class="text-gray-400 hover:text-white text-xs font-bold p-1 cursor-pointer">✕</button>
-                </div>
-
-                <!-- 3 Tab Switchers -->
-                <div class="flex bg-black/60 p-1 rounded-2xl border border-white/10 text-xs font-bold gap-1 shadow-inner">
-                  <button id="impulse-tab-btn-spark" onclick="switchImpulseTab('spark')" class="flex-1 py-1.5 rounded-xl text-white bg-amber-500/30 border border-amber-500/50 transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-bold shadow-sm">
-                    <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
-                    <span>Schwung</span>
-                  </button>
-                  <button id="impulse-tab-btn-inspire" onclick="switchImpulseTab('inspire')" class="flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-medium">
-                    <i data-lucide="sparkles" class="w-3.5 h-3.5 text-violet-400"></i>
-                    <span>Inspiration</span>
-                  </button>
-                  <button id="impulse-tab-btn-clarity" onclick="switchImpulseTab('clarity')" class="flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-medium">
-                    <i data-lucide="anchor" class="w-3.5 h-3.5 text-teal-400"></i>
-                    <span>Klarheit</span>
-                  </button>
-                </div>
-
-                <!-- TAB 1: 30s SCHWUNG-FUNKE -->
-                <div id="impulse-pane-spark" class="space-y-2.5">
+                <!-- TAB 3: SCHWUNG & IMPULSE -->
+                <div id="daily-pane-impulse" class="hidden space-y-2.5">
                   <p class="text-[10px] text-gray-400 leading-normal" data-i18n="boost_desc">
                     Fühlst du dich blockiert? Gönn dir eine winzige, 30-sekündige Aktivität, um deinen Fokus neu auszurichten:
                   </p>
@@ -1296,50 +1237,58 @@
                     Klicke unten für einen Vorschlag!
                   </div>
                   <button onclick="suggestBoostActivity()" class="w-full py-2 bg-amber-500 text-black text-xs font-bold rounded-xl hover:opacity-90 transition cursor-pointer shadow-md" data-i18n="boost_new">Neuer Vorschlag 🔄</button>
-                </div>
-
-                <!-- TAB 2: INSPIRATION -->
-                <div id="impulse-pane-inspire" class="hidden space-y-2.5">
-                  <p class="text-[10px] text-gray-400 leading-normal">
-                    Ein kleiner Impuls für deinen Geist. Manchmal hilft ein Perspektivenwechsel:
-                  </p>
-                  <div id="inspiration-quote-box" class="p-3 bg-violet-500/10 border border-violet-500/20 rounded-xl text-left text-xs font-semibold text-violet-200 min-h-[64px] flex items-center justify-center italic leading-relaxed">
-                    Klicke unten für einen inspirierenden Impuls!
+                  
+                  <div class="pt-2 border-t border-white/10 flex gap-2">
+                    <button onclick="togglePanel('daily'); openClarityModal();" class="flex-1 p-2 bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/30 rounded-xl text-left transition text-teal-200 flex items-center gap-1.5 cursor-pointer text-xs font-bold">
+                      <i data-lucide="anchor" class="w-3.5 h-3.5 text-teal-400"></i>
+                      <span>Klarheits-Hub</span>
+                    </button>
+                    <button onclick="togglePanel('daily'); openSafeSpaceModal('anchor');" class="flex-1 p-2 bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/30 rounded-xl text-left transition text-teal-200 flex items-center gap-1.5 cursor-pointer text-xs font-bold">
+                      <i data-lucide="shield" class="w-3.5 h-3.5 text-teal-400"></i>
+                      <span>5-4-3-2-1 Erdung</span>
+                    </button>
                   </div>
-                  <button onclick="suggestInspirationQuote()" class="w-full py-2 bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold rounded-xl transition cursor-pointer flex items-center justify-center gap-1 shadow-md">
-                    <span>Nächster Impuls</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
-                  </button>
                 </div>
 
-                <!-- TAB 3: KLARHEIT & IMPULSKONTROLLE -->
-                <div id="impulse-pane-clarity" class="hidden space-y-2.5">
+                <!-- TAB 4: SPORT & BEWEGUNG -->
+                <div id="daily-pane-sport" class="hidden space-y-2.5">
                   <p class="text-[10px] text-gray-400 leading-normal">
-                    Stoppe Reizüberflutung, durchbrich Heißhunger oder Drang und zentriere dich:
+                    Wohltuende Bewegung & sanfte Aktivierung für jeden Energiezustand:
                   </p>
                   <div class="grid grid-cols-2 gap-2">
-                    <button onclick="togglePanel('impulse'); openClarityModal();" class="p-2.5 bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/30 rounded-xl text-left transition text-teal-200 flex flex-col gap-1 cursor-pointer">
+                    <button onclick="togglePanel('daily'); openSportModal();" class="p-2.5 bg-orange-500/15 hover:bg-orange-500/25 border border-orange-500/30 rounded-xl text-left transition text-orange-200 flex flex-col gap-1 cursor-pointer">
                       <div class="flex items-center gap-1 font-bold text-xs text-white">
-                        <i data-lucide="anchor" class="w-3.5 h-3.5 text-teal-400"></i> Klarheits-Hub
+                        <i data-lucide="dumbbell" class="w-3.5 h-3.5 text-orange-400"></i> Sport-Aktivierung
                       </div>
-                      <span class="text-[9px] text-gray-400">Impulskontrolle & Tracker</span>
+                      <span class="text-[9px] text-gray-400">Mikrobewegung & Workouts</span>
                     </button>
-                    <button onclick="togglePanel('impulse'); openSafeSpaceModal('anchor');" class="p-2.5 bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/30 rounded-xl text-left transition text-teal-200 flex flex-col gap-1 cursor-pointer">
+                    <button onclick="togglePanel('daily'); openSportModal(); if(typeof triggerRandomExercise==='function') triggerRandomExercise();" class="p-2.5 bg-orange-500/15 hover:bg-orange-500/25 border border-orange-500/30 rounded-xl text-left transition text-orange-200 flex flex-col gap-1 cursor-pointer">
                       <div class="flex items-center gap-1 font-bold text-xs text-white">
-                        <i data-lucide="shield" class="w-3.5 h-3.5 text-teal-400"></i> 5-4-3-2-1
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5 text-orange-400"></i> Schnelle Übung
                       </div>
-                      <span class="text-[9px] text-gray-400">Sofortige Erdungs-Übung</span>
+                      <span class="text-[9px] text-gray-400">60s Sofort-Aktivierung</span>
                     </button>
                   </div>
                 </div>
+
               </div>
             </div>
+          </div>
 
-            <!-- Sport -->
-            <div class="mac-dock-item-wrapper">
-              <button id="sport-trigger-btn" onclick="openSportModal()" class="mac-dock-btn balloon-sport h-12 w-12 md:h-14 md:w-14 rounded-2xl text-orange-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Sport & Aktivierung: Wohltuende Mikrobewegung für jeden Energiezustand">
-                <i data-lucide="dumbbell" class="w-5 h-5 text-orange-400 animate-pulse"></i>
-                <span class="dock-label" data-i18n="dock_sport">Sport</span>
+          <div class="h-8 w-[1px] bg-white/10 mx-1 align-middle self-center"></div>
+
+          <!-- FACH 3: Wecker & Fokus-Timer Hub (SEPARAT) -->
+          <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
+            <div class="relative group cursor-pointer mac-dock-item-wrapper">
+              <button onclick="togglePanel('alarm')" class="mac-dock-btn balloon-alarm h-12 w-12 md:h-14 md:w-14 border border-cyan-500/30 rounded-2xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Wecker & Fokus-Timer: Alarme, zeitbasierte Erinnerungen & intelligenter Timer">
+                <i data-lucide="alarm-clock" class="w-5 h-5 text-cyan-400"></i>
+                <span class="dock-label" data-i18n="dock_alarm">Wecker & Timer</span>
+                <span id="alarm-active-badge" class="hidden w-2 h-2 rounded-full bg-cyan-400 animate-ping absolute top-1 right-1"></span>
               </button>
+
+              <div id="panel-alarm" class="dock-popover-panel hidden absolute right-0 w-[340px] sm:w-[380px] bg-[#111116]/95 border border-cyan-500/40 p-4 rounded-3xl shadow-2xl backdrop-blur-md flex flex-col gap-3 text-left">
+                <!-- Dynamisch gerendert durch renderAlarmPanel() -->
+              </div>
             </div>
           </div>
 

@@ -134,15 +134,15 @@ function switchAudioTab(tabName) {
 window.switchAudioTab = switchAudioTab;
 
 function switchDailyTab(tabName) {
-  const tabs = ['shopping', 'cooking'];
+  const tabs = ['shopping', 'cooking', 'impulse', 'sport'];
   tabs.forEach(t => {
     const btn = document.getElementById(`daily-tab-btn-${t}`);
     const pane = document.getElementById(`daily-pane-${t}`);
     if (btn) {
       if (t === tabName) {
-        btn.className = 'flex-1 py-1.5 rounded-xl text-white bg-emerald-600/30 border border-emerald-500/50 transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-bold shadow-sm';
+        btn.className = 'flex-1 py-1.5 rounded-xl text-white bg-emerald-600/30 border border-emerald-500/50 transition flex items-center justify-center gap-1 cursor-pointer text-[10px] sm:text-[11px] font-bold shadow-sm';
       } else {
-        btn.className = 'flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-medium';
+        btn.className = 'flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1 cursor-pointer text-[10px] sm:text-[11px] font-medium';
       }
     }
     if (pane) {
@@ -155,6 +155,10 @@ function switchDailyTab(tabName) {
   });
   if (tabName === 'cooking' && typeof renderCookingPanel === 'function') {
     renderCookingPanel(true);
+  }
+  if (tabName === 'impulse') {
+    if (typeof suggestBoostActivity === 'function') suggestBoostActivity();
+    if (typeof suggestInspirationQuote === 'function') suggestInspirationQuote();
   }
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }
@@ -224,17 +228,18 @@ document.addEventListener('keydown', (e) => {
       break;
     case 'b':
       e.preventDefault();
-      togglePanel('impulse');
-      switchImpulseTab('spark');
+      togglePanel('daily');
+      switchDailyTab('impulse');
       break;
     case 'i':
       e.preventDefault();
-      togglePanel('impulse');
-      switchImpulseTab('inspire');
+      togglePanel('daily');
+      switchDailyTab('impulse');
       break;
     case 'o':
       e.preventDefault();
-      openSportModal();
+      togglePanel('daily');
+      switchDailyTab('sport');
       break;
     case 'h':
       e.preventDefault();
