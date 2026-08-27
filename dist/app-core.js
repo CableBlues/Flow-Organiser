@@ -153,10 +153,6 @@ document.addEventListener('keydown', (e) => {
       e.preventDefault();
       togglePanel('inspiration');
       break;
-    case 'c':
-      e.preventDefault();
-      openCompassModal();
-      break;
     case 'o':
       e.preventDefault();
       openSportModal();
@@ -177,12 +173,6 @@ document.addEventListener('keydown', (e) => {
       e.preventDefault();
       if (typeof toggleGameMode === 'function') toggleGameMode();
       break;
-    case 'k':
-      if (e.ctrlKey || e.metaKey) {
-        e.preventDefault();
-        openCommandPalette();
-      }
-      break;
     case 'escape':
       e.preventDefault();
       closeAllPanelsAndModals();
@@ -194,7 +184,6 @@ function closeAllPanelsAndModals() {
   if (typeof closeHelperModal === 'function') closeHelperModal();
   if (typeof closeSportModal === 'function') closeSportModal();
   if (typeof closeSafeSpaceModal === 'function') closeSafeSpaceModal();
-  if (typeof closeCompassModal === 'function') closeCompassModal();
   if (typeof closeScriptingModal === 'function') closeScriptingModal();
   if (typeof closeCustomItemModal === 'function') closeCustomItemModal();
   if (typeof closePrivacyModal === 'function') closePrivacyModal();
