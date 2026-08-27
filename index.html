@@ -1478,7 +1478,7 @@
         <!-- 2. Beat Sequencer & BPM -->
         <div class="bg-[#141420]/90 border border-white/10 p-4 rounded-2xl shadow-xl">
           <h4 class="text-xs font-bold text-pink-300 mb-2.5 flex items-center justify-between">
-            <span class="flex items-center gap-1.5"><span>🥁</span> <span>Synthesizer Beats</span></span>
+            <span class="flex items-center gap-1.5"><span>🥁</span> <span data-i18n="mobile_audio_synth_title">Synthesizer Beats</span></span>
             <span id="mobile-bpm-val" class="font-mono text-xs text-pink-400 font-bold">120 BPM</span>
           </h4>
           <div class="grid grid-cols-2 gap-2 mb-3">
@@ -1497,8 +1497,8 @@
     <div id="mobile-view-tools" class="mobile-view-pane select-none">
       <div class="p-4 max-w-md mx-auto space-y-3">
         
-        <div class="text-xs font-black uppercase tracking-wider text-gray-400 mb-1">
-          🛠️ Lifestyle & Produktivität
+        <div class="text-xs font-black uppercase tracking-wider text-gray-400 mb-1" data-i18n="mobile_tools_section">
+          🛠️ Lifestyle & Productivity
         </div>
 
         <div class="grid grid-cols-2 gap-3">
@@ -1507,11 +1507,11 @@
           <div onclick="openP2PSyncModal()" class="p-4 rounded-2xl bg-gradient-to-br from-emerald-950/50 to-[#12121a] border border-emerald-500/40 shadow-lg cursor-pointer active:scale-95 transition flex flex-col justify-between h-28">
             <div class="flex items-center justify-between">
               <span class="text-2xl">📱</span>
-              <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">1-Klick</span>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold" data-i18n="mobile_tools_sync_badge">1-Click</span>
             </div>
             <div>
-              <h4 class="text-xs font-bold text-white leading-tight">Live-Sync & QR</h4>
-              <p class="text-[10px] text-emerald-400 mt-0.5">PC ↔ Smartphone</p>
+              <h4 class="text-xs font-bold text-white leading-tight" data-i18n="mobile_tools_sync_title">Live-Sync & QR</h4>
+              <p class="text-[10px] text-emerald-400 mt-0.5" data-i18n="mobile_tools_sync_sub">PC ↔ Phone</p>
             </div>
           </div>
 
@@ -1519,11 +1519,11 @@
           <div onclick="openMobileQuickMenu()" class="p-4 rounded-2xl bg-gradient-to-br from-purple-950/50 to-[#12121a] border border-purple-500/40 shadow-lg cursor-pointer active:scale-95 transition flex flex-col justify-between h-28">
             <div class="flex items-center justify-between">
               <span class="text-2xl">⚡</span>
-              <span class="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-bold">Optionen</span>
+              <span class="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-bold" data-i18n="mobile_tools_opt_badge">Options</span>
             </div>
             <div>
-              <h4 class="text-xs font-bold text-white leading-tight">Design & Sprache</h4>
-              <p class="text-[10px] text-purple-300 mt-0.5">Themes & Backup</p>
+              <h4 class="text-xs font-bold text-white leading-tight" data-i18n="mobile_tools_opt_title">Design & Language</h4>
+              <p class="text-[10px] text-purple-300 mt-0.5" data-i18n="mobile_tools_opt_sub">Themes & Backup</p>
             </div>
           </div>
 
@@ -1531,11 +1531,11 @@
           <div onclick="openShoppingModal()" class="p-4 rounded-2xl bg-gradient-to-br from-teal-950/50 to-[#12121a] border border-teal-500/30 shadow-lg cursor-pointer active:scale-95 transition flex flex-col justify-between h-28">
             <div class="flex items-center justify-between">
               <span class="text-2xl">🛒</span>
-              <span class="px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 text-[10px] font-bold">Loot</span>
+              <span class="px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 text-[10px] font-bold" data-i18n="mobile_tools_shop_badge">Loot</span>
             </div>
             <div>
-              <h4 class="text-xs font-bold text-white leading-tight">Einkaufsliste</h4>
-              <p class="text-[10px] text-gray-400 mt-0.5">Kategorien & Mengen</p>
+              <h4 class="text-xs font-bold text-white leading-tight" data-i18n="mobile_tools_shop_title">Shopping List</h4>
+              <p class="text-[10px] text-gray-400 mt-0.5" data-i18n="mobile_tools_shop_sub">Items & Quantities</p>
             </div>
           </div>
 
@@ -1543,11 +1543,11 @@
           <div onclick="openRecipeModal()" class="p-4 rounded-2xl bg-gradient-to-br from-amber-950/50 to-[#12121a] border border-amber-500/30 shadow-lg cursor-pointer active:scale-95 transition flex flex-col justify-between h-28">
             <div class="flex items-center justify-between">
               <span class="text-2xl">🍳</span>
-              <span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold">Kessel</span>
+              <span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold" data-i18n="mobile_tools_cook_badge">Pot</span>
             </div>
             <div>
-              <h4 class="text-xs font-bold text-white leading-tight">Rezepte & Prep</h4>
-              <p class="text-[10px] text-gray-400 mt-0.5">Schritt-für-Schritt</p>
+              <h4 class="text-xs font-bold text-white leading-tight" data-i18n="mobile_tools_cook_title">Smart Cooking</h4>
+              <p class="text-[10px] text-gray-400 mt-0.5" data-i18n="mobile_tools_cook_sub">Step-by-Step</p>
             </div>
           </div>
 
@@ -1555,11 +1555,11 @@
           <div onclick="openSportModal()" class="p-4 rounded-2xl bg-gradient-to-br from-orange-950/50 to-[#12121a] border border-orange-500/30 shadow-lg cursor-pointer active:scale-95 transition flex flex-col justify-between h-28">
             <div class="flex items-center justify-between">
               <span class="text-2xl">🏃</span>
-              <span class="px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold">Aktiv</span>
+              <span class="px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-bold" data-i18n="mobile_tools_sport_badge">Active</span>
             </div>
             <div>
-              <h4 class="text-xs font-bold text-white leading-tight">Bewegungspause</h4>
-              <p class="text-[10px] text-gray-400 mt-0.5">Mikro-Workouts</p>
+              <h4 class="text-xs font-bold text-white leading-tight" data-i18n="mobile_tools_sport_title">Movement Break</h4>
+              <p class="text-[10px] text-gray-400 mt-0.5" data-i18n="mobile_tools_sport_sub">Micro-Workouts</p>
             </div>
           </div>
 
@@ -1567,11 +1567,11 @@
           <div onclick="openAlarmModal()" class="p-4 rounded-2xl bg-gradient-to-br from-pink-950/50 to-[#12121a] border border-pink-500/30 shadow-lg cursor-pointer active:scale-95 transition flex flex-col justify-between h-28">
             <div class="flex items-center justify-between">
               <span class="text-2xl">⏰</span>
-              <span class="px-2 py-0.5 rounded-full bg-pink-500/20 text-pink-300 text-[10px] font-bold">Alarm</span>
+              <span class="px-2 py-0.5 rounded-full bg-pink-500/20 text-pink-300 text-[10px] font-bold" data-i18n="mobile_tools_alarm_badge">Alarm</span>
             </div>
             <div>
-              <h4 class="text-xs font-bold text-white leading-tight">Wecker & Timer</h4>
-              <p class="text-[10px] text-gray-400 mt-0.5">Punktgenaue Wecker</p>
+              <h4 class="text-xs font-bold text-white leading-tight" data-i18n="mobile_tools_alarm_title">Alarms & Timers</h4>
+              <p class="text-[10px] text-gray-400 mt-0.5" data-i18n="mobile_tools_alarm_sub">Precise Timers</p>
             </div>
           </div>
 
@@ -1579,11 +1579,11 @@
           <div onclick="openReportDashboard()" class="p-4 rounded-2xl bg-gradient-to-br from-cyan-950/50 to-[#12121a] border border-cyan-500/30 shadow-lg cursor-pointer active:scale-95 transition flex flex-col justify-between h-28">
             <div class="flex items-center justify-between">
               <span class="text-2xl">📊</span>
-              <span class="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-bold">Stats</span>
+              <span class="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-bold" data-i18n="mobile_tools_stats_badge">Stats</span>
             </div>
             <div>
-              <h4 class="text-xs font-bold text-white leading-tight">Produktivität</h4>
-              <p class="text-[10px] text-gray-400 mt-0.5">Wochenauswertung</p>
+              <h4 class="text-xs font-bold text-white leading-tight" data-i18n="mobile_tools_stats_title">Productivity</h4>
+              <p class="text-[10px] text-gray-400 mt-0.5" data-i18n="mobile_tools_stats_sub">Weekly Report</p>
             </div>
           </div>
 
@@ -1591,11 +1591,11 @@
           <div onclick="openWhatNowModal()" class="p-4 rounded-2xl bg-gradient-to-br from-rose-950/50 to-[#12121a] border border-rose-500/30 shadow-lg cursor-pointer active:scale-95 transition flex flex-col justify-between h-28">
             <div class="flex items-center justify-between">
               <span class="text-2xl">🎲</span>
-              <span class="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-bold">Impuls</span>
+              <span class="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-bold" data-i18n="mobile_tools_whatnow_badge">Spark</span>
             </div>
             <div>
-              <h4 class="text-xs font-bold text-white leading-tight">Was nun?</h4>
-              <p class="text-[10px] text-gray-400 mt-0.5">Energie-Vorschlag</p>
+              <h4 class="text-xs font-bold text-white leading-tight" data-i18n="mobile_tools_whatnow_title">What now?</h4>
+              <p class="text-[10px] text-gray-400 mt-0.5" data-i18n="mobile_tools_whatnow_sub">Energy-based Pick</p>
             </div>
           </div>
 
@@ -1605,7 +1605,7 @@
     </div>
 
     <!-- FLOATING ACTION BUTTON (FAB: + NEUE AUFGABE) -->
-    <button id="mobile-fab-add" onclick="openMobileQuickAddModal()" title="Neue Aufgabe hinzufügen" aria-label="Neue Aufgabe hinzufügen">
+    <button id="mobile-fab-add" onclick="openMobileQuickAddModal()" data-i18n-title="mobile_fab_title" aria-label="Add Task">
       <i data-lucide="plus" class="w-6 h-6 stroke-[2.5]"></i>
     </button>
 
@@ -1613,23 +1613,23 @@
     <nav id="mobile-bottom-nav">
       <button onclick="switchMobileNavTab('planer')" id="mob-nav-planer" class="mobile-nav-item active">
         <i data-lucide="layout-grid"></i>
-        <span>Planer</span>
+        <span data-i18n="mobile_nav_planner">Planner</span>
       </button>
       <button onclick="switchMobileNavTab('focus')" id="mob-nav-focus" class="mobile-nav-item">
         <i data-lucide="timer"></i>
-        <span>Fokus</span>
+        <span data-i18n="mobile_nav_focus">Focus</span>
       </button>
       <button onclick="switchMobileNavTab('audio')" id="mob-nav-audio" class="mobile-nav-item">
         <i data-lucide="headphones"></i>
-        <span>Sounds</span>
+        <span data-i18n="mobile_nav_audio">Audio</span>
       </button>
       <button onclick="switchMobileNavTab('tools')" id="mob-nav-tools" class="mobile-nav-item">
         <i data-lucide="wrench"></i>
-        <span>Tools</span>
+        <span data-i18n="mobile_nav_tools">Tools</span>
       </button>
       <button onclick="switchMobileNavTab('game')" id="mob-nav-game" class="mobile-nav-item">
         <i data-lucide="gamepad-2"></i>
-        <span>3D-Game</span>
+        <span data-i18n="mobile_nav_game">Arcade</span>
       </button>
     </nav>
 
@@ -1654,8 +1654,8 @@
         <div class="flex items-center gap-2">
           <span class="text-lg">⚡</span>
           <div>
-            <h3 class="text-white font-bold text-sm font-display">Schnellmenü & Optionen</h3>
-            <p class="text-[10px] text-gray-400">Alle Funktionen für unterwegs griffbereit</p>
+            <h3 class="text-white font-bold text-sm font-display" data-i18n="mobile_quick_title">Quick Menu & Options</h3>
+            <p class="text-[10px] text-gray-400" data-i18n="mobile_quick_desc">Essential functions on the go</p>
           </div>
         </div>
         <button onclick="closeMobileQuickMenu()" class="p-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition cursor-pointer">
@@ -1669,8 +1669,8 @@
         <button onclick="closeMobileQuickMenu(); openP2PSyncModal();" class="p-3 rounded-2xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 flex items-center gap-2.5 transition active:scale-95 text-left cursor-pointer">
           <span class="text-xl">📱</span>
           <div>
-            <div class="font-bold text-white leading-tight">Live-Sync</div>
-            <div class="text-[9px] text-emerald-400">QR & P2P Transfer</div>
+            <div class="font-bold text-white leading-tight" data-i18n="mobile_quick_sync_title">Live-Sync</div>
+            <div class="text-[9px] text-emerald-400" data-i18n="mobile_quick_sync_sub">QR & P2P Transfer</div>
           </div>
         </button>
 
@@ -1678,8 +1678,8 @@
         <button onclick="closeMobileQuickMenu(); openReportDashboard();" class="p-3 rounded-2xl bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-purple-300 flex items-center gap-2.5 transition active:scale-95 text-left cursor-pointer">
           <span class="text-xl">📊</span>
           <div>
-            <div class="font-bold text-white leading-tight">Statistik</div>
-            <div class="text-[9px] text-purple-300">Wochenauswertung</div>
+            <div class="font-bold text-white leading-tight" data-i18n="mobile_quick_stats_title">Stats</div>
+            <div class="text-[9px] text-purple-300" data-i18n="mobile_quick_stats_sub">Weekly insights</div>
           </div>
         </button>
 
@@ -1687,8 +1687,8 @@
         <button onclick="closeMobileQuickMenu(); togglePanel('theme');" class="p-3 rounded-2xl bg-fuchsia-500/10 hover:bg-fuchsia-500/20 border border-fuchsia-500/30 text-fuchsia-300 flex items-center gap-2.5 transition active:scale-95 text-left cursor-pointer">
           <span class="text-xl">🎨</span>
           <div>
-            <div class="font-bold text-white leading-tight">Farbschema</div>
-            <div class="text-[9px] text-fuchsia-300">16 Themes wählen</div>
+            <div class="font-bold text-white leading-tight" data-i18n="mobile_quick_theme_title">Color Theme</div>
+            <div class="text-[9px] text-fuchsia-300" data-i18n="mobile_quick_theme_sub">16 Themes</div>
           </div>
         </button>
 
@@ -1696,8 +1696,8 @@
         <button onclick="closeMobileQuickMenu(); togglePanel('language');" class="p-3 rounded-2xl bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 text-sky-300 flex items-center gap-2.5 transition active:scale-95 text-left cursor-pointer">
           <span class="text-xl">🌐</span>
           <div>
-            <div class="font-bold text-white leading-tight">Sprache</div>
-            <div class="text-[9px] text-sky-300">6 Sprachen (EN/DE/...)</div>
+            <div class="font-bold text-white leading-tight" data-i18n="mobile_quick_lang_title">Language</div>
+            <div class="text-[9px] text-sky-300" data-i18n="mobile_quick_lang_sub">6 Languages</div>
           </div>
         </button>
 
@@ -1705,8 +1705,8 @@
         <button onclick="closeMobileQuickMenu(); openHelperModal('pick');" class="p-3 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 flex items-center gap-2.5 transition active:scale-95 text-left cursor-pointer">
           <span class="text-xl">💡</span>
           <div>
-            <div class="font-bold text-white leading-tight">Was nun?</div>
-            <div class="text-[9px] text-amber-300">Impuls-Vorschlag</div>
+            <div class="font-bold text-white leading-tight" data-i18n="mobile_quick_whatnow_title">What now?</div>
+            <div class="text-[9px] text-amber-300" data-i18n="mobile_quick_whatnow_sub">Random prompt</div>
           </div>
         </button>
 
@@ -1714,8 +1714,8 @@
         <button onclick="closeMobileQuickMenu(); openBreakModal('breath');" class="p-3 rounded-2xl bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 text-teal-300 flex items-center gap-2.5 transition active:scale-95 text-left cursor-pointer">
           <span class="text-xl">🧘</span>
           <div>
-            <div class="font-bold text-white leading-tight">Reizpause</div>
-            <div class="text-[9px] text-teal-300">Atemübungen</div>
+            <div class="font-bold text-white leading-tight" data-i18n="mobile_quick_break_title">Sensory Break</div>
+            <div class="text-[9px] text-teal-300" data-i18n="mobile_quick_break_sub">Breathing & Calm</div>
           </div>
         </button>
 
@@ -1723,8 +1723,8 @@
         <button onclick="closeMobileQuickMenu(); handleSaveJson();" class="p-3 rounded-2xl bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-300 flex items-center gap-2.5 transition active:scale-95 text-left cursor-pointer">
           <span class="text-xl">💾</span>
           <div>
-            <div class="font-bold text-white leading-tight">Plan sichern</div>
-            <div class="text-[9px] text-blue-300">JSON-Export</div>
+            <div class="font-bold text-white leading-tight" data-i18n="mobile_quick_save_title">Save Plan</div>
+            <div class="text-[9px] text-blue-300" data-i18n="mobile_quick_save_sub">JSON Backup</div>
           </div>
         </button>
 
@@ -1732,8 +1732,8 @@
         <button onclick="closeMobileQuickMenu(); openSettingsModal();" class="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/15 text-gray-200 flex items-center gap-2.5 transition active:scale-95 text-left cursor-pointer">
           <span class="text-xl">⚙️</span>
           <div>
-            <div class="font-bold text-white leading-tight">Einstellungen</div>
-            <div class="text-[9px] text-gray-400">Optionen & DSGVO</div>
+            <div class="font-bold text-white leading-tight" data-i18n="mobile_quick_settings_title">Settings</div>
+            <div class="text-[9px] text-gray-400" data-i18n="mobile_quick_settings_sub">Options & Privacy</div>
           </div>
         </button>
       </div>
