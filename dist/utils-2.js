@@ -167,7 +167,8 @@ function renderMiniCalendar() {
     if (dayAppointments.length > 0) {
       const listStr = dayAppointments.map(t => {
         let loc = t.location ? ` (@ ${t.location})` : '';
-        return `${t.time || 'Ganztägig'} · ${t.task}${loc}`;
+        const allDayLabel = tr({ de: 'Ganztägig', en: 'All day', es: 'Todo el día', el: 'Ολοήμερο', fr: 'Toute la journée', it: 'Tutto il giorno' });
+        return `${t.time || allDayLabel} · ${t.task}${loc}`;
       }).join('\n');
       daySpan.title = `${tooltipAction}\n\nTermine:\n${listStr}`;
     } else {
