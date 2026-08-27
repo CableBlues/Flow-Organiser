@@ -104,7 +104,32 @@ async function fetchLocalWeather(force = false) {
   }
 }
 
+function updateDateWeatherWidget(data) {
+  if (!data || !data.current) return;
+  const current = data.current;
+  let temp = Math.round(current.temperature_2m);
+  if (weatherUnit === 'f') {
+    temp = Math.round((temp * 9/5) + 32);
+  }
+  const unitSymbol = weatherUnit === 'f' ? '°F' : '°';
+  const info = getWeatherInfo(current.weather_code);
+
+  const badgeEl = document.getElementById('date-weather-badge');
+  const emojiEl = document.getElementById('date-weather-emoji');
+  const tempEl = document.getElementById('date-weather-temp');
+
+  if (badgeEl && emojiEl && tempEl) {
+    emojiEl.innerText = info.emoji || '☀️';
+    tempEl.innerText = `${temp}${unitSymbol}`;
+    badgeEl.title = `${currentWeatherLocation.name}: ${temp}${unitSymbol} • ${info.text}`;
+    badgeEl.classList.remove('hidden');
+    badgeEl.classList.add('flex');
+  }
+}
+window.updateDateWeatherWidget = updateDateWeatherWidget;
+
 function renderWeatherData(data) {
+  updateDateWeatherWidget(data);
   const container = document.getElementById('weather-content-area');
   if (!container || !data || !data.current) return;
 
@@ -688,13 +713,14 @@ function refreshNewsFeed() {
 
 // Initialer Auto-Start beim Laden
 document.addEventListener('DOMContentLoaded', () => {
+  if (cachedWeatherData) {
+    updateDateWeatherWidget(cachedWeatherData);
+  }
   setTimeout(() => {
-    if (document.getElementById('weather-content-area')) {
-      fetchLocalWeather();
-    }
+    fetchLocalWeather();
     if (document.getElementById('news-content-area')) {
       renderNewsBriefing();
     }
-  }, 1000);
+  }, 800);
 });
 

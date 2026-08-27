@@ -376,11 +376,17 @@
 
         <!-- Zentrales Datum & Monatskalender Dropdown -->
         <div id="date-container" onmouseenter="openCalendarHover()" onmouseleave="closeCalendarHover()" class="flex items-center justify-center h-9 px-3.5 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.08] hover:border-purple-500/40 rounded-xl shadow-sm shrink-0 transition-all duration-300 relative group cursor-pointer">
-          <div class="flex items-center gap-2.5 px-1">
+          <div class="flex items-center gap-2 px-1">
             <button onclick="togglePanel('calendar-dropdown')" id="date-calendar-btn" class="h-6 w-6 flex items-center justify-center rounded-lg bg-purple-500/15 text-purple-300 group-hover:bg-purple-500/25 group-hover:text-purple-200 transition-all duration-300" title="Calendar" aria-label="Calendar">
               <i id="date-icon" data-lucide="calendar-days" class="w-4 h-4 shrink-0"></i>
             </button>
             <span id="date-display" class="whitespace-nowrap text-xs md:text-sm font-bold text-gray-100 group-hover:text-white tracking-wide"></span>
+            
+            <!-- Klein & Dezent: Wetter & Temperatur -->
+            <div id="date-weather-badge" onclick="event.stopPropagation(); togglePanel('weather')" class="hidden items-center gap-1 pl-2 border-l border-white/15 text-[11px] font-medium text-gray-300 hover:text-white transition cursor-pointer" title="Wetterbericht">
+              <span id="date-weather-emoji" class="text-xs shrink-0">☀️</span>
+              <span id="date-weather-temp" class="font-mono font-bold text-[var(--accent-light)] text-[11px]">--°</span>
+            </div>
           </div>
 
           <!-- MINIMAL MONTH CALENDAR PANEL -->

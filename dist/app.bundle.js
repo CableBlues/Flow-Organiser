@@ -9983,7 +9983,29 @@ ${listStr}`;
       }
     }
   }
+  function updateDateWeatherWidget(data) {
+    if (!data || !data.current) return;
+    const current = data.current;
+    let temp = Math.round(current.temperature_2m);
+    if (weatherUnit === "f") {
+      temp = Math.round(temp * 9 / 5 + 32);
+    }
+    const unitSymbol = weatherUnit === "f" ? "\xB0F" : "\xB0";
+    const info = getWeatherInfo(current.weather_code);
+    const badgeEl = document.getElementById("date-weather-badge");
+    const emojiEl = document.getElementById("date-weather-emoji");
+    const tempEl = document.getElementById("date-weather-temp");
+    if (badgeEl && emojiEl && tempEl) {
+      emojiEl.innerText = info.emoji || "\u2600\uFE0F";
+      tempEl.innerText = `${temp}${unitSymbol}`;
+      badgeEl.title = `${currentWeatherLocation.name}: ${temp}${unitSymbol} \u2022 ${info.text}`;
+      badgeEl.classList.remove("hidden");
+      badgeEl.classList.add("flex");
+    }
+  }
+  window.updateDateWeatherWidget = updateDateWeatherWidget;
   function renderWeatherData(data) {
+    updateDateWeatherWidget(data);
     const container = document.getElementById("weather-content-area");
     if (!container || !data || !data.current) return;
     const current = data.current;
@@ -10330,14 +10352,15 @@ ${listStr}`;
     renderLucideIcons();
   }
   document.addEventListener("DOMContentLoaded", () => {
+    if (cachedWeatherData) {
+      updateDateWeatherWidget(cachedWeatherData);
+    }
     setTimeout(() => {
-      if (document.getElementById("weather-content-area")) {
-        fetchLocalWeather2();
-      }
+      fetchLocalWeather2();
       if (document.getElementById("news-content-area")) {
         renderNewsBriefing2();
       }
-    }, 1e3);
+    }, 800);
   });
 
   // app-dice.js
