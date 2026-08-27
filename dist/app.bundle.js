@@ -908,8 +908,8 @@
     };
   }
   function migrateState(raw, lang) {
-    const currentL = lang || (typeof currentLang2 !== "undefined" ? currentLang2 : "de");
-    const localizedDefaults = typeof DEFAULT_TASKS_BY_LANG !== "undefined" && DEFAULT_TASKS_BY_LANG[currentL] ? DEFAULT_TASKS_BY_LANG[currentL] : typeof DEFAULT_TASKS_BY_LANG !== "undefined" && DEFAULT_TASKS_BY_LANG["de"] ? DEFAULT_TASKS_BY_LANG["de"] : { daily: [], weekly: [], occasionally: [] };
+    const currentL = lang || (typeof currentLang2 !== "undefined" ? currentLang2 : "en");
+    const localizedDefaults = typeof DEFAULT_TASKS_BY_LANG !== "undefined" && DEFAULT_TASKS_BY_LANG[currentL] ? DEFAULT_TASKS_BY_LANG[currentL] : typeof DEFAULT_TASKS_BY_LANG !== "undefined" && DEFAULT_TASKS_BY_LANG["en"] ? DEFAULT_TASKS_BY_LANG["en"] : { daily: [], weekly: [], occasionally: [] };
     const todayStr = (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
     if (!raw || typeof raw !== "object") {
       return {
@@ -6122,7 +6122,7 @@ ${listStr}`;
   };
   function getCurrentWorkspaceItems2() {
     if (typeof state !== "undefined" && state && state.activeWorkspace === "work") {
-      if (!state.workItems) state.workItems = createDefaultWorkItems(typeof currentLang !== "undefined" ? currentLang : "de");
+      if (!state.workItems) state.workItems = createDefaultWorkItems(typeof currentLang !== "undefined" ? currentLang : "en");
       return state.workItems;
     }
     return state.items;
@@ -7099,7 +7099,7 @@ ${listStr}`;
     95: { label: { de: "Gewitter", en: "Thunderstorm", fr: "Orage", it: "Temporale", es: "Tormenta", el: "\u039A\u03B1\u03C4\u03B1\u03B9\u03B3\u03AF\u03B4\u03B1" }, icon: "cloud-lightning", emoji: "\u26A1" }
   };
   function getWeatherInfo(code) {
-    const lang = typeof currentLanguage !== "undefined" ? currentLanguage : "de";
+    const lang = typeof currentLang !== "undefined" ? currentLang : "en";
     const item2 = WEATHER_CODES[code] || {
       label: { de: "Heiter", en: "Fair", fr: "Clair", it: "Sereno", es: "Despejado", el: "\u0391\u03AF\u03B8\u03C1\u03B9\u03BF\u03C2" },
       icon: "sun",
@@ -7224,7 +7224,7 @@ ${listStr}`;
     if (daily.time && daily.temperature_2m_max) {
       const daysDE = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
       const daysEN = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-      const lang = typeof currentLanguage !== "undefined" ? currentLanguage : "de";
+      const lang = typeof currentLang !== "undefined" ? currentLang : "en";
       const dayNames = lang === "en" ? daysEN : daysDE;
       for (let i = 1; i < 5 && i < daily.time.length; i++) {
         const dDate = new Date(daily.time[i]);
@@ -7435,14 +7435,14 @@ ${listStr}`;
     { id: "ath_1", loc: "el_athens", category: "local", tag: "\u{1F4CD} \u0391\u03B8\u03AE\u03BD\u03B1 \u03A4\u03BF\u03C0\u03B9\u03BA\u03AC", time: "\u03A0\u03C1\u03B9\u03BD 2 \u03CE\u03C1\u03B5\u03C2", title: "\u0391\u03BD\u03AC\u03C0\u03BB\u03B1\u03C3\u03B7 \u03BA\u03B1\u03B9 \u03B4\u03B7\u03BC\u03B9\u03BF\u03C5\u03C1\u03B3\u03AF\u03B1 \u03BD\u03AD\u03C9\u03BD \u03C0\u03AC\u03C1\u03BA\u03C9\u03BD \u03C4\u03C3\u03AD\u03C0\u03B7\u03C2 \u03C3\u03C4\u03BF \u03BA\u03AD\u03BD\u03C4\u03C1\u03BF \u03C4\u03B7\u03C2 \u0391\u03B8\u03AE\u03BD\u03B1\u03C2", summary: "\u03A0\u03B5\u03C1\u03B9\u03C3\u03C3\u03CC\u03C4\u03B5\u03C1\u03BF \u03C0\u03C1\u03AC\u03C3\u03B9\u03BD\u03BF \u03BA\u03B1\u03B9 \u03B4\u03C1\u03BF\u03C3\u03B9\u03AC \u03C3\u03B5 \u03B3\u03B5\u03B9\u03C4\u03BF\u03BD\u03B9\u03AD\u03C2 \u03C4\u03B7\u03C2 \u03C0\u03CC\u03BB\u03B7\u03C2.", source: "Athens Voice", lang: "el" }
   ];
   function getAvailableLocationsForLang() {
-    const lang = typeof currentLanguage !== "undefined" ? currentLanguage : "de";
-    return NEWS_LOCATIONS[lang] || NEWS_LOCATIONS.de;
+    const lang = typeof currentLang !== "undefined" ? currentLang : "en";
+    return NEWS_LOCATIONS[lang] || NEWS_LOCATIONS.en || NEWS_LOCATIONS.de;
   }
   function renderNewsBriefing2() {
     const container = document.getElementById("news-content-area");
     const locSelect = document.getElementById("news-location-select");
     if (!container) return;
-    const lang = typeof currentLanguage !== "undefined" ? currentLanguage : "de";
+    const lang = typeof currentLang !== "undefined" ? currentLang : "en";
     if (locSelect) {
       const locOptions = getAvailableLocationsForLang();
       const currentLocExists = locOptions.some((l) => l.id === currentNewsLocation);
@@ -7836,7 +7836,7 @@ ${listStr}`;
     ]
   };
   function suggestInspirationQuote2() {
-    const list = INSPIRATION_SAYINGS[currentLang] || INSPIRATION_SAYINGS["de"] || INSPIRATION_SAYINGS["en"];
+    const list = INSPIRATION_SAYINGS[currentLang] || INSPIRATION_SAYINGS["en"] || INSPIRATION_SAYINGS["de"];
     const randomQuote = list[Math.floor(Math.random() * list.length)];
     const box = document.getElementById("inspiration-quote-box");
     if (box) box.innerText = randomQuote;
@@ -8632,7 +8632,7 @@ ${listStr}`;
         historyScreenshots: getHistoryScreenshots(),
         customTranslations: typeof customTranslations !== "undefined" ? customTranslations : {},
         theme: localStorage.getItem("flow_theme") || "dark",
-        currentLang: typeof currentLang !== "undefined" ? currentLang : "de"
+        currentLang: typeof currentLang !== "undefined" ? currentLang : "en"
       };
       const jsonStr = JSON.stringify(backupData, null, 2);
       const blob = new Blob([jsonStr], { type: "application/json" });

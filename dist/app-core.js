@@ -69,7 +69,7 @@ const INSPIRATION_SAYINGS = {
 };
 
 function suggestInspirationQuote() {
-  const list = INSPIRATION_SAYINGS[currentLang] || INSPIRATION_SAYINGS['de'] || INSPIRATION_SAYINGS['en'];
+  const list = INSPIRATION_SAYINGS[currentLang] || INSPIRATION_SAYINGS['en'] || INSPIRATION_SAYINGS['de'];
   const randomQuote = list[Math.floor(Math.random() * list.length)];
   const box = document.getElementById('inspiration-quote-box'); if (box) box.innerText = randomQuote;
 }
@@ -1025,7 +1025,7 @@ function downloadFullBackup() {
       historyScreenshots: getHistoryScreenshots(),
       customTranslations: typeof customTranslations !== 'undefined' ? customTranslations : {},
       theme: localStorage.getItem('flow_theme') || 'dark',
-      currentLang: typeof currentLang !== 'undefined' ? currentLang : 'de'
+      currentLang: typeof currentLang !== 'undefined' ? currentLang : 'en'
     };
 
     const jsonStr = JSON.stringify(backupData, null, 2);

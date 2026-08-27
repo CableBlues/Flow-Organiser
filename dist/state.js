@@ -170,10 +170,10 @@ function saveCategoriesOrder() {
 }
 
 function migrateState(raw, lang) {
-  const currentL = lang || (typeof currentLang !== 'undefined' ? currentLang : 'de');
+  const currentL = lang || (typeof currentLang !== 'undefined' ? currentLang : 'en');
   const localizedDefaults = (typeof DEFAULT_TASKS_BY_LANG !== 'undefined' && DEFAULT_TASKS_BY_LANG[currentL]) 
     ? DEFAULT_TASKS_BY_LANG[currentL] 
-    : ((typeof DEFAULT_TASKS_BY_LANG !== 'undefined' && DEFAULT_TASKS_BY_LANG['de']) ? DEFAULT_TASKS_BY_LANG['de'] : { daily: [], weekly: [], occasionally: [] });
+    : ((typeof DEFAULT_TASKS_BY_LANG !== 'undefined' && DEFAULT_TASKS_BY_LANG['en']) ? DEFAULT_TASKS_BY_LANG['en'] : { daily: [], weekly: [], occasionally: [] });
   const todayStr = new Date().toISOString().split('T')[0];
 
   if (!raw || typeof raw !== 'object') {

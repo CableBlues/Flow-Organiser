@@ -108,7 +108,7 @@ function deleteColumn(colId, e) {
 
 function getCurrentWorkspaceItems() {
   if (typeof state !== 'undefined' && state && state.activeWorkspace === 'work') {
-    if (!state.workItems) state.workItems = createDefaultWorkItems(typeof currentLang !== 'undefined' ? currentLang : 'de');
+    if (!state.workItems) state.workItems = createDefaultWorkItems(typeof currentLang !== 'undefined' ? currentLang : 'en');
     return state.workItems;
   }
   return state.items;

@@ -774,7 +774,7 @@ if (typeof globalThis !== 'undefined') {
 }
 
 function checkAndGenerateAutomaticReports() {
-  const now = new Date(); const todayISO = now.toISOString().split('T')[0]; const lang = currentLang || 'de';
+  const now = new Date(); const todayISO = now.toISOString().split('T')[0]; const lang = currentLang || 'en';
   if (state.lastDate && state.lastDate !== todayISO) {
     const prevDate = state.lastDate; const { reportText, filename } = generateReportContent('daily', prevDate);
     triggerAutomaticDownload(reportText, filename); state.lastDate = todayISO; saveState();

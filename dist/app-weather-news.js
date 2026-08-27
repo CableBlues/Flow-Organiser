@@ -36,7 +36,7 @@ const WEATHER_CODES = {
 };
 
 function getWeatherInfo(code) {
-  const lang = typeof currentLanguage !== 'undefined' ? currentLanguage : 'de';
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'en';
   const item = WEATHER_CODES[code] || {
     label: { de: 'Heiter', en: 'Fair', fr: 'Clair', it: 'Sereno', es: 'Despejado', el: 'Αίθριος' },
     icon: 'sun',
@@ -181,7 +181,7 @@ function renderWeatherData(data) {
   if (daily.time && daily.temperature_2m_max) {
     const daysDE = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
     const daysEN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const lang = typeof currentLanguage !== 'undefined' ? currentLanguage : 'de';
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'en';
     const dayNames = lang === 'en' ? daysEN : daysDE;
 
     for (let i = 1; i < 5 && i < daily.time.length; i++) {
@@ -504,8 +504,8 @@ const COMPREHENSIVE_NEWS_DATABASE = [
 ];
 
 function getAvailableLocationsForLang() {
-  const lang = typeof currentLanguage !== 'undefined' ? currentLanguage : 'de';
-  return NEWS_LOCATIONS[lang] || NEWS_LOCATIONS.de;
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'en';
+  return NEWS_LOCATIONS[lang] || NEWS_LOCATIONS.en || NEWS_LOCATIONS.de;
 }
 
 function renderNewsBriefing() {
@@ -513,7 +513,7 @@ function renderNewsBriefing() {
   const locSelect = document.getElementById('news-location-select');
   if (!container) return;
 
-  const lang = typeof currentLanguage !== 'undefined' ? currentLanguage : 'de';
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'en';
 
   // Location-Dropdown synchronisieren falls nötig
   if (locSelect) {
