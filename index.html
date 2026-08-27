@@ -1545,58 +1545,91 @@
 
           <div class="h-8 w-[1px] bg-white/10 mx-1 align-middle self-center"></div>
 
-          <!-- FACH 3: Fokus & Entscheidung -->
+          <!-- FACH 3: Impulse, Fokus & Aktivierung -->
           <div class="flex items-center gap-1.5 px-1 bg-transparent relative">
-            <!-- Funke -->
-            <div class="relative group mac-dock-item-wrapper">
-              <button onclick="togglePanel('boost'); suggestBoostActivity();" class="mac-dock-btn balloon-boost h-12 w-12 md:h-14 md:w-14 rounded-2xl text-amber-300 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="30-Sekunden-Aktivität zur Überwindung von Blockaden erhalten">
-                <i data-lucide="zap" class="w-5 h-5 text-amber-400"></i>
-                <span class="dock-label" data-i18n="dock_spark">Funke</span>
-              </button>
-              
-              <div id="panel-boost" class="dock-popover-panel hidden absolute bottom-[calc(100%+10px)] right-0 w-[280px] bg-[#111116]/95 border border-amber-500/40 p-4 rounded-2xl shadow-2xl backdrop-blur-md flex flex-col gap-3">
-                <p class="text-[11px] text-gray-400 leading-normal" data-i18n="boost_desc">
-                  Fühlst du dich blockiert? Gönn dir eine winzige, 30-sekündige Aktivität, um deinen Fokus neu auszurichten:
-                </p>
-                <div id="boost-activity-box" class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-center text-xs font-semibold text-amber-200 min-h-[48px] flex items-center justify-center" data-i18n="boost_placeholder">
-                  Klicke unten für einen Vorschlag!
-                </div>
-                <button onclick="suggestBoostActivity()" class="w-full py-1.5 bg-amber-500 text-black text-xs font-bold rounded-xl hover:opacity-90 transition cursor-pointer" data-i18n="boost_new">Neuer Vorschlag 🔄</button>
-              </div>
-            </div>
-
-            <!-- Inspiration -->
+            <!-- Impuls & Klarheit Hub (Funke, Inspiration, Klarheit) -->
             <div class="relative group cursor-pointer mac-dock-item-wrapper">
-              <button onclick="togglePanel('inspiration')" class="mac-dock-btn balloon-inspire h-12 w-12 md:h-14 md:w-14 rounded-2xl text-violet-300 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Inspirierenden Impuls für den Geist anzeigen">
-                <i data-lucide="sparkles" class="w-5 h-5 text-violet-400"></i>
-                <span class="dock-label" data-i18n="dock_inspire">Inspire</span>
+              <button onclick="togglePanel('impulse');" class="mac-dock-btn balloon-boost h-12 w-12 md:h-14 md:w-14 rounded-2xl text-amber-300 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Impuls & Klarheit: 30s-Schwung, Gedanken-Impulse & Impulskontrolle">
+                <i data-lucide="zap" class="w-5 h-5 text-amber-400"></i>
+                <span class="dock-label" data-i18n="dock_impulse">Impuls</span>
               </button>
               
-              <div id="panel-inspiration" class="dock-popover-panel hidden absolute bottom-[calc(100%+10px)] right-0 w-[320px] sm:w-[360px] bg-[#111116]/95 border border-violet-500/40 p-4 rounded-2xl shadow-2xl backdrop-blur-md flex flex-col gap-3">
-                <div class="flex items-center justify-between border-b border-white/10 pb-1.5">
-                  <span class="text-[11px] uppercase font-bold tracking-wider text-violet-400 flex items-center gap-1.5 font-mono">
-                    <i data-lucide="sparkles" class="w-3.5 h-3.5 text-violet-400"></i> <span data-i18n="inspire">Inspiration</span>
-                  </span>
-                  <button onclick="togglePanel('inspiration')" class="text-gray-400 hover:text-white text-xs">✕</button>
+              <div id="panel-impulse" class="dock-popover-panel hidden absolute bottom-[calc(100%+10px)] right-0 w-[320px] sm:w-[380px] bg-[#111116]/98 border border-amber-500/40 p-4 rounded-3xl shadow-2xl backdrop-blur-xl flex flex-col gap-3 text-left">
+                <!-- Header mit Titel & Close -->
+                <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-300">
+                      <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
+                    </div>
+                    <div>
+                      <h4 class="font-bold text-xs font-display text-white">Impuls & Klarheit</h4>
+                      <div class="text-[8px] text-gray-400 font-mono">Fokus, Momentum & Ruhe</div>
+                    </div>
+                  </div>
+                  <button onclick="togglePanel('impulse')" class="text-gray-400 hover:text-white text-xs font-bold p-1 cursor-pointer">✕</button>
                 </div>
-                <p class="text-[11px] text-gray-400 leading-normal">
-                  Ein kleiner Impuls für deinen Geist. Manchmal hilft ein Perspektivwechsel:
-                </p>
-                <div id="inspiration-quote-box" class="p-3.5 bg-violet-500/5 border border-violet-500/20 rounded-xl text-left text-xs font-semibold text-violet-200 min-h-[72px] flex items-center justify-center italic leading-relaxed">
-                  <p class="p-3.5 bg-violet-500/5 border border-violet-500/20 rounded-xl text-left text-xs font-semibold text-violet-200 min-h-[72px] flex items-center justify-center italic leading-relaxed">Klicke unten für einen inspirierenden Impuls!</p>
-                </div>
-                <button onclick="suggestInspirationQuote()" class="w-full py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold rounded-xl transition cursor-pointer flex items-center justify-center gap-1">
-                  <span>Nächster Impuls</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
-                </button>
-              </div>
-            </div>
 
-            <!-- Klarheit & Impuls-Bremse -->
-            <div class="mac-dock-item-wrapper">
-              <button id="clarity-trigger-btn" onclick="openClarityModal()" class="mac-dock-btn balloon-clarity h-12 w-12 md:h-14 md:w-14 rounded-2xl text-teal-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Klarheit: Impulskontrolle, Muster durchbrechen & gesunde Gewohnheiten stärken">
-                <i data-lucide="anchor" class="w-5 h-5 text-teal-400"></i>
-                <span class="dock-label" data-i18n="dock_clarity">Klarheit</span>
-              </button>
+                <!-- 3 Tab Switchers -->
+                <div class="flex bg-black/60 p-1 rounded-2xl border border-white/10 text-xs font-bold gap-1 shadow-inner">
+                  <button id="impulse-tab-btn-spark" onclick="switchImpulseTab('spark')" class="flex-1 py-1.5 rounded-xl text-white bg-amber-500/30 border border-amber-500/50 transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-bold shadow-sm">
+                    <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
+                    <span>Schwung</span>
+                  </button>
+                  <button id="impulse-tab-btn-inspire" onclick="switchImpulseTab('inspire')" class="flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-medium">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5 text-violet-400"></i>
+                    <span>Inspiration</span>
+                  </button>
+                  <button id="impulse-tab-btn-clarity" onclick="switchImpulseTab('clarity')" class="flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-medium">
+                    <i data-lucide="anchor" class="w-3.5 h-3.5 text-teal-400"></i>
+                    <span>Klarheit</span>
+                  </button>
+                </div>
+
+                <!-- TAB 1: 30s SCHWUNG-FUNKE -->
+                <div id="impulse-pane-spark" class="space-y-2.5">
+                  <p class="text-[10px] text-gray-400 leading-normal" data-i18n="boost_desc">
+                    Fühlst du dich blockiert? Gönn dir eine winzige, 30-sekündige Aktivität, um deinen Fokus neu auszurichten:
+                  </p>
+                  <div id="boost-activity-box" class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-center text-xs font-semibold text-amber-200 min-h-[48px] flex items-center justify-center" data-i18n="boost_placeholder">
+                    Klicke unten für einen Vorschlag!
+                  </div>
+                  <button onclick="suggestBoostActivity()" class="w-full py-2 bg-amber-500 text-black text-xs font-bold rounded-xl hover:opacity-90 transition cursor-pointer shadow-md" data-i18n="boost_new">Neuer Vorschlag 🔄</button>
+                </div>
+
+                <!-- TAB 2: INSPIRATION -->
+                <div id="impulse-pane-inspire" class="hidden space-y-2.5">
+                  <p class="text-[10px] text-gray-400 leading-normal">
+                    Ein kleiner Impuls für deinen Geist. Manchmal hilft ein Perspektivenwechsel:
+                  </p>
+                  <div id="inspiration-quote-box" class="p-3 bg-violet-500/10 border border-violet-500/20 rounded-xl text-left text-xs font-semibold text-violet-200 min-h-[64px] flex items-center justify-center italic leading-relaxed">
+                    Klicke unten für einen inspirierenden Impuls!
+                  </div>
+                  <button onclick="suggestInspirationQuote()" class="w-full py-2 bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold rounded-xl transition cursor-pointer flex items-center justify-center gap-1 shadow-md">
+                    <span>Nächster Impuls</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+
+                <!-- TAB 3: KLARHEIT & IMPULSKONTROLLE -->
+                <div id="impulse-pane-clarity" class="hidden space-y-2.5">
+                  <p class="text-[10px] text-gray-400 leading-normal">
+                    Stoppe Reizüberflutung, durchbrich Heißhunger oder Drang und zentriere dich:
+                  </p>
+                  <div class="grid grid-cols-2 gap-2">
+                    <button onclick="togglePanel('impulse'); openClarityModal();" class="p-2.5 bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/30 rounded-xl text-left transition text-teal-200 flex flex-col gap-1 cursor-pointer">
+                      <div class="flex items-center gap-1 font-bold text-xs text-white">
+                        <i data-lucide="anchor" class="w-3.5 h-3.5 text-teal-400"></i> Klarheits-Hub
+                      </div>
+                      <span class="text-[9px] text-gray-400">Impulskontrolle & Tracker</span>
+                    </button>
+                    <button onclick="togglePanel('impulse'); openSafeSpaceModal('anchor');" class="p-2.5 bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/30 rounded-xl text-left transition text-teal-200 flex flex-col gap-1 cursor-pointer">
+                      <div class="flex items-center gap-1 font-bold text-xs text-white">
+                        <i data-lucide="shield" class="w-3.5 h-3.5 text-teal-400"></i> 5-4-3-2-1
+                      </div>
+                      <span class="text-[9px] text-gray-400">Sofortige Erdungs-Übung</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- Sport -->

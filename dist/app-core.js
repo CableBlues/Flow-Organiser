@@ -80,6 +80,32 @@ function suggestBoostActivity() {
   const box = document.getElementById('boost-activity-box'); if (box) box.innerText = randomActivity;
 }
 
+function switchImpulseTab(tabName) {
+  const tabs = ['spark', 'inspire', 'clarity'];
+  tabs.forEach(t => {
+    const btn = document.getElementById(`impulse-tab-btn-${t}`);
+    const pane = document.getElementById(`impulse-pane-${t}`);
+    if (btn) {
+      if (t === tabName) {
+        btn.className = 'flex-1 py-1.5 rounded-xl text-white bg-amber-500/30 border border-amber-500/50 transition flex items-center justify-center gap-1.5 cursor-pointer text-xs font-bold shadow-md';
+      } else {
+        btn.className = 'flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer text-xs font-medium';
+      }
+    }
+    if (pane) {
+      if (t === tabName) {
+        pane.classList.remove('hidden');
+      } else {
+        pane.classList.add('hidden');
+      }
+    }
+  });
+  if (tabName === 'spark') suggestBoostActivity();
+  if (tabName === 'inspire') suggestInspirationQuote();
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+window.switchImpulseTab = switchImpulseTab;
+
 function handleSoundsMainClick() { togglePanel('soundscape'); }
 function handleMusicMainClick() { togglePanel('music'); }
 
@@ -147,11 +173,13 @@ document.addEventListener('keydown', (e) => {
       break;
     case 'b':
       e.preventDefault();
-      togglePanel('boost');
+      togglePanel('impulse');
+      switchImpulseTab('spark');
       break;
     case 'i':
       e.preventDefault();
-      togglePanel('inspiration');
+      togglePanel('impulse');
+      switchImpulseTab('inspire');
       break;
     case 'o':
       e.preventDefault();

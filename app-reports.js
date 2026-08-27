@@ -1,7 +1,7 @@
 function togglePanel(panelName) {
   clearTimeout(hoverPanelTimeout); const el = document.getElementById(`panel-${panelName}`); if (!el) return;
   const isCurrentlyHidden = el.classList.contains('hidden');
-  ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'theme', 'calendar-dropdown', 'inspiration', 'shopping', 'cooking', 'alarm', 'weather', 'news', 'pause-dropdown', 'logo-guide'].forEach(p => {
+  ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'theme', 'calendar-dropdown', 'inspiration', 'impulse', 'shopping', 'cooking', 'alarm', 'weather', 'news', 'pause-dropdown', 'logo-guide'].forEach(p => {
     if (p !== panelName) { const other = document.getElementById(`panel-${p}`); if (other) other.classList.add('hidden'); }
   });
   if (isCurrentlyHidden) { 
@@ -12,6 +12,10 @@ function togglePanel(panelName) {
     if (panelName === 'alarm' && typeof renderAlarmPanel === 'function') renderAlarmPanel();
     if (panelName === 'weather' && typeof fetchLocalWeather === 'function') fetchLocalWeather();
     if (panelName === 'news' && typeof renderNewsBriefing === 'function') renderNewsBriefing();
+    if (panelName === 'impulse') {
+      if (typeof suggestBoostActivity === 'function') suggestBoostActivity();
+      if (typeof suggestInspirationQuote === 'function') suggestInspirationQuote();
+    }
   } 
   else { el.classList.add('hidden'); if (currentlyOpenPanel === panelName) currentlyOpenPanel = null; }
 }

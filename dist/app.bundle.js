@@ -7835,18 +7835,43 @@ ${listStr}`;
       "Gli errori sono solo dati. Ti mostrano cosa non funziona e ti aiutano a perfezionare il tuo percorso."
     ]
   };
-  function suggestInspirationQuote() {
+  function suggestInspirationQuote2() {
     const list = INSPIRATION_SAYINGS[currentLang] || INSPIRATION_SAYINGS["de"] || INSPIRATION_SAYINGS["en"];
     const randomQuote = list[Math.floor(Math.random() * list.length)];
     const box = document.getElementById("inspiration-quote-box");
     if (box) box.innerText = randomQuote;
   }
-  function suggestBoostActivity() {
+  function suggestBoostActivity2() {
     const list = BOOST_ACTIVITIES[currentLang] || BOOST_ACTIVITIES["en"];
     const randomActivity = list[Math.floor(Math.random() * list.length)];
     const box = document.getElementById("boost-activity-box");
     if (box) box.innerText = randomActivity;
   }
+  function switchImpulseTab(tabName) {
+    const tabs = ["spark", "inspire", "clarity"];
+    tabs.forEach((t3) => {
+      const btn = document.getElementById(`impulse-tab-btn-${t3}`);
+      const pane = document.getElementById(`impulse-pane-${t3}`);
+      if (btn) {
+        if (t3 === tabName) {
+          btn.className = "flex-1 py-1.5 rounded-xl text-white bg-amber-500/30 border border-amber-500/50 transition flex items-center justify-center gap-1.5 cursor-pointer text-xs font-bold shadow-md";
+        } else {
+          btn.className = "flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer text-xs font-medium";
+        }
+      }
+      if (pane) {
+        if (t3 === tabName) {
+          pane.classList.remove("hidden");
+        } else {
+          pane.classList.add("hidden");
+        }
+      }
+    });
+    if (tabName === "spark") suggestBoostActivity2();
+    if (tabName === "inspire") suggestInspirationQuote2();
+    if (typeof lucide !== "undefined") lucide.createIcons();
+  }
+  window.switchImpulseTab = switchImpulseTab;
   document.addEventListener("keydown", (e) => {
     const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : "";
     if (activeTag === "input" || activeTag === "textarea" || document.activeElement && document.activeElement.isContentEditable) {
@@ -7895,11 +7920,13 @@ ${listStr}`;
         break;
       case "b":
         e.preventDefault();
-        togglePanel("boost");
+        togglePanel("impulse");
+        switchImpulseTab("spark");
         break;
       case "i":
         e.preventDefault();
-        togglePanel("inspiration");
+        togglePanel("impulse");
+        switchImpulseTab("inspire");
         break;
       case "o":
         e.preventDefault();
@@ -8295,8 +8322,8 @@ ${listStr}`;
     renderApp();
     updateZenView();
     populateHelperTaskSelect();
-    suggestBoostActivity();
-    suggestInspirationQuote();
+    suggestBoostActivity2();
+    suggestInspirationQuote2();
     checkAndGenerateAutomaticReports();
     const btnHeader = document.getElementById("timer-toggle-btn");
     if (btnHeader) {
