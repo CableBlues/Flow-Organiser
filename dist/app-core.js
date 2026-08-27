@@ -157,10 +157,6 @@ document.addEventListener('keydown', (e) => {
       e.preventDefault();
       openSportModal();
       break;
-    case 'x':
-      e.preventDefault();
-      openScriptingModal();
-      break;
     case 'h':
       e.preventDefault();
       togglePanel('logo-guide');
@@ -184,7 +180,6 @@ function closeAllPanelsAndModals() {
   if (typeof closeHelperModal === 'function') closeHelperModal();
   if (typeof closeSportModal === 'function') closeSportModal();
   if (typeof closeSafeSpaceModal === 'function') closeSafeSpaceModal();
-  if (typeof closeScriptingModal === 'function') closeScriptingModal();
   if (typeof closeCustomItemModal === 'function') closeCustomItemModal();
   if (typeof closePrivacyModal === 'function') closePrivacyModal();
   if (typeof closeArchiveModal === 'function') closeArchiveModal();
