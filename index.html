@@ -809,7 +809,7 @@
           <!-- FACH 1: Geist & Audio-Center -->
           <div class="flex items-center gap-1.5 px-1 bg-transparent relative">
             <div class="relative group cursor-pointer mac-dock-item-wrapper">
-              <button onclick="togglePanel('audio')" class="mac-dock-btn balloon-music h-12 w-12 md:h-14 md:w-14 rounded-2xl text-purple-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Audio-Center: Naturgeräusche, Beats & DJ-Studio">
+              <button onclick="togglePanel('audio')" class="mac-dock-btn balloon-music h-12 w-12 md:h-14 md:w-14 rounded-2xl text-purple-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Audio-Center: Naturgeräusche, Beats & Mix-Studio">
                 <i data-lucide="headphones" class="w-5 h-5 text-purple-400"></i>
                 <span class="dock-label" data-i18n="dock_audio">Audio</span>
                 <span id="soundscape-indicator" class="hidden w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping absolute top-1 right-1"></span>
@@ -824,7 +824,7 @@
                     </div>
                     <div>
                       <h4 class="font-bold text-xs font-display text-white">Audio-Center</h4>
-                      <div class="text-[8px] text-gray-400 font-mono">Fokus, Beats & DJ Studio</div>
+                      <div class="text-[8px] text-gray-400 font-mono">Fokus, Beats & Mix-Studio</div>
                     </div>
                   </div>
                   <button onclick="togglePanel('audio')" class="text-gray-400 hover:text-white text-xs font-bold p-1 cursor-pointer">✕</button>
@@ -842,7 +842,7 @@
                   </button>
                   <button id="audio-tab-btn-music" onclick="switchAudioTab('music')" class="flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-medium">
                     <i data-lucide="disc-3" class="w-3.5 h-3.5 text-cyan-400"></i>
-                    <span>Player & DJ</span>
+                    <span>Player & Mix</span>
                   </button>
                 </div>
 
@@ -979,9 +979,9 @@
                   </div>
                 </div>
 
-                <!-- TAB 3: MUSIK & DJ STUDIO -->
+                <!-- TAB 3: MUSIK & MIX STUDIO -->
                 <div id="audio-pane-music" class="hidden space-y-2.5">
-                  <!-- TOP MODE SWITCHER: STANDARD PLAYER VS. 2-DECK DJ STUDIO -->
+                  <!-- TOP MODE SWITCHER: STANDARD PLAYER VS. 2-DECK MIX STUDIO -->
                   <div class="flex items-center bg-black/70 p-1 rounded-2xl border border-white/10 text-xs font-bold gap-1 shadow-inner">
                     <button id="music-view-toggle-std" onclick="switchMusicView('standard')" class="flex-1 py-1.5 rounded-xl text-white bg-purple-600/40 border border-purple-500/50 transition flex items-center justify-center gap-1.5 cursor-pointer text-xs font-bold shadow-md">
                       <i data-lucide="headphones" class="w-3.5 h-3.5 text-purple-300"></i>
@@ -989,7 +989,7 @@
                     </button>
                     <button id="music-view-toggle-dj" onclick="switchMusicView('dj')" class="flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer text-xs font-semibold">
                       <i data-lucide="disc-3" class="w-3.5 h-3.5 text-cyan-400"></i>
-                      <span>DJ Studio (2-Decks)</span>
+                      <span>Mix-Studio (2-Decks)</span>
                     </button>
                   </div>
 
