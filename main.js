@@ -1,4 +1,4 @@
-﻿// main.js - Haupt-Einstiegspunkt für Flow Organiser (ES-Module Pipeline)
+// main.js - Haupt-Einstiegspunkt für Flow Organiser (ES-Module Pipeline)
 // ============================================================================
 
 // 1. Daten & Schritte
@@ -45,11 +45,7 @@ import './helper-tools-2.js';
 import './helper-tools-3.js';
 import './helper-clarity.js';
 
-// 7. Gamification (3D Welten & RPG)
-import './gamification.js';
-import './gamification-2.js';
-
-// 8. Domain Features & Haupt-App
+// 7. Domain Features & Haupt-App
 import './app-shopping.js';
 import './app-cooking.js';
 import './app-alarm.js';

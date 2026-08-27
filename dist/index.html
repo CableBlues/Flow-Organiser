@@ -590,6 +590,20 @@
                 </div>
               </div>
 
+              <!-- SECTION 2B: 3D SPATIAL THEMES (5 RÄUMLICHE FARBSCHEMATA) -->
+              <div class="space-y-1.5 pt-1 border-t border-white/5">
+                <div class="text-[9px] font-bold uppercase tracking-wider text-cyan-300 font-mono flex items-center justify-between">
+                  <span>🌌 3D Spatial Themes (5 Welten)</span>
+                </div>
+                <div class="grid grid-cols-5 gap-1.5 p-1.5 bg-cyan-950/30 border border-cyan-500/20 rounded-2xl">
+                  <button onclick="setTheme('spatial-orbit')" class="h-6 rounded-xl bg-gradient-to-br from-sky-400 to-purple-600 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer" title="🌌 3D Orbit-Deck">🌌</button>
+                  <button onclick="setTheme('spatial-island')" class="h-6 rounded-xl bg-gradient-to-br from-emerald-400 to-amber-400 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer" title="🏝️ 3D Floating Island">🏝️</button>
+                  <button onclick="setTheme('spatial-metropolis')" class="h-6 rounded-xl bg-gradient-to-br from-cyan-400 to-rose-500 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer" title="🏙️ 3D Cyber Metropolis">🏙️</button>
+                  <button onclick="setTheme('spatial-galaxy')" class="h-6 rounded-xl bg-gradient-to-br from-purple-600 to-orange-500 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer" title="🚀 3D Galaxy Warp">🚀</button>
+                  <button onclick="setTheme('spatial-sanctuary')" class="h-6 rounded-xl bg-gradient-to-br from-teal-400 to-fuchsia-400 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer" title="⛩️ 3D Crystal Sanctuary">⛩️</button>
+                </div>
+              </div>
+
               <!-- SECTION 3: QUICK LINKS -->
               <div class="grid grid-cols-2 gap-1.5 pt-1 border-t border-white/10">
                 <button onclick="openP2PSyncModal(); document.getElementById('panel-settings-dropdown').classList.add('hidden');" class="p-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 rounded-xl text-emerald-300 text-left text-[10px] font-bold flex items-center gap-1.5 transition cursor-pointer">
@@ -1624,10 +1638,6 @@
       <button onclick="switchMobileNavTab('tools')" id="mob-nav-tools" class="mobile-nav-item">
         <i data-lucide="wrench"></i>
         <span data-i18n="mobile_nav_tools">Tools</span>
-      </button>
-      <button onclick="switchMobileNavTab('game')" id="mob-nav-game" class="mobile-nav-item">
-        <i data-lucide="gamepad-2"></i>
-        <span data-i18n="mobile_nav_game">Arcade</span>
       </button>
     </nav>
 
@@ -2667,122 +2677,6 @@
   </div>
 
   <canvas id="confetti-canvas" class="fixed inset-0 z-[99999] pointer-events-none w-full h-full"></canvas>
-
-  <!-- GAMIFICATION TOGGLE BUTTON -->
-  <div id="game-mode-toggle-wrapper" class="fixed bottom-4 right-4 z-[100001] flex items-center gap-2">
-    <button id="game-mode-toggle" onclick="toggleGameMode()" class="h-12 w-12 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 border border-white/20 shadow-[0_0_20px_rgba(236,72,153,0.4)] flex items-center justify-center text-white cursor-pointer transition-all duration-300 hover:scale-110 active:scale-95" title="Spielmodus (3D) starten / beenden">
-      <i data-lucide="gamepad-2" id="game-mode-icon" class="w-6 h-6 animate-pulse text-white"></i>
-    </button>
-  </div>
-
-  <!-- 3D GAME MODE VIEWPORT & HOLOGRAPHIC GAMER HUD ("FLOW NEXUS 3D SUITE") -->
-  <div id="game-mode-container" class="hidden fixed inset-0 z-[99998] bg-[#070712] select-none font-sans overflow-hidden">
-    <!-- Three.js Canvas gets injected here -->
-    <div id="game-canvas-parent" class="w-full h-full absolute inset-0"></div>
-    
-    <!-- HUD OVERLAY -->
-    <div class="absolute inset-0 pointer-events-none flex flex-col justify-between p-3 sm:p-5">
-      
-      <!-- TOP BAR: Hero Level, XP, 5 3D Worlds Selector, Exit -->
-      <div class="flex items-center justify-between gap-2 pointer-events-auto w-full z-20 bg-[#0d0d18]/95 backdrop-blur-xl border border-white/10 p-2.5 sm:p-3 rounded-2xl shadow-2xl flex-wrap">
-        <!-- Hero Stats -->
-        <div class="flex items-center gap-2.5">
-          <div class="h-9 w-9 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-lg shadow-lg border border-white/20">
-            👑
-          </div>
-          <div class="flex flex-col">
-            <div class="flex items-center gap-2">
-              <span class="text-xs font-black text-white" id="game-player-level">LVL 1</span>
-              <span id="game-player-combo-badge" class="hidden px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-black font-mono border border-rose-500/40 animate-pulse">🔥 2x COMBO</span>
-            </div>
-            <div class="w-24 sm:w-32 bg-white/10 h-1.5 rounded-full overflow-hidden border border-white/5 relative mt-1">
-              <div id="game-player-xp-bar" class="h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 transition-all duration-300" style="width: 0%"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 5 QUALITATIVE 3D WORLDS & STORY RPG SELECTOR -->
-        <div class="flex items-center gap-1 bg-black/60 p-1 rounded-xl border border-white/10 overflow-x-auto max-w-full">
-          <button data-world-tab="orbit_deck" onclick="switchGameWorld('orbit_deck')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition bg-purple-600 border border-purple-400 text-white flex items-center gap-1 cursor-pointer" title="Sci-Fi Orbit-Deck & Holo-Zentrale">
-            <span>🌌</span> <span class="hidden md:inline">Orbit-Deck</span>
-          </button>
-          <button data-world-tab="floating_island" onclick="switchGameWorld('floating_island')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition hover:bg-emerald-600/30 text-emerald-300 hover:text-white flex items-center gap-1 cursor-pointer" title="Cozy Floating Island & Zen-Garten">
-            <span>🏝️</span> <span class="hidden md:inline">Zen-Insel</span>
-          </button>
-          <button data-world-tab="task_metropolis" onclick="switchGameWorld('task_metropolis')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition hover:bg-blue-600/30 text-blue-300 hover:text-white flex items-center gap-1 cursor-pointer" title="3D Task-Metropole">
-            <span>🏙️</span> <span class="hidden md:inline">Metropole</span>
-          </button>
-          <button data-world-tab="galaxy_runner" onclick="switchGameWorld('galaxy_runner')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition hover:bg-pink-600/30 text-pink-300 hover:text-white flex items-center gap-1 cursor-pointer" title="Galaxy Runner Cockpit">
-            <span>🚀</span> <span class="hidden md:inline">Warp-Cockpit</span>
-          </button>
-          <button data-world-tab="quest_adventure" onclick="switchGameWorld('quest_adventure')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition bg-white/5 hover:bg-white/10 text-amber-300 hover:text-white flex items-center gap-1 cursor-pointer" title="Chronicles of Flow 3D Action-RPG">
-            <span>⚔️</span> <span class="hidden md:inline">RPG-Abenteuer</span>
-          </button>
-        </div>
-
-        <!-- Exit 3D Game -->
-        <button onclick="toggleGameMode()" class="px-3 py-1.5 bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-200 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-md">
-          <i data-lucide="log-out" class="w-3.5 h-3.5 text-rose-400"></i>
-          <span class="hidden sm:inline">Planer</span>
-        </button>
-      </div>
-
-      <!-- MIDDLE CONTENT AREA: ACTIVE QUEST BANNER -->
-      <div class="flex justify-center items-center w-full z-10">
-        <div class="bg-black/80 backdrop-blur-xl border border-purple-500/40 px-5 py-3 rounded-2xl pointer-events-auto text-center max-w-xl w-full shadow-2xl relative transition duration-300">
-          <div id="game-active-quest-text" class="text-xs sm:text-sm font-black text-purple-200 leading-snug">🎯 Klicke auf ein 3D-Aufgabenobjekt oder steuere deinen Helden mit WASD!</div>
-        </div>
-      </div>
-
-      <!-- BOTTOM: INTEGRATED HOLOGRAPHIC 3D DOCK & GAMER TOOLS -->
-      <div class="flex flex-col items-center gap-2 w-full z-10 pointer-events-auto">
-        <div class="flex items-center gap-1.5 p-1.5 bg-[#0d0d18]/90 backdrop-blur-xl border border-purple-500/30 rounded-2xl shadow-2xl flex-wrap justify-center">
-          
-          <!-- 3D Timer Control -->
-          <div class="flex items-center gap-1.5 px-2.5 py-1 bg-purple-950/40 border border-purple-500/30 rounded-xl">
-            <i data-lucide="timer" class="w-3.5 h-3.5 text-purple-400"></i>
-            <span id="game-hud-timer-display" class="font-mono font-black text-xs text-purple-200">00:00</span>
-            <button onclick="game3DQuickTimerToggle()" class="p-1 hover:bg-purple-500/20 text-purple-300 rounded-lg transition cursor-pointer" title="Timer Start / Stop">
-              <i data-lucide="play" class="w-3 h-3"></i>
-            </button>
-          </div>
-
-          <div class="h-5 w-[1px] bg-white/10 mx-0.5 hidden sm:block"></div>
-
-          <!-- Dock Tools in 3D -->
-          <button onclick="game3DOpenDockTool('sounds')" class="px-2.5 py-1.5 bg-white/5 hover:bg-purple-500/20 text-gray-300 hover:text-purple-300 border border-white/5 hover:border-purple-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer" title="Musik & Lo-Fi Sounds">
-            <i data-lucide="headphones" class="w-3.5 h-3.5 text-purple-400"></i>
-            <span class="hidden md:inline">Audio</span>
-          </button>
-
-          <button onclick="game3DOpenDockTool('shopping')" class="px-2.5 py-1.5 bg-white/5 hover:bg-emerald-500/20 text-gray-300 hover:text-emerald-300 border border-white/5 hover:border-emerald-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer" title="Einkaufsliste & Loot">
-            <i data-lucide="shopping-bag" class="w-3.5 h-3.5 text-emerald-400"></i>
-            <span class="hidden md:inline">Loot / Einkauf</span>
-          </button>
-
-          <button onclick="game3DOpenDockTool('cooking')" class="px-2.5 py-1.5 bg-white/5 hover:bg-amber-500/20 text-gray-300 hover:text-amber-300 border border-white/5 hover:border-amber-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer" title="Rezepte & Kessel">
-            <i data-lucide="utensils" class="w-3.5 h-3.5 text-amber-400"></i>
-            <span class="hidden md:inline">Rezepte</span>
-          </button>
-
-          <button onclick="game3DOpenDockTool('sport')" class="px-2.5 py-1.5 bg-white/5 hover:bg-orange-500/20 text-gray-300 hover:text-orange-300 border border-white/5 hover:border-orange-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer" title="Sport & Vitality">
-            <i data-lucide="dumbbell" class="w-3.5 h-3.5 text-orange-400"></i>
-            <span class="hidden md:inline">Sport</span>
-          </button>
-
-          <button onclick="game3DOpenDockTool('report')" class="px-2.5 py-1.5 bg-white/5 hover:bg-cyan-500/20 text-gray-300 hover:text-cyan-300 border border-white/5 hover:border-cyan-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer" title="Quest-Statistik">
-            <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 text-cyan-400"></i>
-            <span class="hidden md:inline">Stats</span>
-          </button>
-        </div>
-
-        <div class="text-[9px] text-gray-500 font-mono text-center">
-          🎮 <b>Klick</b>: Aufgabe wählen / Fokus starten | <b>WASD / Pfeile</b>: Held steuern | <b>Rechtsklick/Ziehen</b>: Kamera drehen | <b>Scroll</b>: Zoom
-        </div>
-      </div>
-
-    </div>
-  </div>
 
   <!-- SAMMEL-IMPORT MODAL (FÜR TO-DO, NOTIZEN & CO) -->
   <div id="text-import-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">

@@ -719,11 +719,23 @@ function getSimilarTheme(current) {
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
+const ALL_VALID_THEMES = [
+  'aurora', 'sage', 'cozy', 'forest', 'architect', 'glacier', 'charcoal', 'executive',
+  'neon-cyber', 'carbon', 'holo-chrome', 'synthwave', 'citrus', 'sakura', 'lagoon', 'matcha',
+  'spatial-orbit', 'spatial-island', 'spatial-metropolis', 'spatial-galaxy', 'spatial-sanctuary'
+];
+
 function setTheme(theme) {
-  const validThemes = ['aurora', 'sage', 'cozy', 'forest', 'architect', 'neon-cyber', 'glacier', 'synthwave', 'charcoal', 'executive', 'holo-chrome', 'carbon'];
-  if (!validThemes.includes(theme)) theme = 'aurora';
-  currentTheme = theme; document.body.className = `h-full antialiased flex flex-col font-sans select-none overflow-x-hidden text-[#f4f4f5] theme-${theme}`;
-  if (isMinimalist) document.body.classList.add('minimalist'); localStorage.setItem('flowPlannerTheme', theme);
+  if (!ALL_VALID_THEMES.includes(theme)) theme = 'aurora';
+  if (typeof window !== 'undefined') window.currentTheme = theme;
+  if (typeof globalThis !== 'undefined') globalThis.currentTheme = theme;
+  try { currentTheme = theme; } catch(e) {}
+  
+  if (typeof document !== 'undefined' && document.body) {
+    document.body.className = `h-full antialiased flex flex-col font-sans select-none overflow-x-hidden text-[#f4f4f5] theme-${theme}`;
+    if (typeof isMinimalist !== 'undefined' && isMinimalist) document.body.classList.add('minimalist');
+  }
+  try { localStorage.setItem('flowPlannerTheme', theme); } catch(e) {}
 }
 
 // Sanfter, langsamer Farbwechsel (z.B. nach dem Erledigen einer Aufgabe): aktiviert kurzzeitig
