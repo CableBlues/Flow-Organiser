@@ -9,29 +9,34 @@ import '../state.js';
 import '../utils.js';
 import '../app-core.js';
 
-describe('Curated 15 Human & Spatial Themes (Production Code)', () => {
-  it('applies all 15 curated themes with deep background harmony', () => {
-    const curatedThemes = [
-      'honey-chamomile', 'peach-cashmere', 'terracotta-sun', 'cozy-amber', 'matcha-latte',
-      'sage-breeze', 'eucalyptus-dew', 'lavender-cloud', 'sakura-blossom', 'lagoon-serenity',
-      'aurora-violet', 'spatial-orbit', 'spatial-island', 'spatial-sanctuary', 'glacier-frost'
-    ];
-    curatedThemes.forEach(theme => {
+describe('6 Distinct & Unique Human Themes (Production Code)', () => {
+  it('applies all 6 distinct themes with unique character and contrast', () => {
+    const distinctThemes = ['honey', 'sage', 'aurora', 'peach', 'ocean', 'terracotta'];
+    distinctThemes.forEach(theme => {
       setTheme(theme);
       expect(document.body.classList.contains(`theme-${theme}`)).toBe(true);
       expect(localStorage.getItem('flowPlannerTheme')).toBe(theme);
     });
   });
 
-  it('smoothly maps legacy theme aliases to the closest curated theme', () => {
-    setTheme('aurora');
-    expect(document.body.classList.contains('theme-aurora-violet')).toBe(true);
+  it('smoothly maps legacy theme aliases to the 6 distinct themes', () => {
+    setTheme('honey-chamomile');
+    expect(document.body.classList.contains('theme-honey')).toBe(true);
 
-    setTheme('sage');
-    expect(document.body.classList.contains('theme-sage-breeze')).toBe(true);
+    setTheme('sage-breeze');
+    expect(document.body.classList.contains('theme-sage')).toBe(true);
 
-    setTheme('cozy');
-    expect(document.body.classList.contains('theme-cozy-amber')).toBe(true);
+    setTheme('aurora-violet');
+    expect(document.body.classList.contains('theme-aurora')).toBe(true);
+
+    setTheme('peach-cashmere');
+    expect(document.body.classList.contains('theme-peach')).toBe(true);
+
+    setTheme('lagoon');
+    expect(document.body.classList.contains('theme-ocean')).toBe(true);
+
+    setTheme('terracotta-sun');
+    expect(document.body.classList.contains('theme-terracotta')).toBe(true);
   });
 });
 

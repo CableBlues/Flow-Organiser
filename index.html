@@ -571,51 +571,19 @@
                 </div>
               </div>
 
-              <!-- SECTION 2: 15 KURATIERTE & MENSCHLICHE FARBSCHEMATA -->
-              <div class="space-y-2 pt-1 border-t border-white/5">
-                
-                <!-- 2A: WARM & MENSCHLICH -->
-                <div class="space-y-1">
-                  <div class="text-[9px] font-bold uppercase tracking-wider text-amber-300/90 font-mono flex items-center justify-between">
-                    <span>☕ Warm & Menschlich</span>
-                  </div>
-                  <div class="grid grid-cols-5 gap-1.5 p-1 bg-amber-950/20 border border-amber-500/20 rounded-2xl">
-                    <button onclick="setTheme('honey-chamomile')" class="h-6 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🍯 Honig & Kamille">🍯</button>
-                    <button onclick="setTheme('peach-cashmere')" class="h-6 rounded-xl bg-gradient-to-br from-rose-300 to-pink-500 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🍑 Pfirsich & Kaschmir">🍑</button>
-                    <button onclick="setTheme('terracotta-sun')" class="h-6 rounded-xl bg-gradient-to-br from-orange-400 to-amber-700 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🏺 Terrakotta & Abendrot">🏺</button>
-                    <button onclick="setTheme('cozy-amber')" class="h-6 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-600 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="☕ Cozy Sandelholz">☕</button>
-                    <button onclick="setTheme('matcha-latte')" class="h-6 rounded-xl bg-gradient-to-br from-lime-400 to-emerald-600 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🍵 Matcha & Vanille">🍵</button>
-                  </div>
+              <!-- SECTION 2: 6 CHARAKTERSTARKE FARBSCHEMATA (OHNE KATEGORISIERUNG) -->
+              <div class="space-y-1.5 pt-1 border-t border-white/5">
+                <div class="text-[9px] font-bold uppercase tracking-wider text-gray-400 font-mono flex items-center justify-between">
+                  <span data-i18n="settings_section_theme">🎨 Farbschema</span>
                 </div>
-
-                <!-- 2B: SANFTE NATUR & BERUHIGEND -->
-                <div class="space-y-1">
-                  <div class="text-[9px] font-bold uppercase tracking-wider text-emerald-300/90 font-mono flex items-center justify-between">
-                    <span>🌿 Sanfte Natur & Ruhe</span>
-                  </div>
-                  <div class="grid grid-cols-5 gap-1.5 p-1 bg-emerald-950/20 border border-emerald-500/20 rounded-2xl">
-                    <button onclick="setTheme('sage-breeze')" class="h-6 rounded-xl bg-gradient-to-br from-emerald-300 to-teal-600 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🍃 Salbei & Morgennebel">🍃</button>
-                    <button onclick="setTheme('eucalyptus-dew')" class="h-6 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-700 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🌿 Eukalyptus & Morgentau">🌿</button>
-                    <button onclick="setTheme('lavender-cloud')" class="h-6 rounded-xl bg-gradient-to-br from-purple-300 to-indigo-400 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🪻 Lavendel & Hafermilch">🪻</button>
-                    <button onclick="setTheme('sakura-blossom')" class="h-6 rounded-xl bg-gradient-to-br from-pink-300 to-rose-400 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🌸 Sakura & Kirschblüte">🌸</button>
-                    <button onclick="setTheme('lagoon-serenity')" class="h-6 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🌊 Lagune & Meeresbrise">🌊</button>
-                  </div>
+                <div class="grid grid-cols-6 gap-1.5 p-1.5 bg-black/40 border border-white/10 rounded-2xl">
+                  <button onclick="setTheme('honey')" class="h-7 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 border border-white/20 hover:scale-110 active:scale-95 transition flex items-center justify-center text-xs cursor-pointer shadow-md" title="🍯 Honig (Warmes Bernstein & Gold)">🍯</button>
+                  <button onclick="setTheme('sage')" class="h-7 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 border border-white/20 hover:scale-110 active:scale-95 transition flex items-center justify-center text-xs cursor-pointer shadow-md" title="🌿 Salbei (Frisches Botanik-Grün)">🌿</button>
+                  <button onclick="setTheme('aurora')" class="h-7 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 border border-white/20 hover:scale-110 active:scale-95 transition flex items-center justify-center text-xs cursor-pointer shadow-md" title="🌌 Aurora (Tiefes Nacht-Violett)">🌌</button>
+                  <button onclick="setTheme('peach')" class="h-7 rounded-xl bg-gradient-to-br from-rose-400 to-pink-500 border border-white/20 hover:scale-110 active:scale-95 transition flex items-center justify-center text-xs cursor-pointer shadow-md" title="🍑 Pfirsich (Sanftes Kaschmir-Rosé)">🍑</button>
+                  <button onclick="setTheme('ocean')" class="h-7 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 border border-white/20 hover:scale-110 active:scale-95 transition flex items-center justify-center text-xs cursor-pointer shadow-md" title="🌊 Ozean (Klares Meeres-Cyan)">🌊</button>
+                  <button onclick="setTheme('terracotta')" class="h-7 rounded-xl bg-gradient-to-br from-orange-400 to-amber-700 border border-white/20 hover:scale-110 active:scale-95 transition flex items-center justify-center text-xs cursor-pointer shadow-md" title="🏺 Terrakotta (Warme Ton-Erde)">🏺</button>
                 </div>
-
-                <!-- 2C: RÄUMLICHE TIEFE & NACHT -->
-                <div class="space-y-1">
-                  <div class="text-[9px] font-bold uppercase tracking-wider text-cyan-300/90 font-mono flex items-center justify-between">
-                    <span>🌌 Räumliche Tiefe & Nacht</span>
-                  </div>
-                  <div class="grid grid-cols-5 gap-1.5 p-1 bg-cyan-950/20 border border-cyan-500/20 rounded-2xl">
-                    <button onclick="setTheme('aurora-violet')" class="h-6 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="✨ Aurora Violett">✨</button>
-                    <button onclick="setTheme('spatial-orbit')" class="h-6 rounded-xl bg-gradient-to-br from-sky-400 to-purple-600 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🌌 3D Orbit-Deck">🌌</button>
-                    <button onclick="setTheme('spatial-island')" class="h-6 rounded-xl bg-gradient-to-br from-emerald-400 to-amber-400 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="🏝️ 3D Floating Island">🏝️</button>
-                    <button onclick="setTheme('spatial-sanctuary')" class="h-6 rounded-xl bg-gradient-to-br from-teal-400 to-fuchsia-400 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="⛩️ 3D Crystal Zen">⛩️</button>
-                    <button onclick="setTheme('glacier-frost')" class="h-6 rounded-xl bg-gradient-to-br from-cyan-300 to-slate-500 border border-white/20 hover:scale-110 transition flex items-center justify-center text-[10px] cursor-pointer shadow-sm" title="❄️ Gletscher & Eiskristall">❄️</button>
-                  </div>
-                </div>
-
               </div>
 
               <!-- SECTION 3: QUICK LINKS -->

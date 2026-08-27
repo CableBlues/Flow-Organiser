@@ -720,36 +720,46 @@ function getSimilarTheme(current) {
 }
 
 const ALL_VALID_THEMES = [
-  'honey-chamomile', 'peach-cashmere', 'terracotta-sun', 'cozy-amber', 'matcha-latte',
-  'sage-breeze', 'eucalyptus-dew', 'lavender-cloud', 'sakura-blossom', 'lagoon-serenity',
-  'aurora-violet', 'spatial-orbit', 'spatial-island', 'spatial-sanctuary', 'glacier-frost'
+  'honey', 'sage', 'aurora', 'peach', 'ocean', 'terracotta'
 ];
 
 const THEME_ALIASES = {
-  'aurora': 'aurora-violet',
-  'sage': 'sage-breeze',
-  'cozy': 'cozy-amber',
-  'forest': 'eucalyptus-dew',
-  'architect': 'glacier-frost',
-  'glacier': 'glacier-frost',
-  'charcoal': 'sage-breeze',
-  'executive': 'spatial-island',
-  'neon-cyber': 'peach-cashmere',
-  'carbon': 'honey-chamomile',
-  'holo-chrome': 'lagoon-serenity',
-  'synthwave': 'lavender-cloud',
-  'citrus': 'honey-chamomile',
-  'sakura': 'sakura-blossom',
-  'lagoon': 'lagoon-serenity',
-  'matcha': 'matcha-latte',
-  'terracotta': 'terracotta-sun',
-  'spatial-galaxy': 'aurora-violet',
-  'spatial-metropolis': 'spatial-orbit'
+  'honey-chamomile': 'honey',
+  'cozy-amber': 'honey',
+  'cozy': 'honey',
+  'citrus': 'honey',
+  'carbon': 'honey',
+  'sage-breeze': 'sage',
+  'eucalyptus-dew': 'sage',
+  'forest': 'sage',
+  'matcha': 'sage',
+  'matcha-latte': 'sage',
+  'charcoal': 'sage',
+  'aurora-violet': 'aurora',
+  'lavender-cloud': 'aurora',
+  'spatial-orbit': 'aurora',
+  'spatial-galaxy': 'aurora',
+  'synthwave': 'aurora',
+  'peach-cashmere': 'peach',
+  'sakura': 'peach',
+  'sakura-blossom': 'peach',
+  'neon-cyber': 'peach',
+  'lagoon': 'ocean',
+  'lagoon-serenity': 'ocean',
+  'glacier': 'ocean',
+  'glacier-frost': 'ocean',
+  'spatial-sanctuary': 'ocean',
+  'spatial-island': 'ocean',
+  'spatial-metropolis': 'ocean',
+  'holo-chrome': 'ocean',
+  'architect': 'ocean',
+  'executive': 'ocean',
+  'terracotta-sun': 'terracotta'
 };
 
 function setTheme(theme) {
   if (THEME_ALIASES[theme]) theme = THEME_ALIASES[theme];
-  if (!ALL_VALID_THEMES.includes(theme)) theme = 'honey-chamomile';
+  if (!ALL_VALID_THEMES.includes(theme)) theme = 'honey';
   if (typeof window !== 'undefined') window.currentTheme = theme;
   if (typeof globalThis !== 'undefined') globalThis.currentTheme = theme;
   try { currentTheme = theme; } catch(e) {}
