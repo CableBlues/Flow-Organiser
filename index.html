@@ -73,7 +73,7 @@
     </div>
 
     <!-- HEADER BAR -->
-    <header class="relative z-[9999] flex flex-nowrap items-center justify-between gap-2.5 md:gap-3 mb-2.5 w-full bg-[#13131c]/90 px-2.5 py-1.5 md:px-4 md:py-2 border border-white/10 rounded-2xl backdrop-blur-xl shadow-2xl">
+    <header class="relative z-[9999] flex flex-nowrap items-center justify-between gap-3 md:gap-6 mb-3 w-full bg-[#13131c]/90 px-3 py-2 md:px-5 md:py-2.5 border border-white/10 rounded-2xl backdrop-blur-xl shadow-2xl">
       
       <!-- Subtile Wave-Bewegung im Hintergrund -->
       <div class="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none opacity-20 zen-hide">
@@ -83,241 +83,231 @@
       </div>
 
       <!-- ====================================================================== -->
-      <!-- LINKE SEITE: BRANDING, WORKSPACE & TIMER (FOKUS) -->
+      <!-- 1. LINKE ZONE: BRANDING & FOKUS-TIMER -->
       <!-- ====================================================================== -->
-      <div class="flex items-center gap-2 md:gap-2.5 shrink-0">
+      <div class="flex items-center gap-2.5 md:gap-3 shrink-0">
         
-        <!-- Gruppe 1: Logo & Workspace Switch -->
-        <div class="flex items-center gap-1.5 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm">
-          <!-- Logo & Hover Popup -->
-          <div class="relative inline-block group" onmouseenter="document.getElementById('panel-logo-guide').classList.remove('hidden')" onmouseleave="document.getElementById('panel-logo-guide').classList.add('hidden')">
-            <div onclick="triggerLogoReloadFlow(this)" class="flow-logo-container relative inline-flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-gradient-to-r from-[#0d1527] via-[#10101e] to-[#180d24] text-xs md:text-sm font-bold font-display text-white transition-all duration-300 group cursor-pointer overflow-hidden border border-cyan-500/30" title="Flow-Anwendung neu laden (mit Wellen-Effekt)">
-              
-              <!-- Kinetic Infinity Ribbon SVG Icon -->
-              <svg class="w-5 h-5 shrink-0 flow-logo-svg" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="flowGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#00f2fe" />
-                    <stop offset="50%" stop-color="#38bdf8" />
-                    <stop offset="100%" stop-color="#818cf8" />
-                  </linearGradient>
-                  <linearGradient id="flowGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stop-color="#c084fc" />
-                    <stop offset="50%" stop-color="#ec4899" />
-                    <stop offset="100%" stop-color="#f43f5e" />
-                  </linearGradient>
-                  <radialGradient id="flowCoreGlow" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
-                    <stop offset="40%" stop-color="#06b6d4" stop-opacity="0.6" />
-                    <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0" />
-                  </radialGradient>
-                  <filter id="flowGlowFilter" x="-30%" y="-30%" width="160%" height="160%">
-                    <feGaussianBlur stdDeviation="2" result="blur" />
-                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                  </filter>
-                </defs>
+        <!-- Logo & Hover Popup -->
+        <div class="relative inline-block group" onmouseenter="document.getElementById('panel-logo-guide').classList.remove('hidden')" onmouseleave="document.getElementById('panel-logo-guide').classList.add('hidden')">
+          <div onclick="triggerLogoReloadFlow(this)" class="flow-logo-container relative inline-flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-gradient-to-r from-[#0d1527] via-[#10101e] to-[#180d24] text-xs md:text-sm font-bold font-display text-white transition-all duration-300 group cursor-pointer overflow-hidden border border-cyan-500/30" title="Flow-Anwendung neu laden (mit Wellen-Effekt)">
+            
+            <!-- Kinetic Infinity Ribbon SVG Icon -->
+            <svg class="w-5 h-5 shrink-0 flow-logo-svg" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="flowGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00f2fe" />
+                  <stop offset="50%" stop-color="#38bdf8" />
+                  <stop offset="100%" stop-color="#818cf8" />
+                </linearGradient>
+                <linearGradient id="flowGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#c084fc" />
+                  <stop offset="50%" stop-color="#ec4899" />
+                  <stop offset="100%" stop-color="#f43f5e" />
+                </linearGradient>
+                <radialGradient id="flowCoreGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+                  <stop offset="40%" stop-color="#06b6d4" stop-opacity="0.6" />
+                  <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0" />
+                </radialGradient>
+                <filter id="flowGlowFilter" x="-30%" y="-30%" width="160%" height="160%">
+                  <feGaussianBlur stdDeviation="2" result="blur" />
+                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+              </defs>
 
-                <!-- Ambient Glow Core -->
-                <circle cx="22" cy="22" r="13" fill="url(#flowCoreGlow)" opacity="0.45" />
+              <!-- Ambient Glow Core -->
+              <circle cx="22" cy="22" r="13" fill="url(#flowCoreGlow)" opacity="0.45" />
 
-                <!-- Wave 1 (Cyan -> Indigo Primary Flow Ribbon) -->
-                <path d="M 7,22 C 12,10 20,34 28,22 C 32,16 36,17 37,22 C 38,27 34,28 30,22 C 22,10 14,34 7,22 Z" 
-                      fill="url(#flowGrad1)" 
-                      opacity="0.95" 
-                      filter="url(#flowGlowFilter)" />
+              <!-- Wave 1 (Cyan -> Indigo Primary Flow Ribbon) -->
+              <path d="M 7,22 C 12,10 20,34 28,22 C 32,16 36,17 37,22 C 38,27 34,28 30,22 C 22,10 14,34 7,22 Z" 
+                    fill="url(#flowGrad1)" 
+                    opacity="0.95" 
+                    filter="url(#flowGlowFilter)" />
 
-                <!-- Wave 2 (Violet -> Rose Intertwined Counter Ribbon) -->
-                <path d="M 37,22 C 32,34 24,10 16,22 C 12,28 8,27 7,22 C 6,17 10,16 14,22 C 22,34 30,10 37,22 Z" 
-                      fill="url(#flowGrad2)" 
-                      opacity="0.85" 
-                      style="mix-blend-mode: screen;" />
+              <!-- Wave 2 (Violet -> Rose Intertwined Counter Ribbon) -->
+              <path d="M 37,22 C 32,34 24,10 16,22 C 12,28 8,27 7,22 C 6,17 10,16 14,22 C 22,34 30,10 37,22 Z" 
+                    fill="url(#flowGrad2)" 
+                    opacity="0.85" 
+                    style="mix-blend-mode: screen;" />
 
-                <!-- Dynamic Orbiting Light Spark -->
-                <g class="flow-orb-node">
-                  <circle cx="22" cy="22" r="2.2" fill="#ffffff" filter="drop-shadow(0 0 4px #38bdf8)" />
-                </g>
-              </svg>
+              <!-- Dynamic Orbiting Light Spark -->
+              <g class="flow-orb-node">
+                <circle cx="22" cy="22" r="2.2" fill="#ffffff" filter="drop-shadow(0 0 4px #38bdf8)" />
+              </g>
+            </svg>
 
-              <!-- Holographic Shimmer Brand Text -->
-              <span class="tracking-tight leading-none flow-logo-text font-black select-none text-sm md:text-base tracking-wide">Flow</span>
-              
-              <!-- Subtle Live Sparkle Pill -->
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping opacity-75 shrink-0"></span>
-            </div>
-
-            <!-- DYNAMISCHES HOVER POPUP (SCHNELLSTART-GUIDE & TASTENKÜRZEL) -->
-            <div id="panel-logo-guide" class="hidden absolute left-0 top-[calc(100%+8px)] z-[110] w-[340px] sm:w-[380px] bg-[#111116] border border-purple-500/40 p-4 rounded-2xl shadow-2xl transition duration-300 animate-fade-in text-left">
-              <h4 class="font-bold text-sm font-display mb-2 text-white flex items-center gap-2">
-                <i data-lucide="help-circle" class="w-4 h-4 text-purple-400"></i>
-                <span>Flow Schnellstart-Guide</span>
-              </h4>
-              <p class="text-[11px] text-gray-400 mb-3 leading-relaxed">
-                Klicke auf ein Element, um die Funktion direkt zu öffnen. Nutze die Tasten außerhalb von Eingabefeldern!
-              </p>
-              
-              <!-- List of Functions -->
-              <div class="space-y-1.5 max-h-[320px] overflow-y-auto pr-1">
-                <!-- Item 1: Focus Mode -->
-                <div onclick="toggleMinimalist(); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-white flex items-center gap-1.5">
-                      <i data-lucide="eye" class="w-3.5 h-3.5 text-purple-400"></i> Fokus-Modus
-                    </span>
-                    <span class="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 text-[9px] font-bold font-mono">Taste [F]</span>
-                  </div>
-                  <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
-                    Blendet das ablenkende Hauptboard aus und zeigt ausschließlich deine aktuell wichtigste To-Do-Aufgabe in einer minimalistischen Zen-Ansicht.
-                  </p>
-                </div>
-
-                <!-- Item 2: Focus Timer -->
-                <div onclick="toggleTimer(); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-white flex items-center gap-1.5">
-                      <i data-lucide="timer" class="w-3.5 h-3.5 text-amber-400"></i> Fokus-Timer
-                    </span>
-                    <div class="flex gap-1">
-                      <span class="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300 text-[9px] font-bold font-mono">Start/Pause [T]</span>
-                      <span class="px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-300 text-[9px] font-bold font-mono">Stop [S]</span>
-                    </div>
-                  </div>
-                  <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
-                    Starte fokussierte Arbeitssitzungen mit motivierender, periodischer Sprachbegleitung und stimmungsvoller Hintergrundmusik.
-                  </p>
-                </div>
-
-                <!-- Item 3: Was nun? -->
-                <div onclick="openHelperModal('pick'); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-white flex items-center gap-1.5">
-                      <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-purple-300"></i> Was nun?
-                    </span>
-                    <span class="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 text-[9px] font-bold font-mono">Taste [W]</span>
-                  </div>
-                  <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
-                    Verringert kognitive Blockaden, indem eine zufällige Aufgabe basierend auf deiner aktuellen Tagespriorität vorgeschlagen wird.
-                  </p>
-                </div>
-
-                <!-- Item 4: Pause & Reizpause -->
-                <div onclick="togglePanel('pause-dropdown'); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-white flex items-center gap-1.5">
-                      <i data-lucide="shield" class="w-3.5 h-3.5 text-teal-400"></i> Reizpause & Erholung
-                    </span>
-                    <span class="px-1.5 py-0.5 rounded bg-teal-500/20 text-teal-300 text-[9px] font-bold font-mono">Taste [P]</span>
-                  </div>
-                  <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
-                    Unterstützt dich bei Reizüberflutung mit geführten Atemtakt-Rhythmen, 5-4-3-2-1 Achtsamkeits-Erdung oder schnellen Entspannungspausen.
-                  </p>
-                </div>
-
-                <!-- Item 5: Kochen -->
-                <div onclick="togglePanel('daily'); switchDailyTab('cooking'); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-white flex items-center gap-1.5">
-                      <i data-lucide="cooking-pot" class="w-3.5 h-3.5 text-orange-400"></i> Kochen & Vorrat
-                    </span>
-                    <span class="px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-300 text-[9px] font-bold font-mono">Taste [K]</span>
-                  </div>
-                  <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
-                    Trage deine vorhandenen Zutaten ein und lass dir ein passendes Rezept samt strukturierter Schritt-für-Schritt-Anleitung generieren.
-                  </p>
-                </div>
-
-                <!-- Item 6: Einkauf -->
-                <div onclick="togglePanel('daily'); switchDailyTab('shopping'); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-white flex items-center gap-1.5">
-                      <i data-lucide="shopping-basket" class="w-3.5 h-3.5 text-emerald-400"></i> Einkaufsliste
-                    </span>
-                    <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[9px] font-bold font-mono">Taste [E]</span>
-                  </div>
-                  <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
-                    Verwalte deine Einkäufe und sieh dir kluge Spartipps an, die auf den Inhalten deines Einkaufskorbs basieren.
-                  </p>
-                </div>
-
-                <!-- Item 7: Sport -->
-                <div onclick="openSportModal(); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-white flex items-center gap-1.5">
-                      <i data-lucide="dumbbell" class="w-3.5 h-3.5 text-orange-400 animate-pulse"></i> Sport & Bewegung
-                    </span>
-                    <span class="px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-300 text-[9px] font-bold font-mono">Taste [O]</span>
-                  </div>
-                  <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
-                    Aktiviere deinen Körper sanft mit 1-Minuten-Übungen, die perfekt auf dein aktuelles Energieniveau (Spoons) abgestimmt sind.
-                  </p>
-                </div>
-
-                <!-- Item 9: Statistik -->
-                <div onclick="togglePanel('report'); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-white flex items-center gap-1.5">
-                      <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 text-purple-300"></i> Statistik & Erfolge
-                    </span>
-                    <span class="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 text-[9px] font-bold font-mono">Taste [R]</span>
-                  </div>
-                  <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
-                    Analysiere deine Fortschritte, sieh dir deine wöchentliche Aktivität an und exportiere deine täglichen Haken als Bild-Report.
-                  </p>
-                </div>
-
-                <!-- Item 11: Beispiel-Aufgaben verwalten -->
-                <div onclick="openSampleManagerModal(); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-amber-500/50 hover:bg-amber-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-white flex items-center gap-1.5">
-                      <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i> Beispiel-Aufgaben verwalten
-                    </span>
-                    <span class="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[9px] font-bold font-mono">Vorlagen</span>
-                  </div>
-                  <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
-                    Beispiel-Aufgaben für Haushalt & Tag neu laden, individuell anpassen oder Board komplett leeren.
-                  </p>
-                </div>
-
-                <!-- Item 12: Sonstige Abkürzungen -->
-                <div class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/30 transition flex flex-col gap-1 cursor-default">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-white flex items-center gap-1.5">
-                      <i data-lucide="keyboard" class="w-3.5 h-3.5 text-gray-300"></i> Weitere Abkürzungen
-                    </span>
-                    <span class="px-1.5 py-0.5 rounded bg-white/10 text-gray-300 text-[9px] font-bold font-mono">Mehrere</span>
-                  </div>
-                  <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
-                    • <b>Taste [U]</b>: Letzte Aktion rückgängig machen (Undo)<br>
-                    • <b>Taste [A]</b>: Neuen Kalendertermin/Termin hinzufügen<br>
-                    • <b>Taste [B]</b>: "Impuls" (Schwung & Fokus) öffnen<br>
-                    • <b>Taste [I]</b>: Inspirierenden Impuls öffnen<br>
-                    • <b>Taste [H]</b>: Diese Kurzanleitung öffnen/schließen<br>
-                    • <b>Taste [Esc]</b>: Alle geöffneten Modale oder Panels schließen
-                  </p>
-                </div>
-
-              </div>
-
-              <!-- Panel Footer: Privacy & Version -->
-              <div class="mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[10px] text-gray-500">
-                <span class="font-mono">Flow Suite · Local-First</span>
-                <button onclick="openPrivacyModal(); document.getElementById('panel-logo-guide').classList.add('hidden');" class="text-emerald-400 hover:text-emerald-300 font-semibold transition cursor-pointer hover:underline flex items-center gap-1">
-                  <i data-lucide="shield-check" class="w-3 h-3"></i>
-                  <span>Datenschutz & Impressum</span>
-                </button>
-              </div>
-            </div>
+            <!-- Holographic Shimmer Brand Text -->
+            <span class="tracking-tight leading-none flow-logo-text font-black select-none text-sm md:text-base tracking-wide">Flow</span>
+            
+            <!-- Subtle Live Sparkle Pill -->
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping opacity-75 shrink-0"></span>
           </div>
 
-          <!-- Work-Life Compact Switch -->
-          <button id="btn-workspace-toggle" onclick="toggleWorkspace()" class="h-8 px-2.5 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 hover:border-purple-500/50 rounded-xl text-purple-200 flex items-center gap-1.5 text-xs font-semibold cursor-pointer transition-all duration-300 shadow-sm" title="Zwischen Privat und Arbeit umschalten">
-            <span id="ws-toggle-icon" class="text-xs">🏠</span>
-            <span id="ws-toggle-text" class="text-[11px] font-bold text-purple-300" data-i18n="workspace_private">Privat</span>
-          </button>
+          <!-- DYNAMISCHES HOVER POPUP (SCHNELLSTART-GUIDE & TASTENKÜRZEL) -->
+          <div id="panel-logo-guide" class="hidden absolute left-0 top-[calc(100%+8px)] z-[110] w-[340px] sm:w-[380px] bg-[#111116] border border-purple-500/40 p-4 rounded-2xl shadow-2xl transition duration-300 animate-fade-in text-left">
+            <h4 class="font-bold text-sm font-display mb-2 text-white flex items-center gap-2">
+              <i data-lucide="help-circle" class="w-4 h-4 text-purple-400"></i>
+              <span>Flow Schnellstart-Guide</span>
+            </h4>
+            <p class="text-[11px] text-gray-400 mb-3 leading-relaxed">
+              Klicke auf ein Element, um die Funktion direkt zu öffnen. Nutze die Tasten außerhalb von Eingabefeldern!
+            </p>
+            
+            <!-- List of Functions -->
+            <div class="space-y-1.5 max-h-[320px] overflow-y-auto pr-1">
+              <!-- Item 1: Focus Mode -->
+              <div onclick="toggleMinimalist(); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="eye" class="w-3.5 h-3.5 text-purple-400"></i> Fokus-Modus
+                  </span>
+                  <span class="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 text-[9px] font-bold font-mono">Taste [F]</span>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  Blendet das ablenkende Hauptboard aus und zeigt ausschließlich deine aktuell wichtigste To-Do-Aufgabe in einer minimalistischen Zen-Ansicht.
+                </p>
+              </div>
+
+              <!-- Item 2: Focus Timer -->
+              <div onclick="toggleTimer(); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="timer" class="w-3.5 h-3.5 text-amber-400"></i> Fokus-Timer
+                  </span>
+                  <div class="flex gap-1">
+                    <span class="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300 text-[9px] font-bold font-mono">Start/Pause [T]</span>
+                    <span class="px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-300 text-[9px] font-bold font-mono">Stop [S]</span>
+                  </div>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  Starte fokussierte Arbeitssitzungen mit motivierender, periodischer Sprachbegleitung und stimmungsvoller Hintergrundmusik.
+                </p>
+              </div>
+
+              <!-- Item 3: Was nun? -->
+              <div onclick="openHelperModal('pick'); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-purple-300"></i> Was nun?
+                  </span>
+                  <span class="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 text-[9px] font-bold font-mono">Taste [W]</span>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  Verringert kognitive Blockaden, indem eine zufällige Aufgabe basierend auf deiner aktuellen Tagespriorität vorgeschlagen wird.
+                </p>
+              </div>
+
+              <!-- Item 4: Pause & Reizpause -->
+              <div onclick="togglePanel('pause-dropdown'); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="shield" class="w-3.5 h-3.5 text-teal-400"></i> Reizpause & Erholung
+                    </span>
+                  <span class="px-1.5 py-0.5 rounded bg-teal-500/20 text-teal-300 text-[9px] font-bold font-mono">Taste [P]</span>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  Unterstützt dich bei Reizüberflutung mit geführten Atemtakt-Rhythmen, 5-4-3-2-1 Achtsamkeits-Erdung oder schnellen Entspannungspausen.
+                </p>
+              </div>
+
+              <!-- Item 5: Kochen -->
+              <div onclick="togglePanel('daily'); switchDailyTab('cooking'); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="cooking-pot" class="w-3.5 h-3.5 text-orange-400"></i> Kochen & Vorrat
+                  </span>
+                  <span class="px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-300 text-[9px] font-bold font-mono">Taste [K]</span>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  Trage deine vorhandenen Zutaten ein und lass dir ein passendes Rezept samt strukturierter Schritt-für-Schritt-Anleitung generieren.
+                </p>
+              </div>
+
+              <!-- Item 6: Einkauf -->
+              <div onclick="togglePanel('daily'); switchDailyTab('shopping'); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="shopping-basket" class="w-3.5 h-3.5 text-emerald-400"></i> Einkaufsliste
+                  </span>
+                  <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[9px] font-bold font-mono">Taste [E]</span>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  Verwalte deine Einkäufe und sieh dir kluge Spartipps an, die auf den Inhalten deines Einkaufskorbs basieren.
+                </p>
+              </div>
+
+              <!-- Item 7: Sport -->
+              <div onclick="openSportModal(); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="dumbbell" class="w-3.5 h-3.5 text-orange-400 animate-pulse"></i> Sport & Bewegung
+                  </span>
+                  <span class="px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-300 text-[9px] font-bold font-mono">Taste [O]</span>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  Aktiviere deinen Körper sanft mit 1-Minuten-Übungen, die perfekt auf dein aktuelles Energieniveau (Spoons) abgestimmt sind.
+                </p>
+              </div>
+
+              <!-- Item 9: Statistik -->
+              <div onclick="togglePanel('report'); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 text-purple-300"></i> Statistik & Erfolge
+                  </span>
+                  <span class="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 text-[9px] font-bold font-mono">Taste [R]</span>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  Analysiere deine Fortschritte, sieh dir deine wöchentliche Aktivität an und exportiere deine täglichen Haken als Bild-Report.
+                </p>
+              </div>
+
+              <!-- Item 11: Beispiel-Aufgaben verwalten -->
+              <div onclick="openSampleManagerModal(); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-amber-500/50 hover:bg-amber-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i> Beispiel-Aufgaben verwalten
+                  </span>
+                  <span class="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[9px] font-bold font-mono">Vorlagen</span>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  Beispiel-Aufgaben für Haushalt & Tag neu laden, individuell anpassen oder Board komplett leeren.
+                </p>
+              </div>
+
+              <!-- Item 12: Sonstige Abkürzungen -->
+              <div class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/30 transition flex flex-col gap-1 cursor-default">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="keyboard" class="w-3.5 h-3.5 text-gray-300"></i> Weitere Abkürzungen
+                  </span>
+                  <span class="px-1.5 py-0.5 rounded bg-white/10 text-gray-300 text-[9px] font-bold font-mono">Mehrere</span>
+                </div>
+                <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
+                  • <b>Taste [U]</b>: Letzte Aktion rückgängig machen (Undo)<br>
+                  • <b>Taste [A]</b>: Neuen Kalendertermin/Termin hinzufügen<br>
+                  • <b>Taste [B]</b>: "Impuls" (Schwung & Fokus) öffnen<br>
+                  • <b>Taste [I]</b>: Inspirierenden Impuls öffnen<br>
+                  • <b>Taste [H]</b>: Diese Kurzanleitung öffnen/schließen<br>
+                  • <b>Taste [Esc]</b>: Alle geöffneten Modale oder Panels schließen
+                </p>
+              </div>
+
+            </div>
+
+            <!-- Panel Footer: Privacy & Version -->
+            <div class="mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[10px] text-gray-500">
+              <span class="font-mono">Flow Suite · Local-First</span>
+              <button onclick="openPrivacyModal(); document.getElementById('panel-logo-guide').classList.add('hidden');" class="text-emerald-400 hover:text-emerald-300 font-semibold transition cursor-pointer hover:underline flex items-center gap-1">
+                <i data-lucide="shield-check" class="w-3 h-3"></i>
+                <span>Datenschutz & Impressum</span>
+              </button>
+            </div>
+          </div>
         </div>
 
-        <!-- Gruppe 2: Timer & Fokus-Modus -->
+        <!-- Fokus-Timer (Zentral für die Arbeitsphase) -->
         <div class="hidden md:flex items-center gap-1.5 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm">
-          <!-- Timer Container -->
           <div id="timer-trigger-container" class="flex items-center gap-2 h-8 px-2 bg-black/30 border border-white/5 rounded-xl">
             <div class="flex flex-col items-center justify-center min-w-[36px]">
               <span id="timer-display" class="font-display font-black text-xs tracking-wider text-[var(--accent-light)] leading-none">02:00</span>
@@ -358,17 +348,11 @@
             </div>
             <span id="active-timer-badge" class="hidden text-[9px] text-[var(--accent-light)] font-semibold border-l border-white/15 pl-1.5 truncate max-w-[60px]"></span>
           </div>
-
-          <!-- Focus Mode Toggle -->
-          <button id="btn-focus-mode" onclick="toggleMinimalist()" class="h-8 px-2.5 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 hover:border-purple-500/60 rounded-xl text-purple-200 flex items-center gap-1.5 text-xs font-bold cursor-pointer transition-all duration-300 shadow-sm" title="Minimalistischen Fokus-Modus ein- oder ausschalten" aria-label="Minimalistischen Fokus-Modus ein- oder ausschalten">
-            <i id="zen-btn-icon" data-lucide="eye" class="w-3.5 h-3.5 text-purple-400 animate-pulse"></i>
-            <span class="hidden 2xl:inline" id="minimal-mode-btn-text" data-i18n="minimal_mode">Focus Mode</span>
-          </button>
         </div>
 
       </div>
 
-      <!-- MOBILE-ONLY HEADER ACTIONS (Workspace, Suche, Live-Sync & Quick-Menü) -->
+      <!-- MOBILE-ONLY HEADER ACTIONS -->
       <div class="flex md:hidden items-center gap-1.5 shrink-0">
         <button onclick="toggleWorkspace()" class="h-8 px-2.5 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 text-purple-200 rounded-xl flex items-center gap-1 text-xs font-bold transition cursor-pointer shadow-sm" title="Zwischen Privat und Arbeit umschalten">
           <span class="text-xs">🏠</span>
@@ -387,9 +371,18 @@
       </div>
 
       <!-- ====================================================================== -->
-      <!-- ZENTRUM: DATUM & MONATSKALENDER (HERVORRAGEND PLATZIERT) -->
+      <!-- 2. ZENTRALE ZONE: FOCUS-MODE + DATUM & KALENDER + WAS NUN? -->
+      <!-- (Exakt zentriert und ausgerichtet mit den Flow Tools) -->
       <!-- ====================================================================== -->
-      <div class="hidden lg:flex items-center justify-center flex-1 min-w-0 mx-2 zen-hide">
+      <div class="hidden lg:flex items-center justify-center gap-2 md:gap-3 flex-1 min-w-0 mx-2 zen-hide">
+        
+        <!-- Focus Mode Toggle (Jetzt links neben dem Datum) -->
+        <button id="btn-focus-mode" onclick="toggleMinimalist()" class="h-8 px-2.5 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 hover:border-purple-500/60 rounded-xl text-purple-200 flex items-center gap-1.5 text-xs font-bold cursor-pointer transition-all duration-300 shadow-sm shrink-0" title="Minimalistischen Fokus-Modus ein- oder ausschalten" aria-label="Minimalistischen Fokus-Modus ein- oder ausschalten">
+          <i id="zen-btn-icon" data-lucide="eye" class="w-3.5 h-3.5 text-purple-400 animate-pulse"></i>
+          <span class="hidden 2xl:inline" id="minimal-mode-btn-text" data-i18n="minimal_mode">Focus Mode</span>
+        </button>
+
+        <!-- Zentrales Datum & Monatskalender Dropdown -->
         <div id="date-container" onmouseenter="openCalendarHover()" onmouseleave="closeCalendarHover()" class="flex items-center justify-center p-1 px-3 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.08] hover:border-purple-500/40 rounded-2xl shadow-sm shrink-0 transition-all duration-300 relative group cursor-pointer">
           <div class="flex items-center gap-2 h-8 px-1">
             <button onclick="togglePanel('calendar-dropdown')" id="date-calendar-btn" class="h-6 w-6 flex items-center justify-center rounded-lg bg-purple-500/15 text-purple-300 group-hover:bg-purple-500/25 group-hover:text-purple-200 transition-all duration-300" title="Monatskalender und Termine anzeigen" aria-label="Monatskalender und Termine anzeigen">
@@ -409,20 +402,21 @@
             <div id="cal-days-grid" class="grid grid-cols-7 gap-1 text-[10px] text-center font-semibold font-mono"></div>
           </div>
         </div>
+
+        <!-- Was nun? (Jetzt rechts neben dem Datum) -->
+        <button id="btn-whatnow-dance" onclick="openHelperModal('pick')" class="h-8 w-8 flex items-center justify-center rounded-xl text-amber-300 hover:text-amber-200 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 cursor-pointer transition-all duration-300 shrink-0 shadow-sm" title="Was nun? – Zufällige Aufgabe vorschlagen" aria-label="Was nun? – Zufällige Aufgabe vorschlagen">
+          <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-amber-300 animate-pulse"></i>
+        </button>
+
       </div>
 
       <!-- ====================================================================== -->
-      <!-- RECHTE SEITE: INSIGHTS, PAUSE, SUCHE, UNDO/RESET & OPTIONEN -->
+      <!-- 3. RECHTE ZONE: STATISTIK, PAUSE, SUCHE, UNDO/RESET, PRIVAT/WORK & OPTIONEN -->
       <!-- ====================================================================== -->
-      <div class="hidden md:flex items-center gap-2 md:gap-2.5 shrink-0 zen-hide">
+      <div class="hidden md:flex items-center gap-2 md:gap-3 shrink-0 zen-hide">
         
-        <!-- Gruppe 3: Rhythmus, Statistik & Pause -->
+        <!-- Gruppe A: Statistik & Pause -->
         <div class="flex items-center gap-1.5 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm">
-          <!-- Was nun? (Kompakter Icon-Button) -->
-          <button id="btn-whatnow-dance" onclick="openHelperModal('pick')" class="h-8 w-8 flex items-center justify-center rounded-xl text-amber-300 hover:text-amber-200 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 cursor-pointer transition-all duration-300 shrink-0 shadow-sm" title="Was nun? – Zufällige Aufgabe vorschlagen" aria-label="Was nun? – Zufällige Aufgabe vorschlagen">
-            <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-amber-300 animate-pulse"></i>
-          </button>
-
           <!-- Statistik -->
           <div class="relative group cursor-pointer">
             <button onclick="togglePanel('report')" class="h-8 px-2.5 border border-white/10 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] hover:border-purple-500/30 text-gray-200 flex items-center gap-1.5 text-xs font-semibold cursor-pointer transition whitespace-nowrap shadow-sm" title="Erledigungsstatistiken und Diagramme einsehen">
@@ -524,9 +518,9 @@
           </div>
         </div>
 
-        <!-- Gruppe 4: SUCHE VOR UNDO, RESET & OPTIONEN -->
+        <!-- Gruppe B: Suche, Undo/Reset, Privat/Arbeit & Optionen -->
         <div class="flex items-center gap-1.5 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm">
-          <!-- 1. Quick Search (Strg+K) - JETZT VOR UNDO -->
+          <!-- 1. Quick Search (Strg+K) - Vor Undo -->
           <button onclick="openCommandPalette()" class="h-8 w-8 flex items-center justify-center border border-white/10 hover:border-purple-500/40 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-purple-300 hover:text-white cursor-pointer transition shadow-sm" title="Suche & Befehle (Strg+K)" aria-label="Suche & Befehle">
             <i data-lucide="search" class="w-3.5 h-3.5 text-purple-300"></i>
           </button>
@@ -541,7 +535,13 @@
 
           <div class="h-5 w-[1px] bg-white/10 mx-0.5"></div>
 
-          <!-- 3. EINSTELLUNGEN MIT HOVER & KLICK POPUP -->
+          <!-- 3. Work-Life Switch (Jetzt vor Optionen platziert) -->
+          <button id="btn-workspace-toggle" onclick="toggleWorkspace()" class="h-8 px-2.5 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 hover:border-purple-500/50 rounded-xl text-purple-200 flex items-center gap-1.5 text-xs font-semibold cursor-pointer transition-all duration-300 shadow-sm" title="Zwischen Privat und Arbeit umschalten">
+            <span id="ws-toggle-icon" class="text-xs">🏠</span>
+            <span id="ws-toggle-text" class="text-[11px] font-bold text-purple-300" data-i18n="workspace_private">Privat</span>
+          </button>
+
+          <!-- 4. EINSTELLUNGEN MIT HOVER & KLICK POPUP -->
           <div class="relative group cursor-pointer" onmouseenter="document.getElementById('panel-settings-dropdown').classList.remove('hidden')" onmouseleave="document.getElementById('panel-settings-dropdown').classList.add('hidden')">
             <button onclick="togglePanel('settings-dropdown')" class="h-8 px-2.5 flex items-center gap-1.5 border border-white/10 hover:border-purple-500/40 rounded-xl bg-white/[0.03] hover:bg-purple-500/15 text-purple-300 hover:text-white cursor-pointer transition shadow-sm" title="Optionen, Farbschemata, Sprache & Sync">
               <i data-lucide="settings" class="w-3.5 h-3.5 text-purple-300"></i>
