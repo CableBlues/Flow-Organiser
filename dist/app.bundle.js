@@ -11226,7 +11226,12 @@ ${listStr}`;
     "spatial-island",
     "spatial-metropolis",
     "spatial-galaxy",
-    "spatial-sanctuary"
+    "spatial-sanctuary",
+    "honey-chamomile",
+    "peach-cashmere",
+    "lavender-cloud",
+    "eucalyptus-dew",
+    "terracotta-sun"
   ];
   function setTheme(theme) {
     if (!ALL_VALID_THEMES.includes(theme)) theme = "aurora";

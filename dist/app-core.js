@@ -722,7 +722,8 @@ function getSimilarTheme(current) {
 const ALL_VALID_THEMES = [
   'aurora', 'sage', 'cozy', 'forest', 'architect', 'glacier', 'charcoal', 'executive',
   'neon-cyber', 'carbon', 'holo-chrome', 'synthwave', 'citrus', 'sakura', 'lagoon', 'matcha',
-  'spatial-orbit', 'spatial-island', 'spatial-metropolis', 'spatial-galaxy', 'spatial-sanctuary'
+  'spatial-orbit', 'spatial-island', 'spatial-metropolis', 'spatial-galaxy', 'spatial-sanctuary',
+  'honey-chamomile', 'peach-cashmere', 'lavender-cloud', 'eucalyptus-dew', 'terracotta-sun'
 ];
 
 function setTheme(theme) {

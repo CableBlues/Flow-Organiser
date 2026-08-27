@@ -542,3 +542,103 @@ body[class*="theme-spatial-"] #date-container {
   box-shadow: 0 12px 30px -4px var(--accent, rgba(139, 92, 246, 0.35)), inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
 }
 
+/* ========================================================================== */
+/* EXTRA WEICHE, FREUNDLICHE & MENSCHLICHE FARBSCHEMATA                      */
+/* (Haupthintergrund & Aufgabenkarten mit warmer, organischer Harmonie)      */
+/* ========================================================================== */
+
+/* 27. 🍯 Honig & Kamille (Warm, sanft & beruhigend) */
+body.theme-honey-chamomile {
+  --accent: #f59e0b;
+  --accent-light: #fde68a;
+  --accent-border: rgba(245, 158, 11, 0.35);
+  --bg-app: #15120c;
+  --bg-header: rgba(30, 24, 16, 0.88);
+  --bg-card: rgba(46, 38, 26, 0.72);
+  --bg-card-hover: rgba(58, 48, 34, 0.88);
+  --bg-dock: #1c1710;
+  --bg-panel: #120e09;
+  --bg-modal: #120e09;
+  --text-main: #fffbeb;
+  --text-muted: #fcd34d;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(245, 158, 11, 0.22);
+}
+
+/* 28. 🍑 Pfirsich & Kaschmir (Menschlich, weich & geborgen) */
+body.theme-peach-cashmere {
+  --accent: #fb7185;
+  --accent-light: #fecdd3;
+  --accent-border: rgba(251, 113, 133, 0.35);
+  --bg-app: #171012;
+  --bg-header: rgba(34, 22, 26, 0.88);
+  --bg-card: rgba(48, 30, 36, 0.72);
+  --bg-card-hover: rgba(62, 38, 46, 0.88);
+  --bg-dock: #201418;
+  --bg-panel: #140c0e;
+  --bg-modal: #140c0e;
+  --text-main: #fff1f2;
+  --text-muted: #fda4af;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(251, 113, 133, 0.22);
+}
+
+/* 29. 🪻 Lavendel & Hafermilch (Stressfrei, sanft & verträumt) */
+body.theme-lavender-cloud {
+  --accent: #a78bfa;
+  --accent-light: #ddd6fe;
+  --accent-border: rgba(167, 139, 250, 0.35);
+  --bg-app: #12111a;
+  --bg-header: rgba(26, 23, 40, 0.88);
+  --bg-card: rgba(36, 32, 54, 0.72);
+  --bg-card-hover: rgba(48, 42, 70, 0.88);
+  --bg-dock: #181526;
+  --bg-panel: #0e0d16;
+  --bg-modal: #0e0d16;
+  --text-main: #faf5ff;
+  --text-muted: #c4b5fd;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(167, 139, 250, 0.22);
+}
+
+/* 30. 🌿 Eukalyptus & Morgentau (Botanisch, frisch & freundlich) */
+body.theme-eucalyptus-dew {
+  --accent: #34d399;
+  --accent-light: #a7f3d0;
+  --accent-border: rgba(52, 211, 153, 0.35);
+  --bg-app: #0d1512;
+  --bg-header: rgba(20, 34, 28, 0.88);
+  --bg-card: rgba(26, 46, 38, 0.72);
+  --bg-card-hover: rgba(34, 60, 50, 0.88);
+  --bg-dock: #12201a;
+  --bg-panel: #09100d;
+  --bg-modal: #09100d;
+  --text-main: #f0fdf4;
+  --text-muted: #6ee7b7;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(52, 211, 153, 0.22);
+}
+
+/* 31. 🏺 Terrakotta & Abendsonne (Erdig, handwerklich & warm) */
+body.theme-terracotta-sun {
+  --accent: #f97316;
+  --accent-light: #fed7aa;
+  --accent-border: rgba(249, 115, 22, 0.35);
+  --bg-app: #17100b;
+  --bg-header: rgba(34, 22, 16, 0.88);
+  --bg-card: rgba(48, 30, 20, 0.72);
+  --bg-card-hover: rgba(64, 40, 26, 0.88);
+  --bg-dock: #20140e;
+  --bg-panel: #120a06;
+  --bg-modal: #120a06;
+  --text-main: #fff7ed;
+  --text-muted: #fdba74;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(249, 115, 22, 0.22);
+}
+

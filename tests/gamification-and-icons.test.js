@@ -9,10 +9,13 @@ import '../state.js';
 import '../utils.js';
 import '../app-core.js';
 
-describe('3D Spatial Themes & Deep Contrast (Production Code)', () => {
-  it('applies 3D spatial themes with depth and lighting classes', () => {
-    const spatialThemes = ['spatial-orbit', 'spatial-island', 'spatial-metropolis', 'spatial-galaxy', 'spatial-sanctuary'];
-    spatialThemes.forEach(theme => {
+describe('3D Spatial & Soft Human Themes (Production Code)', () => {
+  it('applies 3D spatial and soft human themes with depth and lighting classes', () => {
+    const allNewThemes = [
+      'spatial-orbit', 'spatial-island', 'spatial-metropolis', 'spatial-galaxy', 'spatial-sanctuary',
+      'honey-chamomile', 'peach-cashmere', 'lavender-cloud', 'eucalyptus-dew', 'terracotta-sun'
+    ];
+    allNewThemes.forEach(theme => {
       setTheme(theme);
       expect(document.body.classList.contains(`theme-${theme}`)).toBe(true);
       expect(localStorage.getItem('flowPlannerTheme')).toBe(theme);
