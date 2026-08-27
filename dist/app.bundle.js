@@ -10027,6 +10027,32 @@ ${listStr}`;
     }
   }
   window.updateDateWeatherWidget = updateDateWeatherWidget;
+  var weatherHoverTimeout = null;
+  function openWeatherHover() {
+    if (weatherHoverTimeout) {
+      clearTimeout(weatherHoverTimeout);
+      weatherHoverTimeout = null;
+    }
+    const el = document.getElementById("panel-weather");
+    if (el) {
+      el.classList.remove("hidden");
+      if (typeof fetchLocalWeather2 === "function") fetchLocalWeather2();
+    }
+  }
+  window.openWeatherHover = openWeatherHover;
+  function closeWeatherHover() {
+    if (weatherHoverTimeout) clearTimeout(weatherHoverTimeout);
+    weatherHoverTimeout = setTimeout(() => {
+      const el = document.getElementById("panel-weather");
+      const badge = document.getElementById("date-weather-badge");
+      const isOverEl = el && el.matches(":hover");
+      const isOverBadge = badge && badge.matches(":hover");
+      if (el && !isOverEl && !isOverBadge) {
+        el.classList.add("hidden");
+      }
+    }, 250);
+  }
+  window.closeWeatherHover = closeWeatherHover;
   function renderWeatherData(data) {
     updateDateWeatherWidget(data);
     const container = document.getElementById("weather-content-area");

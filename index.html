@@ -383,10 +383,67 @@
             <!-- Zentrales Datum -->
             <span id="date-display" class="whitespace-nowrap text-xs md:text-sm font-bold text-gray-100 group-hover:text-white tracking-wide"></span>
             
-            <!-- Klein & Dezent: Wetter & Temperatur -->
-            <div id="date-weather-badge" onclick="event.stopPropagation(); togglePanel('weather')" class="hidden items-center gap-1 pl-2 border-l border-white/15 text-[11px] font-medium text-gray-300 hover:text-white transition cursor-pointer" title="Wetterbericht">
+            <!-- Klein & Dezent: Wetter & Temperatur mit vollem Hover-Briefing -->
+            <div id="date-weather-badge" onclick="event.stopPropagation(); togglePanel('weather')" onmouseenter="openWeatherHover()" onmouseleave="closeWeatherHover()" class="hidden items-center gap-1 pl-2 border-l border-white/15 text-[11px] font-medium text-gray-300 hover:text-white transition cursor-pointer relative" title="Wetterbericht">
               <span id="date-weather-emoji" class="text-xs shrink-0">☀️</span>
               <span id="date-weather-temp" class="font-mono font-bold text-[var(--accent-light)] text-[11px]">--°</span>
+
+              <!-- VOLLER WETTER- & NEWS-BRIEFING POPOVER (Beim Hover über das Wetter-Badge) -->
+              <div id="panel-weather" onmouseenter="openWeatherHover()" onmouseleave="closeWeatherHover()" onclick="event.stopPropagation()" class="hidden absolute top-[calc(100%+10px)] left-1/2 -translate-x-1/2 z-[120] w-[330px] sm:w-[370px] bg-[var(--bg-modal)] border border-[var(--border-main)] p-3.5 rounded-3xl shadow-2xl backdrop-blur-xl flex flex-col gap-2.5 text-left animate-fade-in cursor-default">
+                <div class="flex items-center justify-between border-b border-white/10 pb-1.5">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-xl bg-sky-500/20 border border-sky-500/30 flex items-center justify-center text-sky-300">
+                      <i data-lucide="cloud-sun" class="w-4 h-4 text-sky-400"></i>
+                    </div>
+                    <div>
+                      <h4 class="font-bold text-xs font-display text-white" data-i18n="weather_title">Lokales Wetter</h4>
+                      <div class="text-[8px] text-gray-400 font-mono" id="weather-location-display">Echtzeit & Vorhersage</div>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <button onclick="toggleWeatherUnit()" id="weather-unit-toggle-btn" class="px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-[9px] font-mono font-bold transition cursor-pointer" title="Einheit wechseln">°C / °F</button>
+                    <button onclick="useDeviceLocationWeather()" class="p-1.5 bg-white/5 hover:bg-white/10 text-sky-400 rounded-lg transition cursor-pointer" title="Mein Standort (GPS)">
+                      <i data-lucide="crosshair" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button onclick="togglePanel('weather')" class="text-gray-400 hover:text-white text-xs font-bold p-1 cursor-pointer">✕</button>
+                  </div>
+                </div>
+
+                <!-- Ort eingeben oder aus Dropdown wählen (Combobox) -->
+                <div class="relative">
+                  <div class="flex gap-1">
+                    <input type="text" id="weather-city-input" list="weather-preset-cities" placeholder="Stadt eingeben oder wählen..." oninput="handleWeatherSearchInput(this.value)" onkeydown="if(event.key==='Enter') searchWeatherCityInstant(this.value)" class="flex-1 p-1.5 bg-black/50 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-sky-500 font-semibold" />
+                    <datalist id="weather-preset-cities">
+                      <option value="Berlin">
+                      <option value="München">
+                      <option value="Hamburg">
+                      <option value="Köln">
+                      <option value="Frankfurt">
+                      <option value="Stuttgart">
+                      <option value="Düsseldorf">
+                      <option value="Dortmund">
+                      <option value="Leipzig">
+                      <option value="Wien">
+                      <option value="Zürich">
+                      <option value="Basel">
+                      <option value="Bern">
+                      <option value="London">
+                      <option value="Paris">
+                      <option value="Rom">
+                      <option value="Madrid">
+                      <option value="Athen">
+                      <option value="New York">
+                    </datalist>
+                    <button onclick="searchWeatherCityInstant(document.getElementById('weather-city-input').value)" class="p-1 px-2 bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 rounded-lg text-[10px] font-bold transition cursor-pointer">
+                      <i data-lucide="search" class="w-3 h-3"></i>
+                    </button>
+                  </div>
+                  <div id="weather-search-results" class="hidden absolute top-full left-0 right-0 z-30 mt-1 bg-[#181824] border border-sky-500/40 rounded-xl p-1 shadow-2xl space-y-0.5 max-h-[140px] overflow-y-auto backdrop-blur-md"></div>
+                </div>
+
+                <!-- Live Wetterinhalt -->
+                <div id="weather-content-area" class="space-y-2.5"></div>
+              </div>
             </div>
           </div>
 
@@ -1179,70 +1236,6 @@
                 </div>
                 <!-- Wecker Panel Content -->
                 <div id="alarm-panel-content" class="space-y-3"></div>
-              </div>
-            </div>
-
-            <!-- Wetter -->
-            <div class="relative group cursor-pointer mac-dock-item-wrapper">
-              <button onclick="togglePanel('weather'); fetchLocalWeather();" class="mac-dock-btn balloon-weather h-12 w-12 md:h-14 md:w-14 border border-sky-500/30 rounded-2xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-200 flex flex-col items-center justify-center gap-1 text-[9px] font-bold cursor-pointer transition shadow-sm" title="Lokales Wetter & Vorhersage anzeigen">
-                <i data-lucide="cloud-sun" class="w-5 h-5 text-sky-400"></i>
-                <span class="dock-label" data-i18n="dock_weather">Wetter</span>
-              </button>
-
-              <div id="panel-weather" class="dock-popover-panel hidden absolute left-1/2 -translate-x-1/2 w-[330px] sm:w-[370px] bg-[#111116]/98 border border-sky-500/40 p-3.5 rounded-3xl shadow-2xl backdrop-blur-xl flex flex-col gap-2.5 text-left">
-                <div class="flex items-center justify-between border-b border-white/10 pb-1.5">
-                  <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-xl bg-sky-500/20 border border-sky-500/30 flex items-center justify-center text-sky-300">
-                      <i data-lucide="cloud-sun" class="w-4 h-4 text-sky-400"></i>
-                    </div>
-                    <div>
-                      <h4 class="font-bold text-xs font-display text-white" data-i18n="weather_title">Lokales Wetter</h4>
-                      <div class="text-[8px] text-gray-400 font-mono" id="weather-location-display">Echtzeit & Vorhersage</div>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-1">
-                    <button onclick="toggleWeatherUnit()" id="weather-unit-toggle-btn" class="px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-[9px] font-mono font-bold transition cursor-pointer" title="Einheit wechseln">°C / °F</button>
-                    <button onclick="useDeviceLocationWeather()" class="p-1.5 bg-white/5 hover:bg-white/10 text-sky-400 rounded-lg transition cursor-pointer" title="Mein Standort (GPS)">
-                      <i data-lucide="crosshair" class="w-3.5 h-3.5"></i>
-                    </button>
-                    <button onclick="togglePanel('weather')" class="text-gray-400 hover:text-white text-xs font-bold p-1 cursor-pointer">✕</button>
-                  </div>
-                </div>
-
-                <!-- Ort eingeben oder aus Dropdown wählen (Combobox) -->
-                <div class="relative">
-                  <div class="flex gap-1">
-                    <input type="text" id="weather-city-input" list="weather-preset-cities" placeholder="Stadt eingeben oder wählen..." oninput="handleWeatherSearchInput(this.value)" onkeydown="if(event.key==='Enter') searchWeatherCityInstant(this.value)" class="flex-1 p-1.5 bg-black/50 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-sky-500 font-semibold" />
-                    <datalist id="weather-preset-cities">
-                      <option value="Berlin">
-                      <option value="München">
-                      <option value="Hamburg">
-                      <option value="Köln">
-                      <option value="Frankfurt">
-                      <option value="Stuttgart">
-                      <option value="Düsseldorf">
-                      <option value="Dortmund">
-                      <option value="Leipzig">
-                      <option value="Wien">
-                      <option value="Zürich">
-                      <option value="Basel">
-                      <option value="Bern">
-                      <option value="London">
-                      <option value="Paris">
-                      <option value="Rom">
-                      <option value="Madrid">
-                      <option value="Athen">
-                      <option value="New York">
-                    </datalist>
-                    <button onclick="searchWeatherCityInstant(document.getElementById('weather-city-input').value)" class="p-1 px-2 bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 rounded-lg text-[10px] font-bold transition cursor-pointer">
-                      <i data-lucide="search" class="w-3 h-3"></i>
-                    </button>
-                  </div>
-                  <div id="weather-search-results" class="hidden absolute top-full left-0 right-0 z-30 mt-1 bg-[#181824] border border-sky-500/40 rounded-xl p-1 shadow-2xl space-y-0.5 max-h-[140px] overflow-y-auto backdrop-blur-md"></div>
-                </div>
-
-                <!-- Live Wetterinhalt -->
-                <div id="weather-content-area" class="space-y-2.5"></div>
               </div>
             </div>
 
