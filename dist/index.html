@@ -73,7 +73,7 @@
     </div>
 
     <!-- HEADER BAR -->
-    <header class="relative z-[9999] flex flex-nowrap items-center justify-between gap-x-1 md:gap-x-1.5 mb-2 w-full bg-[#13131c]/90 p-1.5 md:p-2 border border-white/10 rounded-2xl backdrop-blur-xl shadow-2xl">
+    <header class="relative z-[9999] flex flex-nowrap items-center justify-between gap-x-1.5 md:gap-x-2.5 mb-2 w-full bg-[#13131c]/90 p-1.5 md:p-2 border border-white/10 rounded-2xl backdrop-blur-xl shadow-2xl">
       
       <!-- Subtile Wave-Bewegung im Hintergrund -->
       <div class="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none opacity-20 zen-hide">
@@ -82,10 +82,10 @@
         </svg>
       </div>
 
-      
-      <!-- BEHÄLTER 1: Flow Logo & Feedback -->
-      <div class="flex items-center gap-1.5 p-1 bg-white/[0.02] border border-white/5 rounded-xl shadow-sm shrink-0">
-        
+      <!-- ====================================================================== -->
+      <!-- ZONE 1: BRANDING & WORKSPACE (LINKS) -->
+      <!-- ====================================================================== -->
+      <div class="flex items-center gap-1.5 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0">
         <!-- Logo & Hover Popup -->
         <div class="relative inline-block group" onmouseenter="document.getElementById('panel-logo-guide').classList.remove('hidden')" onmouseleave="document.getElementById('panel-logo-guide').classList.add('hidden')">
           <div onclick="triggerLogoReloadFlow(this)" class="flow-logo-container relative inline-flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-gradient-to-r from-[#0d1527] via-[#10101e] to-[#180d24] text-xs md:text-sm font-bold font-display text-white transition-all duration-300 group cursor-pointer overflow-hidden border border-cyan-500/30" title="Flow-Anwendung neu laden (mit Wellen-Effekt)">
@@ -210,7 +210,7 @@
               </div>
 
               <!-- Item 5: Kochen -->
-              <div onclick="togglePanel('cooking'); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+              <div onclick="togglePanel('daily'); switchDailyTab('cooking'); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-white flex items-center gap-1.5">
                     <i data-lucide="cooking-pot" class="w-3.5 h-3.5 text-orange-400"></i> Kochen & Vorrat
@@ -223,7 +223,7 @@
               </div>
 
               <!-- Item 6: Einkauf -->
-              <div onclick="togglePanel('shopping'); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
+              <div onclick="togglePanel('daily'); switchDailyTab('shopping'); document.getElementById('panel-logo-guide').classList.add('hidden');" class="group/guide-item p-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-purple-500/50 hover:bg-purple-950/10 active:scale-[0.98] transition-all flex flex-col gap-1 cursor-pointer">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-white flex items-center gap-1.5">
                     <i data-lucide="shopping-basket" class="w-3.5 h-3.5 text-emerald-400"></i> Einkaufsliste
@@ -285,7 +285,7 @@
                 <p class="hidden group-hover/guide-item:block text-[10px] text-gray-300 leading-normal animate-fade-in">
                   • <b>Taste [U]</b>: Letzte Aktion rückgängig machen (Undo)<br>
                   • <b>Taste [A]</b>: Neuen Kalendertermin/Termin hinzufügen<br>
-                  • <b>Taste [B]</b>: "Funke" (30s Überwindungstipp) öffnen<br>
+                  • <b>Taste [B]</b>: "Impuls" (Schwung & Fokus) öffnen<br>
                   • <b>Taste [I]</b>: Inspirierenden Impuls öffnen<br>
                   • <b>Taste [H]</b>: Diese Kurzanleitung öffnen/schließen<br>
                   • <b>Taste [Esc]</b>: Alle geöffneten Modale oder Panels schließen
@@ -305,32 +305,11 @@
           </div>
         </div>
 
-        <!-- Feedback Icon Button (Dezent, rechts neben Flow-Logo) -->
-        <div class="hidden md:inline-block relative group zen-hide">
-          <button onclick="togglePanel('feedback')" class="h-6 w-6 flex items-center justify-center border border-white/10 hover:border-pink-500/40 rounded-lg bg-white/[0.03] hover:bg-pink-500/15 text-gray-400 hover:text-pink-300 cursor-pointer transition-all shadow-none" title="Feedback & Ideen senden">
-            <i data-lucide="message-square-heart" class="w-3 h-3 text-gray-400 group-hover:text-pink-300 transition-colors"></i>
-          </button>
-          
-          <div id="panel-feedback" class="hidden absolute left-0 top-[calc(100%+8px)] z-[110] w-[280px] sm:w-[320px] bg-[#111116] border border-purple-500/40 p-4 rounded-2xl shadow-2xl">
-            <h4 class="font-bold text-sm font-display mb-1 text-white" data-i18n="feedback_greet">Hey, schön dass du da bist! 👋</h4>
-            <p class="text-[11px] text-gray-400 mb-3 leading-relaxed" data-i18n="feedback_prompt">
-              Hast du Feedback, Kritik oder neue Ideen für Flow? Schreib uns gerne eine kurze Nachricht!
-            </p>
-            <textarea id="feedback-text" rows="3" class="w-full p-2.5 bg-black/40 border border-white/10 rounded-xl text-xs text-white outline-none focus:border-[var(--accent)] mb-3 leading-relaxed placeholder:text-gray-600" data-i18n-placeholder="feedback_placeholder" placeholder="Deine Gedanken..."></textarea>
-            
-            <button onclick="submitFeedback()" class="w-full py-2 bg-purple-600 text-white text-xs font-bold rounded-xl hover:opacity-90 transition whitespace-nowrap cursor-pointer" data-i18n="send">Senden</button>
-            <div class="text-[11px] text-gray-400/80 text-center mt-2.5 font-medium leading-relaxed" data-i18n="feedback_alt">oder sende eine E-Mail an <span class="text-gray-200 font-semibold underline">support@flow-planner.app</span></div>
-            
-            <div class="mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[10px] text-gray-500">
-              <button onclick="openPrivacyModal(); togglePanel('feedback');" class="text-emerald-400 hover:text-emerald-300 font-semibold transition cursor-pointer hover:underline flex items-center gap-1">
-                <i data-lucide="shield-check" class="w-3 h-3"></i>
-                <span>Datenschutz & Impressum</span>
-              </button>
-              <span class="font-mono">100% Local-First</span>
-            </div>
-          </div>
-        </div>
-
+        <!-- Work-Life Compact Switch -->
+        <button id="btn-workspace-toggle" onclick="toggleWorkspace()" class="h-8 px-2.5 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 hover:border-purple-500/50 rounded-xl text-purple-200 flex items-center gap-1.5 text-xs font-semibold cursor-pointer transition-all duration-300 shadow-sm" title="Zwischen Privat und Arbeit umschalten">
+          <span id="ws-toggle-icon" class="text-xs">🏠</span>
+          <span id="ws-toggle-text" class="text-[11px] font-bold text-purple-300" data-i18n="workspace_private">Privat</span>
+        </button>
       </div>
 
       <!-- MOBILE-ONLY HEADER ACTIONS (Workspace, Suche, Live-Sync & Quick-Menü) -->
@@ -351,16 +330,11 @@
         </button>
       </div>
 
-      <!-- BEHÄLTER 1.5: WORK-LIFE COMPACT SWITCH (Vor dem Timer) -->
-      <div class="hidden sm:flex items-center p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0 zen-hide">
-        <button id="btn-workspace-toggle" onclick="toggleWorkspace()" class="h-8 px-2.5 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 hover:border-purple-500/50 rounded-xl text-purple-200 flex items-center gap-1.5 text-xs font-semibold cursor-pointer transition-all duration-300 shadow-sm" title="Zwischen Privat und Arbeit umschalten">
-          <span id="ws-toggle-icon" class="text-xs">🏠</span>
-          <span id="ws-toggle-text" class="text-[11px] font-bold text-purple-300" data-i18n="workspace_private">Privat</span>
-        </button>
-      </div>
-
-      <!-- BEHÄLTER 2: Timer (Zentral & Elegant) -->
+      <!-- ====================================================================== -->
+      <!-- ZONE 2: FOKUS & ZEIT (MITTE-LINKS) -->
+      <!-- ====================================================================== -->
       <div class="hidden md:flex items-center gap-1.5 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0">
+        <!-- Timer Container -->
         <div id="timer-trigger-container" class="flex items-center gap-2 h-8 px-2 bg-black/30 border border-white/5 rounded-xl">
           <div class="flex flex-col items-center justify-center min-w-[36px]">
             <span id="timer-display" class="font-display font-black text-xs tracking-wider text-[var(--accent-light)] leading-none">02:00</span>
@@ -401,46 +375,45 @@
           </div>
           <span id="active-timer-badge" class="hidden text-[9px] text-[var(--accent-light)] font-semibold border-l border-white/15 pl-1.5 truncate max-w-[60px]"></span>
         </div>
-      </div>
 
-      <!-- BEHÄLTER 3: Focus Mode Toggle -->
-      <div class="hidden md:flex items-center gap-1.5 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0">
+        <!-- Focus Mode Toggle -->
         <button id="btn-focus-mode" onclick="toggleMinimalist()" class="h-8 px-3 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 hover:border-purple-500/60 rounded-xl text-purple-200 flex items-center gap-1.5 text-xs font-bold cursor-pointer transition-all duration-300 shadow-sm" title="Minimalistischen Fokus-Modus ein- oder ausschalten" aria-label="Minimalistischen Fokus-Modus ein- oder ausschalten">
           <i id="zen-btn-icon" data-lucide="eye" class="w-3.5 h-3.5 text-purple-400 animate-pulse"></i>
           <span class="hidden 2xl:inline" id="minimal-mode-btn-text" data-i18n="minimal_mode">Focus Mode</span>
         </button>
       </div>
 
-      <!-- BEHÄLTER 4: Datum -->
-      <div id="date-container" onmouseenter="openCalendarHover()" onmouseleave="closeCalendarHover()" class="hidden 2xl:flex items-center justify-center p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0 transition-all duration-300 relative group cursor-pointer">
-        <div class="flex items-center gap-1.5 px-2.5 h-8">
-          <button onclick="togglePanel('calendar-dropdown')" id="date-calendar-btn" class="h-6 w-6 flex items-center justify-center rounded-lg hover:bg-white/10 transition-all duration-300" title="Monatskalender und Termine anzeigen" aria-label="Monatskalender und Termine anzeigen">
-            <i id="date-icon" data-lucide="calendar-days" class="w-3.5 h-3.5 shrink-0"></i>
-          </button>
-          <span id="date-display" class="whitespace-nowrap text-xs font-semibold text-gray-200"></span>
+      <!-- ====================================================================== -->
+      <!-- ZONE 3: RHYTHMUS & PAUSE (MITTE-RECHTS) -->
+      <!-- ====================================================================== -->
+      <div class="hidden md:flex desktop-only-header items-center gap-1.5 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0 zen-hide">
+        <!-- Datum & Monatskalender -->
+        <div id="date-container" onmouseenter="openCalendarHover()" onmouseleave="closeCalendarHover()" class="hidden 2xl:flex items-center justify-center p-1 bg-transparent rounded-xl shrink-0 transition-all duration-300 relative group cursor-pointer">
+          <div class="flex items-center gap-1.5 px-2 h-8">
+            <button onclick="togglePanel('calendar-dropdown')" id="date-calendar-btn" class="h-6 w-6 flex items-center justify-center rounded-lg hover:bg-white/10 transition-all duration-300" title="Monatskalender und Termine anzeigen" aria-label="Monatskalender und Termine anzeigen">
+              <i id="date-icon" data-lucide="calendar-days" class="w-3.5 h-3.5 shrink-0"></i>
+            </button>
+            <span id="date-display" class="whitespace-nowrap text-xs font-semibold text-gray-200"></span>
+          </div>
+
+          <!-- MINIMAL MONTH CALENDAR PANEL -->
+          <div id="panel-calendar-dropdown" onmouseenter="openCalendarHover()" onmouseleave="closeCalendarHover()" class="hidden absolute top-[calc(100%+8px)] left-0 z-[110] w-[230px] bg-[#111116] border border-white/10 p-3.5 rounded-2xl shadow-2xl flex flex-col gap-2 animate-fade-in">
+            <div class="flex items-center justify-between text-xs font-bold text-gray-200 border-b border-white/5 pb-1.5">
+              <span id="cal-month-title" class="font-display">August 2026</span>
+            </div>
+            <div class="grid grid-cols-7 gap-1 text-[9px] font-bold text-gray-500 text-center uppercase tracking-wider">
+              <span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span>
+            </div>
+            <div id="cal-days-grid" class="grid grid-cols-7 gap-1 text-[10px] text-center font-semibold font-mono"></div>
+          </div>
         </div>
 
-        <!-- MINIMAL MONTH CALENDAR PANEL -->
-        <div id="panel-calendar-dropdown" onmouseenter="openCalendarHover()" onmouseleave="closeCalendarHover()" class="hidden absolute top-[calc(100%+8px)] left-0 z-[110] w-[230px] bg-[#111116] border border-white/10 p-3.5 rounded-2xl shadow-2xl flex flex-col gap-2 animate-fade-in">
-          <div class="flex items-center justify-between text-xs font-bold text-gray-200 border-b border-white/5 pb-1.5">
-            <span id="cal-month-title" class="font-display">August 2026</span>
-          </div>
-          <div class="grid grid-cols-7 gap-1 text-[9px] font-bold text-gray-500 text-center uppercase tracking-wider">
-            <span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span>
-          </div>
-          <div id="cal-days-grid" class="grid grid-cols-7 gap-1 text-[10px] text-center font-semibold font-mono"></div>
-        </div>
-      </div>
-
-      <!-- BEHÄLTER 5: Was nun? (Kompakter Icon-Button mit Tooltip) -->
-      <div class="hidden md:flex desktop-only-header items-center p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0">
+        <!-- Was nun? (Kompakter Icon-Button) -->
         <button id="btn-whatnow-dance" onclick="openHelperModal('pick')" class="h-8 w-8 flex items-center justify-center rounded-xl text-amber-300 hover:text-amber-200 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 cursor-pointer transition-all duration-300 shrink-0 shadow-sm" title="Was nun? – Zufällige Aufgabe nach Energie-Level vorschlagen lassen" aria-label="Was nun? – Zufällige Aufgabe vorschlagen">
           <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-amber-300 animate-pulse"></i>
         </button>
-      </div>
 
-      <!-- BEHÄLTER 8: Statistik & Pause (Insights & Recovery) -->
-      <div class="hidden md:flex desktop-only-header items-center gap-1.5 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0 zen-hide">
+        <!-- Statistik -->
         <div class="relative group cursor-pointer">
           <button onclick="togglePanel('report')" class="h-8 px-2.5 border border-white/10 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] hover:border-purple-500/30 text-gray-200 flex items-center gap-1.5 text-xs font-semibold cursor-pointer transition whitespace-nowrap shadow-sm" title="Erledigungsstatistiken und Diagramme einsehen">
             <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>
@@ -448,146 +421,89 @@
           </button>
           
           <div id="panel-report" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] w-[320px] sm:w-[440px] bg-[#111116] border border-purple-500/40 p-4 rounded-2xl shadow-2xl overflow-visible">
-            <div id="report-export-target" class="p-3 bg-[#111116] rounded-xl border border-white/5 space-y-3">
-              <div class="flex items-center justify-between border-b border-white/10 pb-2">
-                <h4 class="font-bold text-sm font-display text-white flex items-center gap-2">
-                  <i data-lucide="bar-chart-3" class="w-4 h-4 text-purple-400"></i>
-                  <span id="report-title" data-i18n="report_title">Statistik</span>
-                </h4>
-                
-                <!-- Timeframe Tabs -->
-                <div class="flex items-center bg-black/50 p-0.5 rounded-xl border border-white/10 text-[11px] font-bold">
-                  <button onclick="setReportTimeframe('today')" id="report-tab-today" class="px-2.5 py-1 rounded text-purple-300 bg-purple-500/25 cursor-pointer transition" data-i18n="today">Today</button>
-                  <button onclick="setReportTimeframe('week')" id="report-tab-week" class="px-2.5 py-1 rounded text-gray-400 hover:text-white cursor-pointer transition" data-i18n="week">Week</button>
-                  <button onclick="setReportTimeframe('month')" id="report-tab-month" class="px-2.5 py-1 rounded text-gray-400 hover:text-white cursor-pointer transition" data-i18n="month">Month</button>
-                </div>
+            <div class="flex items-center justify-between border-b border-white/10 pb-2 mb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-xs uppercase font-bold tracking-wider text-purple-400 font-mono">Erfolgs-Statistik</span>
+                <span class="text-[9px] bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-mono font-bold" id="report-view-mode-badge">Heute</span>
               </div>
-
-              <!-- 3-Bento Stat Cards -->
-              <div class="grid grid-cols-3 gap-2">
-                <div class="p-2.5 bg-white/[0.03] border border-white/10 rounded-xl text-center shadow-inner">
-                  <div class="text-[10px] text-gray-400 mb-0.5 whitespace-nowrap" data-i18n="completed_stat">Erledigt</div>
-                  <div id="report-today-count" class="text-base font-bold font-display text-emerald-400">0</div>
+              <div class="flex items-center gap-1">
+                <div class="flex bg-black/40 p-0.5 rounded-lg border border-white/10 text-[10px]">
+                  <button onclick="setReportTimeframe('today')" id="report-tab-today" class="px-2.5 py-1 rounded text-purple-300 bg-purple-500/25 cursor-pointer transition font-bold" data-i18n="report_today">Heute</button>
+                  <button onclick="setReportTimeframe('week')" id="report-tab-week" class="px-2.5 py-1 rounded text-gray-400 hover:text-white cursor-pointer transition" data-i18n="report_week">Woche</button>
+                  <button onclick="setReportTimeframe('month')" id="report-tab-month" class="px-2.5 py-1 rounded text-gray-400 hover:text-white cursor-pointer transition" data-i18n="report_month">Monat</button>
                 </div>
-                <div class="p-2.5 bg-white/[0.03] border border-white/10 rounded-xl text-center shadow-inner">
-                  <div class="text-[10px] text-gray-400 mb-0.5 whitespace-nowrap" data-i18n="focus_time">Fokus-Zeit</div>
-                  <div id="report-focus-time" class="text-base font-bold font-display text-purple-300">0m</div>
-                </div>
-                <div class="p-2.5 bg-white/[0.03] border border-white/10 rounded-xl text-center shadow-inner">
-                  <div class="text-[10px] text-gray-400 mb-0.5 whitespace-nowrap" data-i18n="peak_hours">Peak</div>
-                  <div id="report-peak-hour" class="text-xs font-bold font-display text-amber-300 mt-1 truncate">Morgens</div>
-                </div>
-              </div>
-
-              <!-- 7-Tage-Aktivität -->
-              <div id="report-chart-container" class="p-3 bg-white/[0.02] border border-white/10 rounded-xl">
-                <div class="flex items-center justify-between mb-2">
-                  <span class="text-[10px] uppercase font-bold tracking-wider text-gray-400" data-i18n="weekly_activity">7-Tage Aktivität</span>
-                  <span id="report-total-week-tasks" class="font-mono text-purple-300 font-bold text-xs">0 Tasks</span>
-                </div>
-                <div id="report-weekly-chart" class="flex items-end justify-between h-14 pt-1 px-1 animate-fade-in"></div>
-              </div>
-
-              <!-- Intelligent Insights Tip -->
-              <div id="report-insight-box" class="p-2.5 border border-purple-500/20 rounded-xl text-xs text-purple-200 flex items-start gap-2 bg-[#1c1c28]">
-                <i data-lucide="lightbulb" class="w-4 h-4 text-purple-400 shrink-0 mt-0.5"></i>
-                <span id="report-insight-text" data-i18n="loading_stats">Analysiere Produktivität...</span>
+                <button onclick="togglePanel('report')" class="text-gray-400 hover:text-white text-xs font-bold p-1 ml-1 cursor-pointer">✕</button>
               </div>
             </div>
+            
+            <div id="report-content-area" class="space-y-3"></div>
 
-            <!-- Primärer Button: Großes Detail-Dashboard öffnen -->
-            <button onclick="openReportDashboard()" class="w-full mt-3 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-purple-900/30 transition cursor-pointer">
-              <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-              <span data-i18n="open_dashboard">Detail-Analyse & Center öffnen ↗</span>
-            </button>
+            <div class="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between gap-2">
+              <button onclick="openReportDashboard()" class="flex-1 py-1.5 bg-purple-600/30 hover:bg-purple-600/50 text-purple-200 border border-purple-500/40 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+                <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+                <span data-i18n="report_open_full">Großes Dashboard öffnen</span>
+              </button>
+              <button onclick="exportWeeklyReportAsImage()" class="px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer" title="Report als Bild herunterladen">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                <span class="hidden sm:inline">Export</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        <!-- Pause -->
+        <!-- Pause & Erholung -->
         <div class="relative group cursor-pointer">
-          <button onclick="togglePanel('pause-dropdown')" class="h-8 px-2.5 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 hover:border-teal-500/60 rounded-xl text-teal-200 flex items-center gap-1.5 text-xs font-bold cursor-pointer transition shadow-sm" title="Reizpause & Entspannungs-Optionen öffnen">
+          <button onclick="togglePanel('pause-dropdown')" class="h-8 px-2.5 border border-teal-500/30 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-teal-200 flex items-center gap-1.5 text-xs font-semibold cursor-pointer transition whitespace-nowrap shadow-sm" title="Pausen-Assistent: Atembegleitung, Dehnübungen & Mini-Reset">
             <i data-lucide="shield" class="w-3.5 h-3.5 text-teal-400"></i>
             <span class="hidden 2xl:inline" data-i18n="pause_btn">Pause</span>
           </button>
           
-          <div id="panel-pause-dropdown" class="hidden absolute left-1/2 -translate-x-1/2 md:left-auto md:right-0 md:translate-x-0 top-[calc(100%+8px)] z-[110] w-[290px] bg-[#111116] border border-teal-500/40 p-3.5 rounded-2xl shadow-2xl flex flex-col gap-2 max-h-[440px] overflow-y-auto scrollbar-thin">
-            <div class="text-[10px] uppercase font-bold tracking-wider text-teal-400 font-mono flex items-center gap-1"><i data-lucide="shield" class="w-3.5 h-3.5"></i> Reizpause & Erholung</div>
-            <p class="text-[10px] text-gray-400 leading-normal mb-1">Methoden zur sensorischen Pause:</p>
-            
-            <!-- Option 1: Atemtakt -->
-            <button onclick="openBreakModal('breath')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2 cursor-pointer">
-              <i data-lucide="wind" class="w-4 h-4 shrink-0 text-teal-400"></i>
-              <div>
-                <div class="leading-none mb-0.5">Atemtakt-Übung 🧘‍♀️</div>
-                <div class="text-[9px] text-gray-400 font-normal">4-4-4 Atmen zur Beruhigung</div>
+          <div id="panel-pause-dropdown" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] w-[260px] sm:w-[300px] bg-[#111116] border border-teal-500/40 p-3 rounded-2xl shadow-2xl flex flex-col gap-2">
+            <div class="flex items-center justify-between border-b border-white/10 pb-1.5">
+              <span class="text-[11px] uppercase font-bold tracking-wider text-teal-400 font-mono flex items-center gap-1">
+                <i data-lucide="shield" class="w-3.5 h-3.5 text-teal-400"></i> Reizpause & Erholung
+              </span>
+              <button onclick="togglePanel('pause-dropdown')" class="text-gray-400 hover:text-white text-xs">✕</button>
+            </div>
+
+            <!-- Schnellstart: 4-4-4 Atem-Flow -->
+            <button onclick="openBreakModal('breath')" class="w-full py-2 px-2.5 bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/30 text-left text-xs font-bold rounded-xl text-teal-200 transition flex items-center justify-between group/pbtn cursor-pointer">
+              <div class="flex items-center gap-2">
+                <span class="text-base">🧘</span>
+                <div>
+                  <div class="leading-none mb-0.5">4-4-4 Atemtakt</div>
+                  <div class="text-[9px] text-gray-400 font-normal">Beruhigt das Nervensystem in 60s</div>
+                </div>
               </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-teal-400/60 group-hover/pbtn:translate-x-0.5 transition-transform"></i>
             </button>
 
-            <!-- Option 2: Box Breathing -->
-            <button onclick="openBreakModal('box')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2 cursor-pointer">
-              <i data-lucide="box" class="w-4 h-4 shrink-0 text-teal-400"></i>
-              <div>
-                <div class="leading-none mb-0.5">Box-Breathing (Atembox) 📦</div>
-                <div class="text-[9px] text-gray-400 font-normal">Ein, halten, aus, halten im Takt</div>
+            <!-- Schnellstart: 5-4-3-2-1 Achtsamkeit -->
+            <button onclick="openBreakModal('grounding')" class="w-full py-2 px-2.5 bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-left text-xs font-bold rounded-xl text-cyan-200 transition flex items-center justify-between group/pbtn cursor-pointer">
+              <div class="flex items-center gap-2">
+                <span class="text-base">⚓</span>
+                <div>
+                  <div class="leading-none mb-0.5">5-4-3-2-1 Erdung</div>
+                  <div class="text-[9px] text-gray-400 font-normal">Holt dich sofort ins Hier & Jetzt</div>
+                </div>
               </div>
-            </button>
-            
-            <!-- Option 3: Erdungs-Anker -->
-            <button onclick="openBreakModal('anchor')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2 cursor-pointer">
-              <i data-lucide="anchor" class="w-4 h-4 shrink-0 text-teal-400"></i>
-              <div>
-                <div class="leading-none mb-0.5">Erdungs-Anker ⚓</div>
-                <div class="text-[9px] text-gray-400 font-normal">5-4-3-2-1 Achtsamkeit</div>
-              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-cyan-400/60 group-hover/pbtn:translate-x-0.5 transition-transform"></i>
             </button>
 
-            <!-- Option 4: Augen-Entspannung -->
-            <button onclick="openBreakModal('eyes')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2 cursor-pointer">
-              <i data-lucide="eye" class="w-4 h-4 shrink-0 text-teal-400"></i>
-              <div>
-                <div class="leading-none mb-0.5">Augen-Entspannung 👀</div>
-                <div class="text-[9px] text-gray-400 font-normal">Warmes Hand-Palming für 1 Minute</div>
+            <!-- Schnellstart: 2-Minuten Dehnen & Lockern -->
+            <button onclick="openBreakModal('stretch')" class="w-full py-2 px-2.5 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 text-left text-xs font-bold rounded-xl text-purple-200 transition flex items-center justify-between group/pbtn cursor-pointer">
+              <div class="flex items-center gap-2">
+                <span class="text-base">🙆</span>
+                <div>
+                  <div class="leading-none mb-0.5">Körper & Nacken lockern</div>
+                  <div class="text-[9px] text-gray-400 font-normal">2 Minuten sanfte Dehnung</div>
+                </div>
               </div>
-            </button>
-            
-            <!-- Option 5: Schneller Stretch -->
-            <button onclick="openBreakModal('stretch')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2 cursor-pointer">
-              <i data-lucide="dumbbell" class="w-4 h-4 shrink-0 text-teal-400"></i>
-              <div>
-                <div class="leading-none mb-0.5">Schneller Stretch 🙆‍♂️</div>
-                <div class="text-[9px] text-gray-400 font-normal">Sanfte Dehnung für Schultern & Rücken</div>
-              </div>
-            </button>
-            
-            <!-- Option 6: Nacken-Squeeze -->
-            <button onclick="openBreakModal('neck')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2 cursor-pointer">
-              <i data-lucide="activity" class="w-4 h-4 shrink-0 text-teal-400"></i>
-              <div>
-                <div class="leading-none mb-0.5">Nacken-Squeeze (1 Min) 🏋️</div>
-                <div class="text-[9px] text-gray-400 font-normal">Muskeln anspannen & befreien</div>
-              </div>
-            </button>
-            
-            <!-- Option 7: 5-Minuten Teepause -->
-            <button onclick="openBreakModal('tea')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2 cursor-pointer">
-              <i data-lucide="coffee" class="w-4 h-4 shrink-0 text-teal-400"></i>
-              <div>
-                <div class="leading-none mb-0.5">5-Minuten Teepause ☕</div>
-                <div class="text-[9px] text-gray-400 font-normal">Fokus-Auszeit mit Café-Klängen</div>
-              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-purple-400/60 group-hover/pbtn:translate-x-0.5 transition-transform"></i>
             </button>
 
-            <!-- Option 8: Wald-Auszeit -->
-            <button onclick="openBreakModal('nature')" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2 cursor-pointer">
-              <i data-lucide="trees" class="w-4 h-4 shrink-0 text-teal-400"></i>
-              <div>
-                <div class="leading-none mb-0.5">Wald-Auszeit (3 Min) 🐦</div>
-                <div class="text-[9px] text-gray-400 font-normal">Abschalten bei Natur-Vogelstimmen</div>
-              </div>
-            </button>
-
-            <!-- Option 9: Power Nap -->
-            <button onclick="triggerPowerNap()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2">
+            <!-- Power Nap (20 Min) -->
+            <button onclick="triggerPowerNap()" class="w-full py-1.5 px-2 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 hover:border-teal-500/40 text-left text-xs font-bold rounded-xl text-teal-300 transition flex items-center gap-2 cursor-pointer">
               <i data-lucide="bed" class="w-4 h-4 shrink-0 text-teal-400"></i>
               <div>
                 <div class="leading-none mb-0.5">Power Nap (20 Min) 😴</div>
@@ -598,84 +514,94 @@
         </div>
       </div>
 
-      <!-- BEHÄLTER 7: Aktionen (Undo, Reset) -->
-      <div class="hidden md:flex desktop-only-header items-center gap-1 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0">
-        <button onclick="handleUndo()" class="h-8 w-8 flex items-center justify-center bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 rounded-xl text-gray-300 hover:text-white cursor-pointer transition shadow-sm" title="Letzte Aktion rückgängig machen">
+      <!-- ====================================================================== -->
+      <!-- ZONE 4: AKTIONEN, SUCHE & EINSTELLUNGEN MIT HOVER (RECHTS) -->
+      <!-- ====================================================================== -->
+      <div class="hidden md:flex desktop-only-header items-center gap-1.5 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0">
+        <!-- Undo & Reset -->
+        <button onclick="handleUndo()" class="h-8 w-8 flex items-center justify-center bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 rounded-xl text-gray-300 hover:text-white cursor-pointer transition shadow-sm" title="Letzte Aktion rückgängig machen (U)">
           <i data-lucide="undo" class="w-3.5 h-3.5"></i>
         </button>
         <button onclick="handleReset()" class="h-8 w-8 flex items-center justify-center bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-xl text-red-300 hover:text-red-200 cursor-pointer transition shadow-sm zen-hide" title="Gesamten Plan auf die Standardeinstellungen zurücksetzen">
           <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
         </button>
-      </div>
 
-      <!-- BEHÄLTER 9: Preferences & Sync -->
-      <div class="hidden md:flex desktop-only-header items-center gap-1 p-1 bg-white/[0.025] border border-white/[0.07] rounded-2xl shadow-sm shrink-0">
+        <div class="h-5 w-[1px] bg-white/10 mx-0.5"></div>
 
         <!-- Quick Search & Command Palette (Strg+K) -->
-        <div class="relative group cursor-pointer zen-hide">
-          <button onclick="openCommandPalette()" class="h-8 w-8 flex items-center justify-center border border-white/10 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-purple-300 hover:text-white cursor-pointer transition shadow-sm" title="Suche & Befehle (Strg+K)" aria-label="Suche & Befehle">
-            <i data-lucide="search" class="w-3.5 h-3.5 text-purple-300"></i>
-          </button>
-        </div>
+        <button onclick="openCommandPalette()" class="h-8 w-8 flex items-center justify-center border border-white/10 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-purple-300 hover:text-white cursor-pointer transition shadow-sm zen-hide" title="Suche & Befehle (Strg+K)" aria-label="Suche & Befehle">
+          <i data-lucide="search" class="w-3.5 h-3.5 text-purple-300"></i>
+        </button>
 
-        <!-- Theme Selector Dropdown (4x4 Grid - 16 Themes) -->
-        <div class="relative group cursor-pointer">
-          <button onclick="togglePanel('theme')" class="h-8 w-8 flex items-center justify-center border border-white/10 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-gray-200 cursor-pointer transition shadow-sm" title="Farbschema und Hintergrund der App ändern">
-            <i data-lucide="palette" class="w-3.5 h-3.5 text-purple-300"></i>
-          </button>
-          
-          <div id="panel-theme" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] bg-[#111116] border border-purple-500/40 p-2.5 rounded-2xl shadow-2xl grid grid-cols-4 gap-2 w-[120px] origin-top">
-            <!-- Reihe 1 -->
-            <button onclick="setTheme('aurora')" class="w-3.5 h-3.5 rounded-full bg-[#a855f7] border border-white/10 hover:scale-125 transition" title="Aurora (Mystical Purple)"></button>
-            <button onclick="setTheme('sage')" class="w-3.5 h-3.5 rounded-full bg-[#86efac] border border-white/10 hover:scale-125 transition" title="Sage (Earthy Sage Green)"></button>
-            <button onclick="setTheme('cozy')" class="w-3.5 h-3.5 rounded-full bg-[#f59e0b] border border-white/10 hover:scale-125 transition" title="Cozy (Warm Amber)"></button>
-            <button onclick="setTheme('forest')" class="w-3.5 h-3.5 rounded-full bg-[#22c55e] border border-white/10 hover:scale-125 transition" title="Forest (Pine Green)"></button>
-            <!-- Reihe 2 -->
-            <button onclick="setTheme('architect')" class="w-3.5 h-3.5 rounded-full bg-[#64748b] border border-white/10 hover:scale-125 transition" title="Architect (Steel Grey)"></button>
-            <button onclick="setTheme('neon-cyber')" class="w-3.5 h-3.5 rounded-full bg-[#ff2fd0] border border-white/10 hover:scale-125 transition" title="Neon Cyber (Futuristic Magenta)"></button>
-            <button onclick="setTheme('glacier')" class="w-3.5 h-3.5 rounded-full bg-[#a5f3fc] border border-white/10 hover:scale-125 transition" title="Glacier (Nordic Ice)"></button>
-            <button onclick="setTheme('synthwave')" class="w-3.5 h-3.5 rounded-full bg-[#ff5f9e] border border-white/10 hover:scale-125 transition" title="Synthwave (Futuristic Retro Sunset)"></button>
-            <!-- Reihe 3 -->
-            <button onclick="setTheme('charcoal')" class="w-3.5 h-3.5 rounded-full bg-[#475569] border border-white/10 hover:scale-125 transition" title="Charcoal (Pure Graphite)"></button>
-            <button onclick="setTheme('executive')" class="w-3.5 h-3.5 rounded-full bg-[#b5a642] border border-white/10 hover:scale-125 transition" title="Executive (Navy & Gold)"></button>
-            <button onclick="setTheme('holo-chrome')" class="w-3.5 h-3.5 rounded-full bg-[#22e5d4] border border-white/10 hover:scale-125 transition" title="Holo Chrome (Futuristic Cyan HUD)"></button>
-            <button onclick="setTheme('carbon')" class="w-3.5 h-3.5 rounded-full bg-[#1e293b] border border-white/10 hover:scale-125 transition" title="Carbon (Ultra-Minimal)"></button>
-            <!-- Reihe 4 (Fröhlich & Vital) -->
-            <button onclick="setTheme('citrus')" class="w-3.5 h-3.5 rounded-full bg-[#facc15] border border-white/10 hover:scale-125 transition" title="Citrus Sunshine (Sonnengelb)"></button>
-            <button onclick="setTheme('sakura')" class="w-3.5 h-3.5 rounded-full bg-[#f472b6] border border-white/10 hover:scale-125 transition" title="Sakura Spring (Kirschblüte)"></button>
-            <button onclick="setTheme('lagoon')" class="w-3.5 h-3.5 rounded-full bg-[#06b6d4] border border-white/10 hover:scale-125 transition" title="Tropical Lagoon (Türkis)"></button>
-            <button onclick="setTheme('matcha')" class="w-3.5 h-3.5 rounded-full bg-[#84cc16] border border-white/10 hover:scale-125 transition" title="Matcha Latte (Matcha-Grün)"></button>
-          </div>
-        </div>
-
-        <!-- Language Selector Dropdown -->
-        <div class="relative group cursor-pointer">
-          <button onclick="togglePanel('language')" class="h-8 w-8 flex items-center justify-center border border-white/10 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-gray-200 cursor-pointer transition shadow-sm" title="Sprache ändern / Change Language">
-            <span id="current-lang-flag" class="text-xs">🇬🇧</span>
-          </button>
-          
-          <div id="panel-language" class="hidden absolute right-0 top-[calc(100%+8px)] z-[110] bg-[#111116] border border-purple-500/40 p-1.5 rounded-2xl shadow-2xl flex flex-col gap-1 w-[46px]">
-            <button onclick="setLanguage('de')" class="p-1 hover:bg-white/10 rounded-lg text-sm flex items-center justify-center transition cursor-pointer" title="Deutsch">🇩🇪</button>
-            <button onclick="setLanguage('en')" class="p-1 hover:bg-white/10 rounded-lg text-sm flex items-center justify-center transition cursor-pointer" title="English">🇬🇧</button>
-            <button onclick="setLanguage('es')" class="p-1 hover:bg-white/10 rounded-lg text-sm flex items-center justify-center transition cursor-pointer" title="Español">🇪🇸</button>
-            <button onclick="setLanguage('el')" class="p-1 hover:bg-white/10 rounded-lg text-sm flex items-center justify-center transition cursor-pointer" title="Ελληνικά">🇬🇷</button>
-            <button onclick="setLanguage('fr')" class="p-1 hover:bg-white/10 rounded-lg text-sm flex items-center justify-center transition cursor-pointer" title="Français">🇫🇷</button>
-            <button onclick="setLanguage('it')" class="p-1 hover:bg-white/10 rounded-lg text-sm flex items-center justify-center transition cursor-pointer" title="Italiano">🇮🇹</button>
-          </div>
-        </div>
-
-        <!-- Handy Live-Verbindung (1-Klick QR) -->
-        <div class="relative group cursor-pointer zen-hide">
-          <button onclick="openP2PSyncModal()" class="h-8 w-8 flex items-center justify-center border border-emerald-500/30 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 cursor-pointer transition shadow-sm" title="Handy Live-Verbindung ⚡ (1x QR scannen & sofort synchron)" aria-label="Handy Live-Verbindung">
-            <i data-lucide="smartphone" class="w-3.5 h-3.5 text-emerald-400"></i>
-          </button>
-        </div>
-
-        <!-- Settings & Rechtliches (1-Klick Öffnen) -->
-        <div class="relative group cursor-pointer zen-hide">
-          <button onclick="openSettingsModal()" class="h-8 w-8 flex items-center justify-center border border-white/10 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-purple-300 hover:text-white cursor-pointer transition shadow-sm" title="Optionen, Impressum & Datenschutz">
+        <!-- EINSTELLUNGEN MIT HOVER & KLICK POPUP -->
+        <div class="relative group cursor-pointer zen-hide" onmouseenter="document.getElementById('panel-settings-dropdown').classList.remove('hidden')" onmouseleave="document.getElementById('panel-settings-dropdown').classList.add('hidden')">
+          <button onclick="togglePanel('settings-dropdown')" class="h-8 px-2.5 flex items-center gap-1.5 border border-white/10 hover:border-purple-500/40 rounded-xl bg-white/[0.03] hover:bg-purple-500/15 text-purple-300 hover:text-white cursor-pointer transition shadow-sm" title="Optionen, Farbschemata, Sprache & Sync">
             <i data-lucide="settings" class="w-3.5 h-3.5 text-purple-300"></i>
+            <span class="text-[11px] font-bold text-gray-300 group-hover:text-white hidden xl:inline">Optionen</span>
           </button>
+
+          <div id="panel-settings-dropdown" class="hidden absolute right-0 top-[calc(100%+8px)] z-[120] w-[260px] bg-[#111116]/98 border border-purple-500/40 p-3.5 rounded-3xl shadow-2xl backdrop-blur-xl flex flex-col gap-3 text-left animate-fade-in" onclick="event.stopPropagation()">
+            <!-- Title & Modal Trigger -->
+            <div class="flex items-center justify-between border-b border-white/10 pb-2">
+              <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-lg bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-300">
+                  <i data-lucide="settings" class="w-3.5 h-3.5"></i>
+                </div>
+                <h4 class="font-bold text-xs font-display text-white">Einstellungen</h4>
+              </div>
+              <button onclick="openSettingsModal(); document.getElementById('panel-settings-dropdown').classList.add('hidden');" class="px-2 py-0.5 rounded-lg bg-purple-600/30 hover:bg-purple-600 text-purple-200 hover:text-white text-[9px] font-bold transition cursor-pointer">Vollbild ↗</button>
+            </div>
+
+            <!-- SECTION 1: THEMES (16 FARBEN) -->
+            <div class="space-y-1.5">
+              <div class="text-[9px] font-bold uppercase tracking-wider text-gray-400 font-mono flex items-center justify-between">
+                <span>🎨 Farbschema (16 Themes)</span>
+              </div>
+              <div class="grid grid-cols-8 gap-1.5 p-1.5 bg-black/40 border border-white/5 rounded-2xl">
+                <button onclick="setTheme('aurora')" class="w-4 h-4 rounded-full bg-[#a855f7] border border-white/10 hover:scale-125 transition cursor-pointer" title="Aurora"></button>
+                <button onclick="setTheme('sage')" class="w-4 h-4 rounded-full bg-[#86efac] border border-white/10 hover:scale-125 transition cursor-pointer" title="Sage"></button>
+                <button onclick="setTheme('cozy')" class="w-4 h-4 rounded-full bg-[#f59e0b] border border-white/10 hover:scale-125 transition cursor-pointer" title="Cozy"></button>
+                <button onclick="setTheme('forest')" class="w-4 h-4 rounded-full bg-[#22c55e] border border-white/10 hover:scale-125 transition cursor-pointer" title="Forest"></button>
+                <button onclick="setTheme('architect')" class="w-4 h-4 rounded-full bg-[#64748b] border border-white/10 hover:scale-125 transition cursor-pointer" title="Architect"></button>
+                <button onclick="setTheme('neon-cyber')" class="w-4 h-4 rounded-full bg-[#ff2fd0] border border-white/10 hover:scale-125 transition cursor-pointer" title="Neon Cyber"></button>
+                <button onclick="setTheme('glacier')" class="w-4 h-4 rounded-full bg-[#a5f3fc] border border-white/10 hover:scale-125 transition cursor-pointer" title="Glacier"></button>
+                <button onclick="setTheme('synthwave')" class="w-4 h-4 rounded-full bg-[#ff5f9e] border border-white/10 hover:scale-125 transition cursor-pointer" title="Synthwave"></button>
+                <button onclick="setTheme('charcoal')" class="w-4 h-4 rounded-full bg-[#475569] border border-white/10 hover:scale-125 transition cursor-pointer" title="Charcoal"></button>
+                <button onclick="setTheme('executive')" class="w-4 h-4 rounded-full bg-[#b5a642] border border-white/10 hover:scale-125 transition cursor-pointer" title="Executive"></button>
+                <button onclick="setTheme('holo-chrome')" class="w-4 h-4 rounded-full bg-[#22e5d4] border border-white/10 hover:scale-125 transition cursor-pointer" title="Holo Chrome"></button>
+                <button onclick="setTheme('carbon')" class="w-4 h-4 rounded-full bg-[#1e293b] border border-white/10 hover:scale-125 transition cursor-pointer" title="Carbon"></button>
+                <button onclick="setTheme('citrus')" class="w-4 h-4 rounded-full bg-[#facc15] border border-white/10 hover:scale-125 transition cursor-pointer" title="Citrus"></button>
+                <button onclick="setTheme('sakura')" class="w-4 h-4 rounded-full bg-[#f472b6] border border-white/10 hover:scale-125 transition cursor-pointer" title="Sakura"></button>
+                <button onclick="setTheme('lagoon')" class="w-4 h-4 rounded-full bg-[#06b6d4] border border-white/10 hover:scale-125 transition cursor-pointer" title="Lagoon"></button>
+                <button onclick="setTheme('matcha')" class="w-4 h-4 rounded-full bg-[#84cc16] border border-white/10 hover:scale-125 transition cursor-pointer" title="Matcha"></button>
+              </div>
+            </div>
+
+            <!-- SECTION 2: SPRACHE -->
+            <div class="space-y-1.5">
+              <div class="text-[9px] font-bold uppercase tracking-wider text-gray-400 font-mono">🌐 Sprache wählen</div>
+              <div class="grid grid-cols-6 gap-1 p-1 bg-black/40 border border-white/5 rounded-2xl">
+                <button onclick="setLanguage('de')" class="p-1 hover:bg-white/10 rounded-xl text-xs flex items-center justify-center transition cursor-pointer" title="Deutsch">🇩🇪</button>
+                <button onclick="setLanguage('en')" class="p-1 hover:bg-white/10 rounded-xl text-xs flex items-center justify-center transition cursor-pointer" title="English">🇬🇧</button>
+                <button onclick="setLanguage('es')" class="p-1 hover:bg-white/10 rounded-xl text-xs flex items-center justify-center transition cursor-pointer" title="Español">🇪🇸</button>
+                <button onclick="setLanguage('el')" class="p-1 hover:bg-white/10 rounded-xl text-xs flex items-center justify-center transition cursor-pointer" title="Ελληνικά">🇬🇷</button>
+                <button onclick="setLanguage('fr')" class="p-1 hover:bg-white/10 rounded-xl text-xs flex items-center justify-center transition cursor-pointer" title="Français">🇫🇷</button>
+                <button onclick="setLanguage('it')" class="p-1 hover:bg-white/10 rounded-xl text-xs flex items-center justify-center transition cursor-pointer" title="Italiano">🇮🇹</button>
+              </div>
+            </div>
+
+            <!-- SECTION 3: QUICK LINKS -->
+            <div class="grid grid-cols-2 gap-1.5 pt-1 border-t border-white/10">
+              <button onclick="openP2PSyncModal(); document.getElementById('panel-settings-dropdown').classList.add('hidden');" class="p-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 rounded-xl text-emerald-300 text-left text-[10px] font-bold flex items-center gap-1.5 transition cursor-pointer">
+                <i data-lucide="smartphone" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i>
+                <span>Handy Live-Sync</span>
+              </button>
+              <button onclick="openSettingsModal('impressum'); document.getElementById('panel-settings-dropdown').classList.add('hidden');" class="p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-gray-300 hover:text-white text-left text-[10px] font-semibold flex items-center gap-1.5 transition cursor-pointer">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-purple-400 shrink-0"></i>
+                <span>Datenschutz</span>
+              </button>
+            </div>
+          </div>
         </div>
 
       </div>
