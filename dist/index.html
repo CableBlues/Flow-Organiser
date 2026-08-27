@@ -375,9 +375,9 @@
         </button>
 
         <!-- Zentrales Datum & Monatskalender Dropdown -->
-        <div id="date-container" onmouseenter="openCalendarHover()" onmouseleave="closeCalendarHover()" class="flex items-center justify-center h-9 px-3.5 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.08] hover:border-[var(--accent)] rounded-xl shadow-sm shrink-0 transition-all duration-300 relative group cursor-pointer">
+        <div id="date-container" class="flex items-center justify-center h-9 px-3.5 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.08] hover:border-[var(--accent)] rounded-xl shadow-sm shrink-0 transition-all duration-300 relative group">
           <div class="flex items-center gap-2 px-0.5">
-            <!-- Klein & Dezent: Wetter & Temperatur mit vollem Hover-Briefing (LINKS) -->
+            <!-- Klein & Dezent: Wetter & Temperatur mit vollem Hover-Briefing (NUR WETTER BEIM HOVER) -->
             <div id="date-weather-badge" onclick="event.stopPropagation(); togglePanel('weather')" onmouseenter="openWeatherHover()" onmouseleave="closeWeatherHover()" class="hidden items-center gap-1 pr-1.5 text-[11px] font-medium text-gray-300 hover:text-white transition cursor-pointer relative" title="Wetterbericht">
               <span id="date-weather-emoji" class="text-xs shrink-0">☀️</span>
               <span id="date-weather-temp" class="font-mono font-bold text-[var(--accent-light)] text-[11px]">--°</span>
@@ -440,8 +440,10 @@
               </div>
             </div>
 
-            <!-- Zentrales Datum -->
-            <span id="date-display" class="whitespace-nowrap text-xs md:text-sm font-bold text-gray-100 group-hover:text-white tracking-wide"></span>
+            <!-- Zentrales Datum mit separatem Kalender-Hover (NUR KALENDER BEIM HOVER) -->
+            <div id="date-hover-wrapper" onmouseenter="openCalendarHover()" onmouseleave="closeCalendarHover()" class="flex items-center cursor-pointer">
+              <span id="date-display" class="whitespace-nowrap text-xs md:text-sm font-bold text-gray-100 group-hover:text-white tracking-wide"></span>
+            </div>
             
             <span class="text-white/20 text-xs select-none">•</span>
 

@@ -5972,6 +5972,8 @@ ${listStr}`;
       clearTimeout(calendarHoverTimeout);
       calendarHoverTimeout = null;
     }
+    const weatherEl = document.getElementById("panel-weather");
+    if (weatherEl) weatherEl.classList.add("hidden");
     const el = document.getElementById("panel-calendar-dropdown");
     if (el) {
       el.classList.remove("hidden");
@@ -5983,10 +5985,10 @@ ${listStr}`;
     if (calendarHoverTimeout) clearTimeout(calendarHoverTimeout);
     calendarHoverTimeout = setTimeout(() => {
       const el = document.getElementById("panel-calendar-dropdown");
-      const container = document.getElementById("date-container");
+      const trigger = document.getElementById("date-hover-wrapper");
       const isOverEl = el && el.matches(":hover");
-      const isOverContainer = container && container.matches(":hover");
-      if (el && !isOverEl && !isOverContainer) {
+      const isOverTrigger = trigger && trigger.matches(":hover");
+      if (el && !isOverEl && !isOverTrigger) {
         el.classList.add("hidden");
       }
     }, 250);
@@ -10033,6 +10035,8 @@ ${listStr}`;
       clearTimeout(weatherHoverTimeout);
       weatherHoverTimeout = null;
     }
+    const calEl = document.getElementById("panel-calendar-dropdown");
+    if (calEl) calEl.classList.add("hidden");
     const el = document.getElementById("panel-weather");
     if (el) {
       el.classList.remove("hidden");

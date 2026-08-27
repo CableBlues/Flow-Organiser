@@ -135,6 +135,9 @@ function openWeatherHover() {
     clearTimeout(weatherHoverTimeout);
     weatherHoverTimeout = null;
   }
+  const calEl = document.getElementById('panel-calendar-dropdown');
+  if (calEl) calEl.classList.add('hidden');
+
   const el = document.getElementById('panel-weather');
   if (el) {
     el.classList.remove('hidden');
