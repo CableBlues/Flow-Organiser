@@ -377,14 +377,8 @@
         <!-- Zentrales Datum & Monatskalender Dropdown -->
         <div id="date-container" onmouseenter="openCalendarHover()" onmouseleave="closeCalendarHover()" class="flex items-center justify-center h-9 px-3.5 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.08] hover:border-[var(--accent)] rounded-xl shadow-sm shrink-0 transition-all duration-300 relative group cursor-pointer">
           <div class="flex items-center gap-2 px-0.5">
-            <!-- Ganz dezente Live-Uhrzeit -->
-            <span id="time-display" class="font-mono text-xs font-semibold text-gray-300 group-hover:text-white tracking-wider"></span>
-            <span class="text-white/20 text-xs select-none">•</span>
-            <!-- Zentrales Datum -->
-            <span id="date-display" class="whitespace-nowrap text-xs md:text-sm font-bold text-gray-100 group-hover:text-white tracking-wide"></span>
-            
-            <!-- Klein & Dezent: Wetter & Temperatur mit vollem Hover-Briefing -->
-            <div id="date-weather-badge" onclick="event.stopPropagation(); togglePanel('weather')" onmouseenter="openWeatherHover()" onmouseleave="closeWeatherHover()" class="hidden items-center gap-1 pl-2 border-l border-white/15 text-[11px] font-medium text-gray-300 hover:text-white transition cursor-pointer relative" title="Wetterbericht">
+            <!-- Klein & Dezent: Wetter & Temperatur mit vollem Hover-Briefing (LINKS) -->
+            <div id="date-weather-badge" onclick="event.stopPropagation(); togglePanel('weather')" onmouseenter="openWeatherHover()" onmouseleave="closeWeatherHover()" class="hidden items-center gap-1 pr-1.5 text-[11px] font-medium text-gray-300 hover:text-white transition cursor-pointer relative" title="Wetterbericht">
               <span id="date-weather-emoji" class="text-xs shrink-0">☀️</span>
               <span id="date-weather-temp" class="font-mono font-bold text-[var(--accent-light)] text-[11px]">--°</span>
 
@@ -445,6 +439,14 @@
                 <div id="weather-content-area" class="space-y-2.5"></div>
               </div>
             </div>
+
+            <!-- Zentrales Datum -->
+            <span id="date-display" class="whitespace-nowrap text-xs md:text-sm font-bold text-gray-100 group-hover:text-white tracking-wide"></span>
+            
+            <span class="text-white/20 text-xs select-none">•</span>
+
+            <!-- Ganz dezente Live-Uhrzeit (RECHTS) -->
+            <span id="time-display" class="font-mono text-xs font-semibold text-gray-300 group-hover:text-white tracking-wider"></span>
           </div>
 
           <!-- MINIMAL MONTH CALENDAR PANEL (Exakt zentriert unter dem Datums-Container) -->
