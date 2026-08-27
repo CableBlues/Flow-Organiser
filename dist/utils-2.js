@@ -217,18 +217,33 @@ function closeCalendarHover() {
 window.closeCalendarHover = closeCalendarHover;
 
 function updateDateAndStreak() {
+  const now = new Date();
   const locales = { de: 'de-DE', en: 'en-GB', el: 'el-GR', es: 'es-ES', fr: 'fr-FR', it: 'it-IT' };
   try {
-    const str = new Intl.DateTimeFormat(locales[currentLang] || 'en-GB', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
+    const str = new Intl.DateTimeFormat(locales[currentLang] || 'en-GB', { weekday: 'long', day: 'numeric', month: 'long' }).format(now);
     const displayEl = document.getElementById('date-display');
     if (displayEl) displayEl.innerText = str;
   } catch (e) {
     const displayEl = document.getElementById('date-display');
-    if (displayEl) displayEl.innerText = new Date().toLocaleDateString();
+    if (displayEl) displayEl.innerText = now.toLocaleDateString();
+  }
+
+  // Ganz dezente Live-Uhrzeit (Null Speicher-Overhead)
+  const timeEl = document.getElementById('time-display');
+  if (timeEl) {
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    timeEl.innerText = `${hours}:${minutes}`;
   }
 
   renderMiniCalendar();
-} 
+}
+window.updateDateAndStreak = updateDateAndStreak;
+
+// Leichtgewichtiger Ticker für sekundengenaue / minutengenaue Uhrzeit ohne Speicheroverhead
+if (typeof window !== 'undefined' && !window._timeTickerInterval) {
+  window._timeTickerInterval = setInterval(updateDateAndStreak, 10000);
+}
  
 
 /**

@@ -5992,6 +5992,29 @@ ${listStr}`;
     }, 250);
   }
   window.closeCalendarHover = closeCalendarHover;
+  function updateDateAndStreak2() {
+    const now = /* @__PURE__ */ new Date();
+    const locales = { de: "de-DE", en: "en-GB", el: "el-GR", es: "es-ES", fr: "fr-FR", it: "it-IT" };
+    try {
+      const str = new Intl.DateTimeFormat(locales[currentLang] || "en-GB", { weekday: "long", day: "numeric", month: "long" }).format(now);
+      const displayEl = document.getElementById("date-display");
+      if (displayEl) displayEl.innerText = str;
+    } catch (e) {
+      const displayEl = document.getElementById("date-display");
+      if (displayEl) displayEl.innerText = now.toLocaleDateString();
+    }
+    const timeEl = document.getElementById("time-display");
+    if (timeEl) {
+      const hours = String(now.getHours()).padStart(2, "0");
+      const minutes = String(now.getMinutes()).padStart(2, "0");
+      timeEl.innerText = `${hours}:${minutes}`;
+    }
+    renderMiniCalendar();
+  }
+  window.updateDateAndStreak = updateDateAndStreak2;
+  if (typeof window !== "undefined" && !window._timeTickerInterval) {
+    window._timeTickerInterval = setInterval(updateDateAndStreak2, 1e4);
+  }
 
   // audio-core.js
   var audioCtx2 = null;
