@@ -4682,6 +4682,278 @@
     }
   }
 
+  // config.js
+  (function() {
+    const DEFAULT_CONFIG = {
+      // Supabase Projekt-Konfiguration (vom Admin / Host anpassbar oder via Env/Storage überschreibbar)
+      SUPABASE_URL: typeof window !== "undefined" && window.__FLOW_SUPABASE_URL || "https://flow-organiser.supabase.co",
+      SUPABASE_ANON_KEY: typeof window !== "undefined" && window.__FLOW_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dummy_anon_key_flow_organiser",
+      // Lokaler / Webserver Relay-Endpunkt
+      SYNC_API_URL: "api-sync.php",
+      // Auto-Sync Intervall (ms)
+      AUTO_SYNC_INTERVAL_MS: 3e4
+    };
+    try {
+      if (typeof localStorage !== "undefined") {
+        const storedConfig = localStorage.getItem("flow_custom_config");
+        if (storedConfig) {
+          const parsed = JSON.parse(storedConfig);
+          if (parsed && typeof parsed === "object") {
+            Object.assign(DEFAULT_CONFIG, parsed);
+          }
+        }
+      }
+    } catch (e) {
+    }
+    if (typeof window !== "undefined") {
+      window.FLOW_CONFIG = DEFAULT_CONFIG;
+    }
+    if (typeof globalThis !== "undefined") {
+      globalThis.FLOW_CONFIG = DEFAULT_CONFIG;
+    }
+  })();
+
+  // auth-engine.js
+  var FlowAuth2 = /* @__PURE__ */ (function() {
+    let supabaseClient = null;
+    let currentUser = null;
+    let currentSession = null;
+    let customSyncToken = null;
+    const listeners = [];
+    function getConfig() {
+      if (typeof FLOW_CONFIG !== "undefined") {
+        return FLOW_CONFIG;
+      }
+      if (typeof window !== "undefined" && window.FLOW_CONFIG) {
+        return window.FLOW_CONFIG;
+      }
+      return {
+        SUPABASE_URL: "https://flow-organiser.supabase.co",
+        SUPABASE_ANON_KEY: "dummy_anon_key",
+        SYNC_API_URL: "api-sync.php"
+      };
+    }
+    function getSupabaseLib() {
+      if (typeof supabase !== "undefined" && typeof supabase.createClient === "function") {
+        return supabase;
+      }
+      if (typeof window !== "undefined" && window.supabase && typeof window.supabase.createClient === "function") {
+        return window.supabase;
+      }
+      if (typeof globalThis !== "undefined" && globalThis.supabase && typeof globalThis.supabase.createClient === "function") {
+        return globalThis.supabase;
+      }
+      return null;
+    }
+    function init() {
+      try {
+        if (typeof localStorage !== "undefined") {
+          const storedToken = localStorage.getItem("flow_sync_token");
+          const storedEmail = localStorage.getItem("flow_sync_email");
+          if (storedToken) {
+            customSyncToken = storedToken;
+            if (storedEmail && !currentUser) {
+              currentUser = { id: storedToken, email: storedEmail, isTokenOnly: true };
+            }
+          }
+        }
+        const supaLib = getSupabaseLib();
+        const config = getConfig();
+        if (supaLib && config && config.SUPABASE_URL && config.SUPABASE_ANON_KEY) {
+          supabaseClient = supaLib.createClient(config.SUPABASE_URL, config.SUPABASE_ANON_KEY, {
+            auth: {
+              persistSession: true,
+              autoRefreshToken: true,
+              detectSessionInUrl: true
+            }
+          });
+          supabaseClient.auth.getSession().then(({ data, error }) => {
+            if (!error && data && data.session) {
+              setSession(data.session);
+            }
+          }).catch((err) => {
+            console.warn("[FlowAuth] Could not retrieve session (offline or unconfigured):", err.message);
+          });
+          supabaseClient.auth.onAuthStateChange((event, session) => {
+            setSession(session);
+          });
+        }
+      } catch (e) {
+        console.warn("[FlowAuth] Initialization notice (offline-safe):", e.message);
+      }
+    }
+    function setSession(session) {
+      currentSession = session;
+      currentUser = session ? session.user : customSyncToken ? { id: customSyncToken, email: localStorage.getItem("flow_sync_email") || "Ger\xE4te-Kopplung" } : null;
+      if (session && session.user && typeof localStorage !== "undefined") {
+        localStorage.setItem("flow_sync_token", session.user.id);
+        localStorage.setItem("flow_sync_email", session.user.email || "");
+      }
+      notifyListeners();
+      updateAuthUI();
+    }
+    function subscribe(fn) {
+      if (typeof fn === "function") {
+        listeners.push(fn);
+      }
+      return () => {
+        const idx = listeners.indexOf(fn);
+        if (idx !== -1) listeners.splice(idx, 1);
+      };
+    }
+    function notifyListeners() {
+      listeners.forEach((fn) => {
+        try {
+          fn({ user: currentUser, session: currentSession, token: getSyncToken() });
+        } catch (e) {
+          console.error("[FlowAuth] Listener error:", e);
+        }
+      });
+    }
+    async function signInWithMagicLink(email) {
+      if (!email || !email.trim() || !email.includes("@")) {
+        return { success: false, error: "Bitte gib eine g\xFCltige E-Mail-Adresse ein." };
+      }
+      const trimmedEmail = email.trim().toLowerCase();
+      if (typeof navigator !== "undefined" && !navigator.onLine) {
+        return { success: false, error: "Keine Internetverbindung. Bitte sp\xE4ter erneut versuchen." };
+      }
+      const supaLib = getSupabaseLib();
+      if (!supabaseClient && supaLib) {
+        init();
+      }
+      if (!supabaseClient) {
+        return { success: false, error: "Supabase Authentifizierungs-Dienst ist offline oder nicht konfiguriert." };
+      }
+      try {
+        let redirectUrl = "https://cableblues.github.io/Flow-Organiser/";
+        if (typeof window !== "undefined" && window.location && window.location.origin) {
+          redirectUrl = window.location.origin + window.location.pathname;
+        }
+        const { data, error } = await supabaseClient.auth.signInWithOtp({
+          email: trimmedEmail,
+          options: {
+            emailRedirectTo: redirectUrl
+          }
+        });
+        if (error) {
+          return { success: false, error: error.message || "Fehler beim Senden des Magic Links." };
+        }
+        return { success: true, data };
+      } catch (e) {
+        return { success: false, error: e.message || "Verbindungsfehler beim Anfordern des Magic Links." };
+      }
+    }
+    async function signOut() {
+      try {
+        if (supabaseClient) {
+          await supabaseClient.auth.signOut();
+        }
+      } catch (e) {
+        console.warn("[FlowAuth] SignOut error:", e);
+      }
+      currentSession = null;
+      currentUser = null;
+      customSyncToken = null;
+      if (typeof localStorage !== "undefined") {
+        localStorage.removeItem("flow_sync_token");
+        localStorage.removeItem("flow_sync_email");
+      }
+      notifyListeners();
+      updateAuthUI();
+      return { success: true };
+    }
+    function setDirectPairingToken(token, email = "") {
+      if (!token || typeof token !== "string") return;
+      const cleanToken = token.trim();
+      customSyncToken = cleanToken;
+      currentUser = { id: cleanToken, email: email || "Gekoppeltes Ger\xE4t", isTokenOnly: true };
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem("flow_sync_token", cleanToken);
+        if (email) localStorage.setItem("flow_sync_email", email);
+      }
+      notifyListeners();
+      updateAuthUI();
+    }
+    function getSyncToken() {
+      if (currentUser && currentUser.id) {
+        return currentUser.id;
+      }
+      if (customSyncToken) {
+        return customSyncToken;
+      }
+      if (typeof localStorage !== "undefined") {
+        return localStorage.getItem("flow_sync_token") || null;
+      }
+      return null;
+    }
+    function getUser() {
+      return currentUser;
+    }
+    function getSession() {
+      return currentSession;
+    }
+    function isLoggedIn() {
+      return !!getSyncToken();
+    }
+    function updateAuthUI() {
+      if (typeof document === "undefined") return;
+      const loggedIn = isLoggedIn();
+      const user = getUser();
+      const email = user ? user.email : "";
+      const headerSyncBtn = document.getElementById("header-sync-btn") || document.querySelector('button[onclick*="openP2PSyncModal"]');
+      if (headerSyncBtn) {
+        let badge = headerSyncBtn.querySelector(".sync-auth-indicator");
+        if (!badge) {
+          badge = document.createElement("span");
+          badge.className = "sync-auth-indicator absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full border-2 border-[#0a0a0f] transition-all duration-300";
+          headerSyncBtn.appendChild(badge);
+        }
+        if (loggedIn) {
+          badge.className = "sync-auth-indicator absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#0a0a0f] shadow-[0_0_8px_rgba(52,211,153,0.8)]";
+          badge.title = `Eingeloggt als: ${email || "Verbunden"}`;
+        } else {
+          badge.className = "sync-auth-indicator absolute -top-1 -right-1 w-2 h-2 rounded-full bg-gray-500/40 border border-[#0a0a0f]";
+          badge.title = "Nicht angemeldet (nur lokaler Modus)";
+        }
+      }
+      const loginSection = document.getElementById("sync-auth-logged-out-section");
+      const loggedInSection = document.getElementById("sync-auth-logged-in-section");
+      const userEmailDisplay = document.getElementById("sync-auth-user-email");
+      if (loginSection && loggedInSection) {
+        loginSection.classList.toggle("hidden", loggedIn);
+        loggedInSection.classList.toggle("hidden", !loggedIn);
+        if (userEmailDisplay && email) {
+          userEmailDisplay.innerText = email;
+        }
+      }
+    }
+    return {
+      init,
+      signInWithMagicLink,
+      signOut,
+      getUser,
+      getSession,
+      getSyncToken,
+      isLoggedIn,
+      setDirectPairingToken,
+      subscribe,
+      updateAuthUI,
+      _setSupabaseClientForTesting: (mock) => {
+        supabaseClient = mock;
+      }
+    };
+  })();
+  if (typeof window !== "undefined") {
+    window.FlowAuth = FlowAuth2;
+    window.addEventListener("DOMContentLoaded", () => {
+      FlowAuth2.init();
+    });
+  }
+  if (typeof globalThis !== "undefined") {
+    globalThis.FlowAuth = FlowAuth2;
+  }
+
   // storage.js
   var AppStorage2 = {
     get(key, defaultValue = null) {
@@ -5137,6 +5409,9 @@
     if (!skipP2PSync && typeof p2pSyncEngine !== "undefined" && p2pSyncEngine.isConnected()) {
       p2pSyncEngine.broadcastStateUpdate();
     }
+    if (!skipP2PSync && typeof cloudSyncEngine !== "undefined" && typeof FlowAuth !== "undefined" && FlowAuth.isLoggedIn()) {
+      cloudSyncEngine.triggerAutoPush();
+    }
   }
   function persistHistory() {
     localStorage.setItem(HISTORY_KEY, JSON.stringify(historyStack));
@@ -5191,9 +5466,9 @@
       if (!text) return "";
       try {
         const qrLib = typeof QRCode !== "undefined" ? QRCode : typeof window !== "undefined" ? window.QRCode : typeof globalThis !== "undefined" ? globalThis.QRCode : null;
-        if (qrLib) {
+        if (qrLib && typeof qrLib.toString === "function") {
           let svgOut = "";
-          qrLib.toString(text, { type: "svg", margin: 2, width: size, errorCorrectionLevel: "M" }, (err, svg) => {
+          qrLib.toString(text, { type: "svg", margin: 2, width: size, errorCorrectionLevel: "L" }, (err, svg) => {
             if (!err && svg) svgOut = svg;
           });
           if (svgOut) {
@@ -5252,6 +5527,222 @@
   };
   window.MinimalQR = MinimalQR;
   window.P2PDataCodec = P2PDataCodec;
+  var cloudSyncEngine2 = {
+    lastSyncTime: null,
+    isSyncing: false,
+    autoSyncTimer: null,
+    syncDebounceTimer: null,
+    init() {
+      this.checkUrlForIncomingAuth();
+      if (typeof FlowAuth !== "undefined") {
+        FlowAuth.subscribe(({ user, token }) => {
+          if (token) {
+            this.pullState();
+            this.startAutoSync();
+          } else {
+            this.stopAutoSync();
+            this.updateSyncUI();
+          }
+        });
+      }
+      if (typeof window !== "undefined") {
+        window.addEventListener("online", () => {
+          if (typeof FlowAuth !== "undefined" && FlowAuth.isLoggedIn()) {
+            this.pullState();
+          }
+        });
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "visible" && typeof FlowAuth !== "undefined" && FlowAuth.isLoggedIn()) {
+            this.pullState();
+          }
+        });
+      }
+      if (typeof FlowAuth !== "undefined" && FlowAuth.isLoggedIn()) {
+        this.pullState();
+        this.startAutoSync();
+      }
+    },
+    checkUrlForIncomingAuth() {
+      if (typeof window === "undefined" || !window.location.hash) return;
+      const hash = window.location.hash.substring(1);
+      const params = new URLSearchParams(hash);
+      const authToken = params.get("auth_token");
+      const email = params.get("email") || "";
+      if (authToken && typeof FlowAuth !== "undefined") {
+        try {
+          history.replaceState(null, document.title, window.location.pathname + window.location.search);
+        } catch (e) {
+        }
+        FlowAuth.setDirectPairingToken(authToken, email);
+        if (typeof showToast === "function") {
+          showToast(tr({
+            de: "\u{1F4F1} Erfolgreich mit Cloud-Konto verbunden! \u26A1",
+            en: "\u{1F4F1} Successfully connected to cloud account! \u26A1",
+            es: "\u{1F4F1} \xA1Conectado con \xE9xito a la cuenta en la nube! \u26A1",
+            el: "\u{1F4F1} \u0395\u03C0\u03B9\u03C4\u03C5\u03C7\u03AE\u03C2 \u03C3\u03CD\u03BD\u03B4\u03B5\u03C3\u03B7 \u03BC\u03B5 \u03C4\u03BF \u03BB\u03BF\u03B3\u03B1\u03C1\u03B9\u03B1\u03C3\u03BC\u03CC cloud! \u26A1",
+            fr: "\u{1F4F1} Connect\xE9 avec succ\xE8s au compte cloud ! \u26A1",
+            it: "\u{1F4F1} Connesso con successo al cloud! \u26A1"
+          }));
+        }
+        this.pullState();
+      }
+    },
+    getApiUrl(action) {
+      let base = "api-sync.php";
+      if (typeof FLOW_CONFIG !== "undefined" && FLOW_CONFIG.SYNC_API_URL) {
+        base = FLOW_CONFIG.SYNC_API_URL;
+      }
+      return `${base}?action=${encodeURIComponent(action)}`;
+    },
+    async pushState() {
+      if (typeof FlowAuth === "undefined" || !FlowAuth.isLoggedIn()) return { skipped: true };
+      if (typeof navigator !== "undefined" && !navigator.onLine) return { offline: true };
+      const token = FlowAuth.getSyncToken();
+      if (!token) return { skipped: true };
+      this.isSyncing = true;
+      this.updateSyncUI();
+      try {
+        const currentState = typeof window !== "undefined" && window.state ? window.state : typeof state !== "undefined" ? state : {};
+        const payload = {
+          data: {
+            items: currentState.items || {},
+            done: currentState.done || [],
+            workItems: currentState.workItems || {},
+            workDone: currentState.workDone || [],
+            activeWorkspace: currentState.activeWorkspace || "private",
+            clientTimestamp: (/* @__PURE__ */ new Date()).toISOString()
+          }
+        };
+        const res = await fetch(this.getApiUrl("push"), {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+        const json = await res.json();
+        if (json && json.success) {
+          this.lastSyncTime = /* @__PURE__ */ new Date();
+          this.updateSyncUI();
+          return { success: true, time: this.lastSyncTime };
+        }
+        throw new Error(json.error || "Server error");
+      } catch (e) {
+        console.warn("[CloudSync] Push error:", e.message);
+        this.updateSyncUI("error");
+        return { success: false, error: e.message };
+      } finally {
+        this.isSyncing = false;
+      }
+    },
+    async pullState() {
+      if (typeof FlowAuth === "undefined" || !FlowAuth.isLoggedIn()) return { skipped: true };
+      if (typeof navigator !== "undefined" && !navigator.onLine) return { offline: true };
+      const token = FlowAuth.getSyncToken();
+      if (!token) return { skipped: true };
+      this.isSyncing = true;
+      this.updateSyncUI();
+      try {
+        const res = await fetch(this.getApiUrl("pull"), {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        if (res.status === 404) {
+          this.isSyncing = false;
+          return await this.pushState();
+        }
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+        const json = await res.json();
+        if (json && json.success && json.data) {
+          const remoteData = json.data;
+          const remoteTime = json.updated_at ? new Date(json.updated_at).getTime() : 0;
+          const targetState = typeof window !== "undefined" && window.state ? window.state : typeof state !== "undefined" ? state : null;
+          const localSavedTime = targetState && targetState.lastSaved ? new Date(targetState.lastSaved).getTime() : 0;
+          if (targetState && (remoteTime >= localSavedTime || !localSavedTime)) {
+            if (remoteData.items) targetState.items = remoteData.items;
+            if (remoteData.done) targetState.done = remoteData.done;
+            if (remoteData.workItems) targetState.workItems = remoteData.workItems;
+            if (remoteData.workDone) targetState.workDone = remoteData.workDone;
+            if (remoteData.activeWorkspace) targetState.activeWorkspace = remoteData.activeWorkspace;
+            if (typeof saveState === "function") saveState(true);
+            if (typeof renderApp === "function") renderApp();
+          } else if (targetState) {
+            await this.pushState();
+          }
+          this.lastSyncTime = /* @__PURE__ */ new Date();
+          this.updateSyncUI();
+          return { success: true, data: remoteData };
+        }
+        throw new Error(json.error || "Invalid pull response");
+      } catch (e) {
+        console.warn("[CloudSync] Pull error:", e.message);
+        this.updateSyncUI("error");
+        return { success: false, error: e.message };
+      } finally {
+        this.isSyncing = false;
+      }
+    },
+    triggerAutoPush() {
+      if (typeof FlowAuth === "undefined" || !FlowAuth.isLoggedIn()) return;
+      if (this.syncDebounceTimer) clearTimeout(this.syncDebounceTimer);
+      this.syncDebounceTimer = setTimeout(() => {
+        this.pushState();
+      }, 1500);
+    },
+    startAutoSync() {
+      this.stopAutoSync();
+      const interval = typeof FLOW_CONFIG !== "undefined" && FLOW_CONFIG.AUTO_SYNC_INTERVAL_MS || 3e4;
+      this.autoSyncTimer = setInterval(() => {
+        if (typeof document !== "undefined" && document.visibilityState === "visible") {
+          this.pullState();
+        }
+      }, interval);
+    },
+    stopAutoSync() {
+      if (this.autoSyncTimer) {
+        clearInterval(this.autoSyncTimer);
+        this.autoSyncTimer = null;
+      }
+    },
+    updateSyncUI(overrideStatus = null) {
+      if (typeof document === "undefined") return;
+      const statusLabel = document.getElementById("cloud-sync-status-text");
+      const syncDot = document.getElementById("cloud-sync-status-dot");
+      if (!statusLabel) return;
+      if (overrideStatus === "error") {
+        statusLabel.innerText = "Verbindungsfehler (Sync pausiert)";
+        if (syncDot) syncDot.className = "w-2 h-2 rounded-full bg-rose-400";
+        return;
+      }
+      if (this.isSyncing) {
+        statusLabel.innerText = "Synchronisiere...";
+        if (syncDot) syncDot.className = "w-2 h-2 rounded-full bg-amber-400 animate-spin";
+        return;
+      }
+      if (typeof FlowAuth !== "undefined" && FlowAuth.isLoggedIn()) {
+        if (this.lastSyncTime) {
+          const timeStr = this.lastSyncTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+          statusLabel.innerText = `Zuletzt synchronisiert um ${timeStr} Uhr`;
+          if (syncDot) syncDot.className = "w-2 h-2 rounded-full bg-emerald-400";
+        } else {
+          statusLabel.innerText = "Bereit zur Synchronisation";
+          if (syncDot) syncDot.className = "w-2 h-2 rounded-full bg-emerald-400";
+        }
+      } else {
+        statusLabel.innerText = "Nicht angemeldet (nur lokaler Modus)";
+        if (syncDot) syncDot.className = "w-2 h-2 rounded-full bg-gray-500";
+      }
+    }
+  };
+  window.cloudSyncEngine = cloudSyncEngine2;
   var p2pSyncEngine2 = {
     roomId: null,
     isHost: false,
@@ -5332,19 +5823,34 @@
           baseUrl = "https://cableblues.github.io/Flow-Organiser/";
         }
       }
-      const ipHelper = document.getElementById("p2p-ip-helper");
-      if (ipHelper && typeof window !== "undefined") {
-        const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:";
-        ipHelper.classList.toggle("hidden", !isLocal);
-      }
-      const payload = P2PDataCodec.encodeState(state);
       const cleanBase = baseUrl.replace(/\/+$/, "");
-      const shareUrl = `${cleanBase}/#sync=${this.roomId}&data=${payload}`;
+      const isUserLoggedIn = typeof FlowAuth !== "undefined" && FlowAuth.isLoggedIn();
+      const syncToken = isUserLoggedIn ? FlowAuth.getSyncToken() : null;
+      const user = isUserLoggedIn ? FlowAuth.getUser() : null;
+      let shareUrl = "";
+      let payload = "";
+      if (isUserLoggedIn && syncToken) {
+        shareUrl = `${cleanBase}/#auth_token=${encodeURIComponent(syncToken)}&email=${encodeURIComponent(user && user.email || "")}`;
+        payload = syncToken;
+        const qrHint = document.getElementById("p2p-qr-hint");
+        if (qrHint) qrHint.innerText = "Scanne den QR-Code mit deinem Zweitger\xE4t, um es direkt mit deinem Konto zu verbinden.";
+      } else {
+        const currentState = typeof window !== "undefined" && window.state ? window.state : typeof state !== "undefined" ? state : {};
+        payload = P2PDataCodec.encodeState(currentState);
+        shareUrl = `${cleanBase}/#sync=${this.roomId}&data=${payload}`;
+        const qrHint = document.getElementById("p2p-qr-hint");
+        if (qrHint) qrHint.innerText = "Halte einfach deine Smartphone-Kamera auf den QR-Code.";
+      }
       const codeDisplay = document.getElementById("p2p-room-code");
       if (codeDisplay) codeDisplay.innerText = this.roomId;
+      let qrSvg = MinimalQR.generateQRCodeSVG(shareUrl, 260);
+      if (!qrSvg && shareUrl.includes("&data=")) {
+        const fallbackUrl = `${cleanBase}/#sync=${this.roomId}`;
+        qrSvg = MinimalQR.generateQRCodeSVG(fallbackUrl, 260);
+      }
       const qrImg = document.getElementById("p2p-qr-img");
-      if (qrImg) {
-        qrImg.src = MinimalQR.generateQRCodeSVG(shareUrl, 260);
+      if (qrImg && qrSvg) {
+        qrImg.src = qrSvg;
       }
       const shareInput = document.getElementById("p2p-share-link-input");
       if (shareInput) shareInput.value = shareUrl;
@@ -5358,12 +5864,13 @@
       this.roomId = targetRoomId;
       if (compressedData) {
         const imported = P2PDataCodec.decodeState(compressedData);
-        if (imported && imported.items) {
-          state.items = imported.items;
-          if (imported.done) state.done = imported.done;
-          if (imported.workItems) state.workItems = imported.workItems;
-          if (imported.workDone) state.workDone = imported.workDone;
-          if (imported.ws) state.activeWorkspace = imported.ws;
+        const targetState = typeof window !== "undefined" && window.state ? window.state : typeof state !== "undefined" ? state : null;
+        if (imported && imported.items && targetState) {
+          targetState.items = imported.items;
+          if (imported.done) targetState.done = imported.done;
+          if (imported.workItems) targetState.workItems = imported.workItems;
+          if (imported.workDone) targetState.workDone = imported.workDone;
+          if (imported.ws) targetState.activeWorkspace = imported.ws;
           if (typeof saveState === "function") saveState(true);
           if (typeof renderApp === "function") renderApp();
           if (typeof showToast === "function") {
@@ -5388,8 +5895,9 @@
           this.signalingChannel.onmessage = (event) => {
             const msg = event.data;
             if (!msg) return;
+            const currentState = typeof window !== "undefined" && window.state ? window.state : typeof state !== "undefined" ? state : {};
             if (msg.type === "PEER_PING" && isHost) {
-              this.signalingChannel.postMessage({ type: "PEER_PONG", state });
+              this.signalingChannel.postMessage({ type: "PEER_PONG", state: currentState });
               this.setConnectedState(true);
             } else if (msg.type === "PEER_PONG" && !isHost) {
               this.setConnectedState(true);
@@ -5427,22 +5935,23 @@
         badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span><span>\u{1F7E2} Live-Sync aktiv</span>';
       } else {
         badge.className = "px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-medium font-mono flex items-center justify-center gap-2";
-        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span><span>Warte auf QR-Scan...</span>';
+        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span><span>Warte auf Verbindung...</span>';
       }
     },
     broadcastStateUpdate() {
       const now = Date.now();
       if (now - this.lastBroadcastTime < 200) return;
       this.lastBroadcastTime = now;
+      const currentState = typeof window !== "undefined" && window.state ? window.state : typeof state !== "undefined" ? state : {};
       if (this.signalingChannel) {
         this.signalingChannel.postMessage({
           type: "SYNC_DELTA",
           data: {
-            items: state.items,
-            done: state.done,
-            workItems: state.workItems,
-            workDone: state.workDone,
-            activeWorkspace: state.activeWorkspace
+            items: currentState.items,
+            done: currentState.done,
+            workItems: currentState.workItems,
+            workDone: currentState.workDone,
+            activeWorkspace: currentState.activeWorkspace
           }
         });
       }
@@ -5450,28 +5959,30 @@
     applyIncomingUpdate(data) {
       if (!data) return;
       let changed = false;
+      const targetState = typeof window !== "undefined" && window.state ? window.state : typeof state !== "undefined" ? state : null;
+      if (!targetState) return;
       if (data.items) {
-        state.items = data.items;
+        targetState.items = data.items;
         changed = true;
       }
       if (data.done) {
-        state.done = data.done;
+        targetState.done = data.done;
         changed = true;
       }
       if (data.workItems) {
-        state.workItems = data.workItems;
+        targetState.workItems = data.workItems;
         changed = true;
       }
       if (data.workDone) {
-        state.workDone = data.workDone;
+        targetState.workDone = data.workDone;
         changed = true;
       }
       if (data.activeWorkspace) {
-        state.activeWorkspace = data.activeWorkspace;
+        targetState.activeWorkspace = data.activeWorkspace;
         changed = true;
       }
       if (changed) {
-        localStorage.setItem("flowPlannerState", JSON.stringify(state));
+        localStorage.setItem("flowPlannerState", JSON.stringify(targetState));
         if (typeof renderApp === "function") renderApp();
         if (typeof triggerSparkleEffect === "function") triggerSparkleEffect();
       }
@@ -5492,10 +6003,18 @@
     }
   };
   window.p2pSyncEngine = p2pSyncEngine2;
-  function openP2PSyncModal() {
+  function openP2PSyncModal(preferredTab = null) {
     const modal = document.getElementById("modal-p2p-sync");
     if (modal) {
       modal.classList.remove("hidden");
+      if (typeof FlowAuth !== "undefined") {
+        FlowAuth.updateAuthUI();
+      }
+      if (typeof cloudSyncEngine2 !== "undefined") {
+        cloudSyncEngine2.updateSyncUI();
+      }
+      const defaultTab = preferredTab || (typeof FlowAuth !== "undefined" && FlowAuth.isLoggedIn() ? "cloud" : "cloud");
+      switchSyncModalTab(defaultTab);
       p2pSyncEngine2.startHost();
       if (typeof lucide !== "undefined") lucide.createIcons();
     }
@@ -5506,6 +6025,154 @@
     if (modal) modal.classList.add("hidden");
   }
   window.closeP2PSyncModal = closeP2PSyncModal2;
+  async function handleSendMagicLink() {
+    const emailInput = document.getElementById("sync-email-input");
+    const btn = document.getElementById("sync-send-magic-link-btn");
+    const errorMsg = document.getElementById("sync-auth-error-msg");
+    const successMsg = document.getElementById("sync-auth-success-msg");
+    if (!emailInput) return;
+    const email = emailInput.value.trim();
+    if (errorMsg) errorMsg.classList.add("hidden");
+    if (successMsg) successMsg.classList.add("hidden");
+    if (!email || !email.includes("@")) {
+      if (errorMsg) {
+        errorMsg.innerText = tr({
+          de: "Bitte gib eine g\xFCltige E-Mail-Adresse ein.",
+          en: "Please enter a valid email address.",
+          es: "Introduce una direcci\xF3n de correo electr\xF3nico v\xE1lida.",
+          el: "\u03A0\u03B1\u03C1\u03B1\u03BA\u03B1\u03BB\u03CE \u03B5\u03B9\u03C3\u03AC\u03B3\u03B5\u03C4\u03B5 \u03BC\u03B9\u03B1 \u03AD\u03B3\u03BA\u03C5\u03C1\u03B7 \u03B4\u03B9\u03B5\u03CD\u03B8\u03C5\u03BD\u03C3\u03B7 email.",
+          fr: "Veuillez saisir une adresse e-mail valide.",
+          it: "Inserisci un indirizzo email valido."
+        });
+        errorMsg.classList.remove("hidden");
+      }
+      return;
+    }
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="animate-spin inline-block mr-1">\u23F3</span> Sende...';
+    }
+    try {
+      const res = await FlowAuth.signInWithMagicLink(email);
+      if (res.success) {
+        if (successMsg) {
+          successMsg.innerText = tr({
+            de: "\u2709\uFE0F Magic Link gesendet! Bitte pr\xFCfe dein E-Mail-Postfach und klicke auf den Best\xE4tigungslink.",
+            en: "\u2709\uFE0F Magic link sent! Please check your inbox and click the confirmation link.",
+            es: "\u2709\uFE0F \xA1Enlace m\xE1gico enviado! Revisa tu bandeja de entrada y haz clic en el enlace.",
+            el: "\u2709\uFE0F \u039F \u03C3\u03CD\u03BD\u03B4\u03B5\u03C3\u03BC\u03BF\u03C2 \u03C3\u03C4\u03AC\u03BB\u03B8\u03B7\u03BA\u03B5! \u0395\u03BB\u03AD\u03B3\u03BE\u03C4\u03B5 \u03C4\u03B1 \u03B5\u03B9\u03C3\u03B5\u03C1\u03C7\u03CC\u03BC\u03B5\u03BD\u03AC \u03C3\u03B1\u03C2.",
+            fr: "\u2709\uFE0F Lien magique envoy\xE9 ! V\xE9rifiez votre bo\xEEte de r\xE9ception et cliquez sur le lien.",
+            it: "\u2709\uFE0F Link magico inviato! Controlla la tua casella di posta e clicca sul link."
+          });
+          successMsg.classList.remove("hidden");
+        }
+        if (typeof showToast === "function") {
+          showToast(tr({
+            de: "\u2709\uFE0F Magic Link gesendet! Pr\xFCfe deine Mails.",
+            en: "\u2709\uFE0F Magic link sent! Check your inbox.",
+            es: "\u2709\uFE0F \xA1Enlace m\xE1gico enviado!",
+            el: "\u2709\uFE0F \u039F \u03C3\u03CD\u03BD\u03B4\u03B5\u03C3\u03BC\u03BF\u03C2 \u03C3\u03C4\u03AC\u03BB\u03B8\u03B7\u03BA\u03B5!",
+            fr: "\u2709\uFE0F Lien magique envoy\xE9 !",
+            it: "\u2709\uFE0F Link magico inviato!"
+          }));
+        }
+      } else {
+        if (errorMsg) {
+          errorMsg.innerText = res.error || "Fehler beim Senden.";
+          errorMsg.classList.remove("hidden");
+        }
+      }
+    } catch (e) {
+      if (errorMsg) {
+        errorMsg.innerText = e.message || "Verbindungsfehler.";
+        errorMsg.classList.remove("hidden");
+      }
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="send" class="w-4 h-4"></i><span>Magic Link senden</span>';
+        if (typeof lucide !== "undefined") lucide.createIcons();
+      }
+    }
+  }
+  window.handleSendMagicLink = handleSendMagicLink;
+  async function handleLogout() {
+    if (confirm(tr({
+      de: "M\xF6chtest du dich wirklich abmelden? Deine lokalen Daten bleiben erhalten.",
+      en: "Do you really want to log out? Your local data will be preserved.",
+      es: "\xBFSeguro que quieres cerrar sesi\xF3n? Tus datos locales se conservar\xE1n.",
+      el: "\u0398\u03AD\u03BB\u03B5\u03C4\u03B5 \u03C3\u03AF\u03B3\u03BF\u03C5\u03C1\u03B1 \u03BD\u03B1 \u03B1\u03C0\u03BF\u03C3\u03C5\u03BD\u03B4\u03B5\u03B8\u03B5\u03AF\u03C4\u03B5; \u03A4\u03B1 \u03C4\u03BF\u03C0\u03B9\u03BA\u03AC \u03B4\u03B5\u03B4\u03BF\u03BC\u03AD\u03BD\u03B1 \u03B4\u03B9\u03B1\u03C4\u03B7\u03C1\u03BF\u03CD\u03BD\u03C4\u03B1\u03B9.",
+      fr: "Voulez-vous vraiment vous d\xE9connecter ? Vos donn\xE9es locales seront conserv\xE9es.",
+      it: "Vuoi davvero disconnetterti? I tuoi dati locali saranno conservati."
+    }))) {
+      if (typeof FlowAuth !== "undefined") {
+        await FlowAuth.signOut();
+        if (typeof showToast === "function") {
+          showToast(tr({
+            de: "Erfolgreich abgemeldet.",
+            en: "Successfully logged out.",
+            es: "Sesi\xF3n cerrada.",
+            el: "\u0391\u03C0\u03BF\u03C3\u03C5\u03BD\u03B4\u03B5\u03B8\u03AE\u03BA\u03B1\u03C4\u03B5.",
+            fr: "D\xE9connexion r\xE9ussie.",
+            it: "Disconnessione riuscita."
+          }));
+        }
+        p2pSyncEngine2.startHost();
+      }
+    }
+  }
+  window.handleLogout = handleLogout;
+  async function handleManualCloudSync() {
+    if (typeof cloudSyncEngine2 !== "undefined") {
+      const res = await cloudSyncEngine2.pullState();
+      if (res && res.success) {
+        if (typeof showToast === "function") {
+          showToast(tr({
+            de: "\u2705 Synchronisation erfolgreich abgeschlossen!",
+            en: "\u2705 Synchronization successfully completed!",
+            es: "\u2705 \xA1Sincronizaci\xF3n completada con \xE9xito!",
+            el: "\u2705 \u039F \u03C3\u03C5\u03B3\u03C7\u03C1\u03BF\u03BD\u03B9\u03C3\u03BC\u03CC\u03C2 \u03BF\u03BB\u03BF\u03BA\u03BB\u03B7\u03C1\u03CE\u03B8\u03B7\u03BA\u03B5 \u03B5\u03C0\u03B9\u03C4\u03C5\u03C7\u03CE\u03C2!",
+            fr: "\u2705 Synchronisation r\xE9ussie !",
+            it: "\u2705 Sincronizzazione completata!"
+          }));
+        }
+      } else {
+        if (typeof showToast === "function") {
+          showToast(tr({
+            de: "\u26A0\uFE0F Sync nicht m\xF6glich (Offline oder Serverfehler).",
+            en: "\u26A0\uFE0F Sync failed (offline or server error).",
+            es: "\u26A0\uFE0F Error de sincronizaci\xF3n.",
+            el: "\u26A0\uFE0F \u03A3\u03C6\u03AC\u03BB\u03BC\u03B1 \u03C3\u03C5\u03B3\u03C7\u03C1\u03BF\u03BD\u03B9\u03C3\u03BC\u03BF\u03CD.",
+            fr: "\u26A0\uFE0F \xC9chec de la synchronisation.",
+            it: "\u26A0\uFE0F Sincronizzazione fallita."
+          }));
+        }
+      }
+    }
+  }
+  window.handleManualCloudSync = handleManualCloudSync;
+  function switchSyncModalTab(tab) {
+    const paneCloud = document.getElementById("sync-pane-cloud");
+    const paneQr = document.getElementById("p2p-pane-qr");
+    const paneManual = document.getElementById("p2p-pane-manual");
+    const btnCloud = document.getElementById("sync-tab-btn-cloud");
+    const btnQr = document.getElementById("p2p-tab-btn-qr");
+    const btnManual = document.getElementById("p2p-tab-btn-manual");
+    if (paneCloud) paneCloud.classList.toggle("hidden", tab !== "cloud");
+    if (paneQr) paneQr.classList.toggle("hidden", tab !== "qr");
+    if (paneManual) paneManual.classList.toggle("hidden", tab !== "manual");
+    const activeClasses = "flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 transition";
+    const inactiveClasses = "flex-1 py-1.5 px-3 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition";
+    if (btnCloud) btnCloud.className = tab === "cloud" ? activeClasses : inactiveClasses;
+    if (btnQr) btnQr.className = tab === "qr" ? activeClasses : inactiveClasses;
+    if (btnManual) btnManual.className = tab === "manual" ? activeClasses : inactiveClasses;
+    if (tab === "qr") {
+      p2pSyncEngine2.startHost();
+    }
+    if (typeof lucide !== "undefined") lucide.createIcons();
+  }
+  window.switchSyncModalTab = switchSyncModalTab;
+  window.switchP2PTab = (tab) => switchSyncModalTab(tab);
   function copyP2PShareLink() {
     const input = document.getElementById("p2p-share-link-input");
     if (input && input.value) {
@@ -5564,12 +6231,37 @@
     if (trimmed.includes("#")) {
       const hash = trimmed.split("#")[1] || "";
       const params = new URLSearchParams(hash);
+      const authToken = params.get("auth_token");
+      const email = params.get("email") || "";
+      if (authToken && typeof FlowAuth !== "undefined") {
+        FlowAuth.setDirectPairingToken(authToken, email);
+        cloudSyncEngine2.pullState();
+        closeP2PSyncModal2();
+        if (typeof showToast === "function") {
+          showToast(tr({
+            de: "\u{1F4F1} Erfolgreich mit Cloud-Konto verbunden! \u26A1",
+            en: "\u{1F4F1} Successfully connected to cloud account! \u26A1",
+            es: "\u{1F4F1} \xA1Conectado con \xE9xito a la cuenta en la nube! \u26A1",
+            el: "\u{1F4F1} \u0395\u03C0\u03B9\u03C4\u03C5\u03C7\u03AE\u03C2 \u03C3\u03CD\u03BD\u03B4\u03B5\u03C3\u03B7 \u03BC\u03B5 \u03C4\u03BF \u03BB\u03BF\u03B3\u03B1\u03C1\u03B9\u03B1\u03C3\u03BC\u03CC cloud! \u26A1",
+            fr: "\u{1F4F1} Connect\xE9 avec succ\xE8s au compte cloud ! \u26A1",
+            it: "\u{1F4F1} Connesso con successo al cloud! \u26A1"
+          }));
+        }
+        return;
+      }
       syncRoom = params.get("sync");
       syncData = params.get("data");
     } else if (trimmed.includes("=")) {
       const params = new URLSearchParams(trimmed);
       syncRoom = params.get("sync");
       syncData = params.get("data") || trimmed;
+    } else if (trimmed.length > 20 && !trimmed.startsWith("FLOW-")) {
+      if (typeof FlowAuth !== "undefined") {
+        FlowAuth.setDirectPairingToken(trimmed, "Direkt-Token");
+        cloudSyncEngine2.pullState();
+        closeP2PSyncModal2();
+        return;
+      }
     } else {
       syncData = trimmed;
       syncRoom = "FLOW-MANUAL";
@@ -5582,37 +6274,29 @@
     }
   }
   window.importP2PCode = importP2PCode;
-  function switchP2PTab(tab) {
-    const paneQr = document.getElementById("p2p-pane-qr");
-    const paneManual = document.getElementById("p2p-pane-manual");
-    const btnQr = document.getElementById("p2p-tab-btn-qr");
-    const btnManual = document.getElementById("p2p-tab-btn-manual");
-    if (paneQr && paneManual && btnQr && btnManual) {
-      const isQr = tab === "qr";
-      paneQr.classList.toggle("hidden", !isQr);
-      paneManual.classList.toggle("hidden", isQr);
-      btnQr.className = isQr ? "flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 transition" : "flex-1 py-1.5 px-3 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition";
-      btnManual.className = !isQr ? "flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 transition" : "flex-1 py-1.5 px-3 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition";
-    }
-  }
   if (typeof window !== "undefined") {
     window.MinimalQR = MinimalQR;
     window.P2PDataCodec = P2PDataCodec;
     window.p2pSyncEngine = p2pSyncEngine2;
+    window.cloudSyncEngine = cloudSyncEngine2;
     window.openP2PSyncModal = openP2PSyncModal;
     window.closeP2PSyncModal = closeP2PSyncModal2;
     window.switchP2PTab = switchP2PTab;
+    window.switchSyncModalTab = switchSyncModalTab;
     window.addEventListener("DOMContentLoaded", () => {
       p2pSyncEngine2.init();
+      cloudSyncEngine2.init();
     });
   }
   if (typeof globalThis !== "undefined") {
     globalThis.MinimalQR = MinimalQR;
     globalThis.P2PDataCodec = P2PDataCodec;
     globalThis.p2pSyncEngine = p2pSyncEngine2;
+    globalThis.cloudSyncEngine = cloudSyncEngine2;
     globalThis.openP2PSyncModal = openP2PSyncModal;
     globalThis.closeP2PSyncModal = closeP2PSyncModal2;
     globalThis.switchP2PTab = switchP2PTab;
+    globalThis.switchSyncModalTab = switchSyncModalTab;
   }
 
   // utils.js

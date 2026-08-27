@@ -13,6 +13,8 @@ import './data-custom-translations.js';
 import './data-extras.js';
 
 // 2. Storage & State Core
+import './config.js';
+import './auth-engine.js';
 import './storage.js';
 import './state.js';
 import './sync-engine.js';

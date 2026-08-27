@@ -426,6 +426,9 @@ function saveState(skipP2PSync = false) {
   if (!skipP2PSync && typeof p2pSyncEngine !== 'undefined' && p2pSyncEngine.isConnected()) {
     p2pSyncEngine.broadcastStateUpdate();
   }
+  if (!skipP2PSync && typeof cloudSyncEngine !== 'undefined' && typeof FlowAuth !== 'undefined' && FlowAuth.isLoggedIn()) {
+    cloudSyncEngine.triggerAutoPush();
+  }
 }
 
 function persistHistory() {

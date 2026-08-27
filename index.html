@@ -19,8 +19,8 @@
   <!-- Lokale Offline-Bibliotheken (100% autark, offline & DSGVO-konform ohne CDN-Abhängigkeit) -->
   <script src="vendor/tailwindcss.js"></script>
   <script src="vendor/lucide.min.js"></script>
-  <script src="vendor/supabase.min.js" defer></script>
-  <script src="vendor/qrcode.min.js" defer></script>
+  <script src="vendor/supabase.min.js"></script>
+  <script src="vendor/qrcode.min.js"></script>
 
   <!-- 100% Lokale Schriftarten (DSGVO-konform, offline, ohne CDN-Abhängigkeit) -->
   <link rel="stylesheet" href="fonts.css" />
@@ -1815,7 +1815,7 @@
     </div>
   </div>
 
-  <!-- 1-SCAN QR-TRANSFER & P2P LIVE-SYNC MODAL -->
+  <!-- 1-SCAN QR-TRANSFER & CLOUD/P2P LIVE-SYNC MODAL -->
   <div id="modal-p2p-sync" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md">
     <div class="mobile-modal-card animate-spring-modal w-full max-w-sm bg-[#111116]/95 border border-emerald-500/40 p-5 rounded-3xl shadow-[0_10px_50px_rgba(16,185,129,0.25)] backdrop-blur-xl text-white relative transition-all duration-300 flex flex-col items-center gap-3 text-center">
       <button onclick="closeP2PSyncModal()" class="absolute top-3.5 right-3.5 text-gray-400 hover:text-white p-1.5 rounded-xl bg-white/5 hover:bg-white/10 transition cursor-pointer">
@@ -1828,28 +1828,116 @@
           <i data-lucide="smartphone" class="w-5 h-5"></i>
         </div>
         <div>
-          <h3 class="text-white font-bold text-sm font-display">Handy Live-Verbindung ⚡</h3>
-          <p class="text-[10px] text-emerald-400 font-medium">1x QR scannen & sofort synchron</p>
+          <h3 class="text-white font-bold text-sm font-display">Synchronisation & Login ⚡</h3>
+          <p class="text-[10px] text-emerald-400 font-medium">Netzwerkübergreifend & lokal</p>
         </div>
       </div>
 
-      <!-- Tab-Umschaltung: QR-Scan vs. Code-Eingabe -->
-      <div class="flex w-full bg-black/40 p-1 rounded-xl border border-white/5 text-xs">
-        <button id="p2p-tab-btn-qr" onclick="switchP2PTab('qr')" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 transition">
-          📷 QR-Scan
+      <!-- Tab-Umschaltung: Cloud vs QR-Scan vs Code -->
+      <div class="flex w-full bg-black/40 p-1 rounded-xl border border-white/5 text-xs gap-1">
+        <button id="sync-tab-btn-cloud" onclick="switchSyncModalTab('cloud')" class="flex-1 py-1.5 px-2 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 transition flex items-center justify-center gap-1">
+          <i data-lucide="cloud" class="w-3.5 h-3.5"></i>
+          <span>Konto</span>
         </button>
-        <button id="p2p-tab-btn-manual" onclick="switchP2PTab('manual')" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition">
-          🔢 Code / Import
+        <button id="p2p-tab-btn-qr" onclick="switchSyncModalTab('qr')" class="flex-1 py-1.5 px-2 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition flex items-center justify-center gap-1">
+          <i data-lucide="qr-code" class="w-3.5 h-3.5"></i>
+          <span>1-Scan</span>
+        </button>
+        <button id="p2p-tab-btn-manual" onclick="switchSyncModalTab('manual')" class="flex-1 py-1.5 px-2 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition flex items-center justify-center gap-1">
+          <i data-lucide="wifi" class="w-3.5 h-3.5"></i>
+          <span>WLAN</span>
         </button>
       </div>
 
-      <!-- PANE 1: QR CODE -->
-      <div id="p2p-pane-qr" class="w-full flex flex-col items-center gap-2">
+      <!-- PANE 1: CLOUD SYNC & MAGIC LINK LOGIN -->
+      <div id="sync-pane-cloud" class="w-full space-y-3 py-1 text-left">
+        <!-- Logged Out View -->
+        <div id="sync-auth-logged-out-section" class="space-y-2.5">
+          <div class="p-3 rounded-2xl bg-emerald-500/[0.06] border border-emerald-500/20 text-xs space-y-1">
+            <p class="text-[11px] text-gray-300">
+              Melde dich mit deiner E-Mail an, um deine Aufgaben <strong>über alle Netzwerke</strong> hinweg automatisch abzugleichen.
+            </p>
+            <p class="text-[10px] text-emerald-400 font-semibold">
+              🔒 Passwortlos per sicherem Magic Link (kein Passwort nötig).
+            </p>
+          </div>
+
+          <div class="space-y-1.5">
+            <label for="sync-email-input" class="text-[10px] uppercase font-mono text-gray-400 font-bold block">E-Mail-Adresse:</label>
+            <div class="flex gap-1.5">
+              <input id="sync-email-input" type="email" placeholder="name@beispiel.de" class="flex-1 px-3 py-2 bg-black/60 border border-white/15 focus:border-emerald-400 rounded-xl text-xs text-white placeholder-gray-500 outline-none transition" />
+            </div>
+            <button id="sync-send-magic-link-btn" onclick="handleSendMagicLink()" class="w-full py-2.5 px-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer">
+              <i data-lucide="send" class="w-4 h-4"></i>
+              <span>Magic Link senden</span>
+            </button>
+          </div>
+
+          <div id="sync-auth-error-msg" class="hidden p-2 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-[11px] leading-tight"></div>
+          <div id="sync-auth-success-msg" class="hidden p-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[11px] leading-tight"></div>
+
+          <p class="text-[9px] text-gray-400 text-center">
+            100% Optional. Flow Organiser funktioniert auch ohne Konto vollständig lokal & offline.
+          </p>
+        </div>
+
+        <!-- Logged In View -->
+        <div id="sync-auth-logged-in-section" class="hidden space-y-3">
+          <div class="p-3 rounded-2xl bg-black/50 border border-emerald-500/30 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-gray-400 uppercase font-mono">Angemeldet als:</span>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[9px] font-bold">Cloud-Sync aktiv</span>
+            </div>
+            <div id="sync-auth-user-email" class="font-mono text-xs font-bold text-white truncate">
+              user@example.com
+            </div>
+            <div class="flex items-center gap-2 pt-1 border-t border-white/10 text-[10px] text-gray-300">
+              <span id="cloud-sync-status-dot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span id="cloud-sync-status-text">Bereit zur Synchronisation</span>
+            </div>
+          </div>
+
+          <div class="flex gap-2">
+            <button onclick="handleManualCloudSync()" class="flex-1 py-2 px-3 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-200 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+              <span>Jetzt synchronisieren</span>
+            </button>
+            <button onclick="handleLogout()" class="px-3 py-2 bg-white/5 hover:bg-rose-500/20 hover:border-rose-500/40 border border-white/10 text-gray-300 hover:text-rose-300 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1 cursor-pointer" title="Abmelden">
+              <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANE 2: QR CODE -->
+      <div id="p2p-pane-qr" class="hidden w-full flex flex-col items-center gap-2">
         <div class="p-3.5 bg-white rounded-2xl shadow-2xl my-1 flex items-center justify-center border-4 border-emerald-500/30">
-          <img id="p2p-qr-img" src="" alt="Standard QR-Code" class="w-48 h-48 rounded-lg select-none" />
+          <img id="p2p-qr-img" src="" alt="Standard QR-Code" class="w-44 h-44 rounded-lg select-none" />
         </div>
 
-        <p class="text-[10px] text-gray-400">Halte einfach deine Smartphone-Kamera auf den QR-Code.</p>
+        <p id="p2p-qr-hint" class="text-[10px] text-gray-400">Halte einfach deine Smartphone-Kamera auf den QR-Code.</p>
+      </div>
+
+      <!-- PANE 3: MANUELLER CODE & IMPORT -->
+      <div id="p2p-pane-manual" class="hidden w-full space-y-3 py-1 text-left">
+        <div class="p-3 rounded-2xl bg-black/50 border border-white/10 space-y-1">
+          <span class="text-[10px] text-gray-400 uppercase font-mono">Dein Raum-Code / Token:</span>
+          <div class="flex items-center justify-between">
+            <span id="p2p-room-code" class="font-mono font-black text-emerald-400 text-base tracking-wider">FLOW-...</span>
+            <button onclick="copyP2PShareLink()" class="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/15 text-[10px] font-bold text-emerald-300 transition">Link kopieren</button>
+          </div>
+        </div>
+
+        <div class="space-y-1.5">
+          <button onclick="importP2PCode()" class="w-full py-2 px-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            <span>Code / Link einfügen & laden</span>
+          </button>
+          <button onclick="copyP2PRawPayload()" class="w-full py-1.5 px-3 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 text-xs font-semibold rounded-xl transition flex items-center justify-center gap-2">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <span>Transfer-Code kopieren</span>
+          </button>
+        </div>
 
         <!-- IP-Helper für Localhost-Umgebungen -->
         <div id="p2p-ip-helper" class="hidden w-full p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-left space-y-1.5">
@@ -1862,31 +1950,9 @@
           <div class="flex gap-1.5">
             <input id="p2p-custom-ip-input" type="text" placeholder="http://192.168.178.50:80/" class="flex-1 px-2 py-1 bg-black/50 border border-white/15 rounded-lg text-[10px] text-white outline-none" />
             <button onclick="updateP2PCustomUrl(document.getElementById('p2p-custom-ip-input').value)" class="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-black text-[10px] font-bold rounded-lg transition cursor-pointer">
-              Neu generieren
+              Aktualisieren
             </button>
           </div>
-        </div>
-      </div>
-
-      <!-- PANE 2: MANUELLER CODE & IMPORT -->
-      <div id="p2p-pane-manual" class="hidden w-full space-y-3 py-2 text-left">
-        <div class="p-3 rounded-2xl bg-black/50 border border-white/10 space-y-1">
-          <span class="text-[10px] text-gray-400 uppercase font-mono">Dein Raum-Code:</span>
-          <div class="flex items-center justify-between">
-            <span id="p2p-room-code" class="font-mono font-black text-emerald-400 text-base tracking-wider">FLOW-...</span>
-            <button onclick="copyP2PShareLink()" class="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/15 text-[10px] font-bold text-emerald-300 transition">Link kopieren</button>
-          </div>
-        </div>
-
-        <div class="space-y-1.5">
-          <button onclick="importP2PCode()" class="w-full py-2.5 px-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-            <i data-lucide="download" class="w-4 h-4"></i>
-            <span>Transfer-Code einfügen & Plan laden</span>
-          </button>
-          <button onclick="copyP2PRawPayload()" class="w-full py-2 px-3 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 text-xs font-semibold rounded-xl transition flex items-center justify-center gap-2">
-            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-            <span>Plan als Text-Code kopieren</span>
-          </button>
         </div>
       </div>
 
@@ -1894,7 +1960,7 @@
       <div class="w-full space-y-2 pt-1 border-t border-white/10">
         <div id="p2p-status-badge" class="px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-medium font-mono flex items-center justify-center gap-2">
           <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-          <span>Warte auf Verbindung...</span>
+          <span>Bereit zur Synchronisation</span>
         </div>
 
         <input type="hidden" id="p2p-share-link-input" />
@@ -2313,7 +2379,7 @@
           <h4 class="font-bold text-xs text-white pt-1">2. Externe technische Schnittstellen (APIs)</h4>
           <ul class="list-disc pl-4 space-y-1 text-[11px] text-gray-400">
             <li><strong>Wetterdaten (Open-Meteo):</strong> Bei aktiver Nutzung des Wetter-Widgets wird die Open-Meteo API kontaktiert. Es werden keine personenbezogenen Profile erstellt.</li>
-            <li><strong>Cloud-Synchronisation (Optional):</strong> Nutzt du die freiwillige Multi-Device Synchronisation (Supabase), werden deine verschlüsselten Board-Daten auf Servern innerhalb der Europäischen Union übertragen.</li>
+            <li><strong>Cloud-Synchronisation & Login (Optional):</strong> Nutzt du die freiwillige geräteübergreifende Synchronisation, erfolgt die passwortlose Authentifizierung über Supabase Auth (Magic Link per E-Mail) und die Datenübertragung verschlüsselt über den gesicherten Relay-Endpunkt (api-sync.php) auf Servern innerhalb der Europäischen Union.</li>
           </ul>
 
           <h4 class="font-bold text-xs text-white pt-1">3. Deine Rechte (Art. 15–21 DSGVO)</h4>
@@ -3269,7 +3335,7 @@
 
         <div>
           <h4 class="font-bold text-white mb-1">1. Datenspeicherung & Offline-Betrieb</h4>
-          <p>Die Anwendung funktioniert vollständig offline. Deine Daten verbleiben auf deinem Gerät. Wenn du den optionalen Peer-to-Peer Cloud-Sync nutzt, werden Daten Ende-zu-Ende verschlüsselt ausgetauscht.</p>
+          <p>Die Anwendung funktioniert vollständig offline. Deine Daten verbleiben lokal auf deinem Gerät. Nutzt du die optionale Cloud-Synchronisation, wird die passwortlose Authentifizierung via Supabase Magic-Link abgewickelt und der Datenabgleich über den gesicherten Server-Endpunkt (api-sync.php) verschlüsselt übertragen.</p>
         </div>
 
         <div>
@@ -3301,6 +3367,8 @@
   <script src="data-translations.js"></script>
   <script src="data-custom-translations.js"></script>
   <script src="data-extras.js"></script>
+  <script src="config.js"></script>
+  <script src="auth-engine.js"></script>
   <script src="storage.js"></script>
   <script src="state.js"></script>
   <script src="sync-engine.js"></script>
