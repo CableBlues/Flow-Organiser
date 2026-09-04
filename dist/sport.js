@@ -431,11 +431,39 @@ function completeSportActivity() {
 }
 
 // Tastatur-Listener zum Schließen des Modals
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    const sportModal = document.getElementById('helper-sport-modal');
-    if (sportModal && !sportModal.classList.contains('hidden')) {
-      closeSportModal();
+if (typeof document !== 'undefined') {
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const sportModal = document.getElementById('helper-sport-modal');
+      if (sportModal && !sportModal.classList.contains('hidden')) {
+        closeSportModal();
+      }
     }
-  }
-}); 
+  });
+}
+
+if (typeof window !== 'undefined') {
+  window.openSportModal = openSportModal;
+  window.closeSportModal = closeSportModal;
+  window.switchSportCategory = switchSportCategory;
+  window.generateSportSuggestion = generateSportSuggestion;
+  window.startSportTimer = startSportTimer;
+  window.pauseSportTimer = pauseSportTimer;
+  window.skipSportTimer = skipSportTimer;
+  window.resetSportTimer = resetSportTimer;
+  window.completeSportActivity = completeSportActivity;
+  window.setSportCustomDuration = typeof setSportCustomDuration !== 'undefined' ? setSportCustomDuration : undefined;
+}
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.openSportModal = openSportModal;
+  globalThis.closeSportModal = closeSportModal;
+  globalThis.switchSportCategory = switchSportCategory;
+  globalThis.generateSportSuggestion = generateSportSuggestion;
+  globalThis.startSportTimer = startSportTimer;
+  globalThis.pauseSportTimer = pauseSportTimer;
+  globalThis.skipSportTimer = skipSportTimer;
+  globalThis.resetSportTimer = resetSportTimer;
+  globalThis.completeSportActivity = completeSportActivity;
+  globalThis.setSportCustomDuration = typeof setSportCustomDuration !== 'undefined' ? setSportCustomDuration : undefined;
+}

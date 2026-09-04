@@ -7128,7 +7128,7 @@ ${listStr}`;
         return;
       }
     }
-    openSafeSpaceModal();
+    openSafeSpaceModal2();
     if (pattern) {
       currentBreathPattern = pattern;
     }
@@ -7145,12 +7145,12 @@ ${listStr}`;
     }
   }
   window.openBreakModal = openBreakModal2;
-  function openSafeSpaceModal() {
+  function openSafeSpaceModal2() {
     const modal = document.getElementById("helper-safespace-modal");
     if (modal) modal.classList.remove("hidden");
     switchSafeSpaceTab("breath");
   }
-  window.openSafeSpaceModal = openSafeSpaceModal;
+  window.openSafeSpaceModal = openSafeSpaceModal2;
   function closeSafeSpaceModal2() {
     const modal = document.getElementById("helper-safespace-modal");
     if (modal) modal.classList.add("hidden");
@@ -7368,7 +7368,7 @@ ${listStr}`;
   }
   window.stopEyeRestTimer = stopEyeRestTimer;
   function startDopamineDetoxTimer(sec = 60) {
-    openSafeSpaceModal();
+    openSafeSpaceModal2();
     switchSafeSpaceTab("anchor");
     showToast(tr({
       de: "\u23F3 60s Reizstille gestartet. Schlie\xDFe die Augen und lass die Gedanken ziehen.",
@@ -9918,9 +9918,293 @@ ${listStr}`;
   var sportTimerInterval = null;
   var sportTimerSeconds = 60;
   var sportTimerRunning = false;
+  var SPORT_TRANSLATIONS = {
+    de: {
+      no_exercise: "Keine \xDCbung aktiv.",
+      exercise_started: "\xDCbungs-Timer gestartet! \u23F1\uFE0F",
+      exercise_paused: "\xDCbungs-Timer pausiert. \u23F8\uFE0F",
+      exercise_skipped: "\xDCbung \xFCbersprungen.",
+      exercise_completed: "Wunderbar bewegt! \u{1F389} Dein Kreislauf dankt es dir.",
+      energy_label: "Ben\xF6tigtes Level: L\xF6ffel",
+      next_suggestion: "Anderer Vorschlag \u{1F504}"
+    },
+    en: {
+      no_exercise: "No exercise active.",
+      exercise_started: "Exercise timer started! \u23F1\uFE0F",
+      exercise_paused: "Exercise timer paused. \u23F8\uFE0F",
+      exercise_skipped: "Exercise skipped.",
+      exercise_completed: "Wonderfully moved! \u{1F389} Your body appreciates it.",
+      energy_label: "Required level: Spoons",
+      next_suggestion: "Another Suggestion \u{1F504}"
+    },
+    es: {
+      no_exercise: "Ning\xFAn ejercicio activo.",
+      exercise_started: "\xA1Temporizador de ejercicio iniciado! \u23F1\uFE0F",
+      exercise_paused: "Temporizador de ejercicio pausado. \u23F8\uFE0F",
+      exercise_skipped: "Ejercicio omitido.",
+      exercise_completed: "\xA1Maravilloso movimiento! \u{1F389} Tu cuerpo te lo agradece.",
+      energy_label: "Nivel requerido: Cucharas",
+      next_suggestion: "Siguiente sugerencia \u{1F504}"
+    },
+    el: {
+      no_exercise: "\u0394\u03B5\u03BD \u03C5\u03C0\u03AC\u03C1\u03C7\u03B5\u03B9 \u03B5\u03BD\u03B5\u03C1\u03B3\u03AE \u03AC\u03C3\u03BA\u03B7\u03C3\u03B7.",
+      exercise_started: "\u03A4\u03BF \u03C7\u03C1\u03BF\u03BD\u03CC\u03BC\u03B5\u03C4\u03C1\u03BF \u03AC\u03C3\u03BA\u03B7\u03C3\u03B7\u03C2 \u03BE\u03B5\u03BA\u03AF\u03BD\u03B7\u03C3\u03B5! \u23F1\uFE0F",
+      exercise_paused: "\u03A4\u03BF \u03C7\u03C1\u03BF\u03BD\u03CC\u03BC\u03B5\u03C4\u03C1\u03BF \u03AC\u03C3\u03BA\u03B7\u03C3\u03B7\u03C2 \u03C3\u03C4\u03B1\u03BC\u03AC\u03C4\u03B7\u03C3\u03B5. \u23F8\uFE0F",
+      exercise_skipped: "\u0397 \u03AC\u03C3\u03BA\u03B7\u03C3\u03B7 \u03C0\u03B1\u03C1\u03B1\u03BB\u03B5\u03AF\u03C6\u03B8\u03B7\u03BA\u03B5.",
+      exercise_completed: "\u03A5\u03C0\u03AD\u03C1\u03BF\u03C7\u03B7 \u03BA\u03AF\u03BD\u03B7\u03C3\u03B7! \u{1F389} \u03A4\u03BF \u03C3\u03CE\u03BC\u03B1 \u03C3\u03BF\u03C5 \u03C3\u03B5 \u03B5\u03C5\u03C7\u03B1\u03C1\u03B9\u03C3\u03C4\u03B5\u03AF.",
+      energy_label: "\u0391\u03C0\u03B1\u03B9\u03C4\u03BF\u03CD\u03BC\u03B5\u03BD\u03BF \u03B5\u03C0\u03AF\u03C0\u03B5\u03B4\u03BF: \u039A\u03BF\u03C5\u03C4\u03AC\u03BB\u03B9\u03B1",
+      next_suggestion: "\u0395\u03C0\u03CC\u03BC\u03B5\u03BD\u03B7 \u03C0\u03C1\u03CC\u03C4\u03B1\u03C3\u03B7 \u{1F504}"
+    },
+    fr: {
+      no_exercise: "Aucun exercice actif.",
+      exercise_started: "Minuteur d'exercice d\xE9marr\xE9 ! \u23F1\uFE0F",
+      exercise_paused: "Minuteur d'exercice en pause. \u23F8\uFE0F",
+      exercise_skipped: "Exercice pass\xE9.",
+      exercise_completed: "Merveilleusement boug\xE9 ! \u{1F389} Ton corps te remercie.",
+      energy_label: "Niveau requis : Cuill\xE8res",
+      next_suggestion: "Autre suggestion \u{1F504}"
+    },
+    it: {
+      no_exercise: "Nessun esercizio attivo.",
+      exercise_started: "Timer dell'esercizio avviato! \u23F1\uFE0F",
+      exercise_paused: "Timer dell'esercizio in pausa. \u23F8\uFE0F",
+      exercise_skipped: "Esercizio saltato.",
+      exercise_completed: "Ti sei mosso magnificamente! \u{1F389} Il tuo corpo ti ringrazia.",
+      energy_label: "Livello richiesto: Cucchiai",
+      next_suggestion: "Altro suggerimento \u{1F504}"
+    }
+  };
+  var SPORT_EXERCISES = {
+    el: {
+      1: [
+        { name: "\u0391\u03BD\u03B1\u03BA\u03BF\u03CD\u03C6\u03B9\u03C3\u03B7 \u0391\u03C5\u03C7\u03AD\u03BD\u03B1 \u{1F9D8}\u200D\u2640\uFE0F", desc: "\u039A\u03AC\u03B8\u03B9\u03C3\u03B5 \u03BC\u03B5 \u03AF\u03C3\u03B9\u03B1 \u03C0\u03BB\u03AC\u03C4\u03B7. \u0386\u03C6\u03B7\u03C3\u03B5 \u03B1\u03C0\u03B1\u03BB\u03AC \u03C4\u03BF \u03BA\u03B5\u03C6\u03AC\u03BB\u03B9 \u03BD\u03B1 \u03B3\u03B5\u03AF\u03C1\u03B5\u03B9 \u03C0\u03C1\u03BF\u03C2 \u03C4\u03BF\u03BD \u03B4\u03B5\u03BE\u03B9\u03CC \u03CE\u03BC\u03BF. \u039A\u03C1\u03AC\u03C4\u03B7\u03C3\u03B5 \u03B3\u03B9\u03B1 30\u03B4 \u03BA\u03B1\u03B9 \u03AC\u03BB\u03BB\u03B1\u03BE\u03B5 \u03C0\u03BB\u03B5\u03C5\u03C1\u03AC. \u03A0\u03AC\u03C1\u03B5 \u03B2\u03B1\u03B8\u03B9\u03AD\u03C2 \u03B1\u03BD\u03AC\u03C3\u03B5\u03C2.", duration: 60 },
+        { name: "\u039A\u03CD\u03BA\u03BB\u03BF\u03B9 \u039A\u03B1\u03C1\u03C0\u03CE\u03BD \u{1F450}", desc: "\u039A\u03AC\u03BD\u03B5 \u03B1\u03C0\u03B1\u03BB\u03BF\u03CD\u03C2 \u03BA\u03CD\u03BA\u03BB\u03BF\u03C5\u03C2 \u03BC\u03B5 \u03C4\u03BF\u03C5\u03C2 \u03BA\u03B1\u03C1\u03C0\u03BF\u03CD\u03C2 \u03B3\u03B9\u03B1 30\u03B4 \u03C0\u03C1\u03BF\u03C2 \u03C4\u03B1 \u03B1\u03C1\u03B9\u03C3\u03C4\u03B5\u03C1\u03AC \u03BA\u03B1\u03B9 30\u03B4 \u03C0\u03C1\u03BF\u03C2 \u03C4\u03B1 \u03B4\u03B5\u03BE\u03B9\u03AC. \u0399\u03B4\u03B1\u03BD\u03B9\u03BA\u03CC \u03B3\u03B9\u03B1 \u03BE\u03B5\u03BA\u03BF\u03CD\u03C1\u03B1\u03C3\u03B7 \u03B1\u03C0\u03CC \u03C4\u03BF \u03C0\u03BB\u03B7\u03BA\u03C4\u03C1\u03BF\u03BB\u03CC\u03B3\u03B9\u03BF.", duration: 60 },
+        { name: "\u039A\u03C5\u03BA\u03BB\u03B9\u03BA\u03AD\u03C2 \u039A\u03B9\u03BD\u03AE\u03C3\u03B5\u03B9\u03C2 \u038F\u03BC\u03C9\u03BD \u{1F504}", desc: "\u03A3\u03AE\u03BA\u03C9\u03C3\u03B5 \u03B1\u03C0\u03B1\u03BB\u03AC \u03C4\u03BF\u03C5\u03C2 \u03CE\u03BC\u03BF\u03C5\u03C2 \u03C0\u03C1\u03BF\u03C2 \u03C4\u03B1 \u03B1\u03C5\u03C4\u03B9\u03AC, \u03BA\u03CD\u03BB\u03B7\u03C3\u03AD \u03C4\u03BF\u03C5\u03C2 \u03C0\u03C1\u03BF\u03C2 \u03C4\u03B1 \u03C0\u03AF\u03C3\u03C9 \u03BA\u03B1\u03B9 \u03AC\u03C6\u03B7\u03C3\u03AD \u03C4\u03BF\u03C5\u03C2 \u03BD\u03B1 \u03C0\u03AD\u03C3\u03BF\u03C5\u03BD. \u0395\u03C0\u03B1\u03BD\u03AC\u03BB\u03B1\u03B2\u03B5 \u03AE\u03C1\u03B5\u03BC\u03B1 \u03B3\u03B9\u03B1 1 \u03BB\u03B5\u03C0\u03C4\u03CC.", duration: 60 },
+        { name: "\u0393\u03AC\u03C4\u03B1-\u0391\u03B3\u03B5\u03BB\u03AC\u03B4\u03B1 \u03C3\u03B5 \u039A\u03B1\u03C1\u03AD\u03BA\u03BB\u03B1 \u{1FA91}", desc: "\u0392\u03AC\u03BB\u03B5 \u03C4\u03B1 \u03C7\u03AD\u03C1\u03B9\u03B1 \u03C3\u03C4\u03B1 \u03B3\u03CC\u03BD\u03B1\u03C4\u03B1. \u039C\u03B5 \u03C4\u03B7\u03BD \u03B5\u03B9\u03C3\u03C0\u03BD\u03BF\u03AE \u03C3\u03C0\u03C1\u03CE\u03BE\u03B5 \u03C4\u03BF \u03C3\u03C4\u03AE\u03B8\u03BF\u03C2 \u03BC\u03C0\u03C1\u03BF\u03C3\u03C4\u03AC, \u03BC\u03B5 \u03C4\u03B7\u03BD \u03B5\u03BA\u03C0\u03BD\u03BF\u03AE \u03BA\u03B1\u03BC\u03C0\u03BF\u03CD\u03C1\u03B9\u03B1\u03C3\u03B5 \u03B1\u03C0\u03B1\u03BB\u03AC \u03C4\u03B7\u03BD \u03C0\u03BB\u03AC\u03C4\u03B7 \u03C3\u03BF\u03C5.", duration: 60 },
+        { name: "\u03A7\u03B1\u03BB\u03AC\u03C1\u03C9\u03C3\u03B7 \u039C\u03B1\u03C4\u03B9\u03CE\u03BD (Palming) \u{1F440}", desc: "\u03A4\u03C1\u03AF\u03C8\u03B5 \u03C4\u03B9\u03C2 \u03C0\u03B1\u03BB\u03AC\u03BC\u03B5\u03C2 \u03C3\u03BF\u03C5 \u03BC\u03AD\u03C7\u03C1\u03B9 \u03BD\u03B1 \u03B6\u03B5\u03C3\u03C4\u03B1\u03B8\u03BF\u03CD\u03BD. \u03A4\u03BF\u03C0\u03BF\u03B8\u03AD\u03C4\u03B7\u03C3\u03AD \u03C4\u03B5\u03C2 \u03B1\u03C0\u03B1\u03BB\u03AC \u03C0\u03AC\u03BD\u03C9 \u03B1\u03C0\u03CC \u03C4\u03B1 \u03BA\u03BB\u03B5\u03B9\u03C3\u03C4\u03AC \u03C3\u03BF\u03C5 \u03BC\u03AC\u03C4\u03B9\u03B1. \u03A0\u03AC\u03C1\u03B5 5 \u03B2\u03B1\u03B8\u03B9\u03AD\u03C2 \u03B1\u03BD\u03AC\u03C3\u03B5\u03C2.", duration: 60 },
+        { name: "\u0391\u03C0\u03B1\u03BB\u03BF\u03AF \u039A\u03CD\u03BA\u03BB\u03BF\u03B9 \u0391\u03C3\u03C4\u03C1\u03B1\u03B3\u03AC\u03BB\u03C9\u03BD \u{1F9B6}", desc: "\u03A3\u03AE\u03BA\u03C9\u03C3\u03B5 \u03B5\u03BB\u03B1\u03C6\u03C1\u03CE\u03C2 \u03C4\u03BF \u03AD\u03BD\u03B1 \u03C0\u03CC\u03B4\u03B9 \u03BA\u03B1\u03B8\u03B9\u03C3\u03C4\u03CC\u03C2. \u039A\u03AC\u03BD\u03B5 \u03BA\u03CD\u03BA\u03BB\u03BF\u03C5\u03C2 \u03B3\u03B9\u03B1 30\u03B4 \u03B1\u03C1\u03B9\u03C3\u03C4\u03B5\u03C1\u03AC \u03BA\u03B1\u03B9 30\u03B4 \u03B4\u03B5\u03BE\u03B9\u03AC. \u0386\u03BB\u03BB\u03B1\u03BE\u03B5 \u03C0\u03CC\u03B4\u03B9.", duration: 60 },
+        { name: "\u0394\u03B9\u03AC\u03C4\u03B1\u03C3\u03B7 \u03A3\u03C4\u03AE\u03B8\u03BF\u03C5\u03C2 (\u039A\u03B1\u03B8\u03B9\u03C3\u03C4\u03AE) \u{1FAC1}", desc: "\u03A0\u03BB\u03AD\u03BE\u03B5 \u03C4\u03B1 \u03B4\u03AC\u03C7\u03C4\u03C5\u03BB\u03B1 \u03C0\u03AF\u03C3\u03C9 \u03B1\u03C0\u03CC \u03C4\u03BF \u03BA\u03B5\u03C6\u03AC\u03BB\u03B9, \u03AC\u03BD\u03BF\u03B9\u03BE\u03B5 \u03BA\u03B1\u03BB\u03AC \u03C4\u03BF\u03C5\u03C2 \u03B1\u03B3\u03BA\u03CE\u03BD\u03B5\u03C2 \u03BA\u03B1\u03B9 \u03B1\u03BD\u03AC\u03C0\u03BD\u03B5\u03C5\u03C3\u03B5 \u03AE\u03C1\u03B5\u03BC\u03B1 \u03B1\u03BD\u03BF\u03AF\u03B3\u03BF\u03BD\u03C4\u03B1\u03C2 \u03C4\u03BF\u03BD \u03B8\u03CE\u03C1\u03B1\u03BA\u03B1.", duration: 60 },
+        { name: "\u03A3\u03C5\u03BD\u03C4\u03BF\u03BD\u03B9\u03C3\u03BC\u03CC\u03C2 \u0394\u03B1\u03C7\u03C4\u03CD\u03BB\u03C9\u03BD (Brain Gym) \u{1F9E0}", desc: "\u0386\u03B3\u03B3\u03B9\u03BE\u03B5 \u03BC\u03B5 \u03C4\u03BF\u03BD \u03B1\u03BD\u03C4\u03AF\u03C7\u03B5\u03B9\u03C1\u03B1 \u03BA\u03AC\u03B8\u03B5 \u03B4\u03AC\u03C7\u03C4\u03C5\u03BB\u03BF \u03C4\u03BF\u03C5 \u03AF\u03B4\u03B9\u03BF\u03C5 \u03C7\u03B5\u03C1\u03B9\u03BF\u03CD \u03B4\u03B9\u03B1\u03B4\u03BF\u03C7\u03B9\u03BA\u03AC \u03BA\u03B1\u03B9 \u03BC\u03B5\u03C4\u03AC \u03B1\u03BD\u03C4\u03AF\u03C3\u03C4\u03C1\u03BF\u03C6\u03B1. \u0395\u03BD\u03B9\u03C3\u03C7\u03CD\u03B5\u03B9 \u03B1\u03C0\u03B1\u03BB\u03AC \u03C4\u03B7 \u03C3\u03C5\u03B3\u03BA\u03AD\u03BD\u03C4\u03C1\u03C9\u03C3\u03B7.", duration: 60 }
+      ],
+      2: [
+        { name: "\u0386\u03BD\u03BF\u03B9\u03B3\u03BC\u03B1 \u03A3\u03C4\u03AE\u03B8\u03BF\u03C5\u03C2 \u038C\u03C1\u03B8\u03B9\u03BF\u03C2 \u{1F450}", desc: "\u03A3\u03C4\u03AC\u03C3\u03BF\u03C5 \u03CC\u03C1\u03B8\u03B9\u03BF\u03C2. \u03A0\u03BB\u03AD\u03BE\u03B5 \u03C4\u03B1 \u03C7\u03AD\u03C1\u03B9\u03B1 \u03C0\u03AF\u03C3\u03C9 \u03B1\u03C0\u03CC \u03C4\u03B7\u03BD \u03C0\u03BB\u03AC\u03C4\u03B7 \u03BA\u03B1\u03B9 \u03C4\u03C1\u03AC\u03B2\u03B7\u03BE\u03B5 \u03B1\u03C0\u03B1\u03BB\u03AC \u03C0\u03C1\u03BF\u03C2 \u03C4\u03B1 \u03BA\u03AC\u03C4\u03C9. \u039D\u03B9\u03CE\u03C3\u03B5 \u03C4\u03BF \u03AC\u03BD\u03BF\u03B9\u03B3\u03BC\u03B1 \u03C3\u03C4\u03BF \u03C3\u03C4\u03AE\u03B8\u03BF\u03C2 \u03BA\u03B1\u03B9 \u03C4\u03BF\u03C5\u03C2 \u03CE\u03BC\u03BF\u03C5\u03C2.", duration: 60 },
+        { name: "\u0389\u03C0\u03B9\u03B5\u03C2 \u03A3\u03C4\u03C1\u03BF\u03C6\u03AD\u03C2 \u03A3\u03C0\u03BF\u03BD\u03B4\u03C5\u03BB\u03B9\u03BA\u03AE\u03C2 \u03A3\u03C4\u03AE\u03BB\u03B7\u03C2 \u{1F33F}", desc: "\u03A3\u03C4\u03AC\u03C3\u03BF\u03C5 \u03BC\u03B5 \u03C4\u03B1 \u03C0\u03CC\u03B4\u03B9\u03B1 \u03C3\u03C4\u03BF \u03AC\u03BD\u03BF\u03B9\u03B3\u03BC\u03B1 \u03C4\u03C9\u03BD \u03CE\u03BC\u03C9\u03BD, \u03C7\u03AD\u03C1\u03B9\u03B1 \u03C7\u03B1\u03BB\u03B1\u03C1\u03AC. \u03A3\u03C4\u03C1\u03AF\u03C8\u03B5 \u03B1\u03C0\u03B1\u03BB\u03AC \u03C4\u03BF\u03BD \u03BA\u03BF\u03C1\u03BC\u03CC \u03B4\u03B5\u03BE\u03B9\u03AC-\u03B1\u03C1\u03B9\u03C3\u03C4\u03B5\u03C1\u03AC \u03B1\u03C6\u03AE\u03BD\u03BF\u03BD\u03C4\u03B1\u03C2 \u03C4\u03B1 \u03C7\u03AD\u03C1\u03B9\u03B1 \u03BD\u03B1 \u03B1\u03BA\u03BF\u03BB\u03BF\u03C5\u03B8\u03BF\u03CD\u03BD.", duration: 60 },
+        { name: "\u0386\u03B3\u03B3\u03B9\u03B3\u03BC\u03B1 \u03C4\u03C9\u03BD \u0391\u03C3\u03C4\u03B5\u03C1\u03B9\u03CE\u03BD \u{1F30C}", desc: "\u03A4\u03AD\u03BD\u03C4\u03C9\u03C3\u03B5 \u03B5\u03BD\u03B1\u03BB\u03BB\u03AC\u03BE \u03C4\u03BF \u03B1\u03C1\u03B9\u03C3\u03C4\u03B5\u03C1\u03CC \u03BA\u03B1\u03B9 \u03C4\u03BF \u03B4\u03B5\u03BE\u03AF \u03C7\u03AD\u03C1\u03B9 \u03CC\u03C3\u03BF \u03C0\u03B9\u03BF \u03C8\u03B7\u03BB\u03AC \u03BC\u03C0\u03BF\u03C1\u03B5\u03AF\u03C2, \u03C3\u03B1\u03BD \u03BD\u03B1 \u03BC\u03B1\u03B6\u03B5\u03CD\u03B5\u03B9\u03C2 \u03B1\u03C3\u03C4\u03AD\u03C1\u03B9\u03B1 \u03B1\u03C0\u03CC \u03C4\u03BF\u03BD \u03BF\u03C5\u03C1\u03B1\u03BD\u03CC. \u0391\u03BD\u03AC\u03C0\u03BD\u03B5\u03B5 \u03C1\u03C5\u03B8\u03BC\u03B9\u03BA\u03AC.", duration: 60 },
+        { name: "\u039A\u03CD\u03BA\u03BB\u03BF\u03B9 \u039B\u03B5\u03BA\u03AC\u03BD\u03B7\u03C2 \u{1F300}", desc: "\u03A3\u03C4\u03AC\u03C3\u03BF\u03C5 \u03BC\u03B5 \u03C4\u03B1 \u03C7\u03AD\u03C1\u03B9\u03B1 \u03C3\u03C4\u03B7 \u03BC\u03AD\u03C3\u03B7. \u03A3\u03C7\u03B5\u03B4\u03AF\u03B1\u03C3\u03B5 \u03B1\u03C1\u03B3\u03BF\u03CD\u03C2, \u03BA\u03C5\u03BA\u03BB\u03B9\u03BA\u03BF\u03CD\u03C2 \u03BA\u03CD\u03BA\u03BB\u03BF\u03C5\u03C2 \u03BC\u03B5 \u03C4\u03B7 \u03BB\u03B5\u03BA\u03AC\u03BD\u03B7. \u0386\u03BB\u03BB\u03B1\u03BE\u03B5 \u03C6\u03BF\u03C1\u03AC \u03C3\u03C4\u03B1 30 \u03B4\u03B5\u03C5\u03C4\u03B5\u03C1\u03CC\u03BB\u03B5\u03C0\u03C4\u03B1.", duration: 60 },
+        { name: "\u03A0\u03BB\u03AC\u03B3\u03B9\u03B1 \u0394\u03B9\u03AC\u03C4\u03B1\u03C3\u03B7 \u0391\u03C5\u03C7\u03AD\u03BD\u03B1 \u{1F4D0}", desc: "\u0393\u03B5\u03AF\u03C1\u03B5 \u03C4\u03BF \u03BA\u03B5\u03C6\u03AC\u03BB\u03B9 \u03C0\u03C1\u03BF\u03C2 \u03C4\u03BF\u03BD \u03B1\u03C1\u03B9\u03C3\u03C4\u03B5\u03C1\u03CC \u03CE\u03BC\u03BF. \u03A3\u03C0\u03C1\u03CE\u03BE\u03B5 \u03C4\u03B7\u03BD \u03B4\u03B5\u03BE\u03B9\u03AC \u03C0\u03B1\u03BB\u03AC\u03BC\u03B7 \u03C0\u03C1\u03BF\u03C2 \u03C4\u03BF \u03C0\u03AC\u03C4\u03C9\u03BC\u03B1 \u03B3\u03B9\u03B1 \u03BD\u03B1 \u03C4\u03B5\u03BD\u03C4\u03CE\u03C3\u03B5\u03B9 \u03C4\u03BF \u03C7\u03AD\u03C1\u03B9. \u0386\u03BB\u03BB\u03B1\u03BE\u03B5 \u03C3\u03C4\u03B1 30\u03B4.", duration: 60 },
+        { name: "\u03A0\u03BB\u03AC\u03B3\u03B9\u03B1 \u039A\u03AC\u03BC\u03C8\u03B7 \u039A\u03BF\u03C1\u03BC\u03BF\u03CD \u{1F3F9}", desc: "\u03A3\u03AE\u03BA\u03C9\u03C3\u03B5 \u03C4\u03BF \u03AD\u03BD\u03B1 \u03C7\u03AD\u03C1\u03B9 \u03C8\u03B7\u03BB\u03AC \u03BA\u03B1\u03B9 \u03B3\u03B5\u03AF\u03C1\u03B5 \u03B1\u03C0\u03B1\u03BB\u03AC \u03C4\u03BF\u03BD \u03BA\u03BF\u03C1\u03BC\u03CC \u03C0\u03C1\u03BF\u03C2 \u03C4\u03B7\u03BD \u03B1\u03BD\u03C4\u03AF\u03B8\u03B5\u03C4\u03B7 \u03C0\u03BB\u03B5\u03C5\u03C1\u03AC. \u039A\u03C1\u03AC\u03C4\u03B7\u03C3\u03B5 \u03B3\u03B9\u03B1 30\u03B4 \u03BA\u03B1\u03B9 \u03AC\u03BB\u03BB\u03B1\u03BE\u03B5 \u03C7\u03AD\u03C1\u03B9.", duration: 60 },
+        { name: "\u0394\u03B9\u03AC\u03C4\u03B1\u03C3\u03B7 \u0386\u03BD\u03C9 \u03A0\u03BB\u03AC\u03C4\u03B7\u03C2 \u{1F6E1}\uFE0F", desc: "\u03A0\u03BB\u03AD\u03BE\u03B5 \u03C4\u03B1 \u03C7\u03AD\u03C1\u03B9\u03B1 \u03BC\u03C0\u03C1\u03BF\u03C3\u03C4\u03AC \u03C3\u03C4\u03BF \u03C3\u03C4\u03AE\u03B8\u03BF\u03C2, \u03BA\u03B1\u03BC\u03C0\u03BF\u03CD\u03C1\u03B9\u03B1\u03C3\u03B5 \u03C4\u03B7\u03BD \u03AC\u03BD\u03C9 \u03C0\u03BB\u03AC\u03C4\u03B7 \u03BA\u03B1\u03B9 \u03C3\u03C0\u03C1\u03CE\u03BE\u03B5 \u03C4\u03B9\u03C2 \u03C0\u03B1\u03BB\u03AC\u03BC\u03B5\u03C2 \u03BC\u03C0\u03C1\u03BF\u03C3\u03C4\u03AC. \u0391\u03BD\u03AC\u03C0\u03BD\u03B5\u03C5\u03C3\u03B5 \u03B2\u03B1\u03B8\u03B9\u03AC.", duration: 60 },
+        { name: "\u03A7\u03AD\u03C1\u03B9\u03B1 \u0391\u03B5\u03C4\u03BF\u03CD \u{1F985}", desc: "\u03A3\u03C4\u03B1\u03CD\u03C1\u03C9\u03C3\u03B5 \u03C4\u03B1 \u03C7\u03AD\u03C1\u03B9\u03B1 \u03BC\u03C0\u03C1\u03BF\u03C3\u03C4\u03AC \u03C3\u03BF\u03C5, \u03C0\u03BB\u03AD\u03BE\u03B5 \u03C4\u03BF\u03C5\u03C2 \u03C0\u03AE\u03C7\u03B5\u03B9\u03C2 \u03BA\u03B1\u03B9 \u03C3\u03C0\u03C1\u03CE\u03BE\u03B5 \u03B1\u03C0\u03B1\u03BB\u03AC \u03C4\u03BF\u03C5\u03C2 \u03B1\u03B3\u03BA\u03CE\u03BD\u03B5\u03C2 \u03C0\u03C1\u03BF\u03C2 \u03C4\u03B1 \u03C0\u03AC\u03BD\u03C9. \u0395\u03BE\u03B1\u03B9\u03C1\u03B5\u03C4\u03B9\u03BA\u03AE \u03B1\u03BD\u03B1\u03BA\u03BF\u03CD\u03C6\u03B9\u03C3\u03B7 \u03B3\u03B9\u03B1 \u03C4\u03B7\u03BD \u03C0\u03BB\u03AC\u03C4\u03B7.", duration: 60 }
+      ],
+      3: [
+        { name: "\u039A\u03B1\u03B8\u03AF\u03C3\u03BC\u03B1\u03C4\u03B1 \u03C3\u03C4\u03BF\u03BD \u03A0\u03AC\u03B3\u03BA\u03BF \u{1FA91}", desc: "\u039A\u03C1\u03B1\u03C4\u03AE\u03C3\u03BF\u03C5 \u03B1\u03BD \u03B8\u03AD\u03BB\u03B5\u03B9\u03C2 \u03B1\u03C0\u03CC \u03BC\u03B9\u03B1 \u03BA\u03B1\u03C1\u03AD\u03BA\u03BB\u03B1 \u03AE \u03C0\u03AC\u03B3\u03BA\u03BF. \u03A7\u03B1\u03BC\u03AE\u03BB\u03C9\u03C3\u03B5 \u03C4\u03B7 \u03BB\u03B5\u03BA\u03AC\u03BD\u03B7 \u03C0\u03C1\u03BF\u03C2 \u03C4\u03B1 \u03C0\u03AF\u03C3\u03C9 \u03B5\u03BB\u03B5\u03B3\u03C7\u03CC\u03BC\u03B5\u03BD\u03B1 \u03BA\u03B1\u03B9 \u03C3\u03AE\u03BA\u03C9 \u03BE\u03B1\u03BD\u03AC.", duration: 60 },
+        { name: "\u0391\u03BD\u03C5\u03C8\u03CE\u03C3\u03B5\u03B9\u03C2 \u03C3\u03C4\u03B9\u03C2 \u0393\u03AC\u03BC\u03C0\u03B5\u03C2 \u{1F9B5}", desc: "\u03A3\u03C4\u03AC\u03C3\u03BF\u03C5 \u03CC\u03C1\u03B8\u03B9\u03BF\u03C2. \u03A3\u03AE\u03BA\u03C9 \u03B1\u03C1\u03B3\u03AC \u03C3\u03C4\u03B9\u03C2 \u03BC\u03CD\u03C4\u03B5\u03C2 \u03C4\u03C9\u03BD \u03C0\u03BF\u03B4\u03B9\u03CE\u03BD, \u03BA\u03C1\u03AC\u03C4\u03B7\u03C3\u03B5 \u03B3\u03B9\u03B1 \u03BC\u03B9\u03B1 \u03C3\u03C4\u03B9\u03B3\u03BC\u03AE \u03B9\u03C3\u03BF\u03C1\u03C1\u03BF\u03C0\u03AF\u03B1 \u03BA\u03B1\u03B9 \u03BA\u03B1\u03C4\u03AD\u03B2\u03B1 \u03B1\u03C1\u03B3\u03AC. \u0395\u03C0\u03B1\u03BD\u03AC\u03BB\u03B1\u03B2\u03B5 \u03BC\u03B5 \u03C3\u03C4\u03B1\u03B8\u03B5\u03C1\u03CC \u03C1\u03C5\u03B8\u03BC\u03CC.", duration: 60 },
+        { name: "\u039A\u03AC\u03BC\u03C8\u03B5\u03B9\u03C2 \u03C3\u03C4\u03BF\u03BD \u03A4\u03BF\u03AF\u03C7\u03BF \u{1F9F1}", desc: "\u03A3\u03C4\u03AC\u03C3\u03BF\u03C5 \u03AD\u03BD\u03B1 \u03B2\u03AE\u03BC\u03B1 \u03BC\u03B1\u03BA\u03C1\u03B9\u03AC \u03B1\u03C0\u03CC \u03C4\u03BF\u03BD \u03C4\u03BF\u03AF\u03C7\u03BF. \u0391\u03BA\u03BF\u03CD\u03BC\u03C0\u03B7\u03C3\u03B5 \u03C4\u03B9\u03C2 \u03C0\u03B1\u03BB\u03AC\u03BC\u03B5\u03C2, \u03BB\u03CD\u03B3\u03B9\u03C3\u03B5 \u03C4\u03BF\u03C5\u03C2 \u03B1\u03B3\u03BA\u03CE\u03BD\u03B5\u03C2 \u03C6\u03AD\u03C1\u03BD\u03BF\u03BD\u03C4\u03B1\u03C2 \u03C4\u03BF \u03C3\u03C4\u03AE\u03B8\u03BF\u03C2 \u03BA\u03BF\u03BD\u03C4\u03AC \u03C3\u03C4\u03BF\u03BD \u03C4\u03BF\u03AF\u03C7\u03BF \u03BA\u03B1\u03B9 \u03C3\u03C0\u03C1\u03CE\u03BE\u03B5 \u03C0\u03AF\u03C3\u03C9.", duration: 60 },
+        { name: "\u0389\u03C0\u03B9\u03BF Jumping Jack (\u03A7\u03B1\u03BC\u03B7\u03BB\u03AE\u03C2 \u0388\u03BD\u03C4\u03B1\u03C3\u03B7\u03C2) \u{1F938}\u200D\u2642\uFE0F", desc: "\u039A\u03AC\u03BD\u03B5 \u03AD\u03BD\u03B1 \u03B2\u03AE\u03BC\u03B1 \u03C3\u03C4\u03BF \u03C0\u03BB\u03AC\u03B9 \u03C3\u03B7\u03BA\u03CE\u03BD\u03BF\u03BD\u03C4\u03B1\u03C2 \u03C4\u03BF \u03B1\u03BD\u03C4\u03AF\u03C3\u03C4\u03BF\u03B9\u03C7\u03BF \u03C7\u03AD\u03C1\u03B9. \u0386\u03BB\u03BB\u03B1\u03B6\u03B5 \u03C0\u03BB\u03B5\u03C5\u03C1\u03AD\u03C2 \u03C1\u03C5\u03B8\u03BC\u03B9\u03BA\u03AC \u03C7\u03C9\u03C1\u03AF\u03C2 \u03AC\u03BB\u03BC\u03B1\u03C4\u03B1. \u03A0\u03BF\u03BB\u03CD \u03C6\u03B9\u03BB\u03B9\u03BA\u03CC \u03B3\u03B9\u03B1 \u03C4\u03B9\u03C2 \u03B1\u03C1\u03B8\u03C1\u03CE\u03C3\u03B5\u03B9\u03C2.", duration: 60 },
+        { name: "\u03A3\u03BA\u03B9\u03B1\u03BC\u03B1\u03C7\u03AF\u03B1 (Shadow Boxing) \u{1F94A}", desc: "\u03A3\u03C4\u03AC\u03C3\u03BF\u03C5 \u03C3\u03B5 \u03C3\u03C4\u03B1\u03B8\u03B5\u03C1\u03AE \u03C3\u03C4\u03AC\u03C3\u03B7. \u03A1\u03AF\u03BE\u03B5 \u03B1\u03C0\u03B1\u03BB\u03AD\u03C2, \u03C1\u03C5\u03B8\u03BC\u03B9\u03BA\u03AD\u03C2 \u03B3\u03C1\u03BF\u03B8\u03B9\u03AD\u03C2 \u03C3\u03C4\u03BF\u03BD \u03B1\u03AD\u03C1\u03B1 \u03B5\u03BD\u03B1\u03BB\u03BB\u03AC\u03BE \u03BC\u03B5 \u03B1\u03C1\u03B9\u03C3\u03C4\u03B5\u03C1\u03CC \u03BA\u03B1\u03B9 \u03B4\u03B5\u03BE\u03AF. \u0395\u03BA\u03C4\u03BF\u03BD\u03CE\u03BD\u03B5\u03B9 \u03C4\u03B7\u03BD \u03AD\u03BD\u03C4\u03B1\u03C3\u03B7 \u03C3\u03C4\u03BF\u03C5\u03C2 \u03CE\u03BC\u03BF\u03C5\u03C2.", duration: 60 },
+        { name: "\u0386\u03B3\u03B3\u03B9\u03B3\u03BC\u03B1 \u0393\u03CC\u03BD\u03B1\u03C4\u03BF \u03BC\u03B5 \u0391\u03B3\u03BA\u03CE\u03BD\u03B1 \u{1F9EC}", desc: "\u038C\u03C1\u03B8\u03B9\u03BF\u03C2, \u03C6\u03AD\u03C1\u03B5 \u03C4\u03BF \u03B1\u03C1\u03B9\u03C3\u03C4\u03B5\u03C1\u03CC \u03B3\u03CC\u03BD\u03B1\u03C4\u03BF \u03C3\u03C4\u03BF\u03BD \u03B4\u03B5\u03BE\u03B9\u03CC \u03B1\u03B3\u03BA\u03CE\u03BD\u03B1 \u03BA\u03B1\u03B9 \u03BC\u03B5\u03C4\u03AC \u03C4\u03BF \u03B4\u03B5\u03BE\u03AF \u03B3\u03CC\u03BD\u03B1\u03C4\u03BF \u03C3\u03C4\u03BF\u03BD \u03B1\u03C1\u03B9\u03C3\u03C4\u03B5\u03C1\u03CC \u03B1\u03B3\u03BA\u03CE\u03BD\u03B1. \u0395\u03BD\u03B5\u03C1\u03B3\u03BF\u03C0\u03BF\u03B9\u03B5\u03AF \u03C4\u03BF\u03C5\u03C2 \u03BA\u03BF\u03B9\u03BB\u03B9\u03B1\u03BA\u03BF\u03CD\u03C2 \u03BC\u03C5\u03C2.", duration: 60 },
+        { name: "\u03A0\u03BF\u03BB\u03B5\u03BC\u03B9\u03C3\u03C4\u03AE\u03C2 3 \u03BC\u03B5 \u03A5\u03C0\u03BF\u03C3\u03C4\u03AE\u03C1\u03B9\u03BE\u03B7 \u2696\uFE0F", desc: "\u039A\u03C1\u03B1\u03C4\u03AE\u03C3\u03BF\u03C5 \u03B1\u03C0\u03CC \u03BC\u03B9\u03B1 \u03BA\u03B1\u03C1\u03AD\u03BA\u03BB\u03B1 \u03B3\u03B9\u03B1 \u03B9\u03C3\u03BF\u03C1\u03C1\u03BF\u03C0\u03AF\u03B1. \u03A3\u03AE\u03BA\u03C9\u03C3\u03B5 \u03C4\u03BF \u03AD\u03BD\u03B1 \u03C0\u03CC\u03B4\u03B9 \u03C4\u03B5\u03BD\u03C4\u03C9\u03BC\u03AD\u03BD\u03BF \u03C0\u03AF\u03C3\u03C9 \u03BA\u03B1\u03B9 \u03B3\u03B5\u03AF\u03C1\u03B5 \u03B5\u03BB\u03B1\u03C6\u03C1\u03CE\u03C2 \u03BC\u03C0\u03C1\u03BF\u03C3\u03C4\u03AC. \u039A\u03C1\u03AC\u03C4\u03B7\u03C3\u03B5 \u03B3\u03B9\u03B1 30\u03B4, \u03BC\u03B5\u03C4\u03AC \u03AC\u03BB\u03BB\u03B1\u03BE\u03B5.", duration: 60 },
+        { name: "\u03A3\u03CD\u03C3\u03C6\u03B9\u03BE\u03B7 \u03A9\u03BC\u03BF\u03C0\u03BB\u03B1\u03C4\u03CE\u03BD \u{1F3CB}\uFE0F", desc: "\u03A3\u03C4\u03AC\u03C3\u03BF\u03C5 \u03BC\u03B5 \u03AF\u03C3\u03B9\u03B1 \u03C0\u03BB\u03AC\u03C4\u03B7, \u03B1\u03B3\u03BA\u03CE\u03BD\u03B5\u03C2 \u03BB\u03C5\u03B3\u03B9\u03C3\u03BC\u03AD\u03BD\u03BF\u03B9 \u03C3\u03C4\u03B9\u03C2 90 \u03BC\u03BF\u03AF\u03C1\u03B5\u03C2. \u03A4\u03C1\u03AC\u03B2\u03B7\u03BE\u03B5 \u03B4\u03C5\u03BD\u03B1\u03C4\u03AC \u03C4\u03B9\u03C2 \u03C9\u03BC\u03BF\u03C0\u03BB\u03AC\u03C4\u03B5\u03C2 \u03C0\u03C1\u03BF\u03C2 \u03C4\u03B1 \u03C0\u03AF\u03C3\u03C9, \u03BA\u03C1\u03AC\u03C4\u03B7\u03C3\u03B5 \u03B3\u03B9\u03B1 3\u03B4 \u03BA\u03B1\u03B9 \u03C7\u03B1\u03BB\u03AC\u03C1\u03C9\u03C3\u03B5.", duration: 60 }
+      ]
+    },
+    de: {
+      1: [
+        { name: "Nacken-Entlastung \u{1F9D8}\u200D\u2640\uFE0F", desc: "Setze dich aufrecht hin. Lasse den Kopf langsam zur rechten Schulter sinken. Halte f\xFCr 30s, dann wechsle die Seite. Atme tief ein.", duration: 60 },
+        { name: "Handgelenk-Lockerung \u{1F450}", desc: "Kreise deine Handgelenke ganz sanft 30s nach links, dann 30s nach rechts. Perfekt, um Schreibtischanspannung zu l\xF6sen.", duration: 60 },
+        { name: "Schulter-Kreisen \u{1F504}", desc: "Zieh deine Schultern sanft nach oben zu den Ohren, kreise sie nach hinten und lasse sie sinken. Wiederhole das entspannt f\xFCr 1 Minute.", duration: 60 },
+        { name: "Katze-Kuh im Sitzen \u{1FA91}", desc: "Lege die H\xE4nde auf deine Knie. Beim Einatmen schiebst du die Brust sanft nach vorne (leichtes Hohlkreuz), beim Ausatmen machst du den R\xFCcken ganz rund.", duration: 60 },
+        { name: "Augen-Entspannung (Palming) \u{1F440}", desc: "Reibe deine Handfl\xE4chen kr\xE4ftig aneinander, bis sie warm sind. Lege sie sanft schalenf\xF6rmig \xFCber deine geschlossenen Augen. Atme 5-mal tief durch.", duration: 60 },
+        { name: "Sanftes Fu\xDFkreisen \u{1F9B6}", desc: "Hebe im Sitzen einen Fu\xDF leicht an und kreise ihn entspannt 30s nach links, dann 30s nach rechts. Danach die Seite wechseln.", duration: 60 },
+        { name: "Brustkorb-Dehnung (Sitzend) \u{1FAC1}", desc: "Verschr\xE4nke die Finger hinter dem Kopf, ziehe die Ellbogen weit nach au\xDFen und \xF6ffne deinen Brustkorb sanft nach oben. Atme ruhig.", duration: 60 },
+        { name: "Finger-Koordination (Gehirnh\xE4lften-Tanz) \u{1F9E0}", desc: "Bilde mit Daumen und Zeigefinger nacheinander Ringe mit allen Fingern der Hand. Geh vor und wieder zur\xFCck. F\xF6rdert sanft die Konzentration.", duration: 60 }
+      ],
+      2: [
+        { name: "Brust\xF6ffner im Stehen \u{1F450}", desc: "Stelle dich aufrecht hin. Verschr\xE4nke deine H\xE4nde hinter dem R\xFCcken und ziehe sie sanft nach unten weg. Sp\xFCre die Dehnung in Brust und Schultern.", duration: 60 },
+        { name: "Sanftes Wirbels\xE4ulen-Pendeln \u{1F33F}", desc: "Lasse deine Arme im Stehen locker an den Seiten h\xE4ngen. Drehe deinen Oberk\xF6rper ganz entspannt von links nach rechts, sodass die Arme locker mitschwingen.", duration: 60 },
+        { name: "Himmels-Streckung \u{1F30C}", desc: "Strecke dich abwechselnd mit dem linken und rechten Arm so weit wie m\xF6glich nach oben, als w\xFCrdest du Sterne pfl\xFCcken. Atme gleichm\xE4\xDFig.", duration: 60 },
+        { name: "Beckenkreisen \u{1F300}", desc: "Stelle dich h\xFCftbreit hin, lege die H\xE4nde auf die H\xFCften und ziehe ganz langsame, sanfte Kreise mit deinem Becken. Wechsel nach der H\xE4lfte die Richtung.", duration: 60 },
+        { name: "Nacken-Seitendehnung \u{1F4D0}", desc: "Neige den Kopf zur linken Schulter. Schiebe die rechte Handfl\xE4che aktiv Richtung Boden, um den Dehnreiz im Arm-Nerven-Strang zu verst\xE4rken. Nach 30s wechseln.", duration: 60 },
+        { name: "Seitlicher Bogen \u{1F3F9}", desc: "Strecke einen Arm weit nach oben und neige deinen Oberk\xF6rper sanft zur gegen\xFCberliegenden Seite. Halte f\xFCr 30s, dann wechsle den Arm.", duration: 60 },
+        { name: "Schulterbl\xE4tter-Dehnung \u{1F6E1}\uFE0F", desc: "Verschr\xE4nke deine H\xE4nde vor der Brust, runde deinen oberen R\xFCcken maximal und schiebe die Handfl\xE4chen nach vorne weg. Halten und tief atmen.", duration: 60 },
+        { name: "Adler-Arme \u{1F985}", desc: "Kreuze die Arme vor dem K\xF6rper, verschr\xE4nke die Unterarme ineinander und schiebe deine Ellbogen sanft nach oben. Dehnt den oberen R\xFCcken wunderbar.", duration: 60 }
+      ],
+      3: [
+        { name: "K\xFCchen-Kniebeugen \u{1FA91}", desc: "Halte dich optional an einer Stuhllehne oder Arbeitsplatte fest. Senke dein Becken kontrolliert nach hinten ab (wie beim Hinsetzen) und richte dich wieder auf.", duration: 60 },
+        { name: "Wadenheben (Venenpresse) \u{1F9B5}", desc: "Dr\xFCcke dich im Stehen kontrolliert auf die Zehenspitzen hoch, halte kurz die Balance und senke die Fersen langsam wieder ab. Wiederhole dies gleichm\xE4\xDFig.", duration: 60 },
+        { name: "Wand-Liegest\xFCtze \u{1F9F1}", desc: "Stelle dich einen Schritt entfernt vor eine Wand. Lege die H\xE4nde flach auf, senke deine Brust kontrolliert zur Wand ab und dr\xFCcke dich sanft wieder weg.", duration: 60 },
+        { name: "Hampelmann f\xFCr Faule (Low Impact) \u{1F938}\u200D\u2642\uFE0F", desc: "Mache einen Schritt zur Seite und nimm den Arm der gleichen Seite mit nach oben. Wechsle rhythmisch die Seiten, ohne zu springen. Sehr gelenkschonend.", duration: 60 },
+        { name: "Lockerer Faust-Sto\xDF (Schattenboxen) \u{1F94A}", desc: "Stelle dich stabil hin. Boxe locker und rhythmisch abwechselnd mit links und rechts geradeaus in die Luft. L\xF6st Spannungen im Schulterg\xFCrtel.", duration: 60 },
+        { name: "Knie-Ellbogen-Tipp \u{1F9EC}", desc: "F\xFChre im Stehen im Wechsel das linke Knie zum rechten Ellbogen und das rechte Knie zum linken Ellbogen. Aktiviert deine schr\xE4ge Rumpfmuskulatur.", duration: 60 },
+        { name: "Standwaage mit Festhalten \u2696\uFE0F", desc: "Halte dich an einer Stuhllehne fest. Hebe ein Bein gestreckt nach hinten an und neige den Oberk\xF6rper leicht vor. 30s halten, dann Seite wechseln.", duration: 60 },
+        { name: "Schulterblatt-Squeeze \u{1F3CB}\uFE0F", desc: "Stelle dich aufrecht hin, beuge die Ellbogen im 90-Grad-Winkel. Ziehe deine Schulterbl\xE4tter hinten kraftvoll zusammen, halte f\xFCr 3s und lockere wieder.", duration: 60 }
+      ]
+    },
+    en: {
+      1: [
+        { name: "Neck Release \u{1F9D8}\u200D\u2640\uFE0F", desc: "Sit up straight. Gently let your head drop toward your right shoulder. Hold for 30s, then switch sides. Breathe deeply.", duration: 60 },
+        { name: "Wrist Rolls \u{1F450}", desc: "Roll your wrists gently in circles for 30s to the left, then 30s to the right. Perfect for relieving desk fatigue.", duration: 60 },
+        { name: "Shoulder Circles \u{1F504}", desc: "Gently shrug your shoulders up to your ears, roll them backward, and let them drop. Repeat in a relaxed rhythm for 1 minute.", duration: 60 },
+        { name: "Seated Cat-Cow \u{1FA91}", desc: "Place hands on your knees. Inhale as you push your chest forward (gentle backbend), exhale as you round your spine fully.", duration: 60 },
+        { name: "Eye Relaxation (Palming) \u{1F440}", desc: "Rub your palms together until they feel warm. Place them gently over your closed eyes. Breathe deeply 5 times.", duration: 60 },
+        { name: "Gentle Ankle Circles \u{1F9B6}", desc: "Slightly lift one foot while seated. Rotate your ankle for 30s to the left, then 30s to the right. Swap feet.", duration: 60 },
+        { name: "Chest Stretch (Seated) \u{1FAC1}", desc: "Interlace your fingers behind your head, draw your elbows wide apart, and gently open your chest upward. Breathe calmly.", duration: 60 },
+        { name: "Brain-Gym Finger Coordination \u{1F9E0}", desc: "Touch your thumb to each finger on the same hand, one after the other, then reverse the sequence. Boosts concentration gently.", duration: 60 }
+      ],
+      2: [
+        { name: "Standing Chest Opener \u{1F450}", desc: "Stand tall. Interlace your fingers behind your back and gently pull them downward. Feel the stretch in your chest and shoulders.", duration: 60 },
+        { name: "Gentle Spinal Twists \u{1F33F}", desc: "Stand with your feet shoulder-width apart, arms hanging loose. Gently rotate your torso left to right, letting your arms swing freely.", duration: 60 },
+        { name: "Reach for the Stars \u{1F30C}", desc: "Alternate reaching up with your left and right arms as high as possible, as if picking stars from the sky. Breathe evenly.", duration: 60 },
+        { name: "Hip Circles \u{1F300}", desc: "Stand with hands on hips. Draw slow, gentle circles with your pelvis. Reverse the direction after 30 seconds.", duration: 60 },
+        { name: "Neck Lateral Stretch \u{1F4D0}", desc: "Tilt your head toward your left shoulder. Push your right palm actively toward the floor to stretch the arm-nerve bundle. Switch after 30s.", duration: 60 },
+        { name: "Side Bend \u{1F3F9}", desc: "Reach one arm straight up and lean your torso gently to the opposite side. Hold for 30s, then swap arms.", duration: 60 },
+        { name: "Upper Back Stretch \u{1F6E1}\uFE0F", desc: "Interlace your fingers in front of your chest, round your upper back, and push your palms away from you. Hold and breathe deeply.", duration: 60 },
+        { name: "Eagle Arms \u{1F985}", desc: "Cross your arms in front, wrap your forearms around each other, and gently push your elbows upward. Marvelous upper back release.", duration: 60 }
+      ],
+      3: [
+        { name: "Kitchen-Counter Squats \u{1FA91}", desc: "Optionally hold onto a chair or counter for balance. Lower your hips back and down in a controlled motion, then stand back up.", duration: 60 },
+        { name: "Calf Raises \u{1F9B5}", desc: "Stand tall. Slowly push up onto your tiptoes, hold the balance briefly, and slowly lower your heels. Repeat in a steady rhythm.", duration: 60 },
+        { name: "Wall Push-Ups \u{1F9F1}", desc: "Stand an arm's length from a wall. Place hands flat, slowly lower your chest toward the wall, and gently push yourself back.", duration: 60 },
+        { name: "Lazy Jack (Low Impact) \u{1F938}\u200D\u2642\uFE0F", desc: "Step out to the side while raising the arm on the same side. Change sides rhythmically without jumping. Very gentle on the joints.", duration: 60 },
+        { name: "Shadow Boxing \u{1F94A}", desc: "Stand in a stable stance. Punch the air gently and rhythmically, alternating left and right. Releases tension in the shoulders.", duration: 60 },
+        { name: "Knee-to-Elbow Tap \u{1F9EC}", desc: "While standing, touch your left knee to your right elbow, then your right knee to your left elbow. Activates your core muscles.", duration: 60 },
+        { name: "Supported Warrior 3 \u2696\uFE0F", desc: "Hold onto a chair for support. Lift one leg straight back and lean your upper body slightly forward. Hold for 30s, then swap sides.", duration: 60 },
+        { name: "Shoulder Blade Squeeze \u{1F3CB}\uFE0F", desc: "Stand tall, elbows bent at a 90-degree angle. Pull your shoulder blades firmly together behind you, hold for 3s, then release.", duration: 60 }
+      ]
+    },
+    es: {
+      1: [
+        { name: "Alivio del Cuello \u{1F9D8}\u200D\u2640\uFE0F", desc: "Si\xE9ntate derecho. Deja caer suavemente la cabeza hacia el hombro derecho. Sost\xE9n por 30s, luego cambia de lado. Respira profundo.", duration: 60 },
+        { name: "Rotaci\xF3n de Mu\xF1ecas \u{1F450}", desc: "Gira tus mu\xF1ecas suavemente en c\xEDrculos durante 30s a la izquierda, luego 30s a la derecha. Perfecto para aliviar la fatiga de escritorio.", duration: 60 },
+        { name: "C\xEDrculos de Hombros \u{1F504}", desc: "Sube suavemente los hombros hacia las orejas, mu\xE9velos hacia atr\xE1s y d\xE9jalos caer. Repite de forma relaxed durante 1 minuto.", duration: 60 },
+        { name: "Gato-Vaca Sentado \u{1FA91}", desc: "Coloca tus manos en las rodillas. Inhala empujando el pecho hacia delante, exhala redondeando completamente la espalda.", duration: 60 },
+        { name: "Palmeo Ocular \u{1F440}", desc: "Frota tus manos vigorosamente hasta sentir calor. Col\xF3calas suavemente sobre tus ojos cerrados. Respira hondo 5 veces.", duration: 60 },
+        { name: "Giros de Tobillo Suaves \u{1F9B6}", desc: "Levanta un pie ligeramente mientras est\xE1s sentado. G\xEDralo durante 30s a la izquierda, luego 30s a la derecha. Cambia de pie.", duration: 60 },
+        { name: "Apertura de Pecho Sentado \u{1FAC1}", desc: "Cruza tus dedos detr\xE1s de la cabeza, abre bien los codos y estira el pecho suavemente hacia arriba. Respira con calma.", duration: 60 },
+        { name: "Coordinaci\xF3n de Dedos (Brain Gym) \u{1F9E0}", desc: "Toca el pulgar con cada uno de los dedos de la misma mano consecutivamente y al rev\xE9s. Estimula suavemente la concentraci\xF3n.", duration: 60 }
+      ],
+      2: [
+        { name: "Apertura de Pecho de Pie \u{1F450}", desc: "P\xE1rate derecho. Cruza tus dedos detr\xE1s de la espalda y tira suavemente hacia abajo. Siente el estiramiento en pecho y hombros.", duration: 60 },
+        { name: "Giro de Columna Suave \u{1F33F}", desc: "P\xE1rate con los pies separados, los brazos sueltos. Gira suavemente tu torso de izquierda a derecha de forma relajada.", duration: 60 },
+        { name: "Estiramiento al Cielo \u{1F30C}", desc: "Estira alternadamente los brazos izquierdo und derecho hacia arriba lo m\xE1s alto posible, como si quisieras alcanzar las estrellas.", duration: 60 },
+        { name: "C\xEDrculos de Cadera \u{1F300}", desc: "Coloca las manos en las caderas. Dibuja c\xEDrculos lentos y suaves con la pelvis. Cambia de direcci\xF3n a los 30 segundos.", duration: 60 },
+        { name: "Estiramiento Lateral del Cuello \u{1F4D0}", desc: "Inclina la cabeza hacia tu hombro izquierdo. Empuja activamente la palma derecha hacia el suelo para estirar los nervios del brazo. Cambia tras 30s.", duration: 60 },
+        { name: "Flexi\xF3n Lateral \u{1F3F9}", desc: "Sube un brazo estirado e inclina el torso suavemente hacia el lado opuesto. Sost\xE9n por 30s, luego cambia de brazo.", duration: 60 },
+        { name: "Estiramiento de la Espalda Alta \u{1F6E1}\uFE0F", desc: "Entrelaza los dedos frente al peco, redondea la espalda alta y empuja las palmas hacia delante. Sost\xE9n y respira hondo.", duration: 60 },
+        { name: "Brazos de \xC1guila \u{1F985}", desc: "Cruza los brazos por delante, entrelaza los antebrazos y empuja suavemente los codos hacia arriba. Un estiramiento magn\xEDfico de la espalda alta.", duration: 60 }
+      ],
+      3: [
+        { name: "Sentadillas de Cocina \u{1FA91}", desc: "Ap\xF3yate en el respaldo de una silla si lo necesitas. Baja la cadera de forma controlada hacia atr\xE1s y vuelve a subir.", duration: 60 },
+        { name: "Elevaci\xF3n de Talones \u{1F9B5}", desc: "Ponte de pie. Sube despacio sobre las puntas de los pies, mant\xE9n el equilibrio y baja lentamente. Repite de forma constante.", duration: 60 },
+        { name: "Flexiones en la Pared \u{1F9F1}", desc: "Apoya las manos planas en la pared a la distancia de tus brazos. Baja el pecho hacia la pared de forma controlada y empuja hacia atr\xE1s.", duration: 60 },
+        { name: "Jack de Bajo Impacto \u{1F938}\u200D\u2642\uFE0F", desc: "Da un paso lateral mientras subes el brazo del mismo lado. Cambia r\xEDtmicamente de lado sin saltar. Muy suave para las articulaciones.", duration: 60 },
+        { name: "Sombra de Boxeo \u{1F94A}", desc: "P\xE1rate en una postura estable. Lanza pu\xF1etazos suaves y r\xEDtmicos al aire, alternando izquierda y derecha. Alivia tensiones.", duration: 60 },
+        { name: "Toque de Rodilla a Codo \u{1F9EC}", desc: "Estando de pie, toca tu rodilla izquierda con el codo derecho, y luego tu rodilla derecha con el codo izquierdo. Activa tus abdominales.", duration: 60 },
+        { name: "Guerrero 3 Sostenido \u2696\uFE0F", desc: "Ap\xF3yate en una silla para mantener el equilibrio. Eleva una pierna estirada hacia atr\xE1s e inclina el torso adelante. Sost\xE9n 30s, luego cambia.", duration: 60 },
+        { name: "Apret\xF3n de Om\xF3platos \u{1F3CB}\uFE0F", desc: "P\xE1rate derecho, codos doblados en \xE1ngulo de 90 grados. Junta con fuerza los om\xF3platos por detr\xE1s, sost\xE9n 3s y relaja.", duration: 60 }
+      ]
+    },
+    fr: {
+      1: [
+        { name: "Rel\xE2chement de la nuque \u{1F9D8}\u200D\u2640\uFE0F", desc: "Assieds-toi bien droit. Laisse doucement ta t\xEAte tomber vers l'\xE9paule droite. Maintiens 30s, puis change de c\xF4t\xE9. Respire profond\xE9ment.", duration: 60 },
+        { name: "Rotation des poignets \u{1F450}", desc: "Fais tourner doucement tes poignets en cercles pendant 30s vers la gauche, puis 30s vers la droite. Parfait contre la fatigue du bureau.", duration: 60 },
+        { name: "Cercles d'\xE9paules \u{1F504}", desc: "Monte doucement tes \xE9paules vers les oreilles, fais-les tourner vers l'arri\xE8re et laisse-les redescendre. R\xE9p\xE8te calmement pendant 1 minute.", duration: 60 },
+        { name: "Chat-vache assis \u{1FA91}", desc: "Pose les mains sur tes genoux. Inspire en poussant la poitrine vers l'avant, expire en arrondissant compl\xE8tement le dos.", duration: 60 },
+        { name: "Relaxation des yeux (Palming) \u{1F440}", desc: "Frotte tes paumes l'une contre l'autre jusqu'\xE0 ce qu'elles chauffent. Pose-les doucement sur tes yeux ferm\xE9s. Respire profond\xE9ment 5 fois.", duration: 60 },
+        { name: "Cercles de chevilles en douceur \u{1F9B6}", desc: "L\xE8ve l\xE9g\xE8rement un pied en position assise. Fais-le tourner 30s vers la gauche, puis 30s vers la droite. Change de pied.", duration: 60 },
+        { name: "\xC9tirement de la poitrine (assis) \u{1FAC1}", desc: "Entrelace tes doigts derri\xE8re la t\xEAte, \xE9carte bien les coudes et ouvre doucement ta poitrine vers le haut. Respire calmement.", duration: 60 },
+        { name: "Coordination des doigts (Brain Gym) \u{1F9E0}", desc: "Touche ton pouce \xE0 chaque doigt de la m\xEAme main, l'un apr\xE8s l'autre, puis dans l'ordre inverse. Stimule doucement la concentration.", duration: 60 }
+      ],
+      2: [
+        { name: "Ouverture de poitrine debout \u{1F450}", desc: "Tiens-toi bien droit. Entrelace tes doigts derri\xE8re le dos et tire doucement vers le bas. Sens l'\xE9tirement dans la poitrine et les \xE9paules.", duration: 60 },
+        { name: "Torsions douces de la colonne \u{1F33F}", desc: "Tiens-toi debout, pieds \xE9cart\xE9s, bras rel\xE2ch\xE9s. Fais tourner doucement ton buste de gauche \xE0 droite, en laissant les bras suivre librement.", duration: 60 },
+        { name: "Attraper les \xE9toiles \u{1F30C}", desc: "\xC9tire alternativement le bras gauche et le bras droit vers le haut, comme pour attraper des \xE9toiles. Respire r\xE9guli\xE8rement.", duration: 60 },
+        { name: "Cercles de hanches \u{1F300}", desc: "Tiens-toi debout, mains sur les hanches. Trace des cercles lents et doux avec ton bassin. Change de sens apr\xE8s 30 secondes.", duration: 60 },
+        { name: "\xC9tirement lat\xE9ral du cou \u{1F4D0}", desc: "Penche la t\xEAte vers l'\xE9paule gauche. Pousse activement la paume droite vers le sol pour \xE9tirer le bras. Change apr\xE8s 30s.", duration: 60 },
+        { name: "Flexion lat\xE9rale \u{1F3F9}", desc: "\xC9tire un bras tout droit vers le haut et penche doucement le buste du c\xF4t\xE9 oppos\xE9. Maintiens 30s, puis change de bras.", duration: 60 },
+        { name: "\xC9tirement du haut du dos \u{1F6E1}\uFE0F", desc: "Entrelace tes doigts devant la poitrine, arrondis le haut du dos et pousse les paumes vers l'avant. Maintiens et respire profond\xE9ment.", duration: 60 },
+        { name: "Bras d'aigle \u{1F985}", desc: "Croise les bras devant toi, entrelace les avant-bras et pousse doucement les coudes vers le haut. Un merveilleux rel\xE2chement du haut du dos.", duration: 60 }
+      ],
+      3: [
+        { name: "Squats au plan de travail \u{1FA91}", desc: "Tiens-toi \xE9ventuellement \xE0 une chaise ou un plan de travail. Abaisse tes hanches vers l'arri\xE8re de fa\xE7on contr\xF4l\xE9e, puis rel\xE8ve-toi.", duration: 60 },
+        { name: "Mont\xE9es sur pointes \u{1F9B5}", desc: "Tiens-toi bien droit. Monte lentement sur la pointe des pieds, garde l'\xE9quilibre un instant, puis redescends lentement. R\xE9p\xE8te r\xE9guli\xE8rement.", duration: 60 },
+        { name: "Pompes contre le mur \u{1F9F1}", desc: "Place-toi \xE0 un pas d'un mur. Pose les mains \xE0 plat, abaisse ta poitrine vers le mur de fa\xE7on contr\xF4l\xE9e, puis repousse-toi doucement.", duration: 60 },
+        { name: "Jumping Jack tranquille (faible impact) \u{1F938}\u200D\u2642\uFE0F", desc: "Fais un pas de c\xF4t\xE9 en levant le bras du m\xEAme c\xF4t\xE9. Alterne les c\xF4t\xE9s rythmiquement sans sauter. Tr\xE8s doux pour les articulations.", duration: 60 },
+        { name: "Boxe dans le vide \u{1F94A}", desc: "Tiens-toi dans une position stable. Frappe l'air doucement et rythmiquement, en alternant gauche et droite. Rel\xE2che les tensions des \xE9paules.", duration: 60 },
+        { name: "Genou-coude crois\xE9 \u{1F9EC}", desc: "Debout, touche ton genou gauche avec ton coude droit, puis ton genou droit avec ton coude gauche. Active tes muscles abdominaux.", duration: 60 },
+        { name: "Guerrier 3 avec appui \u2696\uFE0F", desc: "Tiens-toi \xE0 une chaise pour t'\xE9quilibrer. L\xE8ve une jambe tendue vers l'arri\xE8re et penche l\xE9g\xE8rement le buste vers l'avant. Maintiens 30s, change de c\xF4t\xE9.", duration: 60 },
+        { name: "Rapprochement des omoplates \u{1F3CB}\uFE0F", desc: "Tiens-toi bien droit, coudes pli\xE9s \xE0 90 degr\xE9s. Rapproche fermement tes omoplates derri\xE8re toi, maintiens 3s, puis rel\xE2che.", duration: 60 }
+      ]
+    },
+    it: {
+      1: [
+        { name: "Rilascio del collo \u{1F9D8}\u200D\u2640\uFE0F", desc: "Siediti dritto. Lascia cadere delicatamente la testa verso la spalla destra. Mantieni per 30s, poi cambia lato. Respira profondamente.", duration: 60 },
+        { name: "Rotazione dei polsi \u{1F450}", desc: "Fai ruotare delicatamente i polsi in cerchio per 30s verso sinistra, poi 30s verso destra. Perfetto contro la stanchezza da scrivania.", duration: 60 },
+        { name: "Cerchi con le spalle \u{1F504}", desc: "Solleva delicatamente le spalle verso le orecchie, falle ruotare all'indietro e lasciale scendere. Ripeti con calma per 1 minuto.", duration: 60 },
+        { name: "Gatto-mucca da seduti \u{1FA91}", desc: "Appoggia le mani sulle ginocchia. Inspira spingendo il petto in avanti, espira arrotondando completamente la schiena.", duration: 60 },
+        { name: "Rilassamento degli occhi (Palming) \u{1F440}", desc: "Strofina le palme una contro l'altra finch\xE9 non si scaldano. Posale delicatamente sugli occhi chiusi. Respira profondamente 5 volte.", duration: 60 },
+        { name: "Cerchi delicati con le caviglie \u{1F9B6}", desc: "Solleva leggermente un piede da seduto. Fallo ruotare per 30s verso sinistra, poi 30s verso destra. Cambia piede.", duration: 60 },
+        { name: "Allungamento del petto (da seduti) \u{1FAC1}", desc: "Intreccia le dita dietro la testa, apri bene i gomiti e apri delicatamente il petto verso l'alto. Respira con calma.", duration: 60 },
+        { name: "Coordinazione delle dita (Brain Gym) \u{1F9E0}", desc: "Tocca il pollice con ogni dito della stessa mano, uno dopo l'altro, poi al contrario. Stimola delicatamente la concentrazione.", duration: 60 }
+      ],
+      2: [
+        { name: "Apertura del petto in piedi \u{1F450}", desc: "Stai dritto in piedi. Intreccia le dita dietro la schiena e tira delicatamente verso il basso. Senti l'allungamento nel petto e nelle spalle.", duration: 60 },
+        { name: "Torsioni delicate della colonna \u{1F33F}", desc: "Stai in piedi con i piedi larghi e le braccia rilassate. Ruota delicatamente il busto da sinistra a destra, lasciando le braccia libere di seguire.", duration: 60 },
+        { name: "Afferra le stelle \u{1F30C}", desc: "Allunga alternativamente il braccio sinistro e destro verso l'alto, come per afferrare le stelle. Respira in modo regolare.", duration: 60 },
+        { name: "Cerchi con i fianchi \u{1F300}", desc: "Stai in piedi con le mani sui fianchi. Disegna cerchi lenti e delicati con il bacino. Cambia direzione dopo 30 secondi.", duration: 60 },
+        { name: "Allungamento laterale del collo \u{1F4D0}", desc: "Inclina la testa verso la spalla sinistra. Spingi attivamente il palmo destro verso il pavimento per allungare il braccio. Cambia dopo 30s.", duration: 60 },
+        { name: "Flessione laterale \u{1F3F9}", desc: "Allunga un braccio dritto verso l'alto e inclina delicatamente il busto verso il lato opposto. Mantieni 30s, poi cambia braccio.", duration: 60 },
+        { name: "Allungamento della parte alta della schiena \u{1F6E1}\uFE0F", desc: "Intreccia le dita davanti al petto, arrotonda la parte alta della schiena e spingi i palmi in avanti. Mantieni e respira profondamente.", duration: 60 },
+        { name: "Braccia d'aquila \u{1F985}", desc: "Incrocia le braccia davanti a te, intreccia gli avambracci e spingi delicatamente i gomiti verso l'alto. Un meraviglioso rilascio della parte alta della schiena.", duration: 60 }
+      ],
+      3: [
+        { name: "Squat al bancone della cucina \u{1FA91}", desc: "Se vuoi, tieniti a una sedia o al bancone. Abbassa i fianchi all'indietro in modo controllato, poi rialzati.", duration: 60 },
+        { name: "Sollevamento sui polpacci \u{1F9B5}", desc: "Stai dritto in piedi. Sali lentamente sulle punte dei piedi, mantieni l'equilibrio un istante, poi riabbassa lentamente. Ripeti con costanza.", duration: 60 },
+        { name: "Flessioni contro il muro \u{1F9F1}", desc: "Mettiti a un passo dal muro. Appoggia le mani piatte, abbassa il petto verso il muro in modo controllato, poi spingiti delicatamente indietro.", duration: 60 },
+        { name: "Jumping jack tranquillo (basso impatto) \u{1F938}\u200D\u2642\uFE0F", desc: "Fai un passo lateralmente sollevando il braccio dello stesso lato. Alterna i lati ritmicamente senza saltare. Molto delicato per le articolazioni.", duration: 60 },
+        { name: "Pugilato immaginario (ombra) \u{1F94A}", desc: "Mettiti in posizione stabile. Colpisci l'aria delicatamente e ritmicamente, alternando sinistra e destra. Rilascia le tensioni delle spalle.", duration: 60 },
+        { name: "Tocco ginocchio-gomito \u{1F9EC}", desc: "In piedi, tocca il ginocchio sinistro con il gomito destro, poi il ginocchio destro con il gomito sinistro. Attiva i muscoli addominali.", duration: 60 },
+        { name: "Guerriero 3 con supporto \u2696\uFE0F", desc: "Tieniti a una sedia per l'equilibrio. Solleva una gamba tesa all'indietro e inclina leggermente il busto in avanti. Mantieni 30s, poi cambia lato.", duration: 60 },
+        { name: "Contrazione delle scapole \u{1F3CB}\uFE0F", desc: "Stai dritto in piedi, gomiti piegati a 90 gradi. Avvicina con forza le scapole dietro di te, mantieni 3s, poi rilascia.", duration: 60 }
+      ]
+    }
+  };
+  function getSportT(key) {
+    const lang = typeof currentLang !== "undefined" ? currentLang : "de";
+    return SPORT_TRANSLATIONS[lang]?.[key] || SPORT_TRANSLATIONS.de[key] || key;
+  }
+  function openSportModal2() {
+    document.getElementById("helper-sport-modal").classList.remove("hidden");
+    resetSportTimer();
+    generateSportSuggestion();
+    if (typeof lucide !== "undefined") lucide.createIcons();
+  }
   function closeSportModal2() {
     document.getElementById("helper-sport-modal").classList.add("hidden");
     resetSportTimer();
+  }
+  function generateSportSuggestion() {
+    const energySelect = document.getElementById("sport-energy-select");
+    if (!energySelect) return;
+    const level = parseInt(energySelect.value) || 2;
+    const lang = typeof currentLang !== "undefined" ? currentLang : "de";
+    const list = SPORT_EXERCISES[lang]?.[level] || SPORT_EXERCISES["de"][level];
+    const randomExercise = list[Math.floor(Math.random() * list.length)];
+    currentSportExercise = randomExercise;
+    const box = document.getElementById("sport-suggestion-box");
+    if (box) {
+      box.innerHTML = `
+      <h4 class="text-white font-bold text-sm font-display mb-1">${randomExercise.name}</h4>
+      <p class="text-xs text-gray-300 leading-relaxed font-semibold">${randomExercise.desc}</p>
+      <div class="flex items-center justify-center gap-1.5 pt-2 text-[10px] text-orange-400 font-bold uppercase tracking-wider">
+        <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+        <span>${randomExercise.duration}s</span>
+      </div>
+    `;
+    }
+    sportTimerSeconds = randomExercise.duration;
+    updateSportTimerDisplay();
+    document.getElementById("sport-timer-container").classList.remove("hidden");
+    if (typeof lucide !== "undefined") lucide.createIcons();
   }
   function updateSportTimerDisplay() {
     const display = document.getElementById("sport-timer-display");
@@ -9934,6 +10218,50 @@ ${listStr}`;
       const pct = sportTimerSeconds / currentSportExercise.duration * 100;
       progress.style.width = `${pct}%`;
     }
+  }
+  var sportTimerTargetEndTime = null;
+  function startSportTimer() {
+    if (sportTimerRunning) return;
+    sportTimerRunning = true;
+    sportTimerTargetEndTime = Date.now() + sportTimerSeconds * 1e3;
+    const playBtn = document.getElementById("sport-timer-play-btn");
+    const pauseBtn = document.getElementById("sport-timer-pause-btn");
+    if (playBtn) playBtn.classList.add("hidden");
+    if (pauseBtn) pauseBtn.classList.remove("hidden");
+    showToast(getSportT("exercise_started"));
+    clearInterval(sportTimerInterval);
+    sportTimerInterval = setInterval(() => {
+      if (sportTimerTargetEndTime) {
+        sportTimerSeconds = Math.max(0, Math.round((sportTimerTargetEndTime - Date.now()) / 1e3));
+      }
+      updateSportTimerDisplay();
+      if (sportTimerSeconds > 0 && sportTimerSeconds <= 3) {
+        if (typeof playProceduralSound === "function") playProceduralSound(6);
+      }
+      if (sportTimerSeconds <= 0) {
+        clearInterval(sportTimerInterval);
+        sportTimerInterval = null;
+        sportTimerRunning = false;
+        sportTimerTargetEndTime = null;
+        completeSportActivity();
+      }
+    }, 1e3);
+  }
+  function pauseSportTimer() {
+    if (!sportTimerRunning) return;
+    clearInterval(sportTimerInterval);
+    sportTimerRunning = false;
+    sportTimerTargetEndTime = null;
+    const playBtn = document.getElementById("sport-timer-play-btn");
+    const pauseBtn = document.getElementById("sport-timer-pause-btn");
+    if (playBtn) playBtn.classList.remove("hidden");
+    if (pauseBtn) pauseBtn.classList.add("hidden");
+    showToast(getSportT("exercise_paused"));
+  }
+  function skipSportTimer() {
+    resetSportTimer();
+    showToast(getSportT("exercise_skipped"));
+    generateSportSuggestion();
   }
   function resetSportTimer() {
     if (sportTimerInterval) {
@@ -9950,14 +10278,961 @@ ${listStr}`;
     }
     updateSportTimerDisplay();
   }
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      const sportModal = document.getElementById("helper-sport-modal");
-      if (sportModal && !sportModal.classList.contains("hidden")) {
-        closeSportModal2();
+  function completeSportActivity() {
+    resetSportTimer();
+    if (typeof playProceduralSound === "function") {
+      playProceduralSound(0);
+    }
+    if (typeof triggerConfetti === "function") {
+      triggerConfetti();
+    }
+    if (typeof showPraise === "function") {
+      showPraise();
+    }
+    showToast(getSportT("exercise_completed"));
+    if (typeof state !== "undefined") {
+      state.streak = (state.streak || 0) + 1;
+      saveState();
+    }
+    closeSportModal2();
+  }
+  if (typeof document !== "undefined") {
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        const sportModal = document.getElementById("helper-sport-modal");
+        if (sportModal && !sportModal.classList.contains("hidden")) {
+          closeSportModal2();
+        }
+      }
+    });
+  }
+  if (typeof window !== "undefined") {
+    window.openSportModal = openSportModal2;
+    window.closeSportModal = closeSportModal2;
+    window.switchSportCategory = switchSportCategory;
+    window.generateSportSuggestion = generateSportSuggestion;
+    window.startSportTimer = startSportTimer;
+    window.pauseSportTimer = pauseSportTimer;
+    window.skipSportTimer = skipSportTimer;
+    window.resetSportTimer = resetSportTimer;
+    window.completeSportActivity = completeSportActivity;
+    window.setSportCustomDuration = typeof setSportCustomDuration !== "undefined" ? setSportCustomDuration : void 0;
+  }
+  if (typeof globalThis !== "undefined") {
+    globalThis.openSportModal = openSportModal2;
+    globalThis.closeSportModal = closeSportModal2;
+    globalThis.switchSportCategory = switchSportCategory;
+    globalThis.generateSportSuggestion = generateSportSuggestion;
+    globalThis.startSportTimer = startSportTimer;
+    globalThis.pauseSportTimer = pauseSportTimer;
+    globalThis.skipSportTimer = skipSportTimer;
+    globalThis.resetSportTimer = resetSportTimer;
+    globalThis.completeSportActivity = completeSportActivity;
+    globalThis.setSportCustomDuration = typeof setSportCustomDuration !== "undefined" ? setSportCustomDuration : void 0;
+  }
+
+  // helper-core-2.js
+  function getTaskStepsList(taskName) {
+    if (!taskName) return [];
+    if (state.customSteps && state.customSteps[taskName] && state.customSteps[taskName].length > 0) {
+      return state.customSteps[taskName];
+    }
+    const deKey = typeof getGermanStandardKey === "function" ? getGermanStandardKey(taskName) : taskName;
+    const dbExists = typeof TASK_STEPS_DATABASE !== "undefined" && TASK_STEPS_DATABASE[deKey];
+    let steps = dbExists ? TASK_STEPS_DATABASE[deKey][currentLang] : null;
+    if (!steps || steps.length === 0) {
+      const templates = typeof FALLBACK_STEPS !== "undefined" ? FALLBACK_STEPS : null;
+      const template = templates ? templates[currentLang] || templates["en"] : ["1. {task} vorbereiten", "2. Den ersten Minischritt ausf\xFChren", "3. Hauptteil erledigen", "4. Fertigstellen & abhaken!"];
+      steps = template.map((step) => step.replace("{task}", taskName));
+    }
+    return steps;
+  }
+  function generateTaskSteps2(specificTask) {
+    let val = specificTask;
+    if (!val) {
+      const select = document.getElementById("helper-task-select");
+      val = select ? select.value : "";
+    }
+    if (!val) {
+      const resBox2 = document.getElementById("helper-steps-result");
+      if (resBox2) resBox2.innerHTML = `<p class="text-xs text-gray-400 italic text-center py-4">${tr({ de: "Bitte w\xE4hle oben eine Aufgabe aus.", en: "Please select a task.", es: "Por favor, selecciona una tarea arriba.", el: "\u03A0\u03B1\u03C1\u03B1\u03BA\u03B1\u03BB\u03CE \u03B5\u03C0\u03AF\u03BB\u03B5\u03BE\u03B5 \u03BC\u03B9\u03B1 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1 \u03C0\u03B1\u03C1\u03B1\u03C0\u03AC\u03BD\u03C9.", fr: "Merci de choisir une t\xE2che ci-dessus.", it: "Seleziona un'attivit\xE0 qui sopra." })}</p>`;
+      return;
+    }
+    if (!currentActiveTaskRef || currentActiveTaskRef.task !== val) currentActiveTaskRef = { task: val };
+    const resBox = document.getElementById("helper-steps-result");
+    if (!resBox) return;
+    const steps = getTaskStepsList(val);
+    currentGeneratedSteps = steps;
+    resBox.innerHTML = "";
+    if (!state.completedSteps) state.completedSteps = {};
+    const completedIndices = state.completedSteps[val] || [];
+    if (steps.length === 0) {
+      resBox.innerHTML = `<div class="text-center py-3 text-xs text-gray-400">Noch keine Teilschritte vorhanden. F\xFCge unten eigene Schritte hinzu oder klicke auf "Vorschl\xE4ge laden".</div>`;
+    } else {
+      steps.forEach((stepText, idx) => {
+        const isChecked = completedIndices.includes(idx);
+        const cleanedText = cleanStepText(stepText);
+        const stepDiv = document.createElement("div");
+        stepDiv.className = `group flex items-center justify-between gap-2.5 p-2.5 rounded-xl border transition-all duration-200 ${isChecked ? "bg-white/[0.02] border-white/5 opacity-60" : "bg-white/[0.04] border-white/10 hover:border-[var(--accent)]/30"} cursor-pointer`;
+        stepDiv.innerHTML = `
+        <input type="checkbox" ${isChecked ? "checked" : ""} onchange="toggleCustomStepCheck('${val.replace(/'/g, "\\'")}', ${idx}, event)" class="w-4 h-4 rounded text-[var(--accent)] cursor-pointer accent-[var(--accent)] shrink-0" />
+        <span class="step-text flex-1 text-xs leading-snug break-words font-medium ${isChecked ? "line-through text-gray-400" : "text-gray-200"}" onclick="toggleCustomStepCheck('${val.replace(/'/g, "\\'")}', ${idx}, event)">${cleanedText}</span>
+        <button onclick="deleteCustomStep('${val.replace(/'/g, "\\'")}', ${idx}, event)" class="opacity-0 group-hover:opacity-100 p-1 text-gray-500 hover:text-red-400 rounded transition cursor-pointer shrink-0" title="Schritt entfernen">
+          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+        </button>
+      `;
+        resBox.appendChild(stepDiv);
+      });
+    }
+    if (typeof lucide !== "undefined") lucide.createIcons();
+  }
+  function triggerDopamineKick() {
+    const dopamineTasksObj = typeof DOPAMINE_TASKS !== "undefined" ? DOPAMINE_TASKS : null;
+    const tips = dopamineTasksObj ? dopamineTasksObj[currentLang] || dopamineTasksObj["en"] : ["Do 5 jumping jacks."];
+    const randomTask = tips[Math.floor(Math.random() * tips.length)];
+    currentDopamineTask = randomTask;
+    const boxEl = document.getElementById("dopamine-task-box");
+    if (boxEl) {
+      const doneBtnLabel = safeTranslate("dopamine_kick_done");
+      const rerollLabel = safeTranslate("dopamine_kick_other");
+      boxEl.innerHTML = `
+      <span id="dopamine-task-text" class="font-bold text-pink-300 text-sm animate-pulse">${randomTask}</span>
+      <div class="flex items-center gap-2 w-full mt-2 justify-center">
+        <button onclick="completeDopamineKick()" class="px-4 py-1.5 bg-pink-500 hover:bg-pink-400 text-white rounded-lg text-xs font-bold transition cursor-pointer font-sans shadow-md">
+          ${doneBtnLabel}
+        </button>
+        <button onclick="triggerDopamineKick()" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-gray-300 rounded-lg text-[10px] font-semibold transition cursor-pointer font-sans">
+          ${rerollLabel}
+        </button>
+      </div>
+    `;
+      if (typeof lucide !== "undefined") lucide.createIcons();
+    }
+  }
+  function completeDopamineKick() {
+    if (!currentDopamineTask) return;
+    saveHistory();
+    const now = /* @__PURE__ */ new Date();
+    const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    const todayStr = now.toISOString().split("T")[0];
+    const logText = `${safeTranslate("dopamine_kick_success_log")} ${currentDopamineTask}`;
+    state.done.push({ task: logText, origin: "boost", date: todayStr, time: timeStr });
+    saveState();
+    if (typeof playProceduralSound === "function") playProceduralSound(3);
+    if (typeof triggerConfetti === "function") triggerConfetti();
+    if (typeof showPraise === "function") showPraise();
+    resetDopamineBox2();
+    if (typeof updateReportPanel === "function") updateReportPanel();
+    showToast(safeTranslate("dopamine_kick_completed_toast"));
+  }
+  function resetDopamineBox2() {
+    currentDopamineTask = null;
+    const boxEl = document.getElementById("dopamine-task-box");
+    if (boxEl) {
+      const title = safeTranslate("dopamine_kick_title");
+      const btnLabel = safeTranslate("dopamine_kick_start");
+      boxEl.innerHTML = `
+      <span id="dopamine-task-text" class="font-bold">${title}</span>
+      <div class="flex items-center gap-2 w-full mt-1 justify-center">
+        <button onclick="triggerDopamineKick()" class="px-3 py-1.5 bg-pink-500/25 hover:bg-pink-500/40 border border-pink-500/40 text-pink-100 rounded-lg text-[10px] font-bold transition cursor-pointer font-sans">
+          ${btnLabel}
+        </button>
+      </div>
+    `;
+      if (typeof lucide !== "undefined") lucide.createIcons();
+    }
+  }
+  if (typeof window !== "undefined") {
+    window.openHelperModal = openHelperModal;
+    window.closeHelperModal = closeHelperModal;
+    window.openTaskStepsModal = openTaskStepsModal;
+    window.speakText = speakText;
+    window.stopSpeaking = stopSpeaking;
+    window.cleanStepText = cleanStepText;
+    window.pickRandomTask = pickRandomTask;
+    window.generateTaskSteps = generateTaskSteps2;
+    window.saveStepsToTasks = saveStepsToTasks;
+    window.triggerDopamineKick = triggerDopamineKick;
+    window.completeDopamineKick = completeDopamineKick;
+    window.resetDopamineBox = resetDopamineBox2;
+    window.switchWhatNowTab = typeof switchWhatNowTab !== "undefined" ? switchWhatNowTab : void 0;
+    window.setWhatNowEnergyLevel = typeof setWhatNowEnergyLevel !== "undefined" ? setWhatNowEnergyLevel : void 0;
+    window.rerollEnergyTask = typeof rerollEnergyTask !== "undefined" ? rerollEnergyTask : void 0;
+    window.acceptEnergyTask = typeof acceptEnergyTask !== "undefined" ? acceptEnergyTask : void 0;
+    window.suggestBoostActivity = typeof suggestBoostActivity !== "undefined" ? suggestBoostActivity : void 0;
+  }
+  if (typeof globalThis !== "undefined") {
+    globalThis.openHelperModal = openHelperModal;
+    globalThis.closeHelperModal = closeHelperModal;
+    globalThis.openTaskStepsModal = openTaskStepsModal;
+    globalThis.speakText = speakText;
+    globalThis.stopSpeaking = stopSpeaking;
+    globalThis.cleanStepText = cleanStepText;
+    globalThis.pickRandomTask = pickRandomTask;
+    globalThis.generateTaskSteps = generateTaskSteps2;
+    globalThis.saveStepsToTasks = saveStepsToTasks;
+    globalThis.triggerDopamineKick = triggerDopamineKick;
+    globalThis.completeDopamineKick = completeDopamineKick;
+    globalThis.resetDopamineBox = resetDopamineBox2;
+    globalThis.switchWhatNowTab = typeof switchWhatNowTab !== "undefined" ? switchWhatNowTab : void 0;
+    globalThis.setWhatNowEnergyLevel = typeof setWhatNowEnergyLevel !== "undefined" ? setWhatNowEnergyLevel : void 0;
+    globalThis.rerollEnergyTask = typeof rerollEnergyTask !== "undefined" ? rerollEnergyTask : void 0;
+    globalThis.acceptEnergyTask = typeof acceptEnergyTask !== "undefined" ? acceptEnergyTask : void 0;
+    globalThis.suggestBoostActivity = typeof suggestBoostActivity !== "undefined" ? suggestBoostActivity : void 0;
+  }
+
+  // helper-tools-3.js
+  function resetBrainDumpSorter2() {
+    const text = document.getElementById("braindump-textarea");
+    if (text) text.value = "";
+    document.getElementById("braindump-input-container").classList.remove("hidden");
+    document.getElementById("braindump-sorting-container").classList.add("hidden");
+    brainDumpThoughts = [];
+    brainDumpCurrentIndex = 0;
+  }
+  function updateBrainDumpUI() {
+    const thoughtEl = document.getElementById("braindump-active-thought");
+    const progressEl = document.getElementById("braindump-progress-counter");
+    if (!thoughtEl || !progressEl) return;
+    if (brainDumpCurrentIndex >= brainDumpThoughts.length) {
+      showToast(tr({ de: "Alle Gedanken einsortiert! Wunderbar aufger\xE4umt. \u{1F9E0}", en: "All thoughts sorted! Perfectly decluttered. \u{1F9E0}", es: "\xA1Todas las ideas organizadas! Mente despejada. \u{1F9E0}", el: "\u038C\u03BB\u03B5\u03C2 \u03BF\u03B9 \u03C3\u03BA\u03AD\u03C8\u03B5\u03B9\u03C2 \u03C4\u03B1\u03BE\u03B9\u03BD\u03BF\u03BC\u03AE\u03B8\u03B7\u03BA\u03B1\u03BD! \u03A5\u03C0\u03AD\u03C1\u03BF\u03C7\u03B1 \u03BF\u03C1\u03B3\u03B1\u03BD\u03C9\u03BC\u03AD\u03BD\u03BF. \u{1F9E0}", fr: "Toutes les pens\xE9es tri\xE9es ! Parfaitement rang\xE9. \u{1F9E0}", it: "Tutti i pensieri organizzati! Perfettamente in ordine. \u{1F9E0}" }));
+      resetBrainDumpSorter2();
+      return;
+    }
+    const currentThought = brainDumpThoughts[brainDumpCurrentIndex];
+    thoughtEl.innerText = currentThought;
+    const left = brainDumpThoughts.length - brainDumpCurrentIndex;
+    progressEl.innerText = tr({ de: `Noch ${left} Gedanken`, en: `${left} thoughts left`, es: `${left} ideas restantes`, el: `${left} \u03C3\u03BA\u03AD\u03C8\u03B5\u03B9\u03C2 \u03B1\u03C0\u03BF\u03BC\u03AD\u03BD\u03BF\u03C5\u03BD`, fr: `${left} pens\xE9es restantes`, it: `${left} pensieri rimasti` });
+  }
+  function skipBrainDumpThought() {
+    brainDumpCurrentIndex++;
+    updateBrainDumpUI();
+  }
+  function loadTenPerspectiveData2() {
+    const mins = document.getElementById("ten-input-mins");
+    const months = document.getElementById("ten-input-months");
+    const years = document.getElementById("ten-input-years");
+    if (mins && months && years && state.compassTenPerspective) {
+      mins.value = state.compassTenPerspective.mins || "";
+      months.value = state.compassTenPerspective.months || "";
+      years.value = state.compassTenPerspective.years || "";
+    }
+  }
+  function saveTenPerspective() {
+    const mins = document.getElementById("ten-input-mins").value.trim();
+    const months = document.getElementById("ten-input-months").value.trim();
+    const years = document.getElementById("ten-input-years").value.trim();
+    state.compassTenPerspective = { mins, months, years };
+    saveState();
+    showToast(tr({ de: "10-10-10 Perspektive gesichert! \u{1F4BE}", en: "10-10-10 perspective saved! \u{1F4BE}", es: "\xA1Perspectiva 10-10-10 guardada! \u{1F4BE}", el: "\u0397 \u03C0\u03C1\u03BF\u03BF\u03C0\u03C4\u03B9\u03BA\u03AE 10-10-10 \u03B1\u03C0\u03BF\u03B8\u03B7\u03BA\u03B5\u03CD\u03C4\u03B7\u03BA\u03B5! \u{1F4BE}", fr: "Perspective 10-10-10 enregistr\xE9e ! \u{1F4BE}", it: "Prospettiva 10-10-10 salvata! \u{1F4BE}" }));
+  }
+  function clearTenPerspective() {
+    const mins = document.getElementById("ten-input-mins");
+    const months = document.getElementById("ten-input-months");
+    const years = document.getElementById("ten-input-years");
+    if (mins) mins.value = "";
+    if (months) months.value = "";
+    if (years) years.value = "";
+    state.compassTenPerspective = {};
+    saveState();
+  }
+  function loadFearSettingData2() {
+    const worst = document.getElementById("fear-worst");
+    const repair = document.getElementById("fear-repair");
+    const inaction = document.getElementById("fear-inaction");
+    if (worst && repair && inaction && state.compassFearSetting) {
+      worst.value = state.compassFearSetting.worst || "";
+      repair.value = state.compassFearSetting.repair || "";
+      inaction.value = state.compassFearSetting.inaction || "";
+    }
+  }
+  function saveFearSettingPerspective() {
+    const worst = document.getElementById("fear-worst").value.trim();
+    const repair = document.getElementById("fear-repair").value.trim();
+    const inaction = document.getElementById("fear-inaction").value.trim();
+    state.compassFearSetting = { worst, repair, inaction };
+    saveState();
+    showToast(tr({ de: "Worst-Case Matrix gesichert! \u{1F4BE}", en: "Worst-case matrix saved! \u{1F4BE}", es: "\xA1Matriz del peor caso guardada! \u{1F4BE}", el: "\u039F \u03C0\u03AF\u03BD\u03B1\u03BA\u03B1\u03C2 \u03C7\u03B5\u03B9\u03C1\u03CC\u03C4\u03B5\u03C1\u03B7\u03C2 \u03C0\u03B5\u03C1\u03AF\u03C0\u03C4\u03C9\u03C3\u03B7\u03C2 \u03B1\u03C0\u03BF\u03B8\u03B7\u03BA\u03B5\u03CD\u03C4\u03B7\u03BA\u03B5! \u{1F4BE}", fr: "Matrice du pire sc\xE9nario enregistr\xE9e ! \u{1F4BE}", it: "Matrice del caso peggiore salvata! \u{1F4BE}" }));
+  }
+  function clearFearSetting() {
+    const worst = document.getElementById("fear-worst");
+    const repair = document.getElementById("fear-repair");
+    const inaction = document.getElementById("fear-inaction");
+    if (worst) worst.value = "";
+    if (repair) repair.value = "";
+    if (inaction) inaction.value = "";
+    state.compassFearSetting = {};
+    saveState();
+  }
+  function openScriptingModal() {
+    const modal = document.getElementById("helper-scripting-modal");
+    if (modal) modal.classList.remove("hidden");
+    onScenarioSelectChange();
+  }
+  function closeScriptingModal() {
+    const modal = document.getElementById("helper-scripting-modal");
+    if (modal) modal.classList.add("hidden");
+  }
+  function onScenarioSelectChange() {
+    const select = document.getElementById("script-scenario-select");
+    const fieldsContainer = document.getElementById("script-fields-container");
+    const resultBox = document.getElementById("script-result-box");
+    if (!select || !fieldsContainer) return;
+    if (resultBox) resultBox.classList.add("hidden");
+    const scenario = select.value;
+    if (scenario === "doctor") {
+      fieldsContainer.innerHTML = `
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-[9px] text-gray-400 font-bold block mb-1">${tr({ en: "Specialty / Reason", de: "Fachrichtung / Grund", fr: "Sp\xE9cialit\xE9 / Motif", it: "Specialit\xE0 / Motivo", es: "Especialidad / Motivo", el: "\u0395\u03B9\u03B4\u03B9\u03BA\u03CC\u03C4\u03B7\u03C4\u03B1 / \u0391\u03B9\u03C4\u03AF\u03B1" })}</label>
+          <input type="text" id="field-doc-specialty" placeholder="${tr({ en: "GP, Dentist...", de: "Hausarzt, Zahnarzt...", fr: "G\xE9n\xE9raliste, Dentiste...", it: "Medico di base, Dentista...", es: "M\xE9dico de cabecera, Dentista...", el: "\u03A0\u03B1\u03B8\u03BF\u03BB\u03CC\u03B3\u03BF\u03C2, \u039F\u03B4\u03BF\u03BD\u03C4\u03AF\u03B1\u03C4\u03C1\u03BF\u03C2..." })}" value="${tr({ en: "GP", de: "Hausarzt", fr: "M\xE9decin g\xE9n\xE9raliste", it: "Medico di base", es: "M\xE9dico de cabecera", el: "\u03A0\u03B1\u03B8\u03BF\u03BB\u03CC\u03B3\u03BF\u03C2" })}" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+        </div>
+        <div>
+          <label class="text-[9px] text-gray-400 font-bold block mb-1">${tr({ en: "Preferred timeframe", de: "Bevorzugter Zeitraum", fr: "P\xE9riode souhait\xE9e", it: "Periodo preferito", es: "Periodo preferido", el: "\u0395\u03C0\u03B9\u03B8\u03C5\u03BC\u03B7\u03C4\u03CC \u03B4\u03B9\u03AC\u03C3\u03C4\u03B7\u03BC\u03B1" })}</label>
+          <input type="text" id="field-doc-time" placeholder="${tr({ en: "Next week, Morning...", de: "N\xE4chste Woche, Vormittags...", fr: "La semaine prochaine, Matin...", it: "La prossima settimana, Mattina...", es: "La pr\xF3xima semana, Ma\xF1ana...", el: "\u03A4\u03B7\u03BD \u03B5\u03C0\u03CC\u03BC\u03B5\u03BD\u03B7 \u03B5\u03B2\u03B4\u03BF\u03BC\u03AC\u03B4\u03B1, \u03A0\u03C1\u03C9\u03AF..." })}" value="${tr({ en: "Next Monday morning", de: "N\xE4chste Woche Montag", fr: "Lundi prochain", it: "Luned\xEC prossimo", es: "El pr\xF3ximo lunes", el: "\u03A4\u03B7\u03BD \u03B5\u03C0\u03CC\u03BC\u03B5\u03BD\u03B7 \u0394\u03B5\u03C5\u03C4\u03AD\u03C1\u03B1" })}" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+        </div>
+      </div>
+    `;
+    } else if (scenario === "cancel") {
+      fieldsContainer.innerHTML = `
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-[9px] text-gray-400 font-bold block mb-1">${tr({ en: "Which appointment?", de: "Welcher Termin?", fr: "Quel rendez-vous ?", it: "Quale appuntamento?", es: "\xBFQu\xE9 cita?", el: "\u03A0\u03BF\u03B9\u03BF \u03C1\u03B1\u03BD\u03C4\u03B5\u03B2\u03BF\u03CD;" })}</label>
+          <input type="text" id="field-cancel-name" placeholder="${tr({ en: "Dentist appointment", de: "Zahnarzttermin", fr: "Rendez-vous dentiste", it: "Visita dentistica", es: "Cita con el dentista", el: "\u03A1\u03B1\u03BD\u03C4\u03B5\u03B2\u03BF\u03CD \u03BF\u03B4\u03BF\u03BD\u03C4\u03B9\u03AC\u03C4\u03C1\u03BF\u03C5" })}" value="${tr({ en: "Appointment on Monday", de: "Termin am Montag", fr: "Rendez-vous de lundi", it: "Appuntamento di luned\xEC", es: "Cita del lunes", el: "\u03A1\u03B1\u03BD\u03C4\u03B5\u03B2\u03BF\u03CD \u03C4\u03B7\u03C2 \u0394\u03B5\u03C5\u03C4\u03AD\u03C1\u03B1\u03C2" })}" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+        </div>
+        <div>
+          <label class="text-[9px] text-gray-400 font-bold block mb-1">${tr({ en: "Reason (e.g. Sickness)", de: "Grund (z.B. Krank)", fr: "Motif (ex. Maladie)", it: "Motivo (es. Malattia)", es: "Motivo (ej. Enfermedad)", el: "\u0391\u03B9\u03C4\u03AF\u03B1 (\u03C0.\u03C7. \u0391\u03C3\u03B8\u03AD\u03BD\u03B5\u03B9\u03B1)" })}</label>
+          <input type="text" id="field-cancel-reason" placeholder="${tr({ en: "Illness, schedule conflict...", de: "Krankheit, \xDCberschneidung...", fr: "Maladie, emp\xEAchement...", it: "Malattia, contrattempo...", es: "Enfermedad, imprevisto...", el: "\u0391\u03C3\u03B8\u03AD\u03BD\u03B5\u03B9\u03B1, \u03C3\u03CD\u03B3\u03BA\u03C1\u03BF\u03C5\u03C3\u03B7 \u03C0\u03C1\u03BF\u03B3\u03C1\u03AC\u03BC\u03BC\u03B1\u03C4\u03BF\u03C2..." })}" value="${tr({ en: "sudden illness", de: "akuter Krankheit", fr: "maladie soudaine", it: "malattia improvvisa", es: "enfermedad repentina", el: "\u03BE\u03B1\u03C6\u03BD\u03B9\u03BA\u03AE\u03C2 \u03B1\u03C3\u03B8\u03AD\u03BD\u03B5\u03B9\u03B1\u03C2" })}" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+        </div>
+      </div>
+    `;
+    } else if (scenario === "food") {
+      fieldsContainer.innerHTML = `
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-[9px] text-gray-400 font-bold block mb-1">${tr({ en: "Your order", de: "Deine Bestellung", fr: "Ta commande", it: "Il tuo ordine", es: "Tu pedido", el: "\u0397 \u03C0\u03B1\u03C1\u03B1\u03B3\u03B3\u03B5\u03BB\u03AF\u03B1 \u03C3\u03BF\u03C5" })}</label>
+          <input type="text" id="field-food-order" value="${tr({ en: "1x Pizza Margherita and a Soda", de: "1x Pizza Margherita und ein Spezi", fr: "1x Pizza Margherita et une boisson", it: "1x Pizza Margherita e una bibita", es: "1x Pizza Margarita y un refresco", el: "1x \u03A0\u03AF\u03C4\u03C3\u03B1 \u039C\u03B1\u03C1\u03B3\u03B1\u03C1\u03AF\u03C4\u03B1 \u03BA\u03B1\u03B9 \u03AD\u03BD\u03B1 \u03B1\u03BD\u03B1\u03C8\u03C5\u03BA\u03C4\u03B9\u03BA\u03CC" })}" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+        </div>
+        <div>
+          <label class="text-[9px] text-gray-400 font-bold block mb-1">${tr({ en: "Delivery address", de: "Lieferadresse", fr: "Adresse de livraison", it: "Indirizzo di consegna", es: "Direcci\xF3n de entrega", el: "\u0394\u03B9\u03B5\u03CD\u03B8\u03C5\u03BD\u03C3\u03B7 \u03C0\u03B1\u03C1\u03AC\u03B4\u03BF\u03C3\u03B7\u03C2" })}</label>
+          <input type="text" id="field-food-address" placeholder="${tr({ en: "123 Main Street, Apt 4...", de: "Musterstra\xDFe 1, 2. Stock...", fr: "12 Rue de la Paix...", it: "Via Roma 10...", es: "Calle Mayor 1...", el: "\u039F\u03B4\u03CC\u03C2 \u0395\u03B9\u03C1\u03AE\u03BD\u03B7\u03C2 10..." })}" value="${tr({ en: "123 Main Street", de: "Musterstra\xDFe 1", fr: "12 Rue de la Paix", it: "Via Roma 10", es: "Calle Mayor 1", el: "\u039F\u03B4\u03CC\u03C2 \u0395\u03B9\u03C1\u03AE\u03BD\u03B7\u03C2 10" })}" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+        </div>
+      </div>
+    `;
+    } else if (scenario === "handyman") {
+      fieldsContainer.innerHTML = `
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-[9px] text-gray-400 font-bold block mb-1">${tr({ en: "What needs fixing?", de: "Was ist defekt?", fr: "Quel est le probl\xE8me ?", it: "Cosa \xE8 guasto?", es: "\xBFQu\xE9 aver\xEDa hay?", el: "\u03A4\u03B9 \u03AD\u03C7\u03B5\u03B9 \u03C7\u03B1\u03BB\u03AC\u03C3\u03B5\u03B9;" })}</label>
+          <input type="text" id="field-handyman-issue" placeholder="${tr({ en: "Dripping tap, heater off...", de: "Tropfender Wasserhahn...", fr: "Robinet qui fuit...", it: "Rubinetto che perde...", es: "Grifo goteando...", el: "\u0392\u03C1\u03CD\u03C3\u03B7 \u03C0\u03BF\u03C5 \u03C3\u03C4\u03AC\u03B6\u03B5\u03B9..." })}" value="${tr({ en: "Dripping tap in the bathroom", de: "Tropfender Wasserhahn im Bad", fr: "Robinet qui fuit dans la salle de bain", it: "Rubinetto che perde in bagno", es: "Grifo que gotea en el ba\xF1o", el: "\u0392\u03C1\u03CD\u03C3\u03B7 \u03C0\u03BF\u03C5 \u03C3\u03C4\u03AC\u03B6\u03B5\u03B9 \u03C3\u03C4\u03BF \u03BC\u03C0\u03AC\u03BD\u03B9\u03BF" })}" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+        </div>
+        <div>
+          <label class="text-[9px] text-gray-400 font-bold block mb-1">${tr({ en: "Urgency", de: "Dringlichkeit", fr: "Urgence", it: "Urgenza", es: "Urgencia", el: "\u0395\u03C0\u03B5\u03AF\u03B3\u03BF\u03BD" })}</label>
+          <input type="text" id="field-handyman-urgency" placeholder="${tr({ en: "Urgent, this week...", de: "Dringend, diese Woche...", fr: "Urgent, cette semaine...", it: "Urgente, questa settimana...", es: "Urgente, esta semana...", el: "\u0395\u03C0\u03B5\u03AF\u03B3\u03BF\u03BD, \u03B1\u03C5\u03C4\u03AE \u03C4\u03B7\u03BD \u03B5\u03B2\u03B4\u03BF\u03BC\u03AC\u03B4\u03B1..." })}" value="${tr({ en: "this week", de: "diese Woche", fr: "cette semaine", it: "questa settimana", es: "esta semana", el: "\u03B1\u03C5\u03C4\u03AE \u03C4\u03B7\u03BD \u03B5\u03B2\u03B4\u03BF\u03BC\u03AC\u03B4\u03B1" })}" class="w-full p-1.5 bg-black/60 border border-white/10 rounded text-xs text-white outline-none" />
+        </div>
+      </div>
+    `;
+    } else if (scenario === "custom") {
+      fieldsContainer.innerHTML = `
+      <div>
+        <label class="text-[9px] text-gray-400 font-bold block mb-1">${tr({ en: "Your key points / notes", de: "Eigene Stichpunkte / Anliegen", fr: "Points cl\xE9s / Message", it: "Punti chiave / Note", es: "Puntos clave / Mensaje", el: "\u0392\u03B1\u03C3\u03B9\u03BA\u03AC \u03C3\u03B7\u03BC\u03B5\u03AF\u03B1 / \u03A3\u03B7\u03BC\u03B5\u03B9\u03CE\u03C3\u03B5\u03B9\u03C2" })}</label>
+        <textarea id="field-custom-text" placeholder="${tr({ en: "Write down key bullet points...", de: "Schreibe hier die wichtigsten Punkte auf...", fr: "Note les points cl\xE9s ici...", it: "Scrivi qui i punti principali...", es: "Apunta los puntos clave aqu\xED...", el: "\u0393\u03C1\u03AC\u03C8\u03B5 \u03B5\u03B4\u03CE \u03C4\u03B1 \u03B2\u03B1\u03C3\u03B9\u03BA\u03AC \u03C3\u03B7\u03BC\u03B5\u03AF\u03B1..." })}" class="w-full h-16 p-2 bg-black/60 border border-white/10 rounded text-xs text-white outline-none resize-none">${tr({ en: "I am calling regarding a question about my order.", de: "Ich rufe an wegen der R\xFCckfrage zu meiner Bestellung.", fr: "Je vous appelle au sujet d'une question sur ma commande.", it: "Chiamo per avere informazioni sul mio ordine.", es: "Llamo para consultar una duda sobre mi pedido.", el: "\u039A\u03B1\u03BB\u03CE \u03C3\u03C7\u03B5\u03C4\u03B9\u03BA\u03AC \u03BC\u03B5 \u03BC\u03B9\u03B1 \u03B5\u03C1\u03CE\u03C4\u03B7\u03C3\u03B7 \u03B3\u03B9\u03B1 \u03C4\u03B7\u03BD \u03C0\u03B1\u03C1\u03B1\u03B3\u03B3\u03B5\u03BB\u03AF\u03B1 \u03BC\u03BF\u03C5." })}</textarea>
+      </div>
+    `;
+    }
+  }
+  function copyGeneratedScript() {
+    const container = document.getElementById("script-text-container");
+    if (!container) return;
+    navigator.clipboard.writeText(container.innerText).then(() => {
+      showToast(t("toast_copied"));
+    }).catch((err) => {
+      console.error("Fehler beim Kopieren:", err);
+    });
+  }
+  if (typeof window !== "undefined") {
+    window.openCompassModal = typeof openCompassModal !== "undefined" ? openCompassModal : void 0;
+    window.closeCompassModal = typeof closeCompassModal !== "undefined" ? closeCompassModal : void 0;
+    window.switchCompassTab = typeof switchCompassTab !== "undefined" ? switchCompassTab : void 0;
+    window.startCoinFlip = typeof startCoinFlip !== "undefined" ? startCoinFlip : void 0;
+    window.cancelCoinVeto = typeof cancelCoinVeto !== "undefined" ? cancelCoinVeto : void 0;
+    window.acceptCoinWinner = typeof acceptCoinWinner !== "undefined" ? acceptCoinWinner : void 0;
+    window.flipCoinAgain = typeof flipCoinAgain !== "undefined" ? flipCoinAgain : void 0;
+    window.openSafeSpaceModal = typeof openSafeSpaceModal !== "undefined" ? openSafeSpaceModal : void 0;
+    window.closeSafeSpaceModal = typeof closeSafeSpaceModal !== "undefined" ? closeSafeSpaceModal : void 0;
+    window.openBrainDumpModal = typeof openBrainDumpModal !== "undefined" ? openBrainDumpModal : void 0;
+    window.closeBrainDumpModal = typeof closeBrainDumpModal !== "undefined" ? closeBrainDumpModal : void 0;
+    window.submitBrainDumpThought = typeof submitBrainDumpThought !== "undefined" ? submitBrainDumpThought : void 0;
+    window.transferBrainDumpToBoard = typeof transferBrainDumpToBoard !== "undefined" ? transferBrainDumpToBoard : void 0;
+    window.skipBrainDumpThought = typeof skipBrainDumpThought !== "undefined" ? skipBrainDumpThought : void 0;
+    window.updateBrainDumpUI = typeof updateBrainDumpUI !== "undefined" ? updateBrainDumpUI : void 0;
+    window.openPanicModal = typeof openPanicModal !== "undefined" ? openPanicModal : void 0;
+    window.closePanicModal = typeof closePanicModal !== "undefined" ? closePanicModal : void 0;
+    window.loadTenPerspectiveData = loadTenPerspectiveData2;
+    window.saveTenPerspective = saveTenPerspective;
+    window.clearTenPerspective = clearTenPerspective;
+    window.loadFearSettingData = loadFearSettingData2;
+    window.saveFearSettingPerspective = saveFearSettingPerspective;
+    window.clearFearSetting = clearFearSetting;
+    window.openScriptingModal = openScriptingModal;
+    window.closeScriptingModal = closeScriptingModal;
+    window.onScenarioSelectChange = onScenarioSelectChange;
+    window.generateScript = generateScript;
+    window.copyGeneratedScript = copyGeneratedScript;
+  }
+  if (typeof globalThis !== "undefined") {
+    globalThis.openCompassModal = typeof openCompassModal !== "undefined" ? openCompassModal : void 0;
+    globalThis.closeCompassModal = typeof closeCompassModal !== "undefined" ? closeCompassModal : void 0;
+    globalThis.switchCompassTab = typeof switchCompassTab !== "undefined" ? switchCompassTab : void 0;
+    globalThis.startCoinFlip = typeof startCoinFlip !== "undefined" ? startCoinFlip : void 0;
+    globalThis.cancelCoinVeto = typeof cancelCoinVeto !== "undefined" ? cancelCoinVeto : void 0;
+    globalThis.acceptCoinWinner = typeof acceptCoinWinner !== "undefined" ? acceptCoinWinner : void 0;
+    globalThis.flipCoinAgain = typeof flipCoinAgain !== "undefined" ? flipCoinAgain : void 0;
+    globalThis.openSafeSpaceModal = typeof openSafeSpaceModal !== "undefined" ? openSafeSpaceModal : void 0;
+    globalThis.closeSafeSpaceModal = typeof closeSafeSpaceModal !== "undefined" ? closeSafeSpaceModal : void 0;
+    globalThis.openBrainDumpModal = typeof openBrainDumpModal !== "undefined" ? openBrainDumpModal : void 0;
+    globalThis.closeBrainDumpModal = typeof closeBrainDumpModal !== "undefined" ? closeBrainDumpModal : void 0;
+    globalThis.submitBrainDumpThought = typeof submitBrainDumpThought !== "undefined" ? submitBrainDumpThought : void 0;
+    globalThis.transferBrainDumpToBoard = typeof transferBrainDumpToBoard !== "undefined" ? transferBrainDumpToBoard : void 0;
+    globalThis.skipBrainDumpThought = typeof skipBrainDumpThought !== "undefined" ? skipBrainDumpThought : void 0;
+    globalThis.updateBrainDumpUI = typeof updateBrainDumpUI !== "undefined" ? updateBrainDumpUI : void 0;
+    globalThis.openPanicModal = typeof openPanicModal !== "undefined" ? openPanicModal : void 0;
+    globalThis.closePanicModal = typeof closePanicModal !== "undefined" ? closePanicModal : void 0;
+    globalThis.loadTenPerspectiveData = loadTenPerspectiveData2;
+    globalThis.saveTenPerspective = saveTenPerspective;
+    globalThis.clearTenPerspective = clearTenPerspective;
+    globalThis.loadFearSettingData = loadFearSettingData2;
+    globalThis.saveFearSettingPerspective = saveFearSettingPerspective;
+    globalThis.clearFearSetting = clearFearSetting;
+    globalThis.openScriptingModal = openScriptingModal;
+    globalThis.closeScriptingModal = closeScriptingModal;
+    globalThis.onScenarioSelectChange = onScenarioSelectChange;
+    globalThis.generateScript = generateScript;
+    globalThis.copyGeneratedScript = copyGeneratedScript;
+  }
+
+  // helper-brainstorm.js
+  var brainstormIdeas = [];
+  var brainstormRecognition = null;
+  var isBrainstormRecording = false;
+  var brainstormActiveFilter = "all";
+  var brainstormSearchQuery = "";
+  var currentSparksIndex = 0;
+  var BRAINSTORM_TAGS = {
+    idea: { label: { de: "Idee", en: "Idea", fr: "Id\xE9e", it: "Idea", es: "Idea", el: "\u0399\u03B4\u03AD\u03B1" }, icon: "\u{1F4A1}", color: "bg-amber-500/15 text-amber-300 border-amber-500/30" },
+    quickwin: { label: { de: "Quick Win", en: "Quick Win", fr: "Gain rapide", it: "Vittoria rapida", es: "Victoria r\xE1pida", el: "\u0393\u03C1\u03AE\u03B3\u03BF\u03C1\u03B7 \u03BD\u03AF\u03BA\u03B7" }, icon: "\u26A1", color: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30" },
+    project: { label: { de: "Projekt", en: "Project", fr: "Projet", it: "Progetto", es: "Proyecto", el: "\u0388\u03C1\u03B3\u03BF" }, icon: "\u{1F680}", color: "bg-indigo-500/15 text-indigo-300 border-indigo-500/30" },
+    question: { label: { de: "Frage", en: "Question", fr: "Question", it: "Domanda", es: "Pregunta", el: "\u0395\u03C1\u03CE\u03C4\u03B7\u03C3\u03B7" }, icon: "\u2753", color: "bg-sky-500/15 text-sky-300 border-sky-500/30" },
+    goal: { label: { de: "Ziel", en: "Goal", fr: "Objectif", it: "Obiettivo", es: "Meta", el: "\u03A3\u03C4\u03CC\u03C7\u03BF\u03C2" }, icon: "\u{1F3AF}", color: "bg-rose-500/15 text-rose-300 border-rose-500/30" }
+  };
+  var CREATIVE_SPARKS = [
+    { de: "Was w\xE4re die radikalste 5-Minuten-L\xF6sung?", en: "What would the radical 5-minute solution look like?", fr: "Quelle serait la solution radicale en 5 minutes ?", it: "Quale sarebbe la soluzione rapida in 5 minuti ?", es: "\xBFCu\xE1l ser\xEDa la soluci\xF3n radical de 5 minutos?", el: "\u03A0\u03BF\u03B9\u03B1 \u03B8\u03B1 \u03AE\u03C4\u03B1\u03BD \u03B7 \u03C1\u03B9\u03B6\u03BF\u03C3\u03C0\u03B1\u03C3\u03C4\u03B9\u03BA\u03AE \u03BB\u03CD\u03C3\u03B7 5 \u03BB\u03B5\u03C0\u03C4\u03CE\u03BD;" },
+    { de: "Wie w\xFCrde man das genaue Gegenteil davon erreichen?", en: "How would you achieve the exact opposite of this?", fr: "Comment obtiendriez-vous exactement le contraire ?", it: "Come faresti per ottenere l'esatto opposto?", es: "\xBFC\xF3mo lograr\xEDas exactamente lo opuesto?", el: "\u03A0\u03CE\u03C2 \u03B8\u03B1 \u03C0\u03B5\u03C4\u03CD\u03C7\u03B1\u03B9\u03BD\u03B5\u03C2 \u03C4\u03BF \u03B1\u03BA\u03C1\u03B9\u03B2\u03CE\u03C2 \u03B1\u03BD\u03C4\u03AF\u03B8\u03B5\u03C4\u03BF;" },
+    { de: "Was, wenn das Budget und der Aufwand 0 \u20AC / 0 Std. w\xE4ren?", en: "What if the budget and effort were $0 / 0 hours?", fr: "Et si le budget et l'effort \xE9taient de 0 \u20AC / 0 h ?", it: "E se budget e impegno fossero 0 \u20AC / 0 ore ?", es: "\xBFY si el presupuesto y esfuerzo fueran 0\u20AC / 0h?", el: "\u03A4\u03B9 \u03B8\u03B1 \u03B3\u03B9\u03BD\u03CC\u03C4\u03B1\u03BD \u03B1\u03BD \u03BF \u03C0\u03C1\u03BF\u03CB\u03C0\u03BF\u03BB\u03BF\u03B3\u03B9\u03C3\u03BC\u03CC\u03C2 \u03AE\u03C4\u03B1\u03BD 0\u20AC / 0 \u03CE\u03C1\u03B5\u03C2;" },
+    { de: "Welches einzelne Element k\xF6nnte man komplett weglassen?", en: "Which single element could be completely removed?", fr: "Quel \xE9l\xE9ment unique pourrait \xEAtre totalement supprim\xE9 ?", it: "Quale singolo elemento potrebbe essere eliminato ?", es: "\xBFQu\xE9 elemento \xFAnico podr\xEDa eliminarse por completo?", el: "\u03A0\u03BF\u03B9\u03BF \u03C3\u03C4\u03BF\u03B9\u03C7\u03B5\u03AF\u03BF \u03B8\u03B1 \u03BC\u03C0\u03BF\u03C1\u03BF\u03CD\u03C3\u03B5\u03C2 \u03BD\u03B1 \u03C0\u03B1\u03C1\u03B1\u03BB\u03B5\u03AF\u03C8\u03B5\u03B9\u03C2 \u03B5\u03BD\u03C4\u03B5\u03BB\u03CE\u03C2;" },
+    { de: "Wie w\xFCrde ein 10-j\xE4hriges Kind dieses Problem anpacken?", en: "How would a 10-year-old child tackle this problem?", fr: "Comment un enfant de 10 ans aborderait-il ce probl\xE8me ?", it: "Come affronterebbe questo problema un bambino di 10 anni ?", es: "\xBFC\xF3mo abordar\xEDa este problema un ni\xF1o de 10 a\xF1os?", el: "\u03A0\u03CE\u03C2 \u03B8\u03B1 \u03C4\u03BF \u03B1\u03BD\u03C4\u03B9\u03BC\u03B5\u03C4\u03CE\u03C0\u03B9\u03B6\u03B5 \u03AD\u03BD\u03B1 \u03C0\u03B1\u03B9\u03B4\u03AF 10 \u03B5\u03C4\u03CE\u03BD;" },
+    { de: "Was ist der wichtigste erste Dominostein f\xFCr den Start?", en: "What is the most crucial first domino to get started?", fr: "Quel est le premier domino d\xE9cisif pour d\xE9marrer ?", it: "Qual \xE8 il primo domino fondamentale per iniziare ?", es: "\xBFCu\xE1l es la primera ficha de domin\xF3 clave?", el: "\u03A0\u03BF\u03B9\u03BF \u03B5\u03AF\u03BD\u03B1\u03B9 \u03C4\u03BF \u03C0\u03C1\u03CE\u03C4\u03BF \u03BA\u03C1\u03AF\u03C3\u03B9\u03BC\u03BF \u03B2\u03AE\u03BC\u03B1 \u03B5\u03BA\u03BA\u03AF\u03BD\u03B7\u03C3\u03B7\u03C2;" }
+  ];
+  function getBrainstormStorageKey() {
+    const wsId = typeof currentWorkspaceId !== "undefined" && currentWorkspaceId ? currentWorkspaceId : "default";
+    return `noodle_brainstorm_ideas_${wsId}`;
+  }
+  function loadBrainstormIdeas() {
+    try {
+      const raw = localStorage.getItem(getBrainstormStorageKey());
+      if (raw) {
+        brainstormIdeas = JSON.parse(raw);
+      } else {
+        brainstormIdeas = [];
+      }
+    } catch (e) {
+      console.warn("[Brainstorm] Load error:", e);
+      brainstormIdeas = [];
+    }
+  }
+  function saveBrainstormIdeas() {
+    try {
+      localStorage.setItem(getBrainstormStorageKey(), JSON.stringify(brainstormIdeas));
+    } catch (e) {
+      console.warn("[Brainstorm] Save error:", e);
+    }
+  }
+  function openBrainstormModal2() {
+    loadBrainstormIdeas();
+    const modal = document.getElementById("brainstorm-modal");
+    if (!modal) return;
+    modal.classList.remove("hidden");
+    renderBrainstormUI();
+    setTimeout(() => {
+      const input = document.getElementById("brainstorm-quick-input");
+      if (input && typeof input.focus === "function") input.focus();
+    }, 100);
+  }
+  function closeBrainstormModal2() {
+    stopBrainstormRecording();
+    const modal = document.getElementById("brainstorm-modal");
+    if (modal) modal.classList.add("hidden");
+  }
+  function toggleBrainstormRecording() {
+    if (isBrainstormRecording) {
+      stopBrainstormRecording();
+    } else {
+      startBrainstormRecording();
+    }
+  }
+  function startBrainstormRecording() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      if (typeof showToast === "function") {
+        showToast(tr({
+          de: "\u{1F399}\uFE0F Spracherkennung in diesem Browser nicht verf\xFCgbar. Bitte Tastatur nutzen.",
+          en: "\u{1F399}\uFE0F Speech recognition not supported in this browser. Please type.",
+          fr: "\u{1F399}\uFE0F Reconnaissance vocale non support\xE9e par ce navigateur.",
+          it: "\u{1F399}\uFE0F Riconoscimento vocale non supportato su questo browser.",
+          es: "\u{1F399}\uFE0F Reconocimiento de voz no compatible en este navegador.",
+          el: "\u{1F399}\uFE0F \u0397 \u03B1\u03BD\u03B1\u03B3\u03BD\u03CE\u03C1\u03B9\u03C3\u03B7 \u03C6\u03C9\u03BD\u03AE\u03C2 \u03B4\u03B5\u03BD \u03C5\u03C0\u03BF\u03C3\u03C4\u03B7\u03C1\u03AF\u03B6\u03B5\u03C4\u03B1\u03B9 \u03C3\u03B5 \u03B1\u03C5\u03C4\u03CC \u03C4\u03BF \u03C0\u03C1\u03CC\u03B3\u03C1\u03B1\u03BC\u03BC\u03B1 \u03C0\u03B5\u03C1\u03B9\u03AE\u03B3\u03B7\u03C3\u03B7\u03C2."
+        }));
+      }
+      return;
+    }
+    try {
+      brainstormRecognition = new SpeechRecognition();
+      brainstormRecognition.continuous = true;
+      brainstormRecognition.interimResults = true;
+      const langMap = { de: "de-DE", en: "en-US", fr: "fr-FR", it: "it-IT", es: "es-ES", el: "el-GR" };
+      brainstormRecognition.lang = typeof currentLang !== "undefined" && langMap[currentLang] ? langMap[currentLang] : "de-DE";
+      const livePill = document.getElementById("brainstorm-live-transcript");
+      brainstormRecognition.onstart = () => {
+        isBrainstormRecording = true;
+        updateBrainstormMicBtnUI(true);
+        if (livePill) {
+          livePill.classList.remove("hidden");
+          livePill.innerText = tr({ de: "\u{1F399}\uFE0F H\xF6re zu... sprich deinen Gedanken aus", en: "\u{1F399}\uFE0F Listening... speak your thoughts" });
+        }
+      };
+      brainstormRecognition.onresult = (event) => {
+        let interimTranscript = "";
+        let finalTranscript = "";
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript;
+          } else {
+            interimTranscript += event.results[i][0].transcript;
+          }
+        }
+        if (livePill && interimTranscript) {
+          livePill.innerText = `\u{1F399}\uFE0F \u201E${interimTranscript.trim()}\u201C`;
+        }
+        if (finalTranscript.trim()) {
+          const text = finalTranscript.trim();
+          addBrainstormIdea(text, "idea");
+          if (livePill) {
+            livePill.innerText = `\u2713 \u201E${text}\u201C als Idee erfasst`;
+            setTimeout(() => {
+              if (isBrainstormRecording && livePill) {
+                livePill.innerText = tr({ de: "\u{1F399}\uFE0F H\xF6re zu... weiter sprechen", en: "\u{1F399}\uFE0F Listening... continue speaking" });
+              }
+            }, 1500);
+          }
+        }
+      };
+      brainstormRecognition.onerror = (e) => {
+        console.warn("[Brainstorm] Speech recognition error:", e);
+        stopBrainstormRecording();
+      };
+      brainstormRecognition.onend = () => {
+        if (isBrainstormRecording) {
+          stopBrainstormRecording();
+        }
+      };
+      brainstormRecognition.start();
+    } catch (e) {
+      console.warn("[Brainstorm] Failed to start recognition:", e);
+      stopBrainstormRecording();
+    }
+  }
+  function stopBrainstormRecording() {
+    isBrainstormRecording = false;
+    if (brainstormRecognition) {
+      try {
+        brainstormRecognition.stop();
+      } catch (e) {
+      }
+      brainstormRecognition = null;
+    }
+    updateBrainstormMicBtnUI(false);
+    const livePill = document.getElementById("brainstorm-live-transcript");
+    if (livePill) livePill.classList.add("hidden");
+  }
+  function updateBrainstormMicBtnUI(recording) {
+    const micBtn = document.getElementById("brainstorm-mic-btn");
+    if (!micBtn) return;
+    if (recording) {
+      micBtn.className = "p-2.5 rounded-xl bg-rose-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-lg shadow-rose-500/30 animate-pulse transition cursor-pointer";
+      micBtn.innerHTML = '<i data-lucide="mic-off" class="w-4 h-4"></i><span>Aufnahme stoppen</span>';
+    } else {
+      micBtn.className = "p-2.5 rounded-xl bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/30 text-teal-300 font-bold text-xs flex items-center gap-1.5 transition cursor-pointer";
+      micBtn.innerHTML = '<i data-lucide="mic" class="w-4 h-4"></i><span>Sprechen (Mic)</span>';
+    }
+    if (typeof lucide !== "undefined") lucide.createIcons();
+  }
+  function addBrainstormIdea(text, tag = "idea") {
+    if (!text || !text.trim()) return;
+    const lines = text.split(/\r?\n/).map((l) => l.replace(/^[-*•\d.]+\s*/, "").trim()).filter((l) => l.length > 0);
+    lines.forEach((line) => {
+      brainstormIdeas.unshift({
+        id: "idea_" + Date.now() + "_" + Math.random().toString(36).substr(2, 5),
+        text: line,
+        tag: tag || "idea",
+        starred: false,
+        createdAt: (/* @__PURE__ */ new Date()).toISOString()
+      });
+    });
+    saveBrainstormIdeas();
+    renderBrainstormUI();
+    if (typeof showToast === "function") {
+      showToast(tr({
+        de: lines.length > 1 ? `\u{1F4A1} ${lines.length} Ideen hinzugef\xFCgt!` : "\u{1F4A1} Idee erfasst!",
+        en: lines.length > 1 ? `\u{1F4A1} ${lines.length} ideas added!` : "\u{1F4A1} Idea captured!",
+        fr: lines.length > 1 ? `\u{1F4A1} ${lines.length} id\xE9es ajout\xE9es !` : "\u{1F4A1} Id\xE9e enregistr\xE9e !",
+        it: lines.length > 1 ? `\u{1F4A1} ${lines.length} idee aggiunte!` : "\u{1F4A1} Idea acquisita!",
+        es: lines.length > 1 ? `\u{1F4A1} \xA1${lines.length} ideas a\xF1adidas!` : "\u{1F4A1} \xA1Idea capturada!",
+        el: lines.length > 1 ? `\u{1F4A1} ${lines.length} \u03B9\u03B4\u03AD\u03B5\u03C2 \u03C0\u03C1\u03BF\u03C3\u03C4\u03AD\u03B8\u03B7\u03BA\u03B1\u03BD!` : "\u{1F4A1} \u0397 \u03B9\u03B4\u03AD\u03B1 \u03BA\u03B1\u03C4\u03B1\u03B3\u03C1\u03AC\u03C6\u03B7\u03BA\u03B5!"
+      }));
+    }
+  }
+  function handleBrainstormInputKeydown(e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      const input = document.getElementById("brainstorm-quick-input");
+      const tagSelect = document.getElementById("brainstorm-tag-select");
+      if (input && input.value.trim()) {
+        addBrainstormIdea(input.value.trim(), tagSelect ? tagSelect.value : "idea");
+        input.value = "";
       }
     }
-  });
+  }
+  function submitBrainstormInput() {
+    const input = document.getElementById("brainstorm-quick-input");
+    const tagSelect = document.getElementById("brainstorm-tag-select");
+    if (input && input.value.trim()) {
+      addBrainstormIdea(input.value.trim(), tagSelect ? tagSelect.value : "idea");
+      input.value = "";
+      if (typeof input.focus === "function") input.focus();
+    }
+  }
+  function toggleStarIdea(id) {
+    const item = brainstormIdeas.find((i) => i.id === id);
+    if (item) {
+      item.starred = !item.starred;
+      saveBrainstormIdeas();
+      renderBrainstormUI();
+    }
+  }
+  function setIdeaTag(id, newTag) {
+    const item = brainstormIdeas.find((i) => i.id === id);
+    if (item && BRAINSTORM_TAGS[newTag]) {
+      item.tag = newTag;
+      saveBrainstormIdeas();
+      renderBrainstormUI();
+    }
+  }
+  function deleteBrainstormIdea(id) {
+    brainstormIdeas = brainstormIdeas.filter((i) => i.id !== id);
+    saveBrainstormIdeas();
+    renderBrainstormUI();
+  }
+  function clearAllBrainstormIdeas() {
+    if (brainstormIdeas.length === 0) return;
+    const msg = tr({
+      de: "M\xF6chtest du wirklich alle gesammelten Ideen in dieser Brainstorming-Session l\xF6schen?",
+      en: "Are you sure you want to clear all collected ideas in this brainstorming session?"
+    });
+    if (window.confirm(msg)) {
+      brainstormIdeas = [];
+      saveBrainstormIdeas();
+      renderBrainstormUI();
+    }
+  }
+  function transferIdeaToBoard(id, targetColumn) {
+    const item = brainstormIdeas.find((i) => i.id === id);
+    if (!item) return;
+    if (typeof saveHistory === "function") saveHistory();
+    const curItems = typeof getCurrentWorkspaceItems === "function" ? getCurrentWorkspaceItems() : null;
+    if (!curItems) return;
+    const targetTitle = {
+      heute: tr({ de: "Heute", en: "Today" }),
+      morgen: tr({ de: "Demn\xE4chst", en: "Next" }),
+      spaeter: tr({ de: "Sp\xE4ter", en: "Someday" }),
+      notes: tr({ de: "Notizen", en: "Notes" }),
+      termine: tr({ de: "Termine", en: "Appointments" })
+    };
+    if (targetColumn === "notes") {
+      if (!curItems.notes) curItems.notes = [];
+      curItems.notes.push(item.text);
+    } else if (targetColumn === "termine") {
+      if (!curItems.termine) curItems.termine = [];
+      const today = typeof getLocalDateISO === "function" ? getLocalDateISO() : (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
+      curItems.termine.push({
+        task: item.text,
+        date: today,
+        time: "12:00",
+        location: ""
+      });
+    } else {
+      if (!curItems[targetColumn]) curItems[targetColumn] = [];
+      curItems[targetColumn].push(item.text);
+    }
+    if (typeof saveState === "function") saveState();
+    if (typeof renderApp === "function") renderApp();
+    if (typeof showToast === "function") {
+      showToast(tr({
+        de: `\u{1F680} Idee erfolgreich nach \u201E${targetTitle[targetColumn] || targetColumn}\u201C \xFCbertragen!`,
+        en: `\u{1F680} Idea successfully transferred to "${targetTitle[targetColumn] || targetColumn}"!`,
+        fr: `\u{1F680} Id\xE9e transf\xE9r\xE9e vers \xAB ${targetTitle[targetColumn] || targetColumn} \xBB !`,
+        it: `\u{1F680} Idea trasferita in "${targetTitle[targetColumn] || targetColumn}"!`,
+        es: `\u{1F680} \xA1Idea transferida a "${targetTitle[targetColumn] || targetColumn}"!`,
+        el: `\u{1F680} \u0397 \u03B9\u03B4\u03AD\u03B1 \u03BC\u03B5\u03C4\u03B1\u03C6\u03AD\u03C1\u03B8\u03B7\u03BA\u03B5 \u03B5\u03C0\u03B9\u03C4\u03C5\u03C7\u03CE\u03C2!`
+      }));
+    }
+  }
+  function expandIdeaToMicroSteps(id) {
+    const item = brainstormIdeas.find((i) => i.id === id);
+    if (!item) return;
+    const baseText = item.text;
+    const step1 = `${tr({ de: "1. Recherche & Vorbereitung f\xFCr", en: "1. Research & preparation for" })}: ${baseText}`;
+    const step2 = `${tr({ de: "2. Ersten Entwurf / Prototyp erstellen f\xFCr", en: "2. Create first draft / prototype for" })}: ${baseText}`;
+    const step3 = `${tr({ de: "3. Finalisieren & Umsetzen von", en: "3. Finalize & implement" })}: ${baseText}`;
+    if (typeof saveHistory === "function") saveHistory();
+    const curItems = typeof getCurrentWorkspaceItems === "function" ? getCurrentWorkspaceItems() : null;
+    if (curItems) {
+      if (!curItems.morgen) curItems.morgen = [];
+      curItems.morgen.push(step1);
+      curItems.morgen.push(step2);
+      curItems.morgen.push(step3);
+      if (typeof saveState === "function") saveState();
+      if (typeof renderApp === "function") renderApp();
+    }
+    if (typeof showToast === "function") {
+      showToast(tr({
+        de: "\u2728 3 Micro-Steps wurden in \u201EDemn\xE4chst\u201C angelegt!",
+        en: '\u2728 3 micro-steps added to "Next" column!',
+        fr: "\u2728 3 micro-\xE9tapes cr\xE9\xE9es !",
+        it: "\u2728 3 micro-passi creati!",
+        es: "\u2728 \xA13 micro-pasos creados!",
+        el: "\u2728 \u0394\u03B7\u03BC\u03B9\u03BF\u03C5\u03C1\u03B3\u03AE\u03B8\u03B7\u03BA\u03B1\u03BD 3 \u03BC\u03B9\u03BA\u03C1\u03BF-\u03B2\u03AE\u03BC\u03B1\u03C4\u03B1!"
+      }));
+    }
+  }
+  function copyBrainstormAsMarkdown() {
+    if (brainstormIdeas.length === 0) return;
+    const lines = brainstormIdeas.map((item) => {
+      const star = item.starred ? "\u2B50 " : "";
+      const tagInfo = BRAINSTORM_TAGS[item.tag] ? `${BRAINSTORM_TAGS[item.tag].icon} ` : "";
+      return `- [ ] ${star}${tagInfo}${item.text}`;
+    });
+    const text = `# Brainstorming - ${(/* @__PURE__ */ new Date()).toLocaleDateString()}
+
+` + lines.join("\n");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        if (typeof showToast === "function") showToast(tr({ de: "\u{1F4CB} Als Markdown in Zwischenablage kopiert!", en: "\u{1F4CB} Copied as Markdown to clipboard!" }));
+      });
+    }
+  }
+  function nextCreativeSpark() {
+    currentSparksIndex = (currentSparksIndex + 1) % CREATIVE_SPARKS.length;
+    renderCreativeSparkUI();
+  }
+  function renderCreativeSparkUI() {
+    const sparkEl = document.getElementById("brainstorm-spark-text");
+    if (!sparkEl) return;
+    const spark = CREATIVE_SPARKS[currentSparksIndex];
+    sparkEl.innerText = tr(spark);
+  }
+  function setBrainstormFilter(filter) {
+    brainstormActiveFilter = filter;
+    renderBrainstormUI();
+  }
+  function handleBrainstormSearch(query) {
+    brainstormSearchQuery = (query || "").toLowerCase().trim();
+    renderBrainstormUI();
+  }
+  function renderBrainstormUI() {
+    const listEl = document.getElementById("brainstorm-ideas-list");
+    const countEl = document.getElementById("brainstorm-count-badge");
+    if (!listEl) return;
+    renderCreativeSparkUI();
+    let filtered = brainstormIdeas.slice();
+    if (brainstormActiveFilter === "starred") {
+      filtered = filtered.filter((i) => i.starred);
+    } else if (brainstormActiveFilter !== "all") {
+      filtered = filtered.filter((i) => i.tag === brainstormActiveFilter);
+    }
+    if (brainstormSearchQuery) {
+      filtered = filtered.filter((i) => i.text.toLowerCase().includes(brainstormSearchQuery));
+    }
+    if (countEl) {
+      countEl.innerText = `${brainstormIdeas.length} ${tr({ de: "Ideen", en: "Ideas" })}`;
+    }
+    const filterBtns = document.querySelectorAll(".brainstorm-filter-btn");
+    filterBtns.forEach((btn) => {
+      const f = btn.getAttribute("data-filter");
+      if (f === brainstormActiveFilter) {
+        btn.className = "brainstorm-filter-btn px-2.5 py-1 rounded-xl text-xs font-bold transition cursor-pointer bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow-xs";
+      } else {
+        btn.className = "brainstorm-filter-btn px-2.5 py-1 rounded-xl text-xs font-semibold text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition cursor-pointer";
+      }
+    });
+    if (filtered.length === 0) {
+      listEl.innerHTML = `
+      <div class="py-12 flex flex-col items-center justify-center text-center text-gray-500 space-y-2">
+        <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl mb-1">
+          \u{1F4A1}
+        </div>
+        <p class="text-xs font-semibold text-gray-400">
+          ${brainstormIdeas.length === 0 ? tr({ de: "Noch keine Ideen erfasst. Tippe oben oder nutze das Mikrofon!", en: "No ideas captured yet. Type above or speak with the microphone!" }) : tr({ de: "Keine Ideen entsprechen dem aktuellen Filter.", en: "No ideas match the current filter." })}
+        </p>
+        <p class="text-[11px] text-gray-500 max-w-xs">
+          ${tr({ de: "Sammle Gedanken v\xF6llig unzensiert \u2013 sortiere und \xFCberf\xFChre sie sp\xE4ter mit 1 Klick ins Board.", en: "Capture thoughts freely \u2013 organize and transfer them to your board with 1 click later." })}
+        </p>
+      </div>
+    `;
+      return;
+    }
+    listEl.innerHTML = "";
+    filtered.forEach((item) => {
+      const tagConfig = BRAINSTORM_TAGS[item.tag] || BRAINSTORM_TAGS.idea;
+      const tagLabel = tr(tagConfig.label);
+      const starIcon = item.starred ? "\u2B50" : "\u2606";
+      const starClass = item.starred ? "text-amber-400 font-bold" : "text-gray-500 hover:text-amber-300";
+      const card = document.createElement("div");
+      card.className = "group relative p-3 bg-white/[0.035] hover:bg-white/[0.06] border border-white/10 hover:border-teal-500/40 rounded-2xl transition flex flex-col gap-2 shadow-xs";
+      card.innerHTML = `
+      <div class="flex items-start justify-between gap-2">
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <span class="brainstorm-tag-badge px-2 py-0.5 rounded-lg text-[10px] font-bold border ${tagConfig.color} flex items-center gap-1 cursor-pointer hover:opacity-80 transition" title="${tr({ de: "Klicken zum \xC4ndern der Kategorie", en: "Click to change category" })}">
+            <span>${tagConfig.icon}</span>
+            <span>${tagLabel}</span>
+          </span>
+          <button onclick="toggleStarIdea('${item.id}')" class="p-1 text-sm ${starClass} transition cursor-pointer" title="${tr({ de: "Favorit umschalten", en: "Toggle favorite" })}">
+            ${starIcon}
+          </button>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition">
+          <button onclick="deleteBrainstormIdea('${item.id}')" class="p-1 rounded-md text-gray-500 hover:text-red-400 hover:bg-white/10 transition cursor-pointer" title="${tr({ de: "Idee l\xF6schen", en: "Delete idea" })}">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Idea Text -->
+      <div class="text-xs text-gray-200 font-medium leading-relaxed break-normal whitespace-pre-wrap select-text">
+        ${escapeHtml(item.text)}
+      </div>
+
+      <!-- Quick Transfer Footer -->
+      <div class="pt-2 mt-1 border-t border-white/5 flex items-center justify-between gap-1 flex-wrap">
+        <span class="text-[10px] text-gray-500 font-mono">${tr({ de: "\xDCbertragen nach:", en: "Transfer to:" })}</span>
+        <div class="flex items-center gap-1 flex-wrap">
+          <button onclick="transferIdeaToBoard('${item.id}', 'heute')" class="px-2 py-1 rounded-lg bg-teal-500/10 hover:bg-teal-500/25 border border-teal-500/30 text-teal-300 hover:text-white text-[10px] font-bold transition cursor-pointer flex items-center gap-1">
+            <i data-lucide="check-circle" class="w-3 h-3"></i>
+            <span>Heute</span>
+          </button>
+          <button onclick="transferIdeaToBoard('${item.id}', 'morgen')" class="px-2 py-1 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/25 border border-indigo-500/30 text-indigo-300 hover:text-white text-[10px] font-bold transition cursor-pointer flex items-center gap-1">
+            <i data-lucide="arrow-right" class="w-3 h-3"></i>
+            <span>Demn\xE4chst</span>
+          </button>
+          <button onclick="transferIdeaToBoard('${item.id}', 'spaeter')" class="px-2 py-1 rounded-lg bg-purple-500/10 hover:bg-purple-500/25 border border-purple-500/30 text-purple-300 hover:text-white text-[10px] font-bold transition cursor-pointer flex items-center gap-1">
+            <i data-lucide="clock" class="w-3 h-3"></i>
+            <span>Sp\xE4ter</span>
+          </button>
+          <button onclick="transferIdeaToBoard('${item.id}', 'notes')" class="px-2 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 hover:text-white text-[10px] font-bold transition cursor-pointer flex items-center gap-1">
+            <i data-lucide="sticky-note" class="w-3 h-3"></i>
+            <span>Notiz</span>
+          </button>
+          <button onclick="expandIdeaToMicroSteps('${item.id}')" class="px-2 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 hover:text-white text-[10px] font-bold transition cursor-pointer flex items-center gap-1" title="${tr({ de: "In 3 Micro-Steps zerlegen", en: "Break down into 3 micro-steps" })}">
+            <i data-lucide="layers" class="w-3 h-3"></i>
+            <span>Steps \u2728</span>
+          </button>
+        </div>
+      </div>
+    `;
+      const tagBadge = card.querySelector(".brainstorm-tag-badge");
+      if (tagBadge) {
+        tagBadge.onclick = (e) => {
+          e.stopPropagation();
+          cycleIdeaTag(item.id);
+        };
+      }
+      if (listEl && typeof listEl.appendChild === "function") {
+        listEl.appendChild(card);
+      }
+    });
+    if (typeof lucide !== "undefined" && typeof lucide.createIcons === "function") {
+      lucide.createIcons();
+    }
+  }
+  function cycleIdeaTag(id) {
+    const item = brainstormIdeas.find((i) => i.id === id);
+    if (!item) return;
+    const tagKeys = Object.keys(BRAINSTORM_TAGS);
+    const currentIdx = tagKeys.indexOf(item.tag);
+    const nextTag = tagKeys[(currentIdx + 1) % tagKeys.length];
+    setIdeaTag(id, nextTag);
+  }
+  if (typeof window !== "undefined") {
+    window.openBrainstormModal = openBrainstormModal2;
+    window.closeBrainstormModal = closeBrainstormModal2;
+    window.toggleBrainstormRecording = toggleBrainstormRecording;
+    window.startBrainstormRecording = startBrainstormRecording;
+    window.stopBrainstormRecording = stopBrainstormRecording;
+    window.addBrainstormIdea = addBrainstormIdea;
+    window.handleBrainstormInputKeydown = handleBrainstormInputKeydown;
+    window.submitBrainstormInput = submitBrainstormInput;
+    window.toggleStarIdea = toggleStarIdea;
+    window.setIdeaTag = setIdeaTag;
+    window.cycleIdeaTag = cycleIdeaTag;
+    window.deleteBrainstormIdea = deleteBrainstormIdea;
+    window.clearAllBrainstormIdeas = clearAllBrainstormIdeas;
+    window.transferIdeaToBoard = transferIdeaToBoard;
+    window.expandIdeaToMicroSteps = expandIdeaToMicroSteps;
+    window.copyBrainstormAsMarkdown = copyBrainstormAsMarkdown;
+    window.nextCreativeSpark = nextCreativeSpark;
+    window.renderCreativeSparkUI = renderCreativeSparkUI;
+    window.setBrainstormFilter = setBrainstormFilter;
+    window.handleBrainstormSearch = handleBrainstormSearch;
+    window.renderBrainstormUI = renderBrainstormUI;
+    window.loadBrainstormIdeas = loadBrainstormIdeas;
+    window.saveBrainstormIdeas = saveBrainstormIdeas;
+  }
+  if (typeof globalThis !== "undefined") {
+    globalThis.openBrainstormModal = openBrainstormModal2;
+    globalThis.closeBrainstormModal = closeBrainstormModal2;
+    globalThis.toggleBrainstormRecording = toggleBrainstormRecording;
+    globalThis.startBrainstormRecording = startBrainstormRecording;
+    globalThis.stopBrainstormRecording = stopBrainstormRecording;
+    globalThis.addBrainstormIdea = addBrainstormIdea;
+    globalThis.handleBrainstormInputKeydown = handleBrainstormInputKeydown;
+    globalThis.submitBrainstormInput = submitBrainstormInput;
+    globalThis.toggleStarIdea = toggleStarIdea;
+    globalThis.setIdeaTag = setIdeaTag;
+    globalThis.cycleIdeaTag = cycleIdeaTag;
+    globalThis.deleteBrainstormIdea = deleteBrainstormIdea;
+    globalThis.clearAllBrainstormIdeas = clearAllBrainstormIdeas;
+    globalThis.transferIdeaToBoard = transferIdeaToBoard;
+    globalThis.expandIdeaToMicroSteps = expandIdeaToMicroSteps;
+    globalThis.copyBrainstormAsMarkdown = copyBrainstormAsMarkdown;
+    globalThis.nextCreativeSpark = nextCreativeSpark;
+    globalThis.renderCreativeSparkUI = renderCreativeSparkUI;
+    globalThis.setBrainstormFilter = setBrainstormFilter;
+    globalThis.handleBrainstormSearch = handleBrainstormSearch;
+    globalThis.renderBrainstormUI = renderBrainstormUI;
+    globalThis.loadBrainstormIdeas = loadBrainstormIdeas;
+    globalThis.saveBrainstormIdeas = saveBrainstormIdeas;
+  }
 
   // app-shopping.js
   var SHOPPING_DEPARTMENTS = {
@@ -10583,6 +11858,311 @@ ${listStr}`;
     globalThis.openSupermarketModal = openSupermarketModal;
     globalThis.closeSupermarketModal = closeSupermarketModal;
     globalThis.renderSupermarketModal = renderSupermarketModal;
+  }
+
+  // app-cooking.js
+  function getCookingState() {
+    if (!state.cooking) state.cooking = createDefaultCookingState();
+    return state.cooking;
+  }
+  function capitalize(str) {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  }
+  function addCookingIngredient(value) {
+    const text = String(value || "").trim();
+    if (!text) return false;
+    const cooking = getCookingState();
+    const normalized = text.toLowerCase();
+    const exists = (cooking.pantryItems || []).some((item) => String(item).trim().toLowerCase() === normalized);
+    if (exists) return false;
+    if (!Array.isArray(cooking.pantryItems)) cooking.pantryItems = [];
+    cooking.pantryItems.push(text);
+    saveState();
+    return true;
+  }
+  function removeCookingIngredient(index) {
+    const cooking = getCookingState();
+    if (!Array.isArray(cooking.pantryItems) || index < 0 || index >= cooking.pantryItems.length) return;
+    cooking.pantryItems.splice(index, 1);
+    saveState();
+    suggestCookingRecipe();
+  }
+  function buildDynamicRecipeFromPantry(pantry) {
+    const items2 = pantry.map((i) => i.trim().toLowerCase()).filter(Boolean);
+    if (items2.length === 0) return null;
+    const carbs = items2.filter((i) => /(pasta|nudel|reis|kartoffel|brot|wrap|toast|fladen|grieß|hafer|baguette|rice|potato|bread|oats)/i.test(i));
+    const proteins = items2.filter((i) => /(hähnchen|huhn|fleisch|rind|schwein|fisch|lachs|tuna|thunfisch|ei|tofu|bohnen|linsen|kichererbsen|quark|chicken|meat|beef|pork|fish|salmon|egg|beans|lentils)/i.test(i));
+    const veggies = items2.filter((i) => /(tomate|gurke|paprika|zucchini|aubergine|spinat|pilz|champignon|zwiebel|knoblauch|karotte|möhre|brokkoli|tomato|cucumber|pepper|spinach|mushroom|onion|garlic|carrot|broccoli)/i.test(i));
+    const dairy = items2.filter((i) => /(käse|feta|parmesan|mozzarella|butter|sahne|joghurt|frischkäse|schmand|cheese|cream|yogurt)/i.test(i));
+    let duration = tr({ en: "15 min", de: "15 Min", fr: "15 min", it: "15 min", es: "15 min", el: "15 \u03BB\u03B5\u03C0" });
+    const primaryCarb = carbs[0] || null;
+    const primaryProtein = proteins[0] || null;
+    const primaryVeggie = veggies[0] || null;
+    const primaryDairy = dairy[0] || null;
+    let title = tr({
+      en: "Creative Skillet Dish",
+      de: "Kreative Restepfanne",
+      fr: "Po\xEAl\xE9e cr\xE9ative maison",
+      it: "Padellata creativa",
+      es: "Salteado creativo casero",
+      el: "\u0394\u03B7\u03BC\u03B9\u03BF\u03C5\u03C1\u03B3\u03B9\u03BA\u03CC \u03C4\u03B7\u03B3\u03B1\u03BD\u03B7\u03C4\u03CC \u03C0\u03B9\u03AC\u03C4\u03BF"
+    });
+    if (primaryCarb && primaryProtein && primaryVeggie) {
+      title = tr({
+        en: `Savory ${capitalize(primaryCarb)} Skillet with ${capitalize(primaryProtein)} & ${capitalize(primaryVeggie)}`,
+        de: `Herzhafte ${capitalize(primaryCarb)}-Pfanne mit ${capitalize(primaryProtein)} und ${capitalize(primaryVeggie)}`,
+        fr: `Po\xEAl\xE9e de ${capitalize(primaryCarb)} avec ${capitalize(primaryProtein)} et ${capitalize(primaryVeggie)}`,
+        it: `Padellata di ${capitalize(primaryCarb)} con ${capitalize(primaryProtein)} e ${capitalize(primaryVeggie)}`,
+        es: `Salteado de ${capitalize(primaryCarb)} con ${capitalize(primaryProtein)} y ${capitalize(primaryVeggie)}`,
+        el: `\u03A0\u03B9\u03AC\u03C4\u03BF ${capitalize(primaryCarb)} \u03BC\u03B5 ${capitalize(primaryProtein)} \u03BA\u03B1\u03B9 ${capitalize(primaryVeggie)}`
+      });
+    } else if (primaryCarb && primaryDairy) {
+      title = tr({
+        en: `Creamy ${capitalize(primaryCarb)} Bowl with Melted ${capitalize(primaryDairy)}`,
+        de: `Cremiges ${capitalize(primaryCarb)}-Gericht mit geschmolzenem ${capitalize(primaryDairy)}`,
+        fr: `Plat cr\xE9meux de ${capitalize(primaryCarb)} au ${capitalize(primaryDairy)} fondu`,
+        it: `Piatto cremoso di ${capitalize(primaryCarb)} con ${capitalize(primaryDairy)} fuso`,
+        es: `Plato cremoso de ${capitalize(primaryCarb)} con ${capitalize(primaryDairy)} fundido`,
+        el: `\u039A\u03C1\u03B5\u03BC\u03CE\u03B4\u03B5\u03C2 \u03C0\u03B9\u03AC\u03C4\u03BF ${capitalize(primaryCarb)} \u03BC\u03B5 \u03BB\u03B9\u03C9\u03BC\u03AD\u03BD\u03BF ${capitalize(primaryDairy)}`
+      });
+    } else if (primaryProtein && primaryVeggie) {
+      title = tr({
+        en: `Stir-fried ${capitalize(primaryProtein)} with Fresh ${capitalize(primaryVeggie)}`,
+        de: `Pfannenger\xFChrtes ${capitalize(primaryProtein)} mit frischem ${capitalize(primaryVeggie)}`,
+        fr: `Saut\xE9 de ${capitalize(primaryProtein)} aux ${capitalize(primaryVeggie)} frais`,
+        it: `Saltato di ${capitalize(primaryProtein)} con ${capitalize(primaryVeggie)} freschi`,
+        es: `Salteado de ${capitalize(primaryProtein)} con ${capitalize(primaryVeggie)} frescos`,
+        el: `\u03A3\u03BF\u03C4\u03B1\u03C1\u03B9\u03C3\u03BC\u03AD\u03BD\u03BF ${capitalize(primaryProtein)} \u03BC\u03B5 \u03C6\u03C1\u03AD\u03C3\u03BA\u03B1 ${capitalize(primaryVeggie)}`
+      });
+    } else if (primaryCarb && primaryVeggie) {
+      title = tr({
+        en: `${capitalize(primaryCarb)} with Steamed ${capitalize(primaryVeggie)}`,
+        de: `${capitalize(primaryCarb)} mit ged\xFCnstetem ${capitalize(primaryVeggie)}`,
+        fr: `${capitalize(primaryCarb)} aux ${capitalize(primaryVeggie)} vapeur`,
+        it: `${capitalize(primaryCarb)} con ${capitalize(primaryVeggie)} stufati`,
+        es: `${capitalize(primaryCarb)} con ${capitalize(primaryVeggie)} al vapor`,
+        el: `${capitalize(primaryCarb)} \u03BC\u03B5 \u03BB\u03B1\u03C7\u03B1\u03BD\u03B9\u03BA\u03AC ${capitalize(primaryVeggie)}`
+      });
+    } else if (primaryProtein && primaryDairy) {
+      title = tr({
+        en: `Savory ${capitalize(primaryProtein)} Gratin with ${capitalize(primaryDairy)}`,
+        de: `Herzhaftes ${capitalize(primaryProtein)} \xFCberbacken mit ${capitalize(primaryDairy)}`,
+        fr: `Gratin de ${capitalize(primaryProtein)} au ${capitalize(primaryDairy)}`,
+        it: `Gratinato di ${capitalize(primaryProtein)} con ${capitalize(primaryDairy)}`,
+        es: `Gratinado de ${capitalize(primaryProtein)} con ${capitalize(primaryDairy)}`,
+        el: `\u039F\u03B3\u03BA\u03C1\u03B1\u03C4\u03AD\u03BD ${capitalize(primaryProtein)} \u03BC\u03B5 ${capitalize(primaryDairy)}`
+      });
+    } else if (primaryProtein) {
+      title = tr({
+        en: `Quick Protein Plate (${capitalize(primaryProtein)})`,
+        de: `Schnelles Protein-Gericht (${capitalize(primaryProtein)})`,
+        fr: `Assiette rapide de prot\xE9ines (${capitalize(primaryProtein)})`,
+        it: `Piatto veloce di proteine (${capitalize(primaryProtein)})`,
+        es: `Plato r\xE1pido de prote\xEDnas (${capitalize(primaryProtein)})`,
+        el: `\u0393\u03C1\u03AE\u03B3\u03BF\u03C1\u03BF \u03C0\u03B9\u03AC\u03C4\u03BF \u03C0\u03C1\u03C9\u03C4\u03B5\u0390\u03BD\u03B7\u03C2 (${capitalize(primaryProtein)})`
+      });
+    } else if (primaryCarb) {
+      title = tr({
+        en: `Satisfying ${capitalize(primaryCarb)} Creation`,
+        de: `S\xE4ttigende ${capitalize(primaryCarb)}-Kreation`,
+        fr: `Plat r\xE9confortant de ${capitalize(primaryCarb)}`,
+        it: `Creazione nutriente di ${capitalize(primaryCarb)}`,
+        es: `Creaci\xF3n nutritiva de ${capitalize(primaryCarb)}`,
+        el: `\u03A7\u03BF\u03C1\u03C4\u03B1\u03C3\u03C4\u03B9\u03BA\u03CC \u03C0\u03B9\u03AC\u03C4\u03BF ${capitalize(primaryCarb)}`
+      });
+    } else if (primaryVeggie) {
+      title = tr({
+        en: `Fresh Colorful ${capitalize(primaryVeggie)} Medley`,
+        de: `Bunte ${capitalize(primaryVeggie)}-Pfanne`,
+        fr: `Po\xEAl\xE9e color\xE9e de ${capitalize(primaryVeggie)}`,
+        it: `Padellata colorata di ${capitalize(primaryVeggie)}`,
+        es: `Salteado colorido de ${capitalize(primaryVeggie)}`,
+        el: `\u03A0\u03BF\u03BB\u03CD\u03C7\u03C1\u03C9\u03BC\u03BF \u03C0\u03B9\u03AC\u03C4\u03BF \u03BB\u03B1\u03C7\u03B1\u03BD\u03B9\u03BA\u03CE\u03BD ${capitalize(primaryVeggie)}`
+      });
+    } else {
+      title = tr({
+        en: `Ingredient Medley: ${items2.map(capitalize).join(" & ")}`,
+        de: `Zutaten-Kombination: ${items2.map(capitalize).join(" & ")}`,
+        fr: `M\xE9li-m\xE9lo d'ingr\xE9dients : ${items2.map(capitalize).join(" & ")}`,
+        it: `Combinazione di ingredienti: ${items2.map(capitalize).join(" & ")}`,
+        es: `Combinaci\xF3n de ingredientes: ${items2.map(capitalize).join(" & ")}`,
+        el: `\u03A3\u03C5\u03BD\u03B4\u03C5\u03B1\u03C3\u03BC\u03CC\u03C2 \u03C5\u03BB\u03B9\u03BA\u03CE\u03BD: ${items2.map(capitalize).join(" & ")}`
+      });
+    }
+    let steps = [];
+    steps.push(tr({
+      en: "Preparation: Clean your prep area and rinse all fresh ingredients thoroughly.",
+      de: "Vorbereitung: Reinige deine Arbeitsfl\xE4che und wasche frische Zutaten gr\xFCndlich ab.",
+      fr: "Pr\xE9paration : Nettoie ton plan de travail et rince soigneusement les ingr\xE9dients frais.",
+      it: "Preparazione: Pulisci la superficie di lavoro e lava accuratamente gli ingredienti freschi.",
+      es: "Preparaci\xF3n: Limpia tu espacio de trabajo y lava bien todos los ingredientes frescos.",
+      el: "\u03A0\u03C1\u03BF\u03B5\u03C4\u03BF\u03B9\u03BC\u03B1\u03C3\u03AF\u03B1: \u039A\u03B1\u03B8\u03AC\u03C1\u03B9\u03C3\u03B5 \u03C4\u03BF\u03BD \u03C0\u03AC\u03B3\u03BA\u03BF \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1\u03C2 \u03BA\u03B1\u03B9 \u03C0\u03BB\u03CD\u03BD\u03B5 \u03BA\u03B1\u03BB\u03AC \u03CC\u03BB\u03B1 \u03C4\u03B1 \u03C6\u03C1\u03AD\u03C3\u03BA\u03B1 \u03C5\u03BB\u03B9\u03BA\u03AC."
+    }));
+    let prepIngredients = [...veggies, ...proteins].filter((i) => !/(ei|linsen|bohnen|egg|lentil|bean)/i.test(i));
+    if (prepIngredients.length > 0) {
+      steps.push(tr({
+        en: `Chop ${prepIngredients.map(capitalize).join(", ")} into even bite-sized pieces.`,
+        de: `Schneide ${prepIngredients.map(capitalize).join(", ")} in gleichm\xE4\xDFige, mundgerechte St\xFCcke.`,
+        fr: `Coupe ${prepIngredients.map(capitalize).join(", ")} en morceaux r\xE9guliers.`,
+        it: `Taglia ${prepIngredients.map(capitalize).join(", ")} in bocconcini regolari.`,
+        es: `Corta ${prepIngredients.map(capitalize).join(", ")} en trozos regulares.`,
+        el: `\u039A\u03CC\u03C8\u03B5 ${prepIngredients.map(capitalize).join(", ")} \u03C3\u03B5 \u03BF\u03BC\u03BF\u03B9\u03CC\u03BC\u03BF\u03C1\u03C6\u03B1 \u03BA\u03BF\u03BC\u03BC\u03AC\u03C4\u03B9\u03B1.`
+      }));
+    }
+    if (primaryCarb) {
+      if (/(pasta|nudel|reis|grieß|linsen|rice|lentil)/i.test(primaryCarb)) {
+        steps.push(tr({
+          en: `Bring salted water to a boil and cook ${capitalize(primaryCarb)} al dente according to instructions.`,
+          de: `Bringe gesalzenes Wasser zum Kochen und bereite ${capitalize(primaryCarb)} bissfest nach Packungsanleitung zu.`,
+          fr: `Porte de l'eau sal\xE9e \xE0 \xE9bullition et cuis ${capitalize(primaryCarb)} al dente selon les indications.`,
+          it: `Porta a ebollizione l'acqua salata e cuoci ${capitalize(primaryCarb)} al dente.`,
+          es: `Lleva agua con sal a ebullici\xF3n y cocina ${capitalize(primaryCarb)} al dente.`,
+          el: `\u0392\u03C1\u03AC\u03C3\u03B5 \u03B1\u03BB\u03B1\u03C4\u03B9\u03C3\u03BC\u03AD\u03BD\u03BF \u03BD\u03B5\u03C1\u03CC \u03BA\u03B1\u03B9 \u03BC\u03B1\u03B3\u03B5\u03AF\u03C1\u03B5\u03C8\u03B5 ${capitalize(primaryCarb)} al dente.`
+        }));
+      } else if (/(kartoffel|potato)/i.test(primaryCarb)) {
+        steps.push(tr({
+          en: `Precook ${capitalize(primaryCarb)} or saut\xE9 sliced in oil until golden brown.`,
+          de: `Vorkoche die ${capitalize(primaryCarb)} kurz oder brate sie direkt in feinen Spalten mit etwas \xD6l goldgelb an.`,
+          fr: `Pr\xE9cuis les ${capitalize(primaryCarb)} ou fais-les dorer en tranches avec un filet d'huile.`,
+          it: `Precuoci le ${capitalize(primaryCarb)} o falle dorare a spicchi con un filo d'olio.`,
+          es: `Precocina las ${capitalize(primaryCarb)} o d\xF3ralas en gajos con un poco de aceite.`,
+          el: `\u03A0\u03C1\u03BF\u03B2\u03C1\u03AC\u03C3\u03B5 \u03C4\u03B9\u03C2 ${capitalize(primaryCarb)} \u03AE \u03C3\u03CC\u03C4\u03B1\u03C1\u03B5 \u03C4\u03B5\u03C2 \u03C3\u03B5 \u03C6\u03AD\u03C4\u03B5\u03C2 \u03BC\u03B5 \u03BB\u03AF\u03B3\u03BF \u03BB\u03AC\u03B4\u03B9 \u03BC\u03AD\u03C7\u03C1\u03B9 \u03BD\u03B1 \u03C1\u03BF\u03B4\u03AF\u03C3\u03BF\u03C5\u03BD.`
+        }));
+      } else if (/(brot|wrap|toast|fladen|baguette|bread)/i.test(primaryCarb)) {
+        steps.push(tr({
+          en: `Warm ${capitalize(primaryCarb)} briefly in a dry pan or toaster for the best aroma.`,
+          de: `Erw\xE4rme ${capitalize(primaryCarb)} kurz in einer trockenen Pfanne oder im Toaster f\xFCr das beste Aroma.`,
+          fr: `R\xE9chauffe ${capitalize(primaryCarb)} dans une po\xEAle s\xE8che ou au grille-pain pour exhaler les ar\xF4mes.`,
+          it: `Scalda ${capitalize(primaryCarb)} in una padella asciutta o nel tostapane per esaltarne il profumo.`,
+          es: `Calienta ${capitalize(primaryCarb)} en una sart\xE9n seca o tostadora para un gran aroma.`,
+          el: `\u0396\u03AD\u03C3\u03C4\u03B1\u03BD\u03B5 ${capitalize(primaryCarb)} \u03C3\u03B5 \u03AD\u03BD\u03B1 \u03C3\u03C4\u03B5\u03B3\u03BD\u03CC \u03C4\u03B7\u03B3\u03AC\u03BD\u03B9 \u03AE \u03C4\u03BF\u03C3\u03C4\u03B9\u03AD\u03C1\u03B1 \u03B3\u03B9\u03B1 \u03C4\u03AD\u03BB\u03B5\u03B9\u03BF \u03AC\u03C1\u03C9\u03BC\u03B1.`
+        }));
+      }
+    }
+    let panItems = [...proteins, ...veggies].filter((i) => !/(pasta|nudel|reis|brot|wrap|toast|fladen|baguette|rice|bread)/i.test(i));
+    if (panItems.length > 0) {
+      let verb = proteins.length > 0 ? tr({
+        en: "Sear the protein first, then add the vegetables",
+        de: "Brate zuerst die Proteinquelle scharf an und f\xFCge kurz darauf das Gem\xFCse hinzu",
+        fr: "Saisis d'abord la source de prot\xE9ines, puis ajoute les l\xE9gumes",
+        it: "Scotta prima la proteina, poi aggiungi le verdure",
+        es: "Dora primero la prote\xEDna y luego a\xF1ade las verduras",
+        el: "\u03A3\u03BF\u03C4\u03AC\u03C1\u03B9\u03C3\u03B5 \u03C0\u03C1\u03CE\u03C4\u03B1 \u03C4\u03B7\u03BD \u03C0\u03C1\u03C9\u03C4\u03B5\u0390\u03BD\u03B7 \u03BA\u03B1\u03B9 \u03BC\u03B5\u03C4\u03AC \u03C0\u03C1\u03CC\u03C3\u03B8\u03B5\u03C3\u03B5 \u03C4\u03B1 \u03BB\u03B1\u03C7\u03B1\u03BD\u03B9\u03BA\u03AC"
+      }) : tr({
+        en: "Saut\xE9 the vegetables with some quality oil in a hot pan",
+        de: "D\xFCnste das Gem\xFCse mit etwas gutem \xD6l in einer hei\xDFen Pfanne an",
+        fr: "Fais revenir les l\xE9gumes avec un filet d'huile dans une po\xEAle chaude",
+        it: "Salta le verdure con un filo d'olio in una padella calda",
+        es: "Saltea las verduras con un poco de buen aceite en una sart\xE9n caliente",
+        el: "\u03A3\u03BF\u03C4\u03AC\u03C1\u03B9\u03C3\u03B5 \u03C4\u03B1 \u03BB\u03B1\u03C7\u03B1\u03BD\u03B9\u03BA\u03AC \u03BC\u03B5 \u03BB\u03AF\u03B3\u03BF \u03B5\u03BB\u03B1\u03B9\u03CC\u03BB\u03B1\u03B4\u03BF \u03C3\u03B5 \u03B6\u03B5\u03C3\u03C4\u03CC \u03C4\u03B7\u03B3\u03AC\u03BD\u03B9"
+      });
+      steps.push(`${verb} (${panItems.map(capitalize).join(", ")}).`);
+    }
+    if (primaryCarb && panItems.length > 0) {
+      steps.push(tr({
+        en: `Combine the cooked ${capitalize(primaryCarb)} directly in the warm pan with all ingredients.`,
+        de: `Vermenge das Gekochte (${capitalize(primaryCarb)}) direkt in der warmen Pfanne mit den \xFCbrigen Zutaten.`,
+        fr: `M\xE9lange les ${capitalize(primaryCarb)} directement dans la po\xEAle chaude avec le reste.`,
+        it: `Unisci ${capitalize(primaryCarb)} direttamente nella padella calda con gli altri ingredienti.`,
+        es: `Mezcla ${capitalize(primaryCarb)} directamente en la sart\xE9n caliente con el resto de ingredientes.`,
+        el: `\u0391\u03BD\u03AC\u03BC\u03B5\u03B9\u03BE\u03B5 ${capitalize(primaryCarb)} \u03B1\u03C0\u03B5\u03C5\u03B8\u03B5\u03AF\u03B1\u03C2 \u03C3\u03C4\u03BF \u03B6\u03B5\u03C3\u03C4\u03CC \u03C4\u03B7\u03B3\u03AC\u03BD\u03B9 \u03BC\u03B5 \u03C4\u03B1 \u03C5\u03C0\u03CC\u03BB\u03BF\u03B9\u03C0\u03B1 \u03C5\u03BB\u03B9\u03BA\u03AC.`
+      }));
+    }
+    if (primaryDairy) {
+      steps.push(tr({
+        en: `Add ${capitalize(primaryDairy)} and let it melt gently into the dish.`,
+        de: `F\xFCge ${capitalize(primaryDairy)} hinzu. Lasse ihn kurz mitschmelzen oder ziehe ihn sanft unter die hei\xDFe Masse.`,
+        fr: `Ajoute ${capitalize(primaryDairy)} et laisse-le fondre doucement.`,
+        it: `Aggiungi ${capitalize(primaryDairy)} e lascialo fondere dolcemente.`,
+        es: `A\xF1ade ${capitalize(primaryDairy)} y deja que se funda suavemente.`,
+        el: `\u03A0\u03C1\u03CC\u03C3\u03B8\u03B5\u03C3\u03B5 ${capitalize(primaryDairy)} \u03BA\u03B1\u03B9 \u03AC\u03C6\u03B7\u03C3\u03AD \u03C4\u03BF \u03BD\u03B1 \u03BB\u03B9\u03CE\u03C3\u03B5\u03B9 \u03B1\u03C0\u03B1\u03BB\u03AC.`
+      }));
+    }
+    steps.push(tr({
+      en: "Finish: Season with salt, pepper, and fresh herbs. Serve warm and enjoy!",
+      de: "Abschluss: Schmecke dein Gericht mit Salz, Pfeffer und Kr\xE4utern ab. Frisch servieren!",
+      fr: "Finition : Assaisonne avec sel, poivre et herbes. Sers chaud et r\xE9gale-toi !",
+      it: "Completamento: Condisci con sale, pepe ed erbe aromatiche. Servi caldo e buon appetito!",
+      es: "Final: Sazona con sal, pimienta y hierbas. \xA1Sirve caliente y disfruta!",
+      el: "\u039F\u03BB\u03BF\u03BA\u03BB\u03AE\u03C1\u03C9\u03C3\u03B7: \u039A\u03B1\u03C1\u03CD\u03BA\u03B5\u03C5\u03C3\u03B5 \u03BC\u03B5 \u03B1\u03BB\u03AC\u03C4\u03B9, \u03C0\u03B9\u03C0\u03AD\u03C1\u03B9 \u03BA\u03B1\u03B9 \u03B2\u03CC\u03C4\u03B1\u03BD\u03B1. \u03A3\u03AD\u03C1\u03B2\u03B9\u03C1\u03B5 \u03B6\u03B5\u03C3\u03C4\u03CC \u03BA\u03B1\u03B9 \u03BA\u03B1\u03BB\u03AE \u03B1\u03C0\u03CC\u03BB\u03B1\u03C5\u03C3\u03B7!"
+    }));
+    return {
+      id: "dynamic-generated",
+      title,
+      duration,
+      ingredients: items2.map(capitalize),
+      steps
+    };
+  }
+  function suggestCookingRecipe() {
+    const cooking = getCookingState();
+    const pantry = (cooking.pantryItems || []).map((item) => String(item).trim().toLowerCase()).filter(Boolean);
+    const recipes = Array.isArray(cooking.recipes) && cooking.recipes.length ? cooking.recipes : createDefaultCookingState().recipes;
+    cooking.activeRecipe = null;
+    cooking.activeRecipeId = null;
+    if (!pantry.length) {
+      saveState();
+      return null;
+    }
+    const ranked = recipes.map((recipe) => {
+      let score = 0;
+      let directMatches = 0;
+      const recipeIngredients = (recipe.ingredients || []).map((item) => String(item).trim().toLowerCase());
+      recipeIngredients.forEach((ingredient) => {
+        if (pantry.includes(ingredient)) {
+          score += 10;
+          directMatches += 1;
+        } else if (pantry.some((item) => item.includes(ingredient) || ingredient.includes(item))) {
+          score += 4;
+        }
+      });
+      return { ...recipe, score, directMatches, recipeIngredients };
+    }).sort((a, b) => b.score - a.score);
+    const bestPredefined = ranked[0];
+    const best = bestPredefined && bestPredefined.directMatches >= 2 ? bestPredefined : buildDynamicRecipeFromPantry(pantry);
+    if (best) {
+      cooking.activeRecipeId = best.id;
+      cooking.activeRecipe = best;
+    }
+    saveState();
+    return best;
+  }
+  function addRecipeMissingIngredientsToShopping() {
+    const cooking = getCookingState();
+    const activeRecipe = cooking.activeRecipe;
+    if (!activeRecipe || !Array.isArray(activeRecipe.ingredients)) return;
+    const pantry = (cooking.pantryItems || []).map((p) => p.toLowerCase());
+    const missing = activeRecipe.ingredients.filter((ing) => {
+      const norm = ing.toLowerCase();
+      return !pantry.some((p) => p.includes(norm) || norm.includes(p));
+    });
+    const itemsToAdd = missing.length > 0 ? missing : activeRecipe.ingredients;
+    if (typeof addIngredientsToShoppingList === "function") {
+      addIngredientsToShoppingList(itemsToAdd, activeRecipe.title);
+    }
+  }
+  if (typeof window !== "undefined") {
+    window.openPantryModal = typeof openPantryModal !== "undefined" ? openPantryModal : void 0;
+    window.closePantryModal = typeof closePantryModal !== "undefined" ? closePantryModal : void 0;
+    window.openRecipeModal = typeof openRecipeModal !== "undefined" ? openRecipeModal : void 0;
+    window.closeRecipeModal = typeof closeRecipeModal !== "undefined" ? closeRecipeModal : void 0;
+    window.addCookingIngredient = addCookingIngredient;
+    window.removeCookingIngredient = removeCookingIngredient;
+    window.suggestCookingRecipe = typeof suggestCookingRecipe !== "undefined" ? suggestCookingRecipe : void 0;
+    window.clearCookingPantry = typeof clearCookingPantry !== "undefined" ? clearCookingPantry : void 0;
+    window.addRecipeMissingIngredientsToShopping = addRecipeMissingIngredientsToShopping;
+  }
+  if (typeof globalThis !== "undefined") {
+    globalThis.openPantryModal = typeof openPantryModal !== "undefined" ? openPantryModal : void 0;
+    globalThis.closePantryModal = typeof closePantryModal !== "undefined" ? closePantryModal : void 0;
+    globalThis.openRecipeModal = typeof openRecipeModal !== "undefined" ? openRecipeModal : void 0;
+    globalThis.closeRecipeModal = typeof closeRecipeModal !== "undefined" ? closeRecipeModal : void 0;
+    globalThis.addCookingIngredient = addCookingIngredient;
+    globalThis.removeCookingIngredient = removeCookingIngredient;
+    globalThis.suggestCookingRecipe = typeof suggestCookingRecipe !== "undefined" ? suggestCookingRecipe : void 0;
+    globalThis.clearCookingPantry = typeof clearCookingPantry !== "undefined" ? clearCookingPantry : void 0;
+    globalThis.addRecipeMissingIngredientsToShopping = addRecipeMissingIngredientsToShopping;
   }
 
   // app-alarm.js

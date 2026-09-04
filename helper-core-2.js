@@ -250,5 +250,42 @@ function resetDopamineBox() {
   }
 }
 
- 
- 
+if (typeof window !== 'undefined') {
+  window.openHelperModal = openHelperModal;
+  window.closeHelperModal = closeHelperModal;
+  window.openTaskStepsModal = openTaskStepsModal;
+  window.speakText = speakText;
+  window.stopSpeaking = stopSpeaking;
+  window.cleanStepText = cleanStepText;
+  window.pickRandomTask = pickRandomTask;
+  window.generateTaskSteps = generateTaskSteps;
+  window.saveStepsToTasks = saveStepsToTasks;
+  window.triggerDopamineKick = triggerDopamineKick;
+  window.completeDopamineKick = completeDopamineKick;
+  window.resetDopamineBox = resetDopamineBox;
+  window.switchWhatNowTab = typeof switchWhatNowTab !== 'undefined' ? switchWhatNowTab : undefined;
+  window.setWhatNowEnergyLevel = typeof setWhatNowEnergyLevel !== 'undefined' ? setWhatNowEnergyLevel : undefined;
+  window.rerollEnergyTask = typeof rerollEnergyTask !== 'undefined' ? rerollEnergyTask : undefined;
+  window.acceptEnergyTask = typeof acceptEnergyTask !== 'undefined' ? acceptEnergyTask : undefined;
+  window.suggestBoostActivity = typeof suggestBoostActivity !== 'undefined' ? suggestBoostActivity : undefined;
+}
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.openHelperModal = openHelperModal;
+  globalThis.closeHelperModal = closeHelperModal;
+  globalThis.openTaskStepsModal = openTaskStepsModal;
+  globalThis.speakText = speakText;
+  globalThis.stopSpeaking = stopSpeaking;
+  globalThis.cleanStepText = cleanStepText;
+  globalThis.pickRandomTask = pickRandomTask;
+  globalThis.generateTaskSteps = generateTaskSteps;
+  globalThis.saveStepsToTasks = saveStepsToTasks;
+  globalThis.triggerDopamineKick = triggerDopamineKick;
+  globalThis.completeDopamineKick = completeDopamineKick;
+  globalThis.resetDopamineBox = resetDopamineBox;
+  globalThis.switchWhatNowTab = typeof switchWhatNowTab !== 'undefined' ? switchWhatNowTab : undefined;
+  globalThis.setWhatNowEnergyLevel = typeof setWhatNowEnergyLevel !== 'undefined' ? setWhatNowEnergyLevel : undefined;
+  globalThis.rerollEnergyTask = typeof rerollEnergyTask !== 'undefined' ? rerollEnergyTask : undefined;
+  globalThis.acceptEnergyTask = typeof acceptEnergyTask !== 'undefined' ? acceptEnergyTask : undefined;
+  globalThis.suggestBoostActivity = typeof suggestBoostActivity !== 'undefined' ? suggestBoostActivity : undefined;
+}

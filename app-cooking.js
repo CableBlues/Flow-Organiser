@@ -500,4 +500,26 @@ function addRecipeMissingIngredientsToShopping() {
   }
 }
 
+if (typeof window !== 'undefined') {
+  window.openPantryModal = typeof openPantryModal !== 'undefined' ? openPantryModal : undefined;
+  window.closePantryModal = typeof closePantryModal !== 'undefined' ? closePantryModal : undefined;
+  window.openRecipeModal = typeof openRecipeModal !== 'undefined' ? openRecipeModal : undefined;
+  window.closeRecipeModal = typeof closeRecipeModal !== 'undefined' ? closeRecipeModal : undefined;
+  window.addCookingIngredient = addCookingIngredient;
+  window.removeCookingIngredient = removeCookingIngredient;
+  window.suggestCookingRecipe = typeof suggestCookingRecipe !== 'undefined' ? suggestCookingRecipe : undefined;
+  window.clearCookingPantry = typeof clearCookingPantry !== 'undefined' ? clearCookingPantry : undefined;
+  window.addRecipeMissingIngredientsToShopping = addRecipeMissingIngredientsToShopping;
+}
 
+if (typeof globalThis !== 'undefined') {
+  globalThis.openPantryModal = typeof openPantryModal !== 'undefined' ? openPantryModal : undefined;
+  globalThis.closePantryModal = typeof closePantryModal !== 'undefined' ? closePantryModal : undefined;
+  globalThis.openRecipeModal = typeof openRecipeModal !== 'undefined' ? openRecipeModal : undefined;
+  globalThis.closeRecipeModal = typeof closeRecipeModal !== 'undefined' ? closeRecipeModal : undefined;
+  globalThis.addCookingIngredient = addCookingIngredient;
+  globalThis.removeCookingIngredient = removeCookingIngredient;
+  globalThis.suggestCookingRecipe = typeof suggestCookingRecipe !== 'undefined' ? suggestCookingRecipe : undefined;
+  globalThis.clearCookingPantry = typeof clearCookingPantry !== 'undefined' ? clearCookingPantry : undefined;
+  globalThis.addRecipeMissingIngredientsToShopping = addRecipeMissingIngredientsToShopping;
+}

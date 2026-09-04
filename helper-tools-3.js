@@ -458,3 +458,65 @@ function copyGeneratedScript() {
   });
 }
 
+if (typeof window !== 'undefined') {
+  window.openCompassModal = typeof openCompassModal !== 'undefined' ? openCompassModal : undefined;
+  window.closeCompassModal = typeof closeCompassModal !== 'undefined' ? closeCompassModal : undefined;
+  window.switchCompassTab = typeof switchCompassTab !== 'undefined' ? switchCompassTab : undefined;
+  window.startCoinFlip = typeof startCoinFlip !== 'undefined' ? startCoinFlip : undefined;
+  window.cancelCoinVeto = typeof cancelCoinVeto !== 'undefined' ? cancelCoinVeto : undefined;
+  window.acceptCoinWinner = typeof acceptCoinWinner !== 'undefined' ? acceptCoinWinner : undefined;
+  window.flipCoinAgain = typeof flipCoinAgain !== 'undefined' ? flipCoinAgain : undefined;
+  window.openSafeSpaceModal = typeof openSafeSpaceModal !== 'undefined' ? openSafeSpaceModal : undefined;
+  window.closeSafeSpaceModal = typeof closeSafeSpaceModal !== 'undefined' ? closeSafeSpaceModal : undefined;
+  window.openBrainDumpModal = typeof openBrainDumpModal !== 'undefined' ? openBrainDumpModal : undefined;
+  window.closeBrainDumpModal = typeof closeBrainDumpModal !== 'undefined' ? closeBrainDumpModal : undefined;
+  window.submitBrainDumpThought = typeof submitBrainDumpThought !== 'undefined' ? submitBrainDumpThought : undefined;
+  window.transferBrainDumpToBoard = typeof transferBrainDumpToBoard !== 'undefined' ? transferBrainDumpToBoard : undefined;
+  window.skipBrainDumpThought = typeof skipBrainDumpThought !== 'undefined' ? skipBrainDumpThought : undefined;
+  window.updateBrainDumpUI = typeof updateBrainDumpUI !== 'undefined' ? updateBrainDumpUI : undefined;
+  window.openPanicModal = typeof openPanicModal !== 'undefined' ? openPanicModal : undefined;
+  window.closePanicModal = typeof closePanicModal !== 'undefined' ? closePanicModal : undefined;
+  window.loadTenPerspectiveData = loadTenPerspectiveData;
+  window.saveTenPerspective = saveTenPerspective;
+  window.clearTenPerspective = clearTenPerspective;
+  window.loadFearSettingData = loadFearSettingData;
+  window.saveFearSettingPerspective = saveFearSettingPerspective;
+  window.clearFearSetting = clearFearSetting;
+  window.openScriptingModal = openScriptingModal;
+  window.closeScriptingModal = closeScriptingModal;
+  window.onScenarioSelectChange = onScenarioSelectChange;
+  window.generateScript = generateScript;
+  window.copyGeneratedScript = copyGeneratedScript;
+}
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.openCompassModal = typeof openCompassModal !== 'undefined' ? openCompassModal : undefined;
+  globalThis.closeCompassModal = typeof closeCompassModal !== 'undefined' ? closeCompassModal : undefined;
+  globalThis.switchCompassTab = typeof switchCompassTab !== 'undefined' ? switchCompassTab : undefined;
+  globalThis.startCoinFlip = typeof startCoinFlip !== 'undefined' ? startCoinFlip : undefined;
+  globalThis.cancelCoinVeto = typeof cancelCoinVeto !== 'undefined' ? cancelCoinVeto : undefined;
+  globalThis.acceptCoinWinner = typeof acceptCoinWinner !== 'undefined' ? acceptCoinWinner : undefined;
+  globalThis.flipCoinAgain = typeof flipCoinAgain !== 'undefined' ? flipCoinAgain : undefined;
+  globalThis.openSafeSpaceModal = typeof openSafeSpaceModal !== 'undefined' ? openSafeSpaceModal : undefined;
+  globalThis.closeSafeSpaceModal = typeof closeSafeSpaceModal !== 'undefined' ? closeSafeSpaceModal : undefined;
+  globalThis.openBrainDumpModal = typeof openBrainDumpModal !== 'undefined' ? openBrainDumpModal : undefined;
+  globalThis.closeBrainDumpModal = typeof closeBrainDumpModal !== 'undefined' ? closeBrainDumpModal : undefined;
+  globalThis.submitBrainDumpThought = typeof submitBrainDumpThought !== 'undefined' ? submitBrainDumpThought : undefined;
+  globalThis.transferBrainDumpToBoard = typeof transferBrainDumpToBoard !== 'undefined' ? transferBrainDumpToBoard : undefined;
+  globalThis.skipBrainDumpThought = typeof skipBrainDumpThought !== 'undefined' ? skipBrainDumpThought : undefined;
+  globalThis.updateBrainDumpUI = typeof updateBrainDumpUI !== 'undefined' ? updateBrainDumpUI : undefined;
+  globalThis.openPanicModal = typeof openPanicModal !== 'undefined' ? openPanicModal : undefined;
+  globalThis.closePanicModal = typeof closePanicModal !== 'undefined' ? closePanicModal : undefined;
+  globalThis.loadTenPerspectiveData = loadTenPerspectiveData;
+  globalThis.saveTenPerspective = saveTenPerspective;
+  globalThis.clearTenPerspective = clearTenPerspective;
+  globalThis.loadFearSettingData = loadFearSettingData;
+  globalThis.saveFearSettingPerspective = saveFearSettingPerspective;
+  globalThis.clearFearSetting = clearFearSetting;
+  globalThis.openScriptingModal = openScriptingModal;
+  globalThis.closeScriptingModal = closeScriptingModal;
+  globalThis.onScenarioSelectChange = onScenarioSelectChange;
+  globalThis.generateScript = generateScript;
+  globalThis.copyGeneratedScript = copyGeneratedScript;
+}
+

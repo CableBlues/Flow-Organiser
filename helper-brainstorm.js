@@ -473,7 +473,7 @@ function renderBrainstormUI() {
     card.innerHTML = `
       <div class="flex items-start justify-between gap-2">
         <div class="flex items-center gap-1.5 flex-wrap">
-          <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold border ${tagConfig.color} flex items-center gap-1">
+          <span class="brainstorm-tag-badge px-2 py-0.5 rounded-lg text-[10px] font-bold border ${tagConfig.color} flex items-center gap-1 cursor-pointer hover:opacity-80 transition" title="${tr({ de: 'Klicken zum Ändern der Kategorie', en: 'Click to change category' })}">
             <span>${tagConfig.icon}</span>
             <span>${tagLabel}</span>
           </span>
@@ -522,10 +522,84 @@ function renderBrainstormUI() {
         </div>
       </div>
     `;
+
+    // Tag click to cycle tag
+    const tagBadge = card.querySelector('.brainstorm-tag-badge');
+    if (tagBadge) {
+      tagBadge.onclick = (e) => {
+        e.stopPropagation();
+        cycleIdeaTag(item.id);
+      };
+    }
+
     if (listEl && typeof listEl.appendChild === 'function') {
       listEl.appendChild(card);
     }
   });
 
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
+    lucide.createIcons();
+  }
+}
+
+function cycleIdeaTag(id) {
+  const item = brainstormIdeas.find(i => i.id === id);
+  if (!item) return;
+  const tagKeys = Object.keys(BRAINSTORM_TAGS);
+  const currentIdx = tagKeys.indexOf(item.tag);
+  const nextTag = tagKeys[(currentIdx + 1) % tagKeys.length];
+  setIdeaTag(id, nextTag);
+}
+
+// Global Window & GlobalThis Bindings für Event-Handler und Bundles
+if (typeof window !== 'undefined') {
+  window.openBrainstormModal = openBrainstormModal;
+  window.closeBrainstormModal = closeBrainstormModal;
+  window.toggleBrainstormRecording = toggleBrainstormRecording;
+  window.startBrainstormRecording = startBrainstormRecording;
+  window.stopBrainstormRecording = stopBrainstormRecording;
+  window.addBrainstormIdea = addBrainstormIdea;
+  window.handleBrainstormInputKeydown = handleBrainstormInputKeydown;
+  window.submitBrainstormInput = submitBrainstormInput;
+  window.toggleStarIdea = toggleStarIdea;
+  window.setIdeaTag = setIdeaTag;
+  window.cycleIdeaTag = cycleIdeaTag;
+  window.deleteBrainstormIdea = deleteBrainstormIdea;
+  window.clearAllBrainstormIdeas = clearAllBrainstormIdeas;
+  window.transferIdeaToBoard = transferIdeaToBoard;
+  window.expandIdeaToMicroSteps = expandIdeaToMicroSteps;
+  window.copyBrainstormAsMarkdown = copyBrainstormAsMarkdown;
+  window.nextCreativeSpark = nextCreativeSpark;
+  window.renderCreativeSparkUI = renderCreativeSparkUI;
+  window.setBrainstormFilter = setBrainstormFilter;
+  window.handleBrainstormSearch = handleBrainstormSearch;
+  window.renderBrainstormUI = renderBrainstormUI;
+  window.loadBrainstormIdeas = loadBrainstormIdeas;
+  window.saveBrainstormIdeas = saveBrainstormIdeas;
+}
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.openBrainstormModal = openBrainstormModal;
+  globalThis.closeBrainstormModal = closeBrainstormModal;
+  globalThis.toggleBrainstormRecording = toggleBrainstormRecording;
+  globalThis.startBrainstormRecording = startBrainstormRecording;
+  globalThis.stopBrainstormRecording = stopBrainstormRecording;
+  globalThis.addBrainstormIdea = addBrainstormIdea;
+  globalThis.handleBrainstormInputKeydown = handleBrainstormInputKeydown;
+  globalThis.submitBrainstormInput = submitBrainstormInput;
+  globalThis.toggleStarIdea = toggleStarIdea;
+  globalThis.setIdeaTag = setIdeaTag;
+  globalThis.cycleIdeaTag = cycleIdeaTag;
+  globalThis.deleteBrainstormIdea = deleteBrainstormIdea;
+  globalThis.clearAllBrainstormIdeas = clearAllBrainstormIdeas;
+  globalThis.transferIdeaToBoard = transferIdeaToBoard;
+  globalThis.expandIdeaToMicroSteps = expandIdeaToMicroSteps;
+  globalThis.copyBrainstormAsMarkdown = copyBrainstormAsMarkdown;
+  globalThis.nextCreativeSpark = nextCreativeSpark;
+  globalThis.renderCreativeSparkUI = renderCreativeSparkUI;
+  globalThis.setBrainstormFilter = setBrainstormFilter;
+  globalThis.handleBrainstormSearch = handleBrainstormSearch;
+  globalThis.renderBrainstormUI = renderBrainstormUI;
+  globalThis.loadBrainstormIdeas = loadBrainstormIdeas;
+  globalThis.saveBrainstormIdeas = saveBrainstormIdeas;
 }

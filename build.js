@@ -73,14 +73,23 @@ console.log(`✓ ${allJsFiles.length} JavaScript-Module nach dist/ kopiert`);
 
 // 3. Bundle JS application with esbuild
 try {
-  esbuild.buildSync({
+  const result = esbuild.buildSync({
     entryPoints: [path.join(rootDir, 'main.js')],
     bundle: true,
     minify: false,
     format: 'iife',
-    outfile: path.join(distDir, 'app.bundle.js')
+    write: false
   });
-  console.log('✓ app.bundle.js mit esbuild erfolgreich erzeugt');
+  if (result.outputFiles && result.outputFiles.length > 0) {
+    const bundlePath = path.join(distDir, 'app.bundle.js');
+    try {
+      if (fs.existsSync(bundlePath)) {
+        fs.unlinkSync(bundlePath);
+      }
+    } catch (ignore) {}
+    fs.writeFileSync(bundlePath, result.outputFiles[0].contents);
+    console.log('✓ app.bundle.js mit esbuild erfolgreich erzeugt');
+  }
 } catch (e) {
   console.warn('esbuild bundling warning:', e.message);
 }
