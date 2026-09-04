@@ -224,7 +224,7 @@ function onUrgeSurfingComplete() {
 }
 
 // -------------------------------------------------------------
-// MODUL 2: HALT-CHECK (BEDÜRFNIS-DIAGNOSE)
+// MODUL 2: HALT-CHECK (BEDÜRFNIS-ANALYSE)
 // -------------------------------------------------------------
 const HALT_DATA = {
   hungry: {

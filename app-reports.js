@@ -1,14 +1,33 @@
 function togglePanel(panelName) {
-  clearTimeout(hoverPanelTimeout); const el = document.getElementById(`panel-${panelName}`); if (!el) return;
+  if (typeof window !== 'undefined' && window.hoverPanelTimeout) {
+    clearTimeout(window.hoverPanelTimeout);
+    window.hoverPanelTimeout = null;
+  }
+  const el = document.getElementById(`panel-${panelName}`);
+  if (!el) return;
   const isCurrentlyHidden = el.classList.contains('hidden');
-  ['feedback', 'report', 'settings', 'settings-dropdown', 'soundscape', 'language', 'boost', 'music', 'theme', 'calendar-dropdown', 'inspiration', 'impulse', 'shopping', 'cooking', 'alarm', 'weather', 'news', 'pause-dropdown', 'logo-guide', 'audio', 'daily'].forEach(p => {
-    if (p !== panelName) { const other = document.getElementById(`panel-${p}`); if (other) other.classList.add('hidden'); }
+
+  // Andere Popover-Panels schließen
+  ['feedback', 'report', 'settings', 'settings-dropdown', 'soundscape', 'language', 'boost', 'music', 'theme', 'calendar-dropdown', 'inspiration', 'impulse', 'shopping', 'cooking', 'alarm', 'weather', 'news', 'pause-dropdown', 'audio', 'daily'].forEach(p => {
+    if (p !== panelName) {
+      const other = document.getElementById(`panel-${p}`);
+      if (other) other.classList.add('hidden');
+    }
   });
+
+  const dockContainer = document.querySelector('.mac-dock-container');
+
   if (isCurrentlyHidden) { 
     el.classList.remove('hidden'); 
-    currentlyOpenPanel = panelName; 
+    if (typeof window !== 'undefined') window.currentlyOpenPanel = panelName;
+    if (typeof currentlyOpenPanel !== 'undefined') currentlyOpenPanel = panelName;
+
+    if (dockContainer && ['audio', 'daily', 'alarm'].includes(panelName)) {
+      dockContainer.classList.add('is-active');
+    }
+
     if (panelName === 'report') updateReportPanel(); 
-    if (panelName === 'cooking') renderCookingPanel(true); 
+    if (panelName === 'cooking' && typeof renderCookingPanel === 'function') renderCookingPanel(true); 
     if (panelName === 'alarm' && typeof renderAlarmPanel === 'function') renderAlarmPanel();
     if (panelName === 'weather' && typeof fetchLocalWeather === 'function') fetchLocalWeather();
     if (panelName === 'news' && typeof renderNewsBriefing === 'function') renderNewsBriefing();
@@ -18,9 +37,24 @@ function togglePanel(panelName) {
     }
     if (panelName === 'daily') {
       if (typeof renderCookingPanel === 'function') renderCookingPanel(true);
+      if (typeof renderShoppingList === 'function') renderShoppingList();
+      if (typeof switchDailyTab === 'function') switchDailyTab('shopping');
     }
-  } 
-  else { el.classList.add('hidden'); if (currentlyOpenPanel === panelName) currentlyOpenPanel = null; }
+    if (panelName === 'audio') {
+      const savedTab = (typeof window !== 'undefined' && window._lastActiveAudioTab) ? window._lastActiveAudioTab : 'ambient';
+      if (typeof switchAudioTab === 'function') switchAudioTab(savedTab);
+    }
+    if (typeof renderLucideIcons === 'function') renderLucideIcons();
+  } else {
+    el.classList.add('hidden');
+    if (typeof window !== 'undefined' && window.currentlyOpenPanel === panelName) {
+      window.currentlyOpenPanel = null;
+    }
+    if (typeof currentlyOpenPanel !== 'undefined' && currentlyOpenPanel === panelName) {
+      currentlyOpenPanel = null;
+    }
+    if (dockContainer) dockContainer.classList.remove('is-active');
+  }
 }
 
 let reportTimeframe = 'today';
@@ -176,6 +210,42 @@ function renderWeeklyChart(targetElementId = 'report-weekly-chart', totalElement
 }
 
 function updateReportPanel() {
+  const contentArea = document.getElementById('report-content-area');
+  if (contentArea && (!document.getElementById('report-today-count') || contentArea.children.length === 0)) {
+    contentArea.innerHTML = `
+      <!-- Bento Kacheln für Schnellübersicht -->
+      <div class="grid grid-cols-3 gap-2">
+        <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/10 text-center">
+          <div class="text-[10px] text-gray-400 font-medium mb-0.5" data-i18n="completed_stat">Erledigt</div>
+          <div id="report-today-count" class="text-lg font-black font-display text-emerald-400">0</div>
+        </div>
+        <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/10 text-center">
+          <div class="text-[10px] text-gray-400 font-medium mb-0.5" data-i18n="focus_time">Fokus</div>
+          <div id="report-focus-time" class="text-lg font-black font-display text-purple-300">0m</div>
+        </div>
+        <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/10 text-center">
+          <div class="text-[10px] text-gray-400 font-medium mb-0.5" data-i18n="peak_hours">Peak</div>
+          <div id="report-peak-hour" class="text-xs font-bold font-display text-amber-300 mt-1 truncate">Morgens</div>
+        </div>
+      </div>
+
+      <!-- 7-Tage Aktivitäts-Chart -->
+      <div class="p-3 bg-black/40 border border-white/10 rounded-xl space-y-2">
+        <div class="flex items-center justify-between text-[11px] font-bold">
+          <span class="text-gray-300">Aktivität (7 Tage)</span>
+          <span id="report-total-week-tasks" class="font-mono text-purple-300">0 Tasks</span>
+        </div>
+        <div id="report-weekly-chart" class="flex items-end justify-between h-16 pt-2 border-b border-white/5 pb-1"></div>
+      </div>
+
+      <!-- Motivations-Insight -->
+      <div class="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-xs text-purple-200 leading-snug flex items-start gap-2">
+        <span class="text-base leading-none">💡</span>
+        <span id="report-insight-text">Lade Produktivitäts-Insights...</span>
+      </div>
+    `;
+  }
+
   const now = new Date();
   const todayISO = now.toISOString().split('T')[0];
   const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
@@ -420,7 +490,7 @@ function generateComprehensiveReportText() {
   const weeklyDoneThisWeek = doneAll.filter(item => item.origin === 'weekly' && item.date >= mondayISO);
 
   let text = `========================================\n`;
-  text += `📊 FLOW-ORGANISER: STATISTIK- & FORTSCHRITTSBERICHT\n`;
+  text += `📊 NOODLE STUDIO: STATISTIK- & FORTSCHRITTSBERICHT\n`;
   text += `Erstellt am: ${dateStr}\n`;
   text += `========================================\n\n`;
 
@@ -515,7 +585,7 @@ function downloadReportFile() {
   const a = document.createElement('a');
   const today = new Date().toISOString().split('T')[0];
   a.href = url;
-  a.download = `Flow-Bericht_${today}.txt`;
+  a.download = `Noodle-Bericht_${today}.txt`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -530,7 +600,7 @@ function printReport() {
     printWindow.document.write(`
       <html>
         <head>
-          <title>Flow-Organiser Bericht</title>
+          <title>Noodle Bericht</title>
           <style>
             body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 30px; line-height: 1.6; color: #111; }
             pre { font-family: "Courier New", Courier, monospace; font-size: 13px; white-space: pre-wrap; background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; }
@@ -553,7 +623,7 @@ function printReport() {
 function submitFeedback() {
   const text = document.getElementById('feedback-text').value;
   if (text.trim()) {
-    const mailtoUrl = `mailto:jmonke@gmail.com?subject=Flow App Feedback&body=${encodeURIComponent(text)}`;
+    const mailtoUrl = `mailto:jmonke@gmail.com?subject=Noodle App Feedback&body=${encodeURIComponent(text)}`;
     window.location.href = mailtoUrl;
     showToast(tr({ de: 'E-Mail-Entwurf geöffnet! ❤️', en: 'Email draft opened! ❤️', es: '¡Borrador de email abierto! ❤️', el: 'Το προσχέδιο email άνοιξε! ❤️', fr: 'Brouillon d\'email ouvert ! ❤️', it: 'Bozza email aperta! ❤️' }));
     document.getElementById('feedback-text').value = ''; togglePanel('feedback');
@@ -734,7 +804,7 @@ async function exportReportAsImage() {
     useCORS: true
   }).then(canvas => {
     const link = document.createElement('a');
-    link.download = `flow-statistik-${new Date().toISOString().split('T')[0]}.png`;
+    link.download = `noodle-statistik-${new Date().toISOString().split('T')[0]}.png`;
     link.href = canvas.toDataURL();
     link.click();
     if (typeof showToast === 'function') showToast(tr({ de: "Statistik als Bild exportiert! 📸", en: "Statistics exported as image! 📸" }));
@@ -763,7 +833,7 @@ function generateReportContent(timeframe = 'comprehensive', targetDate = '') {
   const reportText = typeof generateComprehensiveReportText === 'function' ? generateComprehensiveReportText() : '';
   const now = new Date();
   const dateStr = targetDate || now.toISOString().split('T')[0];
-  const filename = `Flow-Organiser-Report-${timeframe}-${dateStr}.txt`;
+  const filename = `Noodle-Report-${timeframe}-${dateStr}.txt`;
   return { reportText, filename };
 }
 if (typeof window !== 'undefined') {
@@ -805,4 +875,29 @@ let activeDanceTimeouts = []; let currentlyDancingButtons = [];
 
 function startGlobalButtonDanceParty() {
   // Deaktiviert für maximale Performance und flüssige 60fps Reaktionszeit.
+} 
+
+if (typeof window !== 'undefined') {
+  window.togglePanel = togglePanel;
+  window.setReportTimeframe = setReportTimeframe;
+  window.updateReportPanel = updateReportPanel;
+  window.openReportDashboard = openReportDashboard;
+  window.closeReportDashboard = closeReportDashboard;
+  window.setDashboardTimeframe = setDashboardTimeframe;
+  window.filterDashboardHistory = filterDashboardHistory;
+  window.renderDashboardView = renderDashboardView;
+  window.renderDashboardHistoryList = renderDashboardHistoryList;
+  window.openReportExportModal = openReportExportModal;
+  window.closeReportExportModal = closeReportExportModal;
+  window.copyReportText = copyReportText;
+  window.downloadReportFile = downloadReportFile;
+  window.printReport = printReport;
+  window.exportReportAsImage = exportReportAsImage;
+  window.exportWeeklyReportAsImage = exportReportAsImage;
+  window.copyComprehensiveReportText = copyComprehensiveReportText;
+  window.calculateProductivePeakHours = calculateProductivePeakHours;
+  window.calculateCategoryDistribution = calculateCategoryDistribution;
+  window.calculateEstimatedFocusMinutes = calculateEstimatedFocusMinutes;
+  window.triggerManualReportDownload = triggerManualReportDownload;
+  window.generateComprehensiveReportText = generateComprehensiveReportText;
 } 

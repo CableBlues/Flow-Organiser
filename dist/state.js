@@ -20,12 +20,12 @@ function loadCategoriesOrder() {
   // Standard-Layout
   return [
     ['daily', 'sun'],
-    ['weekly', 'calendar-days'],
+    ['weekly', 'home'],
     ['todo', 'list-todo'],
-    ['done', 'check-circle'],
-    ['termine', 'clock'],
-    ['notes', 'sticky-note'],
-    ['occasionally', 'calendar-range']
+    ['done', 'check-circle-2'],
+    ['termine', 'calendar'],
+    ['notes', 'file-text'],
+    ['occasionally', 'clock']
   ];
 }
 
@@ -287,6 +287,26 @@ function migrateState(raw, lang) {
         return true;
       }
       return true;
+    });
+  }
+
+  // 7. Migration für Waschbecken & Spiegelschrank putzen
+  const renameOldTask = (list) => {
+    if (!Array.isArray(list)) return;
+    list.forEach((item, i) => {
+      if (typeof item === 'string' && item === 'Waschbecken & Spiegelschrank') {
+        list[i] = 'Waschbecken & Spiegelschrank putzen';
+      } else if (typeof item === 'object' && item && item.task === 'Waschbecken & Spiegelschrank') {
+        item.task = 'Waschbecken & Spiegelschrank putzen';
+      }
+    });
+  };
+  if (s.items) {
+    Object.values(s.items).forEach(renameOldTask);
+  }
+  if (s.workspaces) {
+    Object.values(s.workspaces).forEach(ws => {
+      if (ws && ws.items) Object.values(ws.items).forEach(renameOldTask);
     });
   }
 

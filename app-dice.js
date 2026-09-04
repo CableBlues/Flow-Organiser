@@ -236,9 +236,22 @@ function ensureDiceModalExists() {
 
         <!-- Top Header & 3D Würfel Badge -->
         <div class="flex flex-col items-center gap-2 pt-1">
-          <div class="flex items-center gap-2">
-            <div id="dice-3d-visual" class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 border border-amber-300/40 flex items-center justify-center text-black font-black shadow-lg shadow-amber-500/25 text-xl">
-              🎲
+          <div class="flex items-center gap-3">
+            <div id="dice-3d-visual" class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-400 to-amber-300 border-2 border-amber-200/60 flex items-center justify-center text-slate-950 font-black shadow-[0_0_25px_rgba(245,158,11,0.45)] transition-all duration-300 shrink-0">
+              <svg class="w-7 h-7 text-slate-950 overflow-visible" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12,2.2 20.8,6.8 12,11.8 3.2,6.8" fill="rgba(255,255,255,0.4)" stroke="currentColor" stroke-width="1.8" />
+                <polygon points="3.2,6.8 12,11.8 12,21.5 3.2,16.5" fill="rgba(0,0,0,0.08)" stroke="currentColor" stroke-width="1.8" />
+                <polygon points="12,11.8 20.8,6.8 20.8,16.5 12,21.5" fill="rgba(0,0,0,0.22)" stroke="currentColor" stroke-width="1.8" />
+                <circle cx="8" cy="5.2" r="1.1" fill="currentColor" stroke="none" />
+                <circle cx="12" cy="7" r="1.1" fill="currentColor" stroke="none" />
+                <circle cx="16" cy="8.8" r="1.1" fill="currentColor" stroke="none" />
+                <circle cx="7.5" cy="11.2" r="1.1" fill="currentColor" stroke="none" />
+                <circle cx="7.5" cy="17.2" r="1.1" fill="currentColor" stroke="none" />
+                <circle cx="14.8" cy="11.2" r="1.1" fill="currentColor" stroke="none" />
+                <circle cx="18" cy="9.5" r="1.1" fill="currentColor" stroke="none" />
+                <circle cx="14.8" cy="17.2" r="1.1" fill="currentColor" stroke="none" />
+                <circle cx="18" cy="15.5" r="1.1" fill="currentColor" stroke="none" />
+              </svg>
             </div>
             <div class="text-left">
               <h3 class="text-base font-bold font-display text-white flex items-center gap-1.5">

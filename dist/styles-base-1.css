@@ -4,18 +4,19 @@
 :root {
   --accent: #8b5cf6;
   --accent-light: #c084fc;
-  --bg-app: #0e0e14;
-  --bg-header: rgba(22, 22, 35, 0.7);
-  --bg-card: rgba(28, 28, 44, 0.65);
-  --bg-card-hover: rgba(36, 36, 58, 0.8);
-  --bg-dock: rgba(22, 22, 35, 0.8);
-  --bg-panel: #161622;
-  --bg-modal: #161622;
-  --text-main: #f4f4f5;
-  --text-muted: #a1a1aa;
-  --text-header: #f4f4f5;
-  --text-dock: #f4f4f5;
-  --border-main: rgba(255, 255, 255, 0.12);
+  --accent-border: rgba(139, 92, 246, 0.35);
+  --bg-app: #090714;
+  --bg-header: rgba(18, 14, 38, 0.85);
+  --bg-card: rgba(18, 12, 34, 0.75);
+  --bg-card-hover: rgba(28, 20, 52, 0.9);
+  --bg-dock: rgba(18, 14, 38, 0.95);
+  --bg-panel: #100a22;
+  --bg-modal: #100a22;
+  --text-main: #faf5ff;
+  --text-muted: #c084fc;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(139, 92, 246, 0.2);
   --font-family: "Plus Jakarta Sans", sans-serif;
 }
 
@@ -34,12 +35,13 @@ body::before {
   position: fixed;
   inset: 0;
   background: 
-    radial-gradient(circle at 12% 18%, var(--accent-light, rgba(168, 85, 247, 0.09)) 0%, transparent 45%),
-    radial-gradient(circle at 88% 82%, var(--accent, rgba(139, 92, 246, 0.07)) 0%, transparent 45%),
-    radial-gradient(circle at 50% 30%, rgba(16, 185, 129, 0.04) 0%, transparent 60%);
+    radial-gradient(circle at 15% 15%, var(--accent-light, rgba(168, 85, 247, 0.12)) 0%, transparent 50%),
+    radial-gradient(circle at 85% 85%, var(--accent, rgba(139, 92, 246, 0.1)) 0%, transparent 50%),
+    radial-gradient(circle at 50% 35%, var(--accent-border, rgba(16, 185, 129, 0.05)) 0%, transparent 65%);
   pointer-events: none;
   z-index: -1;
-  opacity: 0.85;
+  opacity: 0.9;
+  transition: background 0.4s ease;
 }
 
 /* Modals, Overlays & Dialoge liegen IMMER über dem Floating-Dock (z-40) */
@@ -64,15 +66,28 @@ main article {
   backface-visibility: hidden;
   contain: layout style;
   will-change: transform;
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border-main) !important;
+  border-top: 1.5px solid color-mix(in srgb, var(--accent-light, #c084fc) 40%, rgba(255, 255, 255, 0.2)) !important;
+  box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.55), 0 0 15px -4px var(--accent-border, rgba(168, 85, 247, 0.15)), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
   backdrop-filter: blur(28px) saturate(190%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.16) !important;
-  box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
+  transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease !important;
+}
+
+main article:hover {
+  border-color: color-mix(in srgb, var(--accent, #8b5cf6) 50%, var(--border-main)) !important;
+  box-shadow: 0 20px 45px -8px rgba(0, 0, 0, 0.65), 0 0 24px -4px var(--accent-border, rgba(168, 85, 247, 0.3)), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
 }
 
 header {
+  background-color: var(--bg-header) !important;
+  border: 1px solid var(--border-main) !important;
+  border-top: 1.5px solid color-mix(in srgb, var(--accent-light, #c084fc) 45%, rgba(255, 255, 255, 0.25)) !important;
+  box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.55), 0 0 25px -4px var(--accent-border, rgba(168, 85, 247, 0.2)) !important;
   backdrop-filter: blur(24px) saturate(180%) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.09) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease !important;
 }
 
 .font-mono, #timer-display, .timer-digit, [data-tabular="true"] {
@@ -121,152 +136,265 @@ body, body #app, body #app * {
   -webkit-box-orient: vertical;
   overflow: hidden;
   word-break: break-word;
+}
 /* ========================================================================== */
-/* 6 CHARAKTERSTARKE, VÖLLIG EIGENSTÄNDIGE & HUMANE FARBSCHEMATA             */
+/* 12 CHARAKTERSTARKE TECH-, GAMER- & ERGONOMISCHE FARBSCHEMATA             */
 /* ========================================================================== */
 
-/* 1. 🍯 Honig & Bernstein (Warm, Sanft & Geborgen) */
-body.theme-honey,
-body.theme-honey-chamomile,
-body.theme-cozy-amber,
-body.theme-cozy,
-body.theme-citrus,
-body.theme-carbon {
-  --accent: #f59e0b;
-  --accent-light: #fde68a;
-  --accent-border: rgba(245, 158, 11, 0.45);
-  --bg-app: #18120a;
-  --bg-header: rgba(34, 26, 16, 0.92);
-  --bg-card: rgba(48, 34, 18, 0.78);
-  --bg-card-hover: rgba(64, 46, 24, 0.9);
-  --bg-dock: rgba(34, 26, 16, 0.95);
-  --bg-panel: #181109;
-  --bg-modal: #181109;
-  --text-main: #fffbeb;
-  --text-muted: #fbbf24;
+/* 1. 🌌 Cyber Neon / Synthwave (Neon Pink & Cyber Violett) */
+body.theme-cyberpunk,
+body.theme-neon-cyber,
+body.theme-synthwave {
+  --accent: #f43f5e;
+  --accent-light: #fb7185;
+  --accent-border: rgba(244, 63, 94, 0.35);
+  --bg-app: #0d0716;
+  --bg-header: rgba(24, 12, 38, 0.88);
+  --bg-card: rgba(22, 10, 36, 0.78);
+  --bg-card-hover: rgba(36, 16, 58, 0.9);
+  --bg-dock: rgba(24, 12, 38, 0.95);
+  --bg-panel: #12071d;
+  --bg-modal: #12071d;
+  --text-main: #fdf2f8;
+  --text-muted: #f472b6;
   --text-header: #ffffff;
   --text-dock: #ffffff;
-  --border-main: rgba(245, 158, 11, 0.25);
+  --border-main: rgba(244, 63, 94, 0.2);
 }
 
-/* 2. 🌿 Salbei & Eukalyptus (Organisch, Beruhigend & Frisch) */
-body.theme-sage,
-body.theme-sage-breeze,
-body.theme-eucalyptus-dew,
-body.theme-forest,
-body.theme-matcha,
-body.theme-matcha-latte,
-body.theme-charcoal {
-  --accent: #10b981;
-  --accent-light: #86efac;
-  --accent-border: rgba(16, 185, 129, 0.45);
-  --bg-app: #0d1611;
-  --bg-header: rgba(20, 36, 28, 0.92);
-  --bg-card: rgba(24, 46, 34, 0.78);
-  --bg-card-hover: rgba(32, 60, 44, 0.9);
-  --bg-dock: rgba(20, 36, 28, 0.95);
-  --bg-panel: #0a130e;
-  --bg-modal: #0a130e;
-  --text-main: #f0fdf4;
-  --text-muted: #6ee7b7;
-  --text-header: #ffffff;
-  --text-dock: #ffffff;
-  --border-main: rgba(16, 185, 129, 0.25);
-}
-
-/* 3. 🌌 Aurora Violett (Mystisch, Tief & Edel) */
+/* 2. 🔮 Aurora Borealis (Tiefes Nacht-Violett & Stardust) */
 body.theme-aurora,
 body.theme-aurora-violet,
 body.theme-lavender-cloud,
 body.theme-spatial-orbit,
-body.theme-spatial-galaxy,
-body.theme-synthwave {
-  --accent: #a855f7;
-  --accent-light: #d8b4fe;
-  --accent-border: rgba(168, 85, 247, 0.45);
-  --bg-app: #120c22;
-  --bg-header: rgba(28, 20, 48, 0.92);
-  --bg-card: rgba(38, 24, 66, 0.78);
-  --bg-card-hover: rgba(50, 32, 84, 0.9);
-  --bg-dock: rgba(28, 20, 48, 0.95);
-  --bg-panel: #100a1e;
-  --bg-modal: #100a1e;
+body.theme-spatial-galaxy {
+  --accent: #8b5cf6;
+  --accent-light: #c084fc;
+  --accent-border: rgba(139, 92, 246, 0.35);
+  --bg-app: #090714;
+  --bg-header: rgba(18, 14, 38, 0.88);
+  --bg-card: rgba(18, 12, 34, 0.78);
+  --bg-card-hover: rgba(30, 18, 62, 0.9);
+  --bg-dock: rgba(18, 14, 38, 0.95);
+  --bg-panel: #0e091e;
+  --bg-modal: #0e091e;
   --text-main: #faf5ff;
   --text-muted: #c084fc;
   --text-header: #ffffff;
   --text-dock: #ffffff;
-  --border-main: rgba(168, 85, 247, 0.25);
+  --border-main: rgba(139, 92, 246, 0.2);
 }
 
-/* 4. 🍑 Pfirsich & Kaschmir (Menschlich, Weich & Sanft) */
-body.theme-peach,
-body.theme-peach-cashmere,
-body.theme-sakura,
-body.theme-sakura-blossom,
-body.theme-neon-cyber {
-  --accent: #fb7185;
-  --accent-light: #fecdd3;
-  --accent-border: rgba(251, 113, 133, 0.45);
-  --bg-app: #1c0e13;
-  --bg-header: rgba(38, 20, 28, 0.92);
-  --bg-card: rgba(54, 26, 38, 0.78);
-  --bg-card-hover: rgba(70, 34, 48, 0.9);
-  --bg-dock: rgba(38, 20, 28, 0.95);
-  --bg-panel: #180a10;
-  --bg-modal: #180a10;
-  --text-main: #fff1f2;
-  --text-muted: #fda4af;
+/* 3. ⚡ Emerald Matrix (Cyber-Grün & Mint Glow) */
+body.theme-matrix,
+body.theme-forest,
+body.theme-matcha {
+  --accent: #10b981;
+  --accent-light: #34d399;
+  --accent-border: rgba(16, 185, 129, 0.35);
+  --bg-app: #040d08;
+  --bg-header: rgba(10, 26, 18, 0.88);
+  --bg-card: rgba(8, 22, 15, 0.78);
+  --bg-card-hover: rgba(16, 44, 30, 0.9);
+  --bg-dock: rgba(10, 26, 18, 0.95);
+  --bg-panel: #06140d;
+  --bg-modal: #06140d;
+  --text-main: #f0fdf4;
+  --text-muted: #6ee7b7;
   --text-header: #ffffff;
   --text-dock: #ffffff;
-  --border-main: rgba(251, 113, 133, 0.25);
+  --border-main: rgba(16, 185, 129, 0.2);
 }
 
-/* 5. 🌊 Ozean & Lagune (Tiefsee-Klarheit & Frische) */
+/* 4. 🌊 Oceanic Abyss (Laser-Cyan & Tiefsee) */
 body.theme-ocean,
 body.theme-lagoon,
-body.theme-lagoon-serenity,
 body.theme-glacier,
 body.theme-glacier-frost,
-body.theme-spatial-sanctuary,
-body.theme-spatial-island,
 body.theme-holo-chrome,
-body.theme-architect,
-body.theme-executive {
+body.theme-architect {
   --accent: #06b6d4;
-  --accent-light: #67e8f9;
-  --accent-border: rgba(6, 182, 212, 0.45);
-  --bg-app: #081422;
-  --bg-header: rgba(16, 36, 56, 0.92);
-  --bg-card: rgba(18, 44, 70, 0.78);
-  --bg-card-hover: rgba(26, 58, 92, 0.9);
-  --bg-dock: rgba(16, 36, 56, 0.95);
-  --bg-panel: #06101c;
-  --bg-modal: #06101c;
+  --accent-light: #38bdf8;
+  --accent-border: rgba(6, 182, 212, 0.35);
+  --bg-app: #040c16;
+  --bg-header: rgba(10, 24, 42, 0.88);
+  --bg-card: rgba(8, 20, 36, 0.78);
+  --bg-card-hover: rgba(16, 42, 66, 0.9);
+  --bg-dock: rgba(10, 24, 42, 0.95);
+  --bg-panel: #06131f;
+  --bg-modal: #06131f;
   --text-main: #ecfeff;
   --text-muted: #22d3ee;
   --text-header: #ffffff;
   --text-dock: #ffffff;
-  --border-main: rgba(6, 182, 212, 0.25);
+  --border-main: rgba(6, 182, 212, 0.2);
 }
 
-/* 6. 🏺 Terrakotta (Erdig, Handwerklich & Feurig) */
+/* 5. ☀️ Solar Gold / Cyber Amber (Warmes Gold & Laser-Bernstein) */
+body.theme-honey,
+body.theme-amber,
+body.theme-honey-chamomile,
+body.theme-cozy-amber,
+body.theme-cozy,
+body.theme-citrus {
+  --accent: #f59e0b;
+  --accent-light: #fbbf24;
+  --accent-border: rgba(245, 158, 11, 0.35);
+  --bg-app: #0d0904;
+  --bg-header: rgba(28, 20, 10, 0.88);
+  --bg-card: rgba(24, 16, 8, 0.78);
+  --bg-card-hover: rgba(48, 34, 16, 0.9);
+  --bg-dock: rgba(28, 20, 10, 0.95);
+  --bg-panel: #181108;
+  --bg-modal: #181108;
+  --text-main: #fffbeb;
+  --text-muted: #fbbf24;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(245, 158, 11, 0.2);
+}
+
+/* 6. 🩸 Crimson Protocol (Gamer-Rot & Dark Ruby) */
+body.theme-crimson {
+  --accent: #ef4444;
+  --accent-light: #f87171;
+  --accent-border: rgba(239, 68, 68, 0.35);
+  --bg-app: #0f0507;
+  --bg-header: rgba(32, 12, 16, 0.88);
+  --bg-card: rgba(26, 10, 14, 0.78);
+  --bg-card-hover: rgba(52, 18, 26, 0.9);
+  --bg-dock: rgba(32, 12, 16, 0.95);
+  --bg-panel: #1a080d;
+  --bg-modal: #1a080d;
+  --text-main: #fff1f2;
+  --text-muted: #fb7185;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(239, 68, 68, 0.2);
+}
+
+/* 7. 🖤 Obsidian Stealth / OLED (Monochrom & Titan-Silber) */
+body.theme-obsidian,
+body.theme-carbon,
+body.theme-charcoal,
+body.theme-executive {
+  --accent: #94a3b8;
+  --accent-light: #cbd5e1;
+  --accent-border: rgba(255, 255, 255, 0.25);
+  --bg-app: #060709;
+  --bg-header: rgba(15, 18, 24, 0.88);
+  --bg-card: rgba(12, 14, 20, 0.78);
+  --bg-card-hover: rgba(24, 28, 38, 0.9);
+  --bg-dock: rgba(15, 18, 24, 0.95);
+  --bg-panel: #08080a;
+  --bg-modal: #08080a;
+  --text-main: #fafafa;
+  --text-muted: #a1a1aa;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(255, 255, 255, 0.12);
+}
+
+/* 8. 🌌 Cosmic Nebula (Deep Space Indigo & Laser-Blau) */
+body.theme-nebula {
+  --accent: #6366f1;
+  --accent-light: #818cf8;
+  --accent-border: rgba(99, 102, 241, 0.35);
+  --bg-app: #060714;
+  --bg-header: rgba(14, 16, 38, 0.88);
+  --bg-card: rgba(12, 14, 32, 0.78);
+  --bg-card-hover: rgba(24, 28, 64, 0.9);
+  --bg-dock: rgba(14, 16, 38, 0.95);
+  --bg-panel: #090a1c;
+  --bg-modal: #090a1c;
+  --text-main: #eef2ff;
+  --text-muted: #818cf8;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(99, 102, 241, 0.2);
+}
+
+/* 9. 🌸 Tokyo Sakura (Sanftes Japanisches Blüten-Rosé) */
+body.theme-peach,
+body.theme-sakura,
+body.theme-sakura-blossom,
+body.theme-peach-cashmere {
+  --accent: #f472b6;
+  --accent-light: #fbcfe8;
+  --accent-border: rgba(244, 114, 182, 0.35);
+  --bg-app: #10060e;
+  --bg-header: rgba(28, 12, 24, 0.88);
+  --bg-card: rgba(24, 10, 20, 0.78);
+  --bg-card-hover: rgba(48, 20, 40, 0.9);
+  --bg-dock: rgba(28, 12, 24, 0.95);
+  --bg-panel: #180a11;
+  --bg-modal: #180a11;
+  --text-main: #fff1f2;
+  --text-muted: #fda4af;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(244, 114, 182, 0.2);
+}
+
+/* 10. 🌿 Botanical Sage (Beruhigendes Wald-Teal) */
+body.theme-sage,
+body.theme-sage-breeze,
+body.theme-eucalyptus-dew,
+body.theme-matcha-latte {
+  --accent: #14b8a6;
+  --accent-light: #5eead4;
+  --accent-border: rgba(20, 184, 166, 0.35);
+  --bg-app: #050e0d;
+  --bg-header: rgba(12, 28, 26, 0.88);
+  --bg-card: rgba(10, 24, 22, 0.78);
+  --bg-card-hover: rgba(20, 48, 44, 0.9);
+  --bg-dock: rgba(12, 28, 26, 0.95);
+  --bg-panel: #081413;
+  --bg-modal: #081413;
+  --text-main: #f0fdfa;
+  --text-muted: #2dd4bf;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(20, 184, 166, 0.2);
+}
+
+/* 11. 🏺 Sunset Terracotta (Warme Ton-Erde & Orange) */
 body.theme-terracotta,
 body.theme-terracotta-sun {
   --accent: #f97316;
-  --accent-light: #fed7aa;
-  --accent-border: rgba(249, 115, 22, 0.45);
-  --bg-app: #1c0e07;
-  --bg-header: rgba(38, 22, 14, 0.92);
-  --bg-card: rgba(58, 28, 16, 0.78);
-  --bg-card-hover: rgba(76, 36, 20, 0.9);
-  --bg-dock: rgba(38, 22, 14, 0.95);
-  --bg-panel: #180b05;
-  --bg-modal: #180b05;
+  --accent-light: #fdba74;
+  --accent-border: rgba(249, 115, 22, 0.35);
+  --bg-app: #0f0703;
+  --bg-header: rgba(32, 16, 8, 0.88);
+  --bg-card: rgba(26, 12, 6, 0.78);
+  --bg-card-hover: rgba(52, 24, 12, 0.9);
+  --bg-dock: rgba(32, 16, 8, 0.95);
+  --bg-panel: #1a0b05;
+  --bg-modal: #1a0b05;
   --text-main: #fff7ed;
   --text-muted: #fdba74;
   --text-header: #ffffff;
   --text-dock: #ffffff;
-  --border-main: rgba(249, 115, 22, 0.25);
+  --border-main: rgba(249, 115, 22, 0.2);
+}
+
+/* 12. 👑 Royal Velvet (Edles Purpur-Pflaume & Luxus) */
+body.theme-royal {
+  --accent: #d946ef;
+  --accent-light: #f0abfc;
+  --accent-border: rgba(217, 70, 239, 0.35);
+  --bg-app: #0d0414;
+  --bg-header: rgba(26, 10, 38, 0.88);
+  --bg-card: rgba(22, 8, 32, 0.78);
+  --bg-card-hover: rgba(44, 16, 64, 0.9);
+  --bg-dock: rgba(26, 10, 38, 0.95);
+  --bg-panel: #17071c;
+  --bg-modal: #17071c;
+  --text-main: #fdf4ff;
+  --text-muted: #e879f9;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(217, 70, 239, 0.2);
 }
 
 /* --- 3D SPATIAL TIEFEN- & GLOW-EFFEKTE --- */
@@ -344,5 +472,211 @@ body[class*="theme-spatial-"] #date-container {
   border-color: var(--accent) !important;
   box-shadow: 0 0 0 2px var(--accent-border, rgba(168, 85, 247, 0.25)) !important;
   outline: none !important;
+}
+
+/* 3D Würfel Animationen & Glow-Effekte */
+@keyframes diceSpin3D {
+  0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1); }
+  50% { transform: rotateX(180deg) rotateY(360deg) rotateZ(90deg) scale(1.15); }
+  100% { transform: rotateX(360deg) rotateY(720deg) rotateZ(360deg) scale(1); }
+}
+
+@keyframes noodleDiceRoll {
+  0% { transform: perspective(300px) rotateY(0deg) rotateX(0deg) scale(1); }
+  50% { transform: perspective(300px) rotateY(180deg) rotateX(90deg) scale(1.18); }
+  100% { transform: perspective(300px) rotateY(360deg) rotateX(360deg) scale(1); }
+}
+
+@keyframes noodleDiceIdle {
+  0%, 100% { transform: perspective(300px) rotateY(-6deg) rotateX(6deg); }
+  50% { transform: perspective(300px) rotateY(6deg) rotateX(-6deg); }
+}
+
+.dice-3d-svg {
+  animation: noodleDiceIdle 3.5s ease-in-out infinite;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.group\/dice:hover .dice-3d-svg,
+button:hover .dice-3d-svg {
+  animation: noodleDiceRoll 0.85s cubic-bezier(0.2, 0.8, 0.3, 1) infinite !important;
+}
+
+@keyframes diceWinnerPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(245, 158, 11, 0.4); }
+  50% { transform: scale(1.12); box-shadow: 0 0 35px rgba(245, 158, 11, 0.8), 0 0 15px rgba(251, 191, 36, 0.6); }
+}
+
+.dice-spinning-fast {
+  animation: diceSpin3D 0.6s linear infinite !important;
+}
+
+.dice-winner-pulse {
+  animation: diceWinnerPulse 1.8s ease-in-out infinite !important;
+}
+
+/* --- ANIMIERTE DAMPF-TASSE (PAUSE ICON) --- */
+@keyframes steamRise1 {
+  0% { transform: translateY(0) scaleY(1); opacity: 0.2; }
+  50% { transform: translateY(-3px) scaleY(1.3) skewX(-3deg); opacity: 1; }
+  100% { transform: translateY(-6px) scaleY(0.7) skewX(4deg); opacity: 0; }
+}
+
+@keyframes steamRise2 {
+  0% { transform: translateY(0) scaleY(1); opacity: 0.3; }
+  50% { transform: translateY(-4px) scaleY(1.4) skewX(3deg); opacity: 1; }
+  100% { transform: translateY(-7px) scaleY(0.6) skewX(-3deg); opacity: 0; }
+}
+
+@keyframes steamRise3 {
+  0% { transform: translateY(0) scaleY(1); opacity: 0.2; }
+  50% { transform: translateY(-3px) scaleY(1.3) skewX(-4deg); opacity: 1; }
+  100% { transform: translateY(-6px) scaleY(0.7) skewX(3deg); opacity: 0; }
+}
+
+.steam-cup-icon .steam-line-1 {
+  animation: steamRise1 2.2s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+.steam-cup-icon .steam-line-2 {
+  animation: steamRise2 2.5s ease-in-out infinite 0.4s;
+  transform-origin: center bottom;
+}
+
+.steam-cup-icon .steam-line-3 {
+  animation: steamRise3 2.1s ease-in-out infinite 0.8s;
+  transform-origin: center bottom;
+}
+
+button:hover .steam-cup-icon .steam-line-1 {
+  animation-duration: 1.1s;
+  stroke: #2dd4bf !important;
+}
+button:hover .steam-cup-icon .steam-line-2 {
+  animation-duration: 1.2s;
+  stroke: #5eead4 !important;
+}
+button:hover .steam-cup-icon .steam-line-3 {
+  animation-duration: 1.0s;
+  stroke: #2dd4bf !important;
+}
+
+/* --- HOCHWERTIGE NOODLE STUDIO LOGO ANIMATION (GLANZ-SWEEP & AMBIENT NEBULA) --- */
+.logo-ambient-aura {
+  background: radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.3), rgba(56, 189, 248, 0.2) 50%, transparent 75%);
+  animation: logoNebulaPulse 5s ease-in-out infinite;
+}
+
+@keyframes logoNebulaPulse {
+  0%, 100% {
+    transform: scale(0.95);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.75;
+  }
+}
+
+/* Lichtstrahl-Glanz (gleitet elegant über die bunten Knetebuchstaben) */
+.logo-light-sweep {
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 70%
+  );
+  transform: translateX(-150%);
+  animation: logoLightSweep 5.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes logoLightSweep {
+  0%, 60% {
+    transform: translateX(-150%);
+  }
+  80%, 100% {
+    transform: translateX(150%);
+  }
+}
+
+/* STUDIO Shimmer & Living Breathing Float */
+@keyframes noodleStudioLiving {
+  0%, 100% {
+    opacity: 0.9;
+    letter-spacing: 0.32em;
+    transform: translateY(0);
+    color: #d8b4fe;
+    text-shadow: 0 0 8px rgba(168, 85, 247, 0.3);
+  }
+  50% {
+    opacity: 1;
+    letter-spacing: 0.38em;
+    transform: translateY(-0.8px);
+    color: #ffffff;
+    text-shadow: 0 0 16px rgba(192, 132, 252, 0.8), 0 0 30px rgba(56, 189, 248, 0.4);
+  }
+}
+
+.noodle-studio-badge {
+  display: block;
+  animation: noodleStudioLiving 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+.flow-logo-container:hover .noodle-studio-badge {
+  animation-duration: 2s;
+  letter-spacing: 0.4em;
+  color: #ffffff;
+  text-shadow: 0 0 18px rgba(217, 70, 239, 0.9), 0 0 35px rgba(56, 189, 248, 0.6);
+}
+
+/* ========================================================================== */
+/* WAS NUN? — DYNAMISCHE IDEEN-FUNKEN & AMBIENT AURA ANIMATION               */
+/* ========================================================================== */
+@keyframes whatNowAuraGlow {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.2), inset 0 0 4px rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(245, 158, 11, 0.45), 0 0 30px rgba(251, 191, 36, 0.2), inset 0 0 8px rgba(245, 158, 11, 0.25);
+    border-color: rgba(251, 191, 36, 0.6);
+  }
+}
+
+@keyframes whatNowBulbSpark {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.4));
+  }
+  25% {
+    transform: scale(1.15) rotate(-6deg);
+    filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.9)) drop-shadow(0 0 14px rgba(245, 158, 11, 0.7));
+  }
+  50% {
+    transform: scale(1.05) rotate(4deg);
+    filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.6));
+  }
+  75% {
+    transform: scale(1.18) rotate(-3deg);
+    filter: drop-shadow(0 0 10px rgba(251, 191, 36, 1)) drop-shadow(0 0 18px rgba(245, 158, 11, 0.8));
+  }
+}
+
+.whatnow-animated-btn {
+  animation: whatNowAuraGlow 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: box-shadow, border-color;
+}
+
+.whatnow-animated-bulb {
+  animation: whatNowBulbSpark 4s ease-in-out infinite;
+  will-change: transform, filter;
+}
+
+.whatnow-animated-btn:hover {
+  animation-duration: 1.5s;
+}
+
+.whatnow-animated-btn:hover .whatnow-animated-bulb {
+  animation-duration: 1.2s;
 }
 

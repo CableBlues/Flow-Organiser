@@ -149,7 +149,7 @@ let currentWhatNowEnergyLevel = 'med';
 let currentWhatNowChosen = null;
 
 function switchWhatNowTab(tabName) {
-  ['energy', 'triple', 'micro', 'coin'].forEach(t => {
+  ['energy', 'zen', 'micro'].forEach(t => {
     const pane = document.getElementById(`whatnow-pane-${t}`);
     const tabBtn = document.getElementById(`whatnow-tab-${t}`);
     if (pane) {
@@ -158,15 +158,15 @@ function switchWhatNowTab(tabName) {
     }
     if (tabBtn) {
       if (t === tabName) {
-        tabBtn.className = 'py-1.5 px-1 rounded-lg bg-purple-600 text-white text-center transition cursor-pointer flex items-center justify-center gap-1 font-bold';
+        tabBtn.className = 'py-1.5 px-1 rounded-xl bg-purple-600 text-white text-center transition cursor-pointer flex items-center justify-center gap-1 font-bold shadow-sm';
       } else {
-        tabBtn.className = 'py-1.5 px-1 rounded-lg text-gray-400 hover:text-white text-center transition cursor-pointer flex items-center justify-center gap-1 font-bold';
+        tabBtn.className = 'py-1.5 px-1 rounded-xl text-gray-400 hover:text-white text-center transition cursor-pointer flex items-center justify-center gap-1 font-bold';
       }
     }
   });
 
-  if (tabName === 'triple') {
-    generateTripleTaskChoices();
+  if (tabName === 'zen') {
+    updateWhatNowZenTab();
   } else if (tabName === 'micro') {
     if (currentWhatNowChosen) {
       prepareWhatNowMicroStep(currentWhatNowChosen.task);
@@ -175,6 +175,43 @@ function switchWhatNowTab(tabName) {
       if (currentWhatNowChosen) prepareWhatNowMicroStep(currentWhatNowChosen.task);
     }
   }
+}
+
+function updateWhatNowZenTab() {
+  const titleEl = document.getElementById('whatnow-zen-suggested-title');
+  if (!titleEl) return;
+  
+  if (currentWhatNowChosen && currentWhatNowChosen.task) {
+    titleEl.innerText = currentWhatNowChosen.task;
+  } else {
+    const all = [
+      ...(state?.items?.daily || []).map(t => ({ cat: 'daily', task: typeof t === 'object' ? t.task : t })),
+      ...(state?.items?.todo || []).map(t => ({ cat: 'todo', task: typeof t === 'object' ? t.task : t })),
+      ...(state?.items?.weekly || []).map(t => ({ cat: 'weekly', task: typeof t === 'object' ? t.task : t }))
+    ].filter(t => t.task && !isEveningTeethTask(t.task));
+
+    if (all.length > 0) {
+      currentWhatNowChosen = all[0];
+      titleEl.innerText = all[0].task;
+    } else {
+      titleEl.innerText = tr({ de: "Keine offene Aufgabe – Zeit für eine freie Fokus-Session!", en: "No open task – Time for a free focus session!", fr: "Aucune tâche en cours – Session libre !", it: "Nessuna attività – Sessione libera!", es: "¡Sin tareas pendientes!", el: "Καμία εκκρεμής εργασία!" });
+    }
+  }
+}
+
+function launchZenFromWhatNow() {
+  if (currentWhatNowChosen && currentWhatNowChosen.task) {
+    startZenWithTask(currentWhatNowChosen.task, currentWhatNowChosen.cat || 'todo');
+  } else {
+    startZenWithTask(tr({ de: "Fokus-Session", en: "Focus Session", fr: "Session Focus", it: "Sessione Focus", es: "Sesión de Enfoque", el: "Συνεδρία Εστίασης" }), 'todo');
+  }
+}
+
+function launchCustomZenFromWhatNow() {
+  const input = document.getElementById('whatnow-custom-zen-input');
+  const task = input ? input.value.trim() : '';
+  if (!task) return;
+  startZenWithTask(task, 'todo');
 }
 
 function setWhatNowEnergyLevel(level) {
@@ -404,7 +441,7 @@ function pickRandomTask() {
         <div class="flex flex-col sm:flex-row items-center gap-2 mt-2 w-full">
           <button onclick="startZenWithTask('${safeTask}', '${chosen.cat}')" class="flex-1 w-full py-2.5 px-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-1.5 cursor-pointer">
             <i data-lucide="play" class="w-3.5 h-3.5"></i>
-            <span>Im Fokus-Modus starten 🧘</span>
+            <span>${tr({ de: 'Im Fokus starten 🧘', en: 'Start in Focus 🧘', fr: 'Démarrer en Focus 🧘', it: 'Avvia in Focus 🧘', es: 'Iniciar en Enfoque 🧘', el: 'Έναρξη σε Εστίαση 🧘' })}</span>
           </button>
           <button onclick="openTaskStepsModal('${chosen.cat}', ${taskIdx})" class="py-2.5 px-3 bg-white/10 hover:bg-white/15 text-gray-200 text-xs font-semibold rounded-xl transition flex items-center justify-center gap-1 cursor-pointer">
             <i data-lucide="footprints" class="w-3.5 h-3.5"></i>

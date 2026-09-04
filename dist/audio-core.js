@@ -311,11 +311,222 @@ function triggerHapticFeedback(pattern = [15, 30, 15]) {
 }
 window.triggerHapticFeedback = triggerHapticFeedback;
 
+const MOOD_PRESET_NAMES = {
+  deep_focus: { name: 'Deep Focus (Lofi Tape Chords)', sound: 'lofi' },
+  cozy_cafe: { name: 'Cozy Café (Jazz Piano & Coffee)', sound: 'jazz_piano' },
+  zen_forest: { name: 'Zen Forest (Waldvögel & Natur)', sound: 'birds' },
+  energy_boost: { name: 'Energy Boost (Techno 128 BPM)', sound: 'techno' },
+  cosmic_flow: { name: 'Cosmic Flow (432Hz Drone)', sound: 'space' }
+};
+
+function applyAudioMoodPreset(presetKey) {
+  const preset = MOOD_PRESET_NAMES[presetKey];
+  if (!preset) return;
+
+  document.querySelectorAll('.mood-preset-card').forEach(btn => {
+    btn.classList.toggle('border-purple-500/80', btn.id === `mood-btn-${presetKey}`);
+    btn.classList.toggle('bg-purple-500/25', btn.id === `mood-btn-${presetKey}`);
+  });
+
+  playAmbientSound(preset.sound);
+  updateAudioStudioHeader(preset.name);
+  if (typeof showToast === 'function') {
+    showToast(tr({
+      de: `Stimmung aktiviert: ${preset.name} ✨`,
+      en: `Mood active: ${preset.name} ✨`,
+      fr: `Ambiance activée : ${preset.name} ✨`,
+      it: `Atmosfera attivata: ${preset.name} ✨`,
+      es: `Ambiente activado: ${preset.name} ✨`,
+      el: `Ενεργοποιήθηκε η ατμόσφαιρα: ${preset.name} ✨`
+    }));
+  }
+}
+window.applyAudioMoodPreset = applyAudioMoodPreset;
+
+function updateAudioStudioHeader(customTitle) {
+  const titleEl = document.getElementById('audio-studio-now-playing');
+  const liveBadge = document.getElementById('audio-studio-live-badge');
+  const eqBars = document.getElementById('studio-eq-bars');
+  
+  const isPlaying = (typeof currentSoundType !== 'undefined' && currentSoundType) || 
+                    (typeof activeUserAudio !== 'undefined' && activeUserAudio && !activeUserAudio.paused) || 
+                    (typeof djDecks !== 'undefined' && djDecks && (djDecks.a?.isPlaying || djDecks.b?.isPlaying));
+  
+  if (isPlaying) {
+    if (liveBadge) liveBadge.classList.remove('hidden');
+    if (eqBars) eqBars.classList.add('animate-pulse');
+    if (titleEl) {
+      if (customTitle) {
+        titleEl.textContent = '▶ ' + customTitle;
+      } else if (currentSoundType) {
+        const soundTitle = (typeof t === 'function' && t('sound_' + currentSoundType)) ? t('sound_' + currentSoundType) : currentSoundType.toUpperCase();
+        titleEl.textContent = '▶ ' + soundTitle;
+      } else if (typeof activeUserAudio !== 'undefined' && activeUserAudio && typeof playlistTracks !== 'undefined' && playlistTracks[currentTrackIndex]) {
+        titleEl.textContent = '▶ ' + playlistTracks[currentTrackIndex].name;
+      }
+    }
+  } else {
+    if (liveBadge) liveBadge.classList.add('hidden');
+    if (eqBars) eqBars.classList.remove('animate-pulse');
+    if (titleEl) {
+      titleEl.textContent = (typeof tr === 'function') 
+        ? tr({ de: 'Kein Sound aktiv · Wähle einen Preset oder Track', en: 'No audio active · Choose a preset or track' }) 
+        : 'Kein Sound aktiv · Wähle einen Preset oder Track';
+    }
+  }
+  updateHeaderSoundBtnUI();
+}
+window.updateAudioStudioHeader = updateAudioStudioHeader;
+
+function isAnyAudioPlaying() {
+  return (typeof currentSoundType !== 'undefined' && Boolean(currentSoundType)) || 
+         (typeof activeUserAudio !== 'undefined' && activeUserAudio && !activeUserAudio.paused) || 
+         (typeof djDecks !== 'undefined' && djDecks && (djDecks.a?.isPlaying || djDecks.b?.isPlaying));
+}
+window.isAnyAudioPlaying = isAnyAudioPlaying;
+
+function updateHeaderSoundBtnUI() {
+  const btn = document.getElementById('header-btn-sound-toggle');
+  const iconWrapper = document.getElementById('header-sound-icon-wrapper');
+  const eqBars = document.getElementById('header-sound-eq-bars');
+  const label = document.getElementById('header-sound-label');
+  if (!btn) return;
+
+  const isPlaying = isAnyAudioPlaying();
+  if (isPlaying) {
+    btn.className = 'h-9 w-9 p-0 border border-purple-400/80 rounded-xl bg-purple-600/25 active:scale-95 text-white flex items-center justify-center cursor-pointer transition shadow-[0_0_16px_rgba(168,85,247,0.35)] shrink-0 group/sound-btn';
+    btn.title = (typeof tr === 'function') ? tr({ de: 'Sound ausschalten (Klick)', en: 'Turn sound off (Click)' }) : 'Sound ausschalten';
+    if (iconWrapper) {
+      iconWrapper.innerHTML = '<i data-lucide="volume-2" class="w-4 h-4 text-purple-200 animate-pulse"></i>';
+    }
+    if (eqBars) {
+      eqBars.classList.remove('hidden');
+      eqBars.classList.add('flex');
+    }
+    if (label) label.textContent = '';
+  } else {
+    btn.className = 'h-9 w-9 p-0 border border-purple-500/30 hover:border-purple-400/60 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 active:scale-95 text-purple-200 hover:text-white flex items-center justify-center cursor-pointer transition shadow-[0_0_12px_rgba(168,85,247,0.12)] shrink-0 group/sound-btn opacity-90 hover:opacity-100';
+    btn.title = (typeof tr === 'function') ? tr({ de: 'Sound einschalten (Klick)', en: 'Turn sound on (Click)' }) : 'Sound einschalten';
+    if (iconWrapper) {
+      iconWrapper.innerHTML = '<i data-lucide="volume-x" class="w-4 h-4 text-purple-300/80 group-hover/sound-btn:text-purple-200"></i>';
+    }
+    if (eqBars) {
+      eqBars.classList.add('hidden');
+      eqBars.classList.remove('flex');
+    }
+    if (label) label.textContent = '';
+  }
+  if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
+}
+window.updateHeaderSoundBtnUI = updateHeaderSoundBtnUI;
+
+function toggleMasterSound() {
+  if (isAnyAudioPlaying()) {
+    if (typeof currentSoundType !== 'undefined' && currentSoundType) {
+      window._lastPlayedSound = currentSoundType;
+    }
+    stopAllStudioAudio();
+  } else {
+    const soundToPlay = window._lastPlayedSound || 'lofi';
+    if (typeof playAmbientSound === 'function') {
+      playAmbientSound(soundToPlay);
+    }
+    if (typeof showToast === 'function') {
+      showToast(tr({ de: 'Sound aktiviert 🔊', en: 'Sound active 🔊', fr: 'Son activé 🔊', it: 'Suono attivato 🔊', es: 'Sonido activado 🔊', el: 'Ήχος ενεργός 🔊' }));
+    }
+  }
+  updateHeaderSoundBtnUI();
+}
+window.toggleMasterSound = toggleMasterSound;
+
+function stopAllStudioAudio() {
+  if (typeof stopAmbientSound === 'function') stopAmbientSound(true);
+  if (typeof pauseMusicTrack === 'function') pauseMusicTrack();
+  if (typeof pauseDjDeck === 'function') { pauseDjDeck('a'); pauseDjDeck('b'); }
+  updateAudioStudioHeader();
+  updateHeaderSoundBtnUI();
+  document.querySelectorAll('.mood-preset-card').forEach(btn => {
+    btn.classList.remove('border-purple-500/80', 'bg-purple-500/25');
+  });
+  if (typeof showToast === 'function') {
+    showToast(tr({ de: 'Sound gestoppt ⏹️', en: 'Sound stopped ⏹️', fr: 'Son arrêté ⏹️', it: 'Suono interrotto ⏹️', es: 'Sonido detenido ⏹️', el: 'Ο ήχος σταμάτησε ⏹️' }));
+  }
+}
+window.stopAllStudioAudio = stopAllStudioAudio;
+
+function handleHeaderVolumeInput(val) {
+  if (typeof setSoundVolume === 'function') setSoundVolume(val);
+  if (typeof setMusicPlayerVolume === 'function') setMusicPlayerVolume(val);
+  const roundedPct = `${Math.round(val * 100)}%`;
+  const percentEl = document.getElementById('header-sound-volume-percent');
+  if (percentEl) {
+    percentEl.textContent = roundedPct;
+  }
+  const studioPctEl = document.getElementById('audio-panel-master-volume-pct');
+  if (studioPctEl) {
+    studioPctEl.textContent = roundedPct;
+  }
+  document.querySelectorAll('.master-volume-slider').forEach(s => {
+    if (s.value !== val) s.value = val;
+  });
+  const headerSlider = document.getElementById('header-sound-volume-slider');
+  if (headerSlider && headerSlider.value !== val) headerSlider.value = val;
+  const studioSlider = document.getElementById('audio-panel-master-volume-slider');
+  if (studioSlider && studioSlider.value !== val) studioSlider.value = val;
+}
+window.handleHeaderVolumeInput = handleHeaderVolumeInput;
+window.handleStudioMasterVolume = handleHeaderVolumeInput;
+
+function showSoundHoverSlider() {
+  const popover = document.getElementById('header-sound-volume-popover');
+  if (popover) {
+    popover.classList.remove('hidden');
+    popover.classList.add('flex');
+    if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
+  }
+}
+window.showSoundHoverSlider = showSoundHoverSlider;
+
+function hideSoundHoverSlider() {
+  const popover = document.getElementById('header-sound-volume-popover');
+  if (popover) {
+    popover.classList.add('hidden');
+    popover.classList.remove('flex');
+  }
+}
+window.hideSoundHoverSlider = hideSoundHoverSlider;
+
+function toggleSoundVolumePopover(event) {
+  if (event) event.stopPropagation();
+  const popover = document.getElementById('header-sound-volume-popover');
+  if (popover) {
+    if (popover.classList.contains('hidden')) {
+      showSoundHoverSlider();
+    } else {
+      hideSoundHoverSlider();
+    }
+  }
+}
+window.toggleSoundVolumePopover = toggleSoundVolumePopover;
+
+function toggleAudioTimerSync(enabled) {
+  try {
+    localStorage.setItem('flow_audio_timer_sync', enabled ? 'true' : 'false');
+    if (typeof showToast === 'function') {
+      showToast(enabled 
+        ? tr({ de: 'Timer-Sync aktiviert: Sound startet & pausiert automatisch mit dem Fokus-Timer ⏱️', en: 'Timer-Sync active: Sound starts & pauses with focus timer ⏱️' })
+        : tr({ de: 'Timer-Sync deaktiviert', en: 'Timer-Sync disabled' })
+      );
+    }
+  } catch (e) {}
+}
+window.toggleAudioTimerSync = toggleAudioTimerSync;
+
 function updateSoundscapeUI() {
   const sounds = [
     'piano', 'lofi', 'chimes', 'space', 'guitar', 'singingbowl', 'musicbox',
     'breeze', 'campfire', 'birds', 'cafe', 'clock', 'lofi_sunshine', 'summer_meadow',
-    'bossa_nova', 'techno', 'drumnbass', 'afrobeats', 'swing', 'jazz_piano', 'rhodes', 'hypnotic_riff'
+    'bossa_nova', 'techno', 'dnb', 'afrobeats', 'swing', 'boombap', 'jazz_piano', 'rhodes', 'hypnotic_riff'
   ];
   sounds.forEach(st => {
     const btn = document.getElementById("sound-btn-" + st);
@@ -332,13 +543,38 @@ function updateSoundscapeUI() {
     if (typeof currentSoundType !== 'undefined' && currentSoundType) indicator.classList.remove('hidden');
     else indicator.classList.add('hidden');
   }
+  updateAudioStudioHeader();
+  updateHeaderSoundBtnUI();
 }
+
+if (typeof document !== 'undefined') {
+  const initAudioStudioUI = () => {
+    const syncCheckbox = document.getElementById('audio-timer-sync-toggle');
+    if (syncCheckbox) {
+      syncCheckbox.checked = localStorage.getItem('flow_audio_timer_sync') === 'true';
+    }
+    updateAudioStudioHeader();
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAudioStudioUI);
+  } else {
+    initAudioStudioUI();
+  }
+}
+
 if (typeof window !== 'undefined') {
   window.getMasterAudioDestination = getMasterAudioDestination;
   window.initAudioContext = initAudioContext;
   window.playCheerfulSuccessJingle = playCheerfulSuccessJingle;
   window.triggerHapticFeedback = triggerHapticFeedback;
   window.updateSoundscapeUI = updateSoundscapeUI;
+  window.applyAudioMoodPreset = applyAudioMoodPreset;
+  window.updateAudioStudioHeader = updateAudioStudioHeader;
+  window.stopAllStudioAudio = stopAllStudioAudio;
+  window.toggleAudioTimerSync = toggleAudioTimerSync;
+  window.toggleMasterSound = toggleMasterSound;
+  window.isAnyAudioPlaying = isAnyAudioPlaying;
+  window.updateHeaderSoundBtnUI = updateHeaderSoundBtnUI;
 }
 if (typeof globalThis !== 'undefined') {
   globalThis.getMasterAudioDestination = getMasterAudioDestination;
@@ -346,5 +582,12 @@ if (typeof globalThis !== 'undefined') {
   globalThis.playCheerfulSuccessJingle = playCheerfulSuccessJingle;
   globalThis.triggerHapticFeedback = triggerHapticFeedback;
   globalThis.updateSoundscapeUI = updateSoundscapeUI;
+  globalThis.applyAudioMoodPreset = applyAudioMoodPreset;
+  globalThis.updateAudioStudioHeader = updateAudioStudioHeader;
+  globalThis.stopAllStudioAudio = stopAllStudioAudio;
+  globalThis.toggleAudioTimerSync = toggleAudioTimerSync;
+  globalThis.toggleMasterSound = toggleMasterSound;
+  globalThis.isAnyAudioPlaying = isAnyAudioPlaying;
+  globalThis.updateHeaderSoundBtnUI = updateHeaderSoundBtnUI;
 }
 

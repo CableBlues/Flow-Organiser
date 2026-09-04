@@ -7,7 +7,7 @@ import '../storage.js';
 import '../data-tasks.js';
 import '../state.js';
 
-describe('Flow Organiser Core Suite (tests/core.test.js)', () => {
+describe('Noodle Core Suite (tests/core.test.js)', () => {
   beforeEach(() => {
     localStorage.clear();
   });

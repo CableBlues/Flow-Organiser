@@ -43,307 +43,386 @@ let ringingSecondsInterval = null;
 // Konstante Liste aller integrierten sanften Ambient-Sounds & Melodien zum Durchmischen
 const TIMER_AMBIENTS = ['piano', 'lofi', 'chimes', 'space', 'guitar', 'singingbowl', 'musicbox', 'breeze', 'campfire', 'birds', 'cafe', 'clock', 'lofi_sunshine', 'summer_meadow', 'bossa_nova'];
 
-// VIELFÄLTIGE NATÜRLICHE STIMMPROFILE: Weiblich, Männlich, Kindlich/Lebhaft, Coach & Zen-Guide
+// VIELFÄLTIGE NATÜRLICHE STIMMPROFILE: Warm, menschlich, empathisch, nicht roboterhaft
 const VOICE_PROFILES = [
-  { id: 'female_warm', name: 'Warm Empathetic Female', pitch: 1.06, rate: 0.96, gender: 'female', style: 'warm' },
-  { id: 'male_resonant', name: 'Calm Resonant Male', pitch: 0.88, rate: 0.94, gender: 'male', style: 'grounded' },
-  { id: 'child_cheerful', name: 'Cheerful Sunny Child', pitch: 1.38, rate: 1.06, gender: 'child', style: 'joyful' },
-  { id: 'coach_energetic', name: 'Inspiring Coach', pitch: 1.00, rate: 1.08, gender: 'male', style: 'upbeat' },
-  { id: 'zen_serene', name: 'Serene Zen Guide', pitch: 0.92, rate: 0.86, gender: 'female', style: 'mindful' },
-  { id: 'female_sparkle', name: 'Joyful Bright Female', pitch: 1.18, rate: 1.02, gender: 'female', style: 'sparkle' },
-  { id: 'male_flow', name: 'Steady Flow Male', pitch: 0.94, rate: 0.98, gender: 'male', style: 'focus' },
-  { id: 'child_playful', name: 'Playful Little Explorer', pitch: 1.42, rate: 1.04, gender: 'child', style: 'playful' }
+  // 1. FRAUENSTIMMEN (Warm, Sanft, Achtsam, Lebendig)
+  { id: 'female_warm', name: 'Sanfte warme Begleiterin', pitch: 1.01, rate: 0.93, gender: 'female', style: 'warm' },
+  { id: 'female_clear', name: 'Klare achtsame Mentorin', pitch: 1.04, rate: 0.95, gender: 'female', style: 'clear' },
+  { id: 'female_zen', name: 'Entspannte Zen-Stimme', pitch: 0.97, rate: 0.90, gender: 'female', style: 'zen' },
+  { id: 'female_dynamic', name: 'Freundliche Motivatorin', pitch: 1.03, rate: 0.96, gender: 'female', style: 'dynamic' },
+
+  // 2. MÄNNERSTIMMEN (Ruhig, Sonor, Vertrauensvoll, Natürlich)
+  { id: 'male_calm', name: 'Ruhiger Coach', pitch: 0.95, rate: 0.93, gender: 'male', style: 'calm' },
+  { id: 'male_deep', name: 'Tiefe warme Stimme', pitch: 0.91, rate: 0.91, gender: 'male', style: 'deep' },
+  { id: 'male_steady', name: 'Fokussierter Begleiter', pitch: 0.96, rate: 0.94, gender: 'male', style: 'steady' },
+  { id: 'male_coach', name: 'Empathischer Mentor', pitch: 0.98, rate: 0.95, gender: 'male', style: 'coach' }
 ];
 
 let globalVoiceTurnIndex = 0;
 
-// Motivierende Sätze, passend zum Fortschritt der Fokussitzung (hochqualitativ lokalisiert für alle 6 Sprachen)
+// Motivierende Sätze, passend zum Fortschritt der Fokussitzung:
+// - Start: Ruhig, geerdet, realistisch, ohne Übertreibung
+// - Halfway: Beständig, im Fluss, achtsam
+// - End: Konzentrierter Endspurt, Gedanken abschließen
+// - Overdue: Entspannte Pause, Dehnen, Augen lockern
 const MOTIVATIONAL_CHUNKS = {
-  en: {
-    start: [
-      "Great start! Take a deep breath and focus on this first gentle step.",
-      "You've taken the first step. You have full control over your time.",
-      "One small action at a time. You've got this completely!",
-      "Let's go! Your momentum begins right here and now.",
-      "Every moment of focus counts. Enjoy the smooth flow.",
-      "Clear mind, open focus. Dive right into your work!",
-      "A fantastic beginning. Let's make this session count.",
-      "Settling into the rhythm. You are doing wonderfully!"
-    ],
-    halfway: [
-      "Halfway there! You are doing absolutely incredible.",
-      "Keep this calm, steady rhythm. You are totally on track!",
-      "Superb progress! Take a tiny shoulder stretch and continue.",
-      "Midpoint reached! Your focused momentum is carrying you forward.",
-      "Keep flowing effortlessly, you are in your natural element!",
-      "Great pace and dedication. Stay with this peaceful rhythm!",
-      "You've built real traction. The hardest part is behind you.",
-      "Wonderful concentration! Glide smoothly through the rest."
-    ],
-    end: [
-      "Almost done! Just a beautiful, short final stretch.",
-      "Brilliant dedication! The finish line is glowing in sight.",
-      "Outstanding work, just a few moments of focus left!",
-      "You are right at the threshold of success. Keep going!",
-      "Final stretch! Let's wrap this up with joy and pride.",
-      "So close to victory. Savor this rewarding feeling!",
-      "Phenomenal effort. You're practically there!",
-      "Finishing strong! You can feel proud of your focus today."
-    ],
-    overdue: [
-      "Session complete! Time for a well-deserved stretch.",
-      "Take a deep breath and let go. Wonderful session!",
-      "Your focus time is fulfilled. Time to rest your mind.",
-      "How about a refreshing glass of water and a pause?",
-      "You've accomplished a lot. Step back and relax now.",
-      "Time for a gentle change of scenery. Great job today!"
-    ]
-  },
   de: {
     start: [
-      "Super Start! Atme tief durch und nimm dir ganz entspannt diesen ersten Schritt vor.",
-      "Sehr gut, der Anfang ist gemacht! Du hast die volle Kontrolle.",
-      "Schritt für Schritt. Du schaffst das mit Leichtigkeit!",
-      "Los geht's! Dein Momentum entsteht genau jetzt.",
-      "Jeder einzelne Augenblick zählt. Genieße den klaren Fluss.",
-      "Dein Fokus ist bereit. Tauche ganz in deine Aufgabe ein!",
-      "Ein wunderbarer Beginn. Lass uns diese Zeit genießen.",
-      "Du findest deinen Takt. Das machst du wirklich großartig!"
+      "Ganz in Ruhe anfangen. Nimm dir diesen ersten Schritt vor.",
+      "Atme einmal durch und finde deinen eigenen Takt.",
+      "Schritt für Schritt, ganz ohne Hektik.",
+      "Lass dich nicht ablenken, jetzt zählt nur dieser Moment.",
+      "Ein guter, ruhiger Anfang. Du hast die Zeit.",
+      "Komm entspannt in deiner Aufgabe an.",
+      "Einfach anfangen, der Rest fügt sich von selbst.",
+      "Dein Fokus ist da. Mach es in deinem Tempo.",
+      "Klarer Kopf, klare Sache. Ein Schritt nach dem anderen.",
+      "Atme tief ein. Ganz ruhig loslegen.",
+      "Konzentrier dich auf das Erste, was jetzt ansteht.",
+      "Ruhig und gelassen beginnen."
     ],
     halfway: [
-      "Schon die Hälfte geschafft! Du machst das absolut fantastisch.",
-      "Bleib in deinem ruhigen Rhythmus, du bist voll auf Erfolgskurs!",
-      "Ausgezeichneter Fokus! Schultern kurz lockern und weiterfließen.",
-      "Die Mitte ist erreicht, dein Schwung trägt dich von selbst voran.",
-      "Weiter so, du bist mitten in deinem natürlichen Flow!",
-      "Klasse Ausdauer und Klarheit. Bleib einfach dran!",
-      "Das Schwierigste liegt hinter dir. Jetzt läuft es wie von allein.",
-      "Wunderbare Konzentration! Gleite entspannt durch die zweite Hälfte."
+      "Guter Rhythmus. Bleib einfach ganz entspannt dabei.",
+      "Die Mitte ist erreicht. Du bist gut im Fluss.",
+      "Schultern kurz lockern und ruhig weiterarbeiten.",
+      "Konzentration läuft gleichmäßig. Sehr schön.",
+      "Der Faden ist da, bleib in diesem ruhigen Takt.",
+      "Halbzeit geschafft. Weiter so mit Bedacht.",
+      "Du bist voll drin. Lass es einfach fließen.",
+      "Schöner, stetiger Fortschritt. Kein Stress.",
+      "Kurzer Atemzug und mit klarem Kopf weiter.",
+      "Dein Fokus trägt dich ruhig voran.",
+      "Ruhig bleiben, du liegst genau richtig in der Zeit.",
+      "Gleichmäßige Konzentration tut gut."
     ],
     end: [
-      "Fast geschafft! Jetzt kommt der leichte, schöne Endspurt.",
-      "Großartig! Die Ziellinie ist bereits in greifbarer Nähe.",
-      "Hervorragend gemeistert, nur noch ein kleiner Moment!",
-      "Gleich hast du es vollbracht! Sei stolz auf deinen Einsatz.",
-      "Der letzte Abschnitt – mach ihn mit Leichtigkeit fertig!",
-      "So nah am Ziel. Spüre die Freude des Erfolgs!",
-      "Phänomenaler Einsatz, du hast es fast in der Tasche!",
-      "Wunderbar durchgehalten. Ein echter Triumph für heute!"
+      "Fast geschafft. Bring diesen Gedanken in Ruhe zu Ende.",
+      "Der letzte Abschnitt. Bleib noch kurz aufmerksam.",
+      "Gleich am Ziel. Zieh es ganz gelassen durch.",
+      "Nur noch ein kleiner Moment. Schließe das Jetzt gut ab.",
+      "Endspurt. Konzentriert bis zum Schluss.",
+      "Fast fertig. Ein kurzer letzter Blick.",
+      "Gleich hast du diesen Block gemeistert.",
+      "Noch wenige Augenblicke. Bleib ganz bei der Sache.",
+      "Die Ziellinie ist da. Sauber zu Ende führen.",
+      "Gleich kannst du zufrieden aufblicken."
     ],
     overdue: [
-      "Fokuszeit erfüllt! Zeit für eine wohlverdiente Bewegungspause.",
-      "Atme tief durch und lass locker. Großartige Arbeit!",
-      "Deine Sitzung ist geschafft. Gönn deinen Augen etwas Ruhe.",
-      "Wie wäre es mit einem Glas frischem Wasser und einer Pause?",
-      "Du hast viel bewegt. Tritt kurz zurück und entspanne dich.",
-      "Zeit für einen sanften Szenenwechsel. Danke für deinen Fokus!"
+      "Zeit für eine Pause. Atme tief durch und steh kurz auf.",
+      "Sehr gut gemacht. Gönn deinen Augen jetzt etwas Ruhe.",
+      "Schultern kreisen, kurz strecken und durchatmen.",
+      "Ein Glas Wasser trinken und den Kopf frei machen.",
+      "Klasse Fokus. Jetzt kurz komplett abschalten.",
+      "Guter Block. Mach einen Moment die Augen zu.",
+      "Tritt kurz vom Bildschirm zurück.",
+      "Zeit zum Durchschnaufen. Danke für deine Konzentration!"
+    ]
+  },
+  en: {
+    start: [
+      "Begin gently. Take this first step in your own time.",
+      "Take a slow breath and settle into your pace.",
+      "One small step at a time, no need to rush.",
+      "Let distractions fade, just be in this present moment.",
+      "A calm and steady start. You have all the time you need.",
+      "Ease into your task with an open mind.",
+      "Simply start, the flow will come naturally.",
+      "Your focus is ready. Proceed at your own tempo.",
+      "Clear mind, quiet focus. Step by step.",
+      "Deep breath in. Begin with peaceful intent.",
+      "Focus on the very first thing right in front of you.",
+      "Calm and centered start."
+    ],
+    halfway: [
+      "Good steady rhythm. Keep going with ease.",
+      "Midpoint reached. You are moving along nicely.",
+      "Relax your shoulders, breathe, and continue smoothly.",
+      "Concentration is flowing evenly. Very well done.",
+      "You have found the groove, stay with this calm pace.",
+      "Halfway through. Keep moving mindfully.",
+      "You are in the flow now. Let it unfold effortlessly.",
+      "Steady and solid progress. No rush.",
+      "Take a soft breath and carry on with clarity.",
+      "Your focus is carrying you forward gently.",
+      "Staying centered, you are right on time.",
+      "Even concentration makes all the difference."
+    ],
+    end: [
+      "Almost there. Wrap up this thought peacefully.",
+      "The final stretch. Stay gently attentive.",
+      "Near the finish line. See it through with calm confidence.",
+      "Just a moment left. Finish this step mindfully.",
+      "Final phase. Keep your focus right to the end.",
+      "Nearly done. One last attentive look.",
+      "You will complete this block in just a moment.",
+      "Only moments remaining. Stay right here.",
+      "The finish line is here. Bring it to a clean close.",
+      "You can look up with satisfaction in a moment."
+    ],
+    overdue: [
+      "Time for a break. Take a deep breath and stand up.",
+      "Well done. Give your eyes a well-deserved rest.",
+      "Roll your shoulders, stretch, and let go of tension.",
+      "Drink a glass of water and clear your mind.",
+      "Great focus today. Now switch off completely for a bit.",
+      "Wonderful session. Close your eyes for a moment.",
+      "Step away from the screen and take in the room.",
+      "Time to breathe freely. Thank you for your concentration!"
     ]
   },
   fr: {
     start: [
-      "Superbe départ ! Respire profondément et aborde ce premier pas avec sérénité.",
-      "Magnifique, le premier pas est franchi ! Tu as le plein contrôle.",
-      "Une étape après l'autre. Tu maîtrises parfaitement la situation !",
-      "C'est parti ! Ton élan se crée ici et maintenant.",
-      "Chaque instant de concentration compte. Savoure cette fluidité.",
-      "Esprit clair et attentif. Plonge avec plaisir dans ton travail !",
-      "Un départ remarquable. Faisons de cette session un franc succès.",
-      "Tu trouves ton propre tempo. Tu te débrouilles à merveille !"
+      "Commence tout en douceur. Aborde ce premier pas avec sérénité.",
+      "Prends une inspiration lente et trouve ton propre rythme.",
+      "Une étape après l'autre, sans aucune précipitation.",
+      "Laisse de côté les distractions, seul cet instant compte.",
+      "Un départ calme et posé. Tu as tout le temps nécessaire.",
+      "Installe-toi paisiblement dans ta tâche.",
+      "Commence simplement, la suite viendra naturellement.",
+      "Ton attention est là. Avance à ton propre rythme.",
+      "Esprit clair et détendu. Un pas après l'autre.",
+      "Respire profondément. Démarre en toute tranquillité.",
+      "Concentre-toi sur la première chose à faire.",
+      "Un début calme et centré."
     ],
     halfway: [
-      "Déjà à mi-parcours ! Tu accomplis cela avec un brio formidable.",
-      "Garde ce rythme doux et régulier, tu es parfaitement sur la bonne voie !",
-      "Superbe concentration ! Détends un instant tes épaules et continue.",
-      "Mi-chemin franchi, ton élan naturel te porte vers l'avant.",
-      "Continue ainsi, tu es en plein cœur de ton flow !",
-      "Une belle constance et beaucoup de clarté. Reste dans cet état !",
-      "Le plus difficile est fait. La suite se déroule avec aisance.",
-      "Concentration exemplaire ! Glisse tranquillement vers la fin."
+      "Bon rythme régulier. Continue avec fluidité.",
+      "Mi-parcours atteint. Tout se passe à merveille.",
+      "Détends un instant tes épaules et poursuis calmement.",
+      "La concentration est stable et agréable. Bravo.",
+      "Le fil conducteur est là, reste dans cette cadence.",
+      "Déjà la moitié. Continue avec cette belle constance.",
+      "Tu es bien dans ton travail. Laisse couler.",
+      "Beau travail régulier, sans aucun stress.",
+      "Une douce respiration et on continue l'esprit clair.",
+      "Ton élan tranquille te porte vers l'avant.",
+      "Reste serein, tu es parfaitement dans les temps.",
+      "Cette concentration équilibrée fait du bien."
     ],
     end: [
-      "Presque terminé ! Il ne reste qu'une toute petite ligne droite.",
-      "Brillant travail ! La ligne d'arrivée brille à l'horizon.",
-      "Exceptionnel, plus que quelques instants de concentration !",
-      "Tu y es presque ! Savoure la fierté de cet accomplissement.",
-      "Dernier effort tout en douceur, mène cela à terme avec le sourire !",
-      "Si près du but. Ressens la satisfaction du travail bien fait !",
-      "Effort remarquable, la victoire est à portée de main !",
-      "Magnifique persévérance. Sois très fier de ta session aujourd'hui."
+      "Presque fini. Termine cette idée en toute tranquillité.",
+      "Dernière ligne droite. Reste attentif encore un instant.",
+      "Tout près du but. Mène cela à bien sereinement.",
+      "Plus que quelques instants. Conclus cette étape avec soin.",
+      "Dernier effort. Concentré jusqu'au bout.",
+      "Bientôt terminé. Un dernier regard attentif.",
+      "Tu auras accompli cette tâche d'une minute à l'autre.",
+      "Encore quelques secondes. Reste bien présent.",
+      "La fin est là. Boucle cela proprement.",
+      "Tu pourras savourer ce moment dans un instant."
     ],
     overdue: [
-      "Temps de focus accompli ! Place à une pause bien méritée.",
-      "Prends une grande inspiration et relâche la pression. Bravo !",
-      "Ta session est finie. Offre un doux repos à tes yeux.",
-      "Que dirais-tu d'un verre d'eau fraîche et de quelques pas ?",
-      "Tu as fait un travail formidable. Recule un peu et détends-toi.",
-      "Il est temps de changer de décor. Félicitations pour tes efforts !"
+      "C'est l'heure de la pause. Respire à fond et lève-toi.",
+      "Très beau travail. Accorde un repos bien mérité à tes yeux.",
+      "Fais rouler tes épaules, étire-toi et relâche la pression.",
+      "Bois un verre d'eau et aère-toi l'esprit.",
+      "Superbe concentration. Déconnecte totalement un moment.",
+      "Belle session. Ferme les yeux quelques secondes.",
+      "Éloigne-toi de l'écran et regarde au loin.",
+      "Temps de souffler. Bravo pour ta concentration !"
     ]
   },
   it: {
     start: [
-      "Ottimo inizio! Fai un respiro profondo e affronta questo primo passo con calma.",
-      "Perfetto, hai iniziato alla grande! Sei tu al timone.",
-      "Un piccolo passo alla volta. Ce la farai con assoluta scioltezza!",
-      "Si parte! Il tuo ritmo comincia proprio adesso.",
-      "Ogni istante di concentrazione conta. Goditi il flusso naturale.",
-      "Mente lucida e serena. Immergiti con entusiasmo nel tuo compito!",
-      "Una partenza splendida. Rendiamo questa sessione memorabile.",
-      "Stai trovando la tua cadenza ideale. Stai andando benissimo!"
+      "Inizia con calma. Affronta questo primo passo senza fretta.",
+      "Fai un respiro profondo e trova il tuo ritmo naturale.",
+      "Un passo alla volta, con tutta la serenità possibile.",
+      "Lascia andare le distrazioni, conta solo questo momento.",
+      "Una partenza serena e ordinata. Hai tutto il tempo.",
+      "Entra nel compito con mente aperta e rilassata.",
+      "Basta iniziare, il resto verrà da sé.",
+      "Il tuo focus è pronto. Procedi con il tuo passo.",
+      "Mente lucida e tranquilla. Un passo dopo l'altro.",
+      "Respira a fondo. Comincia con calma.",
+      "Concentrati sulla prima cosa che hai davanti.",
+      "Inizio calmo e centrato."
     ],
     halfway: [
-      "Sei già a metà strada! Stai facendo un lavoro davvero straordinario.",
-      "Mantieni questa andatura armoniosa, sei perfettamente in carreggiata!",
-      "Progresso eccellente! Sciogli un momento le spalle e continua.",
-      "Metà percorso raggiunto, la tua carica positiva ti guida in avanti.",
-      "Continua così, sei nel pieno del tuo flow naturale!",
-      "Fantastica determinazione e lucidità. Resta con questa energia!",
-      "La parte più impegnativa è alle spalle. Ora tutto scorre fluido.",
-      "Concentrazione meravigliosa! Accompagna la sessione fino al termine."
+      "Ottimo ritmo costante. Continua con naturalezza.",
+      "Metà percorso raggiunto. Stai procedendo benissimo.",
+      "Sciogli le spalle per un attimo e prosegui sereno.",
+      "La concentrazione scorre in modo armonioso. Molto bene.",
+      "Hai preso il filo giusto, resta in questo ritmo quieto.",
+      "Metà fatta. Avanti così con attenzione.",
+      "Sei immerso nel compito. Lascia scorrere.",
+      "Progresso solido e continuo. Niente stress.",
+      "Un respiro morbido e si continua con chiarezza.",
+      "Il tuo impegno ti sta guidando con delicatezza.",
+      "Rimani tranquillo, sei perfettamente nei tempi.",
+      "Una concentrazione equilibrata porta ottimi frutti."
     ],
     end: [
-      "Quasi fatto! Manca solo un piccolissimo e piacevole sprint finale.",
-      "Lavoro brillante! Il traguardo è ormai a un passo da te.",
-      "Straordinario impegno, restano solo pochi istanti di focus!",
-      "Ci sei quasi arrivato! Assapora la gioia di avercela fatta.",
-      "Ultimo tratto: chiudi questo momento con orgoglio e serenità!",
-      "A un passo dalla vittoria. Senti la bella soddisfazione nel petto!",
-      "Impegno impeccabile, hai conquistato il tuo obiettivo!",
-      "Resistenza da applausi. Puoi essere davvero fiero di te oggi."
+      "Quasi fatto. Concludi questo pensiero con serenità.",
+      "Tratto finale. Rimani attento ancora per un momento.",
+      "A un passo dal traguardo. Porta a termine con calma.",
+      "Mancano pochi istanti. Chiudi questo passaggio con cura.",
+      "Sprint finale. Concentrato fino alla fine.",
+      "Quasi terminato. Un ultimo sguardo attento.",
+      "Tra poco avrai completato questa sessione.",
+      "Ancora qualche istante. Resta concentrato qui.",
+      "Il traguardo è raggiunto. Chiudi in bellezza.",
+      "Tra un momento potrai sentirti molto soddisfatto."
     ],
     overdue: [
-      "Sessione completata! È giunto il momento per una pausa rigenerante.",
-      "Fai un respiro profondo e rilassati. Hai fatto un gran lavoro!",
-      "Il tuo tempo di focus è terminato. Concedi riposo alla tua mente.",
-      "Che ne dici di un bicchiere d'acqua fresca e due passi distensivi?",
-      "Hai ottenuto grandi risultati. Stacca la spina e rilassati.",
-      "È tempo di cambiare visuale. Bravissimo per la tua dedizione!"
+      "È tempo di una pausa. Fai un respiro profondo e alzati.",
+      "Ottimo lavoro. Concedi un meritato riposo agli occhi.",
+      "Ruota le spalle, fai un po' di stretching e rilassati.",
+      "Bevi un bicchiere d'acqua e libera la mente.",
+      "Grande focus. Ora stacca completamente per qualche minuto.",
+      "Sessione splendida. Chiudi gli occhi per un attimo.",
+      "Allontanati dallo schermo e guarda lontano.",
+      "Momento di respirare. Grazie per la tua concentrazione!"
     ]
   },
   es: {
     start: [
-      "¡Excelente comienzo! Respira profundo y da este primer paso con total calma.",
-      "¡Muy bien, ya diste el primer paso! Tienes el control absoluto.",
-      "Paso a pasito, con calma. ¡Lo vas a lograr con total soltura!",
-      "¡Vamos allá! Tu impulso ganador empieza aquí y ahora.",
-      "Cada segundo de concentración suma. Disfruta de esta fluidez.",
-      "Mente despejada y lista. ¡Sumérgete con alegría en tu tarea!",
-      "Un inicio fantástico. Hagamos que esta sesión sea maravillosa.",
-      "Encontraste tu propio ritmo. ¡Lo estás haciendo de maravilla!"
+      "Empieza con calma. Da este primer paso a tu ritmo.",
+      "Respira hondo y encuentra tu propio compás.",
+      "Paso a paso, sin ninguna prisa.",
+      "Deja fuera las distracciones, solo cuenta este momento.",
+      "Un inicio sereno y ordenado. Tienes todo el tiempo.",
+      "Entra en la tarea con la mente tranquila.",
+      "Solo empieza, el flujo vendrá por sí solo.",
+      "Tu enfoque está listo. Avanza a tu manera.",
+      "Mente clara y despejada. Un paso tras otro.",
+      "Respira profundo. Comienza con sosiego.",
+      "Concéntrate en lo primero que tienes delante.",
+      "Comienzo tranquilo y centrado."
     ],
     halfway: [
-      "¡Ya estás a mitad de camino! Lo estás haciendo de forma espectacular.",
-      "Mantén este ritmo sereno y constante, ¡vas directo al éxito!",
-      "¡Progreso fabuloso! Suelta los hombros un momento y continúa.",
-      "¡Punto medio conquistado! Tu propia inercia te lleva hacia adelante.",
-      "¡Sigue fluyendo así, estás en tu estado de flow ideal!",
-      "Gran constancia y claridad mental. ¡Sigue con esa bella energía!",
-      "Lo más difícil ya quedó atrás. Ahora todo marcha sobre ruedas.",
-      "¡Concentración de diez! Deslízate suavemente hacia el final."
+      "Buen ritmo constante. Sigue así con naturalidad.",
+      "Mitad del camino alcanzada. Vas muy bien.",
+      "Relaja los hombros un segundo y continúa tranquilo.",
+      "La concentración fluye de manera uniforme. Muy bien.",
+      "Tienes el hilo correcto, mantén este ritmo sereno.",
+      "La mitad está hecha. Sigue con calma.",
+      "Estás totalmente enfocado. Deja que fluya.",
+      "Progreso firme y constante. Sin agobios.",
+      "Una respiración suave y seguimos con claridad.",
+      "Tu dedicación te lleva hacia adelante suavemente.",
+      "Mantén la calma, vas perfecto de tiempo.",
+      "Una concentración equilibrada hace maravillas."
     ],
     end: [
-      "¡Casi listo! Solo queda un tramo final muy breve y gratificante.",
-      "¡Trabajo brillante! La meta resplandece justo frente a ti.",
-      "¡Extraordinario esfuerzo, solo faltan unos instantes de enfoque!",
-      "¡Ya estás prácticamente ahí! Siente el orgullo de lograrlo.",
-      "Último detalle: ¡remata esta sesión con alegría y satisfacción!",
-      "A pasitos de la meta. ¡Disfruta la sensación de triunfo!",
-      "Dedicación fenomenal, ¡el objetivo ya es todo tuyo!",
-      "Perseverancia admirable. Siéntete muy orgulloso de tu día."
+      "Casi listo. Remata esta idea con serenidad.",
+      "Tramo final. Mantente atento un momento más.",
+      "Cerca de la meta. Concluye con tranquilidad.",
+      "Solo falta un instante. Cierra este paso con esmero.",
+      "Recta final. Concentrado hasta el final.",
+      "Prácticamente terminado. Un último vistazo atento.",
+      "En breve habrás completado este bloque.",
+      "Quedan pocos segundos. Sigue presente aquí.",
+      "La meta está aquí. Ciérralo con limpieza.",
+      "En un momento podrás disfrutar de la satisfacción."
     ],
     overdue: [
-      "¡Tiempo de enfoque cumplido! Momento ideal para una pausa reconfortante.",
-      "Respira hondo y suelta la tensión. ¡Hiciste un trabajo grandioso!",
-      "Tu sesión ha concluido. Dale un merecido descanso a tu mirada.",
-      "¿Qué tal un vaso de agua fresca y estirar un poco las piernas?",
-      "Avanzaste muchísimo hoy. Tómate un respiro y desconecta.",
-      "Hora de un suave cambio de ambiente. ¡Felicidades por tu enfoque!"
+      "Momento de descansar. Respira hondo y ponte de pie.",
+      "Muy buen trabajo. Dale un descanso merecido a tus ojos.",
+      "Mueve los hombros, estírate y suelta la tensión.",
+      "Bebe un vaso de agua y despeja la mente.",
+      "Gran enfoque hoy. Desconecta del todo unos minutos.",
+      "Sesión estupenda. Cierra los ojos un instante.",
+      "Aléjate de la pantalla y mira a lo lejos.",
+      "Hora de respirar aliviado. ¡Gracias por tu concentración!"
     ]
   },
   el: {
     start: [
-      "Υπέροχο ξεκίνημα! Πάρε μια βαθιά ανάσα και κάνε αυτό το πρώτο βήμα με ηρεμία.",
-      "Πολύ όμορφα, η αρχή έγινε! Έχεις τον απόλυτο έλεγχο του χρόνου σου.",
-      "Βήμα προς βήμα, ήρεμα. Μπορείς να το πετύχεις με απόλυτη ευκολία!",
-      "Πάμε δυνατά! Η θετική σου ορμή γεννιέται εδώ και τώρα.",
-      "Κάθε στιγμή συγκέντρωσης μετράει. Απόλαυσε την καθαρή ροή.",
-      "Καθαρό μυαλό και όμορφη διάθεση. Βυθίσου με χαρά στη δουλειά σου!",
-      "Ένα εξαιρετικό ξεκίνημα. Ας κάνουμε αυτό το διάστημα πραγματικά αποδοτικό.",
-      "Βρίσκεις τον ιδανικό σου ρυθμό. Τα πηγαίνεις περίφημα!"
+      "Ξεκίνα με απόλυτη ηρεμία. Κάνε αυτό το πρώτο βήμα στον δικό σου χρόνο.",
+      "Πάρε μια βαθιά ανάσα και βρες τον δικό σου ρυθμό.",
+      "Βήμα προς βήμα, χωρίς καμία βιασύνη.",
+      "Άφησε τις αποσπάσεις στην άκρη, μετράει μόνο αυτή η στιγμή.",
+      "Ένα ήρεμο και σταθερό ξεκίνημα. Έχεις όλο τον χρόνο.",
+      "Μπες στην εργασία σου με καθαρό και ήσυχο μυαλό.",
+      "Απλώς ξεκίνα, η ροή θα έρθει φυσικά.",
+      "Η προσοχή σου είναι έτοιμη. Προχώρα με τον ρυθμό σου.",
+      "Καθαρό μυαλό, ήρεμη εστίαση. Ένα βήμα τη φορά.",
+      "Ανάπνευσε βαθιά. Ξεκίνα με γαλήνη.",
+      "Εστίασε στο πρώτο πράγμα που έχεις μπροστά σου.",
+      "Ήρεμο και συγκεντρωμένο ξεκίνημα."
     ],
     halfway: [
-      "Έφτασες ήδη στα μισά του δρόμου! Τα καταφέρνεις απολύτως φανταστικά.",
-      "Κράτα αυτόν τον γαλήνιο ρυθμό, είσαι σε ιδανική πορεία επιτυχίας!",
-      "Υπέροχη πρόοδος! Χαλάρωσε λίγο τους ώμους σου και συνέχισε.",
-      "Η μέση κατακτήθηκε, η δική σου ορμή σε οδηγεί μπροστά με ευκολία.",
-      "Συνέχισε έτσι, βρίσκεσαι μέσα στην απόλυτη φυσική σου ροή!",
-      "Σπουδαία επιμονή και διαύγεια. Μείνε συντονισμένος σε αυτή την ενέργεια!",
-      "Το δυσκολότερο κομμάτι πέρασε. Τώρα όλα κυλούν αβίαστα.",
-      "Εξαιρετική συγκέντρωση! Γλίστρησε όμορφα προς το τέλος."
+      "Ωραίος σταθερός ρυθμός. Συνέχισε απλά και αβίαστα.",
+      "Έφτασες στα μισά. Προχωράς πολύ όμορφα.",
+      "Χαλάρωσε λίγο τους ώμους σου και συνέχισε ήρεμα.",
+      "Η συγκέντρωση ρέει ομοιόμορφα. Πολύ καλά.",
+      "Έχεις βρει τον μίτο, μείνε σε αυτόν τον γαλήνιο ρυθμό.",
+      "Τα μισά έγιναν. Συνέχισε με προσοχή.",
+      "Είσαι μέσα στην εργασία σου. Άφησέ το να κυλήσει.",
+      "Σταθερή και όμορφη πρόοδος. Χωρίς κανένα άγχος.",
+      "Μια ήρεμη ανάσα και συνεχίζεις με διαύγεια.",
+      "Η εστίασή σου σε οδηγεί μπροστά με ευκολία.",
+      "Μείνε ήρεμος, είσαι απόλυτα μέσα στον χρόνο σου.",
+      "Η ισορροπημένη συγκέντρωση κάνει τη διαφορά."
     ],
     end: [
-      "Σχεδόν τελείωσες! Απομένει μόνο μια μικρή, ευχάριστη τελική ευθεία.",
-      "Λαμπρή προσπάθεια! Η γραμμή του τερματισμού λάμπει μπροστά σου.",
-      "Εξαιρετική δουλειά, έμειναν μόνο ελάχιστες στιγμές εστίασης!",
-      "Έφτασες σχεδόν στην κορυφή! Νιώσε την περηφάνια της επιτυχίας.",
-      "Τελική πινελιά: ολοκλήρωσε αυτό το βήμα με χαμόγελο και ικανοποίηση!",
-      "Τόσο κοντά στον στόχο σου. Απόλαυσε τη γλυκιά αίσθηση του επιτεύγματος!",
-      "Φαινομενική αφοσίωση, το κατάφερες με τον καλύτερο τρόπο!",
-      "Αξιοθαύμαστη αντοχή. Μπορείς να νιώθεις περήφανος για τη σημερινή σου μέρα."
+      "Σχεδόν τελείωσες. Ολοκλήρωσε αυτή τη σκέψη με ηρεμία.",
+      "Τελική ευθεία. Μείνε συγκεντρωμένος για λίγο ακόμα.",
+      "Κοντά στον τερματισμό. Ολοκλήρωσέ το με άνεση.",
+      "Απομένει μόνο μια στιγμή. Κλείσε αυτό το βήμα με φροντίδα.",
+      "Τελικό στάδιο. Εστίαση μέχρι το τέλος.",
+      "Σχεδόν έτοιμο. Μια τελευταία προσεκτική ματιά.",
+      "Σε λίγο θα έχεις ολοκληρώσει αυτό το κομμάτι.",
+      "Έμειναν ελάχιστα δευτερόλεπτα. Μείνε εδώ.",
+      "Το τέλος έφτασε. Ολοκλήρωσε όμορφα.",
+      "Σε λίγο θα νιώσεις τη γλυκιά ικανοποίηση."
     ],
     overdue: [
-      "Ο χρόνος εστίασης ολοκληρώθηκε! Ώρα για ένα καλοδεχούμενο διάλειμμα.",
-      "Πάρε μια βαθιά ανάσα και άφησε την ένταση. Έκανες σπουδαία δουλειά!",
-      "Η συνεδρία σου τελείωσε. Χάρισε λίγη ξεκούραση στα μάτια και στο μυαλό σου.",
-      "Τι θα έλεγες για ένα ποτήρι δροσερό νερό και λίγες διατάσεις;",
-      "Πέτυχες πάρα πολλά σήμερα. Κάνε ένα βήμα πίσω και χαλάρωσε.",
-      "Ώρα για μια όμορφη αλλαγή παραστάσεων. Συγχαρητήρια για την προσπάθεια!"
+      "Ώρα για διάλειμμα. Πάρε μια βαθιά ανάσα και σήκω για λίγο.",
+      "Πολύ ωραία δουλειά. Χάρισε ξεκούραση στα μάτια σου.",
+      "Κάνε κυκλικές κινήσεις στους ώμους και τεντώσου.",
+      "Πιες ένα ποτήρι δροσερό νερό και καθάρισε το μυαλό σου.",
+      "Υπέροχη εστίαση. Τώρα αποσυνδέσου εντελώς για λίγο.",
+      "Όμορφη συνεδρία. Κλείσε τα μάτια σου για λίγες στιγμές.",
+      "Απομακρύνσου από την οθόνη και κοίταξε μακριά.",
+      "Ώρα να αναπνεύσεις ελεύθερα. Ευχαριστούμε για τη συγκέντρωσή σου!"
     ]
   }
 };
 
-// Kurze, herzliche Ansagen beim Start einer Fokus-Sitzung (für alle 6 Sprachen)
+// Kurze, herzliche und unaufdringliche Ansagen beim Start einer Fokus-Sitzung
 const SESSION_START_PHRASES = {
-  en: [
-    "Focus session started, {mins} minutes. Let's make it wonderful!",
-    "{mins} minutes of peaceful focus begin now. Enjoy the flow!",
-    "Timer running, {mins} minutes until your gentle break. Stay with it!",
-    "Here we go! {mins} minutes of dedicated concentration. You've got this.",
-    "A fresh {mins}-minute focus block is underway. Breathe and begin."
-  ],
   de: [
-    "Fokus-Sitzung gestartet, {mins} Minuten. Lass es uns wunderbar gestalten!",
-    "{mins} Minuten entspannte Fokuszeit beginnen jetzt. Viel Freude im Flow!",
-    "Timer läuft, {mins} Minuten bis zu deiner Pause. Bleib ganz ruhig dran!",
-    "Auf geht's! {mins} Minuten volle, klare Konzentration. Du schaffst das.",
-    "Ein frischer {mins}-Minuten Block läuft. Durchatmen und loslegen."
+    "Fokuszeit gestartet, {mins} Minuten. Ganz in Ruhe anfangen.",
+    "{mins} Minuten Fokus. Finde deinen eigenen Takt.",
+    "Timer läuft, {mins} Minuten. Schritt für Schritt.",
+    "Auf geht's. {mins} Minuten für deine Aufgabe.",
+    "{mins} Minuten Fokusblock. Durchatmen und loslegen."
+  ],
+  en: [
+    "Focus session started, {mins} minutes. Begin in your own time.",
+    "{mins} minutes of focus. Find your gentle pace.",
+    "Timer running, {mins} minutes. Step by step.",
+    "Here we go. {mins} minutes for your task.",
+    "A {mins}-minute focus block begins. Breathe and start."
   ],
   fr: [
-    "Session de focus démarrée, {mins} minutes. Faisons de belles choses !",
-    "{mins} minutes de concentration sereine commencent maintenant. Bon flow !",
-    "Minuteur lancé, {mins} minutes avant ta pause douceur. Tiens bon !",
-    "C'est parti ! {mins} minutes de pleine attention. Tu gères cela à merveille.",
-    "Un bloc de {mins} minutes commence. Respire et savoure l'instant."
+    "Session démarrée, {mins} minutes. Commence tout en douceur.",
+    "{mins} minutes de concentration. Trouve ton propre tempo.",
+    "Minuteur lancé, {mins} minutes. Pas à pas.",
+    "C'est parti. {mins} minutes pour ton travail.",
+    "Un bloc de {mins} minutes commence. Respire et débute."
   ],
   it: [
-    "Sessione di focus avviata, {mins} minuti. Rendiamola speciale!",
-    "Iniziano ora {mins} minuti di serena concentrazione. Buon lavoro nel flow!",
-    "Timer avviato, {mins} minuti fino alla tua meritata pausa. Avanti così!",
-    "Si parte! {mins} minuti di pura concentrazione. Sei pronto a dare il meglio.",
-    "Un fresco blocco da {mins} minuti è iniziato. Respira e comincia con calma."
+    "Sessione avviata, {mins} minuti. Comincia con tutta calma.",
+    "{mins} minuti di concentrazione. Trova il tuo ritmo naturale.",
+    "Timer avviato, {mins} minuti. Un passo alla volta.",
+    "Si parte. {mins} minuti per il tuo compito.",
+    "Un blocco da {mins} minuti è iniziato. Respira e comincia."
   ],
   es: [
-    "Sesión de enfoque iniciada, {mins} minutos. ¡Hagamos magia hoy!",
-    "Comienzan {mins} minutos de enfoque tranquilo. ¡Disfruta del flow!",
-    "Temporizador en marcha, {mins} minutos hasta tu descanso. ¡Tú puedes!",
-    "¡Allá vamos! {mins} minutos de concentración total. Lo harás genial.",
-    "Un nuevo bloque de {mins} minutos está en marcha. Respira y adelante."
+    "Sesión iniciada, {mins} minutos. Comienza a tu ritmo.",
+    "{mins} minutos de enfoque. Encuentra tu compás.",
+    "Temporizador en marcha, {mins} minutos. Paso a paso.",
+    "Adelante. {mins} minutos para tu tarea.",
+    "Un bloque de {mins} minutos comienza. Respira e inicia."
   ],
   el: [
-    "Η συνεδρία εστίασης ξεκίνησε, {mins} λεπτά. Ας την κάνουμε υπέροχη!",
-    "Ξεκινούν {mins} λεπτά γαλήνιας συγκέντρωσης. Απόλαυσε τη ροή σου!",
-    "Το χρονόμετρο τρέχει, {mins} λεπτά μέχρι το διάλειμμα. Κράτα γερά!",
-    "Πάμε δυνατά! {mins} λεπτά απόλυτης εστίασης. Μπορείς να τα καταφέρεις τέλεια.",
-    "Ένα φρέσκο διάστημα {mins} λεπτών μόλις άρχισε. Πάρε ανάσα και ξεκίνα."
+    "Η συνεδρία ξεκίνησε, {mins} λεπτά. Ξεκίνα με ηρεμία.",
+    "{mins} λεπτά εστίασης. Βρες τον δικό σου ρυθμό.",
+    "Το χρονόμετρο τρέχει, {mins} λεπτά. Βήμα προς βήμα.",
+    "Πάμε. {mins} λεπτά για την εργασία σου.",
+    "Ένα διάστημα {mins} λεπτών ξεκινά. Πάρε ανάσα και άρχισε."
   ]
 };
 
@@ -482,7 +561,7 @@ if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
   window.speechSynthesis.onvoiceschanged = updateSpeechVoices;
 }
 
-// Globale, hochqualitative Sprach-Synthese mit abwechselnden weiblichen, männlichen, kindlichen und motivierenden Profilen
+// Globale, hochqualitative Sprach-Synthese mit organischen, menschlich-warmen Stimmen
 function speakWithProfile(text, profileIndex = null) {
   if (!timerSoundEnabled) return;
   if (!('speechSynthesis' in window)) return;
@@ -494,12 +573,12 @@ function speakWithProfile(text, profileIndex = null) {
     }
     window.speechSynthesis.cancel();
 
-    // 1. Text für organische menschliche Sprachmelodie, fließenden Rhythmus und natürliche Atempausen aufbereiten
+    // 1. Text für organische menschliche Sprachmelodie & natürliche Atempausen aufbereiten
     let naturalText = text
       .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}]/gu, '') // Emojis entfernen
-      .replace(/^\s*\d+[\.\)\:]\s+/, '') // Nur echte Schrittnummern wie "1. ", "2) " entfernen, aber Mengenangaben wie "30 Sekunden" oder "1 Minute" behalten
+      .replace(/^\s*\d+[\.\)\:]\s+/, '') // Nur echte Schrittnummern wie "1. ", "2) " entfernen
       .replace(/^[•\-\*✓✔✕\+➔]+\s*/, '')
-      .replace(/\s*([!?.])\s*/g, '$1 ') // Saubere Satzenden mit kleiner Atemluft
+      .replace(/\s*([!?.])\s*/g, '$1 ... ') // Sanfte Atempausen nach Sätzen für menschliche Sprachmelodie
       .replace(/([,;:])\s*/g, '$1 ')
       .replace(/\s+/g, ' ')
       .trim();
@@ -519,39 +598,46 @@ function speakWithProfile(text, profileIndex = null) {
     }
     const profile = VOICE_PROFILES[Math.abs(profileIndex) % VOICE_PROFILES.length] || VOICE_PROFILES[0];
 
-    utterance.rate = profile.rate || 0.96;
+    utterance.rate = profile.rate || 0.94;
     utterance.pitch = profile.pitch || 1.0;
 
-    // 3. Verfügbare Stimmen laden & nach Sprach-Code und Audio-Qualität filtern
+    // 3. Verfügbare Stimmen laden & höchste Neural/Natural-Qualität priorisieren
     if (cachedVoices.length === 0) updateSpeechVoices();
     const allVoices = cachedVoices.length > 0 ? cachedVoices : window.speechSynthesis.getVoices();
     const langPrefix = targetLang.split('-')[0].toLowerCase();
     const matchingVoices = allVoices.filter(v => v.lang && v.lang.toLowerCase().replace('_', '-').startsWith(langPrefix));
 
-    // Bevorzuge hochqualitative "Natural", "Neural", "Google", "Apple", "Premium", "Siri", "Enhanced" Stimmen
-    const premiumVoices = matchingVoices.filter(v => 
-      /natural|neural|online|google|siri|apple|premium|enhanced|wavenet/i.test(v.name)
-    );
+    // Höchste Priorität für Neural / Natural / Online / Wavenet / Siri / Enhanced Stimmen
+    function getVoiceScore(voice) {
+      const name = (voice.name || '').toLowerCase();
+      let score = 0;
+      if (name.includes('natural') || name.includes('neural')) score += 100;
+      if (name.includes('online')) score += 50;
+      if (name.includes('google') || name.includes('wavenet')) score += 40;
+      if (name.includes('siri') || name.includes('enhanced') || name.includes('premium')) score += 40;
+      if (name.includes('katja') || name.includes('conrad') || name.includes('luisa') || name.includes('jenny') || name.includes('anna')) score += 30;
+      return score;
+    }
 
-    const pool = premiumVoices.length > 0 ? premiumVoices : (matchingVoices.length > 0 ? matchingVoices : allVoices);
+    const sortedVoices = (matchingVoices.length > 0 ? matchingVoices : allVoices).slice().sort((a, b) => getVoiceScore(b) - getVoiceScore(a));
 
     const femaleKeywords = [
-      'hedda', 'katja', 'anna', 'zira', 'petra', 'elena', 'hazel', 'susan', 'samantha', 'moira',
+      'katja', 'luisa', 'hedda', 'anna', 'zira', 'petra', 'elena', 'hazel', 'susan', 'samantha', 'moira',
       'tessa', 'deutsch', 'female', 'julie', 'hortense', 'clara', 'paola', 'lucia', 'monica',
       'victoria', 'audrey', 'alice', 'federica', 'denise', 'jenny', 'sonia', 'isabella', 'athina',
       'elli', 'marta', 'laura', 'chiara', 'serena', 'ava', 'karen'
     ];
     const maleKeywords = [
-      'stefan', 'yannick', 'markus', 'david', 'george', 'ravi', 'stefanos', 'male', 'paul',
+      'conrad', 'stefan', 'yannick', 'markus', 'david', 'george', 'ravi', 'stefanos', 'male', 'paul',
       'henri', 'alvaro', 'jorge', 'cosimo', 'thomas', 'daniel', 'oliver', 'arthur', 'claude',
       'guy', 'diego', 'nestoras', 'nikos', 'paulino', 'matteo'
     ];
 
-    const femaleVoices = pool.filter(v => 
+    const femaleVoices = sortedVoices.filter(v => 
       femaleKeywords.some(kw => v.name.toLowerCase().includes(kw)) &&
       !maleKeywords.some(kw => v.name.toLowerCase().includes(kw))
     );
-    const maleVoices = pool.filter(v => 
+    const maleVoices = sortedVoices.filter(v => 
       maleKeywords.some(kw => v.name.toLowerCase().includes(kw))
     );
 
@@ -560,13 +646,8 @@ function speakWithProfile(text, profileIndex = null) {
       selectedVoice = femaleVoices[Math.abs(profileIndex) % femaleVoices.length];
     } else if (profile.gender === 'male' && maleVoices.length > 0) {
       selectedVoice = maleVoices[Math.abs(profileIndex) % maleVoices.length];
-    } else if (profile.gender === 'child') {
-      // Kindlich / Lebhaft: Bevorzuge freundliche Stimme mit erhöhter Resonanz & Pitch
-      selectedVoice = femaleVoices.length > 0 
-        ? femaleVoices[Math.abs(profileIndex) % femaleVoices.length]
-        : (pool[Math.abs(profileIndex) % pool.length] || null);
-    } else if (pool.length > 0) {
-      selectedVoice = pool[Math.abs(profileIndex) % pool.length];
+    } else if (sortedVoices.length > 0) {
+      selectedVoice = sortedVoices[Math.abs(profileIndex) % sortedVoices.length];
     }
 
     if (selectedVoice) {
@@ -603,21 +684,21 @@ function speakWithProfile(text, profileIndex = null) {
   }
 }
 
-// Jede Minute wechselnde Stimmenprofile im Timer
+// Jede Minute und jede Ansage wechselnde Stimmenprofile (Frauen, Männer, Kinder)
 function speakSoftlyDynamic(text, remSec, totSec) {
-  const minsLeft = Math.floor(remSec / 60);
-  speakWithProfile(text, minsLeft);
+  const voiceTurn = globalVoiceTurnIndex++;
+  speakWithProfile(text, voiceTurn);
 }
 
-// Liefert kontextbezogene Motivationen basierend auf der vergangenen Zeit (ohne Sofort-Wiederholung)
+// Liefert kontextbezogene, stufenweise angepasste Motivationen (Start: ruhig, Mitte: im Fluss, Ende: Endspurt)
 function getContextMotivation(remSec, totSec) {
   const lang = typeof currentLang !== 'undefined' ? currentLang : 'de';
   const list = MOTIVATIONAL_CHUNKS[lang] || MOTIVATIONAL_CHUNKS['de'];
-  const pct = (remSec / totSec) * 100;
+  const pct = totSec > 0 ? (remSec / totSec) * 100 : 0;
   
   let tier = 'end';
-  if (pct > 72) tier = 'start';
-  else if (pct > 28) tier = 'halfway';
+  if (pct > 70) tier = 'start';
+  else if (pct > 25) tier = 'halfway';
   
   const chosen = pickWithoutImmediateRepeat(list[tier], lastMotivationByTier[tier]);
   lastMotivationByTier[tier] = chosen;

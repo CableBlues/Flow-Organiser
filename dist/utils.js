@@ -15,7 +15,7 @@ window.escapeHtml = escapeHtml;
 
 // Zentraler Panel-Manager (für Dropdowns & Werkzeug-Panels)
 const PanelManager = {
-  panels: ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'theme', 'calendar-dropdown', 'inspiration', 'shopping', 'cooking', 'alarm', 'weather', 'news', 'pause-dropdown', 'logo-guide'],
+  panels: ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'theme', 'calendar-dropdown', 'inspiration', 'shopping', 'cooking', 'alarm', 'weather', 'news', 'pause-dropdown'],
   open(name) {
     this.panels.forEach(p => {
       const el = document.getElementById(`panel-${p}`);
@@ -49,7 +49,7 @@ window.PanelManager = PanelManager;
 
 // Zentraler Modal-Manager (für Dialoge & Overlays)
 const ModalManager = {
-  modals: ['helper-whatnow-modal', 'helper-sport-modal', 'clarity-modal', 'feierabend-modal', 'game-mode-container', 'mobile-menu-drawer', 'mobile-tools-sheet'],
+  modals: ['brainstorm-modal', 'helper-whatnow-modal', 'helper-sport-modal', 'clarity-modal', 'feierabend-modal', 'game-mode-container', 'mobile-menu-drawer', 'mobile-tools-sheet'],
   open(id) {
     const el = document.getElementById(id);
     if (el) el.classList.remove('hidden');
@@ -344,8 +344,266 @@ function triggerCelebrationParticles(customX, customY) {
   animate();
 }
 
+// ===== NOODLE MODERN CALM & LUXURY ANIMATION ENGINE =====
+let _lastNoodleAnim = '';
+let _noodleIsAnimating = false;
+
+function animateNoodleLogo(type) {
+  if (typeof document === 'undefined') return;
+  const logo = document.getElementById('header-noodle-logo');
+  if (!logo) return;
+  
+  const allAnimClasses = [
+    'noodle-anim-float',
+    'noodle-anim-breathe',
+    'noodle-anim-shimmer',
+    'noodle-anim-aurora',
+    'noodle-anim-celebrate',
+    'noodle-anim-wobble',
+    'noodle-anim-spin',
+    'noodle-anim-dance',
+    'noodle-anim-wave',
+    'noodle-anim-bounce',
+    'noodle-anim-sway',
+    'noodle-anim-flip3d'
+  ];
+  
+  allAnimClasses.forEach(cls => logo.classList.remove(cls));
+  
+  const availableMoves = ['float', 'breathe', 'shimmer', 'aurora'];
+  let chosenMove = type;
+  
+  if (!chosenMove || chosenMove === 'random') {
+    const filtered = availableMoves.filter(m => m !== _lastNoodleAnim);
+    chosenMove = filtered[Math.floor(Math.random() * filtered.length)] || 'float';
+  }
+  
+  _lastNoodleAnim = chosenMove;
+  _noodleIsAnimating = true;
+  
+  const classMap = {
+    float: 'noodle-anim-float',
+    breathe: 'noodle-anim-breathe',
+    shimmer: 'noodle-anim-shimmer',
+    aurora: 'noodle-anim-aurora',
+    celebrate: 'noodle-anim-celebrate',
+    wobble: 'noodle-anim-breathe',
+    dance: 'noodle-anim-breathe',
+    sway: 'noodle-anim-breathe',
+    spin: 'noodle-anim-shimmer',
+    flip3d: 'noodle-anim-shimmer',
+    wave: 'noodle-anim-float',
+    bounce: 'noodle-anim-float'
+  };
+  
+  const targetClass = classMap[chosenMove] || 'noodle-anim-float';
+  
+  void logo.offsetWidth;
+  logo.classList.add(targetClass);
+  
+  setTimeout(() => {
+    logo.classList.remove(targetClass);
+    _noodleIsAnimating = false;
+  }, 3000);
+
+  // Tab-Favicon synchron sanft animieren
+  if (typeof animateFavicon === 'function') {
+    animateFavicon('breathe');
+  }
+}
+window.animateNoodleLogo = animateNoodleLogo;
+
+// ===== DYNAMIC TAB FAVICON ANIMATOR =====
+let _faviconCanvas = null;
+let _faviconCtx = null;
+let _faviconLink = null;
+let _isFaviconAnimating = false;
+
+let _noodleLogoImg = null;
+function getCachedNoodleLogoImg() {
+  if (!_noodleLogoImg && typeof Image !== 'undefined') {
+    _noodleLogoImg = new Image();
+    _noodleLogoImg.src = 'favicon.png';
+  }
+  return _noodleLogoImg;
+}
+
+function drawClayNoodleFavicon(ctx, offsetY = 0, scale = 1, rotation = 0) {
+  ctx.clearRect(0, 0, 32, 32);
+  ctx.save();
+  ctx.translate(16, 16 + offsetY);
+  if (rotation) ctx.rotate(rotation);
+  if (scale !== 1) ctx.scale(scale, scale);
+  ctx.translate(-16, -16);
+  
+  // Draw official 3D clay 'n' glyph image
+  const img = getCachedNoodleLogoImg();
+  if (img && img.complete && img.naturalWidth > 0) {
+    ctx.drawImage(img, 0, 0, 32, 32);
+  }
+  
+  ctx.restore();
+}
+
+function animateFavicon(move = 'bounce') {
+  if (typeof document === 'undefined') return;
+  if (!_faviconLink) _faviconLink = document.querySelector("link[rel*='icon']");
+  if (!_faviconCanvas) {
+    _faviconCanvas = document.createElement('canvas');
+    _faviconCanvas.width = 32;
+    if (_faviconCanvas && typeof _faviconCanvas.getContext === 'function') {
+      _faviconCtx = _faviconCanvas.getContext('2d');
+    }
+  }
+  if (!_faviconCtx || _isFaviconAnimating) return;
+  _isFaviconAnimating = true;
+
+  let frame = 0;
+  const totalFrames = 10;
+  const interval = setInterval(() => {
+    frame++;
+    const progress = frame / totalFrames;
+    let offsetY = 0;
+    let scale = 1;
+    let rot = 0;
+
+    if (move === 'bounce') {
+      offsetY = -Math.sin(progress * Math.PI) * 3;
+      scale = 1 + Math.sin(progress * Math.PI) * 0.12;
+    } else if (move === 'spin') {
+      rot = progress * Math.PI * 2;
+    } else {
+      offsetY = Math.sin(progress * Math.PI * 2) * 2;
+    }
+
+    drawClayNoodleFavicon(_faviconCtx, offsetY, scale, rot);
+    if (_faviconLink) {
+      try {
+        _faviconLink.href = _faviconCanvas.toDataURL('image/png');
+      } catch (e) {
+        // Tainted canvas on file:/// scheme is ignored safely
+      }
+    }
+
+    if (frame >= totalFrames) {
+      clearInterval(interval);
+      _isFaviconAnimating = false;
+      drawClayNoodleFavicon(_faviconCtx, 0, 1, 0);
+      if (_faviconLink) {
+        try {
+          _faviconLink.href = _faviconCanvas.toDataURL('image/png');
+        } catch (e) {
+          // Tainted canvas on file:/// scheme is ignored safely
+        }
+      }
+    }
+  }, 45);
+}
+window.animateFavicon = animateFavicon;
+
+function toggleLogoGuide(event) {
+  if (event) event.stopPropagation();
+  const guide = document.getElementById('panel-logo-guide');
+  if (!guide) return;
+  
+  const isHidden = guide.classList.contains('hidden');
+  if (isHidden) {
+    guide.classList.remove('hidden');
+    animateNoodleLogo('shimmer');
+    const searchInput = document.getElementById('logo-guide-search');
+    if (searchInput) {
+      searchInput.value = '';
+      filterLogoGuideItems('');
+      setTimeout(() => searchInput.focus(), 60);
+    }
+  } else {
+    guide.classList.add('hidden');
+  }
+}
+window.toggleLogoGuide = toggleLogoGuide;
+
+function filterLogoGuideItems(query) {
+  const q = (query || '').toLowerCase().trim();
+  const items = document.querySelectorAll('#panel-logo-guide .group\\/guide-item');
+  items.forEach(item => {
+    const text = (item.textContent || '').toLowerCase();
+    if (!q || text.includes(q)) {
+      item.style.display = '';
+    } else {
+      item.style.display = 'none';
+    }
+  });
+}
+window.filterLogoGuideItems = filterLogoGuideItems;
+
+function initNoodlePlayfulEngine() {
+  if (typeof window === 'undefined' || window._noodlePlayfulEngineInitialized) return;
+  window._noodlePlayfulEngineInitialized = true;
+
+  function scheduleNextNoodleMove() {
+    // Ruhiger, edler Zyklus alle 45 bis 75 Sekunden
+    const delay = Math.floor(Math.random() * 30000) + 45000;
+    setTimeout(() => {
+      if (!document.hidden && !_noodleIsAnimating && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
+        animateNoodleLogo('random');
+      }
+      scheduleNextNoodleMove();
+    }, delay);
+  }
+
+  // Sanfter Begrüßungs-Glow kurz nach dem Start (2.5s)
+  setTimeout(() => {
+    animateNoodleLogo('float');
+  }, 2500);
+
+  scheduleNextNoodleMove();
+
+  // Hover-Effekt: startet einen sanften, edlen Shimmer
+  const container = document.querySelector('.flow-logo-container');
+  if (container) {
+    container.addEventListener('mouseenter', () => {
+      if (!_noodleIsAnimating) {
+        animateNoodleLogo('shimmer');
+      }
+    });
+  }
+
+  // Klick außerhalb schließt den Guide
+  document.addEventListener('click', (e) => {
+    const guide = document.getElementById('panel-logo-guide');
+    const container = document.querySelector('.flow-logo-container');
+    if (guide && !guide.classList.contains('hidden')) {
+      if (!guide.contains(e.target) && (!container || !container.contains(e.target))) {
+        guide.classList.add('hidden');
+      }
+    }
+  });
+
+  // ESC schließt den Guide
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const guide = document.getElementById('panel-logo-guide');
+      if (guide && !guide.classList.contains('hidden')) {
+        guide.classList.add('hidden');
+      }
+    }
+  });
+}
+window.initNoodlePlayfulEngine = initNoodlePlayfulEngine;
+
+if (typeof window !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNoodlePlayfulEngine);
+  } else {
+    initNoodlePlayfulEngine();
+  }
+}
+
 function triggerConfetti(x, y) {
   triggerCelebrationParticles(x, y);
+  try {
+    animateNoodleLogo('celebrate');
+  } catch(e) {}
 }
 window.triggerCelebrationParticles = triggerCelebrationParticles;
 window.triggerConfetti = triggerConfetti;
@@ -545,6 +803,7 @@ function triggerLogoReloadFlow(element) {
   
   // 1. Visuelle Klick-Animation auf dem Logo auslösen
   element.classList.add('logo-clicked-flow');
+  try { animateNoodleLogo('spin'); } catch(e) {}
 
   // 2. Bubbly Liquid Sound abspielen
   try {

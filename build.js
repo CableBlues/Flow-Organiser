@@ -10,7 +10,7 @@ const rootDir = __dirname;
 const distDir = path.join(rootDir, 'dist');
 
 console.log('====================================================');
-console.log('📦 FLOW ORGANISER PRODUCTION BUNDLER');
+console.log('📦 NOODLE PRODUCTION BUNDLER');
 console.log('====================================================\n');
 
 // 1. Ensure dist directory exists
@@ -29,7 +29,21 @@ staticDirs.forEach(dir => {
   }
 });
 
-const staticFiles = ['manifest.json', 'favicon.svg', 'icon-192.svg', 'icon-512.svg', 'service-worker.js', 'sw.js', 'fonts.css'];
+const staticFiles = [
+  'manifest.json',
+  'logo-noodle.png',
+  'logo-banner.png',
+  'favicon.png',
+  'favicon.svg',
+  'icon-192.png',
+  'icon-192.svg',
+  'icon-512.png',
+  'icon-512.svg',
+  'service-worker.js',
+  'sw.js',
+  'fonts.css',
+  'api-sync.php'
+];
 staticFiles.forEach(file => {
   const src = path.join(rootDir, file);
   const dest = path.join(distDir, file);
@@ -75,7 +89,7 @@ try {
 let indexHtml = fs.readFileSync(path.join(rootDir, 'index.html'), 'utf8');
 const scriptBlockRegex = /<script src="data-tasks-steps-1\.js"><\/script>[\s\S]*?<script src="app-dice\.js"><\/script>/;
 if (scriptBlockRegex.test(indexHtml)) {
-  indexHtml = indexHtml.replace(scriptBlockRegex, '  <!-- Flow Organiser Standalone Production Bundle -->\n  <script src="app.bundle.js"></script>');
+  indexHtml = indexHtml.replace(scriptBlockRegex, '  <!-- Noodle Standalone Production Bundle -->\n  <script src="app.bundle.js"></script>');
 }
 fs.writeFileSync(path.join(distDir, 'index.html'), indexHtml, 'utf8');
 console.log('✓ dist/index.html erfolgreich auf app.bundle.js umgestellt');
@@ -86,8 +100,13 @@ const distAssets = [
   './',
   './index.html',
   './manifest.json',
+  './logo-noodle.png',
+  './logo-banner.png',
+  './favicon.png',
   './favicon.svg',
+  './icon-192.png',
   './icon-192.svg',
+  './icon-512.png',
   './icon-512.svg',
   './fonts.css',
   './app.bundle.js',

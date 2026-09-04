@@ -71,6 +71,81 @@ function setTimerPreset(mins) {
   showToast(`⏱️ ${mins}m`);
 }
 
+let timerPresetHoverTimeout = null;
+
+function openTimerPresetMenu() {
+  if (timerPresetHoverTimeout) {
+    clearTimeout(timerPresetHoverTimeout);
+    timerPresetHoverTimeout = null;
+  }
+  const panel = document.getElementById('panel-timer-presets');
+  if (!panel) return;
+  
+  // Andere Popovers schließen
+  document.querySelectorAll('#panel-calendar-dropdown, #panel-weather, #panel-pause-dropdown, #panel-settings-dropdown').forEach(el => el.classList.add('hidden'));
+
+  panel.classList.remove('hidden');
+  const currentMins = Math.round(timerInitialSeconds / 60) || 2;
+  document.querySelectorAll('.timer-preset-btn').forEach(btn => {
+    const mins = parseInt(btn.getAttribute('data-mins') || btn.innerText, 10);
+    if (mins === currentMins) {
+      btn.className = 'timer-preset-btn py-1.5 px-2 rounded-xl bg-purple-600/40 border border-purple-400 text-xs font-bold text-white shadow-sm text-center cursor-pointer transition';
+    } else {
+      btn.className = 'timer-preset-btn py-1.5 px-2 rounded-xl bg-white/5 hover:bg-purple-600/20 hover:border-purple-400/50 border border-white/10 text-xs font-semibold text-gray-300 hover:text-white transition text-center cursor-pointer';
+    }
+  });
+}
+window.openTimerPresetMenu = openTimerPresetMenu;
+
+function closeTimerPresetMenu() {
+  if (timerPresetHoverTimeout) clearTimeout(timerPresetHoverTimeout);
+  timerPresetHoverTimeout = setTimeout(() => {
+    const panel = document.getElementById('panel-timer-presets');
+    const trigger = document.getElementById('btn-timer-presets');
+    const isOverPanel = panel && panel.matches(':hover');
+    const isOverTrigger = trigger && trigger.matches(':hover');
+    if (panel && !isOverPanel && !isOverTrigger) {
+      panel.classList.add('hidden');
+    }
+  }, 250);
+}
+window.closeTimerPresetMenu = closeTimerPresetMenu;
+
+function toggleTimerPresetMenu(event) {
+  if (event) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
+  const panel = document.getElementById('panel-timer-presets');
+  if (!panel) return;
+  if (panel.classList.contains('hidden')) {
+    openTimerPresetMenu();
+  } else {
+    panel.classList.add('hidden');
+  }
+}
+window.toggleTimerPresetMenu = toggleTimerPresetMenu;
+
+function selectTimerPreset(mins) {
+  setTimerPreset(mins);
+  const panel = document.getElementById('panel-timer-presets');
+  if (panel) panel.classList.add('hidden');
+}
+window.selectTimerPreset = selectTimerPreset;
+
+// Outside click zum Schließen des Timer-Preset Menüs
+if (typeof document !== 'undefined') {
+  document.addEventListener('click', (e) => {
+    const panel = document.getElementById('panel-timer-presets');
+    const trigger = document.getElementById('btn-timer-presets');
+    if (panel && !panel.classList.contains('hidden')) {
+      if (!panel.contains(e.target) && !trigger?.contains(e.target)) {
+        panel.classList.add('hidden');
+      }
+    }
+  });
+}
+
 function syncTimerWithTimestamp() {
   const isRunning = typeof timerRunning !== 'undefined' ? timerRunning : (typeof window !== 'undefined' ? window.timerRunning : false);
   const targetEnd = typeof timerTargetEndTime !== 'undefined' ? timerTargetEndTime : (typeof window !== 'undefined' ? window.timerTargetEndTime : null);
@@ -115,7 +190,13 @@ function startTimer() {
   updateMuteButtonsUI();
   
   try {
-    playRandomTimerAmbient();
+    if (localStorage.getItem('flow_audio_timer_sync') === 'true' && typeof playAmbientSound === 'function') {
+      if (!currentSoundType && (!activeUserAudio || activeUserAudio.paused)) {
+        playAmbientSound(typeof lastSelectedSound !== 'undefined' && lastSelectedSound ? lastSelectedSound : 'lofi');
+      }
+    } else {
+      playRandomTimerAmbient();
+    }
   } catch(e) {
     console.warn("Ambient play notice:", e);
   }
@@ -332,7 +413,7 @@ function stopTimer() {
     activeTimeouts.length = 0;
   }
   
-  document.title = 'Flow - Dein Alltagsbegleiter';
+  document.title = 'Noodle Studio';
   
   updateActiveTimerLabels();
   updateTimerDisplay();
@@ -469,12 +550,12 @@ function updateTimerDisplay() {
   // Browser-Tab-Titel bei laufendem Timer & Überzeit aktualisieren
   if (timerRunning) {
     if (isNegative) {
-      document.title = `(${str}) ⚠️ Überzeit - Flow`;
+      document.title = `(${str}) ⚠️ Overtime — Noodle Studio`;
     } else {
-      document.title = `(${str}) Flow`;
+      document.title = `(${str}) Noodle Studio`;
     }
   } else {
-    document.title = 'Flow - Dein Alltagsbegleiter';
+    document.title = 'Noodle Studio';
   }
   
   const pct = timerInitialSeconds > 0 ? Math.max(0, (timerSeconds / timerInitialSeconds) * 100) : 100;

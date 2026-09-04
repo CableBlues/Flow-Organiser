@@ -189,6 +189,42 @@ function renderMiniCalendar() {
 
 let calendarHoverTimeout = null;
 
+function toggleCalendarDropdown(event) {
+  if (event) event.stopPropagation();
+  const weatherEl = document.getElementById('panel-weather');
+  if (weatherEl) weatherEl.classList.add('hidden');
+  
+  const calEl = document.getElementById('panel-calendar-dropdown');
+  if (calEl) {
+    const isHidden = calEl.classList.contains('hidden');
+    if (isHidden) {
+      calEl.classList.remove('hidden');
+      renderMiniCalendar();
+    } else {
+      calEl.classList.add('hidden');
+    }
+  }
+}
+window.toggleCalendarDropdown = toggleCalendarDropdown;
+
+function toggleWeatherDropdown(event) {
+  if (event) event.stopPropagation();
+  const calEl = document.getElementById('panel-calendar-dropdown');
+  if (calEl) calEl.classList.add('hidden');
+  
+  const weatherEl = document.getElementById('panel-weather');
+  if (weatherEl) {
+    const isHidden = weatherEl.classList.contains('hidden');
+    if (isHidden) {
+      weatherEl.classList.remove('hidden');
+      if (typeof updateWeatherDisplay === 'function') updateWeatherDisplay();
+    } else {
+      weatherEl.classList.add('hidden');
+    }
+  }
+}
+window.toggleWeatherDropdown = toggleWeatherDropdown;
+
 function openCalendarHover() {
   if (calendarHoverTimeout) {
     clearTimeout(calendarHoverTimeout);
@@ -219,13 +255,62 @@ function closeCalendarHover() {
 }
 window.closeCalendarHover = closeCalendarHover;
 
+// Klick außerhalb schließt alle Header-Dropdowns & Popovers
+if (typeof document !== 'undefined') {
+  document.addEventListener('click', (e) => {
+    // 1. Kalender
+    const calEl = document.getElementById('panel-calendar-dropdown');
+    const dateWrapper = document.getElementById('date-hover-wrapper');
+    if (calEl && !calEl.classList.contains('hidden')) {
+      if (!calEl.contains(e.target) && (!dateWrapper || !dateWrapper.contains(e.target))) {
+        calEl.classList.add('hidden');
+      }
+    }
+    // 2. Wetter
+    const weatherEl = document.getElementById('panel-weather');
+    const weatherBadge = document.getElementById('date-weather-badge');
+    if (weatherEl && !weatherEl.classList.contains('hidden')) {
+      if (!weatherEl.contains(e.target) && (!weatherBadge || !weatherBadge.contains(e.target))) {
+        weatherEl.classList.add('hidden');
+      }
+    }
+    // 3. Report / Statistik
+    const reportEl = document.getElementById('panel-report');
+    const reportBtn = document.querySelector('button[onclick*="togglePanel(\'report\')"]');
+    if (reportEl && !reportEl.classList.contains('hidden')) {
+      if (!reportEl.contains(e.target) && (!reportBtn || !reportBtn.contains(e.target))) {
+        reportEl.classList.add('hidden');
+      }
+    }
+    // 4. Pause
+    const pauseEl = document.getElementById('panel-pause-dropdown');
+    const pauseBtn = document.querySelector('button[onclick*="togglePanel(\'pause-dropdown\')"]');
+    if (pauseEl && !pauseEl.classList.contains('hidden')) {
+      if (!pauseEl.contains(e.target) && (!pauseBtn || !pauseBtn.contains(e.target))) {
+        pauseEl.classList.add('hidden');
+      }
+    }
+    // 5. Settings Dropdown
+    const settingsEl = document.getElementById('panel-settings-dropdown');
+    const settingsBtn = document.querySelector('button[onclick*="togglePanel(\'settings-dropdown\')"]');
+    if (settingsEl && !settingsEl.classList.contains('hidden')) {
+      if (!settingsEl.contains(e.target) && (!settingsBtn || !settingsBtn.contains(e.target))) {
+        settingsEl.classList.add('hidden');
+      }
+    }
+  });
+}
+
 function updateDateAndStreak() {
   const now = new Date();
   const locales = { de: 'de-DE', en: 'en-GB', el: 'el-GR', es: 'es-ES', fr: 'fr-FR', it: 'it-IT' };
   try {
-    const str = new Intl.DateTimeFormat(locales[currentLang] || 'en-GB', { weekday: 'long', day: 'numeric', month: 'long' }).format(now);
+    const weekday = new Intl.DateTimeFormat(locales[currentLang] || 'en-GB', { weekday: 'long' }).format(now);
+    const dayMonth = new Intl.DateTimeFormat(locales[currentLang] || 'en-GB', { day: 'numeric', month: 'long' }).format(now);
     const displayEl = document.getElementById('date-display');
-    if (displayEl) displayEl.innerText = str;
+    if (displayEl) {
+      displayEl.innerHTML = `<span class="text-purple-300 font-extrabold text-xs md:text-sm tracking-wide">${weekday},</span> <span class="text-white font-black text-xs md:text-sm tracking-tight">${dayMonth}</span>`;
+    }
   } catch (e) {
     const displayEl = document.getElementById('date-display');
     if (displayEl) displayEl.innerText = now.toLocaleDateString();
@@ -335,80 +420,320 @@ const ANCHOR_STEPS = {
 };
 
 let safeSpaceBreathInterval = null;
+let safeSpaceBreathTimeout = null;
 let safeSpaceBreathStep = 0;
+let currentBreathPattern = '444'; // '444', '478', 'sigh'
 let safeSpaceNoiseActive = false;
 let anchorStep = 1;
+let eyeRestTimerInterval = null;
+let eyeRestSeconds = 20;
+let eyeRestRunning = false;
+let dopamineDetoxInterval = null;
+let dopamineDetoxSeconds = 60;
+
+function openBreakModal(type, pattern) {
+  if (type === 'stretch') {
+    if (typeof openSportModal === 'function') {
+      openSportModal();
+      return;
+    }
+  }
+  openSafeSpaceModal();
+  if (pattern) {
+    currentBreathPattern = pattern;
+  }
+  if (type === 'grounding') {
+    switchSafeSpaceTab('anchor');
+  } else if (type === 'eyes') {
+    switchSafeSpaceTab('eyes');
+  } else if (type === 'body') {
+    switchSafeSpaceTab('body');
+  } else if (type === 'sound') {
+    switchSafeSpaceTab('sound');
+  } else {
+    switchSafeSpaceTab('breath');
+  }
+}
+window.openBreakModal = openBreakModal;
 
 function openSafeSpaceModal() {
   const modal = document.getElementById('helper-safespace-modal');
   if (modal) modal.classList.remove('hidden');
   switchSafeSpaceTab('breath');
 }
+window.openSafeSpaceModal = openSafeSpaceModal;
 
 function closeSafeSpaceModal() {
   const modal = document.getElementById('helper-safespace-modal');
   if (modal) modal.classList.add('hidden');
   stopSafeSpaceBreathCycle();
+  stopEyeRestTimer();
+  if (dopamineDetoxInterval) {
+    clearInterval(dopamineDetoxInterval);
+    dopamineDetoxInterval = null;
+  }
   if (safeSpaceNoiseActive) {
     toggleSafeSpaceNoise();
   }
 }
+window.closeSafeSpaceModal = closeSafeSpaceModal;
+
+function switchPauseDropdownTab(tabName) {
+  ['breath', 'sensory', 'body', 'sound'].forEach(t => {
+    const pane = document.getElementById(`pause-dropdown-pane-${t}`);
+    const tabBtn = document.getElementById(`pause-dropdown-tab-${t}`);
+    if (pane) {
+      if (t === tabName) pane.classList.remove('hidden');
+      else pane.classList.add('hidden');
+    }
+    if (tabBtn) {
+      if (t === tabName) {
+        tabBtn.className = "py-1.5 px-2 rounded-xl bg-teal-500/20 text-teal-200 border border-teal-500/40 font-bold transition text-center cursor-pointer";
+      } else {
+        tabBtn.className = "py-1.5 px-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition text-center cursor-pointer";
+      }
+    }
+  });
+}
+window.switchPauseDropdownTab = switchPauseDropdownTab;
 
 function switchSafeSpaceTab(tab) {
-  const breathTab = document.getElementById('safespace-tab-breath');
-  const anchorTab = document.getElementById('safespace-tab-anchor');
-  const breathPane = document.getElementById('safespace-pane-breath');
-  const anchorPane = document.getElementById('safespace-pane-anchor');
+  const tabs = ['breath', 'anchor', 'eyes', 'body', 'sound'];
+  tabs.forEach(t => {
+    const btn = document.getElementById(`safespace-tab-${t}`);
+    const pane = document.getElementById(`safespace-pane-${t}`);
+    if (pane) {
+      if (t === tab) pane.classList.remove('hidden');
+      else pane.classList.add('hidden');
+    }
+    if (btn) {
+      if (t === tab) {
+        btn.className = "py-2 px-2 rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5 text-teal-300 bg-teal-500/20 border border-teal-500/40 font-bold shadow-sm";
+      } else {
+        btn.className = "py-2 px-2 rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5 text-gray-400 hover:text-white hover:bg-white/5";
+      }
+    }
+  });
+
+  stopSafeSpaceBreathCycle();
+  stopEyeRestTimer();
+
   if (tab === 'breath') {
-    if (breathTab) breathTab.className = "flex-1 py-1.5 rounded text-teal-300 bg-teal-500/10 border border-teal-500/20";
-    if (anchorTab) anchorTab.className = "flex-1 py-1.5 rounded text-gray-400 hover:text-white";
-    if (breathPane) breathPane.classList.remove('hidden');
-    if (anchorPane) anchorPane.classList.add('hidden');
     startSafeSpaceBreathCycle();
-  } else {
-    if (breathTab) breathTab.className = "flex-1 py-1.5 rounded text-gray-400 hover:text-white";
-    if (anchorTab) anchorTab.className = "flex-1 py-1.5 rounded text-teal-300 bg-teal-500/10 border border-teal-500/20";
-    if (breathPane) breathPane.classList.add('hidden');
-    if (anchorPane) anchorPane.classList.remove('hidden');
-    stopSafeSpaceBreathCycle();
+  } else if (tab === 'anchor') {
     resetAnchorSteps();
+  } else if (tab === 'eyes') {
+    resetEyeRestUI();
   }
 }
+window.switchSafeSpaceTab = switchSafeSpaceTab;
+
+function setBreathPattern(pat) {
+  currentBreathPattern = pat;
+  ['444', '478', 'sigh'].forEach(p => {
+    const btn = document.getElementById(`safespace-pat-${p}`);
+    if (btn) {
+      if (p === pat) {
+        btn.className = "py-1 px-2.5 rounded-lg bg-teal-500/30 text-teal-200 border border-teal-400 font-bold text-xs transition cursor-pointer";
+      } else {
+        btn.className = "py-1 px-2.5 rounded-lg bg-white/5 text-gray-400 hover:text-white border border-white/10 text-xs transition cursor-pointer";
+      }
+    }
+  });
+  startSafeSpaceBreathCycle();
+}
+window.setBreathPattern = setBreathPattern;
 
 function startSafeSpaceBreathCycle() {
   stopSafeSpaceBreathCycle();
   const circle = document.getElementById('safespace-breath-circle');
   const text = document.getElementById('safespace-breath-text');
+  const countEl = document.getElementById('safespace-breath-count');
   if (!circle || !text) return;
-  safeSpaceBreathStep = 0;
-  const runCycle = () => {
-    if (safeSpaceBreathStep === 0) {
-      text.innerText = currentLang === 'de' ? "Einatmen... (4s)" : "Inhale... (4s)";
-      circle.style.transform = "scale(1.35)";
-      circle.style.borderColor = "rgba(20, 184, 166, 0.8)";
-      safeSpaceBreathStep = 1;
-    } else if (safeSpaceBreathStep === 1) {
-      text.innerText = currentLang === 'de' ? "Anhalten... (4s)" : "Hold... (4s)";
-      circle.style.transform = "scale(1.35)";
-      circle.style.borderColor = "rgba(245, 158, 11, 0.6)";
-      safeSpaceBreathStep = 2;
-    } else {
-      text.innerText = currentLang === 'de' ? "Ausatmen... (4s)" : "Exhale... (4s)";
-      circle.style.transform = "scale(0.95)";
-      circle.style.borderColor = "rgba(20, 184, 166, 0.4)";
-      safeSpaceBreathStep = 0;
-    }
-  };
-  runCycle();
-  safeSpaceBreathInterval = setInterval(runCycle, 4000);
-}
 
-function stopSafeSpaceBreathCycle() {
-  if (safeSpaceBreathInterval) {
-    clearInterval(safeSpaceBreathInterval);
-    safeSpaceBreathInterval = null;
+  if (currentBreathPattern === '478') {
+    // 4-7-8 Breathing (4s Inhale, 7s Hold, 8s Exhale)
+    const run478 = () => {
+      text.innerText = tr({ de: "Einatmen (Nase)", en: "Inhale (Nose)", fr: "Inspirez (Nez)", it: "Inspira (Naso)", es: "Inhala (Nariz)", el: "Εισπνοή (Μύτη)" });
+      if (countEl) countEl.innerText = "4s";
+      circle.style.transform = "scale(1.4)";
+      circle.style.borderColor = "rgba(20, 184, 166, 0.9)";
+      circle.style.backgroundColor = "rgba(20, 184, 166, 0.18)";
+
+      safeSpaceBreathTimeout = setTimeout(() => {
+        text.innerText = tr({ de: "Anhalten (Sanft)", en: "Hold (Gently)", fr: "Bloquez (Doux)", it: "Trattieni (Dolce)", es: "Mantén (Suave)", el: "Κράτημα (Απαλά)" });
+        if (countEl) countEl.innerText = "7s";
+        circle.style.borderColor = "rgba(245, 158, 11, 0.8)";
+        circle.style.backgroundColor = "rgba(245, 158, 11, 0.15)";
+
+        safeSpaceBreathTimeout = setTimeout(() => {
+          text.innerText = tr({ de: "Langsam Ausatmen (Mund)", en: "Slow Exhale (Mouth)", fr: "Expirez lentement (Bouche)", it: "Espira lentamente (Bocca)", es: "Exhala lento (Boca)", el: "Εκπνοή αργά (Στόμα)" });
+          if (countEl) countEl.innerText = "8s";
+          circle.style.transform = "scale(0.9)";
+          circle.style.borderColor = "rgba(99, 102, 241, 0.7)";
+          circle.style.backgroundColor = "rgba(99, 102, 241, 0.12)";
+
+          safeSpaceBreathTimeout = setTimeout(run478, 8000);
+        }, 7000);
+      }, 4000);
+    };
+    run478();
+  } else if (currentBreathPattern === 'sigh') {
+    // Physiological Sigh (2s Inhale, 1s Top-up Inhale, 6s Slow Exhale)
+    const runSigh = () => {
+      text.innerText = tr({ de: "1. Tief Einatmen", en: "1. Deep Inhale", fr: "1. Inspirez", it: "1. Inspira a fondo", es: "1. Inhala profundo", el: "1. Βαθιά Εισπνοή" });
+      if (countEl) countEl.innerText = "2s";
+      circle.style.transform = "scale(1.25)";
+      circle.style.borderColor = "rgba(20, 184, 166, 0.8)";
+
+      safeSpaceBreathTimeout = setTimeout(() => {
+        text.innerText = tr({ de: "2. Nochmal nachatmen!", en: "2. Top-up Inhale!", fr: "2. Complétez !", it: "2. Riempi ancora!", es: "2. ¡Inhala más!", el: "2. Συμπληρώστε!" });
+        if (countEl) countEl.innerText = "1s";
+        circle.style.transform = "scale(1.45)";
+        circle.style.borderColor = "rgba(56, 189, 248, 0.9)";
+
+        safeSpaceBreathTimeout = setTimeout(() => {
+          text.innerText = tr({ de: "Langer beruhigender Seufzer...", en: "Long Calming Sigh...", fr: "Long soupir apaisant...", it: "Lungo sospiro calmante...", es: "Largo suspiro calmante...", el: "Μεγάλος αναστεναγμός..." });
+          if (countEl) countEl.innerText = "6s";
+          circle.style.transform = "scale(0.88)";
+          circle.style.borderColor = "rgba(168, 85, 247, 0.8)";
+
+          safeSpaceBreathTimeout = setTimeout(runSigh, 6000);
+        }, 1200);
+      }, 2000);
+    };
+    runSigh();
+  } else {
+    // 4-4-4 Box Breathing (Navy SEAL 4s Inhale, 4s Hold, 4s Exhale, 4s Hold)
+    const run444 = () => {
+      text.innerText = tr({ de: "Einatmen...", en: "Inhale...", fr: "Inspirez...", it: "Inspira...", es: "Inhala...", el: "Εισπνοή..." });
+      if (countEl) countEl.innerText = "4s";
+      circle.style.transform = "scale(1.35)";
+      circle.style.borderColor = "rgba(20, 184, 166, 0.9)";
+      circle.style.backgroundColor = "rgba(20, 184, 166, 0.15)";
+
+      safeSpaceBreathTimeout = setTimeout(() => {
+        text.innerText = tr({ de: "Anhalten...", en: "Hold...", fr: "Bloquez...", it: "Trattieni...", es: "Mantén...", el: "Κράτημα..." });
+        if (countEl) countEl.innerText = "4s";
+        circle.style.borderColor = "rgba(245, 158, 11, 0.8)";
+        circle.style.backgroundColor = "rgba(245, 158, 11, 0.15)";
+
+        safeSpaceBreathTimeout = setTimeout(() => {
+          text.innerText = tr({ de: "Ausatmen...", en: "Exhale...", fr: "Expirez...", it: "Espira...", es: "Exhala...", el: "Εκπνοή..." });
+          if (countEl) countEl.innerText = "4s";
+          circle.style.transform = "scale(0.92)";
+          circle.style.borderColor = "rgba(20, 184, 166, 0.5)";
+          circle.style.backgroundColor = "rgba(20, 184, 166, 0.05)";
+
+          safeSpaceBreathTimeout = setTimeout(() => {
+            text.innerText = tr({ de: "Leer Anhalten...", en: "Hold Empty...", fr: "Poumons vides...", it: "Pausa a vuoto...", es: "Pausa vacío...", el: "Κενό κράτημα..." });
+            if (countEl) countEl.innerText = "4s";
+            circle.style.borderColor = "rgba(99, 102, 241, 0.7)";
+
+            safeSpaceBreathTimeout = setTimeout(run444, 4000);
+          }, 4000);
+        }, 4000);
+      }, 4000);
+    };
+    run444();
   }
 }
+window.startSafeSpaceBreathCycle = startSafeSpaceBreathCycle;
+
+function stopSafeSpaceBreathCycle() {
+  if (safeSpaceBreathTimeout) {
+    clearTimeout(safeSpaceBreathTimeout);
+    safeSpaceBreathTimeout = null;
+  }
+}
+window.stopSafeSpaceBreathCycle = stopSafeSpaceBreathCycle;
+
+function resetEyeRestUI() {
+  eyeRestSeconds = 20;
+  eyeRestRunning = false;
+  const timeEl = document.getElementById('safespace-eyes-time');
+  const btn = document.getElementById('safespace-eyes-btn');
+  if (timeEl) timeEl.innerText = '20s';
+  if (btn) btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> <span>20s Augen-Timer starten</span>`;
+  if (typeof renderLucideIcons === 'function') renderLucideIcons();
+}
+window.resetEyeRestUI = resetEyeRestUI;
+
+function toggleEyeRestTimer() {
+  if (eyeRestRunning) {
+    stopEyeRestTimer();
+  } else {
+    startEyeRestTimer();
+  }
+}
+window.toggleEyeRestTimer = toggleEyeRestTimer;
+
+function startEyeRestTimer() {
+  stopEyeRestTimer();
+  eyeRestRunning = true;
+  eyeRestSeconds = 20;
+  const timeEl = document.getElementById('safespace-eyes-time');
+  const btn = document.getElementById('safespace-eyes-btn');
+  if (btn) btn.innerHTML = `<i data-lucide="pause" class="w-4 h-4"></i> <span>Timer pausieren</span>`;
+  if (typeof renderLucideIcons === 'function') renderLucideIcons();
+
+  eyeRestTimerInterval = setInterval(() => {
+    eyeRestSeconds--;
+    if (timeEl) timeEl.innerText = `${eyeRestSeconds}s`;
+    if (eyeRestSeconds <= 0) {
+      stopEyeRestTimer();
+      if (typeof playProceduralSound === 'function') playProceduralSound(2);
+      showToast(tr({
+        de: "👀 Augen entspannt! Wunderbar erholt.",
+        en: "👀 Eyes relaxed! Wonderful recharge.",
+        fr: "👀 Yeux reposés ! Recharge réussie.",
+        it: "👀 Occhi rilassati! Ottima ricarica.",
+        es: "👀 ¡Ojos descansados! Recarga completada.",
+        el: "👀 Τα μάτια ξεκουράστηκαν! Υπέροχη ανανέωση."
+      }));
+      resetEyeRestUI();
+    }
+  }, 1000);
+}
+window.startEyeRestTimer = startEyeRestTimer;
+
+function stopEyeRestTimer() {
+  if (eyeRestTimerInterval) {
+    clearInterval(eyeRestTimerInterval);
+    eyeRestTimerInterval = null;
+  }
+  eyeRestRunning = false;
+}
+window.stopEyeRestTimer = stopEyeRestTimer;
+
+function startDopamineDetoxTimer(sec = 60) {
+  openSafeSpaceModal();
+  switchSafeSpaceTab('anchor');
+  showToast(tr({
+    de: "⏳ 60s Reizstille gestartet. Schließe die Augen und lass die Gedanken ziehen.",
+    en: "⏳ 60s Sensory silence started. Close your eyes and let your mind wander.",
+    fr: "⏳ 60s de calme sensoriel démarrées.",
+    it: "⏳ 60s di silenzio sensoriale avviati.",
+    es: "⏳ 60s de silencio sensorial iniciados.",
+    el: "⏳ 60 δευτ. αισθητηριακής ηρεμίας ξεκίνησαν."
+  }));
+}
+window.startDopamineDetoxTimer = startDopamineDetoxTimer;
+
+function quickPlaySoundscape(type) {
+  if (typeof playAmbientSound === 'function') {
+    playAmbientSound(type, true);
+    showToast(tr({
+      de: `🎧 Soundscape "${type}" aktiviert`,
+      en: `🎧 Soundscape "${type}" active`,
+      fr: `🎧 Ambiance "${type}" activée`,
+      it: `🎧 Soundscape "${type}" attivo`,
+      es: `🎧 Sonido "${type}" activado`,
+      el: `🎧 Ήχος "${type}" ενεργοποιήθηκε`
+    }));
+  }
+}
+window.quickPlaySoundscape = quickPlaySoundscape;
 
 function toggleSafeSpaceNoise() {
   safeSpaceNoiseActive = !safeSpaceNoiseActive;
@@ -428,6 +753,7 @@ function toggleSafeSpaceNoise() {
     }
   }
 }
+window.toggleSafeSpaceNoise = toggleSafeSpaceNoise;
 
 function resetAnchorSteps() {
   anchorStep = 1;
@@ -458,3 +784,76 @@ function updateAnchorStepUI() {
   textEl.innerText = stepData.text;
   progressEl.style.width = `${anchorStep * 20}%`;
 }
+
+// ===== HEADER LAYOUT CUSTOMIZER =====
+function setHeaderLayout(mode) {
+  const validModes = ['smart_hubs', 'minimal', 'classic'];
+  if (!validModes.includes(mode)) mode = 'smart_hubs';
+  
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem('noodle_header_layout', mode);
+  }
+
+  // 1. Center Flank Buttons (Was nun? is preserved; Fokus is integrated)
+  const whatnowBtn = document.getElementById('btn-whatnow-dance');
+  const focusBtn = document.getElementById('btn-focus-mode');
+  if (whatnowBtn) whatnowBtn.classList.remove('hidden');
+  if (focusBtn) focusBtn.classList.add('hidden');
+
+  // 2. Wellbeing & Options (Optionen MUSS in jedem Modus sichtbar sein!)
+  const wellbeingCapsule = document.getElementById('header-capsule-wellbeing');
+  const reportContainer = document.getElementById('header-btn-report-container');
+  const optionsContainer = document.getElementById('header-btn-options-container');
+
+  if (wellbeingCapsule) wellbeingCapsule.classList.remove('hidden');
+  if (optionsContainer) optionsContainer.classList.remove('hidden');
+
+  if (reportContainer) {
+    if (mode === 'minimal') reportContainer.classList.add('hidden');
+    else reportContainer.classList.remove('hidden');
+  }
+
+  // 3. Direct Undo & Reset Buttons in Header Bar (Klassik = Direkt sichtbar, Minimal/Smart = in Dropdown)
+  const directUndo = document.getElementById('header-btn-undo');
+  const directReset = document.getElementById('header-btn-reset');
+  if (directUndo) {
+    if (mode === 'classic') directUndo.classList.remove('hidden');
+    else directUndo.classList.add('hidden');
+  }
+  if (directReset) {
+    if (mode === 'classic') directReset.classList.remove('hidden');
+    else directReset.classList.add('hidden');
+  }
+
+  // 4. Update UI Buttons in Settings Dropdown
+  const modes = ['smart_hubs', 'minimal', 'classic'];
+  modes.forEach(m => {
+    const btn = document.getElementById(`btn-layout-${m}`);
+    if (btn) {
+      if (m === mode) {
+        btn.className = 'py-1 px-1.5 rounded-xl transition text-center bg-purple-500/20 text-purple-200 border border-purple-500/40 cursor-pointer font-bold shadow-sm';
+      } else {
+        btn.className = 'py-1 px-1.5 rounded-xl transition text-center text-gray-400 hover:text-white cursor-pointer';
+      }
+    }
+  });
+
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+window.setHeaderLayout = setHeaderLayout;
+
+function initHeaderLayout() {
+  if (typeof localStorage === 'undefined') return;
+  const saved = localStorage.getItem('noodle_header_layout') || 'classic';
+  setHeaderLayout(saved);
+}
+window.initHeaderLayout = initHeaderLayout;
+
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHeaderLayout);
+  } else {
+    initHeaderLayout();
+  }
+}
+

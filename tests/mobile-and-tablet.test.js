@@ -1,0 +1,53 @@
+import { describe, it, expect, beforeEach } from 'vitest';
+import fs from 'fs';
+import path from 'path';
+
+describe('Responsive Tablet & Mobile Architecture', () => {
+  let indexHtml;
+  let mobileCss;
+
+  beforeEach(() => {
+    indexHtml = fs.readFileSync(path.resolve(__dirname, '../index.html'), 'utf8');
+    mobileCss = fs.readFileSync(path.resolve(__dirname, '../styles-mobile.css'), 'utf8');
+  });
+
+  it('1. Mobile tools grid contains complete tool parity with desktop dock', () => {
+    expect(indexHtml).toContain('openBrainstormModal()');
+    expect(indexHtml).toContain('openClarityModal()');
+    expect(indexHtml).toContain('openSafeSpaceModal()');
+    expect(indexHtml).toContain('openPantryModal()');
+    expect(indexHtml).toContain('openShoppingModal()');
+    expect(indexHtml).toContain('openRecipeModal()');
+    expect(indexHtml).toContain('openSportModal()');
+    expect(indexHtml).toContain('openAlarmModal()');
+    expect(indexHtml).toContain('openReportDashboard()');
+    expect(indexHtml).toContain('openP2PSyncModal()');
+    expect(indexHtml).toContain('openWhatNowModal()');
+  });
+
+  it('2. Styles-mobile.css defines dedicated smartphone and tablet breakpoints', () => {
+    expect(mobileCss).toContain('@media (max-width: 768px)');
+    expect(mobileCss).toContain('@media (min-width: 769px) and (max-width: 1024px)');
+    expect(mobileCss).toContain('TABLET DESIGN SYSTEM');
+  });
+
+  it('3. Header Sound Volume popover supports touch/click toggle', () => {
+    expect(indexHtml).toContain('toggleSoundVolumePopover(event)');
+  });
+
+  it('4. Brainstorming Modal is responsive with safe max-height and custom scrollbar', () => {
+    expect(indexHtml).toContain('id="brainstorm-modal"');
+    expect(indexHtml).toContain('max-h-[92vh]');
+    expect(indexHtml).toContain('id="brainstorm-quick-input"');
+    expect(indexHtml).toContain('id="brainstorm-mic-btn"');
+  });
+
+  it('5. Mobile bottom navigation bar contains 5 primary zones with safe-area insets', () => {
+    expect(indexHtml).toContain('id="mobile-bottom-nav"');
+    expect(indexHtml).toContain('switchMobileNavTab(\'planer\')');
+    expect(indexHtml).toContain('switchMobileNavTab(\'focus\')');
+    expect(indexHtml).toContain('switchMobileNavTab(\'audio\')');
+    expect(indexHtml).toContain('switchMobileNavTab(\'tools\')');
+    expect(mobileCss).toContain('env(safe-area-inset-bottom)');
+  });
+});

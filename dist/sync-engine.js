@@ -1,3 +1,6 @@
+// sync-engine.js - Zuverlässige & automatische Synchronisations-Engine für Flow Organiser
+// ============================================================================
+
 const MinimalQR = (function() {
   function generateQRCodeSVG(text, size = 220) {
     if (!text) return '';
@@ -5,7 +8,7 @@ const MinimalQR = (function() {
       const qrLib = (typeof QRCode !== 'undefined' ? QRCode : (typeof window !== 'undefined' ? window.QRCode : (typeof globalThis !== 'undefined' ? globalThis.QRCode : null)));
       if (qrLib && typeof qrLib.toString === 'function') {
         let svgOut = '';
-        qrLib.toString(text, { type: 'svg', margin: 2, width: size, errorCorrectionLevel: 'L' }, (err, svg) => {
+        qrLib.toString(text, { type: 'svg', margin: 2, width: size, errorCorrectionLevel: 'M' }, (err, svg) => {
           if (!err && svg) svgOut = svg;
         });
         if (svgOut) {
@@ -23,11 +26,6 @@ const MinimalQR = (function() {
   };
 })();
 
-
-
-// ============================================================================
-// 2. URL-HASH KOMPRIMIERUNG & INSTANT-TRANSFER CODEC
-// ============================================================================
 const P2PDataCodec = {
   encodeState(stateObj) {
     try {
@@ -45,7 +43,6 @@ const P2PDataCodec = {
         .replace(/\//g, '_')
         .replace(/=+$/, '');
     } catch (e) {
-      console.error('[P2P] Encode error:', e);
       return '';
     }
   },
@@ -68,28 +65,62 @@ const P2PDataCodec = {
       }
       return parsed;
     } catch (e) {
-      console.error('[P2P] Decode error:', e);
       return null;
     }
   }
 };
-window.MinimalQR = MinimalQR;
-window.P2PDataCodec = P2PDataCodec;
 
-
+if (typeof window !== 'undefined') {
+  window.MinimalQR = MinimalQR;
+  window.P2PDataCodec = P2PDataCodec;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.MinimalQR = MinimalQR;
+  globalThis.P2PDataCodec = P2PDataCodec;
+}
 
 // ============================================================================
-// 3. CLOUD SERVER RELAY SYNC ENGINE (api-sync.php + Supabase Auth)
+// 1. CLOUD SYNC & MERGE ENGINE (api-sync.php)
 // ============================================================================
 const cloudSyncEngine = {
   lastSyncTime: null,
   isSyncing: false,
+  syncStatus: 'idle', // 'idle' | 'syncing' | 'synced' | 'error' | 'offline'
+  syncError: null,
+  retryCount: 0,
+  retryTimer: null,
   autoSyncTimer: null,
   syncDebounceTimer: null,
 
   init() {
-    this.checkUrlForIncomingAuth();
+    // 1. Event-Listener für Online-/Offline-Wechsel
+    if (typeof window !== 'undefined') {
+      window.addEventListener('online', () => {
+        if (typeof FlowAuth !== 'undefined' && FlowAuth.isLoggedIn()) {
+          this.retryCount = 0;
+          this.pullState();
+          if (this.isPendingSync()) {
+            this.pushState();
+          }
+        }
+      });
 
+      window.addEventListener('offline', () => {
+        this.updateSyncUI('offline');
+      });
+
+      // 2. Automatischer Sync beim Wiederöffnen / Fokussieren des Tabs
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && typeof FlowAuth !== 'undefined' && FlowAuth.isLoggedIn()) {
+          this.pullState();
+          if (this.isPendingSync()) {
+            this.pushState();
+          }
+        }
+      });
+    }
+
+    // 3. Auf Login-/Logout-Events reagieren
     if (typeof FlowAuth !== 'undefined') {
       FlowAuth.subscribe(({ user, token }) => {
         if (token) {
@@ -102,49 +133,10 @@ const cloudSyncEngine = {
       });
     }
 
-    if (typeof window !== 'undefined') {
-      window.addEventListener('online', () => {
-        if (typeof FlowAuth !== 'undefined' && FlowAuth.isLoggedIn()) {
-          this.pullState();
-        }
-      });
-      document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible' && typeof FlowAuth !== 'undefined' && FlowAuth.isLoggedIn()) {
-          this.pullState();
-        }
-      });
-    }
-
+    // 4. Starten wenn bereits angemeldet
     if (typeof FlowAuth !== 'undefined' && FlowAuth.isLoggedIn()) {
       this.pullState();
       this.startAutoSync();
-    }
-  },
-
-  checkUrlForIncomingAuth() {
-    if (typeof window === 'undefined' || !window.location.hash) return;
-    const hash = window.location.hash.substring(1);
-    const params = new URLSearchParams(hash);
-    const authToken = params.get('auth_token');
-    const email = params.get('email') || '';
-
-    if (authToken && typeof FlowAuth !== 'undefined') {
-      try {
-        history.replaceState(null, document.title, window.location.pathname + window.location.search);
-      } catch (e) {}
-
-      FlowAuth.setDirectPairingToken(authToken, email);
-      if (typeof showToast === 'function') {
-        showToast(tr({
-          de: '📱 Erfolgreich mit Cloud-Konto verbunden! ⚡',
-          en: '📱 Successfully connected to cloud account! ⚡',
-          es: '📱 ¡Conectado con éxito a la cuenta en la nube! ⚡',
-          el: '📱 Επιτυχής σύνδεση με το λογαριασμό cloud! ⚡',
-          fr: '📱 Connecté avec succès au compte cloud ! ⚡',
-          it: '📱 Connesso con successo al cloud! ⚡'
-        }));
-      }
-      this.pullState();
     }
   },
 
@@ -156,27 +148,163 @@ const cloudSyncEngine = {
     return `${base}?action=${encodeURIComponent(action)}`;
   },
 
-  async pushState() {
+  isPendingSync() {
+    try {
+      return typeof localStorage !== 'undefined' && localStorage.getItem('flow_pending_sync') === '1';
+    } catch (e) {
+      return false;
+    }
+  },
+
+  markPendingSync() {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('flow_pending_sync', '1');
+      }
+    } catch (e) {}
+  },
+
+  clearPendingSync() {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.removeItem('flow_pending_sync');
+      }
+    } catch (e) {}
+  },
+
+  // Vollständige State-Serialisierung (alle Datenbereiche)
+  serializeFullState(stateObj) {
+    const s = stateObj || {};
+    return {
+      items: s.items || {},
+      done: s.done || [],
+      workItems: s.workItems || {},
+      workDone: s.workDone || [],
+      notes: s.notes || [],
+      termine: s.termine || [],
+      shoppingList: s.shoppingList || [],
+      shoppingHistory: s.shoppingHistory || [],
+      shoppingCategories: s.shoppingCategories || [],
+      pantry: s.pantry || [],
+      recipes: s.recipes || [],
+      cookingList: s.cookingList || [],
+      alarms: s.alarms || [],
+      archive: s.archive || [],
+      brainstormIdeas: s.brainstormIdeas || [],
+      clarityLog: s.clarityLog || [],
+      customCategories: s.customCategories || [],
+      categoriesOrder: s.categoriesOrder || [],
+      activeWorkspace: s.activeWorkspace || 'private',
+      clientTimestamp: new Date().toISOString()
+    };
+  },
+
+  // Intelligenter, nicht-destruktiver 2-Wege-Merge
+  mergeState(localState, remoteData) {
+    if (!localState || !remoteData) return false;
+    let modified = false;
+
+    // Helper: Array-Vereinigung mit Deduplizierung
+    function mergeArray(localArr, remoteArr, keyProp = null) {
+      if (!Array.isArray(remoteArr) || remoteArr.length === 0) return localArr || [];
+      if (!Array.isArray(localArr) || localArr.length === 0) return JSON.parse(JSON.stringify(remoteArr));
+
+      const result = [...localArr];
+      for (const rItem of remoteArr) {
+        if (!rItem) continue;
+        let exists = false;
+        if (keyProp && typeof rItem === 'object') {
+          exists = result.some(lItem => lItem && (lItem[keyProp] === rItem[keyProp] || (lItem.id && lItem.id === rItem.id) || (lItem.text && lItem.text === rItem.text)));
+        } else if (typeof rItem === 'object') {
+          exists = result.some(lItem => lItem && ((lItem.id && lItem.id === rItem.id) || (lItem.task && lItem.task === rItem.task) || (lItem.name && lItem.name === rItem.name) || (lItem.text && lItem.text === rItem.text) || JSON.stringify(lItem) === JSON.stringify(rItem)));
+        } else {
+          exists = result.includes(rItem);
+        }
+        if (!exists) {
+          result.push(rItem);
+          modified = true;
+        }
+      }
+      return result;
+    }
+
+    // Helper: Aufgaben-Kategorien zusammenführen
+    function mergeCategoryMap(localMap, remoteMap) {
+      const merged = { ...(localMap || {}) };
+      if (!remoteMap || typeof remoteMap !== 'object') return merged;
+
+      for (const [cat, rTasks] of Object.entries(remoteMap)) {
+        if (!Array.isArray(rTasks)) continue;
+        if (!merged[cat] || !Array.isArray(merged[cat])) {
+          merged[cat] = [...rTasks];
+          modified = true;
+        } else {
+          const lTasks = merged[cat];
+          const combined = [...lTasks];
+          for (const rt of rTasks) {
+            if (!combined.includes(rt)) {
+              combined.push(rt);
+              modified = true;
+            }
+          }
+          merged[cat] = combined;
+        }
+      }
+      return merged;
+    }
+
+    // 1. Items & WorkItems
+    if (remoteData.items) localState.items = mergeCategoryMap(localState.items, remoteData.items);
+    if (remoteData.workItems) localState.workItems = mergeCategoryMap(localState.workItems, remoteData.workItems);
+
+    // 2. Erledigte Aufgaben
+    if (remoteData.done) localState.done = mergeArray(localState.done, remoteData.done, 'task');
+    if (remoteData.workDone) localState.workDone = mergeArray(localState.workDone, remoteData.workDone, 'task');
+
+    // 3. Notizen & Termine
+    if (remoteData.notes) localState.notes = mergeArray(localState.notes, remoteData.notes, 'id');
+    if (remoteData.termine) localState.termine = mergeArray(localState.termine, remoteData.termine, 'id');
+
+    // 4. Einkaufsliste & Historie
+    if (remoteData.shoppingList) localState.shoppingList = mergeArray(localState.shoppingList, remoteData.shoppingList, 'name');
+    if (remoteData.shoppingHistory) localState.shoppingHistory = mergeArray(localState.shoppingHistory, remoteData.shoppingHistory);
+
+    // 5. Vorrat, Rezepte, Kochen
+    if (remoteData.pantry) localState.pantry = mergeArray(localState.pantry, remoteData.pantry, 'id');
+    if (remoteData.recipes) localState.recipes = mergeArray(localState.recipes, remoteData.recipes, 'id');
+    if (remoteData.cookingList) localState.cookingList = mergeArray(localState.cookingList, remoteData.cookingList, 'id');
+
+    // 6. Alarme, Brainstorming, Klarheit
+    if (remoteData.alarms) localState.alarms = mergeArray(localState.alarms, remoteData.alarms, 'id');
+    if (remoteData.brainstormIdeas) localState.brainstormIdeas = mergeArray(localState.brainstormIdeas, remoteData.brainstormIdeas, 'id');
+    if (remoteData.clarityLog) localState.clarityLog = mergeArray(localState.clarityLog, remoteData.clarityLog, 'id');
+
+    // 7. Archiv
+    if (remoteData.archive) localState.archive = mergeArray(localState.archive, remoteData.archive, 'id');
+
+    return modified;
+  },
+
+  async pushState(isRetry = false) {
     if (typeof FlowAuth === 'undefined' || !FlowAuth.isLoggedIn()) return { skipped: true };
-    if (typeof navigator !== 'undefined' && !navigator.onLine) return { offline: true };
+
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      this.markPendingSync();
+      this.scheduleRetry();
+      this.updateSyncUI('offline');
+      return { offline: true };
+    }
 
     const token = FlowAuth.getSyncToken();
     if (!token) return { skipped: true };
 
     this.isSyncing = true;
-    this.updateSyncUI();
+    this.updateSyncUI('syncing');
 
     try {
       const currentState = (typeof window !== 'undefined' && window.state) ? window.state : (typeof state !== 'undefined' ? state : {});
       const payload = {
-        data: {
-          items: currentState.items || {},
-          done: currentState.done || [],
-          workItems: currentState.workItems || {},
-          workDone: currentState.workDone || [],
-          activeWorkspace: currentState.activeWorkspace || 'private',
-          clientTimestamp: new Date().toISOString()
-        }
+        data: this.serializeFullState(currentState)
       };
 
       const res = await fetch(this.getApiUrl('push'), {
@@ -189,18 +317,27 @@ const cloudSyncEngine = {
       });
 
       if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
+        throw new Error(`Server antwortete mit Status ${res.status}`);
       }
 
       const json = await res.json();
       if (json && json.success) {
+        this.clearPendingSync();
+        this.retryCount = 0;
+        if (this.retryTimer) {
+          clearTimeout(this.retryTimer);
+          this.retryTimer = null;
+        }
         this.lastSyncTime = new Date();
-        this.updateSyncUI();
+        this.syncError = null;
+        this.updateSyncUI('synced');
         return { success: true, time: this.lastSyncTime };
       }
-      throw new Error(json.error || 'Server error');
+      throw new Error(json.error || 'Fehler bei der Übertragung');
     } catch (e) {
-      console.warn('[CloudSync] Push error:', e.message);
+      console.warn('[CloudSync] Push notice:', e.message);
+      this.markPendingSync();
+      this.scheduleRetry();
       this.updateSyncUI('error');
       return { success: false, error: e.message };
     } finally {
@@ -210,13 +347,17 @@ const cloudSyncEngine = {
 
   async pullState() {
     if (typeof FlowAuth === 'undefined' || !FlowAuth.isLoggedIn()) return { skipped: true };
-    if (typeof navigator !== 'undefined' && !navigator.onLine) return { offline: true };
+
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      this.updateSyncUI('offline');
+      return { offline: true };
+    }
 
     const token = FlowAuth.getSyncToken();
     if (!token) return { skipped: true };
 
     this.isSyncing = true;
-    this.updateSyncUI();
+    this.updateSyncUI('syncing');
 
     try {
       const res = await fetch(this.getApiUrl('pull'), {
@@ -227,44 +368,54 @@ const cloudSyncEngine = {
       });
 
       if (res.status === 404) {
-        // Noch kein State auf Server hinterlegt -> aktuellen lokalen Zustand hochladen
+        // Noch kein State auf Server -> aktuellen Zustand hochladen
         this.isSyncing = false;
         return await this.pushState();
       }
 
       if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
+        throw new Error(`Server antwortete mit Status ${res.status}`);
       }
 
       const json = await res.json();
       if (json && json.success && json.data) {
         const remoteData = json.data;
-        const remoteTime = json.updated_at ? new Date(json.updated_at).getTime() : 0;
         const targetState = (typeof window !== 'undefined' && window.state) ? window.state : (typeof state !== 'undefined' ? state : null);
-        const localSavedTime = (targetState && targetState.lastSaved) ? new Date(targetState.lastSaved).getTime() : 0;
 
-        // Last-Write-Wins: wenn Server neuer oder gleich
-        if (targetState && (remoteTime >= localSavedTime || !localSavedTime)) {
-          if (remoteData.items) targetState.items = remoteData.items;
-          if (remoteData.done) targetState.done = remoteData.done;
-          if (remoteData.workItems) targetState.workItems = remoteData.workItems;
-          if (remoteData.workDone) targetState.workDone = remoteData.workDone;
-          if (remoteData.activeWorkspace) targetState.activeWorkspace = remoteData.activeWorkspace;
+        if (targetState) {
+          // Sicherheits-Backup vor Merge anlegen
+          try {
+            if (typeof localStorage !== 'undefined') {
+              localStorage.setItem('flow_backup_before_sync', JSON.stringify(targetState));
+            }
+          } catch (err) {}
+
+          // Intelligenter Merge
+          const hasChanges = this.mergeState(targetState, remoteData);
 
           if (typeof saveState === 'function') saveState(true);
           if (typeof renderApp === 'function') renderApp();
-        } else if (targetState) {
-          // Lokaler State ist neuer -> Server aktualisieren
-          await this.pushState();
+
+          // Falls lokaler Zustand neue Elemente hatte, Server aktualisieren
+          if (hasChanges || this.isPendingSync()) {
+            this.pushState();
+          }
         }
 
+        this.retryCount = 0;
+        if (this.retryTimer) {
+          clearTimeout(this.retryTimer);
+          this.retryTimer = null;
+        }
         this.lastSyncTime = new Date();
-        this.updateSyncUI();
+        this.syncError = null;
+        this.updateSyncUI('synced');
         return { success: true, data: remoteData };
       }
-      throw new Error(json.error || 'Invalid pull response');
+      throw new Error(json.error || 'Ungültige Serverantwort');
     } catch (e) {
-      console.warn('[CloudSync] Pull error:', e.message);
+      console.warn('[CloudSync] Pull notice:', e.message);
+      this.scheduleRetry();
       this.updateSyncUI('error');
       return { success: false, error: e.message };
     } finally {
@@ -272,20 +423,42 @@ const cloudSyncEngine = {
     }
   },
 
+  scheduleRetry() {
+    if (this.retryTimer) clearTimeout(this.retryTimer);
+    // Exponential Backoff: 3s, 6s, 12s, max 30s
+    const delay = Math.min(3000 * Math.pow(2, this.retryCount), 30000);
+    this.retryCount++;
+
+    this.retryTimer = setTimeout(() => {
+      if (typeof FlowAuth !== 'undefined' && FlowAuth.isLoggedIn()) {
+        if (this.isPendingSync()) {
+          this.pushState(true);
+        } else {
+          this.pullState();
+        }
+      }
+    }, delay);
+  },
+
   triggerAutoPush() {
     if (typeof FlowAuth === 'undefined' || !FlowAuth.isLoggedIn()) return;
+    this.markPendingSync();
     if (this.syncDebounceTimer) clearTimeout(this.syncDebounceTimer);
     this.syncDebounceTimer = setTimeout(() => {
       this.pushState();
-    }, 1500);
+    }, 1200);
   },
 
   startAutoSync() {
     this.stopAutoSync();
-    const interval = (typeof FLOW_CONFIG !== 'undefined' && FLOW_CONFIG.AUTO_SYNC_INTERVAL_MS) || 30000;
+    const interval = (typeof FLOW_CONFIG !== 'undefined' && FLOW_CONFIG.AUTO_SYNC_INTERVAL_MS) || 20000;
     this.autoSyncTimer = setInterval(() => {
       if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
-        this.pullState();
+        if (this.isPendingSync()) {
+          this.pushState();
+        } else {
+          this.pullState();
+        }
       }
     }, interval);
   },
@@ -295,339 +468,68 @@ const cloudSyncEngine = {
       clearInterval(this.autoSyncTimer);
       this.autoSyncTimer = null;
     }
+    if (this.retryTimer) {
+      clearTimeout(this.retryTimer);
+      this.retryTimer = null;
+    }
   },
 
   updateSyncUI(overrideStatus = null) {
     if (typeof document === 'undefined') return;
     const statusLabel = document.getElementById('cloud-sync-status-text');
     const syncDot = document.getElementById('cloud-sync-status-dot');
-    if (!statusLabel) return;
+    const modalStatusBadge = document.getElementById('p2p-status-badge');
 
-    if (overrideStatus === 'error') {
-      statusLabel.innerText = 'Verbindungsfehler (Sync pausiert)';
-      if (syncDot) syncDot.className = 'w-2 h-2 rounded-full bg-rose-400';
-      return;
+    const isLoggedIn = (typeof FlowAuth !== 'undefined' && FlowAuth.isLoggedIn());
+
+    let statusText = 'Bereit zur Synchronisation';
+    let dotClass = 'w-2 h-2 rounded-full bg-emerald-400';
+    let badgeHtml = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span><span>✓ Synchronisiert</span>';
+    let badgeClass = 'px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center justify-center gap-2';
+
+    if (!isLoggedIn) {
+      statusText = 'Nicht angemeldet (nur lokaler Modus)';
+      dotClass = 'w-2 h-2 rounded-full bg-gray-500';
+      badgeHtml = '<span class="w-2 h-2 rounded-full bg-gray-500"></span><span>Lokaler Modus</span>';
+      badgeClass = 'px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-gray-400 text-xs font-medium flex items-center justify-center gap-2';
+    } else if (overrideStatus === 'error' || overrideStatus === 'offline') {
+      statusText = '⚠ Synchronisation konnte nicht abgeschlossen werden – wir versuchen es erneut.';
+      dotClass = 'w-2 h-2 rounded-full bg-amber-400 animate-pulse';
+      badgeHtml = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span><span>⚠ Sync pausiert – erneuter Versuch...</span>';
+      badgeClass = 'px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-medium flex items-center justify-center gap-2';
+    } else if (this.isSyncing || overrideStatus === 'syncing') {
+      statusText = 'Synchronisiere...';
+      dotClass = 'w-2 h-2 rounded-full bg-amber-400 animate-spin';
+      badgeHtml = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-spin"></span><span>Synchronisiere...</span>';
+      badgeClass = 'px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-medium flex items-center justify-center gap-2';
+    } else if (this.lastSyncTime) {
+      const timeStr = this.lastSyncTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      statusText = `✓ Synchronisiert (${timeStr} Uhr)`;
+      dotClass = 'w-2 h-2 rounded-full bg-emerald-400';
+      badgeHtml = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span><span>✓ Synchronisiert (${timeStr} Uhr)</span>`;
+      badgeClass = 'px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center justify-center gap-2';
     }
 
-    if (this.isSyncing) {
-      statusLabel.innerText = 'Synchronisiere...';
-      if (syncDot) syncDot.className = 'w-2 h-2 rounded-full bg-amber-400 animate-spin';
-      return;
-    }
-
-    if (typeof FlowAuth !== 'undefined' && FlowAuth.isLoggedIn()) {
-      if (this.lastSyncTime) {
-        const timeStr = this.lastSyncTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        statusLabel.innerText = `Zuletzt synchronisiert um ${timeStr} Uhr`;
-        if (syncDot) syncDot.className = 'w-2 h-2 rounded-full bg-emerald-400';
-      } else {
-        statusLabel.innerText = 'Bereit zur Synchronisation';
-        if (syncDot) syncDot.className = 'w-2 h-2 rounded-full bg-emerald-400';
-      }
-    } else {
-      statusLabel.innerText = 'Nicht angemeldet (nur lokaler Modus)';
-      if (syncDot) syncDot.className = 'w-2 h-2 rounded-full bg-gray-500';
+    if (statusLabel) statusLabel.innerText = statusText;
+    if (syncDot) syncDot.className = dotClass;
+    if (modalStatusBadge) {
+      modalStatusBadge.className = badgeClass;
+      modalStatusBadge.innerHTML = badgeHtml;
     }
   }
 };
 
 window.cloudSyncEngine = cloudSyncEngine;
 
-
-
 // ============================================================================
-// 4. WEBRTC P2P LIVE-SYNC ENGINE (Browser-to-Browser Fallback)
-// ============================================================================
-const p2pSyncEngine = {
-  roomId: null,
-  isHost: false,
-  peerConnection: null,
-  dataChannel: null,
-  connected: false,
-  signalingChannel: null,
-  lastBroadcastTime: 0,
-  customBaseUrl: '',
-  discoveredLanUrl: '',
-
-  init() {
-    this.checkUrlForIncomingSync();
-    this.detectLocalLanIp();
-  },
-
-  detectLocalLanIp() {
-    try {
-      if (typeof window === 'undefined' || typeof RTCPeerConnection === 'undefined') return;
-      const pc = new RTCPeerConnection({ iceServers: [] });
-      pc.createDataChannel('');
-      pc.createOffer().then(o => pc.setLocalDescription(o)).catch(() => {});
-      pc.onicecandidate = (e) => {
-        if (!e || !e.candidate || !e.candidate.candidate) return;
-        const match = /([0-9]{1,3}(\.[0-9]{1,3}){3})/.exec(e.candidate.candidate);
-        if (match && match[1] && !match[1].startsWith('127.')) {
-          const lanIp = match[1];
-          const port = window.location.port ? `:${window.location.port}` : '';
-          const path = window.location.pathname || '/';
-          const fullLan = `http://${lanIp}${port}${path}`;
-          this.discoveredLanUrl = fullLan;
-          
-          const ipInput = document.getElementById('p2p-custom-ip-input');
-          if (ipInput && !ipInput.value) {
-            ipInput.value = fullLan;
-          }
-          pc.onicecandidate = null;
-          try { pc.close(); } catch(err) {}
-        }
-      };
-      setTimeout(() => { try { pc.close(); } catch(err) {} }, 1800);
-    } catch (e) {}
-  },
-
-  isConnected() {
-    return this.connected;
-  },
-
-  generateRoomId() {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    let id = 'FLOW-';
-    for (let i = 0; i < 4; i++) {
-      id += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return id;
-  },
-
-  startHost(customUrl = null) {
-    this.isHost = true;
-    if (!this.roomId) {
-      this.roomId = this.generateRoomId();
-    }
-
-    let baseUrl = customUrl || this.customBaseUrl;
-    if (!baseUrl) {
-      if (typeof window !== 'undefined') {
-        if (window.location.protocol === 'file:') {
-          baseUrl = 'https://cableblues.github.io/Flow-Organiser/';
-        } else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-          baseUrl = this.discoveredLanUrl || (window.location.origin + window.location.pathname);
-        } else {
-          baseUrl = window.location.origin + window.location.pathname;
-        }
-      } else {
-        baseUrl = 'https://cableblues.github.io/Flow-Organiser/';
-      }
-    }
-
-    const cleanBase = baseUrl.replace(/\/+$/, '');
-    const isUserLoggedIn = (typeof FlowAuth !== 'undefined' && FlowAuth.isLoggedIn());
-    const syncToken = isUserLoggedIn ? FlowAuth.getSyncToken() : null;
-    const user = isUserLoggedIn ? FlowAuth.getUser() : null;
-
-    let shareUrl = '';
-    let payload = '';
-
-    if (isUserLoggedIn && syncToken) {
-      // Wenn eingeloggt: QR-Code überträgt das Cloud-Sync Pairing
-      shareUrl = `${cleanBase}/#auth_token=${encodeURIComponent(syncToken)}&email=${encodeURIComponent((user && user.email) || '')}`;
-      payload = syncToken;
-      
-      const qrHint = document.getElementById('p2p-qr-hint');
-      if (qrHint) qrHint.innerText = 'Scanne den QR-Code mit deinem Zweitgerät, um es direkt mit deinem Konto zu verbinden.';
-    } else {
-      // Wenn nicht eingeloggt: Bewährter P2P-Direkttransfer
-      const currentState = (typeof window !== 'undefined' && window.state) ? window.state : (typeof state !== 'undefined' ? state : {});
-      payload = P2PDataCodec.encodeState(currentState);
-      shareUrl = `${cleanBase}/#sync=${this.roomId}&data=${payload}`;
-
-      const qrHint = document.getElementById('p2p-qr-hint');
-      if (qrHint) qrHint.innerText = 'Halte einfach deine Smartphone-Kamera auf den QR-Code.';
-    }
-
-    const codeDisplay = document.getElementById('p2p-room-code');
-    if (codeDisplay) codeDisplay.innerText = this.roomId;
-
-    let qrSvg = MinimalQR.generateQRCodeSVG(shareUrl, 260);
-    if (!qrSvg && shareUrl.includes('&data=')) {
-      // Fallback: Falls der Daten-Payload für einen einzelnen QR-Code zu groß ist, erzeuge kompakten Room-Link
-      const fallbackUrl = `${cleanBase}/#sync=${this.roomId}`;
-      qrSvg = MinimalQR.generateQRCodeSVG(fallbackUrl, 260);
-    }
-
-    const qrImg = document.getElementById('p2p-qr-img');
-    if (qrImg && qrSvg) {
-      qrImg.src = qrSvg;
-    }
-
-    const shareInput = document.getElementById('p2p-share-link-input');
-    if (shareInput) shareInput.value = shareUrl;
-
-    const rawCodeInput = document.getElementById('p2p-raw-payload-input');
-    if (rawCodeInput) rawCodeInput.value = payload;
-
-    this.setupSignaling(this.roomId, true);
-    this.updateStatusBadge('waiting');
-  },
-
-  connectAsClient(targetRoomId, compressedData) {
-    this.isHost = false;
-    this.roomId = targetRoomId;
-
-    if (compressedData) {
-      const imported = P2PDataCodec.decodeState(compressedData);
-      const targetState = (typeof window !== 'undefined' && window.state) ? window.state : (typeof state !== 'undefined' ? state : null);
-      if (imported && imported.items && targetState) {
-        targetState.items = imported.items;
-        if (imported.done) targetState.done = imported.done;
-        if (imported.workItems) targetState.workItems = imported.workItems;
-        if (imported.workDone) targetState.workDone = imported.workDone;
-        if (imported.ws) targetState.activeWorkspace = imported.ws;
-
-        if (typeof saveState === 'function') saveState(true);
-        if (typeof renderApp === 'function') renderApp();
-        if (typeof showToast === 'function') {
-          showToast(tr({
-            de: '📱 Plan erfolgreich vom PC übertragen! ⚡',
-            en: '📱 Plan successfully transferred from PC! ⚡',
-            es: '📱 ¡Plan transferido con éxito desde el PC! ⚡',
-            el: '📱 Το πλάνο μεταφέρθηκε επιτυχώς! ⚡',
-            fr: '📱 Plan transféré avec succès depuis le PC ! ⚡',
-            it: '📱 Piano trasferito con successo dal PC! ⚡'
-          }));
-        }
-      }
-    }
-
-    this.setupSignaling(targetRoomId, false);
-  },
-
-  setupSignaling(roomId, isHost) {
-    try {
-      if (typeof BroadcastChannel !== 'undefined') {
-        if (this.signalingChannel) this.signalingChannel.close();
-        this.signalingChannel = new BroadcastChannel(`flow_p2p_${roomId}`);
-        
-        this.signalingChannel.onmessage = (event) => {
-          const msg = event.data;
-          if (!msg) return;
-
-          const currentState = (typeof window !== 'undefined' && window.state) ? window.state : (typeof state !== 'undefined' ? state : {});
-          if (msg.type === 'PEER_PING' && isHost) {
-            this.signalingChannel.postMessage({ type: 'PEER_PONG', state: currentState });
-            this.setConnectedState(true);
-          } else if (msg.type === 'PEER_PONG' && !isHost) {
-            this.setConnectedState(true);
-          } else if (msg.type === 'SYNC_DELTA') {
-            this.applyIncomingUpdate(msg.data);
-          }
-        };
-
-        if (!isHost) {
-          this.signalingChannel.postMessage({ type: 'PEER_PING' });
-        }
-      }
-    } catch (e) {
-      console.warn('[P2P] Signaling notice:', e);
-    }
-  },
-
-  setConnectedState(isConnected) {
-    this.connected = isConnected;
-    this.updateStatusBadge(isConnected ? 'connected' : 'waiting');
-    
-    if (isConnected && typeof showToast === 'function') {
-      showToast(tr({
-        de: '🟢 Handy & PC verbunden! Live-Sync aktiv.',
-        en: '🟢 Phone & PC connected! Live-sync active.',
-        es: '🟢 ¡Dispositivos conectados! Sincronización en vivo.',
-        el: '🟢 Συνδέθηκε! Ζωντανός συγχρονισμός ενεργός.',
-        fr: '🟢 Connecté ! Synchronisation en direct active.',
-        it: '🟢 Dispositivi connessi! Sincronizzazione attiva.'
-      }));
-    }
-  },
-
-  updateStatusBadge(status) {
-    const badge = document.getElementById('p2p-status-badge');
-    if (!badge) return;
-
-    if (status === 'connected') {
-      badge.className = 'px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold font-mono flex items-center justify-center gap-2 shadow-sm';
-      badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span><span>🟢 Live-Sync aktiv</span>';
-    } else {
-      badge.className = 'px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-medium font-mono flex items-center justify-center gap-2';
-      badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span><span>Warte auf Verbindung...</span>';
-    }
-  },
-
-  broadcastStateUpdate() {
-    const now = Date.now();
-    if (now - this.lastBroadcastTime < 200) return;
-    this.lastBroadcastTime = now;
-
-    const currentState = (typeof window !== 'undefined' && window.state) ? window.state : (typeof state !== 'undefined' ? state : {});
-    if (this.signalingChannel) {
-      this.signalingChannel.postMessage({
-        type: 'SYNC_DELTA',
-        data: {
-          items: currentState.items,
-          done: currentState.done,
-          workItems: currentState.workItems,
-          workDone: currentState.workDone,
-          activeWorkspace: currentState.activeWorkspace
-        }
-      });
-    }
-  },
-
-  applyIncomingUpdate(data) {
-    if (!data) return;
-    let changed = false;
-    const targetState = (typeof window !== 'undefined' && window.state) ? window.state : (typeof state !== 'undefined' ? state : null);
-    if (!targetState) return;
-
-    if (data.items) { targetState.items = data.items; changed = true; }
-    if (data.done) { targetState.done = data.done; changed = true; }
-    if (data.workItems) { targetState.workItems = data.workItems; changed = true; }
-    if (data.workDone) { targetState.workDone = data.workDone; changed = true; }
-    if (data.activeWorkspace) { targetState.activeWorkspace = data.activeWorkspace; changed = true; }
-
-    if (changed) {
-      localStorage.setItem('flowPlannerState', JSON.stringify(targetState));
-      if (typeof renderApp === 'function') renderApp();
-      if (typeof triggerSparkleEffect === 'function') triggerSparkleEffect();
-    }
-  },
-
-  checkUrlForIncomingSync() {
-    if (typeof window === 'undefined' || !window.location.hash) return;
-    const hash = window.location.hash.substring(1);
-    const params = new URLSearchParams(hash);
-
-    const syncRoom = params.get('sync');
-    const syncData = params.get('data');
-
-    if (syncRoom || syncData) {
-      try {
-        history.replaceState(null, document.title, window.location.pathname + window.location.search);
-      } catch (e) {}
-
-      this.connectAsClient(syncRoom, syncData);
-    }
-  }
-};
-
-window.p2pSyncEngine = p2pSyncEngine;
-
-
-
-// ============================================================================
-// 5. MODAL & UI HANDLER FÜR AUTH & SYNC
+// 2. MODAL & UI HANDLER FÜR AUTH & KOPPLUNG
 // ============================================================================
 
 function openP2PSyncModal(preferredTab = null) {
   const modal = document.getElementById('modal-p2p-sync');
   if (modal) {
     modal.classList.remove('hidden');
-    
-    // Auth & UI synchronisieren
+
     if (typeof FlowAuth !== 'undefined') {
       FlowAuth.updateAuthUI();
     }
@@ -635,10 +537,9 @@ function openP2PSyncModal(preferredTab = null) {
       cloudSyncEngine.updateSyncUI();
     }
 
-    const defaultTab = preferredTab || (typeof FlowAuth !== 'undefined' && FlowAuth.isLoggedIn() ? 'cloud' : 'cloud');
+    const defaultTab = preferredTab || (typeof FlowAuth !== 'undefined' && FlowAuth.isLoggedIn() ? 'account' : 'account');
     switchSyncModalTab(defaultTab);
-    
-    p2pSyncEngine.startHost();
+
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
 }
@@ -650,14 +551,45 @@ function closeP2PSyncModal() {
 }
 window.closeP2PSyncModal = closeP2PSyncModal;
 
-async function handleSendMagicLink() {
+function switchSyncModalTab(tab) {
+  const paneAccount = document.getElementById('sync-pane-cloud') || document.getElementById('sync-pane-account');
+  const panePair = document.getElementById('p2p-pane-qr') || document.getElementById('sync-pane-pair');
+
+  const btnAccount = document.getElementById('sync-tab-btn-cloud') || document.getElementById('sync-tab-btn-account');
+  const btnPair = document.getElementById('p2p-tab-btn-qr') || document.getElementById('sync-tab-btn-pair');
+
+  const isAccount = (tab === 'account' || tab === 'cloud');
+  const isPair = (tab === 'pair' || tab === 'qr' || tab === 'manual');
+
+  if (paneAccount) paneAccount.classList.toggle('hidden', !isAccount);
+  if (panePair) panePair.classList.toggle('hidden', !isPair);
+
+  const activeClasses = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm';
+  const inactiveClasses = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold text-gray-400 hover:text-white transition cursor-pointer flex items-center justify-center gap-1.5';
+
+  if (btnAccount) btnAccount.className = isAccount ? activeClasses : inactiveClasses;
+  if (btnPair) btnPair.className = isPair ? activeClasses : inactiveClasses;
+
+  if (isPair && typeof FlowAuth !== 'undefined' && FlowAuth.isLoggedIn()) {
+    handleCreatePairCode();
+  }
+
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+window.switchSyncModalTab = switchSyncModalTab;
+window.switchP2PTab = (tab) => switchSyncModalTab(tab);
+
+// 1. E-Mail & Passwort Login
+async function handleEmailAuth() {
   const emailInput = document.getElementById('sync-email-input');
-  const btn = document.getElementById('sync-send-magic-link-btn');
+  const passwordInput = document.getElementById('sync-password-input');
+  const btn = document.getElementById('sync-auth-submit-btn');
   const errorMsg = document.getElementById('sync-auth-error-msg');
   const successMsg = document.getElementById('sync-auth-success-msg');
 
-  if (!emailInput) return;
+  if (!emailInput || !passwordInput) return;
   const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
 
   if (errorMsg) errorMsg.classList.add('hidden');
   if (successMsg) successMsg.classList.add('hidden');
@@ -677,55 +609,189 @@ async function handleSendMagicLink() {
     return;
   }
 
+  if (!password || password.length < 4) {
+    if (errorMsg) {
+      errorMsg.innerText = tr({
+        de: 'Bitte gib ein Passwort / PIN mit mindestens 4 Zeichen ein.',
+        en: 'Please enter a password / PIN with at least 4 characters.',
+        es: 'Introduce una contraseña / PIN de al menos 4 caracteres.',
+        el: 'Εισάγετε κωδικό πρόσβασης με τουλάχιστον 4 χαρακτήρες.',
+        fr: 'Veuillez saisir un mot de passe d\'au moins 4 caractères.',
+        it: 'Inserisci una password di almeno 4 caratteri.'
+      });
+      errorMsg.classList.remove('hidden');
+    }
+    return;
+  }
+
   if (btn) {
     btn.disabled = true;
-    btn.innerHTML = '<span class="animate-spin inline-block mr-1">⏳</span> Sende...';
+    btn.innerHTML = '<span class="animate-spin inline-block mr-1">⏳</span> Anmelden...';
   }
 
   try {
-    const res = await FlowAuth.signInWithMagicLink(email);
+    const res = await FlowAuth.signInWithCredentials(email, password);
     if (res.success) {
-      if (successMsg) {
-        successMsg.innerText = tr({
-          de: '✉️ Magic Link gesendet! Bitte prüfe dein E-Mail-Postfach und klicke auf den Bestätigungslink.',
-          en: '✉️ Magic link sent! Please check your inbox and click the confirmation link.',
-          es: '✉️ ¡Enlace mágico enviado! Revisa tu bandeja de entrada y haz clic en el enlace.',
-          el: '✉️ Ο σύνδεσμος στάλθηκε! Ελέγξτε τα εισερχόμενά σας.',
-          fr: '✉️ Lien magique envoyé ! Vérifiez votre boîte de réception et cliquez sur le lien.',
-          it: '✉️ Link magico inviato! Controlla la tua casella di posta e clicca sul link.'
-        });
-        successMsg.classList.remove('hidden');
-      }
       if (typeof showToast === 'function') {
         showToast(tr({
-          de: '✉️ Magic Link gesendet! Prüfe deine Mails.',
-          en: '✉️ Magic link sent! Check your inbox.',
-          es: '✉️ ¡Enlace mágico enviado!',
-          el: '✉️ Ο σύνδεσμος στάλθηκε!',
-          fr: '✉️ Lien magique envoyé !',
-          it: '✉️ Link magico inviato!'
+          de: '✓ Erfolgreich angemeldet! Synchronisation läuft...',
+          en: '✓ Successfully signed in! Syncing...',
+          es: '✓ ¡Inicio de sesión correcto!',
+          el: '✓ Επιτυχής σύνδεση!',
+          fr: '✓ Connexion réussie !',
+          it: '✓ Accesso riuscito!'
         }));
       }
+      await cloudSyncEngine.pullState();
     } else {
       if (errorMsg) {
-        errorMsg.innerText = res.error || 'Fehler beim Senden.';
+        errorMsg.innerText = res.error || 'Anmeldung fehlgeschlagen.';
         errorMsg.classList.remove('hidden');
       }
     }
   } catch (e) {
     if (errorMsg) {
-      errorMsg.innerText = e.message || 'Verbindungsfehler.';
+      errorMsg.innerText = 'Verbindungsfehler beim Anmelden.';
       errorMsg.classList.remove('hidden');
     }
   } finally {
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = '<i data-lucide="send" class="w-4 h-4"></i><span>Magic Link senden</span>';
+      btn.innerHTML = '<i data-lucide="log-in" class="w-4 h-4"></i><span>Anmelden / Registrieren</span>';
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }
   }
 }
-window.handleSendMagicLink = handleSendMagicLink;
+window.handleEmailAuth = handleEmailAuth;
+window.handleSendMagicLink = handleEmailAuth;
+
+// 2. 6-Stelligen Code auf Gerät A generieren
+async function handleCreatePairCode() {
+  const codeDisplay = document.getElementById('pair-code-display') || document.getElementById('p2p-room-code');
+  const qrImg = document.getElementById('p2p-qr-img');
+
+  if (codeDisplay) {
+    codeDisplay.innerText = 'Code wird geladen...';
+  }
+
+  try {
+    const res = await FlowAuth.createPairingCode();
+    if (res && res.success && res.code) {
+      if (codeDisplay) {
+        // Formatieren als: 123 456
+        const formatted = `${res.code.slice(0, 3)} ${res.code.slice(3)}`;
+        codeDisplay.innerText = formatted;
+      }
+
+      if (qrImg) {
+        const qrSvg = MinimalQR.generateQRCodeSVG(res.code, 240);
+        if (qrSvg) qrImg.src = qrSvg;
+      }
+    } else {
+      if (codeDisplay) codeDisplay.innerText = 'Kopplung bereit';
+    }
+  } catch (e) {
+    if (codeDisplay) codeDisplay.innerText = 'Fehler beim Laden';
+  }
+}
+window.handleCreatePairCode = handleCreatePairCode;
+
+// 3. 6-Stelligen Code auf Gerät B eingeben & einlösen
+async function handleConfirmPairCode() {
+  const input = document.getElementById('pair-code-input');
+  const btn = document.getElementById('pair-code-submit-btn');
+  const errorMsg = document.getElementById('pair-code-error-msg');
+
+  if (!input) return;
+  const rawCode = input.value.replace(/\s+/g, '').trim();
+
+  if (errorMsg) errorMsg.classList.add('hidden');
+
+  if (!rawCode || !/^\d{6}$/.test(rawCode)) {
+    if (errorMsg) {
+      errorMsg.innerText = tr({
+        de: 'Bitte gib den 6-stelligen Zahlencode ein.',
+        en: 'Please enter the 6-digit number code.',
+        es: 'Introduce el código numérico de 6 dígitos.',
+        el: 'Εισάγετε τον 6ψήφιο αριθμητικό κωδικό.',
+        fr: 'Veuillez saisir le code à 6 chiffres.',
+        it: 'Inserisci il codice numerico a 6 cifre.'
+      });
+      errorMsg.classList.remove('hidden');
+    }
+    return;
+  }
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="animate-spin inline-block mr-1">⏳</span> Verbinde...';
+  }
+
+  try {
+    const res = await FlowAuth.confirmPairingCode(rawCode);
+    if (res && res.success) {
+      if (typeof showToast === 'function') {
+        showToast(tr({
+          de: '📱 Gerät erfolgreich verbunden! ⚡',
+          en: '📱 Device successfully connected! ⚡',
+          es: '📱 ¡Dispositivo conectado con éxito! ⚡',
+          el: '📱 Η συσκευή συνδέθηκε επιτυχώς! ⚡',
+          fr: '📱 Appareil connecté avec succès ! ⚡',
+          it: '📱 Dispositivo connesso con successo! ⚡'
+        }));
+      }
+      closeP2PSyncModal();
+      await cloudSyncEngine.pullState();
+    } else {
+      if (errorMsg) {
+        errorMsg.innerText = res.error || 'Ungültiger oder abgelaufener Code.';
+        errorMsg.classList.remove('hidden');
+      }
+    }
+  } catch (e) {
+    if (errorMsg) {
+      errorMsg.innerText = 'Verbindungsfehler beim Koppeln.';
+      errorMsg.classList.remove('hidden');
+    }
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i data-lucide="link-2" class="w-4 h-4"></i><span>Gerät verbinden</span>';
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+  }
+}
+window.handleConfirmPairCode = handleConfirmPairCode;
+
+async function handleManualCloudSync() {
+  if (typeof cloudSyncEngine !== 'undefined') {
+    const res = await cloudSyncEngine.pullState();
+    if (res && res.success) {
+      if (typeof showToast === 'function') {
+        showToast(tr({
+          de: '✓ Synchronisiert',
+          en: '✓ Synchronized',
+          es: '✓ Sincronizado',
+          el: '✓ Συγχρονίστηκε',
+          fr: '✓ Synchronisé',
+          it: '✓ Sincronizzato'
+        }));
+      }
+    } else {
+      if (typeof showToast === 'function') {
+        showToast(tr({
+          de: '⚠ Synchronisation konnte nicht abgeschlossen werden – wir versuchen es erneut.',
+          en: '⚠ Sync could not be completed – retrying.',
+          es: '⚠ Error de sincronización – reintentando.',
+          el: '⚠ Σφάλμα συγχρονισμού – προσπάθεια ξανά.',
+          fr: '⚠ Échec de la synchronisation – nouvel essai.',
+          it: '⚠ Sincronizzazione fallita – nuovo tentativo.'
+        }));
+      }
+    }
+  }
+}
+window.handleManualCloudSync = handleManualCloudSync;
 
 async function handleLogout() {
   if (confirm(tr({
@@ -748,188 +814,14 @@ async function handleLogout() {
           it: 'Disconnessione riuscita.'
         }));
       }
-      p2pSyncEngine.startHost();
     }
   }
 }
 window.handleLogout = handleLogout;
 
-async function handleManualCloudSync() {
-  if (typeof cloudSyncEngine !== 'undefined') {
-    const res = await cloudSyncEngine.pullState();
-    if (res && res.success) {
-      if (typeof showToast === 'function') {
-        showToast(tr({
-          de: '✅ Synchronisation erfolgreich abgeschlossen!',
-          en: '✅ Synchronization successfully completed!',
-          es: '✅ ¡Sincronización completada con éxito!',
-          el: '✅ Ο συγχρονισμός ολοκληρώθηκε επιτυχώς!',
-          fr: '✅ Synchronisation réussie !',
-          it: '✅ Sincronizzazione completata!'
-        }));
-      }
-    } else {
-      if (typeof showToast === 'function') {
-        showToast(tr({
-          de: '⚠️ Sync nicht möglich (Offline oder Serverfehler).',
-          en: '⚠️ Sync failed (offline or server error).',
-          es: '⚠️ Error de sincronización.',
-          el: '⚠️ Σφάλμα συγχρονισμού.',
-          fr: '⚠️ Échec de la synchronisation.',
-          it: '⚠️ Sincronizzazione fallita.'
-        }));
-      }
-    }
-  }
-}
-window.handleManualCloudSync = handleManualCloudSync;
-
-function switchSyncModalTab(tab) {
-  const paneCloud = document.getElementById('sync-pane-cloud');
-  const paneQr = document.getElementById('p2p-pane-qr');
-  const paneManual = document.getElementById('p2p-pane-manual');
-
-  const btnCloud = document.getElementById('sync-tab-btn-cloud');
-  const btnQr = document.getElementById('p2p-tab-btn-qr');
-  const btnManual = document.getElementById('p2p-tab-btn-manual');
-
-  if (paneCloud) paneCloud.classList.toggle('hidden', tab !== 'cloud');
-  if (paneQr) paneQr.classList.toggle('hidden', tab !== 'qr');
-  if (paneManual) paneManual.classList.toggle('hidden', tab !== 'manual');
-
-  const activeClasses = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 transition';
-  const inactiveClasses = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition';
-
-  if (btnCloud) btnCloud.className = (tab === 'cloud') ? activeClasses : inactiveClasses;
-  if (btnQr) btnQr.className = (tab === 'qr') ? activeClasses : inactiveClasses;
-  if (btnManual) btnManual.className = (tab === 'manual') ? activeClasses : inactiveClasses;
-
-  if (tab === 'qr') {
-    p2pSyncEngine.startHost();
-  }
-  if (typeof lucide !== 'undefined') lucide.createIcons();
-}
-window.switchSyncModalTab = switchSyncModalTab;
-window.switchP2PTab = (tab) => switchSyncModalTab(tab);
-
-function copyP2PShareLink() {
-  const input = document.getElementById('p2p-share-link-input');
-  if (input && input.value) {
-    navigator.clipboard.writeText(input.value).then(() => {
-      if (typeof showToast === 'function') {
-        showToast(tr({
-          de: '📋 Link kopiert! Auf dem Smartphone öffnen.',
-          en: '📋 Link copied! Open on your smartphone.',
-          es: '📋 ¡Enlace copiado! Abrir en el smartphone.',
-          el: '📋 Ο σύνδεσμος αντιγράφηκε!',
-          fr: '📋 Lien copié ! Ouvrir sur smartphone.',
-          it: '📋 Link copiato! Apri sullo smartphone.'
-        }));
-      }
-    });
-  }
-}
-window.copyP2PShareLink = copyP2PShareLink;
-
-function updateP2PCustomUrl(newUrl) {
-  if (!newUrl) return;
-  p2pSyncEngine.customBaseUrl = newUrl.trim();
-  p2pSyncEngine.startHost(newUrl.trim());
-}
-window.updateP2PCustomUrl = updateP2PCustomUrl;
-
-function copyP2PRawPayload() {
-  const input = document.getElementById('p2p-raw-payload-input');
-  if (input && input.value) {
-    navigator.clipboard.writeText(input.value).then(() => {
-      if (typeof showToast === 'function') {
-        showToast(tr({
-          de: '📋 Transfer-Code kopiert!',
-          en: '📋 Transfer code copied!',
-          es: '📋 ¡Código de transferencia copiado!',
-          el: '📋 Ο κωδικός αντιγράφηκε!',
-          fr: '📋 Code de transfert copié !',
-          it: '📋 Codice di trasferimento copiato!'
-        }));
-      }
-    });
-  }
-}
-window.copyP2PRawPayload = copyP2PRawPayload;
-
-function importP2PCode() {
-  const raw = prompt(tr({
-    de: 'Füge den Transfer-Code oder die Sync-URL ein:',
-    en: 'Paste the transfer code or sync URL:',
-    es: 'Pega el código de transferencia o URL de sincronización:',
-    el: 'Επικολλήστε τον κωδικό μεταφοράς ή τη διεύθυνση URL:',
-    fr: 'Collez le code de transfert ou l\'URL de synchronisation :',
-    it: 'Incolla il codice di trasferimento o l\'URL di sincronizzazione:'
-  }));
-
-  if (!raw || !raw.trim()) return;
-
-  const trimmed = raw.trim();
-  let syncData = null;
-  let syncRoom = null;
-
-  if (trimmed.includes('#')) {
-    const hash = trimmed.split('#')[1] || '';
-    const params = new URLSearchParams(hash);
-    const authToken = params.get('auth_token');
-    const email = params.get('email') || '';
-
-    if (authToken && typeof FlowAuth !== 'undefined') {
-      FlowAuth.setDirectPairingToken(authToken, email);
-      cloudSyncEngine.pullState();
-      closeP2PSyncModal();
-      if (typeof showToast === 'function') {
-        showToast(tr({
-          de: '📱 Erfolgreich mit Cloud-Konto verbunden! ⚡',
-          en: '📱 Successfully connected to cloud account! ⚡',
-          es: '📱 ¡Conectado con éxito a la cuenta en la nube! ⚡',
-          el: '📱 Επιτυχής σύνδεση με το λογαριασμό cloud! ⚡',
-          fr: '📱 Connecté avec succès au compte cloud ! ⚡',
-          it: '📱 Connesso con successo al cloud! ⚡'
-        }));
-      }
-      return;
-    }
-
-    syncRoom = params.get('sync');
-    syncData = params.get('data');
-  } else if (trimmed.includes('=')) {
-    const params = new URLSearchParams(trimmed);
-    syncRoom = params.get('sync');
-    syncData = params.get('data') || trimmed;
-  } else if (trimmed.length > 20 && !trimmed.startsWith('FLOW-')) {
-    // Falls direkt ein Auth-Token eingegeben wurde
-    if (typeof FlowAuth !== 'undefined') {
-      FlowAuth.setDirectPairingToken(trimmed, 'Direkt-Token');
-      cloudSyncEngine.pullState();
-      closeP2PSyncModal();
-      return;
-    }
-  } else {
-    syncData = trimmed;
-    syncRoom = 'FLOW-MANUAL';
-  }
-
-  if (syncData) {
-    p2pSyncEngine.connectAsClient(syncRoom || 'FLOW-MANUAL', syncData);
-    closeP2PSyncModal();
-  } else {
-    alert('Ungültiger Code!');
-  }
-}
-window.importP2PCode = importP2PCode;
-
-
 // Initialisierung bei DOMContentLoaded
 if (typeof window !== 'undefined') {
   window.MinimalQR = MinimalQR;
-  window.P2PDataCodec = P2PDataCodec;
-  window.p2pSyncEngine = p2pSyncEngine;
   window.cloudSyncEngine = cloudSyncEngine;
   window.openP2PSyncModal = openP2PSyncModal;
   window.closeP2PSyncModal = closeP2PSyncModal;
@@ -937,14 +829,11 @@ if (typeof window !== 'undefined') {
   window.switchSyncModalTab = switchSyncModalTab;
 
   window.addEventListener('DOMContentLoaded', () => {
-    p2pSyncEngine.init();
     cloudSyncEngine.init();
   });
 }
 if (typeof globalThis !== 'undefined') {
   globalThis.MinimalQR = MinimalQR;
-  globalThis.P2PDataCodec = P2PDataCodec;
-  globalThis.p2pSyncEngine = p2pSyncEngine;
   globalThis.cloudSyncEngine = cloudSyncEngine;
   globalThis.openP2PSyncModal = openP2PSyncModal;
   globalThis.closeP2PSyncModal = closeP2PSyncModal;

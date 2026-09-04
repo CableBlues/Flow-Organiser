@@ -388,7 +388,7 @@ function checkAlarmsLoop() {
       const safeEscape = typeof escapeHtml === 'function' ? escapeHtml : (str) => String(str || '');
       if (typeof showToast === 'function') showToast(`🔔 Erinnerung: "${safeEscape(r.text)}"`);
       if (typeof playProceduralSound === 'function') playProceduralSound(1);
-      sendBrowserNotification('🔔 Flow Reminder', r.text);
+      sendBrowserNotification('🔔 Noodle Reminder', r.text);
     }
   });
 }

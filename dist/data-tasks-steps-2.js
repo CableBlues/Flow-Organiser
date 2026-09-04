@@ -280,6 +280,44 @@ const TASK_STEPS_DATABASE_PART2 = {
       '4. Lascia asciugare completamente prima di ritirarli'
     ]
   },
+  'Waschbecken & Spiegelschrank': {
+    de: [
+      '1. Spiegelflächen mit Glasreiniger einsprühen und trockenreiben',
+      '2. Das Waschbecken mit Badreiniger einsprühen',
+      '3. Becken und Armaturen mit einem Schwamm sauber schrubben',
+      '4. Mit Wasser nachspülen und alles glänzend polieren'
+    ],
+    en: [
+      '1. Spray mirror surfaces with glass cleaner and wipe dry',
+      '2. Spray the sink with bathroom cleaner',
+      '3. Scrub the sink basin and faucets clean with a sponge',
+      '4. Rinse with water and buff dry for a sparkling shine'
+    ],
+    es: [
+      '1. Rocía el espejo con limpiacristales y seca bien',
+      '2. Rocía el lavabo con limpiador de baños',
+      '3. Frota la pila y los grifos con una esponja',
+      '4. Aclara con agua y seca para que brille'
+    ],
+    el: [
+      '1. Ψεκάστε τον καθρέφτη με καθαριστικό τζαμιών και σκουπίστε',
+      '2. Ψεκάστε τον νιπτήρα με καθαριστικό μπάνιου',
+      '3. Τρίψτε καλά τον νιπτήρα και τις βρύσες με σφουγγάρι',
+      '4. Ξεπλύνετε με νερό και στεγνώστε με πανί για λάμψη'
+    ],
+    fr: [
+      '1. Vaporiser le miroir avec du produit à vitre et essuyer',
+      '2. Vaporiser le lavabo avec du nettoyant salle de bain',
+      '3. Frotter la vasque et la robinetterie avec une éponge',
+      '4. Rincer à l\'eau et faire briller avec un chiffon sec'
+    ],
+    it: [
+      '1. Spruzza il detergente vetri sullo specchio e asciuga bene',
+      '2. Spruzza il detergente bagno sul lavandino',
+      '3. Strofina il lavabo e la rubinetteria con una spugna',
+      '4. Risciacqua con acqua e asciuga per far brillare'
+    ]
+  },
   'Waschbecken & Spiegelschrank putzen': {
     de: [
       '1. Spiegelflächen mit Glasreiniger einsprühen und trockenreiben',

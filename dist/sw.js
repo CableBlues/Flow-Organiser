@@ -1,10 +1,15 @@
-const CACHE_NAME = 'flow-cache-v7';
+const CACHE_NAME = 'noodle-cache-v145';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
+  './logo-noodle.png',
+  './logo-banner.png',
+  './favicon.png',
   './favicon.svg',
+  './icon-192.png',
   './icon-192.svg',
+  './icon-512.png',
   './icon-512.svg',
   './fonts.css',
   './app.bundle.js',

@@ -1,10 +1,15 @@
-const CACHE_NAME = 'flow-cache-v7';
+const CACHE_NAME = 'noodle-cache-v145';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
+  './logo-noodle.png',
+  './logo-banner.png',
+  './favicon.png',
   './favicon.svg',
+  './icon-192.png',
   './icon-192.svg',
+  './icon-512.png',
   './icon-512.svg',
   './fonts.css',
   './fonts/plus-jakarta-sans-400.ttf',
@@ -43,6 +48,7 @@ const ASSETS_TO_CACHE = [
   './helper-tools-2.js',
   './helper-tools-3.js',
   './helper-clarity.js',
+  './helper-brainstorm.js',
   './sport.js',
   './app-core.js',
   './app-tasks.js',

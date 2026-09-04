@@ -1,4 +1,4 @@
-// main.js - Haupt-Einstiegspunkt für Flow Organiser (ES-Module Pipeline)
+// main.js - Haupt-Einstiegspunkt für Noodle (ES-Module Pipeline)
 // ============================================================================
 
 // 1. Daten & Schritte
@@ -46,6 +46,7 @@ import './helper-tools-1.js';
 import './helper-tools-2.js';
 import './helper-tools-3.js';
 import './helper-clarity.js';
+import './helper-brainstorm.js';
 
 // 7. Domain Features & Haupt-App
 import './app-shopping.js';
@@ -57,4 +58,4 @@ import './app-weather-news.js';
 import './app-dice.js';
 import './app-core.js';
 
-console.log('⚡ [Flow Organiser] Alle Module erfolgreich initialisiert.');
+console.log('⚡ [Noodle] Alle Module erfolgreich initialisiert.');

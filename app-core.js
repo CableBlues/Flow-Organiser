@@ -110,16 +110,35 @@ function handleSoundsMainClick() { togglePanel('audio'); switchAudioTab('ambient
 function handleMusicMainClick() { togglePanel('audio'); switchAudioTab('music'); }
 
 function switchAudioTab(tabName) {
-  const tabs = ['ambient', 'beats', 'music'];
+  if (typeof window !== 'undefined') window._lastActiveAudioTab = tabName;
+  const tabConfigs = {
+    ambient: {
+      activeClass: 'flex-1 py-2 px-1.5 rounded-xl text-emerald-100 bg-gradient-to-r from-emerald-600/40 via-teal-600/35 to-emerald-600/40 border border-emerald-400/80 shadow-[0_0_15px_rgba(16,185,129,0.35)] font-bold',
+      inactiveClass: 'flex-1 py-2 px-1.5 rounded-xl text-gray-400 hover:text-emerald-300 hover:bg-emerald-500/10 border border-transparent transition font-medium'
+    },
+    beats: {
+      activeClass: 'flex-1 py-2 px-1.5 rounded-xl text-purple-100 bg-gradient-to-r from-purple-600/40 via-violet-600/35 to-purple-600/40 border border-purple-400/80 shadow-[0_0_15px_rgba(168,85,247,0.35)] font-bold',
+      inactiveClass: 'flex-1 py-2 px-1.5 rounded-xl text-gray-400 hover:text-purple-300 hover:bg-purple-500/10 border border-transparent transition font-medium'
+    },
+    music: {
+      activeClass: 'flex-1 py-2 px-1.5 rounded-xl text-cyan-100 bg-gradient-to-r from-cyan-600/40 via-sky-600/35 to-cyan-600/40 border border-cyan-400/80 shadow-[0_0_15px_rgba(6,182,212,0.35)] font-bold',
+      inactiveClass: 'flex-1 py-2 px-1.5 rounded-xl text-gray-400 hover:text-cyan-300 hover:bg-cyan-500/10 border border-transparent transition font-medium'
+    },
+    dj: {
+      activeClass: 'flex-1 py-2 px-1.5 rounded-xl text-amber-100 bg-gradient-to-r from-amber-600/40 via-orange-600/35 to-amber-600/40 border border-amber-400/80 shadow-[0_0_15px_rgba(245,158,11,0.35)] font-bold',
+      inactiveClass: 'flex-1 py-2 px-1.5 rounded-xl text-gray-400 hover:text-amber-300 hover:bg-amber-500/10 border border-transparent transition font-medium'
+    }
+  };
+
+  const tabs = ['ambient', 'beats', 'music', 'dj'];
   tabs.forEach(t => {
     const btn = document.getElementById(`audio-tab-btn-${t}`);
     const pane = document.getElementById(`audio-pane-${t}`);
-    if (btn) {
-      if (t === tabName) {
-        btn.className = 'flex-1 py-1.5 rounded-xl text-white bg-purple-600/30 border border-purple-500/50 transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-bold shadow-sm';
-      } else {
-        btn.className = 'flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-medium';
-      }
+    const conf = tabConfigs[t];
+    if (btn && conf) {
+      btn.className = (t === tabName) 
+        ? `${conf.activeClass} transition-all flex items-center justify-center gap-1.5 cursor-pointer text-xs select-none` 
+        : `${conf.inactiveClass} transition-all flex items-center justify-center gap-1.5 cursor-pointer text-xs select-none`;
     }
     if (pane) {
       if (t === tabName) {
@@ -129,7 +148,11 @@ function switchAudioTab(tabName) {
       }
     }
   });
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  if (tabName === 'dj' && typeof initDjDecks === 'function') {
+    initDjDecks();
+  }
+  if (typeof renderLucideIcons === 'function') renderLucideIcons();
+  if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
 }
 window.switchAudioTab = switchAudioTab;
 
@@ -180,11 +203,17 @@ function rotatePremiumDance() {
 }
 
 document.addEventListener('keydown', (e) => {
-  const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
-  if (activeTag === 'input' || activeTag === 'textarea' || (document.activeElement && document.activeElement.isContentEditable)) {
-    if (e.key === 'Escape') {
+  if (e.key === 'Escape') {
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
       document.activeElement.blur();
     }
+    e.preventDefault();
+    closeAllPanelsAndModals();
+    return;
+  }
+
+  const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+  if (activeTag === 'input' || activeTag === 'textarea' || (document.activeElement && document.activeElement.isContentEditable)) {
     return;
   }
 
@@ -253,14 +282,25 @@ document.addEventListener('keydown', (e) => {
       e.preventDefault();
       if (typeof toggleGameMode === 'function') toggleGameMode();
       break;
-    case 'escape':
-      e.preventDefault();
-      closeAllPanelsAndModals();
-      break;
   }
 });
 
 function closeAllPanelsAndModals() {
+  // 1. Cancel all active hover timeouts
+  if (typeof hoverPanelShowTimeout !== 'undefined' && hoverPanelShowTimeout) {
+    clearTimeout(hoverPanelShowTimeout);
+    hoverPanelShowTimeout = null;
+  }
+  if (typeof hoverPanelHideTimeout !== 'undefined' && hoverPanelHideTimeout) {
+    clearTimeout(hoverPanelHideTimeout);
+    hoverPanelHideTimeout = null;
+  }
+  if (typeof taskMenuCloseTimer !== 'undefined' && taskMenuCloseTimer) {
+    clearTimeout(taskMenuCloseTimer);
+    taskMenuCloseTimer = null;
+  }
+
+  // 2. Modal close helpers
   if (typeof closeHelperModal === 'function') closeHelperModal();
   if (typeof closeSportModal === 'function') closeSportModal();
   if (typeof closeSafeSpaceModal === 'function') closeSafeSpaceModal();
@@ -278,9 +318,58 @@ function closeAllPanelsAndModals() {
   if (typeof closeKeyboardShortcuts === 'function') closeKeyboardShortcuts();
   if (typeof closeP2PSyncModal === 'function') closeP2PSyncModal();
   if (typeof closeMobileQuickMenu === 'function') closeMobileQuickMenu();
+  if (typeof closeMobileMenuDrawer === 'function') closeMobileMenuDrawer();
+  if (typeof closeMobileToolsSheet === 'function') closeMobileToolsSheet();
+  if (typeof closeBreakModal === 'function') closeBreakModal();
+  if (typeof closeStepsModal === 'function') closeStepsModal();
+  if (typeof closeNoteModal === 'function') closeNoteModal();
+  if (typeof closeBrainstormModal === 'function') closeBrainstormModal();
+  if (typeof toggleTerminForm === 'function') toggleTerminForm(false);
+  if (typeof closeTaskOptionsMenu === 'function') closeTaskOptionsMenu();
+  if (typeof hideSoundHoverSlider === 'function') hideSoundHoverSlider();
 
-  const allPanels = document.querySelectorAll('[id^="panel-"]');
+  // 3. Close all specific and generic modal elements
+  const modalIds = [
+    'brainstorm-modal', 'clarity-modal', 'sample-manager-modal', 'supermarket-modal',
+    'feierabend-celebration-modal', 'privacy-legal-modal', 'note-detail-modal',
+    'helper-safespace-modal', 'helper-pick-modal', 'helper-sport-modal',
+    'helper-break-modal', 'helper-steps-modal', 'modal-p2p-sync',
+    'modal-report-dashboard', 'modal-settings', 'modal-command-palette',
+    'modal-keyboard-shortcuts', 'text-import-modal', 'report-export-modal',
+    'mobile-menu-drawer', 'mobile-tools-sheet', 'modal-mobile-quick-menu',
+    'modal-custom-item', 'modal-dice', 'modal-roulette', 'modal-game', 'modal-archive'
+  ];
+  modalIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('hidden');
+  });
+  document.querySelectorAll('.modal, [id$="-modal"], [id*="modal-"], [id*="-modal"]').forEach(el => {
+    el.classList.add('hidden');
+  });
+
+  // 4. Close all dock popover panels, dropdowns, context menus, and hover popovers
+  const allPanels = document.querySelectorAll('.dock-popover-panel, [id^="panel-"], [id$="-dropdown"], [id*="-popover"], #task-context-dropdown, #header-sound-volume-popover, .context-menu');
   allPanels.forEach(p => p.classList.add('hidden'));
+
+  // 5. Reset active state on mac dock
+  if (typeof currentlyOpenPanel !== 'undefined') currentlyOpenPanel = null;
+  if (typeof window !== 'undefined') window.currentlyOpenPanel = null;
+  const dockContainer = document.querySelector('.mac-dock-container');
+  if (dockContainer) dockContainer.classList.remove('is-active');
+
+  // 6. Close all open inline add inputs
+  if (typeof openTaskAddColumns !== 'undefined' && typeof openTaskAddColumns === 'object') {
+    let reRenderNeeded = false;
+    Object.keys(openTaskAddColumns).forEach(k => {
+      if (openTaskAddColumns[k]) {
+        openTaskAddColumns[k] = false;
+        reRenderNeeded = true;
+      }
+    });
+    if (reRenderNeeded && typeof renderApp === 'function') {
+      renderApp();
+    }
+  }
 }
 window.closeAllPanelsAndModals = closeAllPanelsAndModals;
 
@@ -367,6 +456,7 @@ window.triggerSparkleEffect = triggerSparkleEffect;
 
 // COMMAND PALETTE (STRG+K / CMD+K) CONTROLLER
 let commandPaletteActiveIndex = 0;
+let commandPaletteItems = [];
 
 function openCommandPalette() {
   const modal = document.getElementById('modal-command-palette');
@@ -374,8 +464,10 @@ function openCommandPalette() {
   if (!modal || !input) return;
   modal.classList.remove('hidden');
   input.value = '';
+  commandPaletteActiveIndex = 0;
   filterCommandPalette('');
-  setTimeout(() => input.focus(), 50);
+  setTimeout(() => input.focus(), 30);
+  if (typeof renderLucideIcons === 'function') renderLucideIcons();
 }
 
 function closeCommandPalette() {
@@ -385,22 +477,146 @@ function closeCommandPalette() {
 
 function getAvailableCommands() {
   return [
-    { id: 'timer_25', title: '⏱️ Fokus-Timer: 25 Minuten starten', action: () => { if (typeof setTimer === 'function') setTimer(25); if (typeof startTimer === 'function') startTimer(); } },
-    { id: 'timer_15', title: '⏱️ Fokus-Timer: 15 Minuten starten', action: () => { if (typeof setTimer === 'function') setTimer(15); if (typeof startTimer === 'function') startTimer(); } },
-    { id: 'timer_45', title: '⏱️ Fokus-Timer: 45 Minuten starten', action: () => { if (typeof setTimer === 'function') setTimer(45); if (typeof startTimer === 'function') startTimer(); } },
-    { id: 'ws_switch', title: '🔄 Workspace wechseln (Privat / Arbeit)', action: () => { if (typeof toggleWorkspace === 'function') toggleWorkspace(); } },
-    { id: 'dashboard', title: '📊 Detail-Statistik & Analyse-Dashboard', action: () => { if (typeof openReportDashboard === 'function') openReportDashboard(); } },
-    { id: 'dice', title: '🎲 Zufalls-Aufgabe würfeln', action: () => { if (typeof openDiceModal === 'function') openDiceModal(); } },
-    { id: 'zen', title: '🧘 Minimalistischen Fokus-Modus umschalten', action: () => { if (typeof toggleMinimalMode === 'function') toggleMinimalMode(); } },
-    { id: 'theme_aurora', title: '🎨 Theme: Aurora (Lila)', action: () => { setTheme('aurora'); } },
-    { id: 'theme_sage', title: '🎨 Theme: Sage (Salbeigrün)', action: () => { setTheme('sage'); } },
-    { id: 'theme_forest', title: '🎨 Theme: Forest (Grün)', action: () => { setTheme('forest'); } },
-    { id: 'theme_charcoal', title: '🎨 Theme: Charcoal (Graphit)', action: () => { setTheme('charcoal'); } },
-    { id: 'backup_export', title: '💾 Datensicherung: Plan als JSON exportieren', action: () => { if (typeof exportData === 'function') exportData(); else if (typeof handleSaveJson === 'function') handleSaveJson(); } },
-    { id: 'backup_import', title: '📥 Datensicherung: Backup wiederherstellen', action: () => { if (typeof importData === 'function') importData(); } },
-    { id: 'settings', title: '⚙️ Einstellungen, Impressum & Datenschutz', action: () => { openSettingsModal('general'); } },
-    { id: 'history', title: '📷 Screenshot- & Versions-Galerie', action: () => { openSettingsModal('history'); } },
-    { id: 'undo', title: '↩️ Letzte Aktion rückgängig machen', action: () => { if (typeof handleUndo === 'function') handleUndo(); } }
+    {
+      id: 'timer_25',
+      title: tr({
+        de: '⏱️ Fokus-Timer: 25 Minuten starten',
+        en: '⏱️ Focus Timer: Start 25 minutes',
+        fr: '⏱️ Minuteur Focus : Démarrer 25 minutes',
+        it: '⏱️ Timer Focus: Avvia 25 minuti',
+        es: '⏱️ Temporizador Focus: Iniciar 25 minutos',
+        el: '⏱️ Χρονόμετρο Εστίασης: Έναρξη 25 λεπτά'
+      }),
+      action: () => { if (typeof setTimerMinutes === 'function') setTimerMinutes(25); if (typeof startTimer === 'function') startTimer(); }
+    },
+    {
+      id: 'timer_15',
+      title: tr({
+        de: '⏱️ Fokus-Timer: 15 Minuten Kurz-Sprint',
+        en: '⏱️ Focus Timer: 15-minute quick sprint',
+        fr: '⏱️ Minuteur Focus : Sprint rapide de 15 minutes',
+        it: '⏱️ Timer Focus: Sprint rapido di 15 minuti',
+        es: '⏱️ Temporizador Focus: Sprint rápido de 15 minutos',
+        el: '⏱️ Χρονόμετρο Εστίασης: Γρήγορο σπριντ 15 λεπτών'
+      }),
+      action: () => { if (typeof setTimerMinutes === 'function') setTimerMinutes(15); if (typeof startTimer === 'function') startTimer(); }
+    },
+    {
+      id: 'whatnow',
+      title: tr({
+        de: '💡 Was nun? – Nächste beste Aufgabe wählen',
+        en: '💡 What now? – Pick next best task',
+        fr: '💡 Et maintenant ? – Choisir la meilleure tâche',
+        it: '💡 E adesso? – Scegli la migliore attività',
+        es: '💡 ¿Y ahora qué? – Elegir la mejor tarea',
+        el: '💡 Τι να κάνω; – Επιλογή επόμενης εργασίας'
+      }),
+      action: () => { if (typeof openHelperModal === 'function') openHelperModal('pick'); }
+    },
+    {
+      id: 'brainstorm',
+      title: tr({
+        de: '🧠 Brainstorming Studio – Ideen & Gedanken erfassen',
+        en: '🧠 Brainstorming Studio – Capture ideas & thoughts',
+        fr: '🧠 Brainstorming Studio – Capturer des idées et pensées',
+        it: '🧠 Brainstorming Studio – Cattura idee e pensieri',
+        es: '🧠 Brainstorming Studio – Capturar ideas y pensamientos',
+        el: '🧠 Brainstorming Studio – Καταγραφή ιδεών και σκέψεων'
+      }),
+      action: () => { if (typeof openBrainstormModal === 'function') openBrainstormModal(); }
+    },
+    {
+      id: 'zen',
+      title: tr({
+        de: '👁️ Fokus-Modus (Zen) an / aus',
+        en: '👁️ Focus Mode (Zen) on / off',
+        fr: '👁️ Mode Focus (Zen) activer / désactiver',
+        it: '👁️ Modalità Focus (Zen) attiva / disattiva',
+        es: '👁️ Modo Focus (Zen) activar / desactivar',
+        el: '👁️ Λειτουργία Εστίασης (Zen) ενεργοποίηση'
+      }),
+      action: () => { if (typeof toggleMinimalist === 'function') toggleMinimalist(); }
+    },
+    {
+      id: 'pause_breath',
+      title: tr({
+        de: '🧘 4-4-4 Atem-Flow (Nervensystem beruhigen)',
+        en: '🧘 4-4-4 Box Breathing (Calm nervous system)',
+        fr: '🧘 Respiration 4-4-4 (Calmer le système nerveux)',
+        it: '🧘 Respirazione 4-4-4 (Calma il sistema nervoso)',
+        es: '🧘 Respiración 4-4-4 (Calmar sistema nervioso)',
+        el: '🧘 Αναπνοή 4-4-4 (Ηρεμία νευρικού συστήματος)'
+      }),
+      action: () => { if (typeof openBreakModal === 'function') openBreakModal('breath'); }
+    },
+    {
+      id: 'dashboard',
+      title: tr({
+        de: '📊 Produktivitäts- & Analyse-Dashboard',
+        en: '📊 Productivity & Analytics Dashboard',
+        fr: '📊 Tableau de bord Productivité & Analyse',
+        it: '📊 Dashboard Produttività & Analisi',
+        es: '📊 Panel de Productividad y Análisis',
+        el: '📊 Πίνακας Παραγωγικότητας & Αναλύσεων'
+      }),
+      action: () => { if (typeof openReportDashboard === 'function') openReportDashboard(); }
+    },
+    {
+      id: 'undo',
+      title: tr({
+        de: '↩️ Letzte Aktion rückgängig machen (Ctrl+Z)',
+        en: '↩️ Undo last action (Ctrl+Z)',
+        fr: '↩️ Annuler la dernière action (Ctrl+Z)',
+        it: '↩️ Annulla ultima azione (Ctrl+Z)',
+        es: '↩️ Deshacer última acción (Ctrl+Z)',
+        el: '↩️ Αναίρεση τελευταίας ενέργειας (Ctrl+Z)'
+      }),
+      action: () => { if (typeof handleUndo === 'function') handleUndo(); }
+    },
+    {
+      id: 'reset',
+      title: tr({
+        de: '🔄 Board zurücksetzen (Reset)',
+        en: '🔄 Reset board',
+        fr: '🔄 Réinitialiser le tableau',
+        it: '🔄 Ripristina lavagna',
+        es: '🔄 Restablecer tablero',
+        el: '🔄 Επαναφορά πίνακα'
+      }),
+      action: () => { if (typeof handleReset === 'function') handleReset(); }
+    },
+    {
+      id: 'theme_honey',
+      title: '🍯 Theme: Honig (Warmes Gold)',
+      action: () => { setTheme('honey'); }
+    },
+    {
+      id: 'theme_sage',
+      title: '🌿 Theme: Salbei (Botanisch Grün)',
+      action: () => { setTheme('sage'); }
+    },
+    {
+      id: 'theme_aurora',
+      title: '🌌 Theme: Aurora (Nacht-Violett)',
+      action: () => { setTheme('aurora'); }
+    },
+    {
+      id: 'theme_ocean',
+      title: '🌊 Theme: Ozean (Meeres-Cyan)',
+      action: () => { setTheme('ocean'); }
+    },
+    {
+      id: 'settings',
+      title: tr({
+        de: '⚙️ Einstellungen, Impressum & Datenschutz',
+        en: '⚙️ Settings, Legal & Privacy',
+        fr: '⚙️ Paramètres, Mentions légales & Confidentialité',
+        it: '⚙️ Impostazioni, Note legali & Privacy',
+        es: '⚙️ Ajustes, Legal y Privacidad',
+        el: '⚙️ Ρυθμίσεις, Νομικά & Απόρρητο'
+      }),
+      action: () => { openSettingsModal('general'); }
+    }
   ];
 }
 
@@ -427,7 +643,7 @@ function filterCommandPalette(query = '') {
             title: `📌 [${typeof t === 'function' ? t(col) : col}] ${text}`,
             action: () => {
               if (typeof startTaskTimerByIndex === 'function') startTaskTimerByIndex(col, idx);
-              else { if (typeof setTimer === 'function') setTimer(25); if (typeof startTimer === 'function') startTimer(); }
+              else { if (typeof setTimerMinutes === 'function') setTimerMinutes(25); if (typeof startTimer === 'function') startTimer(); }
             }
           });
         }
@@ -438,7 +654,7 @@ function filterCommandPalette(query = '') {
   const combined = [];
   if (matchedCommands.length > 0) {
     combined.push({ isHeader: true, label: typeof t === 'function' ? t('cmd_actions') : 'Schnell-Aktionen' });
-    matchedCommands.slice(0, 6).forEach(c => combined.push({ ...c, isAction: true }));
+    matchedCommands.slice(0, 7).forEach(c => combined.push({ ...c, isAction: true }));
   }
 
   if (matchedTasks.length > 0) {
@@ -446,14 +662,23 @@ function filterCommandPalette(query = '') {
     matchedTasks.slice(0, 8).forEach(t => combined.push({ ...t, isAction: true }));
   }
 
-  if (combined.filter(c => c.isAction).length === 0) {
+  commandPaletteItems = combined.filter(c => c.isAction);
+
+  if (commandPaletteItems.length === 0) {
     resultsContainer.innerHTML = `
       <div class="p-6 text-center text-gray-500 text-xs">
         <i data-lucide="search-x" class="w-6 h-6 mx-auto mb-1 opacity-50"></i>
-        <span>Keine passenden Befehle oder Aufgaben gefunden</span>
+        <span>${tr({
+          de: 'Keine passenden Befehle oder Aufgaben gefunden',
+          en: 'No matching commands or tasks found',
+          fr: 'Aucune commande ou tâche correspondante trouvée',
+          it: 'Nessun comando o attività corrispondente trovato',
+          es: 'No se encontraron comandos o tareas coincidentes',
+          el: 'Δεν βρέθηκαν εντολές ή εργασίες'
+        })}</span>
       </div>
     `;
-    renderLucideIcons();
+    if (typeof renderLucideIcons === 'function') renderLucideIcons();
     return;
   }
 
@@ -467,8 +692,9 @@ function filterCommandPalette(query = '') {
     } else {
       const thisIdx = actionIdx++;
       const btn = document.createElement('button');
+      btn.id = `cmd-item-${thisIdx}`;
       btn.className = `w-full px-3 py-2 text-left rounded-xl flex items-center justify-between text-xs transition cursor-pointer ${
-        thisIdx === 0 ? 'bg-purple-600/30 border border-purple-500/40 text-white font-semibold' : 'text-gray-300 hover:bg-white/5 hover:text-white'
+        thisIdx === commandPaletteActiveIndex ? 'bg-purple-600/30 border border-purple-500/40 text-white font-semibold' : 'text-gray-300 hover:bg-white/5 hover:text-white'
       }`;
       btn.setAttribute('data-cmd-idx', thisIdx);
       btn.innerHTML = `
@@ -483,13 +709,53 @@ function filterCommandPalette(query = '') {
     }
   });
 
-  commandPaletteActiveIndex = 0;
-  renderLucideIcons();
+  if (typeof renderLucideIcons === 'function') renderLucideIcons();
+}
+
+function handleCommandPaletteKeyDown(e) {
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    closeCommandPalette();
+    return;
+  }
+  if (!commandPaletteItems || commandPaletteItems.length === 0) return;
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    commandPaletteActiveIndex = (commandPaletteActiveIndex + 1) % commandPaletteItems.length;
+    updateCommandPaletteHighlight();
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    commandPaletteActiveIndex = (commandPaletteActiveIndex - 1 + commandPaletteItems.length) % commandPaletteItems.length;
+    updateCommandPaletteHighlight();
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    const activeItem = commandPaletteItems[commandPaletteActiveIndex];
+    if (activeItem && typeof activeItem.action === 'function') {
+      closeCommandPalette();
+      activeItem.action();
+    }
+  }
+}
+
+function updateCommandPaletteHighlight() {
+  commandPaletteItems.forEach((_, idx) => {
+    const el = document.getElementById(`cmd-item-${idx}`);
+    if (el) {
+      if (idx === commandPaletteActiveIndex) {
+        el.className = 'w-full px-3 py-2 text-left rounded-xl flex items-center justify-between text-xs transition cursor-pointer bg-purple-600/30 border border-purple-500/40 text-white font-semibold';
+        el.scrollIntoView({ block: 'nearest' });
+      } else {
+        el.className = 'w-full px-3 py-2 text-left rounded-xl flex items-center justify-between text-xs transition cursor-pointer text-gray-300 hover:bg-white/5 hover:text-white';
+      }
+    }
+  });
 }
 
 window.openCommandPalette = openCommandPalette;
 window.closeCommandPalette = closeCommandPalette;
 window.filterCommandPalette = filterCommandPalette;
+window.handleCommandPaletteKeyDown = handleCommandPaletteKeyDown;
 
 function openSettingsModal(tab = 'general') {
   const modal = document.getElementById('modal-settings');
@@ -693,7 +959,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (zenView) { zenView.classList.add('hidden'); zenView.classList.remove('flex'); }
     if (mainEl) { mainEl.classList.remove('hidden'); }
   }
-  updateDateAndStreak(); updateWorkspaceSwitchUI(); renderApp(); updateZenView(); populateHelperTaskSelect(); suggestBoostActivity(); suggestInspirationQuote(); checkAndGenerateAutomaticReports();
+  updateDateAndStreak(); updateWorkspaceSwitchUI(); if (typeof renderApp === 'function') renderApp(); updateZenView(); populateHelperTaskSelect(); suggestBoostActivity(); suggestInspirationQuote(); checkAndGenerateAutomaticReports();
   const btnHeader = document.getElementById('timer-toggle-btn'); if (btnHeader) { btnHeader.innerHTML = '<i data-lucide="play" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>'; }
   renderLucideIcons();
 });
@@ -725,46 +991,42 @@ function getSimilarTheme(current) {
 }
 
 const ALL_VALID_THEMES = [
-  'honey', 'sage', 'aurora', 'peach', 'ocean', 'terracotta'
+  'cyberpunk', 'aurora', 'matrix', 'ocean', 'honey', 'crimson',
+  'obsidian', 'nebula', 'peach', 'sage', 'terracotta', 'royal'
 ];
 
 const THEME_ALIASES = {
+  'neon-cyber': 'cyberpunk',
+  'synthwave': 'cyberpunk',
+  'aurora-violet': 'aurora',
+  'lavender-cloud': 'aurora',
+  'forest': 'matrix',
+  'matcha': 'matrix',
+  'lagoon': 'ocean',
+  'glacier': 'ocean',
+  'glacier-frost': 'ocean',
+  'holo-chrome': 'ocean',
+  'architect': 'ocean',
+  'amber': 'honey',
   'honey-chamomile': 'honey',
   'cozy-amber': 'honey',
   'cozy': 'honey',
   'citrus': 'honey',
-  'carbon': 'honey',
-  'sage-breeze': 'sage',
-  'eucalyptus-dew': 'sage',
-  'forest': 'sage',
-  'matcha': 'sage',
-  'matcha-latte': 'sage',
-  'charcoal': 'sage',
-  'aurora-violet': 'aurora',
-  'lavender-cloud': 'aurora',
-  'spatial-orbit': 'aurora',
-  'spatial-galaxy': 'aurora',
-  'synthwave': 'aurora',
-  'peach-cashmere': 'peach',
+  'carbon': 'obsidian',
+  'charcoal': 'obsidian',
+  'executive': 'obsidian',
   'sakura': 'peach',
   'sakura-blossom': 'peach',
-  'neon-cyber': 'peach',
-  'lagoon': 'ocean',
-  'lagoon-serenity': 'ocean',
-  'glacier': 'ocean',
-  'glacier-frost': 'ocean',
-  'spatial-sanctuary': 'ocean',
-  'spatial-island': 'ocean',
-  'spatial-metropolis': 'ocean',
-  'holo-chrome': 'ocean',
-  'architect': 'ocean',
-  'executive': 'ocean',
+  'peach-cashmere': 'peach',
+  'sage-breeze': 'sage',
+  'eucalyptus-dew': 'sage',
+  'matcha-latte': 'sage',
   'terracotta-sun': 'terracotta'
 };
 
 function setTheme(theme) {
   if (THEME_ALIASES[theme]) theme = THEME_ALIASES[theme];
-  if (!ALL_VALID_THEMES.includes(theme)) theme = 'honey';
+  if (!ALL_VALID_THEMES.includes(theme)) theme = 'aurora';
   if (typeof window !== 'undefined') window.currentTheme = theme;
   if (typeof globalThis !== 'undefined') globalThis.currentTheme = theme;
   try { currentTheme = theme; } catch(e) {}
@@ -774,6 +1036,18 @@ function setTheme(theme) {
     if (typeof isMinimalist !== 'undefined' && isMinimalist) document.body.classList.add('minimalist');
   }
   try { localStorage.setItem('flowPlannerTheme', theme); } catch(e) {}
+
+  // Update theme swatches active glow ring
+  if (typeof document !== 'undefined') {
+    document.querySelectorAll('[data-theme-swatch]').forEach(el => {
+      const swTheme = el.getAttribute('data-theme-swatch');
+      if (swTheme === theme) {
+        el.classList.add('ring-2', 'ring-white', 'scale-110', 'shadow-lg');
+      } else {
+        el.classList.remove('ring-2', 'ring-white', 'scale-110', 'shadow-lg');
+      }
+    });
+  }
 }
 
 // Sanfter, langsamer Farbwechsel (z.B. nach dem Erledigen einer Aufgabe): aktiviert kurzzeitig
@@ -796,7 +1070,7 @@ function setLanguage(lang) {
   if (flagEl) flagEl.innerText = flagMap[lang] || '🇬🇧';
   translateUI(); const textEl = document.getElementById('minimal-mode-btn-text');
   if (textEl) { textEl.innerText = isMinimalist ? t('standard_mode') : t('minimal_mode'); }
-  updateDateAndStreak(); renderApp(); updateZenView(); populateHelperTaskSelect();
+  updateDateAndStreak(); if (typeof renderApp === 'function') renderApp(); updateZenView(); populateHelperTaskSelect();
   renderLucideIcons();
 }
 
@@ -860,19 +1134,35 @@ function translateUserTasks(fromLang, toLang) {
 }
 
 function toggleMinimalist() {
-  isMinimalist = !isMinimalist; localStorage.setItem('flowPlannerMinimalist', String(isMinimalist));
-  const iconEl = document.getElementById('zen-btn-icon'); const textEl = document.getElementById('minimal-mode-btn-text');
+  isMinimalist = !isMinimalist; 
+  localStorage.setItem('flowPlannerMinimalist', String(isMinimalist));
+  const iconEl = document.getElementById('zen-btn-icon'); 
+  const textEl = document.getElementById('minimal-mode-btn-text');
+  const btnEl = document.getElementById('btn-focus-mode');
   const zenView = document.getElementById('zen-chill-view');
   const mainEl = document.querySelector('main');
+  
   if (isMinimalist) {
-    document.body.classList.add('minimalist'); if (iconEl) iconEl.setAttribute('data-lucide', 'eye-off');
+    document.body.classList.add('minimalist'); 
+    if (iconEl) iconEl.setAttribute('data-lucide', 'eye-off');
     if (textEl) textEl.innerText = t('standard_mode'); 
+    if (btnEl) {
+      btnEl.classList.remove('bg-purple-500/10', 'border-purple-500/30', 'text-purple-200');
+      btnEl.classList.add('bg-purple-600/30', 'border-purple-400', 'text-white', 'shadow-[0_0_15px_rgba(168,85,247,0.4)]');
+      btnEl.title = t('standard_mode') + ' [F]';
+    }
     if (zenView) { zenView.classList.remove('hidden'); zenView.classList.add('flex'); }
     if (mainEl) { mainEl.classList.add('hidden'); }
     updateZenView();
   } else {
-    document.body.classList.remove('minimalist'); if (iconEl) iconEl.setAttribute('data-lucide', 'eye');
+    document.body.classList.remove('minimalist'); 
+    if (iconEl) iconEl.setAttribute('data-lucide', 'eye');
     if (textEl) textEl.innerText = t('minimal_mode');
+    if (btnEl) {
+      btnEl.classList.remove('bg-purple-600/30', 'border-purple-400', 'text-white', 'shadow-[0_0_15px_rgba(168,85,247,0.4)]');
+      btnEl.classList.add('bg-purple-500/10', 'border-purple-500/30', 'text-purple-200');
+      btnEl.title = t('minimal_mode') + ' [F]';
+    }
     if (zenView) { zenView.classList.add('hidden'); zenView.classList.remove('flex'); }
     if (mainEl) { mainEl.classList.remove('hidden'); }
   }
@@ -900,6 +1190,9 @@ function zenCompleteCurrentTask() {
 }
 
 let editingTerminIndex = null;
+if (typeof isTerminFormOpen === 'undefined') {
+  var isTerminFormOpen = false;
+}
 
 function toggleTerminForm(open, prefilledDate) {
   isTerminFormOpen = open !== undefined ? open : !isTerminFormOpen;
@@ -909,9 +1202,9 @@ function toggleTerminForm(open, prefilledDate) {
   } else if (prefilledDate) {
     selectedCalendarDate = prefilledDate;
   }
-  renderApp();
+  if (typeof renderApp === 'function') renderApp();
   if (isTerminFormOpen) {
-    setTimeout(() => { const inputTitle = document.getElementById('add-termin-title'); if (inputTitle) inputTitle.focus(); }, 50);
+    setTimeout(() => { const inputTitle = document.getElementById('add-termin-title'); if (inputTitle && typeof inputTitle.focus === 'function') inputTitle.focus(); }, 50);
   }
 }
 
@@ -921,7 +1214,7 @@ function editTermin(index, event) {
   if (!termin) return;
   editingTerminIndex = index;
   isTerminFormOpen = true;
-  renderApp();
+  if (typeof renderApp === 'function') renderApp();
   setTimeout(() => {
     const titleEl = document.getElementById('add-termin-title');
     const locEl = document.getElementById('add-termin-location');
@@ -958,7 +1251,7 @@ function handleAddTermin() {
     state.items.termine.push({ task: title, date, time, location });
     showToast(t('toast_appointment_saved'));
   }
-  isTerminFormOpen = false; selectedCalendarDate = null; saveState(); renderApp(); populateHelperTaskSelect();
+  isTerminFormOpen = false; selectedCalendarDate = null; saveState(); if (typeof renderApp === 'function') renderApp(); populateHelperTaskSelect();
 }
 
 function getTaskIconDetails(taskText, category = '') {
@@ -976,37 +1269,43 @@ function getTaskIconDetails(taskText, category = '') {
     { rx: /medi|pill|tablett|vitam|pharmak|arzt|doctor|docteur|dottore|medico|therap|apothek|ordonnan|farmac|φαρμακ|γιατρ|ασθεν/, ic: 'pill', col: 'text-rose-400' },
     // 2. Zähne / Mundhygiene
     { rx: /zahn|zahne|dient|tooth|teeth|dent|dond|brush|bross|spazzol|δοντ|βουρτσ/, ic: 'smile', col: 'text-cyan-400' },
-    // 3. Geschirr spülen / Küche / Abwasch
+    // 3. Gesicht waschen / Hautpflege
+    { rx: /gesicht|face|visage|viso|προσωπ/, ic: 'smile', col: 'text-cyan-400' },
+    // 4. Herd / Kühlschrank / Ofen / Küche Geräte
+    { rx: /herd|kuhl|fridge|frigo|stov|four|horno|nevera|fornell|refrig|kuehl|backofen|oven|κουζιν|ψυγει/, ic: 'cooking-pot', col: 'text-orange-400' },
+    // 5. Waschbecken / Spiegel / Bad-Armaturen
+    { rx: /waschbeck|sink|lavabo|specch|miroir|espejo|spiegel|νιπτηρ|καθρεφτ/, ic: 'droplets', col: 'text-sky-400' },
+    // 6. Geschirr spülen / Küche / Abwasch
     { rx: /spul|dish|vaissel|piat|plato|geschirr|spuel|πιατ|abwasch/, ic: 'utensils', col: 'text-emerald-400' },
-    // 4. Wäsche waschen / Waschmaschine
+    // 7. Wäsche waschen / Waschmaschine
     { rx: /laund|colad|lessiv|bucat|clothes|linge|roux|ρουχ|πλυντηρ|wasch.*wasch|wasche/, ic: 'washing-machine', col: 'text-indigo-400' },
-    // 5. Wäsche aufhängen / Trocknen
+    // 8. Wäsche aufhängen / Trocknen
     { rx: /aufhang|hang|colg|etend|stend|aplon|dry|sech|asciug|απλωμ/, ic: 'shirt', col: 'text-violet-400' },
-    // 6. Duschen / Baden / Gesicht waschen
-    { rx: /dusch|shower|baign|doccia|duch|ντους|μπανι|gesicht|face|visage|viso|hyg|bath/, ic: 'bath', col: 'text-sky-400' },
-    // 7. Haare / Frisur / Schneiden
+    // 9. Duschen / Baden
+    { rx: /dusch|shower|baign|doccia|duch|ντους|μπανι|bath/, ic: 'bath', col: 'text-sky-400' },
+    // 10. Haare / Frisur / Schneiden
     { rx: /haare|haar|hair|pelo|cabell|cheveux|capell|fris|kour|coiff|tagli|μαλλι|κουρεμ|λουσιμ/, ic: 'scissors', col: 'text-pink-400' },
-    // 8. Nägel / Maniküre
-    { rx: /nagel|nail|ungl|un|ungh|nych|pedicur|manicur|νυχ/, ic: 'sparkles', col: 'text-indigo-400' },
-    // 9. Trinken / Wasser / Hydration
+    // 11. Nägel / Maniküre
+    { rx: /nagel|nail|ungl|un|ungh|nych|pedicur|manicur|νυχ/, ic: 'scissors', col: 'text-indigo-400' },
+    // 12. Trinken / Wasser / Hydration
     { rx: /trink|wat|agu|eau|ner|glass|hydrat|bever|bere|boire|νερο|πινω|ποτηρ/, ic: 'glass-water', col: 'text-blue-400' },
-    // 10. Bett / Schlafen / Bettwäsche
+    // 13. Bett / Schlafen / Bettwäsche
     { rx: /bett|bed|cama|lit|lett|krevat|schlaf|sleep|sommeil|dorm|drap|sabana|lenzuol|κρεβατ|σεντον|υπν/, ic: 'bed', col: 'text-amber-400' },
-    // 11. Aufräumen / Ordnung / Organisation
-    { rx: /aufraum|tidy|orden|rang|riordin|clean|putz|organi|nettoy|limp|puliz|τακτοπ|καθαρισ|οργαν/, ic: 'package', col: 'text-yellow-500' },
-    // 12. Staub wischen / Abstauben
+    // 14. Aufräumen / Ordnung / Putzen
+    { rx: /aufraum|tidy|orden|rang|riordin|clean|putz|organi|nettoy|limp|puliz|τακτοπ|καθαρισ|οργαν/, ic: 'sparkles', col: 'text-yellow-400' },
+    // 15. Staub wischen / Abstauben
     { rx: /staub|dust|polv|poussi|spolver|epousset|xesk|ξεσκον/, ic: 'feather', col: 'text-amber-300' },
-    // 13. Staubsaugen / Saugen
+    // 16. Staubsaugen / Saugen
     { rx: /saugen|staubsaug|vacu|aspir|skoupi|σκουπ/, ic: 'tornado', col: 'text-cyan-500' },
-    // 14. Boden wischen / Feuchtwischen
+    // 17. Boden wischen / Feuchtwischen
     { rx: /wisch|mop|freg|sfoug|paviment|sol|σφουγγαρ/, ic: 'droplets', col: 'text-sky-500' },
-    // 15. Bad / WC / Sanitär / Spiegel
-    { rx: /klo|wc|toil|vater|lekan|lavabo|sink|miroir|specch|espejo|spiegel|bad|fliesen|νιπτηρ|λεκαν/, ic: 'sparkles', col: 'text-teal-500' },
-    // 16. Müll wegbringen / Entsorgung
+    // 18. Bad / WC / Sanitär / Fliesen
+    { rx: /klo|wc|toil|vater|lekan|bad|fliesen|λεκαν/, ic: 'sparkles', col: 'text-teal-500' },
+    // 19. Müll wegbringen / Entsorgung
     { rx: /mull|trash|basur|poubelle|spazzatur|waste|abfall|skoupid|σκουπιδ|πεταμ/, ic: 'trash-2', col: 'text-rose-500' },
-    // 17. Pfandflaschen / Recycling
+    // 20. Pfandflaschen / Recycling
     { rx: /pfand|bottle|bouteill|bottigl|envase|boukal|recycle|recyc|μπουκαλ|ανακυκλ/, ic: 'recycle', col: 'text-emerald-500' },
-    // 18. Kochen / Mahlzeiten / Rezepte
+    // 21. Kochen / Mahlzeiten / Rezepte
     { rx: /koch|food|cook|comid|cena|recept|recet|cuisin|cucin|magir|essen|lunch|dinner|breakfast|dejeun|pranz|past|mahlzeit|φαγητ|μαγειρ|γευμα/, ic: 'cooking-pot', col: 'text-orange-400' },
     // 19. Einkauf / Supermarkt / Laden
     { rx: /einkauf|shop|compr|achat|spesa|supermarkt|market|store|kauf|epicerie|agor|αγορ|σουπερ/, ic: 'shopping-cart', col: 'text-emerald-400' },
@@ -1066,7 +1365,7 @@ window.closeKeyboardShortcuts = closeKeyboardShortcuts;
 function downloadFullBackup() {
   try {
     const backupData = {
-      app: 'Flow Organiser',
+      app: 'Noodle',
       version: '2.5.0',
       exportedAt: new Date().toISOString(),
       items: typeof items !== 'undefined' ? items : {},
@@ -1084,7 +1383,7 @@ function downloadFullBackup() {
     const a = document.createElement('a');
     const dateStr = new Date().toISOString().split('T')[0];
     a.href = url;
-    a.download = `flow-organiser-backup-${dateStr}.json`;
+    a.download = `noodle-backup-${dateStr}.json`;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -1109,7 +1408,7 @@ function handleRestoreBackupFile(event) {
     try {
       const data = JSON.parse(e.target.result);
       if (!data || (!data.items && !data.daily && !Array.isArray(data))) {
-        throw new Error('Ungültiges Flow Organiser Backup-Format');
+        throw new Error('Ungültiges Noodle / Flow Backup-Format');
       }
 
       if (confirm('Möchtest du dieses Backup wirklich wiederherstellen? Bestehende Daten werden aktualisiert.')) {
@@ -1160,7 +1459,7 @@ if (typeof window !== 'undefined') {
     const banner = document.getElementById('pwa-install-banner');
     if (banner) banner.classList.add('hidden');
     if (typeof showToast === 'function') {
-      showToast('Flow Organiser erfolgreich installiert! 🎉');
+      showToast('Noodle erfolgreich installiert! 🎉');
     }
   });
 }
@@ -1178,7 +1477,7 @@ function triggerPwaInstall() {
     });
   } else {
     if (typeof showToast === 'function') {
-      showToast('Installiere Flow über das Browsermenü („Zum Startbildschirm hinzufügen“)');
+      showToast('Installiere Noodle über das Browsermenü („Zum Startbildschirm hinzufügen“)');
     }
   }
 }

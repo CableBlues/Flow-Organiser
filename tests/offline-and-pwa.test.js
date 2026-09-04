@@ -10,7 +10,7 @@ describe('Offline Capability & PWA Assets (Production Code)', () => {
     expect(fs.existsSync(manifestPath)).toBe(true);
 
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-    expect(manifest.name).toBe('Flow Organiser');
+    expect(manifest.name).toBe('Noodle Studio');
     expect(manifest.display).toBe('standalone');
     expect(manifest.icons).toBeDefined();
     expect(manifest.icons.length).toBeGreaterThanOrEqual(2);

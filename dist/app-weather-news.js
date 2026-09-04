@@ -11,7 +11,10 @@ let currentWeatherLocation = JSON.parse(localStorage.getItem('flow_weather_loc')
   lon: 13.41
 };
 let cachedWeatherData = typeof AppStorage !== 'undefined' ? AppStorage.get('flow_weather_cache', null) : (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('flow_weather_cache') || 'null') : null);
+let cachedWeatherTimestamp = parseInt(localStorage.getItem('flow_weather_timestamp') || '0', 10);
 let weatherUnit = localStorage.getItem('flow_weather_unit') || 'c';
+const WEATHER_CACHE_TTL = 10 * 60 * 1000; // 10 Minuten Cache-Gültigkeit (häufige Aktualisierung)
+let isWeatherFetching = false;
 
 const WEATHER_CODES = {
   0: { label: { de: 'Klarer Himmel', en: 'Clear sky', fr: 'Ciel dégagé', it: 'Cielo sereno', es: 'Cielo despejado', el: 'Καθαρός ουρανός' }, icon: 'sun', emoji: '☀️' },
@@ -51,33 +54,50 @@ function getWeatherInfo(code) {
 
 async function fetchLocalWeather(force = false) {
   const container = document.getElementById('weather-content-area');
-  if (!container) return;
+  const now = Date.now();
+  const isStale = (now - cachedWeatherTimestamp) > WEATHER_CACHE_TTL;
 
-  if (cachedWeatherData && !force) {
-    renderWeatherData(cachedWeatherData);
+  // 1. Sofort vorhandene Daten anzeigen, damit nichts flackert
+  if (cachedWeatherData) {
+    updateDateWeatherWidget(cachedWeatherData);
+    if (container && !force && !isStale) {
+      renderWeatherData(cachedWeatherData);
+      return;
+    }
+  }
+
+  // 2. Wenn weder Cache vorhanden noch force/stale nötig ist, beenden
+  if (!force && !isStale && cachedWeatherData) {
     return;
   }
+
+  if (isWeatherFetching) return;
 
   // Offline Check
   if (typeof navigator !== 'undefined' && !navigator.onLine) {
     if (cachedWeatherData) {
       renderWeatherData(cachedWeatherData);
-    } else {
+    } else if (container) {
       renderWeatherFallback();
     }
     return;
   }
 
-  container.innerHTML = `
-    <div class="py-10 text-center text-gray-400 space-y-2">
-      <div class="w-8 h-8 mx-auto border-2 border-sky-400 border-t-transparent rounded-full animate-spin"></div>
-      <div class="text-xs font-semibold">${tr({ de: 'Lade lokales Wetter...', en: 'Fetching local weather...', fr: 'Chargement météo...', it: 'Caricamento meteo...', es: 'Cargando clima...', el: 'Φόρτωση καιρού...' })}</div>
-    </div>
-  `;
+  // Ladeanzeige nur wenn kein Cache da ist oder im Modal aktiv gerendert wird
+  if (container && !cachedWeatherData) {
+    container.innerHTML = `
+      <div class="py-10 text-center text-gray-400 space-y-2">
+        <div class="w-8 h-8 mx-auto border-2 border-sky-400 border-t-transparent rounded-full animate-spin"></div>
+        <div class="text-xs font-semibold">${tr({ de: 'Lade aktuelles Wetter...', en: 'Fetching live weather...', fr: 'Chargement météo...', it: 'Caricamento meteo...', es: 'Cargando clima...', el: 'Φόρτωση καιρού...' })}</div>
+      </div>
+    `;
+  }
+
+  isWeatherFetching = true;
 
   try {
-    const lat = currentWeatherLocation.lat;
-    const lon = currentWeatherLocation.lon;
+    const lat = currentWeatherLocation.lat || 52.52;
+    const lon = currentWeatherLocation.lon || 13.41;
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
 
     const controller = new AbortController();
@@ -88,19 +108,29 @@ async function fetchLocalWeather(force = false) {
     if (!res.ok) throw new Error("Weather API error");
     const data = await res.json();
     cachedWeatherData = data;
+    cachedWeatherTimestamp = Date.now();
+    localStorage.setItem('flow_weather_timestamp', String(cachedWeatherTimestamp));
+
     if (typeof AppStorage !== 'undefined') {
       AppStorage.set('flow_weather_cache', data);
     } else {
       localStorage.setItem('flow_weather_cache', JSON.stringify(data));
     }
-    renderWeatherData(data);
+
+    updateDateWeatherWidget(data);
+    if (container) {
+      renderWeatherData(data);
+    }
   } catch (err) {
     console.warn("Wetter-Ladefehler (Offline oder Timeout):", err.message);
     if (cachedWeatherData) {
-      renderWeatherData(cachedWeatherData);
-    } else {
+      updateDateWeatherWidget(cachedWeatherData);
+      if (container) renderWeatherData(cachedWeatherData);
+    } else if (container) {
       renderWeatherFallback();
     }
+  } finally {
+    isWeatherFetching = false;
   }
 }
 
@@ -489,7 +519,7 @@ const COMPREHENSIVE_NEWS_DATABASE = [
   // --- DEUTSCHLANDWEIT & THEMEN ---
   { id: 'de_n1', loc: 'de_all', category: 'positive', tag: '🌱 Nachhaltigkeit', time: 'Vor 1 Std.', title: 'Rekord: Über 56% des Stroms im Bundesnetz aus erneuerbaren Quellen', summary: 'Sonne und Windkraft erzielten im aktuellen Monat einen neuen Spitzenwert bei der sauberen Stromversorgung in Deutschland.', source: 'Bundesnetz Monitor', lang: 'de' },
   { id: 'de_n2', loc: 'de_all', category: 'economy', tag: '💼 Wirtschaft', time: 'Vor 2 Std.', title: '4-Tage-Woche-Studie in Deutschland zeigt: Höhere Produktivität und Zufriedenheit', summary: 'Nach 6 Monaten Pilotphase berichten 85% der teilnehmenden Firmen von stabilen Umsätzen bei signifikant geringerem Krankenstand.', source: 'WirtschaftsWoche' },
-  { id: 'de_n3', loc: 'de_all', category: 'tech', tag: '💡 Innovation', time: 'Vor 3 Std.', title: 'Europäisches KI-Modell für Medizin erreicht Weltklasse-Diagnostik', summary: 'Ein Forschungsverbund stellt ein Open-Source-Modell vor, das MRT-Scans doppelt so schnell und präzise auswertet.', source: 'Tech Germany' },
+  { id: 'de_n3', loc: 'de_all', category: 'tech', tag: '💡 Innovation', time: 'Vor 3 Std.', title: 'Europäisches KI-Modell für Medizin erreicht Weltklasse-Bildanalyse', summary: 'Ein Forschungsverbund stellt ein Open-Source-Modell vor, das MRT-Scans doppelt so schnell und präzise auswertet.', source: 'Tech Germany' },
   { id: 'de_n4', loc: 'de_all', category: 'life', tag: '⚡ Fokus & Alltag', time: 'Vor 4 Std.', title: 'Die 90-Minuten-Regel: Warum Arbeitsblöcke den Flow revolutionieren', summary: 'Kognitionswissenschaftler empfehlen, Konzentrationsphasen an biologische Ultradian-Rhythmen anzupassen.', source: 'Mind & Focus' },
   { id: 'de_n5', loc: 'de_all', category: 'science', tag: '🔭 Wissenschaft', time: 'Vor 5 Std.', title: 'Durchbruch bei Feststoff-Batterien: Doppelte Reichweite in Sicht', summary: 'Materialforscher entwickeln eine keramische Schutzschicht, die Ladezeiten auf unter 10 Minuten verkürzt.', source: 'Science Journal' },
 
@@ -743,16 +773,46 @@ function refreshNewsFeed() {
   }, 400);
 }
 
-// Initialer Auto-Start beim Laden
-document.addEventListener('DOMContentLoaded', () => {
+// Initialer Auto-Start beim Laden & Regelmäßige Hintergrund-Aktualisierung
+function initWeatherSystem() {
   if (cachedWeatherData) {
     updateDateWeatherWidget(cachedWeatherData);
   }
-  setTimeout(() => {
-    fetchLocalWeather();
-    if (document.getElementById('news-content-area')) {
-      renderNewsBriefing();
-    }
-  }, 800);
-});
+  // Sofort frisches Wetter abrufen
+  fetchLocalWeather(false);
+  if (document.getElementById('news-content-area')) {
+    renderNewsBriefing();
+  }
+
+  // 1. Regelmäßige automatische Aktualisierung alle 10 Minuten
+  if (typeof window !== 'undefined' && !window._weatherPollingInterval) {
+    window._weatherPollingInterval = setInterval(() => {
+      fetchLocalWeather(true);
+    }, 10 * 60 * 1000);
+  }
+
+  // 2. Sofortige Aktualisierung beim Wechseln zurück zum Tab (falls >10 Min vergangen)
+  if (typeof document !== 'undefined' && !window._weatherVisibilityListenerBound) {
+    window._weatherVisibilityListenerBound = true;
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        fetchLocalWeather(false);
+      }
+    });
+  }
+
+  // 3. Sofortige Aktualisierung bei Wiederherstellung der Internetverbindung
+  if (typeof window !== 'undefined' && !window._weatherOnlineListenerBound) {
+    window._weatherOnlineListenerBound = true;
+    window.addEventListener('online', () => {
+      fetchLocalWeather(true);
+    });
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initWeatherSystem);
+} else {
+  initWeatherSystem();
+}
 

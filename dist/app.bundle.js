@@ -108,12 +108,12 @@
     "\u03A0\u03BB\u03CD\u03C3\u03B9\u03BC\u03BF \u03B4\u03BF\u03BD\u03C4\u03B9\u03CE\u03BD (\u03C0\u03C1\u03C9\u03AF)": "sun",
     "Brossage des dents (matin)": "sun",
     "Lavare i denti (mattina)": "sun",
-    "Gesicht waschen": "bath",
-    "Wash face": "bath",
-    "Lavarse la cara": "bath",
-    "\u03A0\u03BB\u03CD\u03C3\u03B9\u03BC\u03BF \u03C0\u03C1\u03BF\u03C3\u03CE\u03C0\u03BF\u03C5": "bath",
-    "Se laver le visage": "bath",
-    "Lavarsi la faccia": "bath",
+    "Gesicht waschen": "smile",
+    "Wash face": "smile",
+    "Lavarse la cara": "smile",
+    "\u03A0\u03BB\u03CD\u03C3\u03B9\u03BC\u03BF \u03C0\u03C1\u03BF\u03C3\u03CE\u03C0\u03BF\u03C5": "smile",
+    "Se laver le visage": "smile",
+    "Lavarsi la faccia": "smile",
     "Bett machen": "bed",
     "Make bed": "bed",
     "Hacer la cama": "bed",
@@ -144,12 +144,12 @@
     "\u039D\u03C4\u03BF\u03C5\u03C2": "bath",
     "Prendre une douche": "bath",
     "Fare la doccia": "bath",
-    "Aufr\xE4umen": "package",
-    "Tidy up": "package",
-    "Ordenar": "package",
-    "\u03A4\u03B1\u03BA\u03C4\u03BF\u03C0\u03BF\u03AF\u03B7\u03C3\u03B7": "package",
-    "Ranger": "package",
-    "Riordinare": "package",
+    "Aufr\xE4umen": "sparkles",
+    "Tidy up": "sparkles",
+    "Ordenar": "sparkles",
+    "\u03A4\u03B1\u03BA\u03C4\u03BF\u03C0\u03BF\u03AF\u03B7\u03C3\u03B7": "sparkles",
+    "Ranger": "sparkles",
+    "Riordinare": "sparkles",
     "Staub wischen": "feather",
     "Dusting": "feather",
     "Quitar el polvo": "feather",
@@ -186,12 +186,13 @@
     "\u0386\u03C0\u03BB\u03C9\u03BC\u03B1 \u03C1\u03BF\u03CD\u03C7\u03C9\u03BD": "shirt",
     "\xC9tendre le linge": "shirt",
     "Stendere il bucato": "shirt",
-    "Waschbecken & Spiegelschrank putzen": "sparkles",
-    "Cleaning sink & mirror cabinet": "sparkles",
-    "Limpiar el lavabo y espejo": "sparkles",
-    "\u039A\u03B1\u03B8\u03B1\u03C1\u03B9\u03C3\u03BC\u03CC\u03C2 \u03BD\u03B9\u03C0\u03C4\u03AE\u03C1\u03B1 & \u03BA\u03B1\u03B8\u03C1\u03AD\u03C6\u03C4\u03B7": "sparkles",
-    "Nettoyer lavabo & armoire \xE0 miroir": "sparkles",
-    "Pulire lavandino e armadietto specchio": "sparkles",
+    "Waschbecken & Spiegelschrank": "droplets",
+    "Waschbecken & Spiegelschrank putzen": "droplets",
+    "Cleaning sink & mirror cabinet": "droplets",
+    "Limpiar el lavabo y espejo": "droplets",
+    "\u039A\u03B1\u03B8\u03B1\u03C1\u03B9\u03C3\u03BC\u03CC\u03C2 \u03BD\u03B9\u03C0\u03C4\u03AE\u03C1\u03B1 & \u03BA\u03B1\u03B8\u03C1\u03AD\u03C6\u03C4\u03B7": "droplets",
+    "Nettoyer lavabo & armoire \xE0 miroir": "droplets",
+    "Pulire lavandino e armadietto specchio": "droplets",
     "Fliesen & Badewanne": "bath",
     "Tiles & bathtub": "bath",
     "Azulejos y ba\xF1era": "bath",
@@ -245,7 +246,13 @@
     "Limpiar puertas y ventanas": "sparkles",
     "\u039A\u03B1\u03B8\u03B1\u03C1\u03B9\u03C3\u03BC\u03CC\u03C2 \u03C0\u03BF\u03C1\u03C4\u03CE\u03BD & \u03C0\u03B1\u03C1\u03B1\u03B8\u03CD\u03C1\u03C9\u03BD": "sparkles",
     "Nettoyer portes & fen\xEAtres": "sparkles",
-    "Pulire porte e finestre": "sparkles"
+    "Pulire porte e finestre": "sparkles",
+    "Herd & K\xFChlschrank putzen": "cooking-pot",
+    "Cleaning stove & fridge": "cooking-pot",
+    "Limpiar cocina y nevera": "cooking-pot",
+    "\u039A\u03B1\u03B8\u03B1\u03C1\u03B9\u03C3\u03BC\u03CC\u03C2 \u03BA\u03BF\u03C5\u03B6\u03AF\u03BD\u03B1\u03C2 & \u03C8\u03C5\u03B3\u03B5\u03AF\u03BF\u03C5": "cooking-pot",
+    "Nettoyer cuisini\xE8re & frigo": "cooking-pot",
+    "Pulire fornelli e frigo": "cooking-pot"
   };
   if (typeof window !== "undefined") {
     window.STORE_KEY = STORE_KEY2;
@@ -309,7 +316,7 @@
       "tab_impressum": "Legal Notice (\xA7 5 DDG)",
       "tab_privacy": "Privacy & GDPR",
       "tab_licenses": "Licenses & Disclaimer",
-      "history_subtitle": "Visual timeline and milestones of Flow development",
+      "history_subtitle": "Visual timeline and milestones of Noodle development",
       "settings_modal_title": "Settings & Legal Compliance",
       "settings_modal_subtitle": "Configuration, privacy policy and open-source licenses",
       "setting_default_workspace": "Default Workspace on Startup",
@@ -327,16 +334,16 @@
       "recurrence_weekdays": "Weekdays (Mon-Fri)",
       "recurrence_weekly": "Weekly",
       "whatnow": "What now?",
-      "minimal_mode": "Focus Mode",
+      "minimal_mode": "Focus",
       "standard_mode": "Standard View",
       "pause_btn": "Pause",
       "give_feedback": "Feedback",
       "feedback": "Feedback",
-      "feedback_desc": "How do you like Flow? Your suggestions help us improve!",
+      "feedback_desc": "How do you like Noodle? Your suggestions help us improve!",
       "feedback_placeholder": "Share your thoughts, ideas, or feature requests...",
       "feedback_greet": "Hey there! \u{1F44B}",
-      "feedback_prompt": "Do you have feedback, ideas, or suggestions for Flow? Feel free to drop a message!",
-      "feedback_alt": "or send an email to support@flow-planner.app",
+      "feedback_prompt": "Do you have feedback, ideas, or suggestions for Noodle? Feel free to drop a message!",
+      "feedback_alt": "or send an email to support@noodlestudio.app",
       "feedback_send_tooltip": "Send feedback directly to the creator",
       "send": "Send",
       "login_btn": "Sign In",
@@ -370,7 +377,7 @@
       "dock_inspire": "Inspire",
       "dock_clarity": "Clarity",
       "dock_impulse": "Drive",
-      "dock_audio": "Audio",
+      "dock_audio": "Sound",
       "dock_daily": "Lifestyle",
       "dock_beats": "Beats",
       "dock_workout": "Workout",
@@ -407,7 +414,7 @@
       "stop": "Stop",
       "steps_btn": "Steps",
       "steps_tab": "Steps",
-      "pick_desc": "Feeling overwhelmed? Let Flow pick the best next task for you based on current priority:",
+      "pick_desc": "Feeling overwhelmed? Let Noodle pick the best next task for you based on current priority:",
       "next_suggestion": "\u{1F3B2} Next Task",
       "steps_desc": "Select a task to view its detailed step-by-step breakdown:",
       "start_timer": "Start Focus Timer",
@@ -505,9 +512,9 @@
       "sound_afrobeats": "Afrobeats",
       "sound_swing": "Swing & Jazz",
       "sound_boombap": "Boom-Bap",
-      "guide_title": "Flow Quickstart Guide",
+      "guide_title": "Noodle Quickstart Guide",
       "guide_desc": "Click any feature to open it directly. Use keyboard shortcuts anytime outside of text inputs!",
-      "guide_focus_mode_title": "Focus Mode",
+      "guide_focus_mode_title": "Focus",
       "guide_focus_mode_desc": "Hides distracting columns to show only your single most important task in a peaceful Zen view.",
       "guide_focus_mode_key": "Key [F]",
       "guide_timer_title": "Focus Timer",
@@ -538,7 +545,7 @@
       "guide_shortcuts_title": "More Shortcuts",
       "guide_shortcuts_desc": "\u2022 <b>Key [U]</b>: Undo last action<br>\u2022 <b>Key [A]</b>: Add appointment<br>\u2022 <b>Key [B]</b>: Open Drive/Momentum<br>\u2022 <b>Key [I]</b>: Daily Inspiration<br>\u2022 <b>Key [H]</b>: Open/close this guide<br>\u2022 <b>Key [Esc]</b>: Close all modals",
       "guide_shortcuts_key": "Multiple",
-      "guide_footer_local": "Flow Suite \xB7 Local-First",
+      "guide_footer_local": "Noodle Suite \xB7 Local-First",
       "guide_footer_privacy": "Privacy & Legal Notice",
       "pause_panel_title": "Sensory Break & Reset",
       "pause_breath_title": "4-4-4 Box Breathing",
@@ -673,7 +680,7 @@
       "tab_impressum": "Impressum (\xA7 5 DDG)",
       "tab_privacy": "Datenschutz & DSGVO",
       "tab_licenses": "Lizenzen & Haftung",
-      "history_subtitle": "Visuelle Meilensteine und Entwicklung von Flow",
+      "history_subtitle": "Visuelle Meilensteine und Entwicklung von Noodle",
       "settings_modal_title": "Einstellungen & Rechtliches",
       "settings_modal_subtitle": "Konfiguration, Datenschutzerkl\xE4rung und Open-Source-Lizenzen",
       "setting_default_workspace": "Standard-Bereich beim Start",
@@ -691,16 +698,16 @@
       "recurrence_weekdays": "Werktags (Mo-Fr)",
       "recurrence_weekly": "W\xF6chentlich",
       "whatnow": "Was nun?",
-      "minimal_mode": "Fokus-Modus",
+      "minimal_mode": "Fokus",
       "standard_mode": "Standard-Modus",
       "pause_btn": "Pause",
       "give_feedback": "Feedback",
       "feedback": "Feedback",
-      "feedback_desc": "Wie gef\xE4llt dir Flow? Deine R\xFCckmeldungen helfen uns, die App stetig zu verbessern!",
+      "feedback_desc": "Wie gef\xE4llt dir Noodle? Deine R\xFCckmeldungen helfen uns, die App stetig zu verbessern!",
       "feedback_placeholder": "Teile deine Gedanken, Ideen oder W\xFCnsche...",
       "feedback_greet": "Hey, ich bin Jannis! \u{1F44B}",
-      "feedback_prompt": "Hast du Feedback, Kritik oder neue Ideen f\xFCr Flow? Schreib mir gerne eine kurze Nachricht!",
-      "feedback_alt": "oder sende eine E-Mail an support@flow-planner.app",
+      "feedback_prompt": "Hast du Feedback, Kritik oder neue Ideen f\xFCr Noodle? Schreib mir gerne eine kurze Nachricht!",
+      "feedback_alt": "oder sende eine E-Mail an support@noodlestudio.app",
       "feedback_send_tooltip": "Feedback direkt absenden",
       "send": "Senden",
       "login_btn": "Anmelden",
@@ -734,7 +741,7 @@
       "dock_inspire": "Inspire",
       "dock_clarity": "Klarheit",
       "dock_impulse": "Schwung",
-      "dock_audio": "Audio",
+      "dock_audio": "Sound",
       "dock_daily": "Alltag",
       "dock_beats": "Beats",
       "dock_workout": "Workout",
@@ -771,7 +778,7 @@
       "stop": "Stopp",
       "steps_btn": "Schritte",
       "steps_tab": "Schritte",
-      "pick_desc": "F\xFChlst du dich blockiert? Lass Flow die passende n\xE4chste Aufgabe nach Priorit\xE4t f\xFCr dich ausw\xE4hlen:",
+      "pick_desc": "F\xFChlst du dich blockiert? Lass Noodle die passende n\xE4chste Aufgabe nach Priorit\xE4t f\xFCr dich ausw\xE4hlen:",
       "next_suggestion": "\u{1F3B2} N\xE4chste Aufgabe",
       "steps_desc": "W\xE4hle eine Aufgabe, um die detaillierte Schritt-f\xFCr-Schritt-Anleitung anzuzeigen:",
       "start_timer": "Fokus-Timer starten",
@@ -869,9 +876,9 @@
       "sound_afrobeats": "Afrobeats",
       "sound_swing": "Swing & Jazz",
       "sound_boombap": "Boom-Bap",
-      "guide_title": "Flow Schnellstart-Guide",
+      "guide_title": "Noodle Schnellstart-Guide",
       "guide_desc": "Klicke auf ein Element, um die Funktion direkt zu \xF6ffnen. Nutze die Tasten au\xDFerhalb von Eingabefeldern!",
-      "guide_focus_mode_title": "Fokus-Modus",
+      "guide_focus_mode_title": "Fokus",
       "guide_focus_mode_desc": "Blendet das ablenkende Hauptboard aus und zeigt ausschlie\xDFlich deine aktuell wichtigste To-Do-Aufgabe in einer minimalistischen Zen-Ansicht.",
       "guide_focus_mode_key": "Taste [F]",
       "guide_timer_title": "Fokus-Timer",
@@ -902,7 +909,7 @@
       "guide_shortcuts_title": "Weitere Abk\xFCrzungen",
       "guide_shortcuts_desc": "\u2022 <b>Taste [U]</b>: Letzte Aktion r\xFCckg\xE4ngig machen<br>\u2022 <b>Taste [A]</b>: Neuen Kalendertermin hinzuf\xFCgen<br>\u2022 <b>Taste [B]</b>: Schwung & Fokus \xF6ffnen<br>\u2022 <b>Taste [I]</b>: Inspirierenden Impuls \xF6ffnen<br>\u2022 <b>Taste [H]</b>: Diese Kurzanleitung \xF6ffnen/schlie\xDFen<br>\u2022 <b>Taste [Esc]</b>: Alle Modale schlie\xDFen",
       "guide_shortcuts_key": "Mehrere",
-      "guide_footer_local": "Flow Suite \xB7 Local-First",
+      "guide_footer_local": "Noodle Suite \xB7 Local-First",
       "guide_footer_privacy": "Datenschutz & Impressum",
       "pause_panel_title": "Reizpause & Erholung",
       "pause_breath_title": "4-4-4 Atemtakt",
@@ -1037,7 +1044,7 @@
       "tab_impressum": "Mentions L\xE9gales (\xA7 5 DDG)",
       "tab_privacy": "Confidentialit\xE9 & RGPD",
       "tab_licenses": "Licences & Responsabilit\xE9",
-      "history_subtitle": "Chronologie visuelle et \xE9tapes de d\xE9veloppement de Flow",
+      "history_subtitle": "Chronologie visuelle et \xE9tapes de d\xE9veloppement de Noodle",
       "settings_modal_title": "Param\xE8tres & Mentions L\xE9gales",
       "settings_modal_subtitle": "Configuration, politique de confidentialit\xE9 et licences libres",
       "setting_default_workspace": "Espace par d\xE9faut au d\xE9marrage",
@@ -1055,16 +1062,16 @@
       "recurrence_weekdays": "Jours ouvr\xE9s (Lun-Ven)",
       "recurrence_weekly": "Hebdomadaire",
       "whatnow": "Et maintenant ?",
-      "minimal_mode": "Mode Focus",
+      "minimal_mode": "Focus",
       "standard_mode": "Vue Standard",
       "pause_btn": "Pause",
       "give_feedback": "Avis",
       "feedback": "Avis",
-      "feedback_desc": "Que penses-tu de Flow ? Tes retours nous aident \xE0 l'am\xE9liorer !",
+      "feedback_desc": "Que penses-tu de Noodle ? Tes retours nous aident \xE0 l'am\xE9liorer !",
       "feedback_placeholder": "Partage tes pens\xE9es, id\xE9es ou souhaits...",
       "feedback_greet": "Salut ! \u{1F44B}",
-      "feedback_prompt": "As-tu des retours, critiques ou id\xE9es pour Flow ? Envoie-nous un message !",
-      "feedback_alt": "ou \xE9cris-nous \xE0 support@flow-planner.app",
+      "feedback_prompt": "As-tu des retours, critiques ou id\xE9es pour Noodle ? Envoie-nous un message !",
+      "feedback_alt": "ou \xE9cris-nous \xE0 support@noodlestudio.app",
       "feedback_send_tooltip": "Envoyer directement tes retours",
       "send": "Envoyer",
       "login_btn": "Connexion",
@@ -1098,7 +1105,7 @@
       "dock_inspire": "Inspiration",
       "dock_clarity": "Clart\xE9",
       "dock_impulse": "\xC9lan",
-      "dock_audio": "Audio",
+      "dock_audio": "Son",
       "dock_daily": "Quotidien",
       "dock_beats": "Beats",
       "dock_workout": "Entra\xEEnement",
@@ -1135,7 +1142,7 @@
       "stop": "Arr\xEAter",
       "steps_btn": "\xC9tapes",
       "steps_tab": "\xC9tapes",
-      "pick_desc": "Tu te sens submerg\xE9 ? Laisse Flow choisir la meilleure t\xE2che selon tes priorit\xE9s :",
+      "pick_desc": "Tu te sens submerg\xE9 ? Laisse Noodle choisir la meilleure t\xE2che selon tes priorit\xE9s :",
       "next_suggestion": "\u{1F3B2} T\xE2che Suivante",
       "steps_desc": "S\xE9lectionne une t\xE2che pour voir son d\xE9coupage d\xE9taill\xE9 pas \xE0 pas :",
       "start_timer": "D\xE9marrer le minuteur",
@@ -1233,9 +1240,9 @@
       "sound_afrobeats": "Afrobeats",
       "sound_swing": "Swing & Jazz",
       "sound_boombap": "Boom-Bap",
-      "guide_title": "Guide de D\xE9marrage Rapide Flow",
+      "guide_title": "Guide de D\xE9marrage Rapide Noodle",
       "guide_desc": "Clique sur un \xE9l\xE9ment pour l'ouvrir directement. Utilise les raccourcis clavier hors des zones de saisie !",
-      "guide_focus_mode_title": "Mode Focus",
+      "guide_focus_mode_title": "Focus",
       "guide_focus_mode_desc": "Masque les \xE9l\xE9ments distrayants pour afficher uniquement ta t\xE2che prioritaire dans une vue Zen \xE9pur\xE9e.",
       "guide_focus_mode_key": "Touche [F]",
       "guide_timer_title": "Minuteur de Focus",
@@ -1266,7 +1273,7 @@
       "guide_shortcuts_title": "Autres Raccourcis",
       "guide_shortcuts_desc": "\u2022 <b>Touche [U]</b> : Annuler la derni\xE8re action<br>\u2022 <b>Touche [A]</b> : Ajouter un rendez-vous<br>\u2022 <b>Touche [B]</b> : Ouvrir \xC9lan & Focus<br>\u2022 <b>Touche [I]</b> : Inspiration du jour<br>\u2022 <b>Touche [H]</b> : Ouvrir/fermer ce guide<br>\u2022 <b>Touche [\xC9chap]</b> : Fermer les fen\xEAtres",
       "guide_shortcuts_key": "Multiples",
-      "guide_footer_local": "Flow Suite \xB7 Local-First",
+      "guide_footer_local": "Noodle Suite \xB7 Local-First",
       "guide_footer_privacy": "Confidentialit\xE9 & Mentions L\xE9gales",
       "pause_panel_title": "Pause Sensorielle & R\xE9cup\xE9ration",
       "pause_breath_title": "Respiration 4-4-4",
@@ -1411,7 +1418,7 @@
       "tab_impressum": "Note Legali (\xA7 5 DDG)",
       "tab_privacy": "Privacy & GDPR",
       "tab_licenses": "Licenze & Disclaimer",
-      "history_subtitle": "Cronologia visiva e traguardi dello sviluppo di Flow",
+      "history_subtitle": "Cronologia visiva e traguardi dello sviluppo di Noodle",
       "settings_modal_title": "Impostazioni & Conformit\xE0",
       "settings_modal_subtitle": "Configurazione, informativa privacy e licenze open-source",
       "setting_default_workspace": "Area di lavoro predefinita all'avvio",
@@ -1429,16 +1436,16 @@
       "recurrence_weekdays": "Giorni feriali (Lun-Ven)",
       "recurrence_weekly": "Settimanale",
       "whatnow": "E adesso?",
-      "minimal_mode": "Modalit\xE0 Focus",
+      "minimal_mode": "Focus",
       "standard_mode": "Vista Standard",
       "pause_btn": "Pausa",
       "give_feedback": "Feedback",
       "feedback": "Feedback",
-      "feedback_desc": "Come trovi Flow? I tuoi suggerimenti ci aiutano a migliorare costantemente!",
+      "feedback_desc": "Come trovi Noodle? I tuoi suggerimenti ci aiutano a migliorare costantemente!",
       "feedback_placeholder": "Condividi pensieri, idee o suggerimenti...",
       "feedback_greet": "Ciao! \u{1F44B}",
-      "feedback_prompt": "Hai feedback, idee o suggerimenti per Flow? Scrivici un messaggio!",
-      "feedback_alt": "o invia un'email a support@flow-planner.app",
+      "feedback_prompt": "Hai feedback, idee o suggerimenti per Noodle? Scrivici un messaggio!",
+      "feedback_alt": "o invia un'email a support@noodlestudio.app",
       "feedback_send_tooltip": "Invia feedback direttamente al creatore",
       "send": "Invia",
       "login_btn": "Accedi",
@@ -1472,7 +1479,7 @@
       "dock_inspire": "Ispirazione",
       "dock_clarity": "Chiarezza",
       "dock_impulse": "Slancio",
-      "dock_audio": "Audio",
+      "dock_audio": "Suono",
       "dock_daily": "Quotidiano",
       "dock_beats": "Beat",
       "dock_workout": "Workout",
@@ -1509,7 +1516,7 @@
       "stop": "Ferma",
       "steps_btn": "Passaggi",
       "steps_tab": "Passaggi",
-      "pick_desc": "Ti senti bloccato? Lascia che Flow scelga la prossima attivit\xE0 migliore in base alle tue priorit\xE0:",
+      "pick_desc": "Ti senti bloccato? Lascia che Noodle scelga la prossima attivit\xE0 migliore in base alle tue priorit\xE0:",
       "next_suggestion": "\u{1F3B2} Prossima Attivit\xE0",
       "steps_desc": "Seleziona un'attivit\xE0 per visualizzare la suddivisione dettagliata passo dopo passo:",
       "start_timer": "Avvia Timer",
@@ -1607,9 +1614,9 @@
       "sound_afrobeats": "Afrobeats",
       "sound_swing": "Swing & Jazz",
       "sound_boombap": "Boom-Bap",
-      "guide_title": "Guida Rapida di Flow",
+      "guide_title": "Guida Rapida di Noodle",
       "guide_desc": "Fai clic su un elemento per aprirlo direttamente. Usa le scorciatoie da tastiera fuori dai campi di testo!",
-      "guide_focus_mode_title": "Modalit\xE0 Focus",
+      "guide_focus_mode_title": "Focus",
       "guide_focus_mode_desc": "Nasconde le distrazioni per mostrare solo l'attivit\xE0 prioritaria in una visualizzazione Zen serena.",
       "guide_focus_mode_key": "Tasto [F]",
       "guide_timer_title": "Timer di Focus",
@@ -1640,7 +1647,7 @@
       "guide_shortcuts_title": "Altre Scorciatoie",
       "guide_shortcuts_desc": "\u2022 <b>Tasto [U]</b>: Annulla ultima azione<br>\u2022 <b>Tasto [A]</b>: Aggiungi appuntamento<br>\u2022 <b>Tasto [B]</b>: Apri Slancio & Focus<br>\u2022 <b>Tasto [I]</b>: Ispirazione quotidiana<br>\u2022 <b>Tasto [H]</b>: Apri/chiudi questa guida<br>\u2022 <b>Tasto [Esc]</b>: Chiudi tutte le finestre",
       "guide_shortcuts_key": "Multiple",
-      "guide_footer_local": "Flow Suite \xB7 Local-First",
+      "guide_footer_local": "Noodle Suite \xB7 Local-First",
       "guide_footer_privacy": "Privacy & Note Legali",
       "pause_panel_title": "Pausa Sensoriale & Recupero",
       "pause_breath_title": "Respirazione 4-4-4",
@@ -1775,7 +1782,7 @@
       "tab_impressum": "Aviso Legal (\xA7 5 DDG)",
       "tab_privacy": "Privacidad y RGPD",
       "tab_licenses": "Licencias y Descargo",
-      "history_subtitle": "L\xEDnea de tiempo visual y avances en el desarrollo de Flow",
+      "history_subtitle": "L\xEDnea de tiempo visual y avances en el desarrollo de Noodle",
       "settings_modal_title": "Ajustes y Cumplimiento Legal",
       "settings_modal_subtitle": "Configuraci\xF3n, pol\xEDtica de privacidad y licencias de c\xF3digo abierto",
       "setting_default_workspace": "\xC1rea de trabajo por defecto al iniciar",
@@ -1793,16 +1800,16 @@
       "recurrence_weekdays": "D\xEDas laborables (Lun-Vie)",
       "recurrence_weekly": "Semanalmente",
       "whatnow": "\xBFY ahora qu\xE9?",
-      "minimal_mode": "Modo Enfoque",
+      "minimal_mode": "Enfoque",
       "standard_mode": "Vista Est\xE1ndar",
       "pause_btn": "Pausa",
       "give_feedback": "Opini\xF3n",
       "feedback": "Opini\xF3n",
-      "feedback_desc": "\xBFQu\xE9 te parece Flow? \xA1Tus sugerencias nos ayudan a seguir mejorando!",
+      "feedback_desc": "\xBFQu\xE9 te parece Noodle? \xA1Tus sugerencias nos ayudan a seguir mejorando!",
       "feedback_placeholder": "Comparte tus pensamientos, ideas o propuestas...",
       "feedback_greet": "\xA1Hola! \u{1F44B}",
-      "feedback_prompt": "\xBFTienes comentarios, cr\xEDticas o ideas para Flow? \xA1Escr\xEDbenos un mensaje!",
-      "feedback_alt": "o env\xEDa un correo a support@flow-planner.app",
+      "feedback_prompt": "\xBFTienes comentarios, cr\xEDticas o ideas para Noodle? \xA1Escr\xEDbenos un mensaje!",
+      "feedback_alt": "o env\xEDa un correo a support@noodlestudio.app",
       "feedback_send_tooltip": "Enviar comentarios directamente al creador",
       "send": "Enviar",
       "login_btn": "Iniciar sesi\xF3n",
@@ -1836,7 +1843,7 @@
       "dock_inspire": "Inspiraci\xF3n",
       "dock_clarity": "Claridad",
       "dock_impulse": "Impulso",
-      "dock_audio": "Audio",
+      "dock_audio": "Sonido",
       "dock_daily": "Cotidiano",
       "dock_beats": "Ritmos",
       "dock_workout": "Entrenamiento",
@@ -1873,7 +1880,7 @@
       "stop": "Detener",
       "steps_btn": "Pasos",
       "steps_tab": "Pasos",
-      "pick_desc": "\xBFTe sientes bloqueado? Deja que Flow elija la mejor tarea seg\xFAn tu prioridad actual:",
+      "pick_desc": "\xBFTe sientes bloqueado? Deja que Noodle elija la mejor tarea seg\xFAn tu prioridad actual:",
       "next_suggestion": "\u{1F3B2} Siguiente Tarea",
       "steps_desc": "Selecciona una tarea para ver el desglose detallado paso a paso:",
       "start_timer": "Iniciar Temporizador",
@@ -1971,9 +1978,9 @@
       "sound_afrobeats": "Afrobeats",
       "sound_swing": "Swing & Jazz",
       "sound_boombap": "Boom-Bap",
-      "guide_title": "Gu\xEDa de Inicio R\xE1pido de Flow",
+      "guide_title": "Gu\xEDa de Inicio R\xE1pido de Noodle",
       "guide_desc": "Haz clic en un elemento para abrirlo directamente. \xA1Usa los atajos de teclado fuera de los campos de texto!",
-      "guide_focus_mode_title": "Modo Enfoque",
+      "guide_focus_mode_title": "Enfoque",
       "guide_focus_mode_desc": "Oculta las distracciones para mostrar solo tu tarea prioritaria en una vista Zen tranquila.",
       "guide_focus_mode_key": "Tecla [F]",
       "guide_timer_title": "Temporizador de Enfoque",
@@ -2004,7 +2011,7 @@
       "guide_shortcuts_title": "M\xE1s Atajos",
       "guide_shortcuts_desc": "\u2022 <b>Tecla [U]</b>: Deshacer \xFAltima acci\xF3n<br>\u2022 <b>Tecla [A]</b>: A\xF1adir cita<br>\u2022 <b>Tecla [B]</b>: Abrir Impulso y Enfoque<br>\u2022 <b>Tecla [I]</b>: Inspiraci\xF3n diaria<br>\u2022 <b>Tecla [H]</b>: Abrir/cerrar esta gu\xEDa<br>\u2022 <b>Tecla [Esc]</b>: Cerrar ventanas",
       "guide_shortcuts_key": "M\xFAltiples",
-      "guide_footer_local": "Flow Suite \xB7 Local-First",
+      "guide_footer_local": "Noodle Suite \xB7 Local-First",
       "guide_footer_privacy": "Privacidad y Aviso Legal",
       "pause_panel_title": "Pausa Sensorial y Recuperaci\xF3n",
       "pause_breath_title": "Respiraci\xF3n 4-4-4",
@@ -2139,7 +2146,7 @@
       "tab_impressum": "\u039D\u03BF\u03BC\u03B9\u03BA\u03AE \u03A3\u03B7\u03BC\u03B5\u03AF\u03C9\u03C3\u03B7 (\xA7 5 DDG)",
       "tab_privacy": "\u03A0\u03C1\u03BF\u03C3\u03C4\u03B1\u03C3\u03AF\u03B1 \u0394\u03B5\u03B4\u03BF\u03BC\u03AD\u03BD\u03C9\u03BD & GDPR",
       "tab_licenses": "\u0386\u03B4\u03B5\u03B9\u03B5\u03C2 \u03A7\u03C1\u03AE\u03C3\u03B7\u03C2 & \u0391\u03C0\u03BF\u03C0\u03BF\u03AF\u03B7\u03C3\u03B7",
-      "history_subtitle": "\u039F\u03C0\u03C4\u03B9\u03BA\u03CC \u03C7\u03C1\u03BF\u03BD\u03BF\u03BB\u03CC\u03B3\u03B9\u03BF \u03BA\u03B1\u03B9 \u03BF\u03C1\u03CC\u03C3\u03B7\u03BC\u03B1 \u03B1\u03BD\u03AC\u03C0\u03C4\u03C5\u03BE\u03B7\u03C2 \u03C4\u03BF\u03C5 Flow",
+      "history_subtitle": "\u039F\u03C0\u03C4\u03B9\u03BA\u03CC \u03C7\u03C1\u03BF\u03BD\u03BF\u03BB\u03CC\u03B3\u03B9\u03BF \u03BA\u03B1\u03B9 \u03BF\u03C1\u03CC\u03C3\u03B7\u03BC\u03B1 \u03B1\u03BD\u03AC\u03C0\u03C4\u03C5\u03BE\u03B7\u03C2 \u03C4\u03BF\u03C5 Noodle",
       "settings_modal_title": "\u03A1\u03C5\u03B8\u03BC\u03AF\u03C3\u03B5\u03B9\u03C2 & \u039D\u03BF\u03BC\u03B9\u03BA\u03AE \u03A3\u03C5\u03BC\u03BC\u03CC\u03C1\u03C6\u03C9\u03C3\u03B7",
       "settings_modal_subtitle": "\u0394\u03B9\u03B1\u03BC\u03CC\u03C1\u03C6\u03C9\u03C3\u03B7, \u03C0\u03BF\u03BB\u03B9\u03C4\u03B9\u03BA\u03AE \u03B1\u03C0\u03BF\u03C1\u03C1\u03AE\u03C4\u03BF\u03C5 \u03BA\u03B1\u03B9 \u03AC\u03B4\u03B5\u03B9\u03B5\u03C2 \u03B1\u03BD\u03BF\u03B9\u03C7\u03C4\u03BF\u03CD \u03BA\u03CE\u03B4\u03B9\u03BA\u03B1",
       "setting_default_workspace": "\u03A0\u03C1\u03BF\u03B5\u03C0\u03B9\u03BB\u03B5\u03B3\u03BC\u03AD\u03BD\u03BF\u03C2 \u03C7\u03CE\u03C1\u03BF\u03C2 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1\u03C2 \u03BA\u03B1\u03C4\u03AC \u03C4\u03B7\u03BD \u03B5\u03BA\u03BA\u03AF\u03BD\u03B7\u03C3\u03B7",
@@ -2156,17 +2163,17 @@
       "recurrence_daily": "\u039A\u03B1\u03B8\u03B7\u03BC\u03B5\u03C1\u03B9\u03BD\u03AC",
       "recurrence_weekdays": "\u039A\u03B1\u03B8\u03B7\u03BC\u03B5\u03C1\u03B9\u03BD\u03AD\u03C2 (\u0394\u03B5\u03C5\u03C4-\u03A0\u03B1\u03C1)",
       "recurrence_weekly": "\u0395\u03B2\u03B4\u03BF\u03BC\u03B1\u03B4\u03B9\u03B1\u03AF\u03B1",
-      "whatnow": "\u039A\u03B1\u03B9 \u03C4\u03CE\u03C1\u03B1 \u03C4\u03B9;",
-      "minimal_mode": "\u039B\u03B5\u03B9\u03C4\u03BF\u03C5\u03C1\u03B3\u03AF\u03B1 \u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7\u03C2",
+      "whatnow": "\u03A4\u03B9 \u03BD\u03B1 \u03BA\u03AC\u03BD\u03C9;",
+      "minimal_mode": "\u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7",
       "standard_mode": "\u0392\u03B1\u03C3\u03B9\u03BA\u03AE \u03A0\u03C1\u03BF\u03B2\u03BF\u03BB\u03AE",
       "pause_btn": "\u03A0\u03B1\u03CD\u03C3\u03B7",
       "give_feedback": "\u03A3\u03C7\u03CC\u03BB\u03B9\u03B1",
       "feedback": "\u03A3\u03C7\u03CC\u03BB\u03B9\u03B1",
-      "feedback_desc": "\u03A0\u03CE\u03C2 \u03C3\u03BF\u03C5 \u03C6\u03B1\u03AF\u03BD\u03B5\u03C4\u03B1\u03B9 \u03C4\u03BF Flow; \u039F\u03B9 \u03C0\u03B1\u03C1\u03B1\u03C4\u03B7\u03C1\u03AE\u03C3\u03B5\u03B9\u03C2 \u03C3\u03BF\u03C5 \u03BC\u03B1\u03C2 \u03B2\u03BF\u03B7\u03B8\u03BF\u03CD\u03BD \u03BD\u03B1 \u03C4\u03BF \u03B5\u03BE\u03B5\u03BB\u03AF\u03C3\u03C3\u03BF\u03C5\u03BC\u03B5 \u03B4\u03B9\u03B1\u03C1\u03BA\u03CE\u03C2!",
+      "feedback_desc": "\u03A0\u03CE\u03C2 \u03C3\u03BF\u03C5 \u03C6\u03B1\u03AF\u03BD\u03B5\u03C4\u03B1\u03B9 \u03C4\u03BF Noodle; \u039F\u03B9 \u03C0\u03B1\u03C1\u03B1\u03C4\u03B7\u03C1\u03AE\u03C3\u03B5\u03B9\u03C2 \u03C3\u03BF\u03C5 \u03BC\u03B1\u03C2 \u03B2\u03BF\u03B7\u03B8\u03BF\u03CD\u03BD \u03BD\u03B1 \u03C4\u03BF \u03B5\u03BE\u03B5\u03BB\u03AF\u03C3\u03C3\u03BF\u03C5\u03BC\u03B5 \u03B4\u03B9\u03B1\u03C1\u03BA\u03CE\u03C2!",
       "feedback_placeholder": "\u039C\u03BF\u03B9\u03C1\u03AC\u03C3\u03BF\u03C5 \u03C4\u03B9\u03C2 \u03C3\u03BA\u03AD\u03C8\u03B5\u03B9\u03C2, \u03B9\u03B4\u03AD\u03B5\u03C2 \u03AE \u03C0\u03C1\u03BF\u03C4\u03AC\u03C3\u03B5\u03B9\u03C2 \u03C3\u03BF\u03C5...",
       "feedback_greet": "\u0393\u03B5\u03B9\u03B1 \u03C3\u03BF\u03C5! \u{1F44B}",
-      "feedback_prompt": "\u0388\u03C7\u03B5\u03B9\u03C2 \u03C3\u03C7\u03CC\u03BB\u03B9\u03B1, \u03C0\u03B1\u03C1\u03B1\u03C4\u03B7\u03C1\u03AE\u03C3\u03B5\u03B9\u03C2 \u03AE \u03BD\u03AD\u03B5\u03C2 \u03B9\u03B4\u03AD\u03B5\u03C2 \u03B3\u03B9\u03B1 \u03C4\u03BF Flow; \u03A3\u03C4\u03B5\u03AF\u03BB\u03B5 \u03BC\u03B1\u03C2 \u03BC\u03AE\u03BD\u03C5\u03BC\u03B1 \u2013 \u03C7\u03B1\u03B9\u03C1\u03CC\u03BC\u03B1\u03C3\u03C4\u03B5 \u03B3\u03B9\u03B1 \u03BA\u03AC\u03B8\u03B5 \u03B5\u03C0\u03B9\u03BA\u03BF\u03B9\u03BD\u03C9\u03BD\u03AF\u03B1!",
-      "feedback_alt": "\u03AE \u03C3\u03C4\u03B5\u03AF\u03BB\u03B5 email \u03C3\u03C4\u03BF support@flow-planner.app",
+      "feedback_prompt": "\u0388\u03C7\u03B5\u03B9\u03C2 \u03C3\u03C7\u03CC\u03BB\u03B9\u03B1, \u03C0\u03B1\u03C1\u03B1\u03C4\u03B7\u03C1\u03AE\u03C3\u03B5\u03B9\u03C2 \u03AE \u03BD\u03AD\u03B5\u03C2 \u03B9\u03B4\u03AD\u03B5\u03C2 \u03B3\u03B9\u03B1 \u03C4\u03BF Noodle; \u03A3\u03C4\u03B5\u03AF\u03BB\u03B5 \u03BC\u03B1\u03C2 \u03BC\u03AE\u03BD\u03C5\u03BC\u03B1 \u2013 \u03C7\u03B1\u03B9\u03C1\u03CC\u03BC\u03B1\u03C3\u03C4\u03B5 \u03B3\u03B9\u03B1 \u03BA\u03AC\u03B8\u03B5 \u03B5\u03C0\u03B9\u03BA\u03BF\u03B9\u03BD\u03C9\u03BD\u03AF\u03B1!",
+      "feedback_alt": "\u03AE \u03C3\u03C4\u03B5\u03AF\u03BB\u03B5 email \u03C3\u03C4\u03BF support@noodlestudio.app",
       "feedback_send_tooltip": "\u0391\u03C0\u03BF\u03C3\u03C4\u03BF\u03BB\u03AE \u03C3\u03C7\u03BF\u03BB\u03AF\u03C9\u03BD \u03B1\u03C0\u03B5\u03C5\u03B8\u03B5\u03AF\u03B1\u03C2 \u03C3\u03C4\u03BF\u03BD \u03B4\u03B7\u03BC\u03B9\u03BF\u03C5\u03C1\u03B3\u03CC",
       "send": "\u0391\u03C0\u03BF\u03C3\u03C4\u03BF\u03BB\u03AE",
       "login_btn": "\u03A3\u03CD\u03BD\u03B4\u03B5\u03C3\u03B7",
@@ -2237,7 +2244,7 @@
       "stop": "\u0394\u03B9\u03B1\u03BA\u03BF\u03C0\u03AE",
       "steps_btn": "\u0392\u03AE\u03BC\u03B1\u03C4\u03B1",
       "steps_tab": "\u0392\u03AE\u03BC\u03B1\u03C4\u03B1",
-      "pick_desc": "\u039D\u03B9\u03CE\u03B8\u03B5\u03B9\u03C2 \u03C0\u03AF\u03B5\u03C3\u03B7 \u03B1\u03C0\u03CC \u03C0\u03BF\u03BB\u03BB\u03AD\u03C2 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B5\u03C2; \u0386\u03C6\u03B7\u03C3\u03B5 \u03C4\u03BF Flow \u03BD\u03B1 \u03C3\u03BF\u03C5 \u03C0\u03C1\u03BF\u03C4\u03B5\u03AF\u03BD\u03B5\u03B9 \u03C4\u03B7\u03BD \u03BA\u03B1\u03C4\u03AC\u03BB\u03BB\u03B7\u03BB\u03B7 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1 \u03B2\u03AC\u03C3\u03B5\u03B9 \u03C0\u03C1\u03BF\u03C4\u03B5\u03C1\u03B1\u03B9\u03CC\u03C4\u03B7\u03C4\u03B1\u03C2:",
+      "pick_desc": "\u039D\u03B9\u03CE\u03B8\u03B5\u03B9\u03C2 \u03C0\u03AF\u03B5\u03C3\u03B7 \u03B1\u03C0\u03CC \u03C0\u03BF\u03BB\u03BB\u03AD\u03C2 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B5\u03C2; \u0386\u03C6\u03B7\u03C3\u03B5 \u03C4\u03BF Noodle \u03BD\u03B1 \u03C3\u03BF\u03C5 \u03C0\u03C1\u03BF\u03C4\u03B5\u03AF\u03BD\u03B5\u03B9 \u03C4\u03B7\u03BD \u03BA\u03B1\u03C4\u03AC\u03BB\u03BB\u03B7\u03BB\u03B7 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1 \u03B2\u03AC\u03C3\u03B5\u03B9 \u03C0\u03C1\u03BF\u03C4\u03B5\u03C1\u03B1\u03B9\u03CC\u03C4\u03B7\u03C4\u03B1\u03C2:",
       "next_suggestion": "\u{1F3B2} \u0395\u03C0\u03CC\u03BC\u03B5\u03BD\u03B7 \u0395\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1",
       "steps_desc": "\u0395\u03C0\u03AF\u03BB\u03B5\u03BE\u03B5 \u03BC\u03B9\u03B1 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1 \u03B3\u03B9\u03B1 \u03BD\u03B1 \u03B4\u03B5\u03B9\u03C2 \u03C4\u03B7 \u03BB\u03B5\u03C0\u03C4\u03BF\u03BC\u03B5\u03C1\u03AE \u03BA\u03B1\u03B8\u03BF\u03B4\u03AE\u03B3\u03B7\u03C3\u03B7 \u03B2\u03AE\u03BC\u03B1 \u03C0\u03C1\u03BF\u03C2 \u03B2\u03AE\u03BC\u03B1:",
       "start_timer": "\u0388\u03BD\u03B1\u03C1\u03BE\u03B7 \u03A7\u03C1\u03BF\u03BD\u03BF\u03BC\u03AD\u03C4\u03C1\u03BF\u03C5",
@@ -2335,16 +2342,16 @@
       "sound_afrobeats": "Afrobeats",
       "sound_swing": "Swing & Jazz",
       "sound_boombap": "Boom-Bap",
-      "guide_title": "\u039F\u03B4\u03B7\u03B3\u03CC\u03C2 \u0393\u03C1\u03AE\u03B3\u03BF\u03C1\u03B7\u03C2 \u0395\u03BA\u03BA\u03AF\u03BD\u03B7\u03C3\u03B7\u03C2 Flow",
+      "guide_title": "\u039F\u03B4\u03B7\u03B3\u03CC\u03C2 \u0393\u03C1\u03AE\u03B3\u03BF\u03C1\u03B7\u03C2 \u0395\u03BA\u03BA\u03AF\u03BD\u03B7\u03C3\u03B7\u03C2 Noodle",
       "guide_desc": "\u039A\u03AC\u03BD\u03B5 \u03BA\u03BB\u03B9\u03BA \u03C3\u03B5 \u03BF\u03C0\u03BF\u03B9\u03B1\u03B4\u03AE\u03C0\u03BF\u03C4\u03B5 \u03BB\u03B5\u03B9\u03C4\u03BF\u03C5\u03C1\u03B3\u03AF\u03B1 \u03B3\u03B9\u03B1 \u03AC\u03BC\u03B5\u03C3\u03BF \u03AC\u03BD\u03BF\u03B9\u03B3\u03BC\u03B1. \u03A7\u03C1\u03B7\u03C3\u03B9\u03BC\u03BF\u03C0\u03BF\u03AF\u03B7\u03C3\u03B5 \u03C4\u03B9\u03C2 \u03C3\u03C5\u03BD\u03C4\u03BF\u03BC\u03B5\u03CD\u03C3\u03B5\u03B9\u03C2 \u03C0\u03BB\u03B7\u03BA\u03C4\u03C1\u03BF\u03BB\u03BF\u03B3\u03AF\u03BF\u03C5 \u03CC\u03C0\u03BF\u03C4\u03B5 \u03B2\u03C1\u03AF\u03C3\u03BA\u03B5\u03C3\u03B1\u03B9 \u03B5\u03BA\u03C4\u03CC\u03C2 \u03C0\u03B5\u03B4\u03AF\u03C9\u03BD \u03BA\u03B5\u03B9\u03BC\u03AD\u03BD\u03BF\u03C5!",
-      "guide_focus_mode_title": "\u039B\u03B5\u03B9\u03C4\u03BF\u03C5\u03C1\u03B3\u03AF\u03B1 \u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7\u03C2",
+      "guide_focus_mode_title": "\u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7",
       "guide_focus_mode_desc": "\u039A\u03C1\u03CD\u03B2\u03B5\u03B9 \u03C4\u03BF\u03C5\u03C2 \u03C0\u03B5\u03C1\u03B9\u03C3\u03C0\u03B1\u03C3\u03BC\u03BF\u03CD\u03C2 \u03BA\u03B1\u03B9 \u03C0\u03C1\u03BF\u03B2\u03AC\u03BB\u03BB\u03B5\u03B9 \u03B1\u03C0\u03BF\u03BA\u03BB\u03B5\u03B9\u03C3\u03C4\u03B9\u03BA\u03AC \u03C4\u03B7 \u03C3\u03B7\u03BC\u03B1\u03BD\u03C4\u03B9\u03BA\u03CC\u03C4\u03B5\u03C1\u03B7 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1 \u03C3\u03BF\u03C5 \u03C3\u03B5 \u03AD\u03BD\u03B1 \u03AE\u03C1\u03B5\u03BC\u03BF \u03C0\u03B5\u03C1\u03B9\u03B2\u03AC\u03BB\u03BB\u03BF\u03BD Zen.",
       "guide_focus_mode_key": "\u03A0\u03BB\u03AE\u03BA\u03C4\u03C1\u03BF [F]",
       "guide_timer_title": "\u03A7\u03C1\u03BF\u03BD\u03CC\u03BC\u03B5\u03C4\u03C1\u03BF \u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7\u03C2",
       "guide_timer_desc": "\u039E\u03B5\u03BA\u03AF\u03BD\u03B7\u03C3\u03B5 \u03C3\u03C5\u03B3\u03BA\u03B5\u03BD\u03C4\u03C1\u03C9\u03BC\u03AD\u03BD\u03B5\u03C2 \u03C0\u03B5\u03C1\u03B9\u03CC\u03B4\u03BF\u03C5\u03C2 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1\u03C2 \u03BC\u03B5 \u03C6\u03C9\u03BD\u03B7\u03C4\u03B9\u03BA\u03AE \u03B5\u03BD\u03B8\u03AC\u03C1\u03C1\u03C5\u03BD\u03C3\u03B7 \u03BA\u03B1\u03B9 \u03B1\u03C4\u03BC\u03BF\u03C3\u03C6\u03B1\u03B9\u03C1\u03B9\u03BA\u03CC \u03AE\u03C7\u03BF.",
       "guide_timer_key_start": "\u0388\u03BD\u03B1\u03C1\u03BE\u03B7/\u03A0\u03B1\u03CD\u03C3\u03B7 [T]",
       "guide_timer_key_stop": "\u0394\u03B9\u03B1\u03BA\u03BF\u03C0\u03AE [S]",
-      "guide_whatnow_title": "\u039A\u03B1\u03B9 \u03C4\u03CE\u03C1\u03B1 \u03C4\u03B9;",
+      "guide_whatnow_title": "\u03A4\u03B9 \u03BD\u03B1 \u03BA\u03AC\u03BD\u03C9;",
       "guide_whatnow_desc": "\u039C\u03B5\u03B9\u03CE\u03BD\u03B5\u03B9 \u03C4\u03B7\u03BD \u03BA\u03CC\u03C0\u03C9\u03C3\u03B7 \u03B1\u03C0\u03BF\u03C6\u03AC\u03C3\u03B5\u03C9\u03BD \u03C0\u03C1\u03BF\u03C4\u03B5\u03AF\u03BD\u03BF\u03BD\u03C4\u03B1\u03C2 \u03C4\u03C5\u03C7\u03B1\u03AF\u03B1 \u03BC\u03B9\u03B1 \u03BA\u03B1\u03C4\u03AC\u03BB\u03BB\u03B7\u03BB\u03B7 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1 \u03B2\u03AC\u03C3\u03B5\u03B9 \u03C4\u03B7\u03C2 \u03C0\u03C1\u03BF\u03C4\u03B5\u03C1\u03B1\u03B9\u03CC\u03C4\u03B7\u03C4\u03AC\u03C2 \u03C3\u03BF\u03C5.",
       "guide_whatnow_key": "\u03A0\u03BB\u03AE\u03BA\u03C4\u03C1\u03BF [W]",
       "guide_break_title": "\u03A0\u03B1\u03CD\u03C3\u03B7 & \u0391\u03B9\u03C3\u03B8\u03B7\u03C4\u03B7\u03C1\u03B9\u03B1\u03BA\u03AE \u03A7\u03B1\u03BB\u03AC\u03C1\u03C9\u03C3\u03B7",
@@ -2368,7 +2375,7 @@
       "guide_shortcuts_title": "\u03A0\u03B5\u03C1\u03B9\u03C3\u03C3\u03CC\u03C4\u03B5\u03C1\u03B5\u03C2 \u03A3\u03C5\u03BD\u03C4\u03BF\u03BC\u03B5\u03CD\u03C3\u03B5\u03B9\u03C2",
       "guide_shortcuts_desc": "\u2022 <b>\u03A0\u03BB\u03AE\u03BA\u03C4\u03C1\u03BF [U]</b>: \u0391\u03BD\u03B1\u03AF\u03C1\u03B5\u03C3\u03B7 \u03C4\u03B5\u03BB\u03B5\u03C5\u03C4\u03B1\u03AF\u03B1\u03C2 \u03B5\u03BD\u03AD\u03C1\u03B3\u03B5\u03B9\u03B1\u03C2<br>\u2022 <b>\u03A0\u03BB\u03AE\u03BA\u03C4\u03C1\u03BF [A]</b>: \u039D\u03AD\u03BF \u03C1\u03B1\u03BD\u03C4\u03B5\u03B2\u03BF\u03CD<br>\u2022 <b>\u03A0\u03BB\u03AE\u03BA\u03C4\u03C1\u03BF [B]</b>: \u0386\u03BD\u03BF\u03B9\u03B3\u03BC\u03B1 \u038F\u03B8\u03B7\u03C3\u03B7\u03C2 & \u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7\u03C2<br>\u2022 <b>\u03A0\u03BB\u03AE\u03BA\u03C4\u03C1\u03BF [I]</b>: \u0397\u03BC\u03B5\u03C1\u03AE\u03C3\u03B9\u03B1 \u03AD\u03BC\u03C0\u03BD\u03B5\u03C5\u03C3\u03B7<br>\u2022 <b>\u03A0\u03BB\u03AE\u03BA\u03C4\u03C1\u03BF [H]</b>: \u0386\u03BD\u03BF\u03B9\u03B3\u03BC\u03B1/\u03BA\u03BB\u03B5\u03AF\u03C3\u03B9\u03BC\u03BF \u03BF\u03B4\u03B7\u03B3\u03BF\u03CD<br>\u2022 <b>\u03A0\u03BB\u03AE\u03BA\u03C4\u03C1\u03BF [Esc]</b>: \u039A\u03BB\u03B5\u03AF\u03C3\u03B9\u03BC\u03BF \u03CC\u03BB\u03C9\u03BD \u03C4\u03C9\u03BD \u03C0\u03B1\u03C1\u03B1\u03B8\u03CD\u03C1\u03C9\u03BD",
       "guide_shortcuts_key": "\u03A0\u03BF\u03BB\u03BB\u03B1\u03C0\u03BB\u03AC",
-      "guide_footer_local": "Flow Suite \xB7 Local-First",
+      "guide_footer_local": "Noodle Suite \xB7 Local-First",
       "guide_footer_privacy": "\u03A0\u03C1\u03BF\u03C3\u03C4\u03B1\u03C3\u03AF\u03B1 \u0394\u03B5\u03B4\u03BF\u03BC\u03AD\u03BD\u03C9\u03BD & \u038C\u03C1\u03BF\u03B9",
       "pause_panel_title": "\u03A0\u03B1\u03CD\u03C3\u03B7 & \u0391\u03B9\u03C3\u03B8\u03B7\u03C4\u03B7\u03C1\u03B9\u03B1\u03BA\u03AE \u03A7\u03B1\u03BB\u03AC\u03C1\u03C9\u03C3\u03B7",
       "pause_breath_title": "\u0391\u03BD\u03B1\u03C0\u03BD\u03BF\u03AE 4-4-4",
@@ -2425,7 +2432,7 @@
       "mobile_quick_theme_sub": "16 \u0398\u03AD\u03BC\u03B1\u03C4\u03B1",
       "mobile_quick_lang_title": "\u0393\u03BB\u03CE\u03C3\u03C3\u03B1",
       "mobile_quick_lang_sub": "6 \u0393\u03BB\u03CE\u03C3\u03C3\u03B5\u03C2",
-      "mobile_quick_whatnow_title": "\u039A\u03B1\u03B9 \u03C4\u03CE\u03C1\u03B1 \u03C4\u03B9;",
+      "mobile_quick_whatnow_title": "\u03A4\u03B9 \u03BD\u03B1 \u03BA\u03AC\u03BD\u03C9;",
       "mobile_quick_whatnow_sub": "\u03A0\u03C1\u03CC\u03C4\u03B1\u03C3\u03B7 \u03B4\u03C1\u03AC\u03C3\u03B7\u03C2",
       "mobile_quick_break_title": "\u03A0\u03B1\u03CD\u03C3\u03B7 \u03A7\u03B1\u03BB\u03AC\u03C1\u03C9\u03C3\u03B7\u03C2",
       "mobile_quick_break_sub": "\u0391\u03BD\u03B1\u03C0\u03BD\u03BF\u03AE & \u0397\u03C1\u03B5\u03BC\u03AF\u03B1",
@@ -2456,7 +2463,7 @@
       "mobile_tools_stats_title": "\u03A0\u03B1\u03C1\u03B1\u03B3\u03C9\u03B3\u03B9\u03BA\u03CC\u03C4\u03B7\u03C4\u03B1",
       "mobile_tools_stats_sub": "\u0395\u03B2\u03B4\u03BF\u03BC\u03B1\u03B4\u03B9\u03B1\u03AF\u03B1 \u0391\u03BD\u03B1\u03C6\u03BF\u03C1\u03AC",
       "mobile_tools_whatnow_badge": "\u038F\u03B8\u03B7\u03C3\u03B7",
-      "mobile_tools_whatnow_title": "\u039A\u03B1\u03B9 \u03C4\u03CE\u03C1\u03B1 \u03C4\u03B9;",
+      "mobile_tools_whatnow_title": "\u03A4\u03B9 \u03BD\u03B1 \u03BA\u03AC\u03BD\u03C9;",
       "mobile_tools_whatnow_sub": "\u03A0\u03C1\u03CC\u03C4\u03B1\u03C3\u03B7 \u03B2\u03AC\u03C3\u03B5\u03B9 \u0395\u03BD\u03AD\u03C1\u03B3\u03B5\u03B9\u03B1\u03C2",
       "mobile_audio_synth_title": "\u03A1\u03C5\u03B8\u03BC\u03BF\u03AF \u03A3\u03C5\u03BD\u03B8\u03B5\u03C3\u03AC\u03B9\u03B6\u03B5\u03C1"
     }
@@ -2523,7 +2530,7 @@
       "tab_impressum": "Legal Notice (\xA7 5 DDG)",
       "tab_privacy": "Privacy & GDPR",
       "tab_licenses": "Licenses & Disclaimer",
-      "history_subtitle": "Visual timeline and milestones of Flow development",
+      "history_subtitle": "Visual timeline and milestones of Noodle development",
       "settings_modal_title": "Settings & Legal Compliance",
       "settings_modal_subtitle": "Configuration, privacy policy and open-source licenses",
       "setting_default_workspace": "Default Workspace on Startup",
@@ -2533,24 +2540,35 @@
       "cmd_search_placeholder": "Type a command or search tasks... (Ctrl+K)",
       "cmd_actions": "Quick Actions",
       "cmd_tasks": "Matching Tasks",
-      "cmd_no_results": "No matching commands or tasks found",
-      "cmd_shortcut_hint": "Use \u2191 \u2193 to navigate, Enter to select, Esc to close",
+      "timer_click_toggle_tooltip": "Click to start / pause [T]",
+      "timer_preset_tooltip": "Focus duration (minutes)",
+      "timer_play_btn_tooltip": "Start timer [T]",
+      "timer_pause_btn_tooltip": "Pause timer [T]",
+      "timer_stop_btn_tooltip": "Reset timer [S]",
+      "timer_sound_btn_tooltip": "Toggle timer sound",
       "recurrence_label": "Repeat Task",
       "recurrence_none": "No repeat",
       "recurrence_daily": "Daily",
       "recurrence_weekdays": "Weekdays (Mon-Fri)",
       "recurrence_weekly": "Weekly",
       "whatnow": "What now?",
-      "minimal_mode": "Focus Mode",
+      "whatnow_tooltip": "What should I do next? (Decision helper) [W]",
+      "whatnow_tab_suggestion": "Suggestion",
+      "whatnow_low": "\u{1F50B} Low (2-5m)",
+      "whatnow_med": "\u26A1 Normal",
+      "whatnow_high": "\u{1F525} High Focus",
+      "minimal_mode": "Focus",
       "standard_mode": "Standard View",
+      "toast_zen_active": "\u{1F9D8} Focus Mode activated (Zen View)",
+      "toast_zen_inactive": "\u{1F4CB} Returned to Standard View",
       "pause_btn": "Pause",
       "give_feedback": "Feedback",
       "feedback": "Feedback",
-      "feedback_desc": "How do you like Flow? Your suggestions help us improve!",
+      "feedback_desc": "How do you like Noodle? Your suggestions help us improve!",
       "feedback_placeholder": "Share your thoughts, ideas, or feature requests...",
       "feedback_greet": "Hey there! \u{1F44B}",
-      "feedback_prompt": "Do you have feedback, ideas, or suggestions for Flow? Feel free to drop a message!",
-      "feedback_alt": "or send an email to support@flow-planner.app",
+      "feedback_prompt": "Do you have feedback, ideas, or suggestions for Noodle? Feel free to drop a message!",
+      "feedback_alt": "or send an email to support@noodlestudio.app",
       "feedback_send_tooltip": "Send feedback directly to the creator",
       "send": "Send",
       "login_btn": "Sign In",
@@ -2584,13 +2602,17 @@
       "dock_inspire": "Inspire",
       "dock_clarity": "Clarity",
       "dock_impulse": "Drive",
-      "dock_audio": "Audio",
+      "dock_audio": "Sound",
       "dock_daily": "Lifestyle",
       "dock_beats": "Beats",
       "dock_workout": "Workout",
       "dock_matrix": "Matrix",
       "dock_gamification": "Arcade",
       "weather_title": "Local Weather",
+      "weather_placeholder": "Enter or choose city...",
+      "weather_gps_tooltip": "My Location (GPS)",
+      "weather_unit_tooltip": "Toggle unit (\xB0C / \xB0F)",
+      "cal_tooltip": "Calendar & Month View",
       "news_title": "Daily Digest",
       "clarity_title": "Clarity & Impulse Control",
       "clarity_subtitle": "Overcome cravings, resist unwanted impulses & strengthen self-regulation",
@@ -2621,7 +2643,7 @@
       "stop": "Stop",
       "steps_btn": "Steps",
       "steps_tab": "Steps",
-      "pick_desc": "Feeling overwhelmed? Let Flow pick the best next task for you based on current priority:",
+      "pick_desc": "Feeling overwhelmed? Let Noodle pick the best next task for you based on current priority:",
       "next_suggestion": "\u{1F3B2} Next Task",
       "steps_desc": "Select a task to view its detailed step-by-step breakdown:",
       "start_timer": "Start Focus Timer",
@@ -2719,9 +2741,9 @@
       "sound_afrobeats": "Afrobeats",
       "sound_swing": "Swing & Jazz",
       "sound_boombap": "Boom-Bap",
-      "guide_title": "Flow Quickstart Guide",
+      "guide_title": "Noodle Quickstart Guide",
       "guide_desc": "Click any feature to open it directly. Use keyboard shortcuts anytime outside of text inputs!",
-      "guide_focus_mode_title": "Focus Mode",
+      "guide_focus_mode_title": "Focus",
       "guide_focus_mode_desc": "Hides distracting columns to show only your single most important task in a peaceful Zen view.",
       "guide_focus_mode_key": "Key [F]",
       "guide_timer_title": "Focus Timer",
@@ -2752,7 +2774,7 @@
       "guide_shortcuts_title": "More Shortcuts",
       "guide_shortcuts_desc": "\u2022 <b>Key [U]</b>: Undo last action<br>\u2022 <b>Key [A]</b>: Add appointment<br>\u2022 <b>Key [B]</b>: Open Drive/Momentum<br>\u2022 <b>Key [I]</b>: Daily Inspiration<br>\u2022 <b>Key [H]</b>: Open/close this guide<br>\u2022 <b>Key [Esc]</b>: Close all modals",
       "guide_shortcuts_key": "Multiple",
-      "guide_footer_local": "Flow Suite \xB7 Local-First",
+      "guide_footer_local": "Noodle Suite \xB7 Local-First",
       "guide_footer_privacy": "Privacy & Legal Notice",
       "pause_panel_title": "Sensory Break & Reset",
       "pause_breath_title": "4-4-4 Box Breathing",
@@ -2761,14 +2783,13 @@
       "pause_grounding_sub": "Brings you immediately to the present",
       "pause_stretch_title": "Body & Neck Stretch",
       "pause_stretch_sub": "2 minutes gentle loosening",
-      "pause_nap_title": "Power Nap (20 Min) \u{1F634}",
-      "pause_nap_sub": "Rest with gentle background rain",
+      "pause_eyes_title": "20-20-20 Eye Rest & Palming",
+      "pause_eyes_sub": "20s screen relaxation & warm palms",
       "settings_dropdown_title": "Settings",
       "settings_btn_fullscreen": "Full view \u2197",
-      "settings_section_theme": "\u{1F3A8} Color Theme (16 Themes)",
+      "settings_section_theme": "\u{1F3A8} Farbschema",
       "settings_section_lang": "\u{1F310} Select Language",
-      "settings_p2p_sync": "Phone Live-Sync",
-      "settings_privacy_btn": "Privacy",
+      "settings_p2p_sync": "Phone Sync",
       "audio_center_title": "Audio Center",
       "audio_center_subtitle": "Focus, Beats & Mix Studio",
       "audio_tab_ambient": "Soundscapes",
@@ -2806,7 +2827,7 @@
       "mobile_quick_stats_title": "Stats",
       "mobile_quick_stats_sub": "Weekly insights",
       "mobile_quick_theme_title": "Color Theme",
-      "mobile_quick_theme_sub": "16 Themes",
+      "mobile_quick_theme_sub": "12 Themes",
       "mobile_quick_lang_title": "Language",
       "mobile_quick_lang_sub": "6 Languages",
       "mobile_quick_whatnow_title": "What now?",
@@ -2842,7 +2863,11 @@
       "mobile_tools_whatnow_badge": "Spark",
       "mobile_tools_whatnow_title": "What now?",
       "mobile_tools_whatnow_sub": "Energy-based Pick",
-      "mobile_audio_synth_title": "Synthesizer Beats"
+      "mobile_audio_synth_title": "Synthesizer Beats",
+      "settings_header_layout": "Header Layout",
+      "layout_smart_hubs": "Smart Hubs",
+      "layout_minimal": "Compact",
+      "layout_classic": "Classic"
     },
     "de": {
       "weekly": "Haushalt",
@@ -2887,7 +2912,7 @@
       "tab_impressum": "Impressum (\xA7 5 DDG)",
       "tab_privacy": "Datenschutz & DSGVO",
       "tab_licenses": "Lizenzen & Haftung",
-      "history_subtitle": "Visuelle Meilensteine und Entwicklung von Flow",
+      "history_subtitle": "Visuelle Meilensteine und Entwicklung von Noodle",
       "settings_modal_title": "Einstellungen & Rechtliches",
       "settings_modal_subtitle": "Konfiguration, Datenschutzerkl\xE4rung und Open-Source-Lizenzen",
       "setting_default_workspace": "Standard-Bereich beim Start",
@@ -2896,25 +2921,35 @@
       "setting_clear_data_confirm": "M\xF6chtest du wirklich alle lokalen Daten unwiderruflich l\xF6schen und die App zur\xFCcksetzen?",
       "cmd_search_placeholder": "Befehl tippen oder Aufgaben suchen... (Strg+K)",
       "cmd_actions": "Schnellaktionen",
-      "cmd_tasks": "Passende Aufgaben",
-      "cmd_no_results": "Keine passenden Befehle oder Aufgaben gefunden",
-      "cmd_shortcut_hint": "Nutze \u2191 \u2193 zur Navigation, Enter zum Ausw\xE4hlen, Esc zum Schlie\xDFen",
+      "timer_click_toggle_tooltip": "Klick zum Starten / Pausieren [T]",
+      "timer_preset_tooltip": "Fokus-Dauer (Minuten)",
+      "timer_play_btn_tooltip": "Timer starten [T]",
+      "timer_pause_btn_tooltip": "Timer pausieren [T]",
+      "timer_stop_btn_tooltip": "Timer zur\xFCcksetzen [S]",
+      "timer_sound_btn_tooltip": "Timer-Ton ein/ausschalten",
       "recurrence_label": "Aufgabe wiederholen",
       "recurrence_none": "Keine Wiederholung",
       "recurrence_daily": "T\xE4glich",
       "recurrence_weekdays": "Werktags (Mo-Fr)",
       "recurrence_weekly": "W\xF6chentlich",
       "whatnow": "Was nun?",
-      "minimal_mode": "Fokus-Modus",
+      "whatnow_tooltip": "Was soll ich als N\xE4chstes tun? (Entscheidungshilfe) [W]",
+      "whatnow_tab_suggestion": "Vorschlag",
+      "whatnow_low": "\u{1F50B} Wenig (2-5m)",
+      "whatnow_med": "\u26A1 Normal",
+      "whatnow_high": "\u{1F525} High Focus",
+      "minimal_mode": "Fokus",
       "standard_mode": "Standard-Modus",
+      "toast_zen_active": "\u{1F9D8} Fokus-Modus aktiviert (Zen-Ansicht)",
+      "toast_zen_inactive": "\u{1F4CB} Zur\xFCck zur Standardansicht",
       "pause_btn": "Pause",
       "give_feedback": "Feedback",
       "feedback": "Feedback",
-      "feedback_desc": "Wie gef\xE4llt dir Flow? Deine R\xFCckmeldungen helfen uns, die App stetig zu verbessern!",
+      "feedback_desc": "Wie gef\xE4llt dir Noodle? Deine R\xFCckmeldungen helfen uns, die App stetig zu verbessern!",
       "feedback_placeholder": "Teile deine Gedanken, Ideen oder W\xFCnsche...",
       "feedback_greet": "Hey, ich bin Jannis! \u{1F44B}",
-      "feedback_prompt": "Hast du Feedback, Kritik oder neue Ideen f\xFCr Flow? Schreib mir gerne eine kurze Nachricht!",
-      "feedback_alt": "oder sende eine E-Mail an support@flow-planner.app",
+      "feedback_prompt": "Hast du Feedback, Kritik oder neue Ideen f\xFCr Noodle? Schreib mir gerne eine kurze Nachricht!",
+      "feedback_alt": "oder sende eine E-Mail an support@noodlestudio.app",
       "feedback_send_tooltip": "Feedback direkt absenden",
       "send": "Senden",
       "login_btn": "Anmelden",
@@ -2948,13 +2983,17 @@
       "dock_inspire": "Inspire",
       "dock_clarity": "Klarheit",
       "dock_impulse": "Schwung",
-      "dock_audio": "Audio",
+      "dock_audio": "Sound",
       "dock_daily": "Alltag",
       "dock_beats": "Beats",
       "dock_workout": "Workout",
       "dock_matrix": "Matrix",
       "dock_gamification": "Arcade",
       "weather_title": "Lokales Wetter",
+      "weather_placeholder": "Stadt eingeben oder w\xE4hlen...",
+      "weather_gps_tooltip": "Mein Standort (GPS)",
+      "weather_unit_tooltip": "Einheit wechseln (\xB0C / \xB0F)",
+      "cal_tooltip": "Kalender & Monatsansicht",
       "news_title": "Daily Digest",
       "clarity_title": "Klarheit & Impulskontrolle",
       "clarity_subtitle": "Gel\xFCste \xFCberwinden, unerw\xFCnschte Gewohnheiten stoppen & Selbststeuerung st\xE4rken",
@@ -2985,7 +3024,7 @@
       "stop": "Stopp",
       "steps_btn": "Schritte",
       "steps_tab": "Schritte",
-      "pick_desc": "F\xFChlst du dich blockiert? Lass Flow die passende n\xE4chste Aufgabe nach Priorit\xE4t f\xFCr dich ausw\xE4hlen:",
+      "pick_desc": "F\xFChlst du dich blockiert? Lass Noodle die passende n\xE4chste Aufgabe nach Priorit\xE4t f\xFCr dich ausw\xE4hlen:",
       "next_suggestion": "\u{1F3B2} N\xE4chste Aufgabe",
       "steps_desc": "W\xE4hle eine Aufgabe, um die detaillierte Schritt-f\xFCr-Schritt-Anleitung anzuzeigen:",
       "start_timer": "Fokus-Timer starten",
@@ -3083,9 +3122,9 @@
       "sound_afrobeats": "Afrobeats",
       "sound_swing": "Swing & Jazz",
       "sound_boombap": "Boom-Bap",
-      "guide_title": "Flow Schnellstart-Guide",
+      "guide_title": "Noodle Schnellstart-Guide",
       "guide_desc": "Klicke auf ein Element, um die Funktion direkt zu \xF6ffnen. Nutze die Tasten au\xDFerhalb von Eingabefeldern!",
-      "guide_focus_mode_title": "Fokus-Modus",
+      "guide_focus_mode_title": "Fokus",
       "guide_focus_mode_desc": "Blendet das ablenkende Hauptboard aus und zeigt ausschlie\xDFlich deine aktuell wichtigste To-Do-Aufgabe in einer minimalistischen Zen-Ansicht.",
       "guide_focus_mode_key": "Taste [F]",
       "guide_timer_title": "Fokus-Timer",
@@ -3116,7 +3155,7 @@
       "guide_shortcuts_title": "Weitere Abk\xFCrzungen",
       "guide_shortcuts_desc": "\u2022 <b>Taste [U]</b>: Letzte Aktion r\xFCckg\xE4ngig machen<br>\u2022 <b>Taste [A]</b>: Neuen Kalendertermin hinzuf\xFCgen<br>\u2022 <b>Taste [B]</b>: Schwung & Fokus \xF6ffnen<br>\u2022 <b>Taste [I]</b>: Inspirierenden Impuls \xF6ffnen<br>\u2022 <b>Taste [H]</b>: Diese Kurzanleitung \xF6ffnen/schlie\xDFen<br>\u2022 <b>Taste [Esc]</b>: Alle Modale schlie\xDFen",
       "guide_shortcuts_key": "Mehrere",
-      "guide_footer_local": "Flow Suite \xB7 Local-First",
+      "guide_footer_local": "Noodle Suite \xB7 Local-First",
       "guide_footer_privacy": "Datenschutz & Impressum",
       "pause_panel_title": "Reizpause & Erholung",
       "pause_breath_title": "4-4-4 Atemtakt",
@@ -3125,14 +3164,13 @@
       "pause_grounding_sub": "Holt dich sofort ins Hier & Jetzt",
       "pause_stretch_title": "K\xF6rper & Nacken lockern",
       "pause_stretch_sub": "2 Minuten sanfte Dehnung",
-      "pause_nap_title": "Power Nap (20 Min) \u{1F634}",
-      "pause_nap_sub": "Kurzschlaf bei leisem Regen",
+      "pause_eyes_title": "20-20-20 Augen-Pause & Palming",
+      "pause_eyes_sub": "20s Bildschirm-Entlastung & Augen ruhen",
       "settings_dropdown_title": "Einstellungen",
       "settings_btn_fullscreen": "Vollbild \u2197",
-      "settings_section_theme": "\u{1F3A8} Farbschema (16 Themes)",
+      "settings_section_theme": "\u{1F3A8} Farbschema",
       "settings_section_lang": "\u{1F310} Sprache w\xE4hlen",
-      "settings_p2p_sync": "Handy Live-Sync",
-      "settings_privacy_btn": "Datenschutz",
+      "settings_p2p_sync": "Handy-Sync",
       "audio_center_title": "Audio-Center",
       "audio_center_subtitle": "Fokus, Beats & Mix-Studio",
       "audio_tab_ambient": "Naturger\xE4usche",
@@ -3170,7 +3208,7 @@
       "mobile_quick_stats_title": "Statistik",
       "mobile_quick_stats_sub": "Wochenauswertung",
       "mobile_quick_theme_title": "Farbschema",
-      "mobile_quick_theme_sub": "16 Themes w\xE4hlen",
+      "mobile_quick_theme_sub": "12 Farbschemata",
       "mobile_quick_lang_title": "Sprache",
       "mobile_quick_lang_sub": "6 Sprachen (EN/DE/...)",
       "mobile_quick_whatnow_title": "Was nun?",
@@ -3206,7 +3244,11 @@
       "mobile_tools_whatnow_badge": "Impuls",
       "mobile_tools_whatnow_title": "Was nun?",
       "mobile_tools_whatnow_sub": "Energie-Vorschlag",
-      "mobile_audio_synth_title": "Synthesizer Beats"
+      "mobile_audio_synth_title": "Synthesizer Beats",
+      "settings_header_layout": "Header-Layout",
+      "layout_smart_hubs": "Smart Hubs",
+      "layout_minimal": "Kompakt",
+      "layout_classic": "Klassisch"
     },
     "fr": {
       "weekly": "Maison",
@@ -3251,7 +3293,7 @@
       "tab_impressum": "Mentions L\xE9gales (\xA7 5 DDG)",
       "tab_privacy": "Confidentialit\xE9 & RGPD",
       "tab_licenses": "Licences & Responsabilit\xE9",
-      "history_subtitle": "Chronologie visuelle et \xE9tapes de d\xE9veloppement de Flow",
+      "history_subtitle": "Chronologie visuelle et \xE9tapes de d\xE9veloppement de Noodle",
       "settings_modal_title": "Param\xE8tres & Mentions L\xE9gales",
       "settings_modal_subtitle": "Configuration, politique de confidentialit\xE9 et licences libres",
       "setting_default_workspace": "Espace par d\xE9faut au d\xE9marrage",
@@ -3260,25 +3302,35 @@
       "setting_clear_data_confirm": "Es-tu s\xFBr de vouloir effacer d\xE9finitivement toutes les donn\xE9es locales et r\xE9initialiser l'application ?",
       "cmd_search_placeholder": "Taper une commande ou rechercher... (Ctrl+K)",
       "cmd_actions": "Actions rapides",
-      "cmd_tasks": "T\xE2ches correspondantes",
-      "cmd_no_results": "Aucune commande ou t\xE2che trouv\xE9e",
-      "cmd_shortcut_hint": "Utilise \u2191 \u2193 pour naviguer, Entr\xE9e pour valider, \xC9chap pour fermer",
+      "timer_click_toggle_tooltip": "Cliquer pour d\xE9marrer / mettre en pause [T]",
+      "timer_preset_tooltip": "Dur\xE9e de concentration (minutes)",
+      "timer_play_btn_tooltip": "D\xE9marrer le minuteur [T]",
+      "timer_pause_btn_tooltip": "Mettre le minuteur en pause [T]",
+      "timer_stop_btn_tooltip": "R\xE9initialiser le minuteur [S]",
+      "timer_sound_btn_tooltip": "Activer/d\xE9sactiver le son du minuteur",
       "recurrence_label": "R\xE9p\xE9ter la t\xE2che",
       "recurrence_none": "Pas de r\xE9p\xE9tition",
       "recurrence_daily": "Tous les jours",
       "recurrence_weekdays": "Jours ouvr\xE9s (Lun-Ven)",
       "recurrence_weekly": "Hebdomadaire",
       "whatnow": "Et maintenant ?",
-      "minimal_mode": "Mode Focus",
+      "whatnow_tooltip": "Que dois-je faire ensuite ? (Aide \xE0 la d\xE9cision) [W]",
+      "whatnow_tab_suggestion": "Suggestion",
+      "whatnow_low": "\u{1F50B} Faible (2-5m)",
+      "whatnow_med": "\u26A1 Normal",
+      "whatnow_high": "\u{1F525} Focus \xC9lev\xE9",
+      "minimal_mode": "Focus",
       "standard_mode": "Vue Standard",
+      "toast_zen_active": "\u{1F9D8} Mode Focus activ\xE9 (Vue Zen)",
+      "toast_zen_inactive": "\u{1F4CB} Retour \xE0 la vue standard",
       "pause_btn": "Pause",
       "give_feedback": "Avis",
       "feedback": "Avis",
-      "feedback_desc": "Que penses-tu de Flow ? Tes retours nous aident \xE0 l'am\xE9liorer !",
+      "feedback_desc": "Que penses-tu de Noodle ? Tes retours nous aident \xE0 l'am\xE9liorer !",
       "feedback_placeholder": "Partage tes pens\xE9es, id\xE9es ou souhaits...",
       "feedback_greet": "Salut ! \u{1F44B}",
-      "feedback_prompt": "As-tu des retours, critiques ou id\xE9es pour Flow ? Envoie-nous un message !",
-      "feedback_alt": "ou \xE9cris-nous \xE0 support@flow-planner.app",
+      "feedback_prompt": "As-tu des retours, critiques ou id\xE9es pour Noodle ? Envoie-nous un message !",
+      "feedback_alt": "ou \xE9cris-nous \xE0 support@noodlestudio.app",
       "feedback_send_tooltip": "Envoyer directement tes retours",
       "send": "Envoyer",
       "login_btn": "Connexion",
@@ -3312,13 +3364,17 @@
       "dock_inspire": "Inspiration",
       "dock_clarity": "Clart\xE9",
       "dock_impulse": "\xC9lan",
-      "dock_audio": "Audio",
+      "dock_audio": "Son",
       "dock_daily": "Quotidien",
       "dock_beats": "Beats",
       "dock_workout": "Entra\xEEnement",
       "dock_matrix": "Matrice",
       "dock_gamification": "Arcade",
       "weather_title": "M\xE9t\xE9o Locale",
+      "weather_placeholder": "Entrez ou choisissez une ville...",
+      "weather_gps_tooltip": "Ma position (GPS)",
+      "weather_unit_tooltip": "Changer d'unit\xE9 (\xB0C / \xB0F)",
+      "cal_tooltip": "Calendrier & Vue mensuelle",
       "news_title": "Daily Digest",
       "clarity_title": "Clart\xE9 & Contr\xF4le des Pulsions",
       "clarity_subtitle": "Surmonter les envies, briser les automatismes et renforcer la ma\xEEtrise de soi",
@@ -3349,7 +3405,7 @@
       "stop": "Arr\xEAter",
       "steps_btn": "\xC9tapes",
       "steps_tab": "\xC9tapes",
-      "pick_desc": "Tu te sens submerg\xE9 ? Laisse Flow choisir la meilleure t\xE2che selon tes priorit\xE9s :",
+      "pick_desc": "Tu te sens submerg\xE9 ? Laisse Noodle choisir la meilleure t\xE2che selon tes priorit\xE9s :",
       "next_suggestion": "\u{1F3B2} T\xE2che Suivante",
       "steps_desc": "S\xE9lectionne une t\xE2che pour voir son d\xE9coupage d\xE9taill\xE9 pas \xE0 pas :",
       "start_timer": "D\xE9marrer le minuteur",
@@ -3447,9 +3503,9 @@
       "sound_afrobeats": "Afrobeats",
       "sound_swing": "Swing & Jazz",
       "sound_boombap": "Boom-Bap",
-      "guide_title": "Guide de D\xE9marrage Rapide Flow",
+      "guide_title": "Guide de D\xE9marrage Rapide Noodle",
       "guide_desc": "Clique sur un \xE9l\xE9ment pour l'ouvrir directement. Utilise les raccourcis clavier hors des zones de saisie !",
-      "guide_focus_mode_title": "Mode Focus",
+      "guide_focus_mode_title": "Focus",
       "guide_focus_mode_desc": "Masque les \xE9l\xE9ments distrayants pour afficher uniquement ta t\xE2che prioritaire dans une vue Zen \xE9pur\xE9e.",
       "guide_focus_mode_key": "Touche [F]",
       "guide_timer_title": "Minuteur de Focus",
@@ -3480,7 +3536,7 @@
       "guide_shortcuts_title": "Autres Raccourcis",
       "guide_shortcuts_desc": "\u2022 <b>Touche [U]</b> : Annuler la derni\xE8re action<br>\u2022 <b>Touche [A]</b> : Ajouter un rendez-vous<br>\u2022 <b>Touche [B]</b> : Ouvrir \xC9lan & Focus<br>\u2022 <b>Touche [I]</b> : Inspiration du jour<br>\u2022 <b>Touche [H]</b> : Ouvrir/fermer ce guide<br>\u2022 <b>Touche [\xC9chap]</b> : Fermer les fen\xEAtres",
       "guide_shortcuts_key": "Multiples",
-      "guide_footer_local": "Flow Suite \xB7 Local-First",
+      "guide_footer_local": "Noodle Suite \xB7 Local-First",
       "guide_footer_privacy": "Confidentialit\xE9 & Mentions L\xE9gales",
       "pause_panel_title": "Pause Sensorielle & R\xE9cup\xE9ration",
       "pause_breath_title": "Respiration 4-4-4",
@@ -3489,14 +3545,13 @@
       "pause_grounding_sub": "Te ram\xE8ne imm\xE9diatement au pr\xE9sent",
       "pause_stretch_title": "\xC9tirement du Corps & Cou",
       "pause_stretch_sub": "2 minutes d'\xE9tirement doux",
-      "pause_nap_title": "Micro-Sieste (20 Min) \u{1F634}",
-      "pause_nap_sub": "Repos r\xE9parateur sous une pluie douce",
+      "pause_eyes_title": "Pause Yeux 20-20-20 & Palming",
+      "pause_eyes_sub": "20s relaxation \xE9cran & paumes chaudes",
       "settings_dropdown_title": "Param\xE8tres",
       "settings_btn_fullscreen": "Plein \xE9cran \u2197",
-      "settings_section_theme": "\u{1F3A8} Th\xE8me de Couleur (16 Th\xE8mes)",
+      "settings_section_theme": "\u{1F3A8} Th\xE8me de Couleur",
       "settings_section_lang": "\u{1F310} Choisir la Langue",
-      "settings_p2p_sync": "Synchro Mobile Directe",
-      "settings_privacy_btn": "Confidentialit\xE9",
+      "settings_p2p_sync": "Sync Mobile",
       "audio_center_title": "Centre Audio",
       "audio_center_subtitle": "Focus, Beats & Studio Mix",
       "audio_tab_ambient": "Ambiances Nature",
@@ -3534,7 +3589,7 @@
       "mobile_quick_stats_title": "Statistiques",
       "mobile_quick_stats_sub": "Analyse hebdo",
       "mobile_quick_theme_title": "Th\xE8me",
-      "mobile_quick_theme_sub": "16 Th\xE8mes",
+      "mobile_quick_theme_sub": "12 Th\xE8mes",
       "mobile_quick_lang_title": "Langue",
       "mobile_quick_lang_sub": "6 Langues",
       "mobile_quick_whatnow_title": "Et maintenant ?",
@@ -3570,7 +3625,11 @@
       "mobile_tools_whatnow_badge": "\xC9lan",
       "mobile_tools_whatnow_title": "Et maintenant ?",
       "mobile_tools_whatnow_sub": "Choix par \xC9nergie",
-      "mobile_audio_synth_title": "Beats Synth\xE9tiseur"
+      "mobile_audio_synth_title": "Beats Synth\xE9tiseur",
+      "settings_header_layout": "Disposition En-t\xEAte",
+      "layout_smart_hubs": "Smart Hubs",
+      "layout_minimal": "Compact",
+      "layout_classic": "Classique"
     },
     "it": {
       "weekly": "Casa",
@@ -3615,7 +3674,7 @@
       "tab_impressum": "Note Legali (\xA7 5 DDG)",
       "tab_privacy": "Privacy & GDPR",
       "tab_licenses": "Licenze & Disclaimer",
-      "history_subtitle": "Cronologia visiva e traguardi dello sviluppo di Flow",
+      "history_subtitle": "Cronologia visiva e traguardi dello sviluppo di Noodle",
       "settings_modal_title": "Impostazioni & Conformit\xE0",
       "settings_modal_subtitle": "Configurazione, informativa privacy e licenze open-source",
       "setting_default_workspace": "Area di lavoro predefinita all'avvio",
@@ -3624,25 +3683,35 @@
       "setting_clear_data_confirm": "Sei sicuro di voler cancellare definitivamente tutti i dati locali e ripristinare l'app?",
       "cmd_search_placeholder": "Digita un comando o cerca attivit\xE0... (Ctrl+K)",
       "cmd_actions": "Azioni rapide",
-      "cmd_tasks": "Attivit\xE0 corrispondenti",
-      "cmd_no_results": "Nessun comando o attivit\xE0 trovata",
-      "cmd_shortcut_hint": "Usa \u2191 \u2193 per navigare, Invio per selezionare, Esc per uscire",
+      "timer_click_toggle_tooltip": "Clicca per avviare / mettere in pausa [T]",
+      "timer_preset_tooltip": "Durata della concentrazione (minuti)",
+      "timer_play_btn_tooltip": "Avvia timer [T]",
+      "timer_pause_btn_tooltip": "Metti in pausa il timer [T]",
+      "timer_stop_btn_tooltip": "Reimposta timer [S]",
+      "timer_sound_btn_tooltip": "Attiva/disattiva audio timer",
       "recurrence_label": "Ripeti attivit\xE0",
       "recurrence_none": "Nessuna ripetizione",
       "recurrence_daily": "Ogni giorno",
       "recurrence_weekdays": "Giorni feriali (Lun-Ven)",
       "recurrence_weekly": "Settimanale",
       "whatnow": "E adesso?",
-      "minimal_mode": "Modalit\xE0 Focus",
+      "whatnow_tooltip": "Cosa dovrei fare dopo? (Aiuto decisionale) [W]",
+      "whatnow_tab_suggestion": "Suggerimento",
+      "whatnow_low": "\u{1F50B} Basso (2-5m)",
+      "whatnow_med": "\u26A1 Normale",
+      "whatnow_high": "\u{1F525} Alto Focus",
+      "minimal_mode": "Focus",
       "standard_mode": "Vista Standard",
+      "toast_zen_active": "\u{1F9D8} Modalit\xE0 Focus attivata (Vista Zen)",
+      "toast_zen_inactive": "\u{1F4CB} Ritorno alla vista standard",
       "pause_btn": "Pausa",
       "give_feedback": "Feedback",
       "feedback": "Feedback",
-      "feedback_desc": "Come trovi Flow? I tuoi suggerimenti ci aiutano a migliorare costantemente!",
+      "feedback_desc": "Come trovi Noodle? I tuoi suggerimenti ci aiutano a migliorare costantemente!",
       "feedback_placeholder": "Condividi pensieri, idee o suggerimenti...",
       "feedback_greet": "Ciao! \u{1F44B}",
-      "feedback_prompt": "Hai feedback, idee o suggerimenti per Flow? Scrivici un messaggio!",
-      "feedback_alt": "o invia un'email a support@flow-planner.app",
+      "feedback_prompt": "Hai feedback, idee o suggerimenti per Noodle? Scrivici un messaggio!",
+      "feedback_alt": "o invia un'email a support@noodlestudio.app",
       "feedback_send_tooltip": "Invia feedback direttamente al creatore",
       "send": "Invia",
       "login_btn": "Accedi",
@@ -3676,13 +3745,17 @@
       "dock_inspire": "Ispirazione",
       "dock_clarity": "Chiarezza",
       "dock_impulse": "Slancio",
-      "dock_audio": "Audio",
+      "dock_audio": "Suono",
       "dock_daily": "Quotidiano",
       "dock_beats": "Beat",
       "dock_workout": "Workout",
       "dock_matrix": "Matrice",
       "dock_gamification": "Arcade",
       "weather_title": "Meteo Locale",
+      "weather_placeholder": "Inserisci o scegli citt\xE0...",
+      "weather_gps_tooltip": "La mia posizione (GPS)",
+      "weather_unit_tooltip": "Cambia unit\xE0 (\xB0C / \xB0F)",
+      "cal_tooltip": "Calendario & Vista mensile",
       "news_title": "Daily Digest",
       "clarity_title": "Chiarezza & Controllo Impulsi",
       "clarity_subtitle": "Supera le tentazioni, interrompi le abitudini indesiderate e rafforza l'autocontrollo",
@@ -3713,7 +3786,7 @@
       "stop": "Ferma",
       "steps_btn": "Passaggi",
       "steps_tab": "Passaggi",
-      "pick_desc": "Ti senti bloccato? Lascia che Flow scelga la prossima attivit\xE0 migliore in base alle tue priorit\xE0:",
+      "pick_desc": "Ti senti bloccato? Lascia che Noodle scelga la prossima attivit\xE0 migliore in base alle tue priorit\xE0:",
       "next_suggestion": "\u{1F3B2} Prossima Attivit\xE0",
       "steps_desc": "Seleziona un'attivit\xE0 per visualizzare la suddivisione dettagliata passo dopo passo:",
       "start_timer": "Avvia Timer",
@@ -3811,9 +3884,9 @@
       "sound_afrobeats": "Afrobeats",
       "sound_swing": "Swing & Jazz",
       "sound_boombap": "Boom-Bap",
-      "guide_title": "Guida Rapida di Flow",
+      "guide_title": "Guida Rapida di Noodle",
       "guide_desc": "Fai clic su un elemento per aprirlo direttamente. Usa le scorciatoie da tastiera fuori dai campi di testo!",
-      "guide_focus_mode_title": "Modalit\xE0 Focus",
+      "guide_focus_mode_title": "Focus",
       "guide_focus_mode_desc": "Nasconde le distrazioni per mostrare solo l'attivit\xE0 prioritaria in una visualizzazione Zen serena.",
       "guide_focus_mode_key": "Tasto [F]",
       "guide_timer_title": "Timer di Focus",
@@ -3844,7 +3917,7 @@
       "guide_shortcuts_title": "Altre Scorciatoie",
       "guide_shortcuts_desc": "\u2022 <b>Tasto [U]</b>: Annulla ultima azione<br>\u2022 <b>Tasto [A]</b>: Aggiungi appuntamento<br>\u2022 <b>Tasto [B]</b>: Apri Slancio & Focus<br>\u2022 <b>Tasto [I]</b>: Ispirazione quotidiana<br>\u2022 <b>Tasto [H]</b>: Apri/chiudi questa guida<br>\u2022 <b>Tasto [Esc]</b>: Chiudi tutte le finestre",
       "guide_shortcuts_key": "Multiple",
-      "guide_footer_local": "Flow Suite \xB7 Local-First",
+      "guide_footer_local": "Noodle Suite \xB7 Local-First",
       "guide_footer_privacy": "Privacy & Note Legali",
       "pause_panel_title": "Pausa Sensoriale & Recupero",
       "pause_breath_title": "Respirazione 4-4-4",
@@ -3853,14 +3926,13 @@
       "pause_grounding_sub": "Ti riporta subito al momento presente",
       "pause_stretch_title": "Stretching Corpo & Collo",
       "pause_stretch_sub": "2 minuti di allungamento dolce",
-      "pause_nap_title": "Power Nap (20 Min) \u{1F634}",
-      "pause_nap_sub": "Riposo breve con pioggia leggera",
+      "pause_eyes_title": "Pausa Occhi 20-20-20 & Palming",
+      "pause_eyes_sub": "20s riposo schermo & palmi caldi",
       "settings_dropdown_title": "Impostazioni",
       "settings_btn_fullscreen": "Schermo intero \u2197",
-      "settings_section_theme": "\u{1F3A8} Tema Colore (16 Temi)",
+      "settings_section_theme": "\u{1F3A8} Tema Colore",
       "settings_section_lang": "\u{1F310} Scegli Lingua",
-      "settings_p2p_sync": "Sincronizzazione Live",
-      "settings_privacy_btn": "Privacy",
+      "settings_p2p_sync": "Sync Telefono",
       "audio_center_title": "Centro Audio",
       "audio_center_subtitle": "Focus, Beat & Mix Studio",
       "audio_tab_ambient": "Suoni della Natura",
@@ -3898,7 +3970,7 @@
       "mobile_quick_stats_title": "Statistiche",
       "mobile_quick_stats_sub": "Report settimanale",
       "mobile_quick_theme_title": "Tema Colore",
-      "mobile_quick_theme_sub": "16 Temi",
+      "mobile_quick_theme_sub": "12 Temi",
       "mobile_quick_lang_title": "Lingua",
       "mobile_quick_lang_sub": "6 Lingue",
       "mobile_quick_whatnow_title": "E adesso?",
@@ -3934,7 +4006,11 @@
       "mobile_tools_whatnow_badge": "Slancio",
       "mobile_tools_whatnow_title": "E adesso?",
       "mobile_tools_whatnow_sub": "Suggerimento Energetico",
-      "mobile_audio_synth_title": "Beat Sintetizzatore"
+      "mobile_audio_synth_title": "Beat Sintetizzatore",
+      "settings_header_layout": "Layout Intestazione",
+      "layout_smart_hubs": "Smart Hubs",
+      "layout_minimal": "Compatto",
+      "layout_classic": "Classico"
     },
     "es": {
       "weekly": "Hogar",
@@ -3979,7 +4055,7 @@
       "tab_impressum": "Aviso Legal (\xA7 5 DDG)",
       "tab_privacy": "Privacidad y RGPD",
       "tab_licenses": "Licencias y Descargo",
-      "history_subtitle": "L\xEDnea de tiempo visual y avances en el desarrollo de Flow",
+      "history_subtitle": "L\xEDnea de tiempo visual y avances en el desarrollo de Noodle",
       "settings_modal_title": "Ajustes y Cumplimiento Legal",
       "settings_modal_subtitle": "Configuraci\xF3n, pol\xEDtica de privacidad y licencias de c\xF3digo abierto",
       "setting_default_workspace": "\xC1rea de trabajo por defecto al iniciar",
@@ -3988,25 +4064,35 @@
       "setting_clear_data_confirm": "\xBFEst\xE1s seguro de que deseas borrar definitivamente todos los datos locales y restablecer la app?",
       "cmd_search_placeholder": "Escribe un comando o busca tareas... (Ctrl+K)",
       "cmd_actions": "Acciones r\xE1pidas",
-      "cmd_tasks": "Tareas coincidentes",
-      "cmd_no_results": "No se encontraron comandos o tareas",
-      "cmd_shortcut_hint": "Usa \u2191 \u2193 para navegar, Enter para seleccionar, Esc para cerrar",
+      "timer_click_toggle_tooltip": "Haz clic para iniciar / pausar [T]",
+      "timer_preset_tooltip": "Duraci\xF3n de concentraci\xF3n (minutos)",
+      "timer_play_btn_tooltip": "Iniciar temporizador [T]",
+      "timer_pause_btn_tooltip": "Pausar temporizador [T]",
+      "timer_stop_btn_tooltip": "Restablecer temporizador [S]",
+      "timer_sound_btn_tooltip": "Activar/desactivar sonido del temporizador",
       "recurrence_label": "Repetir tarea",
       "recurrence_none": "Sin repetici\xF3n",
       "recurrence_daily": "Todos los d\xEDas",
       "recurrence_weekdays": "D\xEDas laborables (Lun-Vie)",
       "recurrence_weekly": "Semanalmente",
       "whatnow": "\xBFY ahora qu\xE9?",
-      "minimal_mode": "Modo Enfoque",
+      "whatnow_tooltip": "\xBFQu\xE9 deber\xEDa hacer ahora? (Ayuda para decidir) [W]",
+      "whatnow_tab_suggestion": "Sugerencia",
+      "whatnow_low": "\u{1F50B} Bajo (2-5m)",
+      "whatnow_med": "\u26A1 Normal",
+      "whatnow_high": "\u{1F525} Alto Enfoque",
+      "minimal_mode": "Enfoque",
       "standard_mode": "Vista Est\xE1ndar",
+      "toast_zen_active": "\u{1F9D8} Modo Enfoque activado (Vista Zen)",
+      "toast_zen_inactive": "\u{1F4CB} Regreso a la vista est\xE1ndar",
       "pause_btn": "Pausa",
       "give_feedback": "Opini\xF3n",
       "feedback": "Opini\xF3n",
-      "feedback_desc": "\xBFQu\xE9 te parece Flow? \xA1Tus sugerencias nos ayudan a seguir mejorando!",
+      "feedback_desc": "\xBFQu\xE9 te parece Noodle? \xA1Tus sugerencias nos ayudan a seguir mejorando!",
       "feedback_placeholder": "Comparte tus pensamientos, ideas o propuestas...",
       "feedback_greet": "\xA1Hola! \u{1F44B}",
-      "feedback_prompt": "\xBFTienes comentarios, cr\xEDticas o ideas para Flow? \xA1Escr\xEDbenos un mensaje!",
-      "feedback_alt": "o env\xEDa un correo a support@flow-planner.app",
+      "feedback_prompt": "\xBFTienes comentarios, cr\xEDticas o ideas para Noodle? \xA1Escr\xEDbenos un mensaje!",
+      "feedback_alt": "o env\xEDa un correo a support@noodlestudio.app",
       "feedback_send_tooltip": "Enviar comentarios directamente al creador",
       "send": "Enviar",
       "login_btn": "Iniciar sesi\xF3n",
@@ -4040,13 +4126,17 @@
       "dock_inspire": "Inspiraci\xF3n",
       "dock_clarity": "Claridad",
       "dock_impulse": "Impulso",
-      "dock_audio": "Audio",
+      "dock_audio": "Sonido",
       "dock_daily": "Cotidiano",
       "dock_beats": "Ritmos",
       "dock_workout": "Entrenamiento",
       "dock_matrix": "Matriz",
       "dock_gamification": "Arcade",
       "weather_title": "Clima Local",
+      "weather_placeholder": "Ingresa o elige ciudad...",
+      "weather_gps_tooltip": "Mi ubicaci\xF3n (GPS)",
+      "weather_unit_tooltip": "Cambiar unidad (\xB0C / \xB0F)",
+      "cal_tooltip": "Calendario y Vista mensual",
       "news_title": "Daily Digest",
       "clarity_title": "Claridad y Control de Impulsos",
       "clarity_subtitle": "Supera los antojos, frena impulsos no deseados y fortalece el autocontrol",
@@ -4077,7 +4167,7 @@
       "stop": "Detener",
       "steps_btn": "Pasos",
       "steps_tab": "Pasos",
-      "pick_desc": "\xBFTe sientes bloqueado? Deja que Flow elija la mejor tarea seg\xFAn tu prioridad actual:",
+      "pick_desc": "\xBFTe sientes bloqueado? Deja que Noodle elija la mejor tarea seg\xFAn tu prioridad actual:",
       "next_suggestion": "\u{1F3B2} Siguiente Tarea",
       "steps_desc": "Selecciona una tarea para ver el desglose detallado paso a paso:",
       "start_timer": "Iniciar Temporizador",
@@ -4175,9 +4265,9 @@
       "sound_afrobeats": "Afrobeats",
       "sound_swing": "Swing & Jazz",
       "sound_boombap": "Boom-Bap",
-      "guide_title": "Gu\xEDa de Inicio R\xE1pido de Flow",
+      "guide_title": "Gu\xEDa de Inicio R\xE1pido de Noodle",
       "guide_desc": "Haz clic en un elemento para abrirlo directamente. \xA1Usa los atajos de teclado fuera de los campos de texto!",
-      "guide_focus_mode_title": "Modo Enfoque",
+      "guide_focus_mode_title": "Enfoque",
       "guide_focus_mode_desc": "Oculta las distracciones para mostrar solo tu tarea prioritaria en una vista Zen tranquila.",
       "guide_focus_mode_key": "Tecla [F]",
       "guide_timer_title": "Temporizador de Enfoque",
@@ -4208,7 +4298,7 @@
       "guide_shortcuts_title": "M\xE1s Atajos",
       "guide_shortcuts_desc": "\u2022 <b>Tecla [U]</b>: Deshacer \xFAltima acci\xF3n<br>\u2022 <b>Tecla [A]</b>: A\xF1adir cita<br>\u2022 <b>Tecla [B]</b>: Abrir Impulso y Enfoque<br>\u2022 <b>Tecla [I]</b>: Inspiraci\xF3n diaria<br>\u2022 <b>Tecla [H]</b>: Abrir/cerrar esta gu\xEDa<br>\u2022 <b>Tecla [Esc]</b>: Cerrar ventanas",
       "guide_shortcuts_key": "M\xFAltiples",
-      "guide_footer_local": "Flow Suite \xB7 Local-First",
+      "guide_footer_local": "Noodle Suite \xB7 Local-First",
       "guide_footer_privacy": "Privacidad y Aviso Legal",
       "pause_panel_title": "Pausa Sensorial y Recuperaci\xF3n",
       "pause_breath_title": "Respiraci\xF3n 4-4-4",
@@ -4217,14 +4307,13 @@
       "pause_grounding_sub": "Te devuelve al momento presente",
       "pause_stretch_title": "Estiramiento de Cuerpo y Cuello",
       "pause_stretch_sub": "2 minutos de estiramiento suave",
-      "pause_nap_title": "Power Nap (20 Min) \u{1F634}",
-      "pause_nap_sub": "Descanso breve con lluvia suave",
+      "pause_eyes_title": "Pausa Ocular 20-20-20 & Palming",
+      "pause_eyes_sub": "20s descanso de pantalla y palmas c\xE1lidas",
       "settings_dropdown_title": "Ajustes",
       "settings_btn_fullscreen": "Pantalla completa \u2197",
-      "settings_section_theme": "\u{1F3A8} Tema de Color (16 Temas)",
+      "settings_section_theme": "\u{1F3A8} Tema de Color",
       "settings_section_lang": "\u{1F310} Elegir Idioma",
-      "settings_p2p_sync": "Sincronizaci\xF3n M\xF3vil",
-      "settings_privacy_btn": "Privacidad",
+      "settings_p2p_sync": "Sync M\xF3vil",
       "audio_center_title": "Centro de Audio",
       "audio_center_subtitle": "Enfoque, Ritmos y Estudio Mix",
       "audio_tab_ambient": "Sonidos de la Naturaleza",
@@ -4262,7 +4351,7 @@
       "mobile_quick_stats_title": "Estad\xEDsticas",
       "mobile_quick_stats_sub": "Resumen semanal",
       "mobile_quick_theme_title": "Tema de Color",
-      "mobile_quick_theme_sub": "16 Temas",
+      "mobile_quick_theme_sub": "12 Temas",
       "mobile_quick_lang_title": "Idioma",
       "mobile_quick_lang_sub": "6 Idiomas",
       "mobile_quick_whatnow_title": "\xBFY ahora qu\xE9?",
@@ -4298,7 +4387,11 @@
       "mobile_tools_whatnow_badge": "Impulso",
       "mobile_tools_whatnow_title": "\xBFY ahora qu\xE9?",
       "mobile_tools_whatnow_sub": "Sugerencia por Energ\xEDa",
-      "mobile_audio_synth_title": "Ritmos de Sintetizador"
+      "mobile_audio_synth_title": "Ritmos de Sintetizador",
+      "settings_header_layout": "Dise\xF1o de Cabecera",
+      "layout_smart_hubs": "Smart Hubs",
+      "layout_minimal": "Compacto",
+      "layout_classic": "Cl\xE1sico"
     },
     "el": {
       "weekly": "\u03A3\u03C0\u03AF\u03C4\u03B9",
@@ -4343,7 +4436,7 @@
       "tab_impressum": "\u039D\u03BF\u03BC\u03B9\u03BA\u03AE \u03A3\u03B7\u03BC\u03B5\u03AF\u03C9\u03C3\u03B7 (\xA7 5 DDG)",
       "tab_privacy": "\u03A0\u03C1\u03BF\u03C3\u03C4\u03B1\u03C3\u03AF\u03B1 \u0394\u03B5\u03B4\u03BF\u03BC\u03AD\u03BD\u03C9\u03BD & GDPR",
       "tab_licenses": "\u0386\u03B4\u03B5\u03B9\u03B5\u03C2 \u03A7\u03C1\u03AE\u03C3\u03B7\u03C2 & \u0391\u03C0\u03BF\u03C0\u03BF\u03AF\u03B7\u03C3\u03B7",
-      "history_subtitle": "\u039F\u03C0\u03C4\u03B9\u03BA\u03CC \u03C7\u03C1\u03BF\u03BD\u03BF\u03BB\u03CC\u03B3\u03B9\u03BF \u03BA\u03B1\u03B9 \u03BF\u03C1\u03CC\u03C3\u03B7\u03BC\u03B1 \u03B1\u03BD\u03AC\u03C0\u03C4\u03C5\u03BE\u03B7\u03C2 \u03C4\u03BF\u03C5 Flow",
+      "history_subtitle": "\u039F\u03C0\u03C4\u03B9\u03BA\u03CC \u03C7\u03C1\u03BF\u03BD\u03BF\u03BB\u03CC\u03B3\u03B9\u03BF \u03BA\u03B1\u03B9 \u03BF\u03C1\u03CC\u03C3\u03B7\u03BC\u03B1 \u03B1\u03BD\u03AC\u03C0\u03C4\u03C5\u03BE\u03B7\u03C2 \u03C4\u03BF\u03C5 Noodle",
       "settings_modal_title": "\u03A1\u03C5\u03B8\u03BC\u03AF\u03C3\u03B5\u03B9\u03C2 & \u039D\u03BF\u03BC\u03B9\u03BA\u03AE \u03A3\u03C5\u03BC\u03BC\u03CC\u03C1\u03C6\u03C9\u03C3\u03B7",
       "settings_modal_subtitle": "\u0394\u03B9\u03B1\u03BC\u03CC\u03C1\u03C6\u03C9\u03C3\u03B7, \u03C0\u03BF\u03BB\u03B9\u03C4\u03B9\u03BA\u03AE \u03B1\u03C0\u03BF\u03C1\u03C1\u03AE\u03C4\u03BF\u03C5 \u03BA\u03B1\u03B9 \u03AC\u03B4\u03B5\u03B9\u03B5\u03C2 \u03B1\u03BD\u03BF\u03B9\u03C7\u03C4\u03BF\u03CD \u03BA\u03CE\u03B4\u03B9\u03BA\u03B1",
       "setting_default_workspace": "\u03A0\u03C1\u03BF\u03B5\u03C0\u03B9\u03BB\u03B5\u03B3\u03BC\u03AD\u03BD\u03BF\u03C2 \u03C7\u03CE\u03C1\u03BF\u03C2 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1\u03C2 \u03BA\u03B1\u03C4\u03AC \u03C4\u03B7\u03BD \u03B5\u03BA\u03BA\u03AF\u03BD\u03B7\u03C3\u03B7",
@@ -4352,25 +4445,35 @@
       "setting_clear_data_confirm": "\u0395\u03AF\u03C3\u03B1\u03B9 \u03C3\u03AF\u03B3\u03BF\u03C5\u03C1\u03BF\u03C2 \u03CC\u03C4\u03B9 \u03B8\u03AD\u03BB\u03B5\u03B9\u03C2 \u03BD\u03B1 \u03B4\u03B9\u03B1\u03B3\u03C1\u03AC\u03C8\u03B5\u03B9\u03C2 \u03BF\u03C1\u03B9\u03C3\u03C4\u03B9\u03BA\u03AC \u03CC\u03BB\u03B1 \u03C4\u03B1 \u03C4\u03BF\u03C0\u03B9\u03BA\u03AC \u03B4\u03B5\u03B4\u03BF\u03BC\u03AD\u03BD\u03B1 \u03BA\u03B1\u03B9 \u03BD\u03B1 \u03B5\u03C0\u03B1\u03BD\u03B1\u03C6\u03AD\u03C1\u03B5\u03B9\u03C2 \u03C4\u03B7\u03BD \u03B5\u03C6\u03B1\u03C1\u03BC\u03BF\u03B3\u03AE;",
       "cmd_search_placeholder": "\u03A0\u03BB\u03B7\u03BA\u03C4\u03C1\u03BF\u03BB\u03CC\u03B3\u03B7\u03C3\u03B5 \u03B5\u03BD\u03C4\u03BF\u03BB\u03AE \u03AE \u03B1\u03BD\u03B1\u03B6\u03AE\u03C4\u03B7\u03C3\u03B5 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B5\u03C2... (Ctrl+K)",
       "cmd_actions": "\u0393\u03C1\u03AE\u03B3\u03BF\u03C1\u03B5\u03C2 \u03B5\u03BD\u03AD\u03C1\u03B3\u03B5\u03B9\u03B5\u03C2",
-      "cmd_tasks": "\u0391\u03C0\u03BF\u03C4\u03B5\u03BB\u03AD\u03C3\u03BC\u03B1\u03C4\u03B1 \u03B5\u03C1\u03B3\u03B1\u03C3\u03B9\u03CE\u03BD",
-      "cmd_no_results": "\u0394\u03B5\u03BD \u03B2\u03C1\u03AD\u03B8\u03B7\u03BA\u03B1\u03BD \u03B5\u03BD\u03C4\u03BF\u03BB\u03AD\u03C2 \u03AE \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B5\u03C2",
-      "cmd_shortcut_hint": "\u03A7\u03C1\u03B7\u03C3\u03B9\u03BC\u03BF\u03C0\u03BF\u03AF\u03B7\u03C3\u03B5 \u2191 \u2193 \u03B3\u03B9\u03B1 \u03C0\u03BB\u03BF\u03AE\u03B3\u03B7\u03C3\u03B7, Enter \u03B3\u03B9\u03B1 \u03B5\u03C0\u03B9\u03BB\u03BF\u03B3\u03AE, Esc \u03B3\u03B9\u03B1 \u03AD\u03BE\u03BF\u03B4\u03BF",
+      "timer_click_toggle_tooltip": "\u039A\u03BB\u03B9\u03BA \u03B3\u03B9\u03B1 \u03AD\u03BD\u03B1\u03C1\u03BE\u03B7 / \u03C0\u03B1\u03CD\u03C3\u03B7 [T]",
+      "timer_preset_tooltip": "\u0394\u03B9\u03AC\u03C1\u03BA\u03B5\u03B9\u03B1 \u03C3\u03C5\u03B3\u03BA\u03AD\u03BD\u03C4\u03C1\u03C9\u03C3\u03B7\u03C2 (\u03BB\u03B5\u03C0\u03C4\u03AC)",
+      "timer_play_btn_tooltip": "\u0388\u03BD\u03B1\u03C1\u03BE\u03B7 \u03C7\u03C1\u03BF\u03BD\u03BF\u03BC\u03AD\u03C4\u03C1\u03BF\u03C5 [T]",
+      "timer_pause_btn_tooltip": "\u03A0\u03B1\u03CD\u03C3\u03B7 \u03C7\u03C1\u03BF\u03BD\u03BF\u03BC\u03AD\u03C4\u03C1\u03BF\u03C5 [T]",
+      "timer_stop_btn_tooltip": "\u0395\u03C0\u03B1\u03BD\u03B1\u03C6\u03BF\u03C1\u03AC \u03C7\u03C1\u03BF\u03BD\u03BF\u03BC\u03AD\u03C4\u03C1\u03BF\u03C5 [S]",
+      "timer_sound_btn_tooltip": "\u0395\u03BD\u03B1\u03BB\u03BB\u03B1\u03B3\u03AE \u03AE\u03C7\u03BF\u03C5 \u03C7\u03C1\u03BF\u03BD\u03BF\u03BC\u03AD\u03C4\u03C1\u03BF\u03C5",
       "recurrence_label": "\u0395\u03C0\u03B1\u03BD\u03AC\u03BB\u03B7\u03C8\u03B7 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1\u03C2",
       "recurrence_none": "\u03A7\u03C9\u03C1\u03AF\u03C2 \u03B5\u03C0\u03B1\u03BD\u03AC\u03BB\u03B7\u03C8\u03B7",
       "recurrence_daily": "\u039A\u03B1\u03B8\u03B7\u03BC\u03B5\u03C1\u03B9\u03BD\u03AC",
       "recurrence_weekdays": "\u039A\u03B1\u03B8\u03B7\u03BC\u03B5\u03C1\u03B9\u03BD\u03AD\u03C2 (\u0394\u03B5\u03C5\u03C4-\u03A0\u03B1\u03C1)",
       "recurrence_weekly": "\u0395\u03B2\u03B4\u03BF\u03BC\u03B1\u03B4\u03B9\u03B1\u03AF\u03B1",
-      "whatnow": "\u039A\u03B1\u03B9 \u03C4\u03CE\u03C1\u03B1 \u03C4\u03B9;",
-      "minimal_mode": "\u039B\u03B5\u03B9\u03C4\u03BF\u03C5\u03C1\u03B3\u03AF\u03B1 \u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7\u03C2",
+      "whatnow": "\u03A4\u03B9 \u03BD\u03B1 \u03BA\u03AC\u03BD\u03C9;",
+      "whatnow_tooltip": "\u03A4\u03B9 \u03BD\u03B1 \u03BA\u03AC\u03BD\u03C9 \u03BC\u03B5\u03C4\u03AC; (\u0392\u03BF\u03B7\u03B8\u03CC\u03C2 \u03B1\u03C0\u03CC\u03C6\u03B1\u03C3\u03B7\u03C2) [W]",
+      "whatnow_tab_suggestion": "\u03A0\u03C1\u03CC\u03C4\u03B1\u03C3\u03B7",
+      "whatnow_low": "\u{1F50B} \u03A7\u03B1\u03BC\u03B7\u03BB\u03AE (2-5m)",
+      "whatnow_med": "\u26A1 \u039A\u03B1\u03BD\u03BF\u03BD\u03B9\u03BA\u03AE",
+      "whatnow_high": "\u{1F525} \u03A5\u03C8\u03B7\u03BB\u03AE \u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7",
+      "minimal_mode": "\u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7",
       "standard_mode": "\u0392\u03B1\u03C3\u03B9\u03BA\u03AE \u03A0\u03C1\u03BF\u03B2\u03BF\u03BB\u03AE",
+      "toast_zen_active": "\u{1F9D8} \u0395\u03BD\u03B5\u03C1\u03B3\u03BF\u03C0\u03BF\u03B9\u03AE\u03B8\u03B7\u03BA\u03B5 \u03B7 \u039B\u03B5\u03B9\u03C4\u03BF\u03C5\u03C1\u03B3\u03AF\u03B1 \u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7\u03C2 (\u03A0\u03C1\u03BF\u03B2\u03BF\u03BB\u03AE Zen)",
+      "toast_zen_inactive": "\u{1F4CB} \u0395\u03C0\u03B9\u03C3\u03C4\u03C1\u03BF\u03C6\u03AE \u03C3\u03C4\u03B7 \u03B2\u03B1\u03C3\u03B9\u03BA\u03AE \u03C0\u03C1\u03BF\u03B2\u03BF\u03BB\u03AE",
       "pause_btn": "\u03A0\u03B1\u03CD\u03C3\u03B7",
       "give_feedback": "\u03A3\u03C7\u03CC\u03BB\u03B9\u03B1",
       "feedback": "\u03A3\u03C7\u03CC\u03BB\u03B9\u03B1",
-      "feedback_desc": "\u03A0\u03CE\u03C2 \u03C3\u03BF\u03C5 \u03C6\u03B1\u03AF\u03BD\u03B5\u03C4\u03B1\u03B9 \u03C4\u03BF Flow; \u039F\u03B9 \u03C0\u03B1\u03C1\u03B1\u03C4\u03B7\u03C1\u03AE\u03C3\u03B5\u03B9\u03C2 \u03C3\u03BF\u03C5 \u03BC\u03B1\u03C2 \u03B2\u03BF\u03B7\u03B8\u03BF\u03CD\u03BD \u03BD\u03B1 \u03C4\u03BF \u03B5\u03BE\u03B5\u03BB\u03AF\u03C3\u03C3\u03BF\u03C5\u03BC\u03B5 \u03B4\u03B9\u03B1\u03C1\u03BA\u03CE\u03C2!",
+      "feedback_desc": "\u03A0\u03CE\u03C2 \u03C3\u03BF\u03C5 \u03C6\u03B1\u03AF\u03BD\u03B5\u03C4\u03B1\u03B9 \u03C4\u03BF Noodle; \u039F\u03B9 \u03C0\u03B1\u03C1\u03B1\u03C4\u03B7\u03C1\u03AE\u03C3\u03B5\u03B9\u03C2 \u03C3\u03BF\u03C5 \u03BC\u03B1\u03C2 \u03B2\u03BF\u03B7\u03B8\u03BF\u03CD\u03BD \u03BD\u03B1 \u03C4\u03BF \u03B5\u03BE\u03B5\u03BB\u03AF\u03C3\u03C3\u03BF\u03C5\u03BC\u03B5 \u03B4\u03B9\u03B1\u03C1\u03BA\u03CE\u03C2!",
       "feedback_placeholder": "\u039C\u03BF\u03B9\u03C1\u03AC\u03C3\u03BF\u03C5 \u03C4\u03B9\u03C2 \u03C3\u03BA\u03AD\u03C8\u03B5\u03B9\u03C2, \u03B9\u03B4\u03AD\u03B5\u03C2 \u03AE \u03C0\u03C1\u03BF\u03C4\u03AC\u03C3\u03B5\u03B9\u03C2 \u03C3\u03BF\u03C5...",
       "feedback_greet": "\u0393\u03B5\u03B9\u03B1 \u03C3\u03BF\u03C5! \u{1F44B}",
-      "feedback_prompt": "\u0388\u03C7\u03B5\u03B9\u03C2 \u03C3\u03C7\u03CC\u03BB\u03B9\u03B1, \u03C0\u03B1\u03C1\u03B1\u03C4\u03B7\u03C1\u03AE\u03C3\u03B5\u03B9\u03C2 \u03AE \u03BD\u03AD\u03B5\u03C2 \u03B9\u03B4\u03AD\u03B5\u03C2 \u03B3\u03B9\u03B1 \u03C4\u03BF Flow; \u03A3\u03C4\u03B5\u03AF\u03BB\u03B5 \u03BC\u03B1\u03C2 \u03BC\u03AE\u03BD\u03C5\u03BC\u03B1 \u2013 \u03C7\u03B1\u03B9\u03C1\u03CC\u03BC\u03B1\u03C3\u03C4\u03B5 \u03B3\u03B9\u03B1 \u03BA\u03AC\u03B8\u03B5 \u03B5\u03C0\u03B9\u03BA\u03BF\u03B9\u03BD\u03C9\u03BD\u03AF\u03B1!",
-      "feedback_alt": "\u03AE \u03C3\u03C4\u03B5\u03AF\u03BB\u03B5 email \u03C3\u03C4\u03BF support@flow-planner.app",
+      "feedback_prompt": "\u0388\u03C7\u03B5\u03B9\u03C2 \u03C3\u03C7\u03CC\u03BB\u03B9\u03B1, \u03C0\u03B1\u03C1\u03B1\u03C4\u03B7\u03C1\u03AE\u03C3\u03B5\u03B9\u03C2 \u03AE \u03BD\u03AD\u03B5\u03C2 \u03B9\u03B4\u03AD\u03B5\u03C2 \u03B3\u03B9\u03B1 \u03C4\u03BF Noodle; \u03A3\u03C4\u03B5\u03AF\u03BB\u03B5 \u03BC\u03B1\u03C2 \u03BC\u03AE\u03BD\u03C5\u03BC\u03B1 \u2013 \u03C7\u03B1\u03B9\u03C1\u03CC\u03BC\u03B1\u03C3\u03C4\u03B5 \u03B3\u03B9\u03B1 \u03BA\u03AC\u03B8\u03B5 \u03B5\u03C0\u03B9\u03BA\u03BF\u03B9\u03BD\u03C9\u03BD\u03AF\u03B1!",
+      "feedback_alt": "\u03AE \u03C3\u03C4\u03B5\u03AF\u03BB\u03B5 email \u03C3\u03C4\u03BF support@noodlestudio.app",
       "feedback_send_tooltip": "\u0391\u03C0\u03BF\u03C3\u03C4\u03BF\u03BB\u03AE \u03C3\u03C7\u03BF\u03BB\u03AF\u03C9\u03BD \u03B1\u03C0\u03B5\u03C5\u03B8\u03B5\u03AF\u03B1\u03C2 \u03C3\u03C4\u03BF\u03BD \u03B4\u03B7\u03BC\u03B9\u03BF\u03C5\u03C1\u03B3\u03CC",
       "send": "\u0391\u03C0\u03BF\u03C3\u03C4\u03BF\u03BB\u03AE",
       "login_btn": "\u03A3\u03CD\u03BD\u03B4\u03B5\u03C3\u03B7",
@@ -4411,6 +4514,10 @@
       "dock_matrix": "\u039C\u03AE\u03C4\u03C1\u03B1",
       "dock_gamification": "Arcade",
       "weather_title": "\u03A4\u03BF\u03C0\u03B9\u03BA\u03CC\u03C2 \u039A\u03B1\u03B9\u03C1\u03CC\u03C2",
+      "weather_placeholder": "\u0395\u03B9\u03C3\u03B1\u03B3\u03AC\u03B3\u03B5\u03C4\u03B5 \u03AE \u03B5\u03C0\u03B9\u03BB\u03AD\u03BE\u03C4\u03B5 \u03C0\u03CC\u03BB\u03B7...",
+      "weather_gps_tooltip": "\u0397 \u03C4\u03BF\u03C0\u03BF\u03B8\u03B5\u03C3\u03AF\u03B1 \u03BC\u03BF\u03C5 (GPS)",
+      "weather_unit_tooltip": "\u0391\u03BB\u03BB\u03B1\u03B3\u03AE \u03BC\u03BF\u03BD\u03AC\u03B4\u03B1\u03C2 (\xB0C / \xB0F)",
+      "cal_tooltip": "\u0397\u03BC\u03B5\u03C1\u03BF\u03BB\u03CC\u03B3\u03B9\u03BF & \u039C\u03B7\u03BD\u03B9\u03B1\u03AF\u03B1 \u03C0\u03C1\u03BF\u03B2\u03BF\u03BB\u03AE",
       "news_title": "Daily Digest",
       "clarity_title": "\u0394\u03B9\u03B1\u03CD\u03B3\u03B5\u03B9\u03B1 & \u0388\u03BB\u03B5\u03B3\u03C7\u03BF\u03C2 \u03A0\u03B1\u03C1\u03BF\u03C1\u03BC\u03AE\u03C3\u03B5\u03C9\u03BD",
       "clarity_subtitle": "\u039E\u03B5\u03C0\u03AD\u03C1\u03B1\u03C3\u03B5 \u03C4\u03B9\u03C2 \u03C0\u03B1\u03C1\u03BF\u03C1\u03BC\u03AE\u03C3\u03B5\u03B9\u03C2, \u03C3\u03C4\u03B1\u03BC\u03AC\u03C4\u03B1 \u03B1\u03BD\u03B5\u03C0\u03B9\u03B8\u03CD\u03BC\u03B7\u03C4\u03B5\u03C2 \u03C3\u03C5\u03BD\u03AE\u03B8\u03B5\u03B9\u03B5\u03C2 & \u03B5\u03BD\u03AF\u03C3\u03C7\u03C5\u03C3\u03B5 \u03C4\u03B7\u03BD \u03B1\u03C5\u03C4\u03BF\u03BA\u03C5\u03C1\u03B9\u03B1\u03C1\u03C7\u03AF\u03B1",
@@ -4441,7 +4548,7 @@
       "stop": "\u0394\u03B9\u03B1\u03BA\u03BF\u03C0\u03AE",
       "steps_btn": "\u0392\u03AE\u03BC\u03B1\u03C4\u03B1",
       "steps_tab": "\u0392\u03AE\u03BC\u03B1\u03C4\u03B1",
-      "pick_desc": "\u039D\u03B9\u03CE\u03B8\u03B5\u03B9\u03C2 \u03C0\u03AF\u03B5\u03C3\u03B7 \u03B1\u03C0\u03CC \u03C0\u03BF\u03BB\u03BB\u03AD\u03C2 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B5\u03C2; \u0386\u03C6\u03B7\u03C3\u03B5 \u03C4\u03BF Flow \u03BD\u03B1 \u03C3\u03BF\u03C5 \u03C0\u03C1\u03BF\u03C4\u03B5\u03AF\u03BD\u03B5\u03B9 \u03C4\u03B7\u03BD \u03BA\u03B1\u03C4\u03AC\u03BB\u03BB\u03B7\u03BB\u03B7 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1 \u03B2\u03AC\u03C3\u03B5\u03B9 \u03C0\u03C1\u03BF\u03C4\u03B5\u03C1\u03B1\u03B9\u03CC\u03C4\u03B7\u03C4\u03B1\u03C2:",
+      "pick_desc": "\u039D\u03B9\u03CE\u03B8\u03B5\u03B9\u03C2 \u03C0\u03AF\u03B5\u03C3\u03B7 \u03B1\u03C0\u03CC \u03C0\u03BF\u03BB\u03BB\u03AD\u03C2 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B5\u03C2; \u0386\u03C6\u03B7\u03C3\u03B5 \u03C4\u03BF Noodle \u03BD\u03B1 \u03C3\u03BF\u03C5 \u03C0\u03C1\u03BF\u03C4\u03B5\u03AF\u03BD\u03B5\u03B9 \u03C4\u03B7\u03BD \u03BA\u03B1\u03C4\u03AC\u03BB\u03BB\u03B7\u03BB\u03B7 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1 \u03B2\u03AC\u03C3\u03B5\u03B9 \u03C0\u03C1\u03BF\u03C4\u03B5\u03C1\u03B1\u03B9\u03CC\u03C4\u03B7\u03C4\u03B1\u03C2:",
       "next_suggestion": "\u{1F3B2} \u0395\u03C0\u03CC\u03BC\u03B5\u03BD\u03B7 \u0395\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1",
       "steps_desc": "\u0395\u03C0\u03AF\u03BB\u03B5\u03BE\u03B5 \u03BC\u03B9\u03B1 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1 \u03B3\u03B9\u03B1 \u03BD\u03B1 \u03B4\u03B5\u03B9\u03C2 \u03C4\u03B7 \u03BB\u03B5\u03C0\u03C4\u03BF\u03BC\u03B5\u03C1\u03AE \u03BA\u03B1\u03B8\u03BF\u03B4\u03AE\u03B3\u03B7\u03C3\u03B7 \u03B2\u03AE\u03BC\u03B1 \u03C0\u03C1\u03BF\u03C2 \u03B2\u03AE\u03BC\u03B1:",
       "start_timer": "\u0388\u03BD\u03B1\u03C1\u03BE\u03B7 \u03A7\u03C1\u03BF\u03BD\u03BF\u03BC\u03AD\u03C4\u03C1\u03BF\u03C5",
@@ -4539,16 +4646,16 @@
       "sound_afrobeats": "Afrobeats",
       "sound_swing": "Swing & Jazz",
       "sound_boombap": "Boom-Bap",
-      "guide_title": "\u039F\u03B4\u03B7\u03B3\u03CC\u03C2 \u0393\u03C1\u03AE\u03B3\u03BF\u03C1\u03B7\u03C2 \u0395\u03BA\u03BA\u03AF\u03BD\u03B7\u03C3\u03B7\u03C2 Flow",
+      "guide_title": "\u039F\u03B4\u03B7\u03B3\u03CC\u03C2 \u0393\u03C1\u03AE\u03B3\u03BF\u03C1\u03B7\u03C2 \u0395\u03BA\u03BA\u03AF\u03BD\u03B7\u03C3\u03B7\u03C2 Noodle",
       "guide_desc": "\u039A\u03AC\u03BD\u03B5 \u03BA\u03BB\u03B9\u03BA \u03C3\u03B5 \u03BF\u03C0\u03BF\u03B9\u03B1\u03B4\u03AE\u03C0\u03BF\u03C4\u03B5 \u03BB\u03B5\u03B9\u03C4\u03BF\u03C5\u03C1\u03B3\u03AF\u03B1 \u03B3\u03B9\u03B1 \u03AC\u03BC\u03B5\u03C3\u03BF \u03AC\u03BD\u03BF\u03B9\u03B3\u03BC\u03B1. \u03A7\u03C1\u03B7\u03C3\u03B9\u03BC\u03BF\u03C0\u03BF\u03AF\u03B7\u03C3\u03B5 \u03C4\u03B9\u03C2 \u03C3\u03C5\u03BD\u03C4\u03BF\u03BC\u03B5\u03CD\u03C3\u03B5\u03B9\u03C2 \u03C0\u03BB\u03B7\u03BA\u03C4\u03C1\u03BF\u03BB\u03BF\u03B3\u03AF\u03BF\u03C5 \u03CC\u03C0\u03BF\u03C4\u03B5 \u03B2\u03C1\u03AF\u03C3\u03BA\u03B5\u03C3\u03B1\u03B9 \u03B5\u03BA\u03C4\u03CC\u03C2 \u03C0\u03B5\u03B4\u03AF\u03C9\u03BD \u03BA\u03B5\u03B9\u03BC\u03AD\u03BD\u03BF\u03C5!",
-      "guide_focus_mode_title": "\u039B\u03B5\u03B9\u03C4\u03BF\u03C5\u03C1\u03B3\u03AF\u03B1 \u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7\u03C2",
+      "guide_focus_mode_title": "\u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7",
       "guide_focus_mode_desc": "\u039A\u03C1\u03CD\u03B2\u03B5\u03B9 \u03C4\u03BF\u03C5\u03C2 \u03C0\u03B5\u03C1\u03B9\u03C3\u03C0\u03B1\u03C3\u03BC\u03BF\u03CD\u03C2 \u03BA\u03B1\u03B9 \u03C0\u03C1\u03BF\u03B2\u03AC\u03BB\u03BB\u03B5\u03B9 \u03B1\u03C0\u03BF\u03BA\u03BB\u03B5\u03B9\u03C3\u03C4\u03B9\u03BA\u03AC \u03C4\u03B7 \u03C3\u03B7\u03BC\u03B1\u03BD\u03C4\u03B9\u03BA\u03CC\u03C4\u03B5\u03C1\u03B7 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1 \u03C3\u03BF\u03C5 \u03C3\u03B5 \u03AD\u03BD\u03B1 \u03AE\u03C1\u03B5\u03BC\u03BF \u03C0\u03B5\u03C1\u03B9\u03B2\u03AC\u03BB\u03BB\u03BF\u03BD Zen.",
       "guide_focus_mode_key": "\u03A0\u03BB\u03AE\u03BA\u03C4\u03C1\u03BF [F]",
       "guide_timer_title": "\u03A7\u03C1\u03BF\u03BD\u03CC\u03BC\u03B5\u03C4\u03C1\u03BF \u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7\u03C2",
       "guide_timer_desc": "\u039E\u03B5\u03BA\u03AF\u03BD\u03B7\u03C3\u03B5 \u03C3\u03C5\u03B3\u03BA\u03B5\u03BD\u03C4\u03C1\u03C9\u03BC\u03AD\u03BD\u03B5\u03C2 \u03C0\u03B5\u03C1\u03B9\u03CC\u03B4\u03BF\u03C5\u03C2 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1\u03C2 \u03BC\u03B5 \u03C6\u03C9\u03BD\u03B7\u03C4\u03B9\u03BA\u03AE \u03B5\u03BD\u03B8\u03AC\u03C1\u03C1\u03C5\u03BD\u03C3\u03B7 \u03BA\u03B1\u03B9 \u03B1\u03C4\u03BC\u03BF\u03C3\u03C6\u03B1\u03B9\u03C1\u03B9\u03BA\u03CC \u03AE\u03C7\u03BF.",
       "guide_timer_key_start": "\u0388\u03BD\u03B1\u03C1\u03BE\u03B7/\u03A0\u03B1\u03CD\u03C3\u03B7 [T]",
       "guide_timer_key_stop": "\u0394\u03B9\u03B1\u03BA\u03BF\u03C0\u03AE [S]",
-      "guide_whatnow_title": "\u039A\u03B1\u03B9 \u03C4\u03CE\u03C1\u03B1 \u03C4\u03B9;",
+      "guide_whatnow_title": "\u03A4\u03B9 \u03BD\u03B1 \u03BA\u03AC\u03BD\u03C9;",
       "guide_whatnow_desc": "\u039C\u03B5\u03B9\u03CE\u03BD\u03B5\u03B9 \u03C4\u03B7\u03BD \u03BA\u03CC\u03C0\u03C9\u03C3\u03B7 \u03B1\u03C0\u03BF\u03C6\u03AC\u03C3\u03B5\u03C9\u03BD \u03C0\u03C1\u03BF\u03C4\u03B5\u03AF\u03BD\u03BF\u03BD\u03C4\u03B1\u03C2 \u03C4\u03C5\u03C7\u03B1\u03AF\u03B1 \u03BC\u03B9\u03B1 \u03BA\u03B1\u03C4\u03AC\u03BB\u03BB\u03B7\u03BB\u03B7 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1 \u03B2\u03AC\u03C3\u03B5\u03B9 \u03C4\u03B7\u03C2 \u03C0\u03C1\u03BF\u03C4\u03B5\u03C1\u03B1\u03B9\u03CC\u03C4\u03B7\u03C4\u03AC\u03C2 \u03C3\u03BF\u03C5.",
       "guide_whatnow_key": "\u03A0\u03BB\u03AE\u03BA\u03C4\u03C1\u03BF [W]",
       "guide_break_title": "\u03A0\u03B1\u03CD\u03C3\u03B7 & \u0391\u03B9\u03C3\u03B8\u03B7\u03C4\u03B7\u03C1\u03B9\u03B1\u03BA\u03AE \u03A7\u03B1\u03BB\u03AC\u03C1\u03C9\u03C3\u03B7",
@@ -4572,7 +4679,7 @@
       "guide_shortcuts_title": "\u03A0\u03B5\u03C1\u03B9\u03C3\u03C3\u03CC\u03C4\u03B5\u03C1\u03B5\u03C2 \u03A3\u03C5\u03BD\u03C4\u03BF\u03BC\u03B5\u03CD\u03C3\u03B5\u03B9\u03C2",
       "guide_shortcuts_desc": "\u2022 <b>\u03A0\u03BB\u03AE\u03BA\u03C4\u03C1\u03BF [U]</b>: \u0391\u03BD\u03B1\u03AF\u03C1\u03B5\u03C3\u03B7 \u03C4\u03B5\u03BB\u03B5\u03C5\u03C4\u03B1\u03AF\u03B1\u03C2 \u03B5\u03BD\u03AD\u03C1\u03B3\u03B5\u03B9\u03B1\u03C2<br>\u2022 <b>\u03A0\u03BB\u03AE\u03BA\u03C4\u03C1\u03BF [A]</b>: \u039D\u03AD\u03BF \u03C1\u03B1\u03BD\u03C4\u03B5\u03B2\u03BF\u03CD<br>\u2022 <b>\u03A0\u03BB\u03AE\u03BA\u03C4\u03C1\u03BF [B]</b>: \u0386\u03BD\u03BF\u03B9\u03B3\u03BC\u03B1 \u038F\u03B8\u03B7\u03C3\u03B7\u03C2 & \u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7\u03C2<br>\u2022 <b>\u03A0\u03BB\u03AE\u03BA\u03C4\u03C1\u03BF [I]</b>: \u0397\u03BC\u03B5\u03C1\u03AE\u03C3\u03B9\u03B1 \u03AD\u03BC\u03C0\u03BD\u03B5\u03C5\u03C3\u03B7<br>\u2022 <b>\u03A0\u03BB\u03AE\u03BA\u03C4\u03C1\u03BF [H]</b>: \u0386\u03BD\u03BF\u03B9\u03B3\u03BC\u03B1/\u03BA\u03BB\u03B5\u03AF\u03C3\u03B9\u03BC\u03BF \u03BF\u03B4\u03B7\u03B3\u03BF\u03CD<br>\u2022 <b>\u03A0\u03BB\u03AE\u03BA\u03C4\u03C1\u03BF [Esc]</b>: \u039A\u03BB\u03B5\u03AF\u03C3\u03B9\u03BC\u03BF \u03CC\u03BB\u03C9\u03BD \u03C4\u03C9\u03BD \u03C0\u03B1\u03C1\u03B1\u03B8\u03CD\u03C1\u03C9\u03BD",
       "guide_shortcuts_key": "\u03A0\u03BF\u03BB\u03BB\u03B1\u03C0\u03BB\u03AC",
-      "guide_footer_local": "Flow Suite \xB7 Local-First",
+      "guide_footer_local": "Noodle Suite \xB7 Local-First",
       "guide_footer_privacy": "\u03A0\u03C1\u03BF\u03C3\u03C4\u03B1\u03C3\u03AF\u03B1 \u0394\u03B5\u03B4\u03BF\u03BC\u03AD\u03BD\u03C9\u03BD & \u038C\u03C1\u03BF\u03B9",
       "pause_panel_title": "\u03A0\u03B1\u03CD\u03C3\u03B7 & \u0391\u03B9\u03C3\u03B8\u03B7\u03C4\u03B7\u03C1\u03B9\u03B1\u03BA\u03AE \u03A7\u03B1\u03BB\u03AC\u03C1\u03C9\u03C3\u03B7",
       "pause_breath_title": "\u0391\u03BD\u03B1\u03C0\u03BD\u03BF\u03AE 4-4-4",
@@ -4581,14 +4688,13 @@
       "pause_grounding_sub": "\u03A3\u03B5 \u03B5\u03C0\u03B1\u03BD\u03B1\u03C6\u03AD\u03C1\u03B5\u03B9 \u03AC\u03BC\u03B5\u03C3\u03B1 \u03C3\u03C4\u03BF \u03C0\u03B1\u03C1\u03CC\u03BD",
       "pause_stretch_title": "\u0394\u03B9\u03AC\u03C4\u03B1\u03C3\u03B7 \u03A3\u03CE\u03BC\u03B1\u03C4\u03BF\u03C2 & \u0391\u03C5\u03C7\u03AD\u03BD\u03B1",
       "pause_stretch_sub": "2 \u03BB\u03B5\u03C0\u03C4\u03AC \u03B1\u03C0\u03B1\u03BB\u03AE\u03C2 \u03C7\u03B1\u03BB\u03AC\u03C1\u03C9\u03C3\u03B7\u03C2",
-      "pause_nap_title": "Power Nap (20 \u039B\u03B5\u03C0\u03C4\u03AC) \u{1F634}",
-      "pause_nap_sub": "\u03A3\u03CD\u03BD\u03C4\u03BF\u03BC\u03BF\u03C2 \u03CD\u03C0\u03BD\u03BF\u03C2 \u03C5\u03C0\u03CC \u03AE\u03C7\u03BF \u03B1\u03C0\u03B1\u03BB\u03AE\u03C2 \u03B2\u03C1\u03BF\u03C7\u03AE\u03C2",
+      "pause_eyes_title": "\u03A7\u03B1\u03BB\u03AC\u03C1\u03C9\u03C3\u03B7 \u039C\u03B1\u03C4\u03B9\u03CE\u03BD 20-20-20",
+      "pause_eyes_sub": "20\u03B4 \u03BE\u03B5\u03BA\u03BF\u03CD\u03C1\u03B1\u03C3\u03B7 \u03B1\u03C0\u03CC \u03C4\u03B7\u03BD \u03BF\u03B8\u03CC\u03BD\u03B7",
       "settings_dropdown_title": "\u03A1\u03C5\u03B8\u03BC\u03AF\u03C3\u03B5\u03B9\u03C2",
       "settings_btn_fullscreen": "\u03A0\u03BB\u03AE\u03C1\u03B7\u03C2 \u03C0\u03C1\u03BF\u03B2\u03BF\u03BB\u03AE \u2197",
-      "settings_section_theme": "\u{1F3A8} \u03A7\u03C1\u03C9\u03BC\u03B1\u03C4\u03B9\u03BA\u03CC \u0398\u03AD\u03BC\u03B1 (16 \u0395\u03C0\u03B9\u03BB\u03BF\u03B3\u03AD\u03C2)",
+      "settings_section_theme": "\u{1F3A8} \u03A7\u03C1\u03C9\u03BC\u03B1\u03C4\u03B9\u03BA\u03CC \u0398\u03AD\u03BC\u03B1",
       "settings_section_lang": "\u{1F310} \u0395\u03C0\u03B9\u03BB\u03BF\u03B3\u03AE \u0393\u03BB\u03CE\u03C3\u03C3\u03B1\u03C2",
-      "settings_p2p_sync": "\u0396\u03C9\u03BD\u03C4\u03B1\u03BD\u03CC\u03C2 \u03A3\u03C5\u03B3\u03C7\u03C1\u03BF\u03BD\u03B9\u03C3\u03BC\u03CC\u03C2",
-      "settings_privacy_btn": "\u03A0\u03C1\u03BF\u03C3\u03C4\u03B1\u03C3\u03AF\u03B1 \u0394\u03B5\u03B4\u03BF\u03BC\u03AD\u03BD\u03C9\u03BD",
+      "settings_p2p_sync": "\u03A3\u03C5\u03B3\u03C7\u03C1\u03BF\u03BD\u03B9\u03C3\u03BC\u03CC\u03C2",
       "audio_center_title": "\u039A\u03AD\u03BD\u03C4\u03C1\u03BF \u0389\u03C7\u03BF\u03C5",
       "audio_center_subtitle": "\u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7, \u03A1\u03C5\u03B8\u03BC\u03BF\u03AF & Mix Studio",
       "audio_tab_ambient": "\u0389\u03C7\u03BF\u03B9 \u03A6\u03CD\u03C3\u03B7\u03C2",
@@ -4626,10 +4732,10 @@
       "mobile_quick_stats_title": "\u03A3\u03C4\u03B1\u03C4\u03B9\u03C3\u03C4\u03B9\u03BA\u03AC",
       "mobile_quick_stats_sub": "\u0395\u03B2\u03B4\u03BF\u03BC\u03B1\u03B4\u03B9\u03B1\u03AF\u03B1 \u03B1\u03BD\u03AC\u03BB\u03C5\u03C3\u03B7",
       "mobile_quick_theme_title": "\u03A7\u03C1\u03C9\u03BC\u03B1\u03C4\u03B9\u03BA\u03CC \u0398\u03AD\u03BC\u03B1",
-      "mobile_quick_theme_sub": "16 \u0398\u03AD\u03BC\u03B1\u03C4\u03B1",
+      "mobile_quick_theme_sub": "12 \u0398\u03AD\u03BC\u03B1\u03C4\u03B1",
       "mobile_quick_lang_title": "\u0393\u03BB\u03CE\u03C3\u03C3\u03B1",
       "mobile_quick_lang_sub": "6 \u0393\u03BB\u03CE\u03C3\u03C3\u03B5\u03C2",
-      "mobile_quick_whatnow_title": "\u039A\u03B1\u03B9 \u03C4\u03CE\u03C1\u03B1 \u03C4\u03B9;",
+      "mobile_quick_whatnow_title": "\u03A4\u03B9 \u03BD\u03B1 \u03BA\u03AC\u03BD\u03C9;",
       "mobile_quick_whatnow_sub": "\u03A0\u03C1\u03CC\u03C4\u03B1\u03C3\u03B7 \u03B4\u03C1\u03AC\u03C3\u03B7\u03C2",
       "mobile_quick_break_title": "\u03A0\u03B1\u03CD\u03C3\u03B7 \u03A7\u03B1\u03BB\u03AC\u03C1\u03C9\u03C3\u03B7\u03C2",
       "mobile_quick_break_sub": "\u0391\u03BD\u03B1\u03C0\u03BD\u03BF\u03AE & \u0397\u03C1\u03B5\u03BC\u03AF\u03B1",
@@ -4660,9 +4766,13 @@
       "mobile_tools_stats_title": "\u03A0\u03B1\u03C1\u03B1\u03B3\u03C9\u03B3\u03B9\u03BA\u03CC\u03C4\u03B7\u03C4\u03B1",
       "mobile_tools_stats_sub": "\u0395\u03B2\u03B4\u03BF\u03BC\u03B1\u03B4\u03B9\u03B1\u03AF\u03B1 \u0391\u03BD\u03B1\u03C6\u03BF\u03C1\u03AC",
       "mobile_tools_whatnow_badge": "\u038F\u03B8\u03B7\u03C3\u03B7",
-      "mobile_tools_whatnow_title": "\u039A\u03B1\u03B9 \u03C4\u03CE\u03C1\u03B1 \u03C4\u03B9;",
+      "mobile_tools_whatnow_title": "\u03A4\u03B9 \u03BD\u03B1 \u03BA\u03AC\u03BD\u03C9;",
       "mobile_tools_whatnow_sub": "\u03A0\u03C1\u03CC\u03C4\u03B1\u03C3\u03B7 \u03B2\u03AC\u03C3\u03B5\u03B9 \u0395\u03BD\u03AD\u03C1\u03B3\u03B5\u03B9\u03B1\u03C2",
-      "mobile_audio_synth_title": "\u03A1\u03C5\u03B8\u03BC\u03BF\u03AF \u03A3\u03C5\u03BD\u03B8\u03B5\u03C3\u03AC\u03B9\u03B6\u03B5\u03C1"
+      "mobile_audio_synth_title": "\u03A1\u03C5\u03B8\u03BC\u03BF\u03AF \u03A3\u03C5\u03BD\u03B8\u03B5\u03C3\u03AC\u03B9\u03B6\u03B5\u03C1",
+      "settings_header_layout": "\u0394\u03B9\u03AC\u03C4\u03B1\u03BE\u03B7 \u0395\u03C0\u03B9\u03BA\u03B5\u03C6\u03B1\u03BB\u03AF\u03B4\u03B1\u03C2",
+      "layout_smart_hubs": "Smart Hubs",
+      "layout_minimal": "\u03A3\u03C5\u03BC\u03C0\u03B1\u03B3\u03AD\u03C2",
+      "layout_classic": "\u039A\u03BB\u03B1\u03C3\u03B9\u03BA\u03CC"
     }
   };
   if (typeof window !== "undefined") {
@@ -4733,6 +4843,11 @@
         SYNC_API_URL: "api-sync.php"
       };
     }
+    function getApiUrl(action) {
+      const config = getConfig();
+      const base = config.SYNC_API_URL || "api-sync.php";
+      return `${base}?action=${encodeURIComponent(action)}`;
+    }
     function getSupabaseLib() {
       if (typeof supabase !== "undefined" && typeof supabase.createClient === "function") {
         return supabase;
@@ -4752,14 +4867,12 @@
           const storedEmail = localStorage.getItem("flow_sync_email");
           if (storedToken) {
             customSyncToken = storedToken;
-            if (storedEmail && !currentUser) {
-              currentUser = { id: storedToken, email: storedEmail, isTokenOnly: true };
-            }
+            currentUser = { id: storedToken, email: storedEmail || "Angemeldet", isTokenOnly: true };
           }
         }
         const supaLib = getSupabaseLib();
         const config = getConfig();
-        if (supaLib && config && config.SUPABASE_URL && config.SUPABASE_ANON_KEY) {
+        if (supaLib && config && config.SUPABASE_URL && config.SUPABASE_ANON_KEY && config.SUPABASE_ANON_KEY !== "dummy_anon_key") {
           supabaseClient = supaLib.createClient(config.SUPABASE_URL, config.SUPABASE_ANON_KEY, {
             auth: {
               persistSession: true,
@@ -4772,7 +4885,7 @@
               setSession(data.session);
             }
           }).catch((err) => {
-            console.warn("[FlowAuth] Could not retrieve session (offline or unconfigured):", err.message);
+            console.warn("[FlowAuth] Could not retrieve Supabase session:", err.message);
           });
           supabaseClient.auth.onAuthStateChange((event, session) => {
             setSession(session);
@@ -4784,7 +4897,7 @@
     }
     function setSession(session) {
       currentSession = session;
-      currentUser = session ? session.user : customSyncToken ? { id: customSyncToken, email: localStorage.getItem("flow_sync_email") || "Ger\xE4te-Kopplung" } : null;
+      currentUser = session ? session.user : customSyncToken ? { id: customSyncToken, email: (typeof localStorage !== "undefined" ? localStorage.getItem("flow_sync_email") : "") || "Ger\xE4te-Kopplung" } : null;
       if (session && session.user && typeof localStorage !== "undefined") {
         localStorage.setItem("flow_sync_token", session.user.id);
         localStorage.setItem("flow_sync_email", session.user.email || "");
@@ -4810,6 +4923,73 @@
         }
       });
     }
+    async function signInWithCredentials(email, password) {
+      if (!email || !email.trim() || !email.includes("@")) {
+        return { success: false, error: "Bitte gib eine g\xFCltige E-Mail-Adresse ein." };
+      }
+      if (!password || password.length < 4) {
+        return { success: false, error: "Bitte gib ein Passwort / PIN mit mindestens 4 Zeichen ein." };
+      }
+      const trimmedEmail = email.trim().toLowerCase();
+      if (typeof navigator !== "undefined" && !navigator.onLine) {
+        return { success: false, error: "Keine Internetverbindung. Bitte stelle eine Verbindung her." };
+      }
+      try {
+        const res = await fetch(getApiUrl("auth_login"), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: trimmedEmail, password })
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) {
+          return { success: false, error: json.error || "Anmeldung fehlgeschlagen." };
+        }
+        setDirectPairingToken(json.token, trimmedEmail);
+        return { success: true, email: trimmedEmail, token: json.token };
+      } catch (e) {
+        return { success: false, error: "Verbindungsfehler zum Server. Bitte erneut versuchen." };
+      }
+    }
+    async function createPairingCode() {
+      const token = getSyncToken();
+      if (!token) {
+        return { success: false, error: "Bitte melde dich zuerst an." };
+      }
+      try {
+        const res = await fetch(getApiUrl("create_pair_code"), {
+          method: "GET",
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) {
+          return { success: false, error: json.error || "Code-Erstellung fehlgeschlagen." };
+        }
+        return { success: true, code: json.code, expiresIn: json.expires_in_seconds };
+      } catch (e) {
+        return { success: false, error: "Verbindungsfehler zum Server." };
+      }
+    }
+    async function confirmPairingCode(code) {
+      if (!code || !/^\d{6}$/.test(String(code).trim())) {
+        return { success: false, error: "Bitte gib den 6-stelligen Zahlencode ein." };
+      }
+      const cleanCode = String(code).trim();
+      try {
+        const res = await fetch(getApiUrl("confirm_pair_code"), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code: cleanCode })
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) {
+          return { success: false, error: json.error || "Kopplungscode ung\xFCltig oder abgelaufen." };
+        }
+        setDirectPairingToken(json.token, "Gekoppeltes Ger\xE4t");
+        return { success: true, token: json.token };
+      } catch (e) {
+        return { success: false, error: "Verbindungsfehler beim Koppeln." };
+      }
+    }
     async function signInWithMagicLink(email) {
       if (!email || !email.trim() || !email.includes("@")) {
         return { success: false, error: "Bitte gib eine g\xFCltige E-Mail-Adresse ein." };
@@ -4822,27 +5002,25 @@
       if (!supabaseClient && supaLib) {
         init();
       }
-      if (!supabaseClient) {
-        return { success: false, error: "Supabase Authentifizierungs-Dienst ist offline oder nicht konfiguriert." };
-      }
-      try {
-        let redirectUrl = "https://cableblues.github.io/Flow-Organiser/";
-        if (typeof window !== "undefined" && window.location && window.location.origin) {
-          redirectUrl = window.location.origin + window.location.pathname;
-        }
-        const { data, error } = await supabaseClient.auth.signInWithOtp({
-          email: trimmedEmail,
-          options: {
-            emailRedirectTo: redirectUrl
+      if (supabaseClient) {
+        try {
+          let redirectUrl = "https://cableblues.github.io/Flow-Organiser/";
+          if (typeof window !== "undefined" && window.location && window.location.origin) {
+            redirectUrl = window.location.origin + window.location.pathname;
           }
-        });
-        if (error) {
-          return { success: false, error: error.message || "Fehler beim Senden des Magic Links." };
+          const { data, error } = await supabaseClient.auth.signInWithOtp({
+            email: trimmedEmail,
+            options: { emailRedirectTo: redirectUrl }
+          });
+          if (error) {
+            return { success: false, error: error.message || "Fehler beim Senden des Magic Links." };
+          }
+          return { success: true, data };
+        } catch (e) {
+          return { success: false, error: e.message || "Verbindungsfehler beim Anfordern des Magic Links." };
         }
-        return { success: true, data };
-      } catch (e) {
-        return { success: false, error: e.message || "Verbindungsfehler beim Anfordern des Magic Links." };
       }
+      return await signInWithCredentials(trimmedEmail, "flow_noodle_pass");
     }
     async function signOut() {
       try {
@@ -4858,6 +5036,7 @@
       if (typeof localStorage !== "undefined") {
         localStorage.removeItem("flow_sync_token");
         localStorage.removeItem("flow_sync_email");
+        localStorage.removeItem("flow_pending_sync");
       }
       notifyListeners();
       updateAuthUI();
@@ -4930,6 +5109,9 @@
     }
     return {
       init,
+      signInWithCredentials,
+      createPairingCode,
+      confirmPairingCode,
       signInWithMagicLink,
       signOut,
       getUser,
@@ -5058,12 +5240,12 @@
     }
     return [
       ["daily", "sun"],
-      ["weekly", "calendar-days"],
+      ["weekly", "home"],
       ["todo", "list-todo"],
-      ["done", "check-circle"],
-      ["termine", "clock"],
-      ["notes", "sticky-note"],
-      ["occasionally", "calendar-range"]
+      ["done", "check-circle-2"],
+      ["termine", "calendar"],
+      ["notes", "file-text"],
+      ["occasionally", "clock"]
     ];
   }
   function loadWorkCategoriesOrder() {
@@ -5281,14 +5463,32 @@
         "Lavarsi la faccia"
       ];
       let foundFace = false;
-      s.items.daily = s.items.daily.filter((item2) => {
-        const taskName = typeof item2 === "object" ? item2.task : item2;
+      s.items.daily = s.items.daily.filter((item) => {
+        const taskName = typeof item === "object" ? item.task : item;
         if (faceWashingTerms.includes(taskName)) {
           if (foundFace) return false;
           foundFace = true;
           return true;
         }
         return true;
+      });
+    }
+    const renameOldTask = (list) => {
+      if (!Array.isArray(list)) return;
+      list.forEach((item, i) => {
+        if (typeof item === "string" && item === "Waschbecken & Spiegelschrank") {
+          list[i] = "Waschbecken & Spiegelschrank putzen";
+        } else if (typeof item === "object" && item && item.task === "Waschbecken & Spiegelschrank") {
+          item.task = "Waschbecken & Spiegelschrank putzen";
+        }
+      });
+    };
+    if (s.items) {
+      Object.values(s.items).forEach(renameOldTask);
+    }
+    if (s.workspaces) {
+      Object.values(s.workspaces).forEach((ws) => {
+        if (ws && ws.items) Object.values(ws.items).forEach(renameOldTask);
       });
     }
     return s;
@@ -5334,11 +5534,11 @@
     }
   }
   window.setWorkspace = setWorkspace;
-  function toggleWorkspace2() {
+  function toggleWorkspace() {
     const nextMode = state2 && state2.activeWorkspace === "work" ? "private" : "work";
     setWorkspace(nextMode);
   }
-  window.toggleWorkspace = toggleWorkspace2;
+  window.toggleWorkspace = toggleWorkspace;
   function updateWorkspaceSwitchUI2() {
     const currentWs = state2 && state2.activeWorkspace ? state2.activeWorkspace : "private";
     const toggleBtn = document.getElementById("btn-workspace-toggle");
@@ -5468,7 +5668,7 @@
         const qrLib = typeof QRCode !== "undefined" ? QRCode : typeof window !== "undefined" ? window.QRCode : typeof globalThis !== "undefined" ? globalThis.QRCode : null;
         if (qrLib && typeof qrLib.toString === "function") {
           let svgOut = "";
-          qrLib.toString(text, { type: "svg", margin: 2, width: size, errorCorrectionLevel: "L" }, (err, svg) => {
+          qrLib.toString(text, { type: "svg", margin: 2, width: size, errorCorrectionLevel: "M" }, (err, svg) => {
             if (!err && svg) svgOut = svg;
           });
           if (svgOut) {
@@ -5498,7 +5698,6 @@
         const json = JSON.stringify(minimalState);
         return btoa(unescape(encodeURIComponent(json))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
       } catch (e) {
-        console.error("[P2P] Encode error:", e);
         return "";
       }
     },
@@ -5520,20 +5719,51 @@
         }
         return parsed;
       } catch (e) {
-        console.error("[P2P] Decode error:", e);
         return null;
       }
     }
   };
-  window.MinimalQR = MinimalQR;
-  window.P2PDataCodec = P2PDataCodec;
+  if (typeof window !== "undefined") {
+    window.MinimalQR = MinimalQR;
+    window.P2PDataCodec = P2PDataCodec;
+  }
+  if (typeof globalThis !== "undefined") {
+    globalThis.MinimalQR = MinimalQR;
+    globalThis.P2PDataCodec = P2PDataCodec;
+  }
   var cloudSyncEngine2 = {
     lastSyncTime: null,
     isSyncing: false,
+    syncStatus: "idle",
+    // 'idle' | 'syncing' | 'synced' | 'error' | 'offline'
+    syncError: null,
+    retryCount: 0,
+    retryTimer: null,
     autoSyncTimer: null,
     syncDebounceTimer: null,
     init() {
-      this.checkUrlForIncomingAuth();
+      if (typeof window !== "undefined") {
+        window.addEventListener("online", () => {
+          if (typeof FlowAuth !== "undefined" && FlowAuth.isLoggedIn()) {
+            this.retryCount = 0;
+            this.pullState();
+            if (this.isPendingSync()) {
+              this.pushState();
+            }
+          }
+        });
+        window.addEventListener("offline", () => {
+          this.updateSyncUI("offline");
+        });
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "visible" && typeof FlowAuth !== "undefined" && FlowAuth.isLoggedIn()) {
+            this.pullState();
+            if (this.isPendingSync()) {
+              this.pushState();
+            }
+          }
+        });
+      }
       if (typeof FlowAuth !== "undefined") {
         FlowAuth.subscribe(({ user, token }) => {
           if (token) {
@@ -5545,46 +5775,9 @@
           }
         });
       }
-      if (typeof window !== "undefined") {
-        window.addEventListener("online", () => {
-          if (typeof FlowAuth !== "undefined" && FlowAuth.isLoggedIn()) {
-            this.pullState();
-          }
-        });
-        document.addEventListener("visibilitychange", () => {
-          if (document.visibilityState === "visible" && typeof FlowAuth !== "undefined" && FlowAuth.isLoggedIn()) {
-            this.pullState();
-          }
-        });
-      }
       if (typeof FlowAuth !== "undefined" && FlowAuth.isLoggedIn()) {
         this.pullState();
         this.startAutoSync();
-      }
-    },
-    checkUrlForIncomingAuth() {
-      if (typeof window === "undefined" || !window.location.hash) return;
-      const hash = window.location.hash.substring(1);
-      const params = new URLSearchParams(hash);
-      const authToken = params.get("auth_token");
-      const email = params.get("email") || "";
-      if (authToken && typeof FlowAuth !== "undefined") {
-        try {
-          history.replaceState(null, document.title, window.location.pathname + window.location.search);
-        } catch (e) {
-        }
-        FlowAuth.setDirectPairingToken(authToken, email);
-        if (typeof showToast === "function") {
-          showToast(tr({
-            de: "\u{1F4F1} Erfolgreich mit Cloud-Konto verbunden! \u26A1",
-            en: "\u{1F4F1} Successfully connected to cloud account! \u26A1",
-            es: "\u{1F4F1} \xA1Conectado con \xE9xito a la cuenta en la nube! \u26A1",
-            el: "\u{1F4F1} \u0395\u03C0\u03B9\u03C4\u03C5\u03C7\u03AE\u03C2 \u03C3\u03CD\u03BD\u03B4\u03B5\u03C3\u03B7 \u03BC\u03B5 \u03C4\u03BF \u03BB\u03BF\u03B3\u03B1\u03C1\u03B9\u03B1\u03C3\u03BC\u03CC cloud! \u26A1",
-            fr: "\u{1F4F1} Connect\xE9 avec succ\xE8s au compte cloud ! \u26A1",
-            it: "\u{1F4F1} Connesso con successo al cloud! \u26A1"
-          }));
-        }
-        this.pullState();
       }
     },
     getApiUrl(action) {
@@ -5594,24 +5787,135 @@
       }
       return `${base}?action=${encodeURIComponent(action)}`;
     },
-    async pushState() {
+    isPendingSync() {
+      try {
+        return typeof localStorage !== "undefined" && localStorage.getItem("flow_pending_sync") === "1";
+      } catch (e) {
+        return false;
+      }
+    },
+    markPendingSync() {
+      try {
+        if (typeof localStorage !== "undefined") {
+          localStorage.setItem("flow_pending_sync", "1");
+        }
+      } catch (e) {
+      }
+    },
+    clearPendingSync() {
+      try {
+        if (typeof localStorage !== "undefined") {
+          localStorage.removeItem("flow_pending_sync");
+        }
+      } catch (e) {
+      }
+    },
+    // Vollständige State-Serialisierung (alle Datenbereiche)
+    serializeFullState(stateObj) {
+      const s = stateObj || {};
+      return {
+        items: s.items || {},
+        done: s.done || [],
+        workItems: s.workItems || {},
+        workDone: s.workDone || [],
+        notes: s.notes || [],
+        termine: s.termine || [],
+        shoppingList: s.shoppingList || [],
+        shoppingHistory: s.shoppingHistory || [],
+        shoppingCategories: s.shoppingCategories || [],
+        pantry: s.pantry || [],
+        recipes: s.recipes || [],
+        cookingList: s.cookingList || [],
+        alarms: s.alarms || [],
+        archive: s.archive || [],
+        brainstormIdeas: s.brainstormIdeas || [],
+        clarityLog: s.clarityLog || [],
+        customCategories: s.customCategories || [],
+        categoriesOrder: s.categoriesOrder || [],
+        activeWorkspace: s.activeWorkspace || "private",
+        clientTimestamp: (/* @__PURE__ */ new Date()).toISOString()
+      };
+    },
+    // Intelligenter, nicht-destruktiver 2-Wege-Merge
+    mergeState(localState, remoteData) {
+      if (!localState || !remoteData) return false;
+      let modified = false;
+      function mergeArray(localArr, remoteArr, keyProp = null) {
+        if (!Array.isArray(remoteArr) || remoteArr.length === 0) return localArr || [];
+        if (!Array.isArray(localArr) || localArr.length === 0) return JSON.parse(JSON.stringify(remoteArr));
+        const result = [...localArr];
+        for (const rItem of remoteArr) {
+          if (!rItem) continue;
+          let exists = false;
+          if (keyProp && typeof rItem === "object") {
+            exists = result.some((lItem) => lItem && (lItem[keyProp] === rItem[keyProp] || lItem.id && lItem.id === rItem.id || lItem.text && lItem.text === rItem.text));
+          } else if (typeof rItem === "object") {
+            exists = result.some((lItem) => lItem && (lItem.id && lItem.id === rItem.id || lItem.task && lItem.task === rItem.task || lItem.name && lItem.name === rItem.name || lItem.text && lItem.text === rItem.text || JSON.stringify(lItem) === JSON.stringify(rItem)));
+          } else {
+            exists = result.includes(rItem);
+          }
+          if (!exists) {
+            result.push(rItem);
+            modified = true;
+          }
+        }
+        return result;
+      }
+      function mergeCategoryMap(localMap, remoteMap) {
+        const merged = { ...localMap || {} };
+        if (!remoteMap || typeof remoteMap !== "object") return merged;
+        for (const [cat, rTasks] of Object.entries(remoteMap)) {
+          if (!Array.isArray(rTasks)) continue;
+          if (!merged[cat] || !Array.isArray(merged[cat])) {
+            merged[cat] = [...rTasks];
+            modified = true;
+          } else {
+            const lTasks = merged[cat];
+            const combined = [...lTasks];
+            for (const rt of rTasks) {
+              if (!combined.includes(rt)) {
+                combined.push(rt);
+                modified = true;
+              }
+            }
+            merged[cat] = combined;
+          }
+        }
+        return merged;
+      }
+      if (remoteData.items) localState.items = mergeCategoryMap(localState.items, remoteData.items);
+      if (remoteData.workItems) localState.workItems = mergeCategoryMap(localState.workItems, remoteData.workItems);
+      if (remoteData.done) localState.done = mergeArray(localState.done, remoteData.done, "task");
+      if (remoteData.workDone) localState.workDone = mergeArray(localState.workDone, remoteData.workDone, "task");
+      if (remoteData.notes) localState.notes = mergeArray(localState.notes, remoteData.notes, "id");
+      if (remoteData.termine) localState.termine = mergeArray(localState.termine, remoteData.termine, "id");
+      if (remoteData.shoppingList) localState.shoppingList = mergeArray(localState.shoppingList, remoteData.shoppingList, "name");
+      if (remoteData.shoppingHistory) localState.shoppingHistory = mergeArray(localState.shoppingHistory, remoteData.shoppingHistory);
+      if (remoteData.pantry) localState.pantry = mergeArray(localState.pantry, remoteData.pantry, "id");
+      if (remoteData.recipes) localState.recipes = mergeArray(localState.recipes, remoteData.recipes, "id");
+      if (remoteData.cookingList) localState.cookingList = mergeArray(localState.cookingList, remoteData.cookingList, "id");
+      if (remoteData.alarms) localState.alarms = mergeArray(localState.alarms, remoteData.alarms, "id");
+      if (remoteData.brainstormIdeas) localState.brainstormIdeas = mergeArray(localState.brainstormIdeas, remoteData.brainstormIdeas, "id");
+      if (remoteData.clarityLog) localState.clarityLog = mergeArray(localState.clarityLog, remoteData.clarityLog, "id");
+      if (remoteData.archive) localState.archive = mergeArray(localState.archive, remoteData.archive, "id");
+      return modified;
+    },
+    async pushState(isRetry = false) {
       if (typeof FlowAuth === "undefined" || !FlowAuth.isLoggedIn()) return { skipped: true };
-      if (typeof navigator !== "undefined" && !navigator.onLine) return { offline: true };
+      if (typeof navigator !== "undefined" && !navigator.onLine) {
+        this.markPendingSync();
+        this.scheduleRetry();
+        this.updateSyncUI("offline");
+        return { offline: true };
+      }
       const token = FlowAuth.getSyncToken();
       if (!token) return { skipped: true };
       this.isSyncing = true;
-      this.updateSyncUI();
+      this.updateSyncUI("syncing");
       try {
         const currentState = typeof window !== "undefined" && window.state ? window.state : typeof state !== "undefined" ? state : {};
         const payload = {
-          data: {
-            items: currentState.items || {},
-            done: currentState.done || [],
-            workItems: currentState.workItems || {},
-            workDone: currentState.workDone || [],
-            activeWorkspace: currentState.activeWorkspace || "private",
-            clientTimestamp: (/* @__PURE__ */ new Date()).toISOString()
-          }
+          data: this.serializeFullState(currentState)
         };
         const res = await fetch(this.getApiUrl("push"), {
           method: "POST",
@@ -5622,17 +5926,26 @@
           body: JSON.stringify(payload)
         });
         if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
+          throw new Error(`Server antwortete mit Status ${res.status}`);
         }
         const json = await res.json();
         if (json && json.success) {
+          this.clearPendingSync();
+          this.retryCount = 0;
+          if (this.retryTimer) {
+            clearTimeout(this.retryTimer);
+            this.retryTimer = null;
+          }
           this.lastSyncTime = /* @__PURE__ */ new Date();
-          this.updateSyncUI();
+          this.syncError = null;
+          this.updateSyncUI("synced");
           return { success: true, time: this.lastSyncTime };
         }
-        throw new Error(json.error || "Server error");
+        throw new Error(json.error || "Fehler bei der \xDCbertragung");
       } catch (e) {
-        console.warn("[CloudSync] Push error:", e.message);
+        console.warn("[CloudSync] Push notice:", e.message);
+        this.markPendingSync();
+        this.scheduleRetry();
         this.updateSyncUI("error");
         return { success: false, error: e.message };
       } finally {
@@ -5641,11 +5954,14 @@
     },
     async pullState() {
       if (typeof FlowAuth === "undefined" || !FlowAuth.isLoggedIn()) return { skipped: true };
-      if (typeof navigator !== "undefined" && !navigator.onLine) return { offline: true };
+      if (typeof navigator !== "undefined" && !navigator.onLine) {
+        this.updateSyncUI("offline");
+        return { offline: true };
+      }
       const token = FlowAuth.getSyncToken();
       if (!token) return { skipped: true };
       this.isSyncing = true;
-      this.updateSyncUI();
+      this.updateSyncUI("syncing");
       try {
         const res = await fetch(this.getApiUrl("pull"), {
           method: "GET",
@@ -5658,51 +5974,78 @@
           return await this.pushState();
         }
         if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
+          throw new Error(`Server antwortete mit Status ${res.status}`);
         }
         const json = await res.json();
         if (json && json.success && json.data) {
           const remoteData = json.data;
-          const remoteTime = json.updated_at ? new Date(json.updated_at).getTime() : 0;
           const targetState = typeof window !== "undefined" && window.state ? window.state : typeof state !== "undefined" ? state : null;
-          const localSavedTime = targetState && targetState.lastSaved ? new Date(targetState.lastSaved).getTime() : 0;
-          if (targetState && (remoteTime >= localSavedTime || !localSavedTime)) {
-            if (remoteData.items) targetState.items = remoteData.items;
-            if (remoteData.done) targetState.done = remoteData.done;
-            if (remoteData.workItems) targetState.workItems = remoteData.workItems;
-            if (remoteData.workDone) targetState.workDone = remoteData.workDone;
-            if (remoteData.activeWorkspace) targetState.activeWorkspace = remoteData.activeWorkspace;
+          if (targetState) {
+            try {
+              if (typeof localStorage !== "undefined") {
+                localStorage.setItem("flow_backup_before_sync", JSON.stringify(targetState));
+              }
+            } catch (err) {
+            }
+            const hasChanges = this.mergeState(targetState, remoteData);
             if (typeof saveState === "function") saveState(true);
             if (typeof renderApp === "function") renderApp();
-          } else if (targetState) {
-            await this.pushState();
+            if (hasChanges || this.isPendingSync()) {
+              this.pushState();
+            }
+          }
+          this.retryCount = 0;
+          if (this.retryTimer) {
+            clearTimeout(this.retryTimer);
+            this.retryTimer = null;
           }
           this.lastSyncTime = /* @__PURE__ */ new Date();
-          this.updateSyncUI();
+          this.syncError = null;
+          this.updateSyncUI("synced");
           return { success: true, data: remoteData };
         }
-        throw new Error(json.error || "Invalid pull response");
+        throw new Error(json.error || "Ung\xFCltige Serverantwort");
       } catch (e) {
-        console.warn("[CloudSync] Pull error:", e.message);
+        console.warn("[CloudSync] Pull notice:", e.message);
+        this.scheduleRetry();
         this.updateSyncUI("error");
         return { success: false, error: e.message };
       } finally {
         this.isSyncing = false;
       }
     },
+    scheduleRetry() {
+      if (this.retryTimer) clearTimeout(this.retryTimer);
+      const delay = Math.min(3e3 * Math.pow(2, this.retryCount), 3e4);
+      this.retryCount++;
+      this.retryTimer = setTimeout(() => {
+        if (typeof FlowAuth !== "undefined" && FlowAuth.isLoggedIn()) {
+          if (this.isPendingSync()) {
+            this.pushState(true);
+          } else {
+            this.pullState();
+          }
+        }
+      }, delay);
+    },
     triggerAutoPush() {
       if (typeof FlowAuth === "undefined" || !FlowAuth.isLoggedIn()) return;
+      this.markPendingSync();
       if (this.syncDebounceTimer) clearTimeout(this.syncDebounceTimer);
       this.syncDebounceTimer = setTimeout(() => {
         this.pushState();
-      }, 1500);
+      }, 1200);
     },
     startAutoSync() {
       this.stopAutoSync();
-      const interval = typeof FLOW_CONFIG !== "undefined" && FLOW_CONFIG.AUTO_SYNC_INTERVAL_MS || 3e4;
+      const interval = typeof FLOW_CONFIG !== "undefined" && FLOW_CONFIG.AUTO_SYNC_INTERVAL_MS || 2e4;
       this.autoSyncTimer = setInterval(() => {
         if (typeof document !== "undefined" && document.visibilityState === "visible") {
-          this.pullState();
+          if (this.isPendingSync()) {
+            this.pushState();
+          } else {
+            this.pullState();
+          }
         }
       }, interval);
     },
@@ -5711,298 +6054,52 @@
         clearInterval(this.autoSyncTimer);
         this.autoSyncTimer = null;
       }
+      if (this.retryTimer) {
+        clearTimeout(this.retryTimer);
+        this.retryTimer = null;
+      }
     },
     updateSyncUI(overrideStatus = null) {
       if (typeof document === "undefined") return;
       const statusLabel = document.getElementById("cloud-sync-status-text");
       const syncDot = document.getElementById("cloud-sync-status-dot");
-      if (!statusLabel) return;
-      if (overrideStatus === "error") {
-        statusLabel.innerText = "Verbindungsfehler (Sync pausiert)";
-        if (syncDot) syncDot.className = "w-2 h-2 rounded-full bg-rose-400";
-        return;
+      const modalStatusBadge = document.getElementById("p2p-status-badge");
+      const isLoggedIn = typeof FlowAuth !== "undefined" && FlowAuth.isLoggedIn();
+      let statusText = "Bereit zur Synchronisation";
+      let dotClass = "w-2 h-2 rounded-full bg-emerald-400";
+      let badgeHtml = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span><span>\u2713 Synchronisiert</span>';
+      let badgeClass = "px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center justify-center gap-2";
+      if (!isLoggedIn) {
+        statusText = "Nicht angemeldet (nur lokaler Modus)";
+        dotClass = "w-2 h-2 rounded-full bg-gray-500";
+        badgeHtml = '<span class="w-2 h-2 rounded-full bg-gray-500"></span><span>Lokaler Modus</span>';
+        badgeClass = "px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-gray-400 text-xs font-medium flex items-center justify-center gap-2";
+      } else if (overrideStatus === "error" || overrideStatus === "offline") {
+        statusText = "\u26A0 Synchronisation konnte nicht abgeschlossen werden \u2013 wir versuchen es erneut.";
+        dotClass = "w-2 h-2 rounded-full bg-amber-400 animate-pulse";
+        badgeHtml = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span><span>\u26A0 Sync pausiert \u2013 erneuter Versuch...</span>';
+        badgeClass = "px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-medium flex items-center justify-center gap-2";
+      } else if (this.isSyncing || overrideStatus === "syncing") {
+        statusText = "Synchronisiere...";
+        dotClass = "w-2 h-2 rounded-full bg-amber-400 animate-spin";
+        badgeHtml = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-spin"></span><span>Synchronisiere...</span>';
+        badgeClass = "px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-medium flex items-center justify-center gap-2";
+      } else if (this.lastSyncTime) {
+        const timeStr = this.lastSyncTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        statusText = `\u2713 Synchronisiert (${timeStr} Uhr)`;
+        dotClass = "w-2 h-2 rounded-full bg-emerald-400";
+        badgeHtml = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span><span>\u2713 Synchronisiert (${timeStr} Uhr)</span>`;
+        badgeClass = "px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center justify-center gap-2";
       }
-      if (this.isSyncing) {
-        statusLabel.innerText = "Synchronisiere...";
-        if (syncDot) syncDot.className = "w-2 h-2 rounded-full bg-amber-400 animate-spin";
-        return;
-      }
-      if (typeof FlowAuth !== "undefined" && FlowAuth.isLoggedIn()) {
-        if (this.lastSyncTime) {
-          const timeStr = this.lastSyncTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-          statusLabel.innerText = `Zuletzt synchronisiert um ${timeStr} Uhr`;
-          if (syncDot) syncDot.className = "w-2 h-2 rounded-full bg-emerald-400";
-        } else {
-          statusLabel.innerText = "Bereit zur Synchronisation";
-          if (syncDot) syncDot.className = "w-2 h-2 rounded-full bg-emerald-400";
-        }
-      } else {
-        statusLabel.innerText = "Nicht angemeldet (nur lokaler Modus)";
-        if (syncDot) syncDot.className = "w-2 h-2 rounded-full bg-gray-500";
+      if (statusLabel) statusLabel.innerText = statusText;
+      if (syncDot) syncDot.className = dotClass;
+      if (modalStatusBadge) {
+        modalStatusBadge.className = badgeClass;
+        modalStatusBadge.innerHTML = badgeHtml;
       }
     }
   };
   window.cloudSyncEngine = cloudSyncEngine2;
-  var p2pSyncEngine2 = {
-    roomId: null,
-    isHost: false,
-    peerConnection: null,
-    dataChannel: null,
-    connected: false,
-    signalingChannel: null,
-    lastBroadcastTime: 0,
-    customBaseUrl: "",
-    discoveredLanUrl: "",
-    init() {
-      this.checkUrlForIncomingSync();
-      this.detectLocalLanIp();
-    },
-    detectLocalLanIp() {
-      try {
-        if (typeof window === "undefined" || typeof RTCPeerConnection === "undefined") return;
-        const pc = new RTCPeerConnection({ iceServers: [] });
-        pc.createDataChannel("");
-        pc.createOffer().then((o) => pc.setLocalDescription(o)).catch(() => {
-        });
-        pc.onicecandidate = (e) => {
-          if (!e || !e.candidate || !e.candidate.candidate) return;
-          const match = /([0-9]{1,3}(\.[0-9]{1,3}){3})/.exec(e.candidate.candidate);
-          if (match && match[1] && !match[1].startsWith("127.")) {
-            const lanIp = match[1];
-            const port = window.location.port ? `:${window.location.port}` : "";
-            const path = window.location.pathname || "/";
-            const fullLan = `http://${lanIp}${port}${path}`;
-            this.discoveredLanUrl = fullLan;
-            const ipInput = document.getElementById("p2p-custom-ip-input");
-            if (ipInput && !ipInput.value) {
-              ipInput.value = fullLan;
-            }
-            pc.onicecandidate = null;
-            try {
-              pc.close();
-            } catch (err) {
-            }
-          }
-        };
-        setTimeout(() => {
-          try {
-            pc.close();
-          } catch (err) {
-          }
-        }, 1800);
-      } catch (e) {
-      }
-    },
-    isConnected() {
-      return this.connected;
-    },
-    generateRoomId() {
-      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-      let id = "FLOW-";
-      for (let i = 0; i < 4; i++) {
-        id += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return id;
-    },
-    startHost(customUrl = null) {
-      this.isHost = true;
-      if (!this.roomId) {
-        this.roomId = this.generateRoomId();
-      }
-      let baseUrl = customUrl || this.customBaseUrl;
-      if (!baseUrl) {
-        if (typeof window !== "undefined") {
-          if (window.location.protocol === "file:") {
-            baseUrl = "https://cableblues.github.io/Flow-Organiser/";
-          } else if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-            baseUrl = this.discoveredLanUrl || window.location.origin + window.location.pathname;
-          } else {
-            baseUrl = window.location.origin + window.location.pathname;
-          }
-        } else {
-          baseUrl = "https://cableblues.github.io/Flow-Organiser/";
-        }
-      }
-      const cleanBase = baseUrl.replace(/\/+$/, "");
-      const isUserLoggedIn = typeof FlowAuth !== "undefined" && FlowAuth.isLoggedIn();
-      const syncToken = isUserLoggedIn ? FlowAuth.getSyncToken() : null;
-      const user = isUserLoggedIn ? FlowAuth.getUser() : null;
-      let shareUrl = "";
-      let payload = "";
-      if (isUserLoggedIn && syncToken) {
-        shareUrl = `${cleanBase}/#auth_token=${encodeURIComponent(syncToken)}&email=${encodeURIComponent(user && user.email || "")}`;
-        payload = syncToken;
-        const qrHint = document.getElementById("p2p-qr-hint");
-        if (qrHint) qrHint.innerText = "Scanne den QR-Code mit deinem Zweitger\xE4t, um es direkt mit deinem Konto zu verbinden.";
-      } else {
-        const currentState = typeof window !== "undefined" && window.state ? window.state : typeof state !== "undefined" ? state : {};
-        payload = P2PDataCodec.encodeState(currentState);
-        shareUrl = `${cleanBase}/#sync=${this.roomId}&data=${payload}`;
-        const qrHint = document.getElementById("p2p-qr-hint");
-        if (qrHint) qrHint.innerText = "Halte einfach deine Smartphone-Kamera auf den QR-Code.";
-      }
-      const codeDisplay = document.getElementById("p2p-room-code");
-      if (codeDisplay) codeDisplay.innerText = this.roomId;
-      let qrSvg = MinimalQR.generateQRCodeSVG(shareUrl, 260);
-      if (!qrSvg && shareUrl.includes("&data=")) {
-        const fallbackUrl = `${cleanBase}/#sync=${this.roomId}`;
-        qrSvg = MinimalQR.generateQRCodeSVG(fallbackUrl, 260);
-      }
-      const qrImg = document.getElementById("p2p-qr-img");
-      if (qrImg && qrSvg) {
-        qrImg.src = qrSvg;
-      }
-      const shareInput = document.getElementById("p2p-share-link-input");
-      if (shareInput) shareInput.value = shareUrl;
-      const rawCodeInput = document.getElementById("p2p-raw-payload-input");
-      if (rawCodeInput) rawCodeInput.value = payload;
-      this.setupSignaling(this.roomId, true);
-      this.updateStatusBadge("waiting");
-    },
-    connectAsClient(targetRoomId, compressedData) {
-      this.isHost = false;
-      this.roomId = targetRoomId;
-      if (compressedData) {
-        const imported = P2PDataCodec.decodeState(compressedData);
-        const targetState = typeof window !== "undefined" && window.state ? window.state : typeof state !== "undefined" ? state : null;
-        if (imported && imported.items && targetState) {
-          targetState.items = imported.items;
-          if (imported.done) targetState.done = imported.done;
-          if (imported.workItems) targetState.workItems = imported.workItems;
-          if (imported.workDone) targetState.workDone = imported.workDone;
-          if (imported.ws) targetState.activeWorkspace = imported.ws;
-          if (typeof saveState === "function") saveState(true);
-          if (typeof renderApp === "function") renderApp();
-          if (typeof showToast === "function") {
-            showToast(tr({
-              de: "\u{1F4F1} Plan erfolgreich vom PC \xFCbertragen! \u26A1",
-              en: "\u{1F4F1} Plan successfully transferred from PC! \u26A1",
-              es: "\u{1F4F1} \xA1Plan transferido con \xE9xito desde el PC! \u26A1",
-              el: "\u{1F4F1} \u03A4\u03BF \u03C0\u03BB\u03AC\u03BD\u03BF \u03BC\u03B5\u03C4\u03B1\u03C6\u03AD\u03C1\u03B8\u03B7\u03BA\u03B5 \u03B5\u03C0\u03B9\u03C4\u03C5\u03C7\u03CE\u03C2! \u26A1",
-              fr: "\u{1F4F1} Plan transf\xE9r\xE9 avec succ\xE8s depuis le PC ! \u26A1",
-              it: "\u{1F4F1} Piano trasferito con successo dal PC! \u26A1"
-            }));
-          }
-        }
-      }
-      this.setupSignaling(targetRoomId, false);
-    },
-    setupSignaling(roomId, isHost) {
-      try {
-        if (typeof BroadcastChannel !== "undefined") {
-          if (this.signalingChannel) this.signalingChannel.close();
-          this.signalingChannel = new BroadcastChannel(`flow_p2p_${roomId}`);
-          this.signalingChannel.onmessage = (event) => {
-            const msg = event.data;
-            if (!msg) return;
-            const currentState = typeof window !== "undefined" && window.state ? window.state : typeof state !== "undefined" ? state : {};
-            if (msg.type === "PEER_PING" && isHost) {
-              this.signalingChannel.postMessage({ type: "PEER_PONG", state: currentState });
-              this.setConnectedState(true);
-            } else if (msg.type === "PEER_PONG" && !isHost) {
-              this.setConnectedState(true);
-            } else if (msg.type === "SYNC_DELTA") {
-              this.applyIncomingUpdate(msg.data);
-            }
-          };
-          if (!isHost) {
-            this.signalingChannel.postMessage({ type: "PEER_PING" });
-          }
-        }
-      } catch (e) {
-        console.warn("[P2P] Signaling notice:", e);
-      }
-    },
-    setConnectedState(isConnected) {
-      this.connected = isConnected;
-      this.updateStatusBadge(isConnected ? "connected" : "waiting");
-      if (isConnected && typeof showToast === "function") {
-        showToast(tr({
-          de: "\u{1F7E2} Handy & PC verbunden! Live-Sync aktiv.",
-          en: "\u{1F7E2} Phone & PC connected! Live-sync active.",
-          es: "\u{1F7E2} \xA1Dispositivos conectados! Sincronizaci\xF3n en vivo.",
-          el: "\u{1F7E2} \u03A3\u03C5\u03BD\u03B4\u03AD\u03B8\u03B7\u03BA\u03B5! \u0396\u03C9\u03BD\u03C4\u03B1\u03BD\u03CC\u03C2 \u03C3\u03C5\u03B3\u03C7\u03C1\u03BF\u03BD\u03B9\u03C3\u03BC\u03CC\u03C2 \u03B5\u03BD\u03B5\u03C1\u03B3\u03CC\u03C2.",
-          fr: "\u{1F7E2} Connect\xE9 ! Synchronisation en direct active.",
-          it: "\u{1F7E2} Dispositivi connessi! Sincronizzazione attiva."
-        }));
-      }
-    },
-    updateStatusBadge(status) {
-      const badge = document.getElementById("p2p-status-badge");
-      if (!badge) return;
-      if (status === "connected") {
-        badge.className = "px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold font-mono flex items-center justify-center gap-2 shadow-sm";
-        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span><span>\u{1F7E2} Live-Sync aktiv</span>';
-      } else {
-        badge.className = "px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-medium font-mono flex items-center justify-center gap-2";
-        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span><span>Warte auf Verbindung...</span>';
-      }
-    },
-    broadcastStateUpdate() {
-      const now = Date.now();
-      if (now - this.lastBroadcastTime < 200) return;
-      this.lastBroadcastTime = now;
-      const currentState = typeof window !== "undefined" && window.state ? window.state : typeof state !== "undefined" ? state : {};
-      if (this.signalingChannel) {
-        this.signalingChannel.postMessage({
-          type: "SYNC_DELTA",
-          data: {
-            items: currentState.items,
-            done: currentState.done,
-            workItems: currentState.workItems,
-            workDone: currentState.workDone,
-            activeWorkspace: currentState.activeWorkspace
-          }
-        });
-      }
-    },
-    applyIncomingUpdate(data) {
-      if (!data) return;
-      let changed = false;
-      const targetState = typeof window !== "undefined" && window.state ? window.state : typeof state !== "undefined" ? state : null;
-      if (!targetState) return;
-      if (data.items) {
-        targetState.items = data.items;
-        changed = true;
-      }
-      if (data.done) {
-        targetState.done = data.done;
-        changed = true;
-      }
-      if (data.workItems) {
-        targetState.workItems = data.workItems;
-        changed = true;
-      }
-      if (data.workDone) {
-        targetState.workDone = data.workDone;
-        changed = true;
-      }
-      if (data.activeWorkspace) {
-        targetState.activeWorkspace = data.activeWorkspace;
-        changed = true;
-      }
-      if (changed) {
-        localStorage.setItem("flowPlannerState", JSON.stringify(targetState));
-        if (typeof renderApp === "function") renderApp();
-        if (typeof triggerSparkleEffect === "function") triggerSparkleEffect();
-      }
-    },
-    checkUrlForIncomingSync() {
-      if (typeof window === "undefined" || !window.location.hash) return;
-      const hash = window.location.hash.substring(1);
-      const params = new URLSearchParams(hash);
-      const syncRoom = params.get("sync");
-      const syncData = params.get("data");
-      if (syncRoom || syncData) {
-        try {
-          history.replaceState(null, document.title, window.location.pathname + window.location.search);
-        } catch (e) {
-        }
-        this.connectAsClient(syncRoom, syncData);
-      }
-    }
-  };
-  window.p2pSyncEngine = p2pSyncEngine2;
   function openP2PSyncModal(preferredTab = null) {
     const modal = document.getElementById("modal-p2p-sync");
     if (modal) {
@@ -6013,9 +6110,8 @@
       if (typeof cloudSyncEngine2 !== "undefined") {
         cloudSyncEngine2.updateSyncUI();
       }
-      const defaultTab = preferredTab || (typeof FlowAuth !== "undefined" && FlowAuth.isLoggedIn() ? "cloud" : "cloud");
+      const defaultTab = preferredTab || (typeof FlowAuth !== "undefined" && FlowAuth.isLoggedIn() ? "account" : "account");
       switchSyncModalTab(defaultTab);
-      p2pSyncEngine2.startHost();
       if (typeof lucide !== "undefined") lucide.createIcons();
     }
   }
@@ -6025,13 +6121,35 @@
     if (modal) modal.classList.add("hidden");
   }
   window.closeP2PSyncModal = closeP2PSyncModal2;
-  async function handleSendMagicLink() {
+  function switchSyncModalTab(tab) {
+    const paneAccount = document.getElementById("sync-pane-cloud") || document.getElementById("sync-pane-account");
+    const panePair = document.getElementById("p2p-pane-qr") || document.getElementById("sync-pane-pair");
+    const btnAccount = document.getElementById("sync-tab-btn-cloud") || document.getElementById("sync-tab-btn-account");
+    const btnPair = document.getElementById("p2p-tab-btn-qr") || document.getElementById("sync-tab-btn-pair");
+    const isAccount = tab === "account" || tab === "cloud";
+    const isPair = tab === "pair" || tab === "qr" || tab === "manual";
+    if (paneAccount) paneAccount.classList.toggle("hidden", !isAccount);
+    if (panePair) panePair.classList.toggle("hidden", !isPair);
+    const activeClasses = "flex-1 py-2 px-3 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm";
+    const inactiveClasses = "flex-1 py-2 px-3 rounded-xl text-xs font-bold text-gray-400 hover:text-white transition cursor-pointer flex items-center justify-center gap-1.5";
+    if (btnAccount) btnAccount.className = isAccount ? activeClasses : inactiveClasses;
+    if (btnPair) btnPair.className = isPair ? activeClasses : inactiveClasses;
+    if (isPair && typeof FlowAuth !== "undefined" && FlowAuth.isLoggedIn()) {
+      handleCreatePairCode();
+    }
+    if (typeof lucide !== "undefined") lucide.createIcons();
+  }
+  window.switchSyncModalTab = switchSyncModalTab;
+  window.switchP2PTab = (tab) => switchSyncModalTab(tab);
+  async function handleEmailAuth() {
     const emailInput = document.getElementById("sync-email-input");
-    const btn = document.getElementById("sync-send-magic-link-btn");
+    const passwordInput = document.getElementById("sync-password-input");
+    const btn = document.getElementById("sync-auth-submit-btn");
     const errorMsg = document.getElementById("sync-auth-error-msg");
     const successMsg = document.getElementById("sync-auth-success-msg");
-    if (!emailInput) return;
+    if (!emailInput || !passwordInput) return;
     const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
     if (errorMsg) errorMsg.classList.add("hidden");
     if (successMsg) successMsg.classList.add("hidden");
     if (!email || !email.includes("@")) {
@@ -6048,54 +6166,173 @@
       }
       return;
     }
+    if (!password || password.length < 4) {
+      if (errorMsg) {
+        errorMsg.innerText = tr({
+          de: "Bitte gib ein Passwort / PIN mit mindestens 4 Zeichen ein.",
+          en: "Please enter a password / PIN with at least 4 characters.",
+          es: "Introduce una contrase\xF1a / PIN de al menos 4 caracteres.",
+          el: "\u0395\u03B9\u03C3\u03AC\u03B3\u03B5\u03C4\u03B5 \u03BA\u03C9\u03B4\u03B9\u03BA\u03CC \u03C0\u03C1\u03CC\u03C3\u03B2\u03B1\u03C3\u03B7\u03C2 \u03BC\u03B5 \u03C4\u03BF\u03C5\u03BB\u03AC\u03C7\u03B9\u03C3\u03C4\u03BF\u03BD 4 \u03C7\u03B1\u03C1\u03B1\u03BA\u03C4\u03AE\u03C1\u03B5\u03C2.",
+          fr: "Veuillez saisir un mot de passe d'au moins 4 caract\xE8res.",
+          it: "Inserisci una password di almeno 4 caratteri."
+        });
+        errorMsg.classList.remove("hidden");
+      }
+      return;
+    }
     if (btn) {
       btn.disabled = true;
-      btn.innerHTML = '<span class="animate-spin inline-block mr-1">\u23F3</span> Sende...';
+      btn.innerHTML = '<span class="animate-spin inline-block mr-1">\u23F3</span> Anmelden...';
     }
     try {
-      const res = await FlowAuth.signInWithMagicLink(email);
+      const res = await FlowAuth.signInWithCredentials(email, password);
       if (res.success) {
-        if (successMsg) {
-          successMsg.innerText = tr({
-            de: "\u2709\uFE0F Magic Link gesendet! Bitte pr\xFCfe dein E-Mail-Postfach und klicke auf den Best\xE4tigungslink.",
-            en: "\u2709\uFE0F Magic link sent! Please check your inbox and click the confirmation link.",
-            es: "\u2709\uFE0F \xA1Enlace m\xE1gico enviado! Revisa tu bandeja de entrada y haz clic en el enlace.",
-            el: "\u2709\uFE0F \u039F \u03C3\u03CD\u03BD\u03B4\u03B5\u03C3\u03BC\u03BF\u03C2 \u03C3\u03C4\u03AC\u03BB\u03B8\u03B7\u03BA\u03B5! \u0395\u03BB\u03AD\u03B3\u03BE\u03C4\u03B5 \u03C4\u03B1 \u03B5\u03B9\u03C3\u03B5\u03C1\u03C7\u03CC\u03BC\u03B5\u03BD\u03AC \u03C3\u03B1\u03C2.",
-            fr: "\u2709\uFE0F Lien magique envoy\xE9 ! V\xE9rifiez votre bo\xEEte de r\xE9ception et cliquez sur le lien.",
-            it: "\u2709\uFE0F Link magico inviato! Controlla la tua casella di posta e clicca sul link."
-          });
-          successMsg.classList.remove("hidden");
-        }
         if (typeof showToast === "function") {
           showToast(tr({
-            de: "\u2709\uFE0F Magic Link gesendet! Pr\xFCfe deine Mails.",
-            en: "\u2709\uFE0F Magic link sent! Check your inbox.",
-            es: "\u2709\uFE0F \xA1Enlace m\xE1gico enviado!",
-            el: "\u2709\uFE0F \u039F \u03C3\u03CD\u03BD\u03B4\u03B5\u03C3\u03BC\u03BF\u03C2 \u03C3\u03C4\u03AC\u03BB\u03B8\u03B7\u03BA\u03B5!",
-            fr: "\u2709\uFE0F Lien magique envoy\xE9 !",
-            it: "\u2709\uFE0F Link magico inviato!"
+            de: "\u2713 Erfolgreich angemeldet! Synchronisation l\xE4uft...",
+            en: "\u2713 Successfully signed in! Syncing...",
+            es: "\u2713 \xA1Inicio de sesi\xF3n correcto!",
+            el: "\u2713 \u0395\u03C0\u03B9\u03C4\u03C5\u03C7\u03AE\u03C2 \u03C3\u03CD\u03BD\u03B4\u03B5\u03C3\u03B7!",
+            fr: "\u2713 Connexion r\xE9ussie !",
+            it: "\u2713 Accesso riuscito!"
           }));
         }
+        await cloudSyncEngine2.pullState();
       } else {
         if (errorMsg) {
-          errorMsg.innerText = res.error || "Fehler beim Senden.";
+          errorMsg.innerText = res.error || "Anmeldung fehlgeschlagen.";
           errorMsg.classList.remove("hidden");
         }
       }
     } catch (e) {
       if (errorMsg) {
-        errorMsg.innerText = e.message || "Verbindungsfehler.";
+        errorMsg.innerText = "Verbindungsfehler beim Anmelden.";
         errorMsg.classList.remove("hidden");
       }
     } finally {
       if (btn) {
         btn.disabled = false;
-        btn.innerHTML = '<i data-lucide="send" class="w-4 h-4"></i><span>Magic Link senden</span>';
+        btn.innerHTML = '<i data-lucide="log-in" class="w-4 h-4"></i><span>Anmelden / Registrieren</span>';
         if (typeof lucide !== "undefined") lucide.createIcons();
       }
     }
   }
-  window.handleSendMagicLink = handleSendMagicLink;
+  window.handleEmailAuth = handleEmailAuth;
+  window.handleSendMagicLink = handleEmailAuth;
+  async function handleCreatePairCode() {
+    const codeDisplay = document.getElementById("pair-code-display") || document.getElementById("p2p-room-code");
+    const qrImg = document.getElementById("p2p-qr-img");
+    if (codeDisplay) {
+      codeDisplay.innerText = "Code wird geladen...";
+    }
+    try {
+      const res = await FlowAuth.createPairingCode();
+      if (res && res.success && res.code) {
+        if (codeDisplay) {
+          const formatted = `${res.code.slice(0, 3)} ${res.code.slice(3)}`;
+          codeDisplay.innerText = formatted;
+        }
+        if (qrImg) {
+          const qrSvg = MinimalQR.generateQRCodeSVG(res.code, 240);
+          if (qrSvg) qrImg.src = qrSvg;
+        }
+      } else {
+        if (codeDisplay) codeDisplay.innerText = "Kopplung bereit";
+      }
+    } catch (e) {
+      if (codeDisplay) codeDisplay.innerText = "Fehler beim Laden";
+    }
+  }
+  window.handleCreatePairCode = handleCreatePairCode;
+  async function handleConfirmPairCode() {
+    const input = document.getElementById("pair-code-input");
+    const btn = document.getElementById("pair-code-submit-btn");
+    const errorMsg = document.getElementById("pair-code-error-msg");
+    if (!input) return;
+    const rawCode = input.value.replace(/\s+/g, "").trim();
+    if (errorMsg) errorMsg.classList.add("hidden");
+    if (!rawCode || !/^\d{6}$/.test(rawCode)) {
+      if (errorMsg) {
+        errorMsg.innerText = tr({
+          de: "Bitte gib den 6-stelligen Zahlencode ein.",
+          en: "Please enter the 6-digit number code.",
+          es: "Introduce el c\xF3digo num\xE9rico de 6 d\xEDgitos.",
+          el: "\u0395\u03B9\u03C3\u03AC\u03B3\u03B5\u03C4\u03B5 \u03C4\u03BF\u03BD 6\u03C8\u03AE\u03C6\u03B9\u03BF \u03B1\u03C1\u03B9\u03B8\u03BC\u03B7\u03C4\u03B9\u03BA\u03CC \u03BA\u03C9\u03B4\u03B9\u03BA\u03CC.",
+          fr: "Veuillez saisir le code \xE0 6 chiffres.",
+          it: "Inserisci il codice numerico a 6 cifre."
+        });
+        errorMsg.classList.remove("hidden");
+      }
+      return;
+    }
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="animate-spin inline-block mr-1">\u23F3</span> Verbinde...';
+    }
+    try {
+      const res = await FlowAuth.confirmPairingCode(rawCode);
+      if (res && res.success) {
+        if (typeof showToast === "function") {
+          showToast(tr({
+            de: "\u{1F4F1} Ger\xE4t erfolgreich verbunden! \u26A1",
+            en: "\u{1F4F1} Device successfully connected! \u26A1",
+            es: "\u{1F4F1} \xA1Dispositivo conectado con \xE9xito! \u26A1",
+            el: "\u{1F4F1} \u0397 \u03C3\u03C5\u03C3\u03BA\u03B5\u03C5\u03AE \u03C3\u03C5\u03BD\u03B4\u03AD\u03B8\u03B7\u03BA\u03B5 \u03B5\u03C0\u03B9\u03C4\u03C5\u03C7\u03CE\u03C2! \u26A1",
+            fr: "\u{1F4F1} Appareil connect\xE9 avec succ\xE8s ! \u26A1",
+            it: "\u{1F4F1} Dispositivo connesso con successo! \u26A1"
+          }));
+        }
+        closeP2PSyncModal2();
+        await cloudSyncEngine2.pullState();
+      } else {
+        if (errorMsg) {
+          errorMsg.innerText = res.error || "Ung\xFCltiger oder abgelaufener Code.";
+          errorMsg.classList.remove("hidden");
+        }
+      }
+    } catch (e) {
+      if (errorMsg) {
+        errorMsg.innerText = "Verbindungsfehler beim Koppeln.";
+        errorMsg.classList.remove("hidden");
+      }
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="link-2" class="w-4 h-4"></i><span>Ger\xE4t verbinden</span>';
+        if (typeof lucide !== "undefined") lucide.createIcons();
+      }
+    }
+  }
+  window.handleConfirmPairCode = handleConfirmPairCode;
+  async function handleManualCloudSync() {
+    if (typeof cloudSyncEngine2 !== "undefined") {
+      const res = await cloudSyncEngine2.pullState();
+      if (res && res.success) {
+        if (typeof showToast === "function") {
+          showToast(tr({
+            de: "\u2713 Synchronisiert",
+            en: "\u2713 Synchronized",
+            es: "\u2713 Sincronizado",
+            el: "\u2713 \u03A3\u03C5\u03B3\u03C7\u03C1\u03BF\u03BD\u03AF\u03C3\u03C4\u03B7\u03BA\u03B5",
+            fr: "\u2713 Synchronis\xE9",
+            it: "\u2713 Sincronizzato"
+          }));
+        }
+      } else {
+        if (typeof showToast === "function") {
+          showToast(tr({
+            de: "\u26A0 Synchronisation konnte nicht abgeschlossen werden \u2013 wir versuchen es erneut.",
+            en: "\u26A0 Sync could not be completed \u2013 retrying.",
+            es: "\u26A0 Error de sincronizaci\xF3n \u2013 reintentando.",
+            el: "\u26A0 \u03A3\u03C6\u03AC\u03BB\u03BC\u03B1 \u03C3\u03C5\u03B3\u03C7\u03C1\u03BF\u03BD\u03B9\u03C3\u03BC\u03BF\u03CD \u2013 \u03C0\u03C1\u03BF\u03C3\u03C0\u03AC\u03B8\u03B5\u03B9\u03B1 \u03BE\u03B1\u03BD\u03AC.",
+            fr: "\u26A0 \xC9chec de la synchronisation \u2013 nouvel essai.",
+            it: "\u26A0 Sincronizzazione fallita \u2013 nuovo tentativo."
+          }));
+        }
+      }
+    }
+  }
+  window.handleManualCloudSync = handleManualCloudSync;
   async function handleLogout() {
     if (confirm(tr({
       de: "M\xF6chtest du dich wirklich abmelden? Deine lokalen Daten bleiben erhalten.",
@@ -6117,181 +6354,23 @@
             it: "Disconnessione riuscita."
           }));
         }
-        p2pSyncEngine2.startHost();
       }
     }
   }
   window.handleLogout = handleLogout;
-  async function handleManualCloudSync() {
-    if (typeof cloudSyncEngine2 !== "undefined") {
-      const res = await cloudSyncEngine2.pullState();
-      if (res && res.success) {
-        if (typeof showToast === "function") {
-          showToast(tr({
-            de: "\u2705 Synchronisation erfolgreich abgeschlossen!",
-            en: "\u2705 Synchronization successfully completed!",
-            es: "\u2705 \xA1Sincronizaci\xF3n completada con \xE9xito!",
-            el: "\u2705 \u039F \u03C3\u03C5\u03B3\u03C7\u03C1\u03BF\u03BD\u03B9\u03C3\u03BC\u03CC\u03C2 \u03BF\u03BB\u03BF\u03BA\u03BB\u03B7\u03C1\u03CE\u03B8\u03B7\u03BA\u03B5 \u03B5\u03C0\u03B9\u03C4\u03C5\u03C7\u03CE\u03C2!",
-            fr: "\u2705 Synchronisation r\xE9ussie !",
-            it: "\u2705 Sincronizzazione completata!"
-          }));
-        }
-      } else {
-        if (typeof showToast === "function") {
-          showToast(tr({
-            de: "\u26A0\uFE0F Sync nicht m\xF6glich (Offline oder Serverfehler).",
-            en: "\u26A0\uFE0F Sync failed (offline or server error).",
-            es: "\u26A0\uFE0F Error de sincronizaci\xF3n.",
-            el: "\u26A0\uFE0F \u03A3\u03C6\u03AC\u03BB\u03BC\u03B1 \u03C3\u03C5\u03B3\u03C7\u03C1\u03BF\u03BD\u03B9\u03C3\u03BC\u03BF\u03CD.",
-            fr: "\u26A0\uFE0F \xC9chec de la synchronisation.",
-            it: "\u26A0\uFE0F Sincronizzazione fallita."
-          }));
-        }
-      }
-    }
-  }
-  window.handleManualCloudSync = handleManualCloudSync;
-  function switchSyncModalTab(tab) {
-    const paneCloud = document.getElementById("sync-pane-cloud");
-    const paneQr = document.getElementById("p2p-pane-qr");
-    const paneManual = document.getElementById("p2p-pane-manual");
-    const btnCloud = document.getElementById("sync-tab-btn-cloud");
-    const btnQr = document.getElementById("p2p-tab-btn-qr");
-    const btnManual = document.getElementById("p2p-tab-btn-manual");
-    if (paneCloud) paneCloud.classList.toggle("hidden", tab !== "cloud");
-    if (paneQr) paneQr.classList.toggle("hidden", tab !== "qr");
-    if (paneManual) paneManual.classList.toggle("hidden", tab !== "manual");
-    const activeClasses = "flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 transition";
-    const inactiveClasses = "flex-1 py-1.5 px-3 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition";
-    if (btnCloud) btnCloud.className = tab === "cloud" ? activeClasses : inactiveClasses;
-    if (btnQr) btnQr.className = tab === "qr" ? activeClasses : inactiveClasses;
-    if (btnManual) btnManual.className = tab === "manual" ? activeClasses : inactiveClasses;
-    if (tab === "qr") {
-      p2pSyncEngine2.startHost();
-    }
-    if (typeof lucide !== "undefined") lucide.createIcons();
-  }
-  window.switchSyncModalTab = switchSyncModalTab;
-  window.switchP2PTab = (tab) => switchSyncModalTab(tab);
-  function copyP2PShareLink() {
-    const input = document.getElementById("p2p-share-link-input");
-    if (input && input.value) {
-      navigator.clipboard.writeText(input.value).then(() => {
-        if (typeof showToast === "function") {
-          showToast(tr({
-            de: "\u{1F4CB} Link kopiert! Auf dem Smartphone \xF6ffnen.",
-            en: "\u{1F4CB} Link copied! Open on your smartphone.",
-            es: "\u{1F4CB} \xA1Enlace copiado! Abrir en el smartphone.",
-            el: "\u{1F4CB} \u039F \u03C3\u03CD\u03BD\u03B4\u03B5\u03C3\u03BC\u03BF\u03C2 \u03B1\u03BD\u03C4\u03B9\u03B3\u03C1\u03AC\u03C6\u03B7\u03BA\u03B5!",
-            fr: "\u{1F4CB} Lien copi\xE9 ! Ouvrir sur smartphone.",
-            it: "\u{1F4CB} Link copiato! Apri sullo smartphone."
-          }));
-        }
-      });
-    }
-  }
-  window.copyP2PShareLink = copyP2PShareLink;
-  function updateP2PCustomUrl(newUrl) {
-    if (!newUrl) return;
-    p2pSyncEngine2.customBaseUrl = newUrl.trim();
-    p2pSyncEngine2.startHost(newUrl.trim());
-  }
-  window.updateP2PCustomUrl = updateP2PCustomUrl;
-  function copyP2PRawPayload() {
-    const input = document.getElementById("p2p-raw-payload-input");
-    if (input && input.value) {
-      navigator.clipboard.writeText(input.value).then(() => {
-        if (typeof showToast === "function") {
-          showToast(tr({
-            de: "\u{1F4CB} Transfer-Code kopiert!",
-            en: "\u{1F4CB} Transfer code copied!",
-            es: "\u{1F4CB} \xA1C\xF3digo de transferencia copiado!",
-            el: "\u{1F4CB} \u039F \u03BA\u03C9\u03B4\u03B9\u03BA\u03CC\u03C2 \u03B1\u03BD\u03C4\u03B9\u03B3\u03C1\u03AC\u03C6\u03B7\u03BA\u03B5!",
-            fr: "\u{1F4CB} Code de transfert copi\xE9 !",
-            it: "\u{1F4CB} Codice di trasferimento copiato!"
-          }));
-        }
-      });
-    }
-  }
-  window.copyP2PRawPayload = copyP2PRawPayload;
-  function importP2PCode() {
-    const raw = prompt(tr({
-      de: "F\xFCge den Transfer-Code oder die Sync-URL ein:",
-      en: "Paste the transfer code or sync URL:",
-      es: "Pega el c\xF3digo de transferencia o URL de sincronizaci\xF3n:",
-      el: "\u0395\u03C0\u03B9\u03BA\u03BF\u03BB\u03BB\u03AE\u03C3\u03C4\u03B5 \u03C4\u03BF\u03BD \u03BA\u03C9\u03B4\u03B9\u03BA\u03CC \u03BC\u03B5\u03C4\u03B1\u03C6\u03BF\u03C1\u03AC\u03C2 \u03AE \u03C4\u03B7 \u03B4\u03B9\u03B5\u03CD\u03B8\u03C5\u03BD\u03C3\u03B7 URL:",
-      fr: "Collez le code de transfert ou l'URL de synchronisation :",
-      it: "Incolla il codice di trasferimento o l'URL di sincronizzazione:"
-    }));
-    if (!raw || !raw.trim()) return;
-    const trimmed = raw.trim();
-    let syncData = null;
-    let syncRoom = null;
-    if (trimmed.includes("#")) {
-      const hash = trimmed.split("#")[1] || "";
-      const params = new URLSearchParams(hash);
-      const authToken = params.get("auth_token");
-      const email = params.get("email") || "";
-      if (authToken && typeof FlowAuth !== "undefined") {
-        FlowAuth.setDirectPairingToken(authToken, email);
-        cloudSyncEngine2.pullState();
-        closeP2PSyncModal2();
-        if (typeof showToast === "function") {
-          showToast(tr({
-            de: "\u{1F4F1} Erfolgreich mit Cloud-Konto verbunden! \u26A1",
-            en: "\u{1F4F1} Successfully connected to cloud account! \u26A1",
-            es: "\u{1F4F1} \xA1Conectado con \xE9xito a la cuenta en la nube! \u26A1",
-            el: "\u{1F4F1} \u0395\u03C0\u03B9\u03C4\u03C5\u03C7\u03AE\u03C2 \u03C3\u03CD\u03BD\u03B4\u03B5\u03C3\u03B7 \u03BC\u03B5 \u03C4\u03BF \u03BB\u03BF\u03B3\u03B1\u03C1\u03B9\u03B1\u03C3\u03BC\u03CC cloud! \u26A1",
-            fr: "\u{1F4F1} Connect\xE9 avec succ\xE8s au compte cloud ! \u26A1",
-            it: "\u{1F4F1} Connesso con successo al cloud! \u26A1"
-          }));
-        }
-        return;
-      }
-      syncRoom = params.get("sync");
-      syncData = params.get("data");
-    } else if (trimmed.includes("=")) {
-      const params = new URLSearchParams(trimmed);
-      syncRoom = params.get("sync");
-      syncData = params.get("data") || trimmed;
-    } else if (trimmed.length > 20 && !trimmed.startsWith("FLOW-")) {
-      if (typeof FlowAuth !== "undefined") {
-        FlowAuth.setDirectPairingToken(trimmed, "Direkt-Token");
-        cloudSyncEngine2.pullState();
-        closeP2PSyncModal2();
-        return;
-      }
-    } else {
-      syncData = trimmed;
-      syncRoom = "FLOW-MANUAL";
-    }
-    if (syncData) {
-      p2pSyncEngine2.connectAsClient(syncRoom || "FLOW-MANUAL", syncData);
-      closeP2PSyncModal2();
-    } else {
-      alert("Ung\xFCltiger Code!");
-    }
-  }
-  window.importP2PCode = importP2PCode;
   if (typeof window !== "undefined") {
     window.MinimalQR = MinimalQR;
-    window.P2PDataCodec = P2PDataCodec;
-    window.p2pSyncEngine = p2pSyncEngine2;
     window.cloudSyncEngine = cloudSyncEngine2;
     window.openP2PSyncModal = openP2PSyncModal;
     window.closeP2PSyncModal = closeP2PSyncModal2;
     window.switchP2PTab = switchP2PTab;
     window.switchSyncModalTab = switchSyncModalTab;
     window.addEventListener("DOMContentLoaded", () => {
-      p2pSyncEngine2.init();
       cloudSyncEngine2.init();
     });
   }
   if (typeof globalThis !== "undefined") {
     globalThis.MinimalQR = MinimalQR;
-    globalThis.P2PDataCodec = P2PDataCodec;
-    globalThis.p2pSyncEngine = p2pSyncEngine2;
     globalThis.cloudSyncEngine = cloudSyncEngine2;
     globalThis.openP2PSyncModal = openP2PSyncModal;
     globalThis.closeP2PSyncModal = closeP2PSyncModal2;
@@ -6307,7 +6386,7 @@
   }
   window.escapeHtml = escapeHtml2;
   var PanelManager = {
-    panels: ["feedback", "report", "settings", "soundscape", "language", "boost", "music", "theme", "calendar-dropdown", "inspiration", "shopping", "cooking", "alarm", "weather", "news", "pause-dropdown", "logo-guide"],
+    panels: ["feedback", "report", "settings", "soundscape", "language", "boost", "music", "theme", "calendar-dropdown", "inspiration", "shopping", "cooking", "alarm", "weather", "news", "pause-dropdown"],
     open(name) {
       this.panels.forEach((p) => {
         const el = document.getElementById(`panel-${p}`);
@@ -6339,7 +6418,7 @@
   };
   window.PanelManager = PanelManager;
   var ModalManager = {
-    modals: ["helper-whatnow-modal", "helper-sport-modal", "clarity-modal", "feierabend-modal", "game-mode-container", "mobile-menu-drawer", "mobile-tools-sheet"],
+    modals: ["brainstorm-modal", "helper-whatnow-modal", "helper-sport-modal", "clarity-modal", "feierabend-modal", "game-mode-container", "mobile-menu-drawer", "mobile-tools-sheet"],
     open(id) {
       const el = document.getElementById(id);
       if (el) el.classList.remove("hidden");
@@ -6554,8 +6633,223 @@
     }
     animate();
   }
+  var _lastNoodleAnim = "";
+  var _noodleIsAnimating = false;
+  function animateNoodleLogo(type) {
+    if (typeof document === "undefined") return;
+    const logo = document.getElementById("header-noodle-logo");
+    if (!logo) return;
+    const allAnimClasses = [
+      "noodle-anim-float",
+      "noodle-anim-breathe",
+      "noodle-anim-shimmer",
+      "noodle-anim-aurora",
+      "noodle-anim-celebrate",
+      "noodle-anim-wobble",
+      "noodle-anim-spin",
+      "noodle-anim-dance",
+      "noodle-anim-wave",
+      "noodle-anim-bounce",
+      "noodle-anim-sway",
+      "noodle-anim-flip3d"
+    ];
+    allAnimClasses.forEach((cls) => logo.classList.remove(cls));
+    const availableMoves = ["float", "breathe", "shimmer", "aurora"];
+    let chosenMove = type;
+    if (!chosenMove || chosenMove === "random") {
+      const filtered = availableMoves.filter((m) => m !== _lastNoodleAnim);
+      chosenMove = filtered[Math.floor(Math.random() * filtered.length)] || "float";
+    }
+    _lastNoodleAnim = chosenMove;
+    _noodleIsAnimating = true;
+    const classMap = {
+      float: "noodle-anim-float",
+      breathe: "noodle-anim-breathe",
+      shimmer: "noodle-anim-shimmer",
+      aurora: "noodle-anim-aurora",
+      celebrate: "noodle-anim-celebrate",
+      wobble: "noodle-anim-breathe",
+      dance: "noodle-anim-breathe",
+      sway: "noodle-anim-breathe",
+      spin: "noodle-anim-shimmer",
+      flip3d: "noodle-anim-shimmer",
+      wave: "noodle-anim-float",
+      bounce: "noodle-anim-float"
+    };
+    const targetClass = classMap[chosenMove] || "noodle-anim-float";
+    void logo.offsetWidth;
+    logo.classList.add(targetClass);
+    setTimeout(() => {
+      logo.classList.remove(targetClass);
+      _noodleIsAnimating = false;
+    }, 3e3);
+    if (typeof animateFavicon === "function") {
+      animateFavicon("breathe");
+    }
+  }
+  window.animateNoodleLogo = animateNoodleLogo;
+  var _faviconCanvas = null;
+  var _faviconCtx = null;
+  var _faviconLink = null;
+  var _isFaviconAnimating = false;
+  var _noodleLogoImg = null;
+  function getCachedNoodleLogoImg() {
+    if (!_noodleLogoImg && typeof Image !== "undefined") {
+      _noodleLogoImg = new Image();
+      _noodleLogoImg.src = "favicon.png";
+    }
+    return _noodleLogoImg;
+  }
+  function drawClayNoodleFavicon(ctx, offsetY = 0, scale = 1, rotation = 0) {
+    ctx.clearRect(0, 0, 32, 32);
+    ctx.save();
+    ctx.translate(16, 16 + offsetY);
+    if (rotation) ctx.rotate(rotation);
+    if (scale !== 1) ctx.scale(scale, scale);
+    ctx.translate(-16, -16);
+    const img = getCachedNoodleLogoImg();
+    if (img && img.complete && img.naturalWidth > 0) {
+      ctx.drawImage(img, 0, 0, 32, 32);
+    }
+    ctx.restore();
+  }
+  function animateFavicon(move = "bounce") {
+    if (typeof document === "undefined") return;
+    if (!_faviconLink) _faviconLink = document.querySelector("link[rel*='icon']");
+    if (!_faviconCanvas) {
+      _faviconCanvas = document.createElement("canvas");
+      _faviconCanvas.width = 32;
+      if (_faviconCanvas && typeof _faviconCanvas.getContext === "function") {
+        _faviconCtx = _faviconCanvas.getContext("2d");
+      }
+    }
+    if (!_faviconCtx || _isFaviconAnimating) return;
+    _isFaviconAnimating = true;
+    let frame = 0;
+    const totalFrames = 10;
+    const interval = setInterval(() => {
+      frame++;
+      const progress = frame / totalFrames;
+      let offsetY = 0;
+      let scale = 1;
+      let rot = 0;
+      if (move === "bounce") {
+        offsetY = -Math.sin(progress * Math.PI) * 3;
+        scale = 1 + Math.sin(progress * Math.PI) * 0.12;
+      } else if (move === "spin") {
+        rot = progress * Math.PI * 2;
+      } else {
+        offsetY = Math.sin(progress * Math.PI * 2) * 2;
+      }
+      drawClayNoodleFavicon(_faviconCtx, offsetY, scale, rot);
+      if (_faviconLink) {
+        try {
+          _faviconLink.href = _faviconCanvas.toDataURL("image/png");
+        } catch (e) {
+        }
+      }
+      if (frame >= totalFrames) {
+        clearInterval(interval);
+        _isFaviconAnimating = false;
+        drawClayNoodleFavicon(_faviconCtx, 0, 1, 0);
+        if (_faviconLink) {
+          try {
+            _faviconLink.href = _faviconCanvas.toDataURL("image/png");
+          } catch (e) {
+          }
+        }
+      }
+    }, 45);
+  }
+  window.animateFavicon = animateFavicon;
+  function toggleLogoGuide(event) {
+    if (event) event.stopPropagation();
+    const guide = document.getElementById("panel-logo-guide");
+    if (!guide) return;
+    const isHidden = guide.classList.contains("hidden");
+    if (isHidden) {
+      guide.classList.remove("hidden");
+      animateNoodleLogo("shimmer");
+      const searchInput = document.getElementById("logo-guide-search");
+      if (searchInput) {
+        searchInput.value = "";
+        filterLogoGuideItems("");
+        setTimeout(() => searchInput.focus(), 60);
+      }
+    } else {
+      guide.classList.add("hidden");
+    }
+  }
+  window.toggleLogoGuide = toggleLogoGuide;
+  function filterLogoGuideItems(query) {
+    const q = (query || "").toLowerCase().trim();
+    const items2 = document.querySelectorAll("#panel-logo-guide .group\\/guide-item");
+    items2.forEach((item) => {
+      const text = (item.textContent || "").toLowerCase();
+      if (!q || text.includes(q)) {
+        item.style.display = "";
+      } else {
+        item.style.display = "none";
+      }
+    });
+  }
+  window.filterLogoGuideItems = filterLogoGuideItems;
+  function initNoodlePlayfulEngine() {
+    if (typeof window === "undefined" || window._noodlePlayfulEngineInitialized) return;
+    window._noodlePlayfulEngineInitialized = true;
+    function scheduleNextNoodleMove() {
+      const delay = Math.floor(Math.random() * 3e4) + 45e3;
+      setTimeout(() => {
+        if (!document.hidden && !_noodleIsAnimating && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") {
+          animateNoodleLogo("random");
+        }
+        scheduleNextNoodleMove();
+      }, delay);
+    }
+    setTimeout(() => {
+      animateNoodleLogo("float");
+    }, 2500);
+    scheduleNextNoodleMove();
+    const container = document.querySelector(".flow-logo-container");
+    if (container) {
+      container.addEventListener("mouseenter", () => {
+        if (!_noodleIsAnimating) {
+          animateNoodleLogo("shimmer");
+        }
+      });
+    }
+    document.addEventListener("click", (e) => {
+      const guide = document.getElementById("panel-logo-guide");
+      const container2 = document.querySelector(".flow-logo-container");
+      if (guide && !guide.classList.contains("hidden")) {
+        if (!guide.contains(e.target) && (!container2 || !container2.contains(e.target))) {
+          guide.classList.add("hidden");
+        }
+      }
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        const guide = document.getElementById("panel-logo-guide");
+        if (guide && !guide.classList.contains("hidden")) {
+          guide.classList.add("hidden");
+        }
+      }
+    });
+  }
+  window.initNoodlePlayfulEngine = initNoodlePlayfulEngine;
+  if (typeof window !== "undefined") {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initNoodlePlayfulEngine);
+    } else {
+      initNoodlePlayfulEngine();
+    }
+  }
   function triggerConfetti2(x, y) {
     triggerCelebrationParticles2(x, y);
+    try {
+      animateNoodleLogo("celebrate");
+    } catch (e) {
+    }
   }
   window.triggerCelebrationParticles = triggerCelebrationParticles2;
   window.triggerConfetti = triggerConfetti2;
@@ -6651,6 +6945,38 @@ ${listStr}`;
     }
   }
   var calendarHoverTimeout = null;
+  function toggleCalendarDropdown(event) {
+    if (event) event.stopPropagation();
+    const weatherEl = document.getElementById("panel-weather");
+    if (weatherEl) weatherEl.classList.add("hidden");
+    const calEl = document.getElementById("panel-calendar-dropdown");
+    if (calEl) {
+      const isHidden = calEl.classList.contains("hidden");
+      if (isHidden) {
+        calEl.classList.remove("hidden");
+        renderMiniCalendar();
+      } else {
+        calEl.classList.add("hidden");
+      }
+    }
+  }
+  window.toggleCalendarDropdown = toggleCalendarDropdown;
+  function toggleWeatherDropdown(event) {
+    if (event) event.stopPropagation();
+    const calEl = document.getElementById("panel-calendar-dropdown");
+    if (calEl) calEl.classList.add("hidden");
+    const weatherEl = document.getElementById("panel-weather");
+    if (weatherEl) {
+      const isHidden = weatherEl.classList.contains("hidden");
+      if (isHidden) {
+        weatherEl.classList.remove("hidden");
+        if (typeof updateWeatherDisplay === "function") updateWeatherDisplay();
+      } else {
+        weatherEl.classList.add("hidden");
+      }
+    }
+  }
+  window.toggleWeatherDropdown = toggleWeatherDropdown;
   function openCalendarHover() {
     if (calendarHoverTimeout) {
       clearTimeout(calendarHoverTimeout);
@@ -6678,13 +7004,55 @@ ${listStr}`;
     }, 250);
   }
   window.closeCalendarHover = closeCalendarHover;
+  if (typeof document !== "undefined") {
+    document.addEventListener("click", (e) => {
+      const calEl = document.getElementById("panel-calendar-dropdown");
+      const dateWrapper = document.getElementById("date-hover-wrapper");
+      if (calEl && !calEl.classList.contains("hidden")) {
+        if (!calEl.contains(e.target) && (!dateWrapper || !dateWrapper.contains(e.target))) {
+          calEl.classList.add("hidden");
+        }
+      }
+      const weatherEl = document.getElementById("panel-weather");
+      const weatherBadge = document.getElementById("date-weather-badge");
+      if (weatherEl && !weatherEl.classList.contains("hidden")) {
+        if (!weatherEl.contains(e.target) && (!weatherBadge || !weatherBadge.contains(e.target))) {
+          weatherEl.classList.add("hidden");
+        }
+      }
+      const reportEl = document.getElementById("panel-report");
+      const reportBtn = document.querySelector(`button[onclick*="togglePanel('report')"]`);
+      if (reportEl && !reportEl.classList.contains("hidden")) {
+        if (!reportEl.contains(e.target) && (!reportBtn || !reportBtn.contains(e.target))) {
+          reportEl.classList.add("hidden");
+        }
+      }
+      const pauseEl = document.getElementById("panel-pause-dropdown");
+      const pauseBtn = document.querySelector(`button[onclick*="togglePanel('pause-dropdown')"]`);
+      if (pauseEl && !pauseEl.classList.contains("hidden")) {
+        if (!pauseEl.contains(e.target) && (!pauseBtn || !pauseBtn.contains(e.target))) {
+          pauseEl.classList.add("hidden");
+        }
+      }
+      const settingsEl = document.getElementById("panel-settings-dropdown");
+      const settingsBtn = document.querySelector(`button[onclick*="togglePanel('settings-dropdown')"]`);
+      if (settingsEl && !settingsEl.classList.contains("hidden")) {
+        if (!settingsEl.contains(e.target) && (!settingsBtn || !settingsBtn.contains(e.target))) {
+          settingsEl.classList.add("hidden");
+        }
+      }
+    });
+  }
   function updateDateAndStreak2() {
     const now = /* @__PURE__ */ new Date();
     const locales = { de: "de-DE", en: "en-GB", el: "el-GR", es: "es-ES", fr: "fr-FR", it: "it-IT" };
     try {
-      const str = new Intl.DateTimeFormat(locales[currentLang] || "en-GB", { weekday: "long", day: "numeric", month: "long" }).format(now);
+      const weekday = new Intl.DateTimeFormat(locales[currentLang] || "en-GB", { weekday: "long" }).format(now);
+      const dayMonth = new Intl.DateTimeFormat(locales[currentLang] || "en-GB", { day: "numeric", month: "long" }).format(now);
       const displayEl = document.getElementById("date-display");
-      if (displayEl) displayEl.innerText = str;
+      if (displayEl) {
+        displayEl.innerHTML = `<span class="text-purple-300 font-extrabold text-xs md:text-sm tracking-wide">${weekday},</span> <span class="text-white font-black text-xs md:text-sm tracking-tight">${dayMonth}</span>`;
+      }
     } catch (e) {
       const displayEl = document.getElementById("date-display");
       if (displayEl) displayEl.innerText = now.toLocaleDateString();
@@ -6701,12 +7069,434 @@ ${listStr}`;
   if (typeof window !== "undefined" && !window._timeTickerInterval) {
     window._timeTickerInterval = setInterval(updateDateAndStreak2, 1e4);
   }
+  var ANCHOR_STEPS = {
+    de: [
+      { title: "5 DINGE SEHEN \u{1F440}", text: "Blicke dich um und benenne 5 Gegenst\xE4nde, die du in deiner Umgebung siehst." },
+      { title: "4 DINGE SP\xDCREN \u270B", text: "F\xFChle 4 verschiedene Texturen (z.B. Kleidung, Tischplatte, Stuhllehne, H\xE4nde)." },
+      { title: "3 DINGE H\xD6REN \u{1F442}", text: "Lausche aufmerksam: Welche 3 unterschiedlichen Ger\xE4usche kannst du wahrnehmen?" },
+      { title: "2 DINGE RIECHEN \u{1F443}", text: "Atme tief durch die Nase: Nimm 2 verschiedene Ger\xFCche wahr (Kaffee, Raumluft, Holz...)." },
+      { title: "1 DING SCHMECKEN \u{1F445}", text: "Konzentriere dich auf den Geschmack in deinem Mund oder nimm einen Schluck Wasser." }
+    ],
+    en: [
+      { title: "5 THINGS TO SEE \u{1F440}", text: "Look around and name 5 objects you can currently see in your room." },
+      { title: "4 THINGS TO FEEL \u270B", text: "Touch 4 different textures (e.g. your clothes, desk, chair, fingertips)." },
+      { title: "3 THINGS TO HEAR \u{1F442}", text: "Listen carefully: What 3 distinct sounds can you hear around you?" },
+      { title: "2 THINGS TO SMELL \u{1F443}", text: "Breathe in: Notice 2 different scents (coffee, air, fabric, wood...)." },
+      { title: "1 THING TO TASTE \u{1F445}", text: "Focus on the taste inside your mouth or take a sip of water." }
+    ],
+    es: [
+      { title: "5 COSAS QUE VER \u{1F440}", text: "Mira a tu alrededor y nombra 5 objetos que puedas ver." },
+      { title: "4 COSAS QUE SENTIR \u270B", text: "Toca 4 texturas diferentes (ej. tu ropa, la mesa, la silla)." },
+      { title: "3 COSAS QUE ESCUCHAR \u{1F442}", text: "Escucha atentamente: \xBFQu\xE9 3 sonidos distintos puedes percibir?" },
+      { title: "2 COSAS QUE OLER \u{1F443}", text: "Respira profundo: Percibe 2 olores diferentes." },
+      { title: "1 COSA QUE SABOREAR \u{1F445}", text: "Conc\xE9ntrate en el sabor en tu boca o toma un sorbo de agua." }
+    ],
+    el: [
+      { title: "5 \u03A0\u03A1\u0391\u0393\u039C\u0391\u03A4\u0391 \u039D\u0391 \u0394\u0395\u0399\u03A3 \u{1F440}", text: "\u039A\u03BF\u03AF\u03C4\u03B1\u03BE\u03B5 \u03B3\u03CD\u03C1\u03C9 \u03C3\u03BF\u03C5 \u03BA\u03B1\u03B9 \u03BF\u03BD\u03CC\u03BC\u03B1\u03C3\u03B5 5 \u03B1\u03BD\u03C4\u03B9\u03BA\u03B5\u03AF\u03BC\u03B5\u03BD\u03B1 \u03C0\u03BF\u03C5 \u03B2\u03BB\u03AD\u03C0\u03B5\u03B9\u03C2." },
+      { title: "4 \u03A0\u03A1\u0391\u0393\u039C\u0391\u03A4\u0391 \u039D\u0391 \u0391\u0393\u0393\u0399\u039E\u0395\u0399\u03A3 \u270B", text: "\u039D\u03B9\u03CE\u03C3\u03B5 4 \u03B4\u03B9\u03B1\u03C6\u03BF\u03C1\u03B5\u03C4\u03B9\u03BA\u03AD\u03C2 \u03C5\u03C6\u03AD\u03C2 (\u03C0.\u03C7. \u03C1\u03BF\u03CD\u03C7\u03B1, \u03B3\u03C1\u03B1\u03C6\u03B5\u03AF\u03BF, \u03BA\u03B1\u03C1\u03AD\u03BA\u03BB\u03B1)." },
+      { title: "3 \u03A0\u03A1\u0391\u0393\u039C\u0391\u03A4\u0391 \u039D\u0391 \u0391\u039A\u039F\u03A5\u03A3\u0395\u0399\u03A3 \u{1F442}", text: "\u0386\u03BA\u03BF\u03C5\u03C3\u03B5 \u03C0\u03C1\u03BF\u03C3\u03B5\u03BA\u03C4\u03B9\u03BA\u03AC: \u03A0\u03BF\u03B9\u03BF\u03C5\u03C2 3 \u03B4\u03B9\u03B1\u03C6\u03BF\u03C1\u03B5\u03C4\u03B9\u03BA\u03BF\u03CD\u03C2 \u03AE\u03C7\u03BF\u03C5\u03C2 \u03B1\u03BA\u03BF\u03CD\u03C2;" },
+      { title: "2 \u03A0\u03A1\u0391\u0393\u039C\u0391\u03A4\u0391 \u039D\u0391 \u039C\u03A5\u03A1\u0399\u03A3\u0395\u0399\u03A3 \u{1F443}", text: "\u03A0\u03AC\u03C1\u03B5 \u03B2\u03B1\u03B8\u03B9\u03AC \u03B1\u03BD\u03AC\u03C3\u03B1: \u0391\u03BD\u03AF\u03C7\u03BD\u03B5\u03C5\u03C3\u03B5 2 \u03B4\u03B9\u03B1\u03C6\u03BF\u03C1\u03B5\u03C4\u03B9\u03BA\u03AD\u03C2 \u03BC\u03C5\u03C1\u03C9\u03B4\u03B9\u03AD\u03C2." },
+      { title: "1 \u03A0\u03A1\u0391\u0393\u039C\u0391 \u039D\u0391 \u0393\u0395\u03A5\u03A4\u0395\u0399\u03A3 \u{1F445}", text: "\u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B5 \u03C3\u03C4\u03B7 \u03B3\u03B5\u03CD\u03C3\u03B7 \u03C3\u03C4\u03BF \u03C3\u03C4\u03CC\u03BC\u03B1 \u03C3\u03BF\u03C5 \u03AE \u03C0\u03B9\u03B5\u03C2 \u03BC\u03B9\u03B1 \u03B3\u03BF\u03C5\u03BB\u03B9\u03AC \u03BD\u03B5\u03C1\u03CC." }
+    ],
+    fr: [
+      { title: "5 CHOSES \xC0 VOIR \u{1F440}", text: "Regarde autour de toi et nomme 5 objets que tu vois." },
+      { title: "4 CHOSES \xC0 TOUCHER \u270B", text: "Touche 4 textures diff\xE9rentes (v\xEAtements, table, chaise...)." },
+      { title: "3 CHOSES \xC0 \xC9COUTER \u{1F442}", text: "\xC9coute attentivement : Quels 3 sons distincts entends-tu ?" },
+      { title: "2 CHOSES \xC0 SENTIR \u{1F443}", text: "Respire profond\xE9ment : Rep\xE8re 2 odeurs diff\xE9rentes." },
+      { title: "1 CHOSE \xC0 GO\xDBTER \u{1F445}", text: "Concentre-toi sur le go\xFBt dans ta bouche ou bois une gorg\xE9e d'eau." }
+    ],
+    it: [
+      { title: "5 COSE DA VEDERE \u{1F440}", text: "Guardati attorno e nomina 5 oggetti che vedi." },
+      { title: "4 COSE DA TOCCARE \u270B", text: "Tocca 4 texture diverse (es. vestiti, scrivania, sedia)." },
+      { title: "3 COSE DA ASCOLTARE \u{1F442}", text: "Ascolta attentamente: Quali 3 suoni distinti percepisci?" },
+      { title: "2 COSE DA ODORARE \u{1F443}", text: "Fai un respiro profondo: Riconosci 2 odori diversi." },
+      { title: "1 COSA DA GUSTARE \u{1F445}", text: "Concentrati sul sapore nella tua bocca o bevi un sorso d'acqua." }
+    ]
+  };
+  var safeSpaceBreathTimeout = null;
+  var currentBreathPattern = "444";
+  var safeSpaceNoiseActive = false;
+  var anchorStep = 1;
+  var eyeRestTimerInterval = null;
+  var eyeRestSeconds = 20;
+  var eyeRestRunning = false;
+  var dopamineDetoxInterval = null;
+  function openBreakModal2(type, pattern) {
+    if (type === "stretch") {
+      if (typeof openSportModal === "function") {
+        openSportModal();
+        return;
+      }
+    }
+    openSafeSpaceModal();
+    if (pattern) {
+      currentBreathPattern = pattern;
+    }
+    if (type === "grounding") {
+      switchSafeSpaceTab("anchor");
+    } else if (type === "eyes") {
+      switchSafeSpaceTab("eyes");
+    } else if (type === "body") {
+      switchSafeSpaceTab("body");
+    } else if (type === "sound") {
+      switchSafeSpaceTab("sound");
+    } else {
+      switchSafeSpaceTab("breath");
+    }
+  }
+  window.openBreakModal = openBreakModal2;
+  function openSafeSpaceModal() {
+    const modal = document.getElementById("helper-safespace-modal");
+    if (modal) modal.classList.remove("hidden");
+    switchSafeSpaceTab("breath");
+  }
+  window.openSafeSpaceModal = openSafeSpaceModal;
+  function closeSafeSpaceModal2() {
+    const modal = document.getElementById("helper-safespace-modal");
+    if (modal) modal.classList.add("hidden");
+    stopSafeSpaceBreathCycle();
+    stopEyeRestTimer();
+    if (dopamineDetoxInterval) {
+      clearInterval(dopamineDetoxInterval);
+      dopamineDetoxInterval = null;
+    }
+    if (safeSpaceNoiseActive) {
+      toggleSafeSpaceNoise();
+    }
+  }
+  window.closeSafeSpaceModal = closeSafeSpaceModal2;
+  function switchPauseDropdownTab(tabName) {
+    ["breath", "sensory", "body", "sound"].forEach((t3) => {
+      const pane = document.getElementById(`pause-dropdown-pane-${t3}`);
+      const tabBtn = document.getElementById(`pause-dropdown-tab-${t3}`);
+      if (pane) {
+        if (t3 === tabName) pane.classList.remove("hidden");
+        else pane.classList.add("hidden");
+      }
+      if (tabBtn) {
+        if (t3 === tabName) {
+          tabBtn.className = "py-1.5 px-2 rounded-xl bg-teal-500/20 text-teal-200 border border-teal-500/40 font-bold transition text-center cursor-pointer";
+        } else {
+          tabBtn.className = "py-1.5 px-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition text-center cursor-pointer";
+        }
+      }
+    });
+  }
+  window.switchPauseDropdownTab = switchPauseDropdownTab;
+  function switchSafeSpaceTab(tab) {
+    const tabs = ["breath", "anchor", "eyes", "body", "sound"];
+    tabs.forEach((t3) => {
+      const btn = document.getElementById(`safespace-tab-${t3}`);
+      const pane = document.getElementById(`safespace-pane-${t3}`);
+      if (pane) {
+        if (t3 === tab) pane.classList.remove("hidden");
+        else pane.classList.add("hidden");
+      }
+      if (btn) {
+        if (t3 === tab) {
+          btn.className = "py-2 px-2 rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5 text-teal-300 bg-teal-500/20 border border-teal-500/40 font-bold shadow-sm";
+        } else {
+          btn.className = "py-2 px-2 rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5 text-gray-400 hover:text-white hover:bg-white/5";
+        }
+      }
+    });
+    stopSafeSpaceBreathCycle();
+    stopEyeRestTimer();
+    if (tab === "breath") {
+      startSafeSpaceBreathCycle();
+    } else if (tab === "anchor") {
+      resetAnchorSteps();
+    } else if (tab === "eyes") {
+      resetEyeRestUI();
+    }
+  }
+  window.switchSafeSpaceTab = switchSafeSpaceTab;
+  function setBreathPattern(pat) {
+    currentBreathPattern = pat;
+    ["444", "478", "sigh"].forEach((p) => {
+      const btn = document.getElementById(`safespace-pat-${p}`);
+      if (btn) {
+        if (p === pat) {
+          btn.className = "py-1 px-2.5 rounded-lg bg-teal-500/30 text-teal-200 border border-teal-400 font-bold text-xs transition cursor-pointer";
+        } else {
+          btn.className = "py-1 px-2.5 rounded-lg bg-white/5 text-gray-400 hover:text-white border border-white/10 text-xs transition cursor-pointer";
+        }
+      }
+    });
+    startSafeSpaceBreathCycle();
+  }
+  window.setBreathPattern = setBreathPattern;
+  function startSafeSpaceBreathCycle() {
+    stopSafeSpaceBreathCycle();
+    const circle = document.getElementById("safespace-breath-circle");
+    const text = document.getElementById("safespace-breath-text");
+    const countEl = document.getElementById("safespace-breath-count");
+    if (!circle || !text) return;
+    if (currentBreathPattern === "478") {
+      const run478 = () => {
+        text.innerText = tr({ de: "Einatmen (Nase)", en: "Inhale (Nose)", fr: "Inspirez (Nez)", it: "Inspira (Naso)", es: "Inhala (Nariz)", el: "\u0395\u03B9\u03C3\u03C0\u03BD\u03BF\u03AE (\u039C\u03CD\u03C4\u03B7)" });
+        if (countEl) countEl.innerText = "4s";
+        circle.style.transform = "scale(1.4)";
+        circle.style.borderColor = "rgba(20, 184, 166, 0.9)";
+        circle.style.backgroundColor = "rgba(20, 184, 166, 0.18)";
+        safeSpaceBreathTimeout = setTimeout(() => {
+          text.innerText = tr({ de: "Anhalten (Sanft)", en: "Hold (Gently)", fr: "Bloquez (Doux)", it: "Trattieni (Dolce)", es: "Mant\xE9n (Suave)", el: "\u039A\u03C1\u03AC\u03C4\u03B7\u03BC\u03B1 (\u0391\u03C0\u03B1\u03BB\u03AC)" });
+          if (countEl) countEl.innerText = "7s";
+          circle.style.borderColor = "rgba(245, 158, 11, 0.8)";
+          circle.style.backgroundColor = "rgba(245, 158, 11, 0.15)";
+          safeSpaceBreathTimeout = setTimeout(() => {
+            text.innerText = tr({ de: "Langsam Ausatmen (Mund)", en: "Slow Exhale (Mouth)", fr: "Expirez lentement (Bouche)", it: "Espira lentamente (Bocca)", es: "Exhala lento (Boca)", el: "\u0395\u03BA\u03C0\u03BD\u03BF\u03AE \u03B1\u03C1\u03B3\u03AC (\u03A3\u03C4\u03CC\u03BC\u03B1)" });
+            if (countEl) countEl.innerText = "8s";
+            circle.style.transform = "scale(0.9)";
+            circle.style.borderColor = "rgba(99, 102, 241, 0.7)";
+            circle.style.backgroundColor = "rgba(99, 102, 241, 0.12)";
+            safeSpaceBreathTimeout = setTimeout(run478, 8e3);
+          }, 7e3);
+        }, 4e3);
+      };
+      run478();
+    } else if (currentBreathPattern === "sigh") {
+      const runSigh = () => {
+        text.innerText = tr({ de: "1. Tief Einatmen", en: "1. Deep Inhale", fr: "1. Inspirez", it: "1. Inspira a fondo", es: "1. Inhala profundo", el: "1. \u0392\u03B1\u03B8\u03B9\u03AC \u0395\u03B9\u03C3\u03C0\u03BD\u03BF\u03AE" });
+        if (countEl) countEl.innerText = "2s";
+        circle.style.transform = "scale(1.25)";
+        circle.style.borderColor = "rgba(20, 184, 166, 0.8)";
+        safeSpaceBreathTimeout = setTimeout(() => {
+          text.innerText = tr({ de: "2. Nochmal nachatmen!", en: "2. Top-up Inhale!", fr: "2. Compl\xE9tez !", it: "2. Riempi ancora!", es: "2. \xA1Inhala m\xE1s!", el: "2. \u03A3\u03C5\u03BC\u03C0\u03BB\u03B7\u03C1\u03CE\u03C3\u03C4\u03B5!" });
+          if (countEl) countEl.innerText = "1s";
+          circle.style.transform = "scale(1.45)";
+          circle.style.borderColor = "rgba(56, 189, 248, 0.9)";
+          safeSpaceBreathTimeout = setTimeout(() => {
+            text.innerText = tr({ de: "Langer beruhigender Seufzer...", en: "Long Calming Sigh...", fr: "Long soupir apaisant...", it: "Lungo sospiro calmante...", es: "Largo suspiro calmante...", el: "\u039C\u03B5\u03B3\u03AC\u03BB\u03BF\u03C2 \u03B1\u03BD\u03B1\u03C3\u03C4\u03B5\u03BD\u03B1\u03B3\u03BC\u03CC\u03C2..." });
+            if (countEl) countEl.innerText = "6s";
+            circle.style.transform = "scale(0.88)";
+            circle.style.borderColor = "rgba(168, 85, 247, 0.8)";
+            safeSpaceBreathTimeout = setTimeout(runSigh, 6e3);
+          }, 1200);
+        }, 2e3);
+      };
+      runSigh();
+    } else {
+      const run444 = () => {
+        text.innerText = tr({ de: "Einatmen...", en: "Inhale...", fr: "Inspirez...", it: "Inspira...", es: "Inhala...", el: "\u0395\u03B9\u03C3\u03C0\u03BD\u03BF\u03AE..." });
+        if (countEl) countEl.innerText = "4s";
+        circle.style.transform = "scale(1.35)";
+        circle.style.borderColor = "rgba(20, 184, 166, 0.9)";
+        circle.style.backgroundColor = "rgba(20, 184, 166, 0.15)";
+        safeSpaceBreathTimeout = setTimeout(() => {
+          text.innerText = tr({ de: "Anhalten...", en: "Hold...", fr: "Bloquez...", it: "Trattieni...", es: "Mant\xE9n...", el: "\u039A\u03C1\u03AC\u03C4\u03B7\u03BC\u03B1..." });
+          if (countEl) countEl.innerText = "4s";
+          circle.style.borderColor = "rgba(245, 158, 11, 0.8)";
+          circle.style.backgroundColor = "rgba(245, 158, 11, 0.15)";
+          safeSpaceBreathTimeout = setTimeout(() => {
+            text.innerText = tr({ de: "Ausatmen...", en: "Exhale...", fr: "Expirez...", it: "Espira...", es: "Exhala...", el: "\u0395\u03BA\u03C0\u03BD\u03BF\u03AE..." });
+            if (countEl) countEl.innerText = "4s";
+            circle.style.transform = "scale(0.92)";
+            circle.style.borderColor = "rgba(20, 184, 166, 0.5)";
+            circle.style.backgroundColor = "rgba(20, 184, 166, 0.05)";
+            safeSpaceBreathTimeout = setTimeout(() => {
+              text.innerText = tr({ de: "Leer Anhalten...", en: "Hold Empty...", fr: "Poumons vides...", it: "Pausa a vuoto...", es: "Pausa vac\xEDo...", el: "\u039A\u03B5\u03BD\u03CC \u03BA\u03C1\u03AC\u03C4\u03B7\u03BC\u03B1..." });
+              if (countEl) countEl.innerText = "4s";
+              circle.style.borderColor = "rgba(99, 102, 241, 0.7)";
+              safeSpaceBreathTimeout = setTimeout(run444, 4e3);
+            }, 4e3);
+          }, 4e3);
+        }, 4e3);
+      };
+      run444();
+    }
+  }
+  window.startSafeSpaceBreathCycle = startSafeSpaceBreathCycle;
+  function stopSafeSpaceBreathCycle() {
+    if (safeSpaceBreathTimeout) {
+      clearTimeout(safeSpaceBreathTimeout);
+      safeSpaceBreathTimeout = null;
+    }
+  }
+  window.stopSafeSpaceBreathCycle = stopSafeSpaceBreathCycle;
+  function resetEyeRestUI() {
+    eyeRestSeconds = 20;
+    eyeRestRunning = false;
+    const timeEl = document.getElementById("safespace-eyes-time");
+    const btn = document.getElementById("safespace-eyes-btn");
+    if (timeEl) timeEl.innerText = "20s";
+    if (btn) btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> <span>20s Augen-Timer starten</span>`;
+    if (typeof renderLucideIcons === "function") renderLucideIcons();
+  }
+  window.resetEyeRestUI = resetEyeRestUI;
+  function toggleEyeRestTimer() {
+    if (eyeRestRunning) {
+      stopEyeRestTimer();
+    } else {
+      startEyeRestTimer();
+    }
+  }
+  window.toggleEyeRestTimer = toggleEyeRestTimer;
+  function startEyeRestTimer() {
+    stopEyeRestTimer();
+    eyeRestRunning = true;
+    eyeRestSeconds = 20;
+    const timeEl = document.getElementById("safespace-eyes-time");
+    const btn = document.getElementById("safespace-eyes-btn");
+    if (btn) btn.innerHTML = `<i data-lucide="pause" class="w-4 h-4"></i> <span>Timer pausieren</span>`;
+    if (typeof renderLucideIcons === "function") renderLucideIcons();
+    eyeRestTimerInterval = setInterval(() => {
+      eyeRestSeconds--;
+      if (timeEl) timeEl.innerText = `${eyeRestSeconds}s`;
+      if (eyeRestSeconds <= 0) {
+        stopEyeRestTimer();
+        if (typeof playProceduralSound === "function") playProceduralSound(2);
+        showToast(tr({
+          de: "\u{1F440} Augen entspannt! Wunderbar erholt.",
+          en: "\u{1F440} Eyes relaxed! Wonderful recharge.",
+          fr: "\u{1F440} Yeux repos\xE9s ! Recharge r\xE9ussie.",
+          it: "\u{1F440} Occhi rilassati! Ottima ricarica.",
+          es: "\u{1F440} \xA1Ojos descansados! Recarga completada.",
+          el: "\u{1F440} \u03A4\u03B1 \u03BC\u03AC\u03C4\u03B9\u03B1 \u03BE\u03B5\u03BA\u03BF\u03C5\u03C1\u03AC\u03C3\u03C4\u03B7\u03BA\u03B1\u03BD! \u03A5\u03C0\u03AD\u03C1\u03BF\u03C7\u03B7 \u03B1\u03BD\u03B1\u03BD\u03AD\u03C9\u03C3\u03B7."
+        }));
+        resetEyeRestUI();
+      }
+    }, 1e3);
+  }
+  window.startEyeRestTimer = startEyeRestTimer;
+  function stopEyeRestTimer() {
+    if (eyeRestTimerInterval) {
+      clearInterval(eyeRestTimerInterval);
+      eyeRestTimerInterval = null;
+    }
+    eyeRestRunning = false;
+  }
+  window.stopEyeRestTimer = stopEyeRestTimer;
+  function startDopamineDetoxTimer(sec = 60) {
+    openSafeSpaceModal();
+    switchSafeSpaceTab("anchor");
+    showToast(tr({
+      de: "\u23F3 60s Reizstille gestartet. Schlie\xDFe die Augen und lass die Gedanken ziehen.",
+      en: "\u23F3 60s Sensory silence started. Close your eyes and let your mind wander.",
+      fr: "\u23F3 60s de calme sensoriel d\xE9marr\xE9es.",
+      it: "\u23F3 60s di silenzio sensoriale avviati.",
+      es: "\u23F3 60s de silencio sensorial iniciados.",
+      el: "\u23F3 60 \u03B4\u03B5\u03C5\u03C4. \u03B1\u03B9\u03C3\u03B8\u03B7\u03C4\u03B7\u03C1\u03B9\u03B1\u03BA\u03AE\u03C2 \u03B7\u03C1\u03B5\u03BC\u03AF\u03B1\u03C2 \u03BE\u03B5\u03BA\u03AF\u03BD\u03B7\u03C3\u03B1\u03BD."
+    }));
+  }
+  window.startDopamineDetoxTimer = startDopamineDetoxTimer;
+  function quickPlaySoundscape(type) {
+    if (typeof playAmbientSound === "function") {
+      playAmbientSound(type, true);
+      showToast(tr({
+        de: `\u{1F3A7} Soundscape "${type}" aktiviert`,
+        en: `\u{1F3A7} Soundscape "${type}" active`,
+        fr: `\u{1F3A7} Ambiance "${type}" activ\xE9e`,
+        it: `\u{1F3A7} Soundscape "${type}" attivo`,
+        es: `\u{1F3A7} Sonido "${type}" activado`,
+        el: `\u{1F3A7} \u0389\u03C7\u03BF\u03C2 "${type}" \u03B5\u03BD\u03B5\u03C1\u03B3\u03BF\u03C0\u03BF\u03B9\u03AE\u03B8\u03B7\u03BA\u03B5`
+      }));
+    }
+  }
+  window.quickPlaySoundscape = quickPlaySoundscape;
+  function toggleSafeSpaceNoise() {
+    safeSpaceNoiseActive = !safeSpaceNoiseActive;
+    const btn = document.getElementById("safespace-noise-btn");
+    if (!btn) return;
+    if (safeSpaceNoiseActive) {
+      btn.innerText = currentLang === "de" ? "Bach-Sound aus" : "Stop Stream Sound";
+      btn.className = "px-3.5 py-1.5 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-300 text-xs font-bold rounded-lg transition";
+      if (typeof playAmbientSound === "function") {
+        playAmbientSound("stream", true);
+      }
+    } else {
+      btn.innerText = currentLang === "de" ? "Bach-Sound ein" : "Start Stream Sound";
+      btn.className = "px-3.5 py-1.5 bg-teal-500/20 hover:bg-teal-500/30 border border-teal-500/30 text-teal-300 text-xs font-bold rounded-lg transition";
+      if (typeof stopAmbientSound === "function") {
+        stopAmbientSound(true);
+      }
+    }
+  }
+  window.toggleSafeSpaceNoise = toggleSafeSpaceNoise;
+  function resetAnchorSteps() {
+    anchorStep = 1;
+    updateAnchorStepUI();
+  }
+  function updateAnchorStepUI() {
+    const titleEl = document.getElementById("anchor-step-title");
+    const textEl = document.getElementById("anchor-step-instruction");
+    const progressEl = document.getElementById("anchor-progress-bar");
+    if (!titleEl || !textEl || !progressEl) return;
+    const steps = ANCHOR_STEPS[currentLang] || ANCHOR_STEPS.de;
+    const stepData = steps[anchorStep - 1] || steps[0];
+    titleEl.innerText = stepData.title;
+    textEl.innerText = stepData.text;
+    progressEl.style.width = `${anchorStep * 20}%`;
+  }
+  function setHeaderLayout(mode) {
+    const validModes = ["smart_hubs", "minimal", "classic"];
+    if (!validModes.includes(mode)) mode = "smart_hubs";
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem("noodle_header_layout", mode);
+    }
+    const whatnowBtn = document.getElementById("btn-whatnow-dance");
+    const focusBtn = document.getElementById("btn-focus-mode");
+    if (whatnowBtn) whatnowBtn.classList.remove("hidden");
+    if (focusBtn) focusBtn.classList.add("hidden");
+    const wellbeingCapsule = document.getElementById("header-capsule-wellbeing");
+    const reportContainer = document.getElementById("header-btn-report-container");
+    const optionsContainer = document.getElementById("header-btn-options-container");
+    if (wellbeingCapsule) wellbeingCapsule.classList.remove("hidden");
+    if (optionsContainer) optionsContainer.classList.remove("hidden");
+    if (reportContainer) {
+      if (mode === "minimal") reportContainer.classList.add("hidden");
+      else reportContainer.classList.remove("hidden");
+    }
+    const directUndo = document.getElementById("header-btn-undo");
+    const directReset = document.getElementById("header-btn-reset");
+    if (directUndo) {
+      if (mode === "classic") directUndo.classList.remove("hidden");
+      else directUndo.classList.add("hidden");
+    }
+    if (directReset) {
+      if (mode === "classic") directReset.classList.remove("hidden");
+      else directReset.classList.add("hidden");
+    }
+    const modes = ["smart_hubs", "minimal", "classic"];
+    modes.forEach((m) => {
+      const btn = document.getElementById(`btn-layout-${m}`);
+      if (btn) {
+        if (m === mode) {
+          btn.className = "py-1 px-1.5 rounded-xl transition text-center bg-purple-500/20 text-purple-200 border border-purple-500/40 cursor-pointer font-bold shadow-sm";
+        } else {
+          btn.className = "py-1 px-1.5 rounded-xl transition text-center text-gray-400 hover:text-white cursor-pointer";
+        }
+      }
+    });
+    if (typeof lucide !== "undefined") lucide.createIcons();
+  }
+  window.setHeaderLayout = setHeaderLayout;
+  function initHeaderLayout() {
+    if (typeof localStorage === "undefined") return;
+    const saved = localStorage.getItem("noodle_header_layout") || "classic";
+    setHeaderLayout(saved);
+  }
+  window.initHeaderLayout = initHeaderLayout;
+  if (typeof document !== "undefined") {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initHeaderLayout);
+    } else {
+      initHeaderLayout();
+    }
+  }
 
   // audio-core.js
   var audioCtx2 = null;
   var currentSoundType2 = null;
+  var soundGainNode2 = null;
   var soundMasterVolume2 = 0.5;
   var activeUserAudio2 = null;
+  var activeNodes2 = [];
+  var activeTimeouts2 = [];
+  var pendingCrossfadeNodes2 = [];
+  var pendingCrossfadeGains2 = [];
+  var playlistTracks2 = [];
+  var currentTrackIndex2 = 0;
   var isPlayerMuted2 = false;
   var masterGainNode2 = null;
   function getMasterAudioDestination2() {
@@ -6764,6 +7554,65 @@ ${listStr}`;
       });
     }
   }
+  function playAmbientSound2(type, crossfade = false) {
+    initAudioContext2();
+    if (!audioCtx2) return;
+    if (crossfade && currentSoundType2) {
+      const oldGain = soundGainNode2;
+      const oldNodes = [...activeNodes2];
+      if (oldGain) {
+        pendingCrossfadeGains2.push(oldGain);
+        const now = audioCtx2.currentTime;
+        try {
+          oldGain.gain.cancelScheduledValues(now);
+          oldGain.gain.setValueAtTime(oldGain.gain.value, now);
+          oldGain.gain.linearRampToValueAtTime(1e-4, now + 4);
+        } catch (e) {
+          console.warn("[Audio] Crossfade ramp error:", e);
+        }
+      }
+      if (oldNodes.length > 0) {
+        pendingCrossfadeNodes2.push(...oldNodes);
+      }
+      const crossTimeout = setTimeout(() => {
+        oldNodes.forEach((node) => {
+          try {
+            if (typeof node.stop === "function") node.stop(0);
+          } catch (e) {
+            console.warn("[Audio] crossfade oldNode.stop error:", e);
+          }
+          try {
+            node.disconnect();
+          } catch (e) {
+            console.warn("[Audio] crossfade oldNode.disconnect error:", e);
+          }
+        });
+        try {
+          if (oldGain) oldGain.disconnect();
+        } catch (e) {
+          console.warn("[Audio] crossfade oldGain.disconnect error:", e);
+        }
+        pendingCrossfadeNodes2 = pendingCrossfadeNodes2.filter((n) => !oldNodes.includes(n));
+        pendingCrossfadeGains2 = pendingCrossfadeGains2.filter((g) => g !== oldGain);
+      }, 4200);
+      activeTimeouts2.push(crossTimeout);
+      activeNodes2 = [];
+      currentSoundType2 = type;
+      soundGainNode2 = audioCtx2.createGain();
+      soundGainNode2.gain.setValueAtTime(0, audioCtx2.currentTime);
+      soundGainNode2.gain.linearRampToValueAtTime(soundMasterVolume2 * 1, audioCtx2.currentTime + 4);
+      soundGainNode2.connect(getMasterAudioDestination2() || audioCtx2.destination);
+    } else {
+      stopAmbientSound(true);
+      currentSoundType2 = type;
+      soundGainNode2 = audioCtx2.createGain();
+      soundGainNode2.gain.setValueAtTime(soundMasterVolume2 * 1, audioCtx2.currentTime);
+      soundGainNode2.connect(getMasterAudioDestination2() || audioCtx2.destination);
+    }
+    startAmbientGeneratorForType(type);
+    updateSoundscapeUI2();
+    lastSelectedSound = type;
+  }
   function playCheerfulSuccessJingle2() {
     initAudioContext2();
     if (!audioCtx2 || isPlayerMuted2) return;
@@ -6809,6 +7658,197 @@ ${listStr}`;
     }
   }
   window.triggerHapticFeedback = triggerHapticFeedback2;
+  var MOOD_PRESET_NAMES = {
+    deep_focus: { name: "Deep Focus (Lofi Tape Chords)", sound: "lofi" },
+    cozy_cafe: { name: "Cozy Caf\xE9 (Jazz Piano & Coffee)", sound: "jazz_piano" },
+    zen_forest: { name: "Zen Forest (Waldv\xF6gel & Natur)", sound: "birds" },
+    energy_boost: { name: "Energy Boost (Techno 128 BPM)", sound: "techno" },
+    cosmic_flow: { name: "Cosmic Flow (432Hz Drone)", sound: "space" }
+  };
+  function applyAudioMoodPreset(presetKey) {
+    const preset = MOOD_PRESET_NAMES[presetKey];
+    if (!preset) return;
+    document.querySelectorAll(".mood-preset-card").forEach((btn) => {
+      btn.classList.toggle("border-purple-500/80", btn.id === `mood-btn-${presetKey}`);
+      btn.classList.toggle("bg-purple-500/25", btn.id === `mood-btn-${presetKey}`);
+    });
+    playAmbientSound2(preset.sound);
+    updateAudioStudioHeader(preset.name);
+    if (typeof showToast === "function") {
+      showToast(tr({
+        de: `Stimmung aktiviert: ${preset.name} \u2728`,
+        en: `Mood active: ${preset.name} \u2728`,
+        fr: `Ambiance activ\xE9e : ${preset.name} \u2728`,
+        it: `Atmosfera attivata: ${preset.name} \u2728`,
+        es: `Ambiente activado: ${preset.name} \u2728`,
+        el: `\u0395\u03BD\u03B5\u03C1\u03B3\u03BF\u03C0\u03BF\u03B9\u03AE\u03B8\u03B7\u03BA\u03B5 \u03B7 \u03B1\u03C4\u03BC\u03CC\u03C3\u03C6\u03B1\u03B9\u03C1\u03B1: ${preset.name} \u2728`
+      }));
+    }
+  }
+  window.applyAudioMoodPreset = applyAudioMoodPreset;
+  function updateAudioStudioHeader(customTitle) {
+    const titleEl = document.getElementById("audio-studio-now-playing");
+    const liveBadge = document.getElementById("audio-studio-live-badge");
+    const eqBars = document.getElementById("studio-eq-bars");
+    const isPlaying = typeof currentSoundType2 !== "undefined" && currentSoundType2 || typeof activeUserAudio2 !== "undefined" && activeUserAudio2 && !activeUserAudio2.paused || typeof djDecks !== "undefined" && djDecks && (djDecks.a?.isPlaying || djDecks.b?.isPlaying);
+    if (isPlaying) {
+      if (liveBadge) liveBadge.classList.remove("hidden");
+      if (eqBars) eqBars.classList.add("animate-pulse");
+      if (titleEl) {
+        if (customTitle) {
+          titleEl.textContent = "\u25B6 " + customTitle;
+        } else if (currentSoundType2) {
+          const soundTitle = typeof t === "function" && t("sound_" + currentSoundType2) ? t("sound_" + currentSoundType2) : currentSoundType2.toUpperCase();
+          titleEl.textContent = "\u25B6 " + soundTitle;
+        } else if (typeof activeUserAudio2 !== "undefined" && activeUserAudio2 && typeof playlistTracks2 !== "undefined" && playlistTracks2[currentTrackIndex2]) {
+          titleEl.textContent = "\u25B6 " + playlistTracks2[currentTrackIndex2].name;
+        }
+      }
+    } else {
+      if (liveBadge) liveBadge.classList.add("hidden");
+      if (eqBars) eqBars.classList.remove("animate-pulse");
+      if (titleEl) {
+        titleEl.textContent = typeof tr === "function" ? tr({ de: "Kein Sound aktiv \xB7 W\xE4hle einen Preset oder Track", en: "No audio active \xB7 Choose a preset or track" }) : "Kein Sound aktiv \xB7 W\xE4hle einen Preset oder Track";
+      }
+    }
+    updateHeaderSoundBtnUI();
+  }
+  window.updateAudioStudioHeader = updateAudioStudioHeader;
+  function isAnyAudioPlaying() {
+    return typeof currentSoundType2 !== "undefined" && Boolean(currentSoundType2) || typeof activeUserAudio2 !== "undefined" && activeUserAudio2 && !activeUserAudio2.paused || typeof djDecks !== "undefined" && djDecks && (djDecks.a?.isPlaying || djDecks.b?.isPlaying);
+  }
+  window.isAnyAudioPlaying = isAnyAudioPlaying;
+  function updateHeaderSoundBtnUI() {
+    const btn = document.getElementById("header-btn-sound-toggle");
+    const iconWrapper = document.getElementById("header-sound-icon-wrapper");
+    const eqBars = document.getElementById("header-sound-eq-bars");
+    const label = document.getElementById("header-sound-label");
+    if (!btn) return;
+    const isPlaying = isAnyAudioPlaying();
+    if (isPlaying) {
+      btn.className = "h-9 w-9 p-0 border border-purple-400/80 rounded-xl bg-purple-600/25 active:scale-95 text-white flex items-center justify-center cursor-pointer transition shadow-[0_0_16px_rgba(168,85,247,0.35)] shrink-0 group/sound-btn";
+      btn.title = typeof tr === "function" ? tr({ de: "Sound ausschalten (Klick)", en: "Turn sound off (Click)" }) : "Sound ausschalten";
+      if (iconWrapper) {
+        iconWrapper.innerHTML = '<i data-lucide="volume-2" class="w-4 h-4 text-purple-200 animate-pulse"></i>';
+      }
+      if (eqBars) {
+        eqBars.classList.remove("hidden");
+        eqBars.classList.add("flex");
+      }
+      if (label) label.textContent = "";
+    } else {
+      btn.className = "h-9 w-9 p-0 border border-purple-500/30 hover:border-purple-400/60 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 active:scale-95 text-purple-200 hover:text-white flex items-center justify-center cursor-pointer transition shadow-[0_0_12px_rgba(168,85,247,0.12)] shrink-0 group/sound-btn opacity-90 hover:opacity-100";
+      btn.title = typeof tr === "function" ? tr({ de: "Sound einschalten (Klick)", en: "Turn sound on (Click)" }) : "Sound einschalten";
+      if (iconWrapper) {
+        iconWrapper.innerHTML = '<i data-lucide="volume-x" class="w-4 h-4 text-purple-300/80 group-hover/sound-btn:text-purple-200"></i>';
+      }
+      if (eqBars) {
+        eqBars.classList.add("hidden");
+        eqBars.classList.remove("flex");
+      }
+      if (label) label.textContent = "";
+    }
+    if (typeof lucide !== "undefined" && lucide.createIcons) lucide.createIcons();
+  }
+  window.updateHeaderSoundBtnUI = updateHeaderSoundBtnUI;
+  function toggleMasterSound() {
+    if (isAnyAudioPlaying()) {
+      if (typeof currentSoundType2 !== "undefined" && currentSoundType2) {
+        window._lastPlayedSound = currentSoundType2;
+      }
+      stopAllStudioAudio();
+    } else {
+      const soundToPlay = window._lastPlayedSound || "lofi";
+      if (typeof playAmbientSound2 === "function") {
+        playAmbientSound2(soundToPlay);
+      }
+      if (typeof showToast === "function") {
+        showToast(tr({ de: "Sound aktiviert \u{1F50A}", en: "Sound active \u{1F50A}", fr: "Son activ\xE9 \u{1F50A}", it: "Suono attivato \u{1F50A}", es: "Sonido activado \u{1F50A}", el: "\u0389\u03C7\u03BF\u03C2 \u03B5\u03BD\u03B5\u03C1\u03B3\u03CC\u03C2 \u{1F50A}" }));
+      }
+    }
+    updateHeaderSoundBtnUI();
+  }
+  window.toggleMasterSound = toggleMasterSound;
+  function stopAllStudioAudio() {
+    if (typeof stopAmbientSound === "function") stopAmbientSound(true);
+    if (typeof pauseMusicTrack === "function") pauseMusicTrack();
+    if (typeof pauseDjDeck === "function") {
+      pauseDjDeck("a");
+      pauseDjDeck("b");
+    }
+    updateAudioStudioHeader();
+    updateHeaderSoundBtnUI();
+    document.querySelectorAll(".mood-preset-card").forEach((btn) => {
+      btn.classList.remove("border-purple-500/80", "bg-purple-500/25");
+    });
+    if (typeof showToast === "function") {
+      showToast(tr({ de: "Sound gestoppt \u23F9\uFE0F", en: "Sound stopped \u23F9\uFE0F", fr: "Son arr\xEAt\xE9 \u23F9\uFE0F", it: "Suono interrotto \u23F9\uFE0F", es: "Sonido detenido \u23F9\uFE0F", el: "\u039F \u03AE\u03C7\u03BF\u03C2 \u03C3\u03C4\u03B1\u03BC\u03AC\u03C4\u03B7\u03C3\u03B5 \u23F9\uFE0F" }));
+    }
+  }
+  window.stopAllStudioAudio = stopAllStudioAudio;
+  function handleHeaderVolumeInput(val) {
+    if (typeof setSoundVolume === "function") setSoundVolume(val);
+    if (typeof setMusicPlayerVolume === "function") setMusicPlayerVolume(val);
+    const roundedPct = `${Math.round(val * 100)}%`;
+    const percentEl = document.getElementById("header-sound-volume-percent");
+    if (percentEl) {
+      percentEl.textContent = roundedPct;
+    }
+    const studioPctEl = document.getElementById("audio-panel-master-volume-pct");
+    if (studioPctEl) {
+      studioPctEl.textContent = roundedPct;
+    }
+    document.querySelectorAll(".master-volume-slider").forEach((s) => {
+      if (s.value !== val) s.value = val;
+    });
+    const headerSlider = document.getElementById("header-sound-volume-slider");
+    if (headerSlider && headerSlider.value !== val) headerSlider.value = val;
+    const studioSlider = document.getElementById("audio-panel-master-volume-slider");
+    if (studioSlider && studioSlider.value !== val) studioSlider.value = val;
+  }
+  window.handleHeaderVolumeInput = handleHeaderVolumeInput;
+  window.handleStudioMasterVolume = handleHeaderVolumeInput;
+  function showSoundHoverSlider() {
+    const popover = document.getElementById("header-sound-volume-popover");
+    if (popover) {
+      popover.classList.remove("hidden");
+      popover.classList.add("flex");
+      if (typeof lucide !== "undefined" && lucide.createIcons) lucide.createIcons();
+    }
+  }
+  window.showSoundHoverSlider = showSoundHoverSlider;
+  function hideSoundHoverSlider2() {
+    const popover = document.getElementById("header-sound-volume-popover");
+    if (popover) {
+      popover.classList.add("hidden");
+      popover.classList.remove("flex");
+    }
+  }
+  window.hideSoundHoverSlider = hideSoundHoverSlider2;
+  function toggleSoundVolumePopover(event) {
+    if (event) event.stopPropagation();
+    const popover = document.getElementById("header-sound-volume-popover");
+    if (popover) {
+      if (popover.classList.contains("hidden")) {
+        showSoundHoverSlider();
+      } else {
+        hideSoundHoverSlider2();
+      }
+    }
+  }
+  window.toggleSoundVolumePopover = toggleSoundVolumePopover;
+  function toggleAudioTimerSync(enabled) {
+    try {
+      localStorage.setItem("flow_audio_timer_sync", enabled ? "true" : "false");
+      if (typeof showToast === "function") {
+        showToast(
+          enabled ? tr({ de: "Timer-Sync aktiviert: Sound startet & pausiert automatisch mit dem Fokus-Timer \u23F1\uFE0F", en: "Timer-Sync active: Sound starts & pauses with focus timer \u23F1\uFE0F" }) : tr({ de: "Timer-Sync deaktiviert", en: "Timer-Sync disabled" })
+        );
+      }
+    } catch (e) {
+    }
+  }
+  window.toggleAudioTimerSync = toggleAudioTimerSync;
   function updateSoundscapeUI2() {
     const sounds = [
       "piano",
@@ -6827,9 +7867,10 @@ ${listStr}`;
       "summer_meadow",
       "bossa_nova",
       "techno",
-      "drumnbass",
+      "dnb",
       "afrobeats",
       "swing",
+      "boombap",
       "jazz_piano",
       "rhodes",
       "hypnotic_riff"
@@ -6849,6 +7890,22 @@ ${listStr}`;
       if (typeof currentSoundType2 !== "undefined" && currentSoundType2) indicator.classList.remove("hidden");
       else indicator.classList.add("hidden");
     }
+    updateAudioStudioHeader();
+    updateHeaderSoundBtnUI();
+  }
+  if (typeof document !== "undefined") {
+    const initAudioStudioUI = () => {
+      const syncCheckbox = document.getElementById("audio-timer-sync-toggle");
+      if (syncCheckbox) {
+        syncCheckbox.checked = localStorage.getItem("flow_audio_timer_sync") === "true";
+      }
+      updateAudioStudioHeader();
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initAudioStudioUI);
+    } else {
+      initAudioStudioUI();
+    }
   }
   if (typeof window !== "undefined") {
     window.getMasterAudioDestination = getMasterAudioDestination2;
@@ -6856,6 +7913,13 @@ ${listStr}`;
     window.playCheerfulSuccessJingle = playCheerfulSuccessJingle2;
     window.triggerHapticFeedback = triggerHapticFeedback2;
     window.updateSoundscapeUI = updateSoundscapeUI2;
+    window.applyAudioMoodPreset = applyAudioMoodPreset;
+    window.updateAudioStudioHeader = updateAudioStudioHeader;
+    window.stopAllStudioAudio = stopAllStudioAudio;
+    window.toggleAudioTimerSync = toggleAudioTimerSync;
+    window.toggleMasterSound = toggleMasterSound;
+    window.isAnyAudioPlaying = isAnyAudioPlaying;
+    window.updateHeaderSoundBtnUI = updateHeaderSoundBtnUI;
   }
   if (typeof globalThis !== "undefined") {
     globalThis.getMasterAudioDestination = getMasterAudioDestination2;
@@ -6863,6 +7927,13 @@ ${listStr}`;
     globalThis.playCheerfulSuccessJingle = playCheerfulSuccessJingle2;
     globalThis.triggerHapticFeedback = triggerHapticFeedback2;
     globalThis.updateSoundscapeUI = updateSoundscapeUI2;
+    globalThis.applyAudioMoodPreset = applyAudioMoodPreset;
+    globalThis.updateAudioStudioHeader = updateAudioStudioHeader;
+    globalThis.stopAllStudioAudio = stopAllStudioAudio;
+    globalThis.toggleAudioTimerSync = toggleAudioTimerSync;
+    globalThis.toggleMasterSound = toggleMasterSound;
+    globalThis.isAnyAudioPlaying = isAnyAudioPlaying;
+    globalThis.updateHeaderSoundBtnUI = updateHeaderSoundBtnUI;
   }
 
   // audio-generators.js
@@ -7240,7 +8311,7 @@ ${listStr}`;
   var crossfadeDuration = 8;
   var djPlaybackSpeed = 1;
   var djCrossfaderPosition = 0.5;
-  var djDecks = {
+  var djDecks2 = {
     a: {
       audio: null,
       track: null,
@@ -7299,7 +8370,7 @@ ${listStr}`;
         panel.classList.remove("w-[390px]", "sm:w-[450px]");
         panel.classList.add("w-[390px]", "sm:w-[560px]", "md:w-[620px]");
       }
-      initDjDecks();
+      initDjDecks2();
     } else {
       if (djPane) djPane.classList.add("hidden");
       if (stdPane) stdPane.classList.remove("hidden");
@@ -7649,7 +8720,7 @@ ${listStr}`;
     if (!countEl) return;
     countEl.innerText = `${playlistTracks.length} Tracks`;
   }
-  function setSoundVolume(val) {
+  function setSoundVolume2(val) {
     soundMasterVolume = parseFloat(val);
     if (soundMasterVolume < 0.02) soundMasterVolume = 0;
     isPlayerMuted = false;
@@ -7664,7 +8735,7 @@ ${listStr}`;
     }
     applyDjMixerGains();
   }
-  window.setSoundVolume = setSoundVolume;
+  window.setSoundVolume = setSoundVolume2;
   function togglePlayerMute() {
     isPlayerMuted = !isPlayerMuted;
     if (activeUserAudio) {
@@ -7678,7 +8749,7 @@ ${listStr}`;
     }
   }
   window.togglePlayerMute = togglePlayerMute;
-  function initDjDecks() {
+  function initDjDecks2() {
     initAudioContext();
     populateDjDeckSelectors();
   }
@@ -7713,7 +8784,7 @@ ${listStr}`;
   }
   window.handleDeckFileUpload = handleDeckFileUpload;
   function loadTrackToDeck(deckId, track) {
-    const deck = djDecks[deckId];
+    const deck = djDecks2[deckId];
     if (!deck) return;
     if (deck.audio) {
       deck.audio.pause();
@@ -7741,7 +8812,7 @@ ${listStr}`;
   function setupDeckAudioNodes(deckId) {
     if (!audioCtx) initAudioContext();
     if (!audioCtx) return;
-    const deck = djDecks[deckId];
+    const deck = djDecks2[deckId];
     if (!deck || !deck.audio) return;
     try {
       applyDjMixerGains();
@@ -7750,7 +8821,7 @@ ${listStr}`;
     }
   }
   function toggleDeck(deckId) {
-    const deck = djDecks[deckId];
+    const deck = djDecks2[deckId];
     if (!deck || !deck.audio) {
       if (playlistTracks.length > 0) {
         loadTrackToDeck(deckId, playlistTracks[deckId === "a" ? 0 : Math.min(1, playlistTracks.length - 1)]);
@@ -7772,7 +8843,7 @@ ${listStr}`;
   }
   window.toggleDeck = toggleDeck;
   function cueDeck(deckId) {
-    const deck = djDecks[deckId];
+    const deck = djDecks2[deckId];
     if (!deck || !deck.audio) return;
     deck.audio.currentTime = 0;
     if (deck.audio.paused) {
@@ -7785,8 +8856,8 @@ ${listStr}`;
   window.cueDeck = cueDeck;
   function syncDeck(deckId) {
     const otherDeckId = deckId === "a" ? "b" : "a";
-    const thisDeck = djDecks[deckId];
-    const otherDeck = djDecks[otherDeckId];
+    const thisDeck = djDecks2[deckId];
+    const otherDeck = djDecks2[otherDeckId];
     if (!thisDeck) return;
     thisDeck.pitch = otherDeck ? otherDeck.pitch : 1;
     thisDeck.bpm = otherDeck ? otherDeck.bpm : 128;
@@ -7799,7 +8870,7 @@ ${listStr}`;
   }
   window.syncDeck = syncDeck;
   function setDeckPitch(deckId, val) {
-    const deck = djDecks[deckId];
+    const deck = djDecks2[deckId];
     if (!deck) return;
     const pct = parseFloat(val);
     deck.pitch = 1 + pct / 100;
@@ -7809,7 +8880,7 @@ ${listStr}`;
   }
   window.setDeckPitch = setDeckPitch;
   function setDeckVolume(deckId, val) {
-    const deck = djDecks[deckId];
+    const deck = djDecks2[deckId];
     if (!deck) return;
     deck.volume = parseFloat(val);
     applyDjMixerGains();
@@ -7831,21 +8902,21 @@ ${listStr}`;
     const crossGainA = Math.cos(angle);
     const crossGainB = Math.sin(angle);
     const master = isPlayerMuted ? 0 : soundMasterVolume || 0.5;
-    if (djDecks.a.audio) {
-      djDecks.a.audio.volume = Math.max(0, Math.min(1, djDecks.a.volume * crossGainA * master));
+    if (djDecks2.a.audio) {
+      djDecks2.a.audio.volume = Math.max(0, Math.min(1, djDecks2.a.volume * crossGainA * master));
     }
-    if (djDecks.b.audio) {
-      djDecks.b.audio.volume = Math.max(0, Math.min(1, djDecks.b.volume * crossGainB * master));
+    if (djDecks2.b.audio) {
+      djDecks2.b.audio.volume = Math.max(0, Math.min(1, djDecks2.b.volume * crossGainB * master));
     }
   }
   function updateDeckTimeDisplay(deckId) {
-    const deck = djDecks[deckId];
+    const deck = djDecks2[deckId];
     if (!deck || !deck.audio) return;
     const curEl = document.getElementById(`dj-time-${deckId}`);
     if (curEl) curEl.innerText = formatAudioTime(deck.audio.currentTime);
   }
   function updateDeckPlayBtn(deckId) {
-    const deck = djDecks[deckId];
+    const deck = djDecks2[deckId];
     const btn = document.getElementById(`dj-play-btn-${deckId}`);
     if (btn) {
       btn.innerHTML = deck.isPlaying ? '<i data-lucide="pause" class="w-4 h-4"></i>' : '<i data-lucide="play" class="w-4 h-4 ml-0.5"></i>';
@@ -7853,7 +8924,7 @@ ${listStr}`;
     }
   }
   function updateDeckVinylAnim(deckId) {
-    const deck = djDecks[deckId];
+    const deck = djDecks2[deckId];
     const vinyl = document.getElementById(`dj-vinyl-${deckId}`);
     if (vinyl) {
       if (deck.isPlaying) {
@@ -8020,255 +9091,329 @@ ${listStr}`;
   var ringInterval2 = null;
   var TIMER_AMBIENTS = ["piano", "lofi", "chimes", "space", "guitar", "singingbowl", "musicbox", "breeze", "campfire", "birds", "cafe", "clock", "lofi_sunshine", "summer_meadow", "bossa_nova"];
   var VOICE_PROFILES = [
-    { id: "female_warm", name: "Warm Empathetic Female", pitch: 1.06, rate: 0.96, gender: "female", style: "warm" },
-    { id: "male_resonant", name: "Calm Resonant Male", pitch: 0.88, rate: 0.94, gender: "male", style: "grounded" },
-    { id: "child_cheerful", name: "Cheerful Sunny Child", pitch: 1.38, rate: 1.06, gender: "child", style: "joyful" },
-    { id: "coach_energetic", name: "Inspiring Coach", pitch: 1, rate: 1.08, gender: "male", style: "upbeat" },
-    { id: "zen_serene", name: "Serene Zen Guide", pitch: 0.92, rate: 0.86, gender: "female", style: "mindful" },
-    { id: "female_sparkle", name: "Joyful Bright Female", pitch: 1.18, rate: 1.02, gender: "female", style: "sparkle" },
-    { id: "male_flow", name: "Steady Flow Male", pitch: 0.94, rate: 0.98, gender: "male", style: "focus" },
-    { id: "child_playful", name: "Playful Little Explorer", pitch: 1.42, rate: 1.04, gender: "child", style: "playful" }
+    // 1. FRAUENSTIMMEN (Warm, Sanft, Achtsam, Lebendig)
+    { id: "female_warm", name: "Sanfte warme Begleiterin", pitch: 1.01, rate: 0.93, gender: "female", style: "warm" },
+    { id: "female_clear", name: "Klare achtsame Mentorin", pitch: 1.04, rate: 0.95, gender: "female", style: "clear" },
+    { id: "female_zen", name: "Entspannte Zen-Stimme", pitch: 0.97, rate: 0.9, gender: "female", style: "zen" },
+    { id: "female_dynamic", name: "Freundliche Motivatorin", pitch: 1.03, rate: 0.96, gender: "female", style: "dynamic" },
+    // 2. MÄNNERSTIMMEN (Ruhig, Sonor, Vertrauensvoll, Natürlich)
+    { id: "male_calm", name: "Ruhiger Coach", pitch: 0.95, rate: 0.93, gender: "male", style: "calm" },
+    { id: "male_deep", name: "Tiefe warme Stimme", pitch: 0.91, rate: 0.91, gender: "male", style: "deep" },
+    { id: "male_steady", name: "Fokussierter Begleiter", pitch: 0.96, rate: 0.94, gender: "male", style: "steady" },
+    { id: "male_coach", name: "Empathischer Mentor", pitch: 0.98, rate: 0.95, gender: "male", style: "coach" }
   ];
   var globalVoiceTurnIndex = 0;
   var MOTIVATIONAL_CHUNKS2 = {
-    en: {
-      start: [
-        "Great start! Take a deep breath and focus on this first gentle step.",
-        "You've taken the first step. You have full control over your time.",
-        "One small action at a time. You've got this completely!",
-        "Let's go! Your momentum begins right here and now.",
-        "Every moment of focus counts. Enjoy the smooth flow.",
-        "Clear mind, open focus. Dive right into your work!",
-        "A fantastic beginning. Let's make this session count.",
-        "Settling into the rhythm. You are doing wonderfully!"
-      ],
-      halfway: [
-        "Halfway there! You are doing absolutely incredible.",
-        "Keep this calm, steady rhythm. You are totally on track!",
-        "Superb progress! Take a tiny shoulder stretch and continue.",
-        "Midpoint reached! Your focused momentum is carrying you forward.",
-        "Keep flowing effortlessly, you are in your natural element!",
-        "Great pace and dedication. Stay with this peaceful rhythm!",
-        "You've built real traction. The hardest part is behind you.",
-        "Wonderful concentration! Glide smoothly through the rest."
-      ],
-      end: [
-        "Almost done! Just a beautiful, short final stretch.",
-        "Brilliant dedication! The finish line is glowing in sight.",
-        "Outstanding work, just a few moments of focus left!",
-        "You are right at the threshold of success. Keep going!",
-        "Final stretch! Let's wrap this up with joy and pride.",
-        "So close to victory. Savor this rewarding feeling!",
-        "Phenomenal effort. You're practically there!",
-        "Finishing strong! You can feel proud of your focus today."
-      ],
-      overdue: [
-        "Session complete! Time for a well-deserved stretch.",
-        "Take a deep breath and let go. Wonderful session!",
-        "Your focus time is fulfilled. Time to rest your mind.",
-        "How about a refreshing glass of water and a pause?",
-        "You've accomplished a lot. Step back and relax now.",
-        "Time for a gentle change of scenery. Great job today!"
-      ]
-    },
     de: {
       start: [
-        "Super Start! Atme tief durch und nimm dir ganz entspannt diesen ersten Schritt vor.",
-        "Sehr gut, der Anfang ist gemacht! Du hast die volle Kontrolle.",
-        "Schritt f\xFCr Schritt. Du schaffst das mit Leichtigkeit!",
-        "Los geht's! Dein Momentum entsteht genau jetzt.",
-        "Jeder einzelne Augenblick z\xE4hlt. Genie\xDFe den klaren Fluss.",
-        "Dein Fokus ist bereit. Tauche ganz in deine Aufgabe ein!",
-        "Ein wunderbarer Beginn. Lass uns diese Zeit genie\xDFen.",
-        "Du findest deinen Takt. Das machst du wirklich gro\xDFartig!"
+        "Ganz in Ruhe anfangen. Nimm dir diesen ersten Schritt vor.",
+        "Atme einmal durch und finde deinen eigenen Takt.",
+        "Schritt f\xFCr Schritt, ganz ohne Hektik.",
+        "Lass dich nicht ablenken, jetzt z\xE4hlt nur dieser Moment.",
+        "Ein guter, ruhiger Anfang. Du hast die Zeit.",
+        "Komm entspannt in deiner Aufgabe an.",
+        "Einfach anfangen, der Rest f\xFCgt sich von selbst.",
+        "Dein Fokus ist da. Mach es in deinem Tempo.",
+        "Klarer Kopf, klare Sache. Ein Schritt nach dem anderen.",
+        "Atme tief ein. Ganz ruhig loslegen.",
+        "Konzentrier dich auf das Erste, was jetzt ansteht.",
+        "Ruhig und gelassen beginnen."
       ],
       halfway: [
-        "Schon die H\xE4lfte geschafft! Du machst das absolut fantastisch.",
-        "Bleib in deinem ruhigen Rhythmus, du bist voll auf Erfolgskurs!",
-        "Ausgezeichneter Fokus! Schultern kurz lockern und weiterflie\xDFen.",
-        "Die Mitte ist erreicht, dein Schwung tr\xE4gt dich von selbst voran.",
-        "Weiter so, du bist mitten in deinem nat\xFCrlichen Flow!",
-        "Klasse Ausdauer und Klarheit. Bleib einfach dran!",
-        "Das Schwierigste liegt hinter dir. Jetzt l\xE4uft es wie von allein.",
-        "Wunderbare Konzentration! Gleite entspannt durch die zweite H\xE4lfte."
+        "Guter Rhythmus. Bleib einfach ganz entspannt dabei.",
+        "Die Mitte ist erreicht. Du bist gut im Fluss.",
+        "Schultern kurz lockern und ruhig weiterarbeiten.",
+        "Konzentration l\xE4uft gleichm\xE4\xDFig. Sehr sch\xF6n.",
+        "Der Faden ist da, bleib in diesem ruhigen Takt.",
+        "Halbzeit geschafft. Weiter so mit Bedacht.",
+        "Du bist voll drin. Lass es einfach flie\xDFen.",
+        "Sch\xF6ner, stetiger Fortschritt. Kein Stress.",
+        "Kurzer Atemzug und mit klarem Kopf weiter.",
+        "Dein Fokus tr\xE4gt dich ruhig voran.",
+        "Ruhig bleiben, du liegst genau richtig in der Zeit.",
+        "Gleichm\xE4\xDFige Konzentration tut gut."
       ],
       end: [
-        "Fast geschafft! Jetzt kommt der leichte, sch\xF6ne Endspurt.",
-        "Gro\xDFartig! Die Ziellinie ist bereits in greifbarer N\xE4he.",
-        "Hervorragend gemeistert, nur noch ein kleiner Moment!",
-        "Gleich hast du es vollbracht! Sei stolz auf deinen Einsatz.",
-        "Der letzte Abschnitt \u2013 mach ihn mit Leichtigkeit fertig!",
-        "So nah am Ziel. Sp\xFCre die Freude des Erfolgs!",
-        "Ph\xE4nomenaler Einsatz, du hast es fast in der Tasche!",
-        "Wunderbar durchgehalten. Ein echter Triumph f\xFCr heute!"
+        "Fast geschafft. Bring diesen Gedanken in Ruhe zu Ende.",
+        "Der letzte Abschnitt. Bleib noch kurz aufmerksam.",
+        "Gleich am Ziel. Zieh es ganz gelassen durch.",
+        "Nur noch ein kleiner Moment. Schlie\xDFe das Jetzt gut ab.",
+        "Endspurt. Konzentriert bis zum Schluss.",
+        "Fast fertig. Ein kurzer letzter Blick.",
+        "Gleich hast du diesen Block gemeistert.",
+        "Noch wenige Augenblicke. Bleib ganz bei der Sache.",
+        "Die Ziellinie ist da. Sauber zu Ende f\xFChren.",
+        "Gleich kannst du zufrieden aufblicken."
       ],
       overdue: [
-        "Fokuszeit erf\xFCllt! Zeit f\xFCr eine wohlverdiente Bewegungspause.",
-        "Atme tief durch und lass locker. Gro\xDFartige Arbeit!",
-        "Deine Sitzung ist geschafft. G\xF6nn deinen Augen etwas Ruhe.",
-        "Wie w\xE4re es mit einem Glas frischem Wasser und einer Pause?",
-        "Du hast viel bewegt. Tritt kurz zur\xFCck und entspanne dich.",
-        "Zeit f\xFCr einen sanften Szenenwechsel. Danke f\xFCr deinen Fokus!"
+        "Zeit f\xFCr eine Pause. Atme tief durch und steh kurz auf.",
+        "Sehr gut gemacht. G\xF6nn deinen Augen jetzt etwas Ruhe.",
+        "Schultern kreisen, kurz strecken und durchatmen.",
+        "Ein Glas Wasser trinken und den Kopf frei machen.",
+        "Klasse Fokus. Jetzt kurz komplett abschalten.",
+        "Guter Block. Mach einen Moment die Augen zu.",
+        "Tritt kurz vom Bildschirm zur\xFCck.",
+        "Zeit zum Durchschnaufen. Danke f\xFCr deine Konzentration!"
+      ]
+    },
+    en: {
+      start: [
+        "Begin gently. Take this first step in your own time.",
+        "Take a slow breath and settle into your pace.",
+        "One small step at a time, no need to rush.",
+        "Let distractions fade, just be in this present moment.",
+        "A calm and steady start. You have all the time you need.",
+        "Ease into your task with an open mind.",
+        "Simply start, the flow will come naturally.",
+        "Your focus is ready. Proceed at your own tempo.",
+        "Clear mind, quiet focus. Step by step.",
+        "Deep breath in. Begin with peaceful intent.",
+        "Focus on the very first thing right in front of you.",
+        "Calm and centered start."
+      ],
+      halfway: [
+        "Good steady rhythm. Keep going with ease.",
+        "Midpoint reached. You are moving along nicely.",
+        "Relax your shoulders, breathe, and continue smoothly.",
+        "Concentration is flowing evenly. Very well done.",
+        "You have found the groove, stay with this calm pace.",
+        "Halfway through. Keep moving mindfully.",
+        "You are in the flow now. Let it unfold effortlessly.",
+        "Steady and solid progress. No rush.",
+        "Take a soft breath and carry on with clarity.",
+        "Your focus is carrying you forward gently.",
+        "Staying centered, you are right on time.",
+        "Even concentration makes all the difference."
+      ],
+      end: [
+        "Almost there. Wrap up this thought peacefully.",
+        "The final stretch. Stay gently attentive.",
+        "Near the finish line. See it through with calm confidence.",
+        "Just a moment left. Finish this step mindfully.",
+        "Final phase. Keep your focus right to the end.",
+        "Nearly done. One last attentive look.",
+        "You will complete this block in just a moment.",
+        "Only moments remaining. Stay right here.",
+        "The finish line is here. Bring it to a clean close.",
+        "You can look up with satisfaction in a moment."
+      ],
+      overdue: [
+        "Time for a break. Take a deep breath and stand up.",
+        "Well done. Give your eyes a well-deserved rest.",
+        "Roll your shoulders, stretch, and let go of tension.",
+        "Drink a glass of water and clear your mind.",
+        "Great focus today. Now switch off completely for a bit.",
+        "Wonderful session. Close your eyes for a moment.",
+        "Step away from the screen and take in the room.",
+        "Time to breathe freely. Thank you for your concentration!"
       ]
     },
     fr: {
       start: [
-        "Superbe d\xE9part ! Respire profond\xE9ment et aborde ce premier pas avec s\xE9r\xE9nit\xE9.",
-        "Magnifique, le premier pas est franchi ! Tu as le plein contr\xF4le.",
-        "Une \xE9tape apr\xE8s l'autre. Tu ma\xEEtrises parfaitement la situation !",
-        "C'est parti ! Ton \xE9lan se cr\xE9e ici et maintenant.",
-        "Chaque instant de concentration compte. Savoure cette fluidit\xE9.",
-        "Esprit clair et attentif. Plonge avec plaisir dans ton travail !",
-        "Un d\xE9part remarquable. Faisons de cette session un franc succ\xE8s.",
-        "Tu trouves ton propre tempo. Tu te d\xE9brouilles \xE0 merveille !"
+        "Commence tout en douceur. Aborde ce premier pas avec s\xE9r\xE9nit\xE9.",
+        "Prends une inspiration lente et trouve ton propre rythme.",
+        "Une \xE9tape apr\xE8s l'autre, sans aucune pr\xE9cipitation.",
+        "Laisse de c\xF4t\xE9 les distractions, seul cet instant compte.",
+        "Un d\xE9part calme et pos\xE9. Tu as tout le temps n\xE9cessaire.",
+        "Installe-toi paisiblement dans ta t\xE2che.",
+        "Commence simplement, la suite viendra naturellement.",
+        "Ton attention est l\xE0. Avance \xE0 ton propre rythme.",
+        "Esprit clair et d\xE9tendu. Un pas apr\xE8s l'autre.",
+        "Respire profond\xE9ment. D\xE9marre en toute tranquillit\xE9.",
+        "Concentre-toi sur la premi\xE8re chose \xE0 faire.",
+        "Un d\xE9but calme et centr\xE9."
       ],
       halfway: [
-        "D\xE9j\xE0 \xE0 mi-parcours ! Tu accomplis cela avec un brio formidable.",
-        "Garde ce rythme doux et r\xE9gulier, tu es parfaitement sur la bonne voie !",
-        "Superbe concentration ! D\xE9tends un instant tes \xE9paules et continue.",
-        "Mi-chemin franchi, ton \xE9lan naturel te porte vers l'avant.",
-        "Continue ainsi, tu es en plein c\u0153ur de ton flow !",
-        "Une belle constance et beaucoup de clart\xE9. Reste dans cet \xE9tat !",
-        "Le plus difficile est fait. La suite se d\xE9roule avec aisance.",
-        "Concentration exemplaire ! Glisse tranquillement vers la fin."
+        "Bon rythme r\xE9gulier. Continue avec fluidit\xE9.",
+        "Mi-parcours atteint. Tout se passe \xE0 merveille.",
+        "D\xE9tends un instant tes \xE9paules et poursuis calmement.",
+        "La concentration est stable et agr\xE9able. Bravo.",
+        "Le fil conducteur est l\xE0, reste dans cette cadence.",
+        "D\xE9j\xE0 la moiti\xE9. Continue avec cette belle constance.",
+        "Tu es bien dans ton travail. Laisse couler.",
+        "Beau travail r\xE9gulier, sans aucun stress.",
+        "Une douce respiration et on continue l'esprit clair.",
+        "Ton \xE9lan tranquille te porte vers l'avant.",
+        "Reste serein, tu es parfaitement dans les temps.",
+        "Cette concentration \xE9quilibr\xE9e fait du bien."
       ],
       end: [
-        "Presque termin\xE9 ! Il ne reste qu'une toute petite ligne droite.",
-        "Brillant travail ! La ligne d'arriv\xE9e brille \xE0 l'horizon.",
-        "Exceptionnel, plus que quelques instants de concentration !",
-        "Tu y es presque ! Savoure la fiert\xE9 de cet accomplissement.",
-        "Dernier effort tout en douceur, m\xE8ne cela \xE0 terme avec le sourire !",
-        "Si pr\xE8s du but. Ressens la satisfaction du travail bien fait !",
-        "Effort remarquable, la victoire est \xE0 port\xE9e de main !",
-        "Magnifique pers\xE9v\xE9rance. Sois tr\xE8s fier de ta session aujourd'hui."
+        "Presque fini. Termine cette id\xE9e en toute tranquillit\xE9.",
+        "Derni\xE8re ligne droite. Reste attentif encore un instant.",
+        "Tout pr\xE8s du but. M\xE8ne cela \xE0 bien sereinement.",
+        "Plus que quelques instants. Conclus cette \xE9tape avec soin.",
+        "Dernier effort. Concentr\xE9 jusqu'au bout.",
+        "Bient\xF4t termin\xE9. Un dernier regard attentif.",
+        "Tu auras accompli cette t\xE2che d'une minute \xE0 l'autre.",
+        "Encore quelques secondes. Reste bien pr\xE9sent.",
+        "La fin est l\xE0. Boucle cela proprement.",
+        "Tu pourras savourer ce moment dans un instant."
       ],
       overdue: [
-        "Temps de focus accompli ! Place \xE0 une pause bien m\xE9rit\xE9e.",
-        "Prends une grande inspiration et rel\xE2che la pression. Bravo !",
-        "Ta session est finie. Offre un doux repos \xE0 tes yeux.",
-        "Que dirais-tu d'un verre d'eau fra\xEEche et de quelques pas ?",
-        "Tu as fait un travail formidable. Recule un peu et d\xE9tends-toi.",
-        "Il est temps de changer de d\xE9cor. F\xE9licitations pour tes efforts !"
+        "C'est l'heure de la pause. Respire \xE0 fond et l\xE8ve-toi.",
+        "Tr\xE8s beau travail. Accorde un repos bien m\xE9rit\xE9 \xE0 tes yeux.",
+        "Fais rouler tes \xE9paules, \xE9tire-toi et rel\xE2che la pression.",
+        "Bois un verre d'eau et a\xE8re-toi l'esprit.",
+        "Superbe concentration. D\xE9connecte totalement un moment.",
+        "Belle session. Ferme les yeux quelques secondes.",
+        "\xC9loigne-toi de l'\xE9cran et regarde au loin.",
+        "Temps de souffler. Bravo pour ta concentration !"
       ]
     },
     it: {
       start: [
-        "Ottimo inizio! Fai un respiro profondo e affronta questo primo passo con calma.",
-        "Perfetto, hai iniziato alla grande! Sei tu al timone.",
-        "Un piccolo passo alla volta. Ce la farai con assoluta scioltezza!",
-        "Si parte! Il tuo ritmo comincia proprio adesso.",
-        "Ogni istante di concentrazione conta. Goditi il flusso naturale.",
-        "Mente lucida e serena. Immergiti con entusiasmo nel tuo compito!",
-        "Una partenza splendida. Rendiamo questa sessione memorabile.",
-        "Stai trovando la tua cadenza ideale. Stai andando benissimo!"
+        "Inizia con calma. Affronta questo primo passo senza fretta.",
+        "Fai un respiro profondo e trova il tuo ritmo naturale.",
+        "Un passo alla volta, con tutta la serenit\xE0 possibile.",
+        "Lascia andare le distrazioni, conta solo questo momento.",
+        "Una partenza serena e ordinata. Hai tutto il tempo.",
+        "Entra nel compito con mente aperta e rilassata.",
+        "Basta iniziare, il resto verr\xE0 da s\xE9.",
+        "Il tuo focus \xE8 pronto. Procedi con il tuo passo.",
+        "Mente lucida e tranquilla. Un passo dopo l'altro.",
+        "Respira a fondo. Comincia con calma.",
+        "Concentrati sulla prima cosa che hai davanti.",
+        "Inizio calmo e centrato."
       ],
       halfway: [
-        "Sei gi\xE0 a met\xE0 strada! Stai facendo un lavoro davvero straordinario.",
-        "Mantieni questa andatura armoniosa, sei perfettamente in carreggiata!",
-        "Progresso eccellente! Sciogli un momento le spalle e continua.",
-        "Met\xE0 percorso raggiunto, la tua carica positiva ti guida in avanti.",
-        "Continua cos\xEC, sei nel pieno del tuo flow naturale!",
-        "Fantastica determinazione e lucidit\xE0. Resta con questa energia!",
-        "La parte pi\xF9 impegnativa \xE8 alle spalle. Ora tutto scorre fluido.",
-        "Concentrazione meravigliosa! Accompagna la sessione fino al termine."
+        "Ottimo ritmo costante. Continua con naturalezza.",
+        "Met\xE0 percorso raggiunto. Stai procedendo benissimo.",
+        "Sciogli le spalle per un attimo e prosegui sereno.",
+        "La concentrazione scorre in modo armonioso. Molto bene.",
+        "Hai preso il filo giusto, resta in questo ritmo quieto.",
+        "Met\xE0 fatta. Avanti cos\xEC con attenzione.",
+        "Sei immerso nel compito. Lascia scorrere.",
+        "Progresso solido e continuo. Niente stress.",
+        "Un respiro morbido e si continua con chiarezza.",
+        "Il tuo impegno ti sta guidando con delicatezza.",
+        "Rimani tranquillo, sei perfettamente nei tempi.",
+        "Una concentrazione equilibrata porta ottimi frutti."
       ],
       end: [
-        "Quasi fatto! Manca solo un piccolissimo e piacevole sprint finale.",
-        "Lavoro brillante! Il traguardo \xE8 ormai a un passo da te.",
-        "Straordinario impegno, restano solo pochi istanti di focus!",
-        "Ci sei quasi arrivato! Assapora la gioia di avercela fatta.",
-        "Ultimo tratto: chiudi questo momento con orgoglio e serenit\xE0!",
-        "A un passo dalla vittoria. Senti la bella soddisfazione nel petto!",
-        "Impegno impeccabile, hai conquistato il tuo obiettivo!",
-        "Resistenza da applausi. Puoi essere davvero fiero di te oggi."
+        "Quasi fatto. Concludi questo pensiero con serenit\xE0.",
+        "Tratto finale. Rimani attento ancora per un momento.",
+        "A un passo dal traguardo. Porta a termine con calma.",
+        "Mancano pochi istanti. Chiudi questo passaggio con cura.",
+        "Sprint finale. Concentrato fino alla fine.",
+        "Quasi terminato. Un ultimo sguardo attento.",
+        "Tra poco avrai completato questa sessione.",
+        "Ancora qualche istante. Resta concentrato qui.",
+        "Il traguardo \xE8 raggiunto. Chiudi in bellezza.",
+        "Tra un momento potrai sentirti molto soddisfatto."
       ],
       overdue: [
-        "Sessione completata! \xC8 giunto il momento per una pausa rigenerante.",
-        "Fai un respiro profondo e rilassati. Hai fatto un gran lavoro!",
-        "Il tuo tempo di focus \xE8 terminato. Concedi riposo alla tua mente.",
-        "Che ne dici di un bicchiere d'acqua fresca e due passi distensivi?",
-        "Hai ottenuto grandi risultati. Stacca la spina e rilassati.",
-        "\xC8 tempo di cambiare visuale. Bravissimo per la tua dedizione!"
+        "\xC8 tempo di una pausa. Fai un respiro profondo e alzati.",
+        "Ottimo lavoro. Concedi un meritato riposo agli occhi.",
+        "Ruota le spalle, fai un po' di stretching e rilassati.",
+        "Bevi un bicchiere d'acqua e libera la mente.",
+        "Grande focus. Ora stacca completamente per qualche minuto.",
+        "Sessione splendida. Chiudi gli occhi per un attimo.",
+        "Allontanati dallo schermo e guarda lontano.",
+        "Momento di respirare. Grazie per la tua concentrazione!"
       ]
     },
     es: {
       start: [
-        "\xA1Excelente comienzo! Respira profundo y da este primer paso con total calma.",
-        "\xA1Muy bien, ya diste el primer paso! Tienes el control absoluto.",
-        "Paso a pasito, con calma. \xA1Lo vas a lograr con total soltura!",
-        "\xA1Vamos all\xE1! Tu impulso ganador empieza aqu\xED y ahora.",
-        "Cada segundo de concentraci\xF3n suma. Disfruta de esta fluidez.",
-        "Mente despejada y lista. \xA1Sum\xE9rgete con alegr\xEDa en tu tarea!",
-        "Un inicio fant\xE1stico. Hagamos que esta sesi\xF3n sea maravillosa.",
-        "Encontraste tu propio ritmo. \xA1Lo est\xE1s haciendo de maravilla!"
+        "Empieza con calma. Da este primer paso a tu ritmo.",
+        "Respira hondo y encuentra tu propio comp\xE1s.",
+        "Paso a paso, sin ninguna prisa.",
+        "Deja fuera las distracciones, solo cuenta este momento.",
+        "Un inicio sereno y ordenado. Tienes todo el tiempo.",
+        "Entra en la tarea con la mente tranquila.",
+        "Solo empieza, el flujo vendr\xE1 por s\xED solo.",
+        "Tu enfoque est\xE1 listo. Avanza a tu manera.",
+        "Mente clara y despejada. Un paso tras otro.",
+        "Respira profundo. Comienza con sosiego.",
+        "Conc\xE9ntrate en lo primero que tienes delante.",
+        "Comienzo tranquilo y centrado."
       ],
       halfway: [
-        "\xA1Ya est\xE1s a mitad de camino! Lo est\xE1s haciendo de forma espectacular.",
-        "Mant\xE9n este ritmo sereno y constante, \xA1vas directo al \xE9xito!",
-        "\xA1Progreso fabuloso! Suelta los hombros un momento y contin\xFAa.",
-        "\xA1Punto medio conquistado! Tu propia inercia te lleva hacia adelante.",
-        "\xA1Sigue fluyendo as\xED, est\xE1s en tu estado de flow ideal!",
-        "Gran constancia y claridad mental. \xA1Sigue con esa bella energ\xEDa!",
-        "Lo m\xE1s dif\xEDcil ya qued\xF3 atr\xE1s. Ahora todo marcha sobre ruedas.",
-        "\xA1Concentraci\xF3n de diez! Desl\xEDzate suavemente hacia el final."
+        "Buen ritmo constante. Sigue as\xED con naturalidad.",
+        "Mitad del camino alcanzada. Vas muy bien.",
+        "Relaja los hombros un segundo y contin\xFAa tranquilo.",
+        "La concentraci\xF3n fluye de manera uniforme. Muy bien.",
+        "Tienes el hilo correcto, mant\xE9n este ritmo sereno.",
+        "La mitad est\xE1 hecha. Sigue con calma.",
+        "Est\xE1s totalmente enfocado. Deja que fluya.",
+        "Progreso firme y constante. Sin agobios.",
+        "Una respiraci\xF3n suave y seguimos con claridad.",
+        "Tu dedicaci\xF3n te lleva hacia adelante suavemente.",
+        "Mant\xE9n la calma, vas perfecto de tiempo.",
+        "Una concentraci\xF3n equilibrada hace maravillas."
       ],
       end: [
-        "\xA1Casi listo! Solo queda un tramo final muy breve y gratificante.",
-        "\xA1Trabajo brillante! La meta resplandece justo frente a ti.",
-        "\xA1Extraordinario esfuerzo, solo faltan unos instantes de enfoque!",
-        "\xA1Ya est\xE1s pr\xE1cticamente ah\xED! Siente el orgullo de lograrlo.",
-        "\xDAltimo detalle: \xA1remata esta sesi\xF3n con alegr\xEDa y satisfacci\xF3n!",
-        "A pasitos de la meta. \xA1Disfruta la sensaci\xF3n de triunfo!",
-        "Dedicaci\xF3n fenomenal, \xA1el objetivo ya es todo tuyo!",
-        "Perseverancia admirable. Si\xE9ntete muy orgulloso de tu d\xEDa."
+        "Casi listo. Remata esta idea con serenidad.",
+        "Tramo final. Mantente atento un momento m\xE1s.",
+        "Cerca de la meta. Concluye con tranquilidad.",
+        "Solo falta un instante. Cierra este paso con esmero.",
+        "Recta final. Concentrado hasta el final.",
+        "Pr\xE1cticamente terminado. Un \xFAltimo vistazo atento.",
+        "En breve habr\xE1s completado este bloque.",
+        "Quedan pocos segundos. Sigue presente aqu\xED.",
+        "La meta est\xE1 aqu\xED. Ci\xE9rralo con limpieza.",
+        "En un momento podr\xE1s disfrutar de la satisfacci\xF3n."
       ],
       overdue: [
-        "\xA1Tiempo de enfoque cumplido! Momento ideal para una pausa reconfortante.",
-        "Respira hondo y suelta la tensi\xF3n. \xA1Hiciste un trabajo grandioso!",
-        "Tu sesi\xF3n ha concluido. Dale un merecido descanso a tu mirada.",
-        "\xBFQu\xE9 tal un vaso de agua fresca y estirar un poco las piernas?",
-        "Avanzaste much\xEDsimo hoy. T\xF3mate un respiro y desconecta.",
-        "Hora de un suave cambio de ambiente. \xA1Felicidades por tu enfoque!"
+        "Momento de descansar. Respira hondo y ponte de pie.",
+        "Muy buen trabajo. Dale un descanso merecido a tus ojos.",
+        "Mueve los hombros, est\xEDrate y suelta la tensi\xF3n.",
+        "Bebe un vaso de agua y despeja la mente.",
+        "Gran enfoque hoy. Desconecta del todo unos minutos.",
+        "Sesi\xF3n estupenda. Cierra los ojos un instante.",
+        "Al\xE9jate de la pantalla y mira a lo lejos.",
+        "Hora de respirar aliviado. \xA1Gracias por tu concentraci\xF3n!"
       ]
     },
     el: {
       start: [
-        "\u03A5\u03C0\u03AD\u03C1\u03BF\u03C7\u03BF \u03BE\u03B5\u03BA\u03AF\u03BD\u03B7\u03BC\u03B1! \u03A0\u03AC\u03C1\u03B5 \u03BC\u03B9\u03B1 \u03B2\u03B1\u03B8\u03B9\u03AC \u03B1\u03BD\u03AC\u03C3\u03B1 \u03BA\u03B1\u03B9 \u03BA\u03AC\u03BD\u03B5 \u03B1\u03C5\u03C4\u03CC \u03C4\u03BF \u03C0\u03C1\u03CE\u03C4\u03BF \u03B2\u03AE\u03BC\u03B1 \u03BC\u03B5 \u03B7\u03C1\u03B5\u03BC\u03AF\u03B1.",
-        "\u03A0\u03BF\u03BB\u03CD \u03CC\u03BC\u03BF\u03C1\u03C6\u03B1, \u03B7 \u03B1\u03C1\u03C7\u03AE \u03AD\u03B3\u03B9\u03BD\u03B5! \u0388\u03C7\u03B5\u03B9\u03C2 \u03C4\u03BF\u03BD \u03B1\u03C0\u03CC\u03BB\u03C5\u03C4\u03BF \u03AD\u03BB\u03B5\u03B3\u03C7\u03BF \u03C4\u03BF\u03C5 \u03C7\u03C1\u03CC\u03BD\u03BF\u03C5 \u03C3\u03BF\u03C5.",
-        "\u0392\u03AE\u03BC\u03B1 \u03C0\u03C1\u03BF\u03C2 \u03B2\u03AE\u03BC\u03B1, \u03AE\u03C1\u03B5\u03BC\u03B1. \u039C\u03C0\u03BF\u03C1\u03B5\u03AF\u03C2 \u03BD\u03B1 \u03C4\u03BF \u03C0\u03B5\u03C4\u03CD\u03C7\u03B5\u03B9\u03C2 \u03BC\u03B5 \u03B1\u03C0\u03CC\u03BB\u03C5\u03C4\u03B7 \u03B5\u03C5\u03BA\u03BF\u03BB\u03AF\u03B1!",
-        "\u03A0\u03AC\u03BC\u03B5 \u03B4\u03C5\u03BD\u03B1\u03C4\u03AC! \u0397 \u03B8\u03B5\u03C4\u03B9\u03BA\u03AE \u03C3\u03BF\u03C5 \u03BF\u03C1\u03BC\u03AE \u03B3\u03B5\u03BD\u03BD\u03B9\u03AD\u03C4\u03B1\u03B9 \u03B5\u03B4\u03CE \u03BA\u03B1\u03B9 \u03C4\u03CE\u03C1\u03B1.",
-        "\u039A\u03AC\u03B8\u03B5 \u03C3\u03C4\u03B9\u03B3\u03BC\u03AE \u03C3\u03C5\u03B3\u03BA\u03AD\u03BD\u03C4\u03C1\u03C9\u03C3\u03B7\u03C2 \u03BC\u03B5\u03C4\u03C1\u03AC\u03B5\u03B9. \u0391\u03C0\u03CC\u03BB\u03B1\u03C5\u03C3\u03B5 \u03C4\u03B7\u03BD \u03BA\u03B1\u03B8\u03B1\u03C1\u03AE \u03C1\u03BF\u03AE.",
-        "\u039A\u03B1\u03B8\u03B1\u03C1\u03CC \u03BC\u03C5\u03B1\u03BB\u03CC \u03BA\u03B1\u03B9 \u03CC\u03BC\u03BF\u03C1\u03C6\u03B7 \u03B4\u03B9\u03AC\u03B8\u03B5\u03C3\u03B7. \u0392\u03C5\u03B8\u03AF\u03C3\u03BF\u03C5 \u03BC\u03B5 \u03C7\u03B1\u03C1\u03AC \u03C3\u03C4\u03B7 \u03B4\u03BF\u03C5\u03BB\u03B5\u03B9\u03AC \u03C3\u03BF\u03C5!",
-        "\u0388\u03BD\u03B1 \u03B5\u03BE\u03B1\u03B9\u03C1\u03B5\u03C4\u03B9\u03BA\u03CC \u03BE\u03B5\u03BA\u03AF\u03BD\u03B7\u03BC\u03B1. \u0391\u03C2 \u03BA\u03AC\u03BD\u03BF\u03C5\u03BC\u03B5 \u03B1\u03C5\u03C4\u03CC \u03C4\u03BF \u03B4\u03B9\u03AC\u03C3\u03C4\u03B7\u03BC\u03B1 \u03C0\u03C1\u03B1\u03B3\u03BC\u03B1\u03C4\u03B9\u03BA\u03AC \u03B1\u03C0\u03BF\u03B4\u03BF\u03C4\u03B9\u03BA\u03CC.",
-        "\u0392\u03C1\u03AF\u03C3\u03BA\u03B5\u03B9\u03C2 \u03C4\u03BF\u03BD \u03B9\u03B4\u03B1\u03BD\u03B9\u03BA\u03CC \u03C3\u03BF\u03C5 \u03C1\u03C5\u03B8\u03BC\u03CC. \u03A4\u03B1 \u03C0\u03B7\u03B3\u03B1\u03AF\u03BD\u03B5\u03B9\u03C2 \u03C0\u03B5\u03C1\u03AF\u03C6\u03B7\u03BC\u03B1!"
+        "\u039E\u03B5\u03BA\u03AF\u03BD\u03B1 \u03BC\u03B5 \u03B1\u03C0\u03CC\u03BB\u03C5\u03C4\u03B7 \u03B7\u03C1\u03B5\u03BC\u03AF\u03B1. \u039A\u03AC\u03BD\u03B5 \u03B1\u03C5\u03C4\u03CC \u03C4\u03BF \u03C0\u03C1\u03CE\u03C4\u03BF \u03B2\u03AE\u03BC\u03B1 \u03C3\u03C4\u03BF\u03BD \u03B4\u03B9\u03BA\u03CC \u03C3\u03BF\u03C5 \u03C7\u03C1\u03CC\u03BD\u03BF.",
+        "\u03A0\u03AC\u03C1\u03B5 \u03BC\u03B9\u03B1 \u03B2\u03B1\u03B8\u03B9\u03AC \u03B1\u03BD\u03AC\u03C3\u03B1 \u03BA\u03B1\u03B9 \u03B2\u03C1\u03B5\u03C2 \u03C4\u03BF\u03BD \u03B4\u03B9\u03BA\u03CC \u03C3\u03BF\u03C5 \u03C1\u03C5\u03B8\u03BC\u03CC.",
+        "\u0392\u03AE\u03BC\u03B1 \u03C0\u03C1\u03BF\u03C2 \u03B2\u03AE\u03BC\u03B1, \u03C7\u03C9\u03C1\u03AF\u03C2 \u03BA\u03B1\u03BC\u03AF\u03B1 \u03B2\u03B9\u03B1\u03C3\u03CD\u03BD\u03B7.",
+        "\u0386\u03C6\u03B7\u03C3\u03B5 \u03C4\u03B9\u03C2 \u03B1\u03C0\u03BF\u03C3\u03C0\u03AC\u03C3\u03B5\u03B9\u03C2 \u03C3\u03C4\u03B7\u03BD \u03AC\u03BA\u03C1\u03B7, \u03BC\u03B5\u03C4\u03C1\u03AC\u03B5\u03B9 \u03BC\u03CC\u03BD\u03BF \u03B1\u03C5\u03C4\u03AE \u03B7 \u03C3\u03C4\u03B9\u03B3\u03BC\u03AE.",
+        "\u0388\u03BD\u03B1 \u03AE\u03C1\u03B5\u03BC\u03BF \u03BA\u03B1\u03B9 \u03C3\u03C4\u03B1\u03B8\u03B5\u03C1\u03CC \u03BE\u03B5\u03BA\u03AF\u03BD\u03B7\u03BC\u03B1. \u0388\u03C7\u03B5\u03B9\u03C2 \u03CC\u03BB\u03BF \u03C4\u03BF\u03BD \u03C7\u03C1\u03CC\u03BD\u03BF.",
+        "\u039C\u03C0\u03B5\u03C2 \u03C3\u03C4\u03B7\u03BD \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1 \u03C3\u03BF\u03C5 \u03BC\u03B5 \u03BA\u03B1\u03B8\u03B1\u03C1\u03CC \u03BA\u03B1\u03B9 \u03AE\u03C3\u03C5\u03C7\u03BF \u03BC\u03C5\u03B1\u03BB\u03CC.",
+        "\u0391\u03C0\u03BB\u03CE\u03C2 \u03BE\u03B5\u03BA\u03AF\u03BD\u03B1, \u03B7 \u03C1\u03BF\u03AE \u03B8\u03B1 \u03AD\u03C1\u03B8\u03B5\u03B9 \u03C6\u03C5\u03C3\u03B9\u03BA\u03AC.",
+        "\u0397 \u03C0\u03C1\u03BF\u03C3\u03BF\u03C7\u03AE \u03C3\u03BF\u03C5 \u03B5\u03AF\u03BD\u03B1\u03B9 \u03AD\u03C4\u03BF\u03B9\u03BC\u03B7. \u03A0\u03C1\u03BF\u03C7\u03CE\u03C1\u03B1 \u03BC\u03B5 \u03C4\u03BF\u03BD \u03C1\u03C5\u03B8\u03BC\u03CC \u03C3\u03BF\u03C5.",
+        "\u039A\u03B1\u03B8\u03B1\u03C1\u03CC \u03BC\u03C5\u03B1\u03BB\u03CC, \u03AE\u03C1\u03B5\u03BC\u03B7 \u03B5\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7. \u0388\u03BD\u03B1 \u03B2\u03AE\u03BC\u03B1 \u03C4\u03B7 \u03C6\u03BF\u03C1\u03AC.",
+        "\u0391\u03BD\u03AC\u03C0\u03BD\u03B5\u03C5\u03C3\u03B5 \u03B2\u03B1\u03B8\u03B9\u03AC. \u039E\u03B5\u03BA\u03AF\u03BD\u03B1 \u03BC\u03B5 \u03B3\u03B1\u03BB\u03AE\u03BD\u03B7.",
+        "\u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B5 \u03C3\u03C4\u03BF \u03C0\u03C1\u03CE\u03C4\u03BF \u03C0\u03C1\u03AC\u03B3\u03BC\u03B1 \u03C0\u03BF\u03C5 \u03AD\u03C7\u03B5\u03B9\u03C2 \u03BC\u03C0\u03C1\u03BF\u03C3\u03C4\u03AC \u03C3\u03BF\u03C5.",
+        "\u0389\u03C1\u03B5\u03BC\u03BF \u03BA\u03B1\u03B9 \u03C3\u03C5\u03B3\u03BA\u03B5\u03BD\u03C4\u03C1\u03C9\u03BC\u03AD\u03BD\u03BF \u03BE\u03B5\u03BA\u03AF\u03BD\u03B7\u03BC\u03B1."
       ],
       halfway: [
-        "\u0388\u03C6\u03C4\u03B1\u03C3\u03B5\u03C2 \u03AE\u03B4\u03B7 \u03C3\u03C4\u03B1 \u03BC\u03B9\u03C3\u03AC \u03C4\u03BF\u03C5 \u03B4\u03C1\u03CC\u03BC\u03BF\u03C5! \u03A4\u03B1 \u03BA\u03B1\u03C4\u03B1\u03C6\u03AD\u03C1\u03BD\u03B5\u03B9\u03C2 \u03B1\u03C0\u03BF\u03BB\u03CD\u03C4\u03C9\u03C2 \u03C6\u03B1\u03BD\u03C4\u03B1\u03C3\u03C4\u03B9\u03BA\u03AC.",
-        "\u039A\u03C1\u03AC\u03C4\u03B1 \u03B1\u03C5\u03C4\u03CC\u03BD \u03C4\u03BF\u03BD \u03B3\u03B1\u03BB\u03AE\u03BD\u03B9\u03BF \u03C1\u03C5\u03B8\u03BC\u03CC, \u03B5\u03AF\u03C3\u03B1\u03B9 \u03C3\u03B5 \u03B9\u03B4\u03B1\u03BD\u03B9\u03BA\u03AE \u03C0\u03BF\u03C1\u03B5\u03AF\u03B1 \u03B5\u03C0\u03B9\u03C4\u03C5\u03C7\u03AF\u03B1\u03C2!",
-        "\u03A5\u03C0\u03AD\u03C1\u03BF\u03C7\u03B7 \u03C0\u03C1\u03CC\u03BF\u03B4\u03BF\u03C2! \u03A7\u03B1\u03BB\u03AC\u03C1\u03C9\u03C3\u03B5 \u03BB\u03AF\u03B3\u03BF \u03C4\u03BF\u03C5\u03C2 \u03CE\u03BC\u03BF\u03C5\u03C2 \u03C3\u03BF\u03C5 \u03BA\u03B1\u03B9 \u03C3\u03C5\u03BD\u03AD\u03C7\u03B9\u03C3\u03B5.",
-        "\u0397 \u03BC\u03AD\u03C3\u03B7 \u03BA\u03B1\u03C4\u03B1\u03BA\u03C4\u03AE\u03B8\u03B7\u03BA\u03B5, \u03B7 \u03B4\u03B9\u03BA\u03AE \u03C3\u03BF\u03C5 \u03BF\u03C1\u03BC\u03AE \u03C3\u03B5 \u03BF\u03B4\u03B7\u03B3\u03B5\u03AF \u03BC\u03C0\u03C1\u03BF\u03C3\u03C4\u03AC \u03BC\u03B5 \u03B5\u03C5\u03BA\u03BF\u03BB\u03AF\u03B1.",
-        "\u03A3\u03C5\u03BD\u03AD\u03C7\u03B9\u03C3\u03B5 \u03AD\u03C4\u03C3\u03B9, \u03B2\u03C1\u03AF\u03C3\u03BA\u03B5\u03C3\u03B1\u03B9 \u03BC\u03AD\u03C3\u03B1 \u03C3\u03C4\u03B7\u03BD \u03B1\u03C0\u03CC\u03BB\u03C5\u03C4\u03B7 \u03C6\u03C5\u03C3\u03B9\u03BA\u03AE \u03C3\u03BF\u03C5 \u03C1\u03BF\u03AE!",
-        "\u03A3\u03C0\u03BF\u03C5\u03B4\u03B1\u03AF\u03B1 \u03B5\u03C0\u03B9\u03BC\u03BF\u03BD\u03AE \u03BA\u03B1\u03B9 \u03B4\u03B9\u03B1\u03CD\u03B3\u03B5\u03B9\u03B1. \u039C\u03B5\u03AF\u03BD\u03B5 \u03C3\u03C5\u03BD\u03C4\u03BF\u03BD\u03B9\u03C3\u03BC\u03AD\u03BD\u03BF\u03C2 \u03C3\u03B5 \u03B1\u03C5\u03C4\u03AE \u03C4\u03B7\u03BD \u03B5\u03BD\u03AD\u03C1\u03B3\u03B5\u03B9\u03B1!",
-        "\u03A4\u03BF \u03B4\u03C5\u03C3\u03BA\u03BF\u03BB\u03CC\u03C4\u03B5\u03C1\u03BF \u03BA\u03BF\u03BC\u03BC\u03AC\u03C4\u03B9 \u03C0\u03AD\u03C1\u03B1\u03C3\u03B5. \u03A4\u03CE\u03C1\u03B1 \u03CC\u03BB\u03B1 \u03BA\u03C5\u03BB\u03BF\u03CD\u03BD \u03B1\u03B2\u03AF\u03B1\u03C3\u03C4\u03B1.",
-        "\u0395\u03BE\u03B1\u03B9\u03C1\u03B5\u03C4\u03B9\u03BA\u03AE \u03C3\u03C5\u03B3\u03BA\u03AD\u03BD\u03C4\u03C1\u03C9\u03C3\u03B7! \u0393\u03BB\u03AF\u03C3\u03C4\u03C1\u03B7\u03C3\u03B5 \u03CC\u03BC\u03BF\u03C1\u03C6\u03B1 \u03C0\u03C1\u03BF\u03C2 \u03C4\u03BF \u03C4\u03AD\u03BB\u03BF\u03C2."
+        "\u03A9\u03C1\u03B1\u03AF\u03BF\u03C2 \u03C3\u03C4\u03B1\u03B8\u03B5\u03C1\u03CC\u03C2 \u03C1\u03C5\u03B8\u03BC\u03CC\u03C2. \u03A3\u03C5\u03BD\u03AD\u03C7\u03B9\u03C3\u03B5 \u03B1\u03C0\u03BB\u03AC \u03BA\u03B1\u03B9 \u03B1\u03B2\u03AF\u03B1\u03C3\u03C4\u03B1.",
+        "\u0388\u03C6\u03C4\u03B1\u03C3\u03B5\u03C2 \u03C3\u03C4\u03B1 \u03BC\u03B9\u03C3\u03AC. \u03A0\u03C1\u03BF\u03C7\u03C9\u03C1\u03AC\u03C2 \u03C0\u03BF\u03BB\u03CD \u03CC\u03BC\u03BF\u03C1\u03C6\u03B1.",
+        "\u03A7\u03B1\u03BB\u03AC\u03C1\u03C9\u03C3\u03B5 \u03BB\u03AF\u03B3\u03BF \u03C4\u03BF\u03C5\u03C2 \u03CE\u03BC\u03BF\u03C5\u03C2 \u03C3\u03BF\u03C5 \u03BA\u03B1\u03B9 \u03C3\u03C5\u03BD\u03AD\u03C7\u03B9\u03C3\u03B5 \u03AE\u03C1\u03B5\u03BC\u03B1.",
+        "\u0397 \u03C3\u03C5\u03B3\u03BA\u03AD\u03BD\u03C4\u03C1\u03C9\u03C3\u03B7 \u03C1\u03AD\u03B5\u03B9 \u03BF\u03BC\u03BF\u03B9\u03CC\u03BC\u03BF\u03C1\u03C6\u03B1. \u03A0\u03BF\u03BB\u03CD \u03BA\u03B1\u03BB\u03AC.",
+        "\u0388\u03C7\u03B5\u03B9\u03C2 \u03B2\u03C1\u03B5\u03B9 \u03C4\u03BF\u03BD \u03BC\u03AF\u03C4\u03BF, \u03BC\u03B5\u03AF\u03BD\u03B5 \u03C3\u03B5 \u03B1\u03C5\u03C4\u03CC\u03BD \u03C4\u03BF\u03BD \u03B3\u03B1\u03BB\u03AE\u03BD\u03B9\u03BF \u03C1\u03C5\u03B8\u03BC\u03CC.",
+        "\u03A4\u03B1 \u03BC\u03B9\u03C3\u03AC \u03AD\u03B3\u03B9\u03BD\u03B1\u03BD. \u03A3\u03C5\u03BD\u03AD\u03C7\u03B9\u03C3\u03B5 \u03BC\u03B5 \u03C0\u03C1\u03BF\u03C3\u03BF\u03C7\u03AE.",
+        "\u0395\u03AF\u03C3\u03B1\u03B9 \u03BC\u03AD\u03C3\u03B1 \u03C3\u03C4\u03B7\u03BD \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1 \u03C3\u03BF\u03C5. \u0386\u03C6\u03B7\u03C3\u03AD \u03C4\u03BF \u03BD\u03B1 \u03BA\u03C5\u03BB\u03AE\u03C3\u03B5\u03B9.",
+        "\u03A3\u03C4\u03B1\u03B8\u03B5\u03C1\u03AE \u03BA\u03B1\u03B9 \u03CC\u03BC\u03BF\u03C1\u03C6\u03B7 \u03C0\u03C1\u03CC\u03BF\u03B4\u03BF\u03C2. \u03A7\u03C9\u03C1\u03AF\u03C2 \u03BA\u03B1\u03BD\u03AD\u03BD\u03B1 \u03AC\u03B3\u03C7\u03BF\u03C2.",
+        "\u039C\u03B9\u03B1 \u03AE\u03C1\u03B5\u03BC\u03B7 \u03B1\u03BD\u03AC\u03C3\u03B1 \u03BA\u03B1\u03B9 \u03C3\u03C5\u03BD\u03B5\u03C7\u03AF\u03B6\u03B5\u03B9\u03C2 \u03BC\u03B5 \u03B4\u03B9\u03B1\u03CD\u03B3\u03B5\u03B9\u03B1.",
+        "\u0397 \u03B5\u03C3\u03C4\u03AF\u03B1\u03C3\u03AE \u03C3\u03BF\u03C5 \u03C3\u03B5 \u03BF\u03B4\u03B7\u03B3\u03B5\u03AF \u03BC\u03C0\u03C1\u03BF\u03C3\u03C4\u03AC \u03BC\u03B5 \u03B5\u03C5\u03BA\u03BF\u03BB\u03AF\u03B1.",
+        "\u039C\u03B5\u03AF\u03BD\u03B5 \u03AE\u03C1\u03B5\u03BC\u03BF\u03C2, \u03B5\u03AF\u03C3\u03B1\u03B9 \u03B1\u03C0\u03CC\u03BB\u03C5\u03C4\u03B1 \u03BC\u03AD\u03C3\u03B1 \u03C3\u03C4\u03BF\u03BD \u03C7\u03C1\u03CC\u03BD\u03BF \u03C3\u03BF\u03C5.",
+        "\u0397 \u03B9\u03C3\u03BF\u03C1\u03C1\u03BF\u03C0\u03B7\u03BC\u03AD\u03BD\u03B7 \u03C3\u03C5\u03B3\u03BA\u03AD\u03BD\u03C4\u03C1\u03C9\u03C3\u03B7 \u03BA\u03AC\u03BD\u03B5\u03B9 \u03C4\u03B7 \u03B4\u03B9\u03B1\u03C6\u03BF\u03C1\u03AC."
       ],
       end: [
-        "\u03A3\u03C7\u03B5\u03B4\u03CC\u03BD \u03C4\u03B5\u03BB\u03B5\u03AF\u03C9\u03C3\u03B5\u03C2! \u0391\u03C0\u03BF\u03BC\u03AD\u03BD\u03B5\u03B9 \u03BC\u03CC\u03BD\u03BF \u03BC\u03B9\u03B1 \u03BC\u03B9\u03BA\u03C1\u03AE, \u03B5\u03C5\u03C7\u03AC\u03C1\u03B9\u03C3\u03C4\u03B7 \u03C4\u03B5\u03BB\u03B9\u03BA\u03AE \u03B5\u03C5\u03B8\u03B5\u03AF\u03B1.",
-        "\u039B\u03B1\u03BC\u03C0\u03C1\u03AE \u03C0\u03C1\u03BF\u03C3\u03C0\u03AC\u03B8\u03B5\u03B9\u03B1! \u0397 \u03B3\u03C1\u03B1\u03BC\u03BC\u03AE \u03C4\u03BF\u03C5 \u03C4\u03B5\u03C1\u03BC\u03B1\u03C4\u03B9\u03C3\u03BC\u03BF\u03CD \u03BB\u03AC\u03BC\u03C0\u03B5\u03B9 \u03BC\u03C0\u03C1\u03BF\u03C3\u03C4\u03AC \u03C3\u03BF\u03C5.",
-        "\u0395\u03BE\u03B1\u03B9\u03C1\u03B5\u03C4\u03B9\u03BA\u03AE \u03B4\u03BF\u03C5\u03BB\u03B5\u03B9\u03AC, \u03AD\u03BC\u03B5\u03B9\u03BD\u03B1\u03BD \u03BC\u03CC\u03BD\u03BF \u03B5\u03BB\u03AC\u03C7\u03B9\u03C3\u03C4\u03B5\u03C2 \u03C3\u03C4\u03B9\u03B3\u03BC\u03AD\u03C2 \u03B5\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7\u03C2!",
-        "\u0388\u03C6\u03C4\u03B1\u03C3\u03B5\u03C2 \u03C3\u03C7\u03B5\u03B4\u03CC\u03BD \u03C3\u03C4\u03B7\u03BD \u03BA\u03BF\u03C1\u03C5\u03C6\u03AE! \u039D\u03B9\u03CE\u03C3\u03B5 \u03C4\u03B7\u03BD \u03C0\u03B5\u03C1\u03B7\u03C6\u03AC\u03BD\u03B9\u03B1 \u03C4\u03B7\u03C2 \u03B5\u03C0\u03B9\u03C4\u03C5\u03C7\u03AF\u03B1\u03C2.",
-        "\u03A4\u03B5\u03BB\u03B9\u03BA\u03AE \u03C0\u03B9\u03BD\u03B5\u03BB\u03B9\u03AC: \u03BF\u03BB\u03BF\u03BA\u03BB\u03AE\u03C1\u03C9\u03C3\u03B5 \u03B1\u03C5\u03C4\u03CC \u03C4\u03BF \u03B2\u03AE\u03BC\u03B1 \u03BC\u03B5 \u03C7\u03B1\u03BC\u03CC\u03B3\u03B5\u03BB\u03BF \u03BA\u03B1\u03B9 \u03B9\u03BA\u03B1\u03BD\u03BF\u03C0\u03BF\u03AF\u03B7\u03C3\u03B7!",
-        "\u03A4\u03CC\u03C3\u03BF \u03BA\u03BF\u03BD\u03C4\u03AC \u03C3\u03C4\u03BF\u03BD \u03C3\u03C4\u03CC\u03C7\u03BF \u03C3\u03BF\u03C5. \u0391\u03C0\u03CC\u03BB\u03B1\u03C5\u03C3\u03B5 \u03C4\u03B7 \u03B3\u03BB\u03C5\u03BA\u03B9\u03AC \u03B1\u03AF\u03C3\u03B8\u03B7\u03C3\u03B7 \u03C4\u03BF\u03C5 \u03B5\u03C0\u03B9\u03C4\u03B5\u03CD\u03B3\u03BC\u03B1\u03C4\u03BF\u03C2!",
-        "\u03A6\u03B1\u03B9\u03BD\u03BF\u03BC\u03B5\u03BD\u03B9\u03BA\u03AE \u03B1\u03C6\u03BF\u03C3\u03AF\u03C9\u03C3\u03B7, \u03C4\u03BF \u03BA\u03B1\u03C4\u03AC\u03C6\u03B5\u03C1\u03B5\u03C2 \u03BC\u03B5 \u03C4\u03BF\u03BD \u03BA\u03B1\u03BB\u03CD\u03C4\u03B5\u03C1\u03BF \u03C4\u03C1\u03CC\u03C0\u03BF!",
-        "\u0391\u03BE\u03B9\u03BF\u03B8\u03B1\u03CD\u03BC\u03B1\u03C3\u03C4\u03B7 \u03B1\u03BD\u03C4\u03BF\u03C7\u03AE. \u039C\u03C0\u03BF\u03C1\u03B5\u03AF\u03C2 \u03BD\u03B1 \u03BD\u03B9\u03CE\u03B8\u03B5\u03B9\u03C2 \u03C0\u03B5\u03C1\u03AE\u03C6\u03B1\u03BD\u03BF\u03C2 \u03B3\u03B9\u03B1 \u03C4\u03B7 \u03C3\u03B7\u03BC\u03B5\u03C1\u03B9\u03BD\u03AE \u03C3\u03BF\u03C5 \u03BC\u03AD\u03C1\u03B1."
+        "\u03A3\u03C7\u03B5\u03B4\u03CC\u03BD \u03C4\u03B5\u03BB\u03B5\u03AF\u03C9\u03C3\u03B5\u03C2. \u039F\u03BB\u03BF\u03BA\u03BB\u03AE\u03C1\u03C9\u03C3\u03B5 \u03B1\u03C5\u03C4\u03AE \u03C4\u03B7 \u03C3\u03BA\u03AD\u03C8\u03B7 \u03BC\u03B5 \u03B7\u03C1\u03B5\u03BC\u03AF\u03B1.",
+        "\u03A4\u03B5\u03BB\u03B9\u03BA\u03AE \u03B5\u03C5\u03B8\u03B5\u03AF\u03B1. \u039C\u03B5\u03AF\u03BD\u03B5 \u03C3\u03C5\u03B3\u03BA\u03B5\u03BD\u03C4\u03C1\u03C9\u03BC\u03AD\u03BD\u03BF\u03C2 \u03B3\u03B9\u03B1 \u03BB\u03AF\u03B3\u03BF \u03B1\u03BA\u03CC\u03BC\u03B1.",
+        "\u039A\u03BF\u03BD\u03C4\u03AC \u03C3\u03C4\u03BF\u03BD \u03C4\u03B5\u03C1\u03BC\u03B1\u03C4\u03B9\u03C3\u03BC\u03CC. \u039F\u03BB\u03BF\u03BA\u03BB\u03AE\u03C1\u03C9\u03C3\u03AD \u03C4\u03BF \u03BC\u03B5 \u03AC\u03BD\u03B5\u03C3\u03B7.",
+        "\u0391\u03C0\u03BF\u03BC\u03AD\u03BD\u03B5\u03B9 \u03BC\u03CC\u03BD\u03BF \u03BC\u03B9\u03B1 \u03C3\u03C4\u03B9\u03B3\u03BC\u03AE. \u039A\u03BB\u03B5\u03AF\u03C3\u03B5 \u03B1\u03C5\u03C4\u03CC \u03C4\u03BF \u03B2\u03AE\u03BC\u03B1 \u03BC\u03B5 \u03C6\u03C1\u03BF\u03BD\u03C4\u03AF\u03B4\u03B1.",
+        "\u03A4\u03B5\u03BB\u03B9\u03BA\u03CC \u03C3\u03C4\u03AC\u03B4\u03B9\u03BF. \u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7 \u03BC\u03AD\u03C7\u03C1\u03B9 \u03C4\u03BF \u03C4\u03AD\u03BB\u03BF\u03C2.",
+        "\u03A3\u03C7\u03B5\u03B4\u03CC\u03BD \u03AD\u03C4\u03BF\u03B9\u03BC\u03BF. \u039C\u03B9\u03B1 \u03C4\u03B5\u03BB\u03B5\u03C5\u03C4\u03B1\u03AF\u03B1 \u03C0\u03C1\u03BF\u03C3\u03B5\u03BA\u03C4\u03B9\u03BA\u03AE \u03BC\u03B1\u03C4\u03B9\u03AC.",
+        "\u03A3\u03B5 \u03BB\u03AF\u03B3\u03BF \u03B8\u03B1 \u03AD\u03C7\u03B5\u03B9\u03C2 \u03BF\u03BB\u03BF\u03BA\u03BB\u03B7\u03C1\u03CE\u03C3\u03B5\u03B9 \u03B1\u03C5\u03C4\u03CC \u03C4\u03BF \u03BA\u03BF\u03BC\u03BC\u03AC\u03C4\u03B9.",
+        "\u0388\u03BC\u03B5\u03B9\u03BD\u03B1\u03BD \u03B5\u03BB\u03AC\u03C7\u03B9\u03C3\u03C4\u03B1 \u03B4\u03B5\u03C5\u03C4\u03B5\u03C1\u03CC\u03BB\u03B5\u03C0\u03C4\u03B1. \u039C\u03B5\u03AF\u03BD\u03B5 \u03B5\u03B4\u03CE.",
+        "\u03A4\u03BF \u03C4\u03AD\u03BB\u03BF\u03C2 \u03AD\u03C6\u03C4\u03B1\u03C3\u03B5. \u039F\u03BB\u03BF\u03BA\u03BB\u03AE\u03C1\u03C9\u03C3\u03B5 \u03CC\u03BC\u03BF\u03C1\u03C6\u03B1.",
+        "\u03A3\u03B5 \u03BB\u03AF\u03B3\u03BF \u03B8\u03B1 \u03BD\u03B9\u03CE\u03C3\u03B5\u03B9\u03C2 \u03C4\u03B7 \u03B3\u03BB\u03C5\u03BA\u03B9\u03AC \u03B9\u03BA\u03B1\u03BD\u03BF\u03C0\u03BF\u03AF\u03B7\u03C3\u03B7."
       ],
       overdue: [
-        "\u039F \u03C7\u03C1\u03CC\u03BD\u03BF\u03C2 \u03B5\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7\u03C2 \u03BF\u03BB\u03BF\u03BA\u03BB\u03B7\u03C1\u03CE\u03B8\u03B7\u03BA\u03B5! \u038F\u03C1\u03B1 \u03B3\u03B9\u03B1 \u03AD\u03BD\u03B1 \u03BA\u03B1\u03BB\u03BF\u03B4\u03B5\u03C7\u03BF\u03CD\u03BC\u03B5\u03BD\u03BF \u03B4\u03B9\u03AC\u03BB\u03B5\u03B9\u03BC\u03BC\u03B1.",
-        "\u03A0\u03AC\u03C1\u03B5 \u03BC\u03B9\u03B1 \u03B2\u03B1\u03B8\u03B9\u03AC \u03B1\u03BD\u03AC\u03C3\u03B1 \u03BA\u03B1\u03B9 \u03AC\u03C6\u03B7\u03C3\u03B5 \u03C4\u03B7\u03BD \u03AD\u03BD\u03C4\u03B1\u03C3\u03B7. \u0388\u03BA\u03B1\u03BD\u03B5\u03C2 \u03C3\u03C0\u03BF\u03C5\u03B4\u03B1\u03AF\u03B1 \u03B4\u03BF\u03C5\u03BB\u03B5\u03B9\u03AC!",
-        "\u0397 \u03C3\u03C5\u03BD\u03B5\u03B4\u03C1\u03AF\u03B1 \u03C3\u03BF\u03C5 \u03C4\u03B5\u03BB\u03B5\u03AF\u03C9\u03C3\u03B5. \u03A7\u03AC\u03C1\u03B9\u03C3\u03B5 \u03BB\u03AF\u03B3\u03B7 \u03BE\u03B5\u03BA\u03BF\u03CD\u03C1\u03B1\u03C3\u03B7 \u03C3\u03C4\u03B1 \u03BC\u03AC\u03C4\u03B9\u03B1 \u03BA\u03B1\u03B9 \u03C3\u03C4\u03BF \u03BC\u03C5\u03B1\u03BB\u03CC \u03C3\u03BF\u03C5.",
-        "\u03A4\u03B9 \u03B8\u03B1 \u03AD\u03BB\u03B5\u03B3\u03B5\u03C2 \u03B3\u03B9\u03B1 \u03AD\u03BD\u03B1 \u03C0\u03BF\u03C4\u03AE\u03C1\u03B9 \u03B4\u03C1\u03BF\u03C3\u03B5\u03C1\u03CC \u03BD\u03B5\u03C1\u03CC \u03BA\u03B1\u03B9 \u03BB\u03AF\u03B3\u03B5\u03C2 \u03B4\u03B9\u03B1\u03C4\u03AC\u03C3\u03B5\u03B9\u03C2;",
-        "\u03A0\u03AD\u03C4\u03C5\u03C7\u03B5\u03C2 \u03C0\u03AC\u03C1\u03B1 \u03C0\u03BF\u03BB\u03BB\u03AC \u03C3\u03AE\u03BC\u03B5\u03C1\u03B1. \u039A\u03AC\u03BD\u03B5 \u03AD\u03BD\u03B1 \u03B2\u03AE\u03BC\u03B1 \u03C0\u03AF\u03C3\u03C9 \u03BA\u03B1\u03B9 \u03C7\u03B1\u03BB\u03AC\u03C1\u03C9\u03C3\u03B5.",
-        "\u038F\u03C1\u03B1 \u03B3\u03B9\u03B1 \u03BC\u03B9\u03B1 \u03CC\u03BC\u03BF\u03C1\u03C6\u03B7 \u03B1\u03BB\u03BB\u03B1\u03B3\u03AE \u03C0\u03B1\u03C1\u03B1\u03C3\u03C4\u03AC\u03C3\u03B5\u03C9\u03BD. \u03A3\u03C5\u03B3\u03C7\u03B1\u03C1\u03B7\u03C4\u03AE\u03C1\u03B9\u03B1 \u03B3\u03B9\u03B1 \u03C4\u03B7\u03BD \u03C0\u03C1\u03BF\u03C3\u03C0\u03AC\u03B8\u03B5\u03B9\u03B1!"
+        "\u038F\u03C1\u03B1 \u03B3\u03B9\u03B1 \u03B4\u03B9\u03AC\u03BB\u03B5\u03B9\u03BC\u03BC\u03B1. \u03A0\u03AC\u03C1\u03B5 \u03BC\u03B9\u03B1 \u03B2\u03B1\u03B8\u03B9\u03AC \u03B1\u03BD\u03AC\u03C3\u03B1 \u03BA\u03B1\u03B9 \u03C3\u03AE\u03BA\u03C9 \u03B3\u03B9\u03B1 \u03BB\u03AF\u03B3\u03BF.",
+        "\u03A0\u03BF\u03BB\u03CD \u03C9\u03C1\u03B1\u03AF\u03B1 \u03B4\u03BF\u03C5\u03BB\u03B5\u03B9\u03AC. \u03A7\u03AC\u03C1\u03B9\u03C3\u03B5 \u03BE\u03B5\u03BA\u03BF\u03CD\u03C1\u03B1\u03C3\u03B7 \u03C3\u03C4\u03B1 \u03BC\u03AC\u03C4\u03B9\u03B1 \u03C3\u03BF\u03C5.",
+        "\u039A\u03AC\u03BD\u03B5 \u03BA\u03C5\u03BA\u03BB\u03B9\u03BA\u03AD\u03C2 \u03BA\u03B9\u03BD\u03AE\u03C3\u03B5\u03B9\u03C2 \u03C3\u03C4\u03BF\u03C5\u03C2 \u03CE\u03BC\u03BF\u03C5\u03C2 \u03BA\u03B1\u03B9 \u03C4\u03B5\u03BD\u03C4\u03CE\u03C3\u03BF\u03C5.",
+        "\u03A0\u03B9\u03B5\u03C2 \u03AD\u03BD\u03B1 \u03C0\u03BF\u03C4\u03AE\u03C1\u03B9 \u03B4\u03C1\u03BF\u03C3\u03B5\u03C1\u03CC \u03BD\u03B5\u03C1\u03CC \u03BA\u03B1\u03B9 \u03BA\u03B1\u03B8\u03AC\u03C1\u03B9\u03C3\u03B5 \u03C4\u03BF \u03BC\u03C5\u03B1\u03BB\u03CC \u03C3\u03BF\u03C5.",
+        "\u03A5\u03C0\u03AD\u03C1\u03BF\u03C7\u03B7 \u03B5\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7. \u03A4\u03CE\u03C1\u03B1 \u03B1\u03C0\u03BF\u03C3\u03C5\u03BD\u03B4\u03AD\u03C3\u03BF\u03C5 \u03B5\u03BD\u03C4\u03B5\u03BB\u03CE\u03C2 \u03B3\u03B9\u03B1 \u03BB\u03AF\u03B3\u03BF.",
+        "\u038C\u03BC\u03BF\u03C1\u03C6\u03B7 \u03C3\u03C5\u03BD\u03B5\u03B4\u03C1\u03AF\u03B1. \u039A\u03BB\u03B5\u03AF\u03C3\u03B5 \u03C4\u03B1 \u03BC\u03AC\u03C4\u03B9\u03B1 \u03C3\u03BF\u03C5 \u03B3\u03B9\u03B1 \u03BB\u03AF\u03B3\u03B5\u03C2 \u03C3\u03C4\u03B9\u03B3\u03BC\u03AD\u03C2.",
+        "\u0391\u03C0\u03BF\u03BC\u03B1\u03BA\u03C1\u03CD\u03BD\u03C3\u03BF\u03C5 \u03B1\u03C0\u03CC \u03C4\u03B7\u03BD \u03BF\u03B8\u03CC\u03BD\u03B7 \u03BA\u03B1\u03B9 \u03BA\u03BF\u03AF\u03C4\u03B1\u03BE\u03B5 \u03BC\u03B1\u03BA\u03C1\u03B9\u03AC.",
+        "\u038F\u03C1\u03B1 \u03BD\u03B1 \u03B1\u03BD\u03B1\u03C0\u03BD\u03B5\u03CD\u03C3\u03B5\u03B9\u03C2 \u03B5\u03BB\u03B5\u03CD\u03B8\u03B5\u03C1\u03B1. \u0395\u03C5\u03C7\u03B1\u03C1\u03B9\u03C3\u03C4\u03BF\u03CD\u03BC\u03B5 \u03B3\u03B9\u03B1 \u03C4\u03B7 \u03C3\u03C5\u03B3\u03BA\u03AD\u03BD\u03C4\u03C1\u03C9\u03C3\u03AE \u03C3\u03BF\u03C5!"
       ]
     }
   };
@@ -8357,11 +9502,21 @@ ${listStr}`;
     if (!("speechSynthesis" in window)) return;
     if (!text || typeof text !== "string") return;
     try {
+      let getVoiceScore = function(voice) {
+        const name = (voice.name || "").toLowerCase();
+        let score = 0;
+        if (name.includes("natural") || name.includes("neural")) score += 100;
+        if (name.includes("online")) score += 50;
+        if (name.includes("google") || name.includes("wavenet")) score += 40;
+        if (name.includes("siri") || name.includes("enhanced") || name.includes("premium")) score += 40;
+        if (name.includes("katja") || name.includes("conrad") || name.includes("luisa") || name.includes("jenny") || name.includes("anna")) score += 30;
+        return score;
+      };
       if (window.speechSynthesis.paused) {
         window.speechSynthesis.resume();
       }
       window.speechSynthesis.cancel();
-      let naturalText = text.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}]/gu, "").replace(/^\s*\d+[\.\)\:]\s+/, "").replace(/^[•\-\*✓✔✕\+➔]+\s*/, "").replace(/\s*([!?.])\s*/g, "$1 ").replace(/([,;:])\s*/g, "$1 ").replace(/\s+/g, " ").trim();
+      let naturalText = text.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}]/gu, "").replace(/^\s*\d+[\.\)\:]\s+/, "").replace(/^[•\-\*✓✔✕\+➔]+\s*/, "").replace(/\s*([!?.])\s*/g, "$1 ... ").replace(/([,;:])\s*/g, "$1 ").replace(/\s+/g, " ").trim();
       if (!naturalText) naturalText = text;
       const utterance = new SpeechSynthesisUtterance(naturalText);
       const lang = typeof currentLang !== "undefined" ? currentLang : "en";
@@ -8373,19 +9528,17 @@ ${listStr}`;
         profileIndex = globalVoiceTurnIndex++;
       }
       const profile = VOICE_PROFILES[Math.abs(profileIndex) % VOICE_PROFILES.length] || VOICE_PROFILES[0];
-      utterance.rate = profile.rate || 0.96;
+      utterance.rate = profile.rate || 0.94;
       utterance.pitch = profile.pitch || 1;
       if (cachedVoices.length === 0) updateSpeechVoices();
       const allVoices = cachedVoices.length > 0 ? cachedVoices : window.speechSynthesis.getVoices();
       const langPrefix = targetLang.split("-")[0].toLowerCase();
       const matchingVoices = allVoices.filter((v) => v.lang && v.lang.toLowerCase().replace("_", "-").startsWith(langPrefix));
-      const premiumVoices = matchingVoices.filter(
-        (v) => /natural|neural|online|google|siri|apple|premium|enhanced|wavenet/i.test(v.name)
-      );
-      const pool = premiumVoices.length > 0 ? premiumVoices : matchingVoices.length > 0 ? matchingVoices : allVoices;
+      const sortedVoices = (matchingVoices.length > 0 ? matchingVoices : allVoices).slice().sort((a, b) => getVoiceScore(b) - getVoiceScore(a));
       const femaleKeywords = [
-        "hedda",
         "katja",
+        "luisa",
+        "hedda",
         "anna",
         "zira",
         "petra",
@@ -8421,6 +9574,7 @@ ${listStr}`;
         "karen"
       ];
       const maleKeywords = [
+        "conrad",
         "stefan",
         "yannick",
         "markus",
@@ -8446,10 +9600,10 @@ ${listStr}`;
         "paulino",
         "matteo"
       ];
-      const femaleVoices = pool.filter(
+      const femaleVoices = sortedVoices.filter(
         (v) => femaleKeywords.some((kw) => v.name.toLowerCase().includes(kw)) && !maleKeywords.some((kw) => v.name.toLowerCase().includes(kw))
       );
-      const maleVoices = pool.filter(
+      const maleVoices = sortedVoices.filter(
         (v) => maleKeywords.some((kw) => v.name.toLowerCase().includes(kw))
       );
       let selectedVoice = null;
@@ -8457,10 +9611,8 @@ ${listStr}`;
         selectedVoice = femaleVoices[Math.abs(profileIndex) % femaleVoices.length];
       } else if (profile.gender === "male" && maleVoices.length > 0) {
         selectedVoice = maleVoices[Math.abs(profileIndex) % maleVoices.length];
-      } else if (profile.gender === "child") {
-        selectedVoice = femaleVoices.length > 0 ? femaleVoices[Math.abs(profileIndex) % femaleVoices.length] : pool[Math.abs(profileIndex) % pool.length] || null;
-      } else if (pool.length > 0) {
-        selectedVoice = pool[Math.abs(profileIndex) % pool.length];
+      } else if (sortedVoices.length > 0) {
+        selectedVoice = sortedVoices[Math.abs(profileIndex) % sortedVoices.length];
       }
       if (selectedVoice) {
         utterance.voice = selectedVoice;
@@ -8494,16 +9646,16 @@ ${listStr}`;
     }
   }
   function speakSoftlyDynamic2(text, remSec, totSec) {
-    const minsLeft = Math.floor(remSec / 60);
-    speakWithProfile2(text, minsLeft);
+    const voiceTurn = globalVoiceTurnIndex++;
+    speakWithProfile2(text, voiceTurn);
   }
   function getContextMotivation2(remSec, totSec) {
     const lang = typeof currentLang !== "undefined" ? currentLang : "de";
     const list = MOTIVATIONAL_CHUNKS2[lang] || MOTIVATIONAL_CHUNKS2["de"];
-    const pct = remSec / totSec * 100;
+    const pct = totSec > 0 ? remSec / totSec * 100 : 0;
     let tier = "end";
-    if (pct > 72) tier = "start";
-    else if (pct > 28) tier = "halfway";
+    if (pct > 70) tier = "start";
+    else if (pct > 25) tier = "halfway";
     const chosen = pickWithoutImmediateRepeat2(list[tier], lastMotivationByTier2[tier]);
     lastMotivationByTier2[tier] = chosen;
     return chosen;
@@ -8522,6 +9674,115 @@ ${listStr}`;
   }
 
   // timer-3.js
+  var timerHasTriggeredZero = false;
+  function updateActiveTimerBadge() {
+    const badge = document.getElementById("active-timer-badge");
+    if (badge) {
+      if (activeTimerTask && timerRunning) {
+        badge.classList.remove("hidden");
+        badge.innerText = `\u{1F3AF} ${activeTimerTask}`;
+        badge.title = `Fokus: ${activeTimerTask}`;
+      } else if (activeTimerTask) {
+        badge.classList.remove("hidden");
+        badge.innerText = `\u23F8\uFE0F ${activeTimerTask}`;
+      } else {
+        badge.classList.add("hidden");
+      }
+    }
+  }
+  function setTimerPreset2(mins) {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+    timerRunning = false;
+    timerTargetEndTime = null;
+    timerHasTriggeredZero = false;
+    timerSeconds = mins * 60;
+    timerInitialSeconds = mins * 60;
+    if (typeof stopAmbientSound === "function") stopAmbientSound(true);
+    if (typeof stopLookaheadSequencer === "function") stopLookaheadSequencer();
+    if ("speechSynthesis" in window) {
+      try {
+        window.speechSynthesis.cancel();
+      } catch (e) {
+      }
+    }
+    const dropdowns = ["timer-preset-select-real", "helper-pick-timer-preset-select-real", "helper-steps-timer-preset-select-real"];
+    dropdowns.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.value = String(mins);
+    });
+    updateTimerDisplay2();
+    updateTimerUI2();
+    if (typeof renderApp === "function") renderApp();
+    showToast(`\u23F1\uFE0F ${mins}m`);
+  }
+  var timerPresetHoverTimeout = null;
+  function openTimerPresetMenu() {
+    if (timerPresetHoverTimeout) {
+      clearTimeout(timerPresetHoverTimeout);
+      timerPresetHoverTimeout = null;
+    }
+    const panel = document.getElementById("panel-timer-presets");
+    if (!panel) return;
+    document.querySelectorAll("#panel-calendar-dropdown, #panel-weather, #panel-pause-dropdown, #panel-settings-dropdown").forEach((el) => el.classList.add("hidden"));
+    panel.classList.remove("hidden");
+    const currentMins = Math.round(timerInitialSeconds / 60) || 2;
+    document.querySelectorAll(".timer-preset-btn").forEach((btn) => {
+      const mins = parseInt(btn.getAttribute("data-mins") || btn.innerText, 10);
+      if (mins === currentMins) {
+        btn.className = "timer-preset-btn py-1.5 px-2 rounded-xl bg-purple-600/40 border border-purple-400 text-xs font-bold text-white shadow-sm text-center cursor-pointer transition";
+      } else {
+        btn.className = "timer-preset-btn py-1.5 px-2 rounded-xl bg-white/5 hover:bg-purple-600/20 hover:border-purple-400/50 border border-white/10 text-xs font-semibold text-gray-300 hover:text-white transition text-center cursor-pointer";
+      }
+    });
+  }
+  window.openTimerPresetMenu = openTimerPresetMenu;
+  function closeTimerPresetMenu() {
+    if (timerPresetHoverTimeout) clearTimeout(timerPresetHoverTimeout);
+    timerPresetHoverTimeout = setTimeout(() => {
+      const panel = document.getElementById("panel-timer-presets");
+      const trigger = document.getElementById("btn-timer-presets");
+      const isOverPanel = panel && panel.matches(":hover");
+      const isOverTrigger = trigger && trigger.matches(":hover");
+      if (panel && !isOverPanel && !isOverTrigger) {
+        panel.classList.add("hidden");
+      }
+    }, 250);
+  }
+  window.closeTimerPresetMenu = closeTimerPresetMenu;
+  function toggleTimerPresetMenu(event) {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    const panel = document.getElementById("panel-timer-presets");
+    if (!panel) return;
+    if (panel.classList.contains("hidden")) {
+      openTimerPresetMenu();
+    } else {
+      panel.classList.add("hidden");
+    }
+  }
+  window.toggleTimerPresetMenu = toggleTimerPresetMenu;
+  function selectTimerPreset(mins) {
+    setTimerPreset2(mins);
+    const panel = document.getElementById("panel-timer-presets");
+    if (panel) panel.classList.add("hidden");
+  }
+  window.selectTimerPreset = selectTimerPreset;
+  if (typeof document !== "undefined") {
+    document.addEventListener("click", (e) => {
+      const panel = document.getElementById("panel-timer-presets");
+      const trigger = document.getElementById("btn-timer-presets");
+      if (panel && !panel.classList.contains("hidden")) {
+        if (!panel.contains(e.target) && !trigger?.contains(e.target)) {
+          panel.classList.add("hidden");
+        }
+      }
+    });
+  }
   function syncTimerWithTimestamp() {
     const isRunning = typeof timerRunning !== "undefined" ? timerRunning : typeof window !== "undefined" ? window.timerRunning : false;
     const targetEnd = typeof timerTargetEndTime !== "undefined" ? timerTargetEndTime : typeof window !== "undefined" ? window.timerTargetEndTime : null;
@@ -8539,6 +9800,54 @@ ${listStr}`;
     window.addEventListener("focus", () => {
       syncTimerWithTimestamp();
     });
+  }
+  function updateTimerUI2() {
+    const playBtns = ["timer-play-btn", "helper-pick-timer-play-btn", "helper-steps-timer-play"];
+    const pauseBtns = ["timer-pause-btn", "helper-pick-timer-pause-btn", "helper-steps-timer-pause"];
+    const muteBtns = ["timer-mute-btn", "helper-pick-timer-mute-btn", "helper-steps-timer-mute"];
+    playBtns.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) {
+        if (timerRunning) el.classList.add("hidden");
+        else el.classList.remove("hidden");
+      }
+    });
+    pauseBtns.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) {
+        if (timerRunning) el.classList.remove("hidden");
+        else el.classList.add("hidden");
+      }
+    });
+    muteBtns.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) {
+        if (timerRunning) el.classList.remove("hidden");
+        else el.classList.add("hidden");
+      }
+    });
+    const zenPlay = document.getElementById("zen-play-btn");
+    const zenPause = document.getElementById("zen-pause-btn");
+    if (zenPlay && zenPause) {
+      if (timerRunning) {
+        zenPlay.classList.add("hidden");
+        zenPause.classList.remove("hidden");
+      } else {
+        zenPlay.classList.remove("hidden");
+        zenPause.classList.add("hidden");
+      }
+    }
+    updateActiveTimerBadge();
+    updateMuteButtonsUI();
+    const timerContainers = [
+      document.getElementById("timer-trigger-container"),
+      document.getElementById("helper-pick-timer-box"),
+      document.getElementById("helper-steps-timer-box")
+    ];
+    timerContainers.forEach((el) => {
+      if (el) el.classList.toggle("timer-active-glow", !!timerRunning);
+    });
+    if (typeof lucide !== "undefined") lucide.createIcons();
   }
   function updateTimerDisplay2() {
     const isNegative = timerSeconds < 0;
@@ -8582,12 +9891,12 @@ ${listStr}`;
     }
     if (timerRunning) {
       if (isNegative) {
-        document.title = `(${str}) \u26A0\uFE0F \xDCberzeit - Flow`;
+        document.title = `(${str}) \u26A0\uFE0F Overtime \u2014 Noodle Studio`;
       } else {
-        document.title = `(${str}) Flow`;
+        document.title = `(${str}) Noodle Studio`;
       }
     } else {
-      document.title = "Flow - Dein Alltagsbegleiter";
+      document.title = "Noodle Studio";
     }
     const pct = timerInitialSeconds > 0 ? Math.max(0, timerSeconds / timerInitialSeconds * 100) : 100;
     const progressBars = ["timer-progress-bar", "helper-pick-timer-progress-bar", "helper-steps-timer-progress-bar"];
@@ -9104,7 +10413,7 @@ ${listStr}`;
         name = qtyMatch[3].trim();
       }
       const dept = getDepartmentForItem(name);
-      const existingIndex = state.shoppingList.findIndex((item2) => item2.name.toLowerCase() === name.toLowerCase());
+      const existingIndex = state.shoppingList.findIndex((item) => item.name.toLowerCase() === name.toLowerCase());
       if (existingIndex !== -1) {
         state.shoppingList[existingIndex].qty = (state.shoppingList[existingIndex].qty || 1) + qty;
         if (unit) state.shoppingList[existingIndex].unit = unit;
@@ -9191,10 +10500,10 @@ ${listStr}`;
       return;
     }
     const grouped = {};
-    list.forEach((item2, originalIdx) => {
-      const dept = item2.dept || getDepartmentForItem(item2.name);
+    list.forEach((item, originalIdx) => {
+      const dept = item.dept || getDepartmentForItem(item.name);
       if (!grouped[dept]) grouped[dept] = [];
-      grouped[dept].push({ item: item2, originalIdx });
+      grouped[dept].push({ item, originalIdx });
     });
     let html = '<div class="space-y-4">';
     for (const deptKey in grouped) {
@@ -9209,15 +10518,15 @@ ${listStr}`;
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
     `;
-      grouped[deptKey].forEach(({ item: item2, originalIdx }) => {
-        const qtyLabel = item2.qty && item2.qty > 1 ? `<span class="px-2 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-300 font-bold text-xs">${item2.qty}${item2.unit ? " " + item2.unit : "x"}</span>` : "";
+      grouped[deptKey].forEach(({ item, originalIdx }) => {
+        const qtyLabel = item.qty && item.qty > 1 ? `<span class="px-2 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-300 font-bold text-xs">${item.qty}${item.unit ? " " + item.unit : "x"}</span>` : "";
         html += `
         <div class="flex items-center justify-between p-3 bg-black/40 hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/40 rounded-xl transition cursor-pointer group" onclick="handleToggleShoppingItem(${originalIdx})">
           <div class="flex items-center gap-3 min-w-0">
             <div class="w-6 h-6 rounded-lg border-2 border-white/30 group-hover:border-emerald-400 flex items-center justify-center transition">
               <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 opacity-0 group-hover:opacity-100 transition"></i>
             </div>
-            <span class="font-bold text-sm text-white truncate">${escapeHtml(item2.name)}</span>
+            <span class="font-bold text-sm text-white truncate">${escapeHtml(item.name)}</span>
           </div>
           <div class="flex items-center gap-2" onclick="event.stopPropagation()">
             ${qtyLabel}
@@ -9598,7 +10907,7 @@ ${listStr}`;
         const safeEscape = typeof escapeHtml === "function" ? escapeHtml : (str) => String(str || "");
         if (typeof showToast === "function") showToast(`\u{1F514} Erinnerung: "${safeEscape(r.text)}"`);
         if (typeof playProceduralSound === "function") playProceduralSound(1);
-        sendBrowserNotification("\u{1F514} Flow Reminder", r.text);
+        sendBrowserNotification("\u{1F514} Noodle Reminder", r.text);
       }
     });
   }
@@ -9673,7 +10982,117 @@ ${listStr}`;
   }
 
   // app-tasks.js
-  var inlineEditingTaskInfo = null;
+  var openTaskMenuMeta = null;
+  var taskMenuCloseTimer2 = null;
+  function scheduleCloseTaskMenu() {
+    taskMenuCloseTimer2 = setTimeout(() => {
+      closeTaskOptionsMenu2();
+    }, 250);
+  }
+  function cancelCloseTaskMenu() {
+    if (taskMenuCloseTimer2) {
+      clearTimeout(taskMenuCloseTimer2);
+      taskMenuCloseTimer2 = null;
+    }
+  }
+  function toggleTaskOptionsMenu(colId, index, event) {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    const existing = document.getElementById("task-context-dropdown");
+    if (openTaskMenuMeta && openTaskMenuMeta.colId === colId && openTaskMenuMeta.index === index && existing && !existing.classList.contains("hidden")) {
+      closeTaskOptionsMenu2();
+      return;
+    }
+    openTaskOptionsMenu(colId, index, event ? event.currentTarget : null);
+  }
+  function closeTaskOptionsMenu2() {
+    cancelCloseTaskMenu();
+    const el = document.getElementById("task-context-dropdown");
+    if (el) el.classList.add("hidden");
+    openTaskMenuMeta = null;
+  }
+  function openTaskOptionsMenu(colId, index, anchorBtn) {
+    cancelCloseTaskMenu();
+    openTaskMenuMeta = { colId, index };
+    let menu = document.getElementById("task-context-dropdown");
+    if (!menu) {
+      menu = document.createElement("div");
+      menu.id = "task-context-dropdown";
+      document.body.appendChild(menu);
+    }
+    menu.onmouseenter = cancelCloseTaskMenu;
+    menu.onmouseleave = scheduleCloseTaskMenu;
+    const curItems = getCurrentWorkspaceItems2();
+    const rawTask = curItems[colId]?.[index];
+    if (!rawTask) return;
+    const taskObj = typeof rawTask === "object" ? rawTask : { task: rawTask };
+    const taskColor = taskObj.color || "none";
+    menu.className = "fixed z-[999999] w-[138px] p-1.5 bg-[#141422]/95 border border-white/20 rounded-2xl shadow-2xl backdrop-blur-xl flex flex-col gap-0.5 text-xs text-gray-200";
+    menu.innerHTML = `
+    <!-- Focus & Steps ganz oben -->
+    <button onclick="startTaskTimerByIndex('${colId}', ${index}, event); closeTaskOptionsMenu();" class="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-white/10 text-amber-300 hover:text-amber-200 transition cursor-pointer text-left font-medium">
+      <i data-lucide="timer" class="w-3.5 h-3.5 text-amber-400"></i>
+      <span>Focus</span>
+    </button>
+    <button onclick="openTaskStepsModal('${colId}', ${index}, event); closeTaskOptionsMenu();" class="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-white/10 text-[var(--accent-light)] hover:text-white transition cursor-pointer text-left font-medium">
+      <i data-lucide="footprints" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i>
+      <span>Steps</span>
+    </button>
+    
+    <div class="h-[1px] bg-white/10 my-0.5"></div>
+
+    <!-- Standard-Aktionen -->
+    <button onclick="editTaskInline('${colId}', ${index}, event); closeTaskOptionsMenu();" class="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-white/10 text-gray-200 hover:text-white transition cursor-pointer text-left font-medium">
+      <i data-lucide="edit-3" class="w-3.5 h-3.5 text-purple-400"></i>
+      <span>${tr({ de: "Bearbeiten", en: "Edit", fr: "Modifier", it: "Modifica", es: "Editar", el: "\u0395\u03C0\u03B5\u03BE\u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1" })}</span>
+    </button>
+    <button onclick="deleteTask('${colId}', ${index}, event); closeTaskOptionsMenu();" class="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-red-500/20 text-rose-400 hover:text-rose-300 transition cursor-pointer text-left font-medium">
+      <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+      <span>${tr({ de: "L\xF6schen", en: "Delete", fr: "Supprimer", it: "Elimina", es: "Eliminar", el: "\u0394\u03B9\u03B1\u03B3\u03C1\u03B1\u03C6\u03AE" })}</span>
+    </button>
+
+    <div class="h-[1px] bg-white/10 my-0.5"></div>
+
+    <!-- Farbpalette (unten, extra klein & dezent) -->
+    <div class="px-1.5 pt-0.5 pb-0.5">
+      <span class="text-[8px] font-bold text-gray-400 uppercase tracking-wider block mb-1">${tr({ de: "Farbe \u{1F3A8}", en: "Color \u{1F3A8}", fr: "Couleur \u{1F3A8}", it: "Colore \u{1F3A8}", es: "Color \u{1F3A8}", el: "\u03A7\u03C1\u03CE\u03BC\u03B1 \u{1F3A8}" })}</span>
+      <div class="flex items-center gap-1 justify-between">
+        <button onclick="setTaskColor('${colId}', ${index}, 'none', event); closeTaskOptionsMenu();" class="w-2.5 h-2.5 rounded-full border border-gray-400 bg-transparent hover:scale-125 transition cursor-pointer ${taskColor === "none" ? "ring-1 ring-white" : ""}" title="${tr({ de: "Standard", en: "Default", fr: "Par d\xE9faut", it: "Predefinito", es: "Por defecto", el: "\u03A0\u03C1\u03BF\u03B5\u03C0\u03B9\u03BB\u03BF\u03B3\u03AE" })}"></button>
+        <button onclick="setTaskColor('${colId}', ${index}, 'rose', event); closeTaskOptionsMenu();" class="w-2.5 h-2.5 rounded-full bg-rose-500 hover:scale-125 transition cursor-pointer shadow-sm ${taskColor === "rose" ? "ring-1 ring-white" : ""}" title="${tr({ de: "Rot", en: "Red", fr: "Rouge", it: "Rosso", es: "Rojo", el: "\u039A\u03CC\u03BA\u03BA\u03B9\u03BD\u03BF" })}"></button>
+        <button onclick="setTaskColor('${colId}', ${index}, 'orange', event); closeTaskOptionsMenu();" class="w-2.5 h-2.5 rounded-full bg-orange-500 hover:scale-125 transition cursor-pointer shadow-sm ${taskColor === "orange" ? "ring-1 ring-white" : ""}" title="${tr({ de: "Orange", en: "Orange", fr: "Orange", it: "Arancione", es: "Naranja", el: "\u03A0\u03BF\u03C1\u03C4\u03BF\u03BA\u03B1\u03BB\u03AF" })}"></button>
+        <button onclick="setTaskColor('${colId}', ${index}, 'amber', event); closeTaskOptionsMenu();" class="w-2.5 h-2.5 rounded-full bg-amber-500 hover:scale-125 transition cursor-pointer shadow-sm ${taskColor === "amber" ? "ring-1 ring-white" : ""}" title="${tr({ de: "Gelb", en: "Yellow", fr: "Jaune", it: "Giallo", es: "Amarillo", el: "\u039A\u03AF\u03C4\u03C1\u03B9\u03BD\u03BF" })}"></button>
+        <button onclick="setTaskColor('${colId}', ${index}, 'emerald', event); closeTaskOptionsMenu();" class="w-2.5 h-2.5 rounded-full bg-emerald-500 hover:scale-125 transition cursor-pointer shadow-sm ${taskColor === "emerald" ? "ring-1 ring-white" : ""}" title="${tr({ de: "Gr\xFCn", en: "Green", fr: "Vert", it: "Verde", es: "Verde", el: "\u03A0\u03C1\u03AC\u03C3\u03B9\u03BD\u03BF" })}"></button>
+        <button onclick="setTaskColor('${colId}', ${index}, 'sky', event); closeTaskOptionsMenu();" class="w-2.5 h-2.5 rounded-full bg-sky-500 hover:scale-125 transition cursor-pointer shadow-sm ${taskColor === "sky" ? "ring-1 ring-white" : ""}" title="${tr({ de: "Blau", en: "Blue", fr: "Bleu", it: "Blu", es: "Azul", el: "\u039C\u03C0\u03BB\u03B5" })}"></button>
+        <button onclick="setTaskColor('${colId}', ${index}, 'purple', event); closeTaskOptionsMenu();" class="w-2.5 h-2.5 rounded-full bg-purple-500 hover:scale-125 transition cursor-pointer shadow-sm ${taskColor === "purple" ? "ring-1 ring-white" : ""}" title="${tr({ de: "Lila", en: "Purple", fr: "Violet", it: "Viola", es: "Morado", el: "\u039C\u03C9\u03B2" })}"></button>
+      </div>
+    </div>
+  `;
+    if (anchorBtn) {
+      const rect = anchorBtn.getBoundingClientRect();
+      let top = rect.bottom + 4;
+      let left = rect.right - 138;
+      if (left < 10) left = 10;
+      if (top + 200 > window.innerHeight) {
+        top = rect.top - 200;
+      }
+      menu.style.top = `${top}px`;
+      menu.style.left = `${left}px`;
+    }
+    menu.classList.remove("hidden");
+    renderLucideIcons();
+  }
+  if (typeof document !== "undefined") {
+    document.addEventListener("click", (e) => {
+      const menu = document.getElementById("task-context-dropdown");
+      if (menu && !menu.classList.contains("hidden")) {
+        if (!menu.contains(e.target) && !e.target.closest('button[onclick*="toggleTaskOptionsMenu"]')) {
+          closeTaskOptionsMenu2();
+        }
+      }
+    });
+  }
   var TASK_COLOR_MAP = {
     rose: {
       border: "border-l-rose-500",
@@ -9725,6 +11144,19 @@ ${listStr}`;
       shadow: ""
     }
   };
+  var COLUMN_THEMES = {
+    daily: { color: "text-amber-300", bg: "bg-amber-500/15 border-amber-500/30 shadow-[0_0_10px_rgba(245,158,11,0.15)]" },
+    work_focus: { color: "text-amber-300", bg: "bg-amber-500/15 border-amber-500/30 shadow-[0_0_10px_rgba(245,158,11,0.15)]" },
+    weekly: { color: "text-purple-300", bg: "bg-purple-500/15 border-purple-500/30 shadow-[0_0_10px_rgba(168,85,247,0.15)]" },
+    work_in_progress: { color: "text-purple-300", bg: "bg-purple-500/15 border-purple-500/30 shadow-[0_0_10px_rgba(168,85,247,0.15)]" },
+    todo: { color: "text-cyan-300", bg: "bg-cyan-500/15 border-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.15)]" },
+    work_backlog: { color: "text-cyan-300", bg: "bg-cyan-500/15 border-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.15)]" },
+    occasionally: { color: "text-indigo-300", bg: "bg-indigo-500/15 border-indigo-500/30 shadow-[0_0_10px_rgba(99,102,241,0.15)]" },
+    work_waiting: { color: "text-indigo-300", bg: "bg-indigo-500/15 border-indigo-500/30 shadow-[0_0_10px_rgba(99,102,241,0.15)]" },
+    done: { color: "text-emerald-300", bg: "bg-emerald-500/15 border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.15)]" },
+    termine: { color: "text-orange-300", bg: "bg-orange-500/15 border-orange-500/30 shadow-[0_0_10px_rgba(249,115,22,0.15)]" },
+    notes: { color: "text-amber-300", bg: "bg-amber-500/15 border-amber-500/30 shadow-[0_0_10px_rgba(245,158,11,0.15)]" }
+  };
   function getCurrentWorkspaceItems2() {
     if (typeof state !== "undefined" && state && state.activeWorkspace === "work") {
       if (!state.workItems) state.workItems = createDefaultWorkItems(typeof currentLang !== "undefined" ? currentLang : "en");
@@ -9750,11 +11182,11 @@ ${listStr}`;
     const distanceToMonday = (dayOfWeek + 6) % 7;
     const mondayDate = new Date(now.getTime() - distanceToMonday * 24 * 60 * 60 * 1e3);
     const mondayISO = mondayDate.toISOString().split("T")[0];
-    const currentItems = getCurrentWorkspaceItems2();
-    const doneList = getCurrentWorkspaceDone();
-    const isWork = state.activeWorkspace === "work";
-    const activeOrder = isWork ? WORK_CATEGORIES_ORDER : categoriesOrder;
-    activeOrder.forEach(([id, iconKey]) => {
+    const currentItems = getCurrentWorkspaceItems2() || {};
+    const doneList = getCurrentWorkspaceDone() || [];
+    const isWork = state && state.activeWorkspace === "work";
+    const activeOrder = isWork ? workCategoriesOrder || (typeof WORK_CATEGORIES_ORDER !== "undefined" ? WORK_CATEGORIES_ORDER : []) : categoriesOrder || (typeof CATEGORIES_ORDER !== "undefined" ? CATEGORIES_ORDER : []);
+    (activeOrder || []).forEach(([id, iconKey]) => {
       const isDone = id === "done";
       const isNotes = id === "notes";
       const isTermine = id === "termine";
@@ -9774,20 +11206,40 @@ ${listStr}`;
       const isCustomCol = Array.isArray(activeOrder) && activeOrder.find(([cid]) => cid === id) ? activeOrder.find(([cid]) => cid === id)[3] === true || id.startsWith("custom_") : false;
       const catName = catCustomTitle || t(id);
       const pct = !isDone && !isNotes && totalInCat > 0 ? Math.round(doneInCat / totalInCat * 100) : 0;
+      const isComplete = totalInCat > 0 && doneInCat === totalInCat;
       let countBadgeHTML = "";
       if (isDone) {
-        countBadgeHTML = `<span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-white/5 text-gray-400 border border-white/10 shadow-xs">${doneList.length}</span>`;
-      } else if (!isNotes) {
-        const isComplete = totalInCat > 0 && doneInCat === totalInCat;
-        const badgeBg = isComplete ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30" : doneInCat > 0 ? "bg-[var(--accent)]/15 text-[var(--accent-light)] border-[var(--accent)]/25" : "bg-white/5 text-gray-400 border-white/10";
-        countBadgeHTML = `<span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold border shadow-xs ${badgeBg} transition-all duration-300">${doneInCat}/${totalInCat}</span>`;
-      } else {
+        countBadgeHTML = `
+        <div class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-xs flex items-center gap-1 shrink-0" title="${doneList.length} erledigte Aufgaben">
+          <i data-lucide="check" class="w-3 h-3 text-emerald-400"></i>
+          <span>${doneList.length}</span>
+        </div>
+      `;
+      } else if (isNotes) {
         const noteCount = (currentItems.notes || []).length;
-        countBadgeHTML = `<span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-white/5 text-gray-400 border border-white/10 shadow-xs">${noteCount}</span>`;
+        countBadgeHTML = `
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-xs shrink-0" title="${noteCount} Notizen">
+          ${noteCount}
+        </span>
+      `;
+      } else {
+        let badgeStyle = "bg-white/5 text-gray-400 border-white/10";
+        let checkSuffix = "";
+        if (isComplete) {
+          badgeStyle = "bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-[0_0_10px_rgba(16,185,129,0.25)]";
+          checkSuffix = " \u2713";
+        } else if (doneInCat > 0) {
+          badgeStyle = "bg-[var(--accent)]/15 text-[var(--accent-light)] border-[var(--accent)]/30";
+        }
+        countBadgeHTML = `
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold border shadow-xs ${badgeStyle} transition-all duration-300 shrink-0" title="${doneInCat} von ${totalInCat} erledigt (${pct}%)">
+          ${doneInCat}/${totalInCat}${checkSuffix}
+        </span>
+      `;
       }
       const article = document.createElement("article");
       article.dataset.category = id;
-      article.className = "min-h-[380px] h-full flex flex-col p-3 rounded-2xl border border-white/[0.08] bg-[#13131a]/75 backdrop-blur-md shadow-lg hover:border-[var(--accent)]/30 transition duration-300 cursor-default column-card-breathing";
+      article.className = "group/col relative min-h-[380px] h-full flex flex-col p-3 pt-3.5 rounded-2xl transition-all duration-300 cursor-default column-card-breathing overflow-hidden";
       article.draggable = true;
       article.ondragstart = (e) => {
         if (draggedItemInfo) return;
@@ -9835,42 +11287,76 @@ ${listStr}`;
         }
       };
       const hasDice = id === "daily" || id === "weekly" || id === "todo" || id === "occasionally" || id === "work_focus" || id === "work_in_progress" || id === "work_backlog" || id === "work_waiting";
-      let columnIconHTML = "";
-      if (hasDice) {
-        columnIconHTML = `
-        <span onclick="rollTaskDice('${id}', event)" class="text-[15.5px] leading-none cursor-pointer hover:scale-125 active:scale-90 transition-transform duration-200 shrink-0 select-none inline-flex items-center justify-center" title="${tr({ de: "Aufgabe ausw\xFCrfeln \u{1F3B2}", en: "Roll a task \u{1F3B2}", es: "Tirar dado para tarea \u{1F3B2}", el: "\u03A1\u03AF\u03BE\u03B5 \u03C4\u03BF \u03B6\u03AC\u03C1\u03B9 \u{1F3B2}", fr: "Tirer au sort \u{1F3B2}", it: "Lancia il dado \u{1F3B2}" })}">
-          \u{1F3B2}
-        </span>
-      `;
-      } else {
-        columnIconHTML = `
-        <span class="w-5 h-5 rounded-md bg-white/5 border border-white/10 flex items-center justify-center text-[var(--accent-light)] shadow-xs pointer-events-none shrink-0">
-          <i data-lucide="${iconKey}" class="w-3 h-3"></i>
-        </span>
-      `;
-      }
+      const COLUMN_ICONS_DEFAULT = {
+        daily: "sun",
+        work_focus: "sun",
+        weekly: "home",
+        work_in_progress: "home",
+        todo: "list-todo",
+        work_backlog: "list-todo",
+        occasionally: "clock",
+        work_waiting: "clock",
+        done: "check-circle-2",
+        termine: "calendar",
+        notes: "file-text"
+      };
+      const finalIcon = COLUMN_ICONS_DEFAULT[id] || iconKey || "layers";
+      const theme = COLUMN_THEMES[id] || { color: "text-[var(--accent-light)]", bg: "bg-white/5 border-white/10 shadow-xs" };
+      const columnIconHTML = `
+      <span class="w-5 h-5 rounded-md border ${theme.bg} flex items-center justify-center ${theme.color} shrink-0 pointer-events-none transition-transform group-hover/col:scale-105">
+        <i data-lucide="${finalIcon}" class="w-3 h-3"></i>
+      </span>
+    `;
       article.innerHTML = `
-      <div class="flex items-center justify-between gap-2 mb-2 pb-1">
-        <div class="flex items-center gap-2 select-none min-w-0">
+      ${!isDone && !isNotes ? `
+        <div class="absolute top-0 left-0 right-0 h-[2.5px] bg-white/[0.04] overflow-hidden pointer-events-none">
+          <div class="h-full bg-gradient-to-r from-[var(--accent)] via-cyan-400 to-emerald-400 transition-all duration-500 ${isComplete ? "shadow-[0_0_12px_rgba(16,185,129,0.8)]" : ""}" style="width: ${pct}%"></div>
+        </div>
+      ` : ""}
+      
+      <!-- Floating Action Mini-Capsule on Hover -->
+      <div class="absolute right-2 top-2 hidden sm:group-hover/col:flex items-center gap-1 bg-[#13131e]/95 border border-white/15 px-1.5 py-1 rounded-xl shadow-xl z-20 backdrop-blur-md">
+        ${hasDice ? `
+          <button onclick="rollTaskDice('${id}', event)" class="p-1 px-1.5 bg-gradient-to-r from-purple-500/20 to-pink-500/15 hover:from-purple-500/35 hover:to-pink-500/30 border border-purple-400/30 hover:border-purple-300 text-purple-200 hover:text-white rounded-lg shadow-sm hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer flex items-center justify-center gap-1 group/dice" title="${tr({ de: "Aufgabe ausw\xFCrfeln \u{1F3B2}", en: "Roll a task \u{1F3B2}", es: "Tirar dado \u{1F3B2}", el: "\u03A1\u03AF\u03BE\u03B5 \u03C4\u03BF \u03B6\u03AC\u03C1\u03B9 \u{1F3B2}", fr: "Tirer au sort \u{1F3B2}", it: "Lancia il dado \u{1F3B2}" })}">
+            <svg class="w-3.5 h-3.5 text-purple-300 group-hover/dice:text-white group-hover/dice:scale-110 group-hover/dice:rotate-6 transition-all duration-200 shrink-0 overflow-visible" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12,2.2 20.8,6.8 12,11.8 3.2,6.8" fill="rgba(168,85,247,0.3)" stroke="currentColor" stroke-width="1.6" />
+              <polygon points="3.2,6.8 12,11.8 12,21.5 3.2,16.5" fill="rgba(168,85,247,0.15)" stroke="currentColor" stroke-width="1.6" />
+              <polygon points="12,11.8 20.8,6.8 20.8,16.5 12,21.5" fill="rgba(147,51,234,0.45)" stroke="currentColor" stroke-width="1.6" />
+              <circle cx="8" cy="5.2" r="0.9" fill="currentColor" stroke="none" />
+              <circle cx="12" cy="7" r="0.9" fill="currentColor" stroke="none" />
+              <circle cx="16" cy="8.8" r="0.9" fill="currentColor" stroke="none" />
+              <circle cx="7.5" cy="11.2" r="0.9" fill="currentColor" stroke="none" />
+              <circle cx="7.5" cy="17.2" r="0.9" fill="currentColor" stroke="none" />
+              <circle cx="14.8" cy="11.2" r="0.9" fill="currentColor" stroke="none" />
+              <circle cx="18" cy="9.5" r="0.9" fill="currentColor" stroke="none" />
+              <circle cx="14.8" cy="17.2" r="0.9" fill="currentColor" stroke="none" />
+              <circle cx="18" cy="15.5" r="0.9" fill="currentColor" stroke="none" />
+            </svg>
+          </button>
+        ` : ""}
+        ${!isDone ? `
+          <button onclick="quickAddTaskTop('${id}', event)" class="p-1 text-gray-300 hover:text-[var(--accent-light)] hover:bg-white/10 rounded-lg transition cursor-pointer flex items-center justify-center" title="${tr({ de: "Aufgabe hinzuf\xFCgen \u2795", en: "Add task \u2795", es: "A\xF1adir tarea \u2795", el: "\u03A0\u03C1\u03BF\u03C3\u03B8\u03AE\u03BA\u03B7 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1\u03C2 \u2795", fr: "Ajouter t\xE2che \u2795", it: "Aggiungi attivit\xE0 \u2795" })}">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+          </button>
+        ` : ""}
+        ${isCustomCol ? `
+          <button onclick="renameColumn('${id}', event)" class="p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition cursor-pointer flex items-center justify-center" title="${t("rename_column") || "Umbenennen"}"><i data-lucide="edit-3" class="w-3 h-3"></i></button>
+          <button onclick="deleteColumn('${id}', event)" class="p-1 text-gray-400 hover:text-red-400 hover:bg-red-500/15 rounded-lg transition cursor-pointer flex items-center justify-center" title="${t("delete_column") || "L\xF6schen"}"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
+        ` : ""}
+      </div>
+
+      <div class="flex items-center justify-between gap-1.5 mb-2 pb-1.5 border-b border-white/[0.04]">
+        <div class="flex items-center gap-1.5 select-none min-w-0 flex-1 cursor-grab active:cursor-grabbing" title="${tr({ de: "Spalte durch Ziehen neu anordnen", en: "Drag to reorder column", fr: "Glisser pour r\xE9organiser la colonne", it: "Trascina per riordinare la colonna", es: "Arrastrar para reordenar columna", el: "\u03A3\u03CD\u03C1\u03B5\u03C4\u03B5 \u03B3\u03B9\u03B1 \u03B1\u03BD\u03B1\u03B4\u03B9\u03AC\u03C4\u03B1\u03BE\u03B7 \u03C3\u03C4\u03AE\u03BB\u03B7\u03C2" })}">
           ${columnIconHTML}
-          <h2 class="text-gray-300 hover:text-white font-bold font-display text-[11px] tracking-wider uppercase cursor-grab active:cursor-grabbing transition truncate" title="Spalte durch Ziehen neu anordnen">
+          <h2 class="text-gray-200 hover:text-white font-bold font-display text-xs tracking-wide uppercase transition whitespace-nowrap">
             ${catName}
           </h2>
         </div>
-        <div class="flex items-center gap-1.5 shrink-0">
+        <div class="flex items-center gap-1 shrink-0 ml-1">
           ${countBadgeHTML}
-          ${isCustomCol ? `
-            <button onclick="renameColumn('${id}', event)" class="p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded transition cursor-pointer" title="${t("rename_column") || "Umbenennen"}"><i data-lucide="edit-3" class="w-3 h-3"></i></button>
-            <button onclick="deleteColumn('${id}', event)" class="p-1 text-gray-400 hover:text-red-400 hover:bg-red-500/15 rounded transition cursor-pointer" title="${t("delete_column") || "L\xF6schen"}"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
-          ` : ""}
         </div>
       </div>
-      ${!isDone && !isNotes ? `
-        <div class="w-full h-1.5 bg-white/[0.06] rounded-full mb-3 overflow-hidden pointer-events-none p-0.5">
-          <div class="h-full rounded-full bg-gradient-to-r from-[var(--accent)] via-emerald-400 to-teal-300 transition-all duration-500 shadow-sm" style="width: ${pct}%"></div>
-        </div>
-      ` : ""}
-      <div id="list-${id}" class="flex flex-col gap-2.5 flex-1 min-h-[120px] overflow-y-auto py-0.5 px-0.5"></div>
+      <div id="list-${id}" class="flex flex-col gap-1.5 flex-1 min-h-[100px] overflow-y-auto py-0.5 px-0.5 custom-scrollbar"></div>
       ${!isDone ? `
         <div class="flex items-center justify-start pt-1 px-0.5 mt-auto">
           <button onclick="openTextImportModal('${id}', event)" class="p-1 rounded-md bg-transparent hover:bg-white/5 border border-transparent hover:border-white/10 text-gray-500 hover:text-gray-200 opacity-40 hover:opacity-100 transition-all duration-200 cursor-pointer flex items-center justify-center shrink-0" title="${isNotes ? tr({ de: "Notizen importieren (.txt, .md, .csv, .json oder Zwischenablage)", en: "Import notes (.txt, .md, .csv, .json or clipboard)", es: "Importar notas (.txt, .md, .csv, .json o portapapeles)", el: "\u0395\u03B9\u03C3\u03B1\u03B3\u03C9\u03B3\u03AE \u03C3\u03B7\u03BC\u03B5\u03B9\u03CE\u03C3\u03B5\u03C9\u03BD (.txt, .md, .csv, .json \u03AE \u03C0\u03C1\u03CC\u03C7\u03B5\u03B9\u03C1\u03BF)", fr: "Importer des notes (.txt, .md, .csv, .json ou presse-papiers)", it: "Importa note (.txt, .md, .csv, .json o appunti)" }) : isTermine ? tr({ de: "Termine aus Kalenderdatei (.ics) oder Text importieren", en: "Import appointments from calendar file (.ics) or text", es: "Importar citas desde archivo (.ics) o texto", el: "\u0395\u03B9\u03C3\u03B1\u03B3\u03C9\u03B3\u03AE \u03C1\u03B1\u03BD\u03C4\u03B5\u03B2\u03BF\u03CD \u03B1\u03C0\u03CC \u03B7\u03BC\u03B5\u03C1\u03BF\u03BB\u03CC\u03B3\u03B9\u03BF (.ics) \u03AE \u03BA\u03B5\u03AF\u03BC\u03B5\u03BD\u03BF", fr: "Importer des rendez-vous depuis un fichier (.ics) ou texte", it: "Importa appuntamenti da file (.ics) o testo" }) : tr({ de: "Aufgaben importieren (.txt, .md, .csv, .json oder Zwischenablage)", en: "Import tasks (.txt, .md, .csv, .json or clipboard)", es: "Importar tareas (.txt, .md, .csv, .json o portapapeles)", el: "\u0395\u03B9\u03C3\u03B1\u03B3\u03C9\u03B3\u03AE \u03B5\u03C1\u03B3\u03B1\u03C3\u03B9\u03CE\u03BD (.txt, .md, .csv, .json \u03AE \u03C0\u03C1\u03CC\u03C7\u03B5\u03B9\u03C1\u03BF)", fr: "Importer des t\xE2ches (.txt, .md, .csv, .json ou presse-papiers)", it: "Importa attivit\xE0 (.txt, .md, .csv, .json o appunti)" })}">
@@ -9886,12 +11372,12 @@ ${listStr}`;
     `;
       const listEl = article.querySelector(`#list-${id}`);
       if (isDone) {
-        doneList.slice().reverse().forEach((item2, idx) => {
+        doneList.slice().reverse().forEach((item, idx) => {
           const itemDiv = document.createElement("div");
-          itemDiv.className = "group p-2 text-[11px] text-gray-400 hover:text-white border border-dashed border-slate-700 hover:border-purple-500 rounded-lg bg-slate-800/25 hover:bg-purple-950/20 cursor-pointer font-medium transition flex items-center justify-between gap-1";
+          itemDiv.className = "group p-1.5 px-2.5 text-[11px] min-h-[28px] text-gray-400 hover:text-white border border-dashed border-slate-700/80 hover:border-purple-500 rounded-lg bg-slate-800/25 hover:bg-purple-950/20 cursor-pointer font-medium transition flex items-center justify-between gap-1";
           itemDiv.onclick = () => handleRestoreDoneTask(idx);
           itemDiv.title = "Zur\xFCck in den Plan verschieben";
-          itemDiv.innerHTML = `<span class="truncate">${escapeHtml(item2.task)} \xB7 ${escapeHtml(item2.time)}</span><i data-lucide="undo" class="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 text-purple-400 shrink-0"></i>`;
+          itemDiv.innerHTML = `<span class="truncate leading-tight">${escapeHtml(item.task)} \xB7 ${escapeHtml(item.time)}</span><i data-lucide="undo" class="w-3 h-3 opacity-0 group-hover:opacity-100 text-purple-400 shrink-0"></i>`;
           listEl.appendChild(itemDiv);
         });
       } else if (isNotes) {
@@ -9903,29 +11389,25 @@ ${listStr}`;
           itemDiv.draggable = true;
           itemDiv.ondragstart = (e) => handleDragStart(e, "notes", index);
           itemDiv.ondragover = (e) => handleDragOver(e);
+          itemDiv.ondragleave = (e) => handleDragLeave(e);
+          itemDiv.ondragend = (e) => handleDragEnd(e);
           itemDiv.ondrop = (e) => handleItemDrop(e, "notes", index);
-          itemDiv.className = `group relative w-full h-auto min-h-[44px] max-h-[85px] overflow-hidden flex items-center justify-between p-2.5 border-0 border-l-[3.5px] border-amber-400 bg-amber-500/10 hover:bg-amber-500/20 text-gray-100 font-medium transition-all duration-200 ease-out rounded-xl shadow-sm cursor-pointer`;
+          itemDiv.className = `group relative w-full h-auto min-h-[32px] flex items-center justify-between py-1.5 px-2.5 border-0 border-l-[3.5px] border-amber-400 bg-amber-500/10 hover:bg-amber-500/20 text-gray-100 font-medium transition-all duration-150 ease-out rounded-xl shadow-xs cursor-pointer`;
           itemDiv.onclick = () => openNoteDetailModal(index);
           itemDiv.innerHTML = `
-          <div class="flex items-center gap-2.5 flex-1 min-w-0 pr-2 pointer-events-none">
-            <i data-lucide="sticky-note" class="w-4 h-4 text-amber-400 shrink-0"></i>
-            <span class="text-xs text-amber-100 font-normal leading-snug line-clamp-2 break-words flex-1 select-text" title="${safeNoteEscaped}">${safeNoteEscaped}</span>
+          <div class="flex items-center gap-1.5 flex-1 min-w-0 pr-2 pointer-events-none">
+            <i data-lucide="sticky-note" class="w-3.5 h-3.5 text-amber-400 shrink-0"></i>
+            <span class="text-xs text-amber-100 font-normal leading-snug break-normal whitespace-normal flex-1 select-text" title="${safeNoteEscaped}">${safeNoteEscaped}</span>
           </div>
-          <div class="absolute right-1 -top-3 flex items-center gap-1 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200 shrink-0 bg-[#13131a] border border-white/10 px-1 py-0.5 rounded-lg shadow-lg z-50 whitespace-nowrap" onclick="event.stopPropagation()">
-            <button onclick="convertNoteToTask(${index}, 'todo', event)" class="p-1 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded transition cursor-pointer" title="${tr({ de: "In To-Do umwandeln", en: "Convert to To-Do", es: "Convertir a To-Do", el: "\u039C\u03B5\u03C4\u03B1\u03C4\u03C1\u03BF\u03C0\u03AE \u03C3\u03B5 To-Do", fr: "Convertir en To-Do", it: "Converti in To-Do" })}">
-              <i data-lucide="arrow-right-circle" class="w-3.5 h-3.5"></i>
+          <div class="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-0.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-150 shrink-0 bg-[#141420]/95 border border-white/10 p-0.5 rounded-lg shadow-md z-40 backdrop-blur-md" onclick="event.stopPropagation()">
+            <button onclick="openNoteDetailModal(${index}, event)" class="p-1 text-amber-400 hover:text-amber-300 hover:bg-white/10 rounded-md transition cursor-pointer" title="${tr({ de: "Notiz \xF6ffnen & bearbeiten", en: "Open & edit note", fr: "Ouvrir et modifier la note", it: "Apri e modifica nota", es: "Abrir y editar nota", el: "\u0386\u03BD\u03BF\u03B9\u03B3\u03BC\u03B1 & \u03B5\u03C0\u03B5\u03BE\u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1 \u03C3\u03B7\u03BC\u03B5\u03AF\u03C9\u03C3\u03B7\u03C2" })}">
+              <i data-lucide="edit-3" class="w-3 h-3"></i>
             </button>
-            <div class="w-[1px] h-3 bg-white/15 my-auto"></div>
-            <button onclick="copyNoteText(${index}, event)" class="p-1 text-gray-300 hover:text-white hover:bg-white/10 rounded transition cursor-pointer" title="${tr({ de: "Kopieren", en: "Copy", es: "Copiar", el: "\u0391\u03BD\u03C4\u03B9\u03B3\u03C1\u03B1\u03C6\u03AE", fr: "Copier", it: "Copia" })}">
-              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <button onclick="copyNoteText(${index}, event)" class="p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition cursor-pointer" title="${tr({ de: "Kopieren", en: "Copy", es: "Copiar", el: "\u0391\u03BD\u03C4\u03B9\u03B3\u03C1\u03B1\u03C6\u03AE", fr: "Copier", it: "Copia" })}">
+              <i data-lucide="copy" class="w-3 h-3"></i>
             </button>
-            <div class="w-[1px] h-3 bg-white/15 my-auto"></div>
-            <button onclick="openNoteDetailModal(${index}, event)" class="p-1 text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 rounded transition cursor-pointer" title="Bearbeiten">
-              <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
-            </button>
-            <div class="w-[1px] h-3 bg-white/15 my-auto"></div>
-            <button onclick="deleteTask('notes', ${index}, event)" class="p-1 text-gray-500 hover:text-red-400 hover:bg-white/10 rounded transition cursor-pointer" title="L\xF6schen">
-              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            <button onclick="deleteTask('notes', ${index}, event)" class="p-1 text-gray-500 hover:text-red-400 hover:bg-white/10 rounded-md transition cursor-pointer" title="${tr({ de: "Notiz l\xF6schen", en: "Delete note", fr: "Supprimer la note", it: "Elimina nota", es: "Eliminar nota", el: "\u0394\u03B9\u03B1\u03B3\u03C1\u03B1\u03C6\u03AE \u03C3\u03B7\u03BC\u03B5\u03AF\u03C9\u03C3\u03B7\u03C2" })}">
+              <i data-lucide="trash-2" class="w-3 h-3"></i>
             </button>
           </div>
         `;
@@ -9936,12 +11418,12 @@ ${listStr}`;
           openTaskAddColumns["notes"] = true;
           renderApp2();
         };
-        addBtn.className = "w-full min-h-[38px] p-2 rounded-lg border border-dashed border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10 text-center text-xs text-amber-300/80 hover:text-amber-200 font-semibold transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm";
-        addBtn.innerHTML = `<i data-lucide="plus" class="w-3.5 h-3.5 text-amber-400"></i><span>${tr({ de: "Notiz hinzuf\xFCgen", en: "Add note", es: "A\xF1adir nota", el: "\u03A0\u03C1\u03BF\u03C3\u03B8\u03AE\u03BA\u03B7 \u03C3\u03B7\u03BC\u03B5\u03AF\u03C9\u03C3\u03B7\u03C2", fr: "Ajouter une note", it: "Aggiungi nota" })}</span>`;
+        addBtn.className = "w-full min-h-[30px] p-1.5 rounded-xl border border-dashed border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/15 hover:border-amber-400/60 text-center text-xs text-amber-300/90 hover:text-amber-200 font-semibold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 shadow-xs group/addbtn mt-1";
+        addBtn.innerHTML = `<i data-lucide="plus" class="w-3.5 h-3.5 text-amber-400 group-hover/addbtn:scale-110 transition-transform"></i><span>${tr({ de: "Notiz hinzuf\xFCgen", en: "Add note", es: "A\xF1adir nota", el: "\u03A0\u03C1\u03BF\u03C3\u03B8\u03AE\u03BA\u03B7 \u03C3\u03B7\u03BC\u03B5\u03AF\u03C9\u03C3\u03B7\u03C2", fr: "Ajouter une note", it: "Aggiungi nota" })}</span>`;
         const addInput = document.createElement("textarea");
         addInput.rows = 2;
-        addInput.placeholder = t("notesPlaceholder");
-        addInput.className = "w-full min-h-[50px] p-2 px-3 rounded-lg border border-amber-500/60 bg-[#0a0a0e] text-left text-xs placeholder:text-gray-500 focus:outline-none focus:border-amber-400 transition cursor-text font-medium text-amber-100 shadow-inner resize-none";
+        addInput.placeholder = t("notesPlaceholder") || tr({ de: "Neue Notiz tippen (Enter zum Speichern)...", en: "Type new note (Enter to save)..." });
+        addInput.className = "w-full min-h-[44px] p-1.5 px-2.5 rounded-xl border border-amber-500/60 bg-[#0a0a0e] text-left text-xs placeholder:text-gray-500 focus:outline-none focus:border-amber-400 transition cursor-text font-medium text-amber-100 shadow-inner resize-none mt-1";
         addInput.onkeydown = (e) => {
           if (e.key === "Enter" && !e.shiftKey && addInput.value.trim()) {
             e.preventDefault();
@@ -9962,14 +11444,20 @@ ${listStr}`;
         };
         if (openTaskAddColumns["notes"]) {
           listEl.appendChild(addInput);
-          setTimeout(() => addInput.focus(), 0);
+          setTimeout(() => {
+            if (typeof addInput.focus === "function") addInput.focus();
+            try {
+              addInput.scrollIntoView({ block: "nearest", behavior: "smooth" });
+            } catch (e) {
+            }
+          }, 0);
         } else {
           listEl.appendChild(addBtn);
         }
       } else if (isTermine) {
         const rawTermine = currentItems.termine || [];
-        const itemsWithMeta = rawTermine.map((item2, originalIdx) => {
-          const obj = typeof item2 === "object" ? item2 : { task: item2, date: "", time: "", location: "" };
+        const itemsWithMeta = rawTermine.map((item, originalIdx) => {
+          const obj = typeof item === "object" ? item : { task: item, date: "", time: "", location: "" };
           return { ...obj, originalIdx };
         });
         itemsWithMeta.sort((a, b) => {
@@ -9978,13 +11466,13 @@ ${listStr}`;
           if (!b.date) return -1;
           return `${a.date} ${a.time || "00:00"}`.localeCompare(`${b.date} ${b.time || "00:00"}`);
         });
-        itemsWithMeta.forEach((item2) => {
-          const originalIndex = item2.originalIdx;
-          const isToday = item2.date === todayISO;
+        itemsWithMeta.forEach((item) => {
+          const originalIndex = item.originalIdx;
+          const isToday = item.date === todayISO;
           let fullDateString = "No Date";
-          if (item2.date) {
+          if (item.date) {
             try {
-              const parts = item2.date.split("-");
+              const parts = item.date.split("-");
               if (parts.length === 3) {
                 const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
                 fullDateString = d.toLocaleDateString(currentLang, { weekday: "short", day: "numeric", month: "short" });
@@ -9993,28 +11481,32 @@ ${listStr}`;
               console.warn("[Tasks] Date parsing warning:", e);
             }
           }
-          let locHTML = item2.location ? `<span class="text-[9px] text-gray-400 truncate max-w-[100px] inline-flex items-center gap-0.5"><i data-lucide="map-pin" class="w-2.5 h-2.5 shrink-0 text-gray-500"></i>${escapeHtml(item2.location)}</span>` : "";
+          let locHTML = item.location ? `<span class="text-[9px] text-gray-400 truncate max-w-[90px] inline-flex items-center gap-0.5"><i data-lucide="map-pin" class="w-2.5 h-2.5 shrink-0 text-gray-500"></i>${escapeHtml(item.location)}</span>` : "";
           const itemDiv = document.createElement("div");
-          itemDiv.className = `group relative w-full h-auto min-h-[44px] flex items-center justify-between p-2.5 border-0 border-l-[3.5px] ${isToday ? "border-amber-400 bg-amber-500/10" : "border-amber-500/40 bg-white/[0.035]"} hover:bg-white/[0.07] text-gray-200 font-medium transition-all duration-200 ease-out rounded-xl shadow-sm cursor-pointer`;
+          itemDiv.className = `group relative w-full h-auto min-h-[34px] flex items-center justify-between py-1.5 px-2.5 border-0 border-l-[3.5px] ${isToday ? "border-amber-400 bg-amber-500/10" : "border-amber-500/40 bg-white/[0.035]"} hover:bg-white/[0.07] text-gray-200 font-medium transition-all duration-150 ease-out rounded-xl shadow-xs cursor-pointer`;
           itemDiv.onclick = () => editTermin(originalIndex);
           itemDiv.innerHTML = `
-          <button onclick="handleCompleteTask('termine', ${originalIndex}, event)" class="flex items-center gap-2.5 flex-1 min-w-0 text-left bg-transparent border-0 text-inherit cursor-pointer p-0 pr-2 group/task" title="Termin als erledigt markieren">
-            <i data-lucide="clock" class="w-4 h-4 text-amber-400 shrink-0 group-hover/task:text-emerald-400 transition-colors"></i>
-            <div class="flex flex-col min-w-0 flex-1">
+          <div class="flex items-center gap-2 flex-1 min-w-0 pr-10 select-none">
+            <button onclick="handleCompleteTask('termine', ${originalIndex}, event)" class="task-check-btn p-0 bg-transparent border-0 cursor-pointer shrink-0" title="${tr({ de: "Termin als erledigt markieren", en: "Mark appointment as completed", fr: "Marquer le rendez-vous comme termin\xE9", it: "Segna appuntamento come completato", es: "Marcar cita como completada", el: "\u03A3\u03AE\u03BC\u03B1\u03BD\u03C3\u03B7 \u03C1\u03B1\u03BD\u03C4\u03B5\u03B2\u03BF\u03CD \u03C9\u03C2 \u03BF\u03BB\u03BF\u03BA\u03BB\u03B7\u03C1\u03C9\u03BC\u03AD\u03BD\u03BF" })}">
+              <span class="task-check-circle relative flex items-center justify-center w-4.5 h-4.5 rounded-full border border-orange-400/30 bg-orange-500/10 hover:border-emerald-400 hover:bg-emerald-500/20 hover:scale-110 active:scale-90 transition-all duration-200 shrink-0 shadow-xs group/check">
+                <i data-lucide="clock" class="task-default-icon w-2.5 h-2.5 text-orange-400 transition-all duration-200 group-hover/check:opacity-0 group-hover/check:scale-50"></i>
+                <i data-lucide="check" class="task-hover-check w-3 h-3 text-emerald-400 opacity-0 scale-50 group-hover/check:opacity-100 group-hover/check:scale-100 transition-all duration-200 absolute"></i>
+              </span>
+            </button>
+            <div class="flex flex-col min-w-0 flex-1 cursor-pointer" onclick="editTermin(${originalIndex}, event)">
               <div class="flex items-center gap-1.5 min-w-0">
-                <span class="text-xs leading-snug font-semibold text-amber-100 truncate">${escapeHtml(item2.task || item2.name || "Termin")}</span>
-                ${item2.time ? `<span class="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 shrink-0">${escapeHtml(item2.time)}</span>` : ""}
+                <span class="text-xs leading-snug font-semibold text-amber-100 break-normal whitespace-normal">${escapeHtml(item.task || item.name || "Termin")}</span>
+                ${item.time ? `<span class="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 shrink-0">${escapeHtml(item.time)}</span>` : ""}
               </div>
-              <div class="flex items-center gap-2 mt-0.5">
+              <div class="flex items-center gap-1.5 mt-0.5">
                 <span class="text-[9px] font-mono text-gray-400">${escapeHtml(fullDateString)}</span>
                 ${locHTML}
               </div>
             </div>
-          </button>
-          <div class="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 shrink-0 bg-[#13131e]/95 border border-white/15 px-1.5 py-1 rounded-xl shadow-xl z-50 whitespace-nowrap backdrop-blur-md">
-            <button onclick="editTermin(${originalIndex}, event)" class="p-1 text-amber-400 hover:text-amber-300 hover:bg-amber-500/15 rounded-lg transition cursor-pointer" title="${tr({ de: "Bearbeiten", en: "Edit", fr: "Modifier", it: "Modifica", es: "Editar", el: "\u0395\u03C0\u03B5\u03BE\u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1" })}"><i data-lucide="edit-3" class="w-3.5 h-3.5"></i></button>
-            <div class="w-[1px] h-3 bg-white/15 my-auto"></div>
-            <button onclick="deleteTask('termine', ${originalIndex}, event)" class="p-1 text-gray-500 hover:text-red-400 hover:bg-red-500/15 rounded-lg transition cursor-pointer" title="L\xF6schen"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+          </div>
+          <div class="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-0.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-150 shrink-0 bg-[#141420]/95 border border-white/10 p-0.5 rounded-lg shadow-md z-40 backdrop-blur-md">
+            <button onclick="editTermin(${originalIndex}, event)" class="p-1 text-amber-400 hover:text-amber-300 hover:bg-white/10 rounded-md transition cursor-pointer" title="${tr({ de: "Termin bearbeiten", en: "Edit appointment", fr: "Modifier le rendez-vous", it: "Modifica appuntamento", es: "Editar cita", el: "\u0395\u03C0\u03B5\u03BE\u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1 \u03C1\u03B1\u03BD\u03C4\u03B5\u03B2\u03BF\u03CD" })}"><i data-lucide="edit-3" class="w-3 h-3"></i></button>
+            <button onclick="deleteTask('termine', ${originalIndex}, event)" class="p-1 text-gray-500 hover:text-red-400 hover:bg-white/10 rounded-md transition cursor-pointer" title="${tr({ de: "Termin l\xF6schen", en: "Delete appointment", fr: "Supprimer le rendez-vous", it: "Elimina appuntamento", es: "Eliminar cita", el: "\u0394\u03B9\u03B1\u03B3\u03C1\u03B1\u03C6\u03AE \u03C1\u03B1\u03BD\u03C4\u03B5\u03B2\u03BF\u03CD" })}"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
           </div>
         `;
           listEl.appendChild(itemDiv);
@@ -10022,19 +11514,27 @@ ${listStr}`;
         if (!isTerminFormOpen) {
           const btnEl = document.createElement("button");
           btnEl.onclick = () => toggleTerminForm(true);
-          btnEl.className = "mt-2 w-full min-h-[38px] p-2 rounded-lg border border-dashed border-white/15 bg-[#0a0a0e] hover:bg-[#13131e] text-center text-xs text-gray-400 hover:text-white font-semibold transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm";
-          const btnT = t("appointment_new_btn");
-          btnEl.innerHTML = `<i data-lucide="calendar-plus" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i><span>${btnT}</span>`;
+          btnEl.className = "w-full min-h-[30px] p-1.5 rounded-xl border border-dashed border-orange-500/30 bg-orange-500/5 hover:bg-orange-500/15 hover:border-orange-400/60 text-center text-xs text-orange-300/90 hover:text-orange-200 font-semibold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 shadow-xs group/addbtn mt-1";
+          const btnT = t("appointment_new_btn") || tr({ de: "Neuer Termin", en: "New appointment", es: "Nueva cita", el: "\u039D\u03AD\u03BF \u03C1\u03B1\u03BD\u03C4\u03B5\u03B2\u03BF\u03CD", fr: "Nouveau rendez-vous", it: "Nuovo appuntamento" });
+          btnEl.innerHTML = `<i data-lucide="calendar-plus" class="w-3.5 h-3.5 text-orange-400 group-hover/addbtn:scale-110 transition-transform"></i><span>${btnT}</span>`;
           listEl.appendChild(btnEl);
         } else {
           const formDiv = document.createElement("div");
-          formDiv.className = "mt-2 p-3 bg-[#0e0e14] border border-[var(--accent)]/40 rounded-xl flex flex-col gap-2 shadow-lg";
+          formDiv.className = "mt-1 p-3 bg-[#0e0e14] border border-[var(--accent)]/40 rounded-xl flex flex-col gap-2 shadow-lg";
           const formT = t("appointment_form_title");
           const nameT = t("appointment_form_name_placeholder");
           const dateT = t("appointment_form_date_label");
           const timeT = t("appointment_form_time_label");
           const saveT = t("appointment_form_save_btn");
           const cancelT = t("appointment_form_cancel_btn");
+          const locPlaceholder = t("appointment_form_location_placeholder") || tr({
+            de: "Ort (z.B. Zoom, B\xFCro, Praxis, Park)",
+            en: "Location (e.g. Zoom, Office, Clinic, Park)",
+            fr: "Lieu (ex. Zoom, Bureau, Cabinet, Parc)",
+            it: "Luogo (es. Zoom, Ufficio, Studio, Parco)",
+            es: "Lugar (ej. Zoom, Oficina, Consulta, Parque)",
+            el: "\u03A4\u03BF\u03C0\u03BF\u03B8\u03B5\u03C3\u03AF\u03B1 (\u03C0.\u03C7. Zoom, \u0393\u03C1\u03B1\u03C6\u03B5\u03AF\u03BF, \u0399\u03B1\u03C4\u03C1\u03B5\u03AF\u03BF, \u03A0\u03AC\u03C1\u03BA\u03BF)"
+          });
           const dateValue = selectedCalendarDate || todayISO;
           formDiv.innerHTML = `
           <div class="flex items-center justify-between text-xs font-bold text-amber-300">
@@ -10042,7 +11542,7 @@ ${listStr}`;
             <button onclick="toggleTerminForm(false)" class="text-gray-400 hover:text-white p-0.5 cursor-pointer text-xs">\u2715</button>
           </div>
           <input type="text" id="add-termin-title" placeholder="${nameT}" class="w-full p-2 bg-black/60 border border-white/15 rounded-lg text-xs text-white outline-none focus:border-[var(--accent)] font-semibold placeholder:text-gray-500 mb-2" />
-          <input type="text" id="add-termin-location" placeholder="Ort (z.B. Zoom, B\xFCro, Park)" class="w-full p-2 bg-black/60 border border-white/15 rounded-lg text-xs text-white outline-none focus:border-[var(--accent)] font-semibold placeholder:text-gray-500 mb-2" />
+          <input type="text" id="add-termin-location" placeholder="${locPlaceholder}" class="w-full p-2 bg-black/60 border border-white/15 rounded-lg text-xs text-white outline-none focus:border-[var(--accent)] font-semibold placeholder:text-gray-500 mb-2" />
           <div class="grid grid-cols-2 gap-2 mb-2">
             <div><label class="text-[10px] text-gray-400 mb-0.5 block font-medium">${dateT}</label><input type="date" id="add-termin-date" value="${dateValue}" class="w-full p-1.5 bg-black/60 border border-white/15 rounded-lg text-xs text-gray-200 outline-none focus:border-[var(--accent)] cursor-pointer" /></div>
             <div><label class="text-[10px] text-gray-400 mb-0.5 block font-medium">${timeT}</label><input type="time" id="add-termin-time" value="10:00" class="w-full p-1.5 bg-black/60 border border-white/15 rounded-lg text-xs text-gray-200 outline-none focus:border-[var(--accent)] cursor-pointer" /></div>
@@ -10055,6 +11555,11 @@ ${listStr}`;
           setTimeout(() => {
             const inputTitle = formDiv.querySelector("#add-termin-title");
             if (inputTitle) {
+              if (typeof inputTitle.focus === "function") inputTitle.focus();
+              try {
+                formDiv.scrollIntoView({ block: "nearest", behavior: "smooth" });
+              } catch (e) {
+              }
               inputTitle.onkeydown = (e) => {
                 if (e.key === "Enter" && inputTitle.value.trim()) handleAddTermin();
                 if (e.key === "Escape") toggleTerminForm(false);
@@ -10070,71 +11575,38 @@ ${listStr}`;
           const taskColor = taskObj.color || "none";
           const colorStyle = TASK_COLOR_MAP[taskColor] || TASK_COLOR_MAP.none;
           const iconDetails = getTaskIconDetails(taskText, id);
-          const isTaskActive = activeTimerTask === taskText && timerRunning;
+          const isTaskActive = typeof activeTimerTask !== "undefined" && activeTimerTask && activeTimerTask.category === id && activeTimerTask.index === index;
           const itemDiv = document.createElement("div");
           itemDiv.draggable = true;
           itemDiv.ondragstart = (e) => handleDragStart(e, id, index);
           itemDiv.ondragover = (e) => handleDragOver(e);
+          itemDiv.ondragleave = (e) => handleDragLeave(e);
+          itemDiv.ondragend = (e) => handleDragEnd(e);
           itemDiv.ondrop = (e) => handleItemDrop(e, id, index);
-          const randomVal = Math.random();
-          let subtleAnimClass = "";
-          if (randomVal < 0.1) subtleAnimClass = "task-anim-float";
-          else if (randomVal < 0.2) subtleAnimClass = "task-anim-shift";
-          else if (randomVal < 0.3) subtleAnimClass = "task-anim-pulse";
           const borderBgClass = isTaskActive ? "border-amber-400 bg-amber-500/15 shadow-[0_0_18px_rgba(251,191,36,0.25)]" : taskColor !== "none" ? `${colorStyle.border} ${colorStyle.bg} ${colorStyle.shadow}` : "border-[var(--accent)] bg-white/[0.035] hover:bg-white/[0.07]";
-          itemDiv.className = `group relative w-full min-h-[44px] flex items-center justify-between p-2.5 border-0 border-l-[4px] ${borderBgClass} text-gray-200 font-medium leading-tight transition-all duration-200 ease-out rounded-xl ${subtleAnimClass}`;
+          itemDiv.className = `group relative w-full h-auto min-h-[34px] flex items-center justify-between py-1.5 px-2.5 border-0 border-l-[3.5px] ${borderBgClass} text-gray-200 font-medium rounded-xl transition-colors`;
           const safeTaskEscaped = escapeHtml(taskText);
+          const formattedTaskHtml = safeTaskEscaped.replace(/ &amp; /g, "&nbsp;&amp; ").replace(/ & /g, "&nbsp;& ");
           const pair = HOVER_COLOR_PAIRS[(index + id.charCodeAt(0)) % HOVER_COLOR_PAIRS.length];
-          const isInlineEditing = inlineEditingTaskInfo && inlineEditingTaskInfo.cat === id && inlineEditingTaskInfo.index === index;
-          if (isInlineEditing) {
-            itemDiv.innerHTML = `
-            <div class="flex items-center gap-1.5 w-full" onclick="event.stopPropagation()">
-              <input type="text" id="inline-edit-input" value="${safeTaskEscaped}" class="flex-1 p-1.5 px-2.5 bg-black/80 border border-[var(--accent)] rounded-lg text-xs text-white outline-none font-medium shadow-inner" onkeydown="if(event.key==='Enter') saveInlineEdit('${id}', ${index}); if(event.key==='Escape') cancelInlineEdit();" />
-              <button onclick="saveInlineEdit('${id}', ${index}, event)" class="p-1.5 bg-emerald-500 hover:bg-emerald-400 text-black rounded-lg transition cursor-pointer shrink-0" title="Speichern"><i data-lucide="check" class="w-3.5 h-3.5"></i></button>
-              <button onclick="cancelInlineEdit(event)" class="p-1.5 bg-white/10 hover:bg-white/20 text-gray-300 rounded-lg transition cursor-pointer shrink-0" title="Abbrechen"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
-            </div>
-          `;
-            setTimeout(() => {
-              const inp = itemDiv.querySelector("#inline-edit-input");
-              if (inp) {
-                inp.focus();
-                inp.select();
-              }
-            }, 20);
-          } else {
-            const recurrenceBadge = typeof item === "object" && item.recurrence && item.recurrence !== "none" ? `<span class="px-1.5 py-0.2 rounded text-[9px] font-mono bg-purple-500/20 text-purple-300 border border-purple-500/30 shrink-0 ml-1">\u{1F501} ${t("recurrence_" + item.recurrence) || item.recurrence}</span>` : "";
-            itemDiv.innerHTML = `
-            <button onclick="handleCompleteTask('${id}', ${index}, event)" class="task-complete-btn flex items-center gap-2.5 flex-1 min-w-0 text-left bg-transparent border-0 text-inherit cursor-pointer p-0 transition duration-150 pr-2 group/task" title="Abhaken">
-              <i data-lucide="${iconDetails.icon}" class="standard-task-icon w-4 h-4 ${isTaskActive ? "text-amber-400 animate-pulse" : taskColor !== "none" ? colorStyle.iconColor : iconDetails.color} shrink-0 transition-colors duration-150 ${pair.hoverIcon}"></i>
-              <span ondblclick="editTaskInline('${id}', ${index}, event)" class="task-text-span block text-xs leading-snug min-w-0 flex-1 font-medium text-gray-200 truncate ${isTaskActive ? "text-amber-200 font-bold" : taskColor !== "none" ? colorStyle.text : ""} ${pair.text} transition-colors duration-150" title="${safeTaskEscaped} (Doppelklick zum Bearbeiten)">${safeTaskEscaped}</span>
-              ${recurrenceBadge}
+          const recurrenceBadge = taskObj.recurrence && taskObj.recurrence !== "none" ? `<span class="px-1.5 py-0.2 rounded text-[9px] font-mono bg-purple-500/20 text-purple-300 border border-purple-500/30 shrink-0 ml-1">\u{1F501} ${t("recurrence_" + taskObj.recurrence) || taskObj.recurrence}</span>` : "";
+          const editTooltip = tr({ de: "Klicken zum Bearbeiten", en: "Click to edit", fr: "Cliquer pour modifier", it: "Clicca per modificare", es: "Clic para editar", el: "\u039A\u03BB\u03B9\u03BA \u03B3\u03B9\u03B1 \u03B5\u03C0\u03B5\u03BE\u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1" });
+          itemDiv.innerHTML = `
+          <div class="flex items-center gap-2 flex-1 min-w-0 pr-6 select-none">
+            <button onclick="handleCompleteTask('${id}', ${index}, event)" class="task-check-btn p-0 bg-transparent border-0 cursor-pointer shrink-0" title="${tr({ de: "Als erledigt markieren", en: "Mark as completed", fr: "Marquer comme termin\xE9", it: "Segna come completato", es: "Marcar como completada", el: "\u03A3\u03AE\u03BC\u03B1\u03BD\u03C3\u03B7 \u03C9\u03C2 \u03BF\u03BB\u03BF\u03BA\u03BB\u03B7\u03C1\u03C9\u03BC\u03AD\u03BD\u03BF" })}">
+              <span class="task-check-circle relative flex items-center justify-center w-4.5 h-4.5 rounded-full border border-white/20 bg-white/[0.04] hover:border-emerald-400 hover:bg-emerald-500/20 hover:scale-110 active:scale-90 transition-all duration-200 shrink-0 shadow-xs group/check">
+                <i data-lucide="${iconDetails.icon}" class="task-default-icon w-2.5 h-2.5 ${isTaskActive ? "text-amber-400 animate-pulse" : taskColor !== "none" ? colorStyle.iconColor : iconDetails.color} transition-all duration-200 group-hover/check:opacity-0 group-hover/check:scale-50"></i>
+                <i data-lucide="check" class="task-hover-check w-3 h-3 text-emerald-400 opacity-0 scale-50 group-hover/check:opacity-100 group-hover/check:scale-100 transition-all duration-200 absolute"></i>
+              </span>
             </button>
-            <div class="absolute right-1.5 -top-3.5 flex items-center gap-1 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 shrink-0 bg-[#13131e]/95 border border-white/15 px-1.5 py-1 rounded-xl shadow-xl z-50 whitespace-nowrap backdrop-blur-md">
-              <div class="relative group/color inline-flex items-center">
-                <button onclick="event.stopPropagation()" class="p-1 text-pink-400 hover:text-pink-300 hover:bg-pink-500/15 rounded-lg transition cursor-pointer" title="${tr({ de: "Farbe w\xE4hlen \u{1F3A8}", en: "Card color \u{1F3A8}", es: "Elegir color \u{1F3A8}", el: "\u0395\u03C0\u03B9\u03BB\u03BF\u03B3\u03AE \u03C7\u03C1\u03CE\u03BC\u03B1\u03C4\u03BF\u03C2 \u{1F3A8}", fr: "Couleur \u{1F3A8}", it: "Colore \u{1F3A8}" })}"><i data-lucide="palette" class="w-3.5 h-3.5"></i></button>
-                <div class="hidden group-hover/color:flex absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 p-1 px-1.5 bg-[#161622] border border-white/20 rounded-xl shadow-2xl gap-1.5 z-50 items-center backdrop-blur-md">
-                  <button onclick="setTaskColor('${id}', ${index}, 'none', event)" class="w-3.5 h-3.5 rounded-full border border-gray-400 bg-transparent hover:scale-125 transition cursor-pointer" title="Standard"></button>
-                  <button onclick="setTaskColor('${id}', ${index}, 'rose', event)" class="w-3.5 h-3.5 rounded-full bg-rose-500 hover:scale-125 transition cursor-pointer shadow-sm" title="Rot"></button>
-                  <button onclick="setTaskColor('${id}', ${index}, 'orange', event)" class="w-3.5 h-3.5 rounded-full bg-orange-500 hover:scale-125 transition cursor-pointer shadow-sm" title="Orange"></button>
-                  <button onclick="setTaskColor('${id}', ${index}, 'amber', event)" class="w-3.5 h-3.5 rounded-full bg-amber-500 hover:scale-125 transition cursor-pointer shadow-sm" title="Gelb"></button>
-                  <button onclick="setTaskColor('${id}', ${index}, 'emerald', event)" class="w-3.5 h-3.5 rounded-full bg-emerald-500 hover:scale-125 transition cursor-pointer shadow-sm" title="Gr\xFCn"></button>
-                  <button onclick="setTaskColor('${id}', ${index}, 'sky', event)" class="w-3.5 h-3.5 rounded-full bg-sky-500 hover:scale-125 transition cursor-pointer shadow-sm" title="Blau"></button>
-                  <button onclick="setTaskColor('${id}', ${index}, 'purple', event)" class="w-3.5 h-3.5 rounded-full bg-purple-500 hover:scale-125 transition cursor-pointer shadow-sm" title="Lila"></button>
-                </div>
-              </div>
-              <div class="w-[1px] h-3 bg-white/15 my-auto"></div>
-              <button onclick="editTaskInline('${id}', ${index}, event)" class="p-1 text-purple-400 hover:text-purple-300 hover:bg-purple-500/15 rounded-lg transition cursor-pointer" title="${tr({ de: "Bearbeiten", en: "Edit", fr: "Modifier", it: "Modifica", es: "Editar", el: "\u0395\u03C0\u03B5\u03BE\u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1" })}"><i data-lucide="edit-3" class="w-3.5 h-3.5"></i></button>
-              <div class="w-[1px] h-3 bg-white/15 my-auto"></div>
-              <button onclick="openTaskStepsModal('${id}', ${index}, event)" class="p-1 text-[var(--accent-light)] hover:text-white hover:bg-white/10 rounded-lg transition cursor-pointer" title="${tr({ de: "In Teilschritte zerlegen", en: "Break into subtasks", fr: "D\xE9couper en \xE9tapes", it: "Dividi in passaggi", es: "Dividir en pasos", el: "\u0391\u03BD\u03AC\u03BB\u03C5\u03C3\u03B7 \u03C3\u03B5 \u03B2\u03AE\u03BC\u03B1\u03C4\u03B1" })}"><i data-lucide="footprints" class="w-3.5 h-3.5"></i></button>
-              <div class="w-[1px] h-3 bg-white/15 my-auto"></div>
-              <button onclick="copyTaskTextByIndex('${id}', ${index}, event)" class="p-1 text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition cursor-pointer" title="${tr({ de: "Text kopieren", en: "Copy text", fr: "Copier texte", it: "Copia testo", es: "Copiar testo", el: "\u0391\u03BD\u03C4\u03B9\u03B3\u03C1\u03B1\u03C6\u03AE \u03BA\u03B5\u03B9\u03BC\u03AD\u03BD\u03BF\u03C5" })}"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
-              <div class="w-[1px] h-3 bg-white/15 my-auto"></div>
-              <button onclick="startTaskTimerByIndex('${id}', ${index}, event)" class="p-1 text-amber-400 hover:text-amber-300 hover:bg-amber-500/15 rounded-lg transition cursor-pointer" title="Timer starten"><i data-lucide="timer" class="w-3.5 h-3.5"></i></button>
-              <div class="w-[1px] h-3 bg-white/15 my-auto"></div>
-              <button onclick="deleteTask('${id}', ${index}, event)" class="p-1 text-gray-500 hover:text-red-400 hover:bg-red-500/15 rounded-lg transition cursor-pointer" title="L\xF6schen"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-            </div>
-          `;
-          }
+            <span data-task-span="${id}-${index}" onclick="editTaskInline('${id}', ${index}, event)" class="task-text-span block text-xs leading-snug py-0.5 min-w-0 flex-1 font-medium text-gray-200 hover:text-white break-normal whitespace-normal cursor-pointer active:cursor-text ${isTaskActive ? "text-amber-200 font-bold" : taskColor !== "none" ? colorStyle.text : ""} ${pair.text} transition-colors duration-150" title="${safeTaskEscaped} (${editTooltip})">${formattedTaskHtml}</span>
+            ${recurrenceBadge}
+          </div>
+          <div class="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-150 shrink-0 z-40">
+            <button onmouseenter="cancelCloseTaskMenu(); openTaskOptionsMenu('${id}', ${index}, this);" onmouseleave="scheduleCloseTaskMenu();" onclick="toggleTaskOptionsMenu('${id}', ${index}, event)" class="p-1 px-1.5 text-gray-200 hover:text-white bg-[#1a1a28] hover:bg-[#252538] border border-white/20 rounded-lg shadow-md transition cursor-pointer" title="${tr({ de: "Optionen (Steps, Focus, etc.)", en: "Options (Steps, Focus, etc.)", fr: "Options (Steps, Focus, etc.)", it: "Opzioni (Steps, Focus, etc.)", es: "Opciones (Steps, Focus, etc.)", el: "\u0395\u03C0\u03B9\u03BB\u03BF\u03B3\u03AD\u03C2 (Steps, Focus, etc.)" })}">
+              <i data-lucide="more-horizontal" class="w-3.5 h-3.5 text-gray-200 hover:text-white"></i>
+            </button>
+          </div>
+        `;
           listEl.appendChild(itemDiv);
         });
         const addBtn = document.createElement("button");
@@ -10142,12 +11614,12 @@ ${listStr}`;
           openTaskAddColumns[id] = true;
           renderApp2();
         };
-        addBtn.className = "w-full min-h-[38px] p-2 rounded-xl border border-dashed border-white/15 bg-white/[0.02] hover:bg-white/[0.06] hover:border-white/25 text-center text-xs text-gray-400 hover:text-white font-semibold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 shadow-sm";
-        addBtn.innerHTML = `<i data-lucide="plus" class="w-3.5 h-3.5 text-[var(--accent-light)]"></i><span>${t("add")}</span>`;
+        addBtn.className = "w-full min-h-[30px] p-1.5 rounded-xl border border-dashed border-white/15 bg-white/[0.02] hover:bg-white/[0.06] hover:border-[var(--accent)]/40 text-center text-xs text-gray-400 hover:text-white font-semibold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 shadow-xs group/addbtn mt-1";
+        addBtn.innerHTML = `<i data-lucide="plus" class="w-3.5 h-3.5 text-[var(--accent-light)] group-hover/addbtn:scale-110 transition-transform"></i><span>${t("add")}</span>`;
         const addInput = document.createElement("input");
         addInput.type = "text";
         addInput.placeholder = t("add");
-        addInput.className = "w-full min-h-[38px] p-2 px-3 rounded-xl border border-[var(--accent)]/60 bg-[#0e0e16] text-left text-xs placeholder:text-gray-500 focus:outline-none focus:border-[var(--accent)] transition cursor-text font-semibold text-white shadow-inner";
+        addInput.className = "w-full min-h-[32px] p-1.5 px-2.5 rounded-xl border border-[var(--accent)]/60 bg-[#0e0e16] text-left text-xs placeholder:text-gray-500 focus:outline-none focus:border-[var(--accent)] transition cursor-text font-semibold text-white shadow-inner mt-1";
         addInput.onkeydown = (e) => {
           if (e.key === "Enter" && addInput.value.trim()) {
             saveHistory();
@@ -10168,7 +11640,13 @@ ${listStr}`;
         };
         if (openTaskAddColumns[id]) {
           listEl.appendChild(addInput);
-          setTimeout(() => addInput.focus(), 0);
+          setTimeout(() => {
+            if (typeof addInput.focus === "function") addInput.focus();
+            try {
+              addInput.scrollIntoView({ block: "nearest", behavior: "smooth" });
+            } catch (e) {
+            }
+          }, 0);
         } else {
           listEl.appendChild(addBtn);
         }
@@ -10209,6 +11687,74 @@ ${listStr}`;
     `;
     }).join("");
     renderLucideIcons();
+  }
+  function animateTaskToDone(taskEl, targetSelector, onComplete) {
+    if (!taskEl) {
+      onComplete();
+      return;
+    }
+    taskEl.classList.add("task-completing-anim");
+    setTimeout(() => {
+      onComplete();
+    }, 260);
+  }
+  function handleCompleteTask2(category, index, event) {
+    if (event) event.stopPropagation();
+    let taskEl = null;
+    if (event && event.currentTarget) {
+      taskEl = event.currentTarget.closest('div[draggable="true"]');
+    }
+    const clientX = event?.clientX || (taskEl ? taskEl.getBoundingClientRect().left + 40 : null);
+    const clientY = event?.clientY || (taskEl ? taskEl.getBoundingClientRect().top + 20 : null);
+    const onComplete = () => {
+      const curItems = getCurrentWorkspaceItems2();
+      const curDone = getCurrentWorkspaceDone();
+      const rawTask = curItems[category]?.[index];
+      if (!rawTask) return;
+      saveHistory();
+      curItems[category].splice(index, 1);
+      const now = /* @__PURE__ */ new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      const todayStr = now.toISOString().split("T")[0];
+      let taskText = typeof rawTask === "object" ? rawTask.task : rawTask;
+      if (typeof rawTask === "object" && rawTask.date) {
+        let locInfo = rawTask.location ? ` @ ${rawTask.location}` : "";
+        taskText += ` (${formatTerminDate(rawTask.date, rawTask.time)}${locInfo})`;
+      }
+      curDone.push({ task: taskText, origin: category, date: todayStr, time: timeStr });
+      if (state.completedSteps) delete state.completedSteps[taskText];
+      setThemeSlow(getSimilarTheme(currentTheme));
+      saveState();
+      showPraise();
+      renderApp2();
+      updateZenView();
+      populateHelperTaskSelect();
+      const isDailyCat = category === "daily" || category === "work_focus";
+      if (isDailyCat && (curItems[category] || []).length === 0) {
+        setTimeout(() => openFeierabendModal(), 450);
+      } else if ((curItems[category] || []).length === 0) {
+        showToast(tr({
+          de: `Spalte "${t(category)}" zu 100% erledigt! \u{1F31F}`,
+          en: `Column "${t(category)}" 100% completed! \u{1F31F}`,
+          fr: `Colonne "${t(category)}" termin\xE9e \xE0 100% ! \u{1F31F}`,
+          it: `Colonna "${t(category)}" completata al 100%! \u{1F31F}`,
+          es: `\xA1Columna "${t(category)}" completada al 100%! \u{1F31F}`,
+          el: `\u0397 \u03C3\u03C4\u03AE\u03BB\u03B7 "${t(category)}" \u03BF\u03BB\u03BF\u03BA\u03BB\u03B7\u03C1\u03CE\u03B8\u03B7\u03BA\u03B5 100%! \u{1F31F}`
+        }));
+      }
+    };
+    if (typeof triggerHapticFeedback === "function") triggerHapticFeedback();
+    if (typeof triggerSparkleEffect === "function") triggerSparkleEffect(clientX, clientY);
+    if (typeof playTactileClickSound === "function") playTactileClickSound();
+    if (typeof playCheerfulSuccessJingle === "function") playCheerfulSuccessJingle();
+    if (typeof triggerCelebrationParticles === "function") triggerCelebrationParticles(clientX, clientY);
+    if (taskEl) {
+      spawnFloatingBubbles(event);
+      animateTaskToDone(taskEl, "#list-done", onComplete);
+    } else {
+      spawnFloatingBubbles(event);
+      onComplete();
+    }
   }
   function openFeierabendModal() {
     const modal = document.getElementById("feierabend-celebration-modal");
@@ -10257,13 +11803,13 @@ ${listStr}`;
     const curDone = getCurrentWorkspaceDone();
     const curItems = getCurrentWorkspaceItems2();
     const reversedIndex = curDone.length - 1 - doneIndex;
-    const item2 = curDone[reversedIndex];
-    if (!item2) return;
+    const item = curDone[reversedIndex];
+    if (!item) return;
     curDone.splice(reversedIndex, 1);
     const fallbackCat = state.activeWorkspace === "work" ? "work_focus" : "daily";
-    const targetCat = curItems[item2.origin] ? item2.origin : fallbackCat;
+    const targetCat = curItems[item.origin] ? item.origin : fallbackCat;
     if (!curItems[targetCat]) curItems[targetCat] = [];
-    curItems[targetCat].push(item2.task);
+    curItems[targetCat].push(item.task);
     saveState();
     showToast(t("toast_task_restored"));
     renderApp2();
@@ -10271,19 +11817,136 @@ ${listStr}`;
     populateHelperTaskSelect();
   }
   var draggedItemInfo = null;
+  function cleanupDragIndicators() {
+    document.querySelectorAll(".dragging, .drag-insert-top, .drag-insert-bottom, .drag-over").forEach((el) => {
+      el.classList.remove("dragging", "drag-insert-top", "drag-insert-bottom", "drag-over");
+    });
+  }
   function handleDragStart(e, category, index) {
-    draggedItemInfo = { category, index };
+    draggedItemInfo = { category, index, element: e.currentTarget };
     e.stopPropagation();
     e.dataTransfer.setData("text/plain", JSON.stringify({ category, index }));
     e.dataTransfer.effectAllowed = "move";
+    const target = e.currentTarget;
+    setTimeout(() => {
+      if (target) target.classList.add("dragging");
+    }, 10);
   }
   function handleDragOver(e) {
     e.preventDefault();
+    e.stopPropagation();
     e.dataTransfer.dropEffect = "move";
+    const target = e.currentTarget;
+    if (target && target.classList.contains("group")) {
+      const rect = target.getBoundingClientRect();
+      const relY = e.clientY - rect.top;
+      const isTopHalf = relY < rect.height / 2;
+      document.querySelectorAll(".drag-insert-top, .drag-insert-bottom").forEach((el) => {
+        if (el !== target) el.classList.remove("drag-insert-top", "drag-insert-bottom");
+      });
+      if (isTopHalf) {
+        target.classList.add("drag-insert-top");
+        target.classList.remove("drag-insert-bottom");
+      } else {
+        target.classList.add("drag-insert-bottom");
+        target.classList.remove("drag-insert-top");
+      }
+    }
+  }
+  function handleDragLeave(e) {
+    const target = e.currentTarget;
+    if (target) {
+      target.classList.remove("drag-insert-top", "drag-insert-bottom");
+    }
+  }
+  function handleDragEnd(e) {
+    cleanupDragIndicators();
+    draggedItemInfo = null;
+  }
+  function rebindListDragHandlers(colId) {
+    const list = document.getElementById(`list-${colId}`);
+    if (!list) return;
+    const items2 = Array.from(list.querySelectorAll(":scope > div.group"));
+    items2.forEach((itemDiv, idx) => {
+      itemDiv.ondragstart = (e) => handleDragStart(e, colId, idx);
+      itemDiv.ondragover = (e) => handleDragOver(e);
+      itemDiv.ondragleave = (e) => handleDragLeave(e);
+      itemDiv.ondragend = (e) => handleDragEnd(e);
+      itemDiv.ondrop = (e) => handleItemDrop(e, colId, idx);
+      const span = itemDiv.querySelector(".task-text-span");
+      if (span) {
+        span.setAttribute("data-task-span", `${colId}-${idx}`);
+        span.onclick = (e) => editTaskInline(colId, idx, e);
+      }
+      const checkBtn = itemDiv.querySelector(".task-check-btn");
+      if (checkBtn) {
+        checkBtn.onclick = (e) => handleCompleteTask2(colId, idx, e);
+      }
+      const optBtn = itemDiv.querySelector('button[onclick*="toggleTaskOptionsMenu"]');
+      if (optBtn) {
+        optBtn.onmouseenter = function() {
+          cancelCloseTaskMenu();
+          openTaskOptionsMenu(colId, idx, this);
+        };
+        optBtn.onclick = (e) => toggleTaskOptionsMenu(colId, idx, e);
+      }
+    });
+    const curItems = getCurrentWorkspaceItems2();
+    const count = (curItems[colId] || []).length;
+    const article = list.closest("article");
+    const badgeEl = article ? article.querySelector(".cat-count-badge") : null;
+    if (badgeEl) {
+      badgeEl.textContent = count;
+    }
+  }
+  function moveTaskDOM(srcCat, srcIdx, targetCat, insertIdx) {
+    const srcList = document.getElementById(`list-${srcCat}`);
+    const targetList = document.getElementById(`list-${targetCat}`);
+    if (!srcList || !targetList) return false;
+    const srcItems = Array.from(srcList.querySelectorAll(":scope > div.group"));
+    const targetItems = Array.from(targetList.querySelectorAll(":scope > div.group"));
+    const draggedEl = srcItems[srcIdx];
+    if (!draggedEl) return false;
+    draggedEl.classList.remove("dragging", "drag-insert-top", "drag-insert-bottom");
+    const addBtn = targetList.querySelector("button.group\\/addbtn, input");
+    if (srcCat === targetCat) {
+      if (insertIdx >= targetItems.length - 1) {
+        if (addBtn) targetList.insertBefore(draggedEl, addBtn);
+        else targetList.appendChild(draggedEl);
+      } else {
+        const refEl = targetItems[insertIdx];
+        if (refEl && refEl !== draggedEl) {
+          targetList.insertBefore(draggedEl, srcIdx < insertIdx ? refEl.nextSibling : refEl);
+        }
+      }
+    } else {
+      if (insertIdx >= targetItems.length) {
+        if (addBtn) targetList.insertBefore(draggedEl, addBtn);
+        else targetList.appendChild(draggedEl);
+      } else {
+        const refEl = targetItems[insertIdx];
+        if (refEl) {
+          targetList.insertBefore(draggedEl, refEl);
+        } else {
+          if (addBtn) targetList.insertBefore(draggedEl, addBtn);
+          else targetList.appendChild(draggedEl);
+        }
+      }
+    }
+    rebindListDragHandlers(srcCat);
+    if (srcCat !== targetCat) rebindListDragHandlers(targetCat);
+    return true;
   }
   function handleItemDrop(e, targetCategory, targetIndex) {
     e.preventDefault();
     e.stopPropagation();
+    const target = e.currentTarget;
+    let isTopHalf = true;
+    if (target && target.getBoundingClientRect) {
+      const rect = target.getBoundingClientRect();
+      isTopHalf = e.clientY - rect.top < rect.height / 2;
+    }
+    cleanupDragIndicators();
     let data = draggedItemInfo;
     try {
       if (!data) data = JSON.parse(e.dataTransfer.getData("text/plain"));
@@ -10294,16 +11957,24 @@ ${listStr}`;
     if (srcCat === "done" || targetCategory === "done") return;
     const curItems = getCurrentWorkspaceItems2();
     if (!curItems[srcCat] || !curItems[targetCategory]) return;
+    let insertIdx = isTopHalf ? targetIndex : targetIndex + 1;
     saveHistory();
-    const [item2] = curItems[srcCat].splice(srcIdx, 1);
-    curItems[targetCategory].splice(targetIndex, 0, item2);
+    const [item] = curItems[srcCat].splice(srcIdx, 1);
+    if (srcCat === targetCategory && srcIdx < insertIdx) {
+      insertIdx--;
+    }
+    if (insertIdx < 0) insertIdx = 0;
+    if (insertIdx > curItems[targetCategory].length) insertIdx = curItems[targetCategory].length;
+    curItems[targetCategory].splice(insertIdx, 0, item);
     draggedItemInfo = null;
     saveState();
-    renderApp2();
+    const moved = moveTaskDOM(srcCat, srcIdx, targetCategory, insertIdx);
+    if (!moved) renderApp2();
     populateHelperTaskSelect();
   }
   function handleDrop(e, targetCategory) {
     e.preventDefault();
+    cleanupDragIndicators();
     let data = draggedItemInfo;
     try {
       if (!data) data = JSON.parse(e.dataTransfer.getData("text/plain"));
@@ -10314,15 +11985,122 @@ ${listStr}`;
     if (srcCat === "done" || targetCategory === "done") return;
     const curItems = getCurrentWorkspaceItems2();
     if (!curItems[srcCat] || !curItems[targetCategory]) return;
+    const insertIdx = curItems[targetCategory].length;
     saveHistory();
-    const [item2] = curItems[srcCat].splice(srcIdx, 1);
-    curItems[targetCategory].push(item2);
+    const [item] = curItems[srcCat].splice(srcIdx, 1);
+    curItems[targetCategory].push(item);
     draggedItemInfo = null;
     saveState();
-    renderApp2();
+    const moved = moveTaskDOM(srcCat, srcIdx, targetCategory, insertIdx);
+    if (!moved) renderApp2();
     populateHelperTaskSelect();
   }
-  var currentlyOpenPanel2 = null;
+  if (typeof window !== "undefined" && typeof window.currentlyOpenPanel === "undefined") window.currentlyOpenPanel = null;
+  var currentlyOpenPanel2 = typeof window !== "undefined" && window.currentlyOpenPanel ? window.currentlyOpenPanel : null;
+  var hoverPanelShowTimeout2 = null;
+  var hoverPanelHideTimeout2 = null;
+  function showPanelHover(panelName, delay = 180) {
+    if (hoverPanelHideTimeout2) {
+      clearTimeout(hoverPanelHideTimeout2);
+      hoverPanelHideTimeout2 = null;
+    }
+    if (hoverPanelShowTimeout2) {
+      clearTimeout(hoverPanelShowTimeout2);
+      hoverPanelShowTimeout2 = null;
+    }
+    const el = document.getElementById(`panel-${panelName}`);
+    if (!el) return;
+    if (!el.classList.contains("hidden")) {
+      currentlyOpenPanel2 = panelName;
+      return;
+    }
+    hoverPanelShowTimeout2 = setTimeout(() => {
+      const ALL_POPOVER_PANELS = [
+        "feedback",
+        "report",
+        "settings",
+        "settings-dropdown",
+        "soundscape",
+        "language",
+        "boost",
+        "music",
+        "theme",
+        "calendar-dropdown",
+        "inspiration",
+        "impulse",
+        "shopping",
+        "cooking",
+        "alarm",
+        "weather",
+        "news",
+        "pause-dropdown",
+        "timer-presets",
+        "audio",
+        "daily",
+        "logo-guide"
+      ];
+      ALL_POPOVER_PANELS.forEach((p) => {
+        if (p !== panelName) {
+          const other = document.getElementById(`panel-${p}`);
+          if (other) other.classList.add("hidden");
+        }
+      });
+      el.classList.remove("hidden");
+      currentlyOpenPanel2 = panelName;
+      const dockContainer = document.querySelector(".mac-dock-container");
+      if (dockContainer && ["audio", "daily", "alarm"].includes(panelName)) {
+        dockContainer.classList.add("is-active");
+      }
+      if (panelName === "report" && typeof updateReportPanel === "function") updateReportPanel();
+      if (panelName === "weather" && typeof fetchLocalWeather === "function") fetchLocalWeather();
+      if (panelName === "cooking" && typeof renderCookingPanel === "function") renderCookingPanel(true);
+      if (panelName === "news" && typeof renderNewsBriefing === "function") renderNewsBriefing();
+      if (panelName === "alarm" && typeof renderAlarmPanel === "function") renderAlarmPanel();
+      if (panelName === "daily") {
+        if (typeof renderCookingPanel === "function") renderCookingPanel(true);
+        if (typeof renderShoppingList === "function") renderShoppingList();
+        if (typeof switchDailyTab === "function") switchDailyTab("shopping");
+      }
+      if (panelName === "audio") {
+        const savedTab = typeof window !== "undefined" && window._lastActiveAudioTab ? window._lastActiveAudioTab : "ambient";
+        if (typeof switchAudioTab === "function") switchAudioTab(savedTab);
+      }
+      if (panelName === "impulse") {
+        if (typeof suggestBoostActivity === "function") suggestBoostActivity();
+        if (typeof suggestInspirationQuote === "function") suggestInspirationQuote();
+      }
+      if (typeof renderLucideIcons === "function") renderLucideIcons();
+    }, delay);
+  }
+  window.showPanelHover = showPanelHover;
+  function hidePanelHover(panelName, gracePeriod = 300) {
+    if (hoverPanelShowTimeout2) {
+      clearTimeout(hoverPanelShowTimeout2);
+      hoverPanelShowTimeout2 = null;
+    }
+    if (hoverPanelHideTimeout2) {
+      clearTimeout(hoverPanelHideTimeout2);
+    }
+    hoverPanelHideTimeout2 = setTimeout(() => {
+      if (panelName) {
+        const el = document.getElementById(`panel-${panelName}`);
+        if (el) {
+          el.classList.add("hidden");
+          if (currentlyOpenPanel2 === panelName) currentlyOpenPanel2 = null;
+        }
+      } else if (currentlyOpenPanel2) {
+        const el = document.getElementById(`panel-${currentlyOpenPanel2}`);
+        if (el) el.classList.add("hidden");
+        currentlyOpenPanel2 = null;
+      }
+      const openDockPanel = document.querySelector(".dock-popover-panel:not(.hidden)");
+      if (!openDockPanel) {
+        const dockContainer = document.querySelector(".mac-dock-container");
+        if (dockContainer) dockContainer.classList.remove("is-active");
+      }
+    }, gracePeriod);
+  }
+  window.hidePanelHover = hidePanelHover;
   document.addEventListener("pointerdown", (e) => {
     if (!currentlyOpenPanel2) return;
     const openPanelEl = document.getElementById(`panel-${currentlyOpenPanel2}`);
@@ -10346,11 +12124,11 @@ ${listStr}`;
         const parsed = JSON.parse(trimmed);
         const arr = Array.isArray(parsed) ? parsed : parsed.tasks || parsed.items || parsed.todos || [parsed];
         const extracted = [];
-        arr.forEach((item2) => {
-          if (typeof item2 === "string" && item2.trim()) {
-            extracted.push(item2.trim());
-          } else if (item2 && typeof item2 === "object") {
-            const val = item2.task || item2.title || item2.name || item2.text || item2.content;
+        arr.forEach((item) => {
+          if (typeof item === "string" && item.trim()) {
+            extracted.push(item.trim());
+          } else if (item && typeof item === "object") {
+            const val = item.task || item.title || item.name || item.text || item.content;
             if (val && typeof val === "string" && val.trim()) {
               extracted.push(val.trim());
             }
@@ -10463,8 +12241,8 @@ ${listStr}`;
     if (!currentItems[currentImportTargetCat]) {
       currentItems[currentImportTargetCat] = [];
     }
-    items2.forEach((item2) => {
-      currentItems[currentImportTargetCat].push(item2);
+    items2.forEach((item) => {
+      currentItems[currentImportTargetCat].push(item);
     });
     saveState();
     closeTextImportModal();
@@ -10512,45 +12290,609 @@ ${listStr}`;
   function copyTaskTextByIndex(cat, index, event) {
     if (event) event.stopPropagation();
     const curItems = getCurrentWorkspaceItems2();
-    const item2 = curItems[cat]?.[index];
-    if (!item2) return;
-    const text = typeof item2 === "object" ? item2.task : item2;
+    const item = curItems[cat]?.[index];
+    if (!item) return;
+    const text = typeof item === "object" ? item.task : item;
     copyTaskText(text, event);
   }
   window.copyTaskTextByIndex = copyTaskTextByIndex;
   function startTaskTimerByIndex2(cat, index, event) {
     if (event) event.stopPropagation();
     const curItems = getCurrentWorkspaceItems2();
-    const item2 = curItems[cat]?.[index];
-    if (!item2) return;
-    const text = typeof item2 === "object" ? item2.task : item2;
+    const item = curItems[cat]?.[index];
+    if (!item) return;
+    const text = typeof item === "object" ? item.task : item;
     if (typeof startTaskTimer === "function") {
       startTaskTimer(text, event);
     }
   }
   window.startTaskTimerByIndex = startTaskTimerByIndex2;
+  function editTaskInline(cat, index, event) {
+    if (event) {
+      event.stopPropagation();
+    }
+    const span = event && event.currentTarget && event.currentTarget.hasAttribute("data-task-span") ? event.currentTarget : document.querySelector(`[data-task-span="${cat}-${index}"]`);
+    if (!span) return;
+    if (span.isContentEditable) return;
+    const itemDiv = span.closest(".group");
+    if (itemDiv) itemDiv.draggable = false;
+    const curItems = getCurrentWorkspaceItems2();
+    const rawTask = curItems[cat]?.[index];
+    if (!rawTask) return;
+    const originalText = typeof rawTask === "object" ? rawTask.task : rawTask;
+    span.textContent = originalText;
+    span.contentEditable = "true";
+    span.style.outline = "none";
+    span.style.borderBottom = "1.5px solid var(--accent, #a855f7)";
+    span.style.backgroundColor = "rgba(255, 255, 255, 0.05)";
+    span.style.borderRadius = "4px";
+    span.focus();
+    try {
+      const range = document.createRange();
+      range.selectNodeContents(span);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } catch (e) {
+    }
+    let isDoneEditing = false;
+    function finishEdit(save) {
+      if (isDoneEditing) return;
+      isDoneEditing = true;
+      span.contentEditable = "false";
+      span.style.outline = "";
+      span.style.borderBottom = "";
+      span.style.backgroundColor = "";
+      span.style.borderRadius = "";
+      if (itemDiv) itemDiv.draggable = true;
+      const newText = span.textContent.trim();
+      if (save && newText && newText !== originalText) {
+        saveHistory();
+        if (typeof curItems[cat][index] === "object") {
+          curItems[cat][index].task = newText;
+        } else {
+          curItems[cat][index] = newText;
+        }
+        saveState();
+        const safeEscaped = escapeHtml(newText);
+        span.innerHTML = safeEscaped.replace(/ &amp; /g, "&nbsp;&amp; ").replace(/ & /g, "&nbsp;& ");
+        span.title = `${newText} (${tr({ de: "Klicken zum Bearbeiten", en: "Click to edit", fr: "Cliquer pour modifier", it: "Clicca per modificare", es: "Clic para editar", el: "\u039A\u03BB\u03B9\u03BA \u03B3\u03B9\u03B1 \u03B5\u03C0\u03B5\u03BE\u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1" })})`;
+        if (typeof populateHelperTaskSelect === "function") populateHelperTaskSelect();
+        showToast(tr({
+          de: "Aufgabe aktualisiert \u270F\uFE0F",
+          en: "Task updated \u270F\uFE0F",
+          fr: "T\xE2che mise \xE0 jour \u270F\uFE0F",
+          it: "Attivit\xE0 aggiornata \u270F\uFE0F",
+          es: "Tarea actualizada \u270F\uFE0F",
+          el: "\u0397 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1 \u03B5\u03BD\u03B7\u03BC\u03B5\u03C1\u03CE\u03B8\u03B7\u03BA\u03B5 \u270F\uFE0F"
+        }));
+      } else {
+        const safeEscaped = escapeHtml(originalText);
+        span.innerHTML = safeEscaped.replace(/ &amp; /g, "&nbsp;&amp; ").replace(/ & /g, "&nbsp;& ");
+      }
+      span.onkeydown = null;
+      span.onblur = null;
+    }
+    span.onkeydown = (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        finishEdit(true);
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        finishEdit(false);
+      }
+    };
+    span.onblur = () => {
+      finishEdit(true);
+    };
+  }
   function checkSampleBannerVisibility() {
     const banner = document.getElementById("sample-tasks-banner");
     if (!banner) return;
     banner.classList.remove("sample-banner-visible");
     if (typeof lucide !== "undefined") lucide.createIcons();
   }
+  var dragDemoTimer = null;
+  function triggerDragDemonstration() {
+    try {
+      if (typeof document === "undefined") return;
+      if (draggedItemInfo || window.isEditingTaskInline || typeof state !== "undefined" && state && state.timerRunning) return;
+      if (document.hidden) return;
+      const articles = Array.from(document.querySelectorAll("main article")).filter((a) => !a.classList.contains("hidden"));
+      if (!articles.length) return;
+      const mode = Math.floor(Math.random() * 3);
+      if (mode === 0) {
+        const tasks = Array.from(document.querySelectorAll('main article div[draggable="true"]'));
+        if (!tasks.length) return;
+        const randomTask = tasks[Math.floor(Math.random() * tasks.length)];
+        randomTask.classList.add("demo-anim-vertical");
+        setTimeout(() => randomTask.classList.remove("demo-anim-vertical"), 1500);
+      } else if (mode === 1) {
+        const tasks = Array.from(document.querySelectorAll('main article div[draggable="true"]'));
+        if (!tasks.length) return;
+        const randomTask = tasks[Math.floor(Math.random() * tasks.length)];
+        randomTask.classList.add("demo-anim-horizontal");
+        setTimeout(() => randomTask.classList.remove("demo-anim-horizontal"), 1600);
+      } else {
+        const randomCol = articles[Math.floor(Math.random() * articles.length)];
+        randomCol.classList.add("demo-anim-column");
+        setTimeout(() => randomCol.classList.remove("demo-anim-column"), 1700);
+      }
+    } catch (err) {
+    }
+  }
+  function initDragDemonstrationEngine() {
+    if (typeof window === "undefined") return;
+    if (dragDemoTimer) clearInterval(dragDemoTimer);
+    setTimeout(triggerDragDemonstration, 5e3);
+    dragDemoTimer = setInterval(triggerDragDemonstration, 12e4);
+  }
+  if (typeof document !== "undefined") {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initDragDemonstrationEngine);
+    } else {
+      initDragDemonstrationEngine();
+    }
+  }
   if (typeof window !== "undefined") {
+    window.renderApp = renderApp2;
+    window.getCurrentWorkspaceItems = getCurrentWorkspaceItems2;
+    window.getCurrentWorkspaceDone = getCurrentWorkspaceDone;
+    window.handleCompleteTask = handleCompleteTask2;
+    window.handleDragStart = handleDragStart;
+    window.handleDragOver = handleDragOver;
+    window.handleDragLeave = handleDragLeave;
+    window.handleDragEnd = handleDragEnd;
+    window.handleDrop = handleDrop;
+    window.handleItemDrop = handleItemDrop;
+    window.editTaskInline = editTaskInline;
     window.parseTextIntoItems = parseTextIntoItems;
     window.parseIcsCalendar = parseIcsCalendar;
     window.executeTextImport = executeTextImport;
     window.deleteTask = deleteTask;
     window.handleRestoreDoneTask = handleRestoreDoneTask;
+    window.triggerDragDemonstration = triggerDragDemonstration;
   }
   if (typeof globalThis !== "undefined") {
+    globalThis.renderApp = renderApp2;
+    globalThis.getCurrentWorkspaceItems = getCurrentWorkspaceItems2;
+    globalThis.getCurrentWorkspaceDone = getCurrentWorkspaceDone;
+    globalThis.handleCompleteTask = handleCompleteTask2;
+    globalThis.handleDragStart = handleDragStart;
+    globalThis.handleDragOver = handleDragOver;
+    globalThis.handleDragLeave = handleDragLeave;
+    globalThis.handleDragEnd = handleDragEnd;
+    globalThis.handleDrop = handleDrop;
+    globalThis.handleItemDrop = handleItemDrop;
+    globalThis.editTaskInline = editTaskInline;
     globalThis.parseTextIntoItems = parseTextIntoItems;
     globalThis.parseIcsCalendar = parseIcsCalendar;
     globalThis.executeTextImport = executeTextImport;
     globalThis.deleteTask = deleteTask;
     globalThis.handleRestoreDoneTask = handleRestoreDoneTask;
+    globalThis.triggerDragDemonstration = triggerDragDemonstration;
   }
 
   // app-reports.js
+  function togglePanel2(panelName) {
+    if (typeof window !== "undefined" && window.hoverPanelTimeout) {
+      clearTimeout(window.hoverPanelTimeout);
+      window.hoverPanelTimeout = null;
+    }
+    const el = document.getElementById(`panel-${panelName}`);
+    if (!el) return;
+    const isCurrentlyHidden = el.classList.contains("hidden");
+    ["feedback", "report", "settings", "settings-dropdown", "soundscape", "language", "boost", "music", "theme", "calendar-dropdown", "inspiration", "impulse", "shopping", "cooking", "alarm", "weather", "news", "pause-dropdown", "audio", "daily"].forEach((p) => {
+      if (p !== panelName) {
+        const other = document.getElementById(`panel-${p}`);
+        if (other) other.classList.add("hidden");
+      }
+    });
+    const dockContainer = document.querySelector(".mac-dock-container");
+    if (isCurrentlyHidden) {
+      el.classList.remove("hidden");
+      if (typeof window !== "undefined") window.currentlyOpenPanel = panelName;
+      if (typeof currentlyOpenPanel !== "undefined") currentlyOpenPanel = panelName;
+      if (dockContainer && ["audio", "daily", "alarm"].includes(panelName)) {
+        dockContainer.classList.add("is-active");
+      }
+      if (panelName === "report") updateReportPanel2();
+      if (panelName === "cooking" && typeof renderCookingPanel === "function") renderCookingPanel(true);
+      if (panelName === "alarm" && typeof renderAlarmPanel === "function") renderAlarmPanel();
+      if (panelName === "weather" && typeof fetchLocalWeather === "function") fetchLocalWeather();
+      if (panelName === "news" && typeof renderNewsBriefing === "function") renderNewsBriefing();
+      if (panelName === "impulse") {
+        if (typeof suggestBoostActivity === "function") suggestBoostActivity();
+        if (typeof suggestInspirationQuote === "function") suggestInspirationQuote();
+      }
+      if (panelName === "daily") {
+        if (typeof renderCookingPanel === "function") renderCookingPanel(true);
+        if (typeof renderShoppingList === "function") renderShoppingList();
+        if (typeof switchDailyTab === "function") switchDailyTab("shopping");
+      }
+      if (panelName === "audio") {
+        const savedTab = typeof window !== "undefined" && window._lastActiveAudioTab ? window._lastActiveAudioTab : "ambient";
+        if (typeof switchAudioTab === "function") switchAudioTab(savedTab);
+      }
+      if (typeof renderLucideIcons === "function") renderLucideIcons();
+    } else {
+      el.classList.add("hidden");
+      if (typeof window !== "undefined" && window.currentlyOpenPanel === panelName) {
+        window.currentlyOpenPanel = null;
+      }
+      if (typeof currentlyOpenPanel !== "undefined" && currentlyOpenPanel === panelName) {
+        currentlyOpenPanel = null;
+      }
+      if (dockContainer) dockContainer.classList.remove("is-active");
+    }
+  }
+  var reportTimeframe = "today";
+  var dashboardTimeframe = "week";
+  function setReportTimeframe(tf) {
+    reportTimeframe = tf;
+    ["today", "week", "month"].forEach((t3) => {
+      const btn = document.getElementById(`report-tab-${t3}`);
+      if (btn) {
+        if (t3 === tf) btn.className = "px-2.5 py-1 rounded text-purple-300 bg-purple-500/25 cursor-pointer transition font-bold";
+        else btn.className = "px-2.5 py-1 rounded text-gray-400 hover:text-white cursor-pointer transition";
+      }
+    });
+    updateReportPanel2();
+  }
+  function calculateProductivePeakHours(doneItems = []) {
+    if (!doneItems || doneItems.length === 0) {
+      return {
+        peakKey: "morning",
+        label: typeof t === "function" ? t("morning_peak") : "Morgens (06:00 - 12:00)",
+        shortLabel: typeof currentLang !== "undefined" && currentLang === "de" ? "Morgens" : "Morning",
+        timeRange: "06:00 - 12:00"
+      };
+    }
+    const buckets = { morning: 0, afternoon: 0, evening: 0, night: 0 };
+    doneItems.forEach((item) => {
+      let hour = 10;
+      if (item.time && typeof item.time === "string") {
+        const match = item.time.match(/(\d{1,2}):/);
+        if (match) hour = parseInt(match[1], 10);
+      }
+      if (hour >= 6 && hour < 12) buckets.morning++;
+      else if (hour >= 12 && hour < 18) buckets.afternoon++;
+      else if (hour >= 18 && hour < 24) buckets.evening++;
+      else buckets.night++;
+    });
+    let maxKey = "morning";
+    let maxCount = -1;
+    Object.keys(buckets).forEach((k) => {
+      if (buckets[k] > maxCount) {
+        maxCount = buckets[k];
+        maxKey = k;
+      }
+    });
+    const labels = {
+      morning: { short: "Morgens", shortEn: "Morning", range: "06:00 - 12:00" },
+      afternoon: { short: "Nachmittags", shortEn: "Afternoon", range: "12:00 - 18:00" },
+      evening: { short: "Abends", shortEn: "Evening", range: "18:00 - 24:00" },
+      night: { short: "Nachts", shortEn: "Night", range: "00:00 - 06:00" }
+    };
+    const isDe = typeof currentLang === "undefined" || currentLang === "de";
+    const info = labels[maxKey] || labels.morning;
+    return {
+      peakKey: maxKey,
+      label: typeof t === "function" ? t(`${maxKey}_peak`) || info.range : info.range,
+      shortLabel: isDe ? info.short : info.shortEn,
+      timeRange: info.range
+    };
+  }
+  function calculateEstimatedFocusMinutes(doneItems = []) {
+    if (!doneItems || doneItems.length === 0) return { totalMins: 0, text: "0m", sessions: 0 };
+    const totalMins = doneItems.reduce((acc, item) => acc + (item.durationMinutes || 15), 0);
+    const hours = Math.floor(totalMins / 60);
+    const mins = totalMins % 60;
+    const text = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+    return { totalMins, text, sessions: doneItems.length };
+  }
+  function calculateCategoryDistribution(doneItems = []) {
+    if (!doneItems || doneItems.length === 0) return [];
+    const counts = {};
+    doneItems.forEach((item) => {
+      const origin = item.origin || "todo";
+      counts[origin] = (counts[origin] || 0) + 1;
+    });
+    const total = doneItems.length;
+    const palette = {
+      daily: { bg: "bg-amber-400", text: "text-amber-300" },
+      weekly: { bg: "bg-emerald-400", text: "text-emerald-300" },
+      todo: { bg: "bg-purple-400", text: "text-purple-300" },
+      termine: { bg: "bg-sky-400", text: "text-sky-300" },
+      occasionally: { bg: "bg-rose-400", text: "text-rose-300" }
+    };
+    return Object.keys(counts).map((catId) => {
+      const count = counts[catId];
+      const pct = Math.round(count / total * 100);
+      const catLabel = typeof t === "function" ? t(catId) || catId : catId;
+      const style = palette[catId] || { bg: "bg-indigo-400", text: "text-indigo-300" };
+      return { id: catId, label: catLabel, count, pct, bg: style.bg, text: style.text };
+    }).sort((a, b) => b.count - a.count);
+  }
+  function renderWeeklyChart(targetElementId = "report-weekly-chart", totalElementId = "report-total-week-tasks", isDashboard = false) {
+    const chartEl = document.getElementById(targetElementId);
+    const totalWeekTasksEl = document.getElementById(totalElementId);
+    if (!chartEl) return;
+    chartEl.innerHTML = "";
+    const now = /* @__PURE__ */ new Date();
+    const last7Days = [];
+    const weekdaysShort = {
+      de: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
+      en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      es: ["Dom", "Lun", "Mar", "Mi\xE9", "Jue", "Vie", "S\xE1b"],
+      el: ["\u039A\u03C5\u03C1", "\u0394\u03B5\u03C5", "\u03A4\u03C1\u03B9", "\u03A4\u03B5\u03C4", "\u03A0\u03B5\u03BC", "\u03A0\u03B1\u03C1", "\u03A3\u03B1\u03B2"],
+      fr: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
+      it: ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"]
+    };
+    for (let i = 6; i >= 0; i--) {
+      const d = /* @__PURE__ */ new Date();
+      d.setDate(now.getDate() - i);
+      const iso = d.toISOString().split("T")[0];
+      last7Days.push({ date: iso, label: weekdaysShort[currentLang]?.[d.getDay()] || weekdaysShort["en"][d.getDay()], count: 0 });
+    }
+    let totalWeekCount = 0;
+    (state.done || []).forEach((item) => {
+      const found = last7Days.find((day) => day.date === item.date);
+      if (found) {
+        found.count++;
+        totalWeekCount++;
+      }
+    });
+    if (totalWeekTasksEl) {
+      totalWeekTasksEl.innerText = tr({
+        de: `${totalWeekCount} Aufgaben`,
+        en: `${totalWeekCount} Tasks`,
+        es: `${totalWeekCount} Tareas`,
+        el: `${totalWeekCount} \u0395\u03C1\u03B3\u03B1\u03C3\u03AF\u03B5\u03C2`,
+        fr: `${totalWeekCount} T\xE2ches`,
+        it: `${totalWeekCount} Attivit\xE0`
+      });
+    }
+    const maxCount = Math.max(...last7Days.map((d) => d.count), 4);
+    last7Days.forEach((day) => {
+      const pct = Math.max(8, day.count / maxCount * 100);
+      const isToday = day.date === now.toISOString().split("T")[0];
+      const barCol = isToday ? "bg-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.5)]" : "bg-purple-500 hover:bg-purple-400";
+      const barBg = isToday ? "bg-amber-500/15 border-amber-400/30" : "bg-white/[0.04] border-white/10";
+      const barWrapper = document.createElement("div");
+      barWrapper.className = `flex flex-col items-center gap-1.5 flex-1 ${isDashboard ? "max-w-[54px]" : "max-w-[40px]"}`;
+      barWrapper.innerHTML = `
+      <span class="text-[10px] font-bold font-mono ${day.count > 0 ? isToday ? "text-amber-300" : "text-white" : "text-gray-600"}">${day.count}</span>
+      <div class="${isDashboard ? "w-7 h-20" : "w-5 h-12"} ${barBg} border rounded-xl relative flex items-end overflow-hidden cursor-pointer transition-transform hover:scale-105" title="${day.date}: ${day.count} erledigt">
+        <div class="w-full ${barCol} transition-all duration-500 rounded-t" style="height: ${pct}%"></div>
+      </div>
+      <span class="text-[10px] font-bold ${isToday ? "text-amber-300 font-extrabold" : "text-gray-400"}">${day.label}</span>
+    `;
+      chartEl.appendChild(barWrapper);
+    });
+  }
+  function updateReportPanel2() {
+    const contentArea = document.getElementById("report-content-area");
+    if (contentArea && (!document.getElementById("report-today-count") || contentArea.children.length === 0)) {
+      contentArea.innerHTML = `
+      <!-- Bento Kacheln f\xFCr Schnell\xFCbersicht -->
+      <div class="grid grid-cols-3 gap-2">
+        <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/10 text-center">
+          <div class="text-[10px] text-gray-400 font-medium mb-0.5" data-i18n="completed_stat">Erledigt</div>
+          <div id="report-today-count" class="text-lg font-black font-display text-emerald-400">0</div>
+        </div>
+        <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/10 text-center">
+          <div class="text-[10px] text-gray-400 font-medium mb-0.5" data-i18n="focus_time">Fokus</div>
+          <div id="report-focus-time" class="text-lg font-black font-display text-purple-300">0m</div>
+        </div>
+        <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/10 text-center">
+          <div class="text-[10px] text-gray-400 font-medium mb-0.5" data-i18n="peak_hours">Peak</div>
+          <div id="report-peak-hour" class="text-xs font-bold font-display text-amber-300 mt-1 truncate">Morgens</div>
+        </div>
+      </div>
+
+      <!-- 7-Tage Aktivit\xE4ts-Chart -->
+      <div class="p-3 bg-black/40 border border-white/10 rounded-xl space-y-2">
+        <div class="flex items-center justify-between text-[11px] font-bold">
+          <span class="text-gray-300">Aktivit\xE4t (7 Tage)</span>
+          <span id="report-total-week-tasks" class="font-mono text-purple-300">0 Tasks</span>
+        </div>
+        <div id="report-weekly-chart" class="flex items-end justify-between h-16 pt-2 border-b border-white/5 pb-1"></div>
+      </div>
+
+      <!-- Motivations-Insight -->
+      <div class="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-xs text-purple-200 leading-snug flex items-start gap-2">
+        <span class="text-base leading-none">\u{1F4A1}</span>
+        <span id="report-insight-text">Lade Produktivit\xE4ts-Insights...</span>
+      </div>
+    `;
+    }
+    const now = /* @__PURE__ */ new Date();
+    const todayISO = now.toISOString().split("T")[0];
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1e3).toISOString().split("T")[0];
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1e3).toISOString().split("T")[0];
+    let filteredDone = state.done || [];
+    if (reportTimeframe === "today") {
+      filteredDone = filteredDone.filter((item) => item.date === todayISO);
+    } else if (reportTimeframe === "week") {
+      filteredDone = filteredDone.filter((item) => item.date && item.date >= sevenDaysAgo);
+    } else if (reportTimeframe === "month") {
+      filteredDone = filteredDone.filter((item) => item.date && item.date >= thirtyDaysAgo);
+    }
+    const count = filteredDone.length;
+    const focus = calculateEstimatedFocusMinutes(filteredDone);
+    const peak = calculateProductivePeakHours(filteredDone);
+    const todayEl = document.getElementById("report-today-count");
+    if (todayEl) todayEl.innerText = count;
+    const focusEl = document.getElementById("report-focus-time");
+    if (focusEl) focusEl.innerText = focus.text;
+    const peakEl = document.getElementById("report-peak-hour");
+    if (peakEl) peakEl.innerText = peak.shortLabel;
+    renderWeeklyChart("report-weekly-chart", "report-total-week-tasks", false);
+    const insightEl = document.getElementById("report-insight-text");
+    if (insightEl) {
+      if (count === 0) {
+        insightEl.innerText = tr({
+          de: "Noch keine Aufgaben abgeschlossen. Starte mit einem kleinen Quick-Win!",
+          en: "No tasks completed yet. Start with a quick win!"
+        });
+      } else if (count < 4) {
+        insightEl.innerText = tr({
+          de: `Guter Fortschritt! Schon ${count} Aufgaben gemeistert (${focus.text} Fokus). Weiter so!`,
+          en: `Good progress! Already ${count} tasks completed (${focus.text} focus). Keep going!`
+        });
+      } else if (count < 8) {
+        insightEl.innerText = tr({
+          de: `Starke Leistung! ${count} Aufgaben erledigt. Dein Peak liegt bei ${peak.timeRange}!`,
+          en: `Great performance! ${count} tasks done. Your peak is at ${peak.timeRange}!`
+        });
+      } else {
+        insightEl.innerText = tr({
+          de: `Hervorragend! ${count} Aufgaben & ${focus.text} Fokus \u2013 ein extrem produktiver Zeitraum! \u{1F680}`,
+          en: `Outstanding! ${count} tasks & ${focus.text} focus \u2013 an extremely productive period! \u{1F680}`
+        });
+      }
+    }
+    renderLucideIcons();
+  }
+  function openReportDashboard2() {
+    const modal = document.getElementById("modal-report-dashboard");
+    if (!modal) return;
+    modal.classList.remove("hidden");
+    const panel = document.getElementById("panel-report");
+    if (panel) panel.classList.add("hidden");
+    setDashboardTimeframe("week");
+    renderLucideIcons();
+  }
+  function closeReportDashboard2() {
+    const modal = document.getElementById("modal-report-dashboard");
+    if (modal) modal.classList.add("hidden");
+  }
+  function setDashboardTimeframe(tf) {
+    dashboardTimeframe = tf;
+    ["today", "week", "month"].forEach((t3) => {
+      const btn = document.getElementById(`dash-tab-${t3}`);
+      if (btn) {
+        if (t3 === tf) btn.className = "px-3 py-1.5 rounded-lg text-purple-300 bg-purple-500/20 font-bold transition cursor-pointer";
+        else btn.className = "px-3 py-1.5 rounded-lg text-gray-400 hover:text-white transition cursor-pointer";
+      }
+    });
+    renderDashboardView();
+  }
+  var currentDashboardFilter = "";
+  function filterDashboardHistory(query) {
+    currentDashboardFilter = (query || "").toLowerCase().trim();
+    renderDashboardHistoryList();
+  }
+  var activeDashboardDoneList = [];
+  function renderDashboardView() {
+    const now = /* @__PURE__ */ new Date();
+    const todayISO = now.toISOString().split("T")[0];
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1e3).toISOString().split("T")[0];
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1e3).toISOString().split("T")[0];
+    let doneList = state.done || [];
+    if (dashboardTimeframe === "today") {
+      doneList = doneList.filter((item) => item.date === todayISO);
+    } else if (dashboardTimeframe === "week") {
+      doneList = doneList.filter((item) => item.date && item.date >= sevenDaysAgo);
+    } else if (dashboardTimeframe === "month") {
+      doneList = doneList.filter((item) => item.date && item.date >= thirtyDaysAgo);
+    }
+    activeDashboardDoneList = doneList;
+    const count = doneList.length;
+    const focus = calculateEstimatedFocusMinutes(doneList);
+    const peak = calculateProductivePeakHours(doneList);
+    const dist = calculateCategoryDistribution(doneList);
+    const compEl = document.getElementById("dash-stat-completed");
+    if (compEl) compEl.innerText = count;
+    const focEl = document.getElementById("dash-stat-focus");
+    if (focEl) focEl.innerText = focus.text;
+    const sessEl = document.getElementById("dash-stat-sessions");
+    if (sessEl) sessEl.innerText = `${focus.sessions} ${typeof tr === "function" ? tr({ de: "Sitzungen", en: "Sessions" }) : "Sitzungen"}`;
+    const pkEl = document.getElementById("dash-stat-peak");
+    if (pkEl) pkEl.innerText = peak.shortLabel;
+    const pkDetailEl = document.getElementById("dash-stat-peakhour-detail");
+    if (pkDetailEl) pkDetailEl.innerText = peak.timeRange;
+    const topCat = dist.length > 0 ? dist[0].label : typeof tr === "function" ? tr({ de: "Ausgeglichen", en: "Balanced" }) : "Ausgeglichen";
+    const topCatEl = document.getElementById("dash-stat-topcat");
+    if (topCatEl) topCatEl.innerText = `Top: ${topCat}`;
+    renderWeeklyChart("dash-weekly-chart", "dash-chart-total", true);
+    const catDistEl = document.getElementById("dash-category-distribution");
+    if (catDistEl) {
+      catDistEl.innerHTML = "";
+      if (dist.length === 0) {
+        catDistEl.innerHTML = `<div class="text-gray-500 italic py-4 text-center text-xs">Noch keine Daten im Zeitraum.</div>`;
+      } else {
+        dist.forEach((item) => {
+          const row = document.createElement("div");
+          row.className = "space-y-1";
+          row.innerHTML = `
+          <div class="flex justify-between items-center text-[11px]">
+            <span class="text-gray-300 font-medium">${escapeHtml(item.label)}</span>
+            <span class="${item.text} font-mono font-bold">${item.count} (${item.pct}%)</span>
+          </div>
+          <div class="w-full h-2 bg-black/50 rounded-full overflow-hidden border border-white/5">
+            <div class="h-full ${item.bg} transition-all duration-500 rounded-full" style="width: ${item.pct}%"></div>
+          </div>
+        `;
+          catDistEl.appendChild(row);
+        });
+      }
+    }
+    renderDashboardHistoryList();
+    renderLucideIcons();
+  }
+  function renderDashboardHistoryList() {
+    const listEl = document.getElementById("dash-history-list");
+    const badgeEl = document.getElementById("dash-history-badge");
+    if (!listEl) return;
+    listEl.innerHTML = "";
+    let filtered = activeDashboardDoneList;
+    if (currentDashboardFilter) {
+      filtered = filtered.filter((item) => {
+        const tStr = (item.task || item.name || "").toLowerCase();
+        const catStr = (t(item.origin) || item.origin || "").toLowerCase();
+        return tStr.includes(currentDashboardFilter) || catStr.includes(currentDashboardFilter);
+      });
+    }
+    if (badgeEl) badgeEl.innerText = filtered.length;
+    if (filtered.length === 0) {
+      listEl.innerHTML = `<div class="text-gray-500 italic text-center py-6 text-xs">Keine passenden erledigten Aufgaben gefunden.</div>`;
+      return;
+    }
+    filtered.slice().reverse().forEach((item) => {
+      const div = document.createElement("div");
+      div.className = "p-2.5 bg-white/[0.025] hover:bg-white/[0.06] border border-white/5 rounded-xl flex items-center justify-between transition gap-2";
+      const catLabel = t(item.origin) || item.origin || "Task";
+      div.innerHTML = `
+      <div class="flex items-center gap-2 overflow-hidden min-w-0">
+        <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+        <span class="text-[10px] px-2 py-0.5 rounded-lg bg-purple-500/20 text-purple-300 border border-purple-500/30 shrink-0 font-medium">${escapeHtml(catLabel)}</span>
+        <span class="truncate font-semibold text-xs text-white">${escapeHtml(item.task || item.name || "Task")}</span>
+      </div>
+      <span class="text-gray-400 font-mono text-[10px] shrink-0">${escapeHtml(item.time || item.date || "")}</span>
+    `;
+      listEl.appendChild(div);
+    });
+    renderLucideIcons();
+  }
+  function copyComprehensiveReportText() {
+    const text = generateComprehensiveReportText();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        if (typeof showToast === "function") {
+          showToast(tr({
+            de: "Bericht in die Zwischenablage kopiert! \u{1F4CB}",
+            en: "Report copied to clipboard! \u{1F4CB}",
+            fr: "Rapport copi\xE9 dans le presse-papiers ! \u{1F4CB}",
+            it: "Rapporto copiato negli appunti! \u{1F4CB}",
+            es: "\xA1Informe copiado al portapapeles! \u{1F4CB}",
+            el: "\u0397 \u03B1\u03BD\u03B1\u03C6\u03BF\u03C1\u03AC \u03B1\u03BD\u03C4\u03B9\u03B3\u03C1\u03AC\u03C6\u03B7\u03BA\u03B5 \u03C3\u03C4\u03BF \u03C0\u03C1\u03CC\u03C7\u03B5\u03B9\u03C1\u03BF! \u{1F4CB}"
+          }));
+        }
+      }).catch((e) => console.warn("Clipboard copy error:", e));
+    }
+  }
   function generateComprehensiveReportText() {
     const now = /* @__PURE__ */ new Date();
     const dateStr = now.toLocaleDateString(currentLang === "de" ? "de-DE" : "en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
@@ -10562,14 +12904,14 @@ ${listStr}`;
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1e3).toISOString().split("T")[0];
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1e3).toISOString().split("T")[0];
     const doneAll = state.done || [];
-    const doneToday = doneAll.filter((item2) => item2.date === todayISO);
-    const doneWeek = doneAll.filter((item2) => item2.date && item2.date >= sevenDaysAgo);
-    const doneMonth = doneAll.filter((item2) => item2.date && item2.date >= thirtyDaysAgo);
+    const doneToday = doneAll.filter((item) => item.date === todayISO);
+    const doneWeek = doneAll.filter((item) => item.date && item.date >= sevenDaysAgo);
+    const doneMonth = doneAll.filter((item) => item.date && item.date >= thirtyDaysAgo);
     const weeklyItems = state.items.weekly || [];
-    const weeklyDoneThisWeek = doneAll.filter((item2) => item2.origin === "weekly" && item2.date >= mondayISO);
+    const weeklyDoneThisWeek = doneAll.filter((item) => item.origin === "weekly" && item.date >= mondayISO);
     let text = `========================================
 `;
-    text += `\u{1F4CA} FLOW-ORGANISER: STATISTIK- & FORTSCHRITTSBERICHT
+    text += `\u{1F4CA} NOODLE STUDIO: STATISTIK- & FORTSCHRITTSBERICHT
 `;
     text += `Erstellt am: ${dateStr}
 `;
@@ -10659,11 +13001,124 @@ ${listStr}`;
 `;
     return text;
   }
+  function openReportExportModal() {
+    const modal = document.getElementById("report-export-modal");
+    const textarea = document.getElementById("report-export-text-area");
+    if (textarea) {
+      textarea.value = generateComprehensiveReportText();
+    }
+    if (modal) modal.classList.remove("hidden");
+    const panel = document.getElementById("panel-report");
+    if (panel) panel.classList.add("hidden");
+    renderLucideIcons();
+  }
+  function closeReportExportModal() {
+    const modal = document.getElementById("report-export-modal");
+    if (modal) modal.classList.add("hidden");
+  }
+  function copyReportText() {
+    const text = generateComprehensiveReportText();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(tr({ de: "\u{1F4CB} Bericht in Zwischenablage kopiert!", en: "\u{1F4CB} Report copied to clipboard!" }));
+      });
+    } else {
+      showToast(tr({ de: "Bericht markiert \u2013 dr\xFCcke Strg+C!", en: "Report selected \u2013 press Ctrl+C!" }));
+    }
+  }
+  function downloadReportFile() {
+    const text = generateComprehensiveReportText();
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const today = (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
+    a.href = url;
+    a.download = `Noodle-Bericht_${today}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast(tr({ de: "\u{1F4BE} Bericht als Datei heruntergeladen!", en: "\u{1F4BE} Report file downloaded!" }));
+  }
+  function printReport() {
+    const text = generateComprehensiveReportText();
+    const printWindow = window.open("", "_blank");
+    if (printWindow) {
+      printWindow.document.write(`
+      <html>
+        <head>
+          <title>Noodle Bericht</title>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 30px; line-height: 1.6; color: #111; }
+            pre { font-family: "Courier New", Courier, monospace; font-size: 13px; white-space: pre-wrap; background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; }
+            @media print { pre { border: none; padding: 0; background: none; } }
+          </style>
+        </head>
+        <body>
+          <pre>${text}</pre>
+        </body>
+      </html>
+    `);
+      printWindow.document.close();
+      printWindow.focus();
+      setTimeout(() => {
+        printWindow.print();
+      }, 400);
+    }
+  }
+  async function exportReportAsImage() {
+    const target = document.getElementById("report-export-target");
+    if (!target) return;
+    if (typeof html2canvas === "undefined") {
+      try {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = "vendor/html2canvas.min.js";
+          script.onload = resolve;
+          script.onerror = () => {
+            const fallbackScript = document.createElement("script");
+            fallbackScript.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+            fallbackScript.onload = resolve;
+            fallbackScript.onerror = reject;
+            document.head.appendChild(fallbackScript);
+          };
+          document.head.appendChild(script);
+        });
+      } catch (e) {
+        console.warn("[Reports] Failed to load html2canvas:", e);
+        if (typeof showToast === "function") showToast(tr({ de: "Export fehlgeschlagen.", en: "Export failed." }));
+        return;
+      }
+    }
+    html2canvas(target, {
+      backgroundColor: "#111116",
+      scale: 2,
+      useCORS: true
+    }).then((canvas) => {
+      const link = document.createElement("a");
+      link.download = `noodle-statistik-${(/* @__PURE__ */ new Date()).toISOString().split("T")[0]}.png`;
+      link.href = canvas.toDataURL();
+      link.click();
+      if (typeof showToast === "function") showToast(tr({ de: "Statistik als Bild exportiert! \u{1F4F8}", en: "Statistics exported as image! \u{1F4F8}" }));
+    }).catch((err) => {
+      console.error("Export-Fehler:", err);
+      if (typeof showToast === "function") showToast(tr({ de: "Export fehlgeschlagen.", en: "Export failed." }));
+    });
+  }
+  function triggerAutomaticDownload(reportText, filename) {
+    const blob = new Blob([reportText], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1e3);
+  }
   function generateReportContent(timeframe = "comprehensive", targetDate = "") {
     const reportText = typeof generateComprehensiveReportText === "function" ? generateComprehensiveReportText() : "";
     const now = /* @__PURE__ */ new Date();
     const dateStr = targetDate || now.toISOString().split("T")[0];
-    const filename = `Flow-Organiser-Report-${timeframe}-${dateStr}.txt`;
+    const filename = `Noodle-Report-${timeframe}-${dateStr}.txt`;
     return { reportText, filename };
   }
   if (typeof window !== "undefined") {
@@ -10671,6 +13126,35 @@ ${listStr}`;
   }
   if (typeof globalThis !== "undefined") {
     globalThis.generateReportContent = generateReportContent;
+  }
+  function triggerManualReportDownload(timeframe) {
+    const { reportText, filename } = generateReportContent(timeframe);
+    triggerAutomaticDownload(reportText, filename);
+    showToast(tr({ de: `Bericht heruntergeladen! \u{1F4E5}`, en: `Report downloaded! \u{1F4E5}`, es: `\xA1Informe descargado! \u{1F4E5}`, el: `\u0397 \u03B1\u03BD\u03B1\u03C6\u03BF\u03C1\u03AC \u03BB\u03AE\u03C6\u03B8\u03B7\u03BA\u03B5! \u{1F4E5}`, fr: `Rapport t\xE9l\xE9charg\xE9 ! \u{1F4E5}`, it: `Report scaricato! \u{1F4E5}` }));
+  }
+  if (typeof window !== "undefined") {
+    window.togglePanel = togglePanel2;
+    window.setReportTimeframe = setReportTimeframe;
+    window.updateReportPanel = updateReportPanel2;
+    window.openReportDashboard = openReportDashboard2;
+    window.closeReportDashboard = closeReportDashboard2;
+    window.setDashboardTimeframe = setDashboardTimeframe;
+    window.filterDashboardHistory = filterDashboardHistory;
+    window.renderDashboardView = renderDashboardView;
+    window.renderDashboardHistoryList = renderDashboardHistoryList;
+    window.openReportExportModal = openReportExportModal;
+    window.closeReportExportModal = closeReportExportModal;
+    window.copyReportText = copyReportText;
+    window.downloadReportFile = downloadReportFile;
+    window.printReport = printReport;
+    window.exportReportAsImage = exportReportAsImage;
+    window.exportWeeklyReportAsImage = exportReportAsImage;
+    window.copyComprehensiveReportText = copyComprehensiveReportText;
+    window.calculateProductivePeakHours = calculateProductivePeakHours;
+    window.calculateCategoryDistribution = calculateCategoryDistribution;
+    window.calculateEstimatedFocusMinutes = calculateEstimatedFocusMinutes;
+    window.triggerManualReportDownload = triggerManualReportDownload;
+    window.generateComprehensiveReportText = generateComprehensiveReportText;
   }
 
   // app-weather-news.js
@@ -10681,7 +13165,10 @@ ${listStr}`;
     lon: 13.41
   };
   var cachedWeatherData = typeof AppStorage !== "undefined" ? AppStorage.get("flow_weather_cache", null) : typeof localStorage !== "undefined" ? JSON.parse(localStorage.getItem("flow_weather_cache") || "null") : null;
+  var cachedWeatherTimestamp = parseInt(localStorage.getItem("flow_weather_timestamp") || "0", 10);
   var weatherUnit = localStorage.getItem("flow_weather_unit") || "c";
+  var WEATHER_CACHE_TTL = 10 * 60 * 1e3;
+  var isWeatherFetching = false;
   var WEATHER_CODES = {
     0: { label: { de: "Klarer Himmel", en: "Clear sky", fr: "Ciel d\xE9gag\xE9", it: "Cielo sereno", es: "Cielo despejado", el: "\u039A\u03B1\u03B8\u03B1\u03C1\u03CC\u03C2 \u03BF\u03C5\u03C1\u03B1\u03BD\u03CC\u03C2" }, icon: "sun", emoji: "\u2600\uFE0F" },
     1: { label: { de: "\xDCberwiegend klar", en: "Mainly clear", fr: "Plut\xF4t d\xE9gag\xE9", it: "Prevalentemente sereno", es: "Mayormente despejado", el: "\u039A\u03C5\u03C1\u03AF\u03C9\u03C2 \u03B1\u03AF\u03B8\u03C1\u03B9\u03BF\u03C2" }, icon: "sun-medium", emoji: "\u{1F324}\uFE0F" },
@@ -10705,41 +13192,52 @@ ${listStr}`;
   };
   function getWeatherInfo(code) {
     const lang = typeof currentLang !== "undefined" ? currentLang : "en";
-    const item2 = WEATHER_CODES[code] || {
+    const item = WEATHER_CODES[code] || {
       label: { de: "Heiter", en: "Fair", fr: "Clair", it: "Sereno", es: "Despejado", el: "\u0391\u03AF\u03B8\u03C1\u03B9\u03BF\u03C2" },
       icon: "sun",
       emoji: "\u2600\uFE0F"
     };
     return {
-      text: item2.label[lang] || item2.label.en || "Clear",
-      icon: item2.icon,
-      emoji: item2.emoji
+      text: item.label[lang] || item.label.en || "Clear",
+      icon: item.icon,
+      emoji: item.emoji
     };
   }
   async function fetchLocalWeather2(force = false) {
     const container = document.getElementById("weather-content-area");
-    if (!container) return;
-    if (cachedWeatherData && !force) {
-      renderWeatherData(cachedWeatherData);
+    const now = Date.now();
+    const isStale = now - cachedWeatherTimestamp > WEATHER_CACHE_TTL;
+    if (cachedWeatherData) {
+      updateDateWeatherWidget(cachedWeatherData);
+      if (container && !force && !isStale) {
+        renderWeatherData(cachedWeatherData);
+        return;
+      }
+    }
+    if (!force && !isStale && cachedWeatherData) {
       return;
     }
+    if (isWeatherFetching) return;
     if (typeof navigator !== "undefined" && !navigator.onLine) {
       if (cachedWeatherData) {
         renderWeatherData(cachedWeatherData);
-      } else {
+      } else if (container) {
         renderWeatherFallback();
       }
       return;
     }
-    container.innerHTML = `
-    <div class="py-10 text-center text-gray-400 space-y-2">
-      <div class="w-8 h-8 mx-auto border-2 border-sky-400 border-t-transparent rounded-full animate-spin"></div>
-      <div class="text-xs font-semibold">${tr({ de: "Lade lokales Wetter...", en: "Fetching local weather...", fr: "Chargement m\xE9t\xE9o...", it: "Caricamento meteo...", es: "Cargando clima...", el: "\u03A6\u03CC\u03C1\u03C4\u03C9\u03C3\u03B7 \u03BA\u03B1\u03B9\u03C1\u03BF\u03CD..." })}</div>
-    </div>
-  `;
+    if (container && !cachedWeatherData) {
+      container.innerHTML = `
+      <div class="py-10 text-center text-gray-400 space-y-2">
+        <div class="w-8 h-8 mx-auto border-2 border-sky-400 border-t-transparent rounded-full animate-spin"></div>
+        <div class="text-xs font-semibold">${tr({ de: "Lade aktuelles Wetter...", en: "Fetching live weather...", fr: "Chargement m\xE9t\xE9o...", it: "Caricamento meteo...", es: "Cargando clima...", el: "\u03A6\u03CC\u03C1\u03C4\u03C9\u03C3\u03B7 \u03BA\u03B1\u03B9\u03C1\u03BF\u03CD..." })}</div>
+      </div>
+    `;
+    }
+    isWeatherFetching = true;
     try {
-      const lat = currentWeatherLocation.lat;
-      const lon = currentWeatherLocation.lon;
+      const lat = currentWeatherLocation.lat || 52.52;
+      const lon = currentWeatherLocation.lon || 13.41;
       const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 6e3);
@@ -10748,19 +13246,27 @@ ${listStr}`;
       if (!res.ok) throw new Error("Weather API error");
       const data = await res.json();
       cachedWeatherData = data;
+      cachedWeatherTimestamp = Date.now();
+      localStorage.setItem("flow_weather_timestamp", String(cachedWeatherTimestamp));
       if (typeof AppStorage !== "undefined") {
         AppStorage.set("flow_weather_cache", data);
       } else {
         localStorage.setItem("flow_weather_cache", JSON.stringify(data));
       }
-      renderWeatherData(data);
+      updateDateWeatherWidget(data);
+      if (container) {
+        renderWeatherData(data);
+      }
     } catch (err) {
       console.warn("Wetter-Ladefehler (Offline oder Timeout):", err.message);
       if (cachedWeatherData) {
-        renderWeatherData(cachedWeatherData);
-      } else {
+        updateDateWeatherWidget(cachedWeatherData);
+        if (container) renderWeatherData(cachedWeatherData);
+      } else if (container) {
         renderWeatherFallback();
       }
+    } finally {
+      isWeatherFetching = false;
     }
   }
   function updateDateWeatherWidget(data) {
@@ -11035,7 +13541,7 @@ ${listStr}`;
     // --- DEUTSCHLANDWEIT & THEMEN ---
     { id: "de_n1", loc: "de_all", category: "positive", tag: "\u{1F331} Nachhaltigkeit", time: "Vor 1 Std.", title: "Rekord: \xDCber 56% des Stroms im Bundesnetz aus erneuerbaren Quellen", summary: "Sonne und Windkraft erzielten im aktuellen Monat einen neuen Spitzenwert bei der sauberen Stromversorgung in Deutschland.", source: "Bundesnetz Monitor", lang: "de" },
     { id: "de_n2", loc: "de_all", category: "economy", tag: "\u{1F4BC} Wirtschaft", time: "Vor 2 Std.", title: "4-Tage-Woche-Studie in Deutschland zeigt: H\xF6here Produktivit\xE4t und Zufriedenheit", summary: "Nach 6 Monaten Pilotphase berichten 85% der teilnehmenden Firmen von stabilen Ums\xE4tzen bei signifikant geringerem Krankenstand.", source: "WirtschaftsWoche" },
-    { id: "de_n3", loc: "de_all", category: "tech", tag: "\u{1F4A1} Innovation", time: "Vor 3 Std.", title: "Europ\xE4isches KI-Modell f\xFCr Medizin erreicht Weltklasse-Diagnostik", summary: "Ein Forschungsverbund stellt ein Open-Source-Modell vor, das MRT-Scans doppelt so schnell und pr\xE4zise auswertet.", source: "Tech Germany" },
+    { id: "de_n3", loc: "de_all", category: "tech", tag: "\u{1F4A1} Innovation", time: "Vor 3 Std.", title: "Europ\xE4isches KI-Modell f\xFCr Medizin erreicht Weltklasse-Bildanalyse", summary: "Ein Forschungsverbund stellt ein Open-Source-Modell vor, das MRT-Scans doppelt so schnell und pr\xE4zise auswertet.", source: "Tech Germany" },
     { id: "de_n4", loc: "de_all", category: "life", tag: "\u26A1 Fokus & Alltag", time: "Vor 4 Std.", title: "Die 90-Minuten-Regel: Warum Arbeitsbl\xF6cke den Flow revolutionieren", summary: "Kognitionswissenschaftler empfehlen, Konzentrationsphasen an biologische Ultradian-Rhythmen anzupassen.", source: "Mind & Focus" },
     { id: "de_n5", loc: "de_all", category: "science", tag: "\u{1F52D} Wissenschaft", time: "Vor 5 Std.", title: "Durchbruch bei Feststoff-Batterien: Doppelte Reichweite in Sicht", summary: "Materialforscher entwickeln eine keramische Schutzschicht, die Ladezeiten auf unter 10 Minuten verk\xFCrzt.", source: "Science Journal" },
     // --- BERLIN & BRANDENBURG ---
@@ -11109,13 +13615,13 @@ ${listStr}`;
       <option value="${l.id}" ${l.id === currentNewsLocation ? "selected" : ""}>${l.name}</option>
     `).join("");
     }
-    let articles = COMPREHENSIVE_NEWS_DATABASE.filter((item2) => {
+    let articles = COMPREHENSIVE_NEWS_DATABASE.filter((item) => {
       if (currentNewsCategory === "bookmarked") {
-        return bookmarkedNews.includes(item2.id);
+        return bookmarkedNews.includes(item.id);
       }
-      const matchesLoc = currentNewsLocation === "global" ? true : item2.loc === currentNewsLocation || currentNewsLocation.startsWith("de_") && item2.loc === "de_all" || item2.loc === "global";
-      const matchesCat = currentNewsCategory === "all" ? true : item2.category === currentNewsCategory;
-      const matchesSearch = !newsSearchKeyword || item2.title.toLowerCase().includes(newsSearchKeyword.toLowerCase()) || item2.summary.toLowerCase().includes(newsSearchKeyword.toLowerCase()) || item2.tag.toLowerCase().includes(newsSearchKeyword.toLowerCase());
+      const matchesLoc = currentNewsLocation === "global" ? true : item.loc === currentNewsLocation || currentNewsLocation.startsWith("de_") && item.loc === "de_all" || item.loc === "global";
+      const matchesCat = currentNewsCategory === "all" ? true : item.category === currentNewsCategory;
+      const matchesSearch = !newsSearchKeyword || item.title.toLowerCase().includes(newsSearchKeyword.toLowerCase()) || item.summary.toLowerCase().includes(newsSearchKeyword.toLowerCase()) || item.tag.toLowerCase().includes(newsSearchKeyword.toLowerCase());
       return matchesLoc && matchesCat && matchesSearch;
     });
     if (articles.length === 0) {
@@ -11133,43 +13639,65 @@ ${listStr}`;
     `;
       return;
     }
-    container.innerHTML = articles.map((item2) => {
-      const isBookmarked = bookmarkedNews.includes(item2.id);
+    container.innerHTML = articles.map((item) => {
+      const isBookmarked = bookmarkedNews.includes(item.id);
       return `
       <article class="p-3 bg-black/40 hover:bg-white/[0.04] border border-white/5 hover:border-amber-500/30 rounded-2xl transition flex flex-col gap-1.5 group">
         <div class="flex items-center justify-between text-[9px] font-mono text-gray-400">
           <span class="px-2 py-0.5 rounded-md bg-white/5 text-amber-300 font-semibold border border-white/5 flex items-center gap-1">
-            ${item2.tag}
+            ${item.tag}
           </span>
           <div class="flex items-center gap-2">
-            <span>${item2.time}</span>
-            <button onclick="toggleBookmarkNews('${item2.id}', event)" class="hover:text-amber-400 transition cursor-pointer p-1" title="Artikel merken">
+            <span>${item.time}</span>
+            <button onclick="toggleBookmarkNews('${item.id}', event)" class="hover:text-amber-400 transition cursor-pointer p-1" title="Artikel merken">
               <i data-lucide="${isBookmarked ? "bookmark-check" : "bookmark"}" class="w-3.5 h-3.5 ${isBookmarked ? "text-amber-400 fill-amber-400/20" : "text-gray-500"}"></i>
             </button>
           </div>
         </div>
-        <h5 class="text-xs font-bold text-white group-hover:text-amber-200 transition leading-snug">${item2.title}</h5>
-        <p class="text-[11px] text-gray-300 leading-relaxed">${item2.summary}</p>
+        <h5 class="text-xs font-bold text-white group-hover:text-amber-200 transition leading-snug">${item.title}</h5>
+        <p class="text-[11px] text-gray-300 leading-relaxed">${item.summary}</p>
         <div class="flex items-center justify-between text-[8px] text-gray-500 font-mono pt-1 border-t border-white/5">
-          <span>Quelle: ${item2.source}</span>
-          <span class="text-gray-600">${item2.loc.replace("de_", "").replace("en_", "").toUpperCase()}</span>
+          <span>Quelle: ${item.source}</span>
+          <span class="text-gray-600">${item.loc.replace("de_", "").replace("en_", "").toUpperCase()}</span>
         </div>
       </article>
     `;
     }).join("");
     renderLucideIcons();
   }
-  document.addEventListener("DOMContentLoaded", () => {
+  function initWeatherSystem() {
     if (cachedWeatherData) {
       updateDateWeatherWidget(cachedWeatherData);
     }
-    setTimeout(() => {
-      fetchLocalWeather2();
-      if (document.getElementById("news-content-area")) {
-        renderNewsBriefing2();
-      }
-    }, 800);
-  });
+    fetchLocalWeather2(false);
+    if (document.getElementById("news-content-area")) {
+      renderNewsBriefing2();
+    }
+    if (typeof window !== "undefined" && !window._weatherPollingInterval) {
+      window._weatherPollingInterval = setInterval(() => {
+        fetchLocalWeather2(true);
+      }, 10 * 60 * 1e3);
+    }
+    if (typeof document !== "undefined" && !window._weatherVisibilityListenerBound) {
+      window._weatherVisibilityListenerBound = true;
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) {
+          fetchLocalWeather2(false);
+        }
+      });
+    }
+    if (typeof window !== "undefined" && !window._weatherOnlineListenerBound) {
+      window._weatherOnlineListenerBound = true;
+      window.addEventListener("online", () => {
+        fetchLocalWeather2(true);
+      });
+    }
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initWeatherSystem);
+  } else {
+    initWeatherSystem();
+  }
 
   // app-dice.js
   var isDiceRolling = false;
@@ -11184,8 +13712,8 @@ ${listStr}`;
     if (isDiceRolling) return;
     currentDiceColumn = columnId;
     const rawItems = state?.items?.[columnId] || [];
-    const tasks = rawItems.map((item2, idx) => {
-      const text = typeof item2 === "object" ? item2.task : item2;
+    const tasks = rawItems.map((item, idx) => {
+      const text = typeof item === "object" ? item.task : item;
       return text ? { index: idx, text: String(text).trim(), category: columnId } : null;
     }).filter(Boolean);
     if (tasks.length === 0) {
@@ -11231,13 +13759,13 @@ ${listStr}`;
       });
     }
     const targetReelIndex = (cycleCount - 2) * tasks.length + winnerIndex;
-    totalItems.forEach((item2, idx) => {
+    totalItems.forEach((item, idx) => {
       const isTarget = idx === targetReelIndex;
       reelItemsHTML += `
       <div class="dice-reel-item h-[68px] flex items-center justify-center px-4 py-2 my-1.5 rounded-2xl bg-white/[0.04] border border-white/10 transition-all duration-300 select-none ${isTarget ? "target-winner" : ""}">
         <div class="flex items-center gap-2.5 max-w-full truncate">
           <span class="w-2.5 h-2.5 rounded-full bg-amber-400/80 shrink-0 shadow-xs"></span>
-          <span class="text-sm font-semibold text-gray-100 truncate font-display">${escapeHtml(item2.text)}</span>
+          <span class="text-sm font-semibold text-gray-100 truncate font-display">${escapeHtml(item.text)}</span>
         </div>
       </div>
     `;
@@ -11376,9 +13904,22 @@ ${listStr}`;
 
         <!-- Top Header & 3D W\xFCrfel Badge -->
         <div class="flex flex-col items-center gap-2 pt-1">
-          <div class="flex items-center gap-2">
-            <div id="dice-3d-visual" class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 border border-amber-300/40 flex items-center justify-center text-black font-black shadow-lg shadow-amber-500/25 text-xl">
-              \u{1F3B2}
+          <div class="flex items-center gap-3">
+            <div id="dice-3d-visual" class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-400 to-amber-300 border-2 border-amber-200/60 flex items-center justify-center text-slate-950 font-black shadow-[0_0_25px_rgba(245,158,11,0.45)] transition-all duration-300 shrink-0">
+              <svg class="w-7 h-7 text-slate-950 overflow-visible" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12,2.2 20.8,6.8 12,11.8 3.2,6.8" fill="rgba(255,255,255,0.4)" stroke="currentColor" stroke-width="1.8" />
+                <polygon points="3.2,6.8 12,11.8 12,21.5 3.2,16.5" fill="rgba(0,0,0,0.08)" stroke="currentColor" stroke-width="1.8" />
+                <polygon points="12,11.8 20.8,6.8 20.8,16.5 12,21.5" fill="rgba(0,0,0,0.22)" stroke="currentColor" stroke-width="1.8" />
+                <circle cx="8" cy="5.2" r="1.1" fill="currentColor" stroke="none" />
+                <circle cx="12" cy="7" r="1.1" fill="currentColor" stroke="none" />
+                <circle cx="16" cy="8.8" r="1.1" fill="currentColor" stroke="none" />
+                <circle cx="7.5" cy="11.2" r="1.1" fill="currentColor" stroke="none" />
+                <circle cx="7.5" cy="17.2" r="1.1" fill="currentColor" stroke="none" />
+                <circle cx="14.8" cy="11.2" r="1.1" fill="currentColor" stroke="none" />
+                <circle cx="18" cy="9.5" r="1.1" fill="currentColor" stroke="none" />
+                <circle cx="14.8" cy="17.2" r="1.1" fill="currentColor" stroke="none" />
+                <circle cx="18" cy="15.5" r="1.1" fill="currentColor" stroke="none" />
+              </svg>
             </div>
             <div class="text-left">
               <h3 class="text-base font-bold font-display text-white flex items-center gap-1.5">
@@ -11528,17 +14069,33 @@ ${listStr}`;
     if (typeof lucide !== "undefined") lucide.createIcons();
   }
   window.switchImpulseTab = switchImpulseTab;
-  function switchAudioTab(tabName) {
-    const tabs = ["ambient", "beats", "music"];
+  function switchAudioTab2(tabName) {
+    if (typeof window !== "undefined") window._lastActiveAudioTab = tabName;
+    const tabConfigs = {
+      ambient: {
+        activeClass: "flex-1 py-2 px-1.5 rounded-xl text-emerald-100 bg-gradient-to-r from-emerald-600/40 via-teal-600/35 to-emerald-600/40 border border-emerald-400/80 shadow-[0_0_15px_rgba(16,185,129,0.35)] font-bold",
+        inactiveClass: "flex-1 py-2 px-1.5 rounded-xl text-gray-400 hover:text-emerald-300 hover:bg-emerald-500/10 border border-transparent transition font-medium"
+      },
+      beats: {
+        activeClass: "flex-1 py-2 px-1.5 rounded-xl text-purple-100 bg-gradient-to-r from-purple-600/40 via-violet-600/35 to-purple-600/40 border border-purple-400/80 shadow-[0_0_15px_rgba(168,85,247,0.35)] font-bold",
+        inactiveClass: "flex-1 py-2 px-1.5 rounded-xl text-gray-400 hover:text-purple-300 hover:bg-purple-500/10 border border-transparent transition font-medium"
+      },
+      music: {
+        activeClass: "flex-1 py-2 px-1.5 rounded-xl text-cyan-100 bg-gradient-to-r from-cyan-600/40 via-sky-600/35 to-cyan-600/40 border border-cyan-400/80 shadow-[0_0_15px_rgba(6,182,212,0.35)] font-bold",
+        inactiveClass: "flex-1 py-2 px-1.5 rounded-xl text-gray-400 hover:text-cyan-300 hover:bg-cyan-500/10 border border-transparent transition font-medium"
+      },
+      dj: {
+        activeClass: "flex-1 py-2 px-1.5 rounded-xl text-amber-100 bg-gradient-to-r from-amber-600/40 via-orange-600/35 to-amber-600/40 border border-amber-400/80 shadow-[0_0_15px_rgba(245,158,11,0.35)] font-bold",
+        inactiveClass: "flex-1 py-2 px-1.5 rounded-xl text-gray-400 hover:text-amber-300 hover:bg-amber-500/10 border border-transparent transition font-medium"
+      }
+    };
+    const tabs = ["ambient", "beats", "music", "dj"];
     tabs.forEach((t3) => {
       const btn = document.getElementById(`audio-tab-btn-${t3}`);
       const pane = document.getElementById(`audio-pane-${t3}`);
-      if (btn) {
-        if (t3 === tabName) {
-          btn.className = "flex-1 py-1.5 rounded-xl text-white bg-purple-600/30 border border-purple-500/50 transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-bold shadow-sm";
-        } else {
-          btn.className = "flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1 cursor-pointer text-[11px] font-medium";
-        }
+      const conf = tabConfigs[t3];
+      if (btn && conf) {
+        btn.className = t3 === tabName ? `${conf.activeClass} transition-all flex items-center justify-center gap-1.5 cursor-pointer text-xs select-none` : `${conf.inactiveClass} transition-all flex items-center justify-center gap-1.5 cursor-pointer text-xs select-none`;
       }
       if (pane) {
         if (t3 === tabName) {
@@ -11548,10 +14105,14 @@ ${listStr}`;
         }
       }
     });
-    if (typeof lucide !== "undefined") lucide.createIcons();
+    if (tabName === "dj" && typeof initDjDecks === "function") {
+      initDjDecks();
+    }
+    if (typeof renderLucideIcons === "function") renderLucideIcons();
+    if (typeof lucide !== "undefined" && lucide.createIcons) lucide.createIcons();
   }
-  window.switchAudioTab = switchAudioTab;
-  function switchDailyTab(tabName) {
+  window.switchAudioTab = switchAudioTab2;
+  function switchDailyTab2(tabName) {
     const tabs = ["shopping", "cooking", "impulse", "sport"];
     tabs.forEach((t3) => {
       const btn = document.getElementById(`daily-tab-btn-${t3}`);
@@ -11580,13 +14141,18 @@ ${listStr}`;
     }
     if (typeof lucide !== "undefined") lucide.createIcons();
   }
-  window.switchDailyTab = switchDailyTab;
+  window.switchDailyTab = switchDailyTab2;
   document.addEventListener("keydown", (e) => {
-    const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : "";
-    if (activeTag === "input" || activeTag === "textarea" || document.activeElement && document.activeElement.isContentEditable) {
-      if (e.key === "Escape") {
+    if (e.key === "Escape") {
+      if (document.activeElement && typeof document.activeElement.blur === "function") {
         document.activeElement.blur();
       }
+      e.preventDefault();
+      closeAllPanelsAndModals();
+      return;
+    }
+    const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : "";
+    if (activeTag === "input" || activeTag === "textarea" || document.activeElement && document.activeElement.isContentEditable) {
       return;
     }
     const key = e.key.toLowerCase();
@@ -11630,17 +14196,17 @@ ${listStr}`;
       case "b":
         e.preventDefault();
         togglePanel("daily");
-        switchDailyTab("impulse");
+        switchDailyTab2("impulse");
         break;
       case "i":
         e.preventDefault();
         togglePanel("daily");
-        switchDailyTab("impulse");
+        switchDailyTab2("impulse");
         break;
       case "o":
         e.preventDefault();
         togglePanel("daily");
-        switchDailyTab("sport");
+        switchDailyTab2("sport");
         break;
       case "h":
         e.preventDefault();
@@ -11654,13 +14220,21 @@ ${listStr}`;
         e.preventDefault();
         if (typeof toggleGameMode === "function") toggleGameMode();
         break;
-      case "escape":
-        e.preventDefault();
-        closeAllPanelsAndModals();
-        break;
     }
   });
   function closeAllPanelsAndModals() {
+    if (typeof hoverPanelShowTimeout !== "undefined" && hoverPanelShowTimeout) {
+      clearTimeout(hoverPanelShowTimeout);
+      hoverPanelShowTimeout = null;
+    }
+    if (typeof hoverPanelHideTimeout !== "undefined" && hoverPanelHideTimeout) {
+      clearTimeout(hoverPanelHideTimeout);
+      hoverPanelHideTimeout = null;
+    }
+    if (typeof taskMenuCloseTimer !== "undefined" && taskMenuCloseTimer) {
+      clearTimeout(taskMenuCloseTimer);
+      taskMenuCloseTimer = null;
+    }
     if (typeof closeHelperModal === "function") closeHelperModal();
     if (typeof closeSportModal === "function") closeSportModal();
     if (typeof closeSafeSpaceModal === "function") closeSafeSpaceModal();
@@ -11678,8 +14252,69 @@ ${listStr}`;
     if (typeof closeKeyboardShortcuts === "function") closeKeyboardShortcuts();
     if (typeof closeP2PSyncModal === "function") closeP2PSyncModal();
     if (typeof closeMobileQuickMenu === "function") closeMobileQuickMenu();
-    const allPanels = document.querySelectorAll('[id^="panel-"]');
+    if (typeof closeMobileMenuDrawer === "function") closeMobileMenuDrawer();
+    if (typeof closeMobileToolsSheet === "function") closeMobileToolsSheet();
+    if (typeof closeBreakModal === "function") closeBreakModal();
+    if (typeof closeStepsModal === "function") closeStepsModal();
+    if (typeof closeNoteModal === "function") closeNoteModal();
+    if (typeof closeBrainstormModal === "function") closeBrainstormModal();
+    if (typeof toggleTerminForm2 === "function") toggleTerminForm2(false);
+    if (typeof closeTaskOptionsMenu === "function") closeTaskOptionsMenu();
+    if (typeof hideSoundHoverSlider === "function") hideSoundHoverSlider();
+    const modalIds = [
+      "brainstorm-modal",
+      "clarity-modal",
+      "sample-manager-modal",
+      "supermarket-modal",
+      "feierabend-celebration-modal",
+      "privacy-legal-modal",
+      "note-detail-modal",
+      "helper-safespace-modal",
+      "helper-pick-modal",
+      "helper-sport-modal",
+      "helper-break-modal",
+      "helper-steps-modal",
+      "modal-p2p-sync",
+      "modal-report-dashboard",
+      "modal-settings",
+      "modal-command-palette",
+      "modal-keyboard-shortcuts",
+      "text-import-modal",
+      "report-export-modal",
+      "mobile-menu-drawer",
+      "mobile-tools-sheet",
+      "modal-mobile-quick-menu",
+      "modal-custom-item",
+      "modal-dice",
+      "modal-roulette",
+      "modal-game",
+      "modal-archive"
+    ];
+    modalIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add("hidden");
+    });
+    document.querySelectorAll('.modal, [id$="-modal"], [id*="modal-"], [id*="-modal"]').forEach((el) => {
+      el.classList.add("hidden");
+    });
+    const allPanels = document.querySelectorAll('.dock-popover-panel, [id^="panel-"], [id$="-dropdown"], [id*="-popover"], #task-context-dropdown, #header-sound-volume-popover, .context-menu');
     allPanels.forEach((p) => p.classList.add("hidden"));
+    if (typeof currentlyOpenPanel !== "undefined") currentlyOpenPanel = null;
+    if (typeof window !== "undefined") window.currentlyOpenPanel = null;
+    const dockContainer = document.querySelector(".mac-dock-container");
+    if (dockContainer) dockContainer.classList.remove("is-active");
+    if (typeof openTaskAddColumns !== "undefined" && typeof openTaskAddColumns === "object") {
+      let reRenderNeeded = false;
+      Object.keys(openTaskAddColumns).forEach((k) => {
+        if (openTaskAddColumns[k]) {
+          openTaskAddColumns[k] = false;
+          reRenderNeeded = true;
+        }
+      });
+      if (reRenderNeeded && typeof renderApp === "function") {
+        renderApp();
+      }
+    }
   }
   window.closeAllPanelsAndModals = closeAllPanelsAndModals;
   function openMobileQuickMenu() {
@@ -11760,14 +14395,17 @@ ${listStr}`;
   }
   window.triggerSparkleEffect = triggerSparkleEffect2;
   var commandPaletteActiveIndex = 0;
+  var commandPaletteItems = [];
   function openCommandPalette() {
     const modal = document.getElementById("modal-command-palette");
     const input = document.getElementById("cmd-palette-input");
     if (!modal || !input) return;
     modal.classList.remove("hidden");
     input.value = "";
+    commandPaletteActiveIndex = 0;
     filterCommandPalette("");
-    setTimeout(() => input.focus(), 50);
+    setTimeout(() => input.focus(), 30);
+    if (typeof renderLucideIcons === "function") renderLucideIcons();
   }
   function closeCommandPalette() {
     const modal = document.getElementById("modal-command-palette");
@@ -11775,58 +14413,176 @@ ${listStr}`;
   }
   function getAvailableCommands() {
     return [
-      { id: "timer_25", title: "\u23F1\uFE0F Fokus-Timer: 25 Minuten starten", action: () => {
-        if (typeof setTimer === "function") setTimer(25);
-        if (typeof startTimer === "function") startTimer();
-      } },
-      { id: "timer_15", title: "\u23F1\uFE0F Fokus-Timer: 15 Minuten starten", action: () => {
-        if (typeof setTimer === "function") setTimer(15);
-        if (typeof startTimer === "function") startTimer();
-      } },
-      { id: "timer_45", title: "\u23F1\uFE0F Fokus-Timer: 45 Minuten starten", action: () => {
-        if (typeof setTimer === "function") setTimer(45);
-        if (typeof startTimer === "function") startTimer();
-      } },
-      { id: "ws_switch", title: "\u{1F504} Workspace wechseln (Privat / Arbeit)", action: () => {
-        if (typeof toggleWorkspace === "function") toggleWorkspace();
-      } },
-      { id: "dashboard", title: "\u{1F4CA} Detail-Statistik & Analyse-Dashboard", action: () => {
-        if (typeof openReportDashboard === "function") openReportDashboard();
-      } },
-      { id: "dice", title: "\u{1F3B2} Zufalls-Aufgabe w\xFCrfeln", action: () => {
-        if (typeof openDiceModal === "function") openDiceModal();
-      } },
-      { id: "zen", title: "\u{1F9D8} Minimalistischen Fokus-Modus umschalten", action: () => {
-        if (typeof toggleMinimalMode === "function") toggleMinimalMode();
-      } },
-      { id: "theme_aurora", title: "\u{1F3A8} Theme: Aurora (Lila)", action: () => {
-        setTheme("aurora");
-      } },
-      { id: "theme_sage", title: "\u{1F3A8} Theme: Sage (Salbeigr\xFCn)", action: () => {
-        setTheme("sage");
-      } },
-      { id: "theme_forest", title: "\u{1F3A8} Theme: Forest (Gr\xFCn)", action: () => {
-        setTheme("forest");
-      } },
-      { id: "theme_charcoal", title: "\u{1F3A8} Theme: Charcoal (Graphit)", action: () => {
-        setTheme("charcoal");
-      } },
-      { id: "backup_export", title: "\u{1F4BE} Datensicherung: Plan als JSON exportieren", action: () => {
-        if (typeof exportData === "function") exportData();
-        else if (typeof handleSaveJson === "function") handleSaveJson();
-      } },
-      { id: "backup_import", title: "\u{1F4E5} Datensicherung: Backup wiederherstellen", action: () => {
-        if (typeof importData === "function") importData();
-      } },
-      { id: "settings", title: "\u2699\uFE0F Einstellungen, Impressum & Datenschutz", action: () => {
-        openSettingsModal("general");
-      } },
-      { id: "history", title: "\u{1F4F7} Screenshot- & Versions-Galerie", action: () => {
-        openSettingsModal("history");
-      } },
-      { id: "undo", title: "\u21A9\uFE0F Letzte Aktion r\xFCckg\xE4ngig machen", action: () => {
-        if (typeof handleUndo === "function") handleUndo();
-      } }
+      {
+        id: "timer_25",
+        title: tr({
+          de: "\u23F1\uFE0F Fokus-Timer: 25 Minuten starten",
+          en: "\u23F1\uFE0F Focus Timer: Start 25 minutes",
+          fr: "\u23F1\uFE0F Minuteur Focus : D\xE9marrer 25 minutes",
+          it: "\u23F1\uFE0F Timer Focus: Avvia 25 minuti",
+          es: "\u23F1\uFE0F Temporizador Focus: Iniciar 25 minutos",
+          el: "\u23F1\uFE0F \u03A7\u03C1\u03BF\u03BD\u03CC\u03BC\u03B5\u03C4\u03C1\u03BF \u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7\u03C2: \u0388\u03BD\u03B1\u03C1\u03BE\u03B7 25 \u03BB\u03B5\u03C0\u03C4\u03AC"
+        }),
+        action: () => {
+          if (typeof setTimerMinutes === "function") setTimerMinutes(25);
+          if (typeof startTimer === "function") startTimer();
+        }
+      },
+      {
+        id: "timer_15",
+        title: tr({
+          de: "\u23F1\uFE0F Fokus-Timer: 15 Minuten Kurz-Sprint",
+          en: "\u23F1\uFE0F Focus Timer: 15-minute quick sprint",
+          fr: "\u23F1\uFE0F Minuteur Focus : Sprint rapide de 15 minutes",
+          it: "\u23F1\uFE0F Timer Focus: Sprint rapido di 15 minuti",
+          es: "\u23F1\uFE0F Temporizador Focus: Sprint r\xE1pido de 15 minutos",
+          el: "\u23F1\uFE0F \u03A7\u03C1\u03BF\u03BD\u03CC\u03BC\u03B5\u03C4\u03C1\u03BF \u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7\u03C2: \u0393\u03C1\u03AE\u03B3\u03BF\u03C1\u03BF \u03C3\u03C0\u03C1\u03B9\u03BD\u03C4 15 \u03BB\u03B5\u03C0\u03C4\u03CE\u03BD"
+        }),
+        action: () => {
+          if (typeof setTimerMinutes === "function") setTimerMinutes(15);
+          if (typeof startTimer === "function") startTimer();
+        }
+      },
+      {
+        id: "whatnow",
+        title: tr({
+          de: "\u{1F4A1} Was nun? \u2013 N\xE4chste beste Aufgabe w\xE4hlen",
+          en: "\u{1F4A1} What now? \u2013 Pick next best task",
+          fr: "\u{1F4A1} Et maintenant ? \u2013 Choisir la meilleure t\xE2che",
+          it: "\u{1F4A1} E adesso? \u2013 Scegli la migliore attivit\xE0",
+          es: "\u{1F4A1} \xBFY ahora qu\xE9? \u2013 Elegir la mejor tarea",
+          el: "\u{1F4A1} \u03A4\u03B9 \u03BD\u03B1 \u03BA\u03AC\u03BD\u03C9; \u2013 \u0395\u03C0\u03B9\u03BB\u03BF\u03B3\u03AE \u03B5\u03C0\u03CC\u03BC\u03B5\u03BD\u03B7\u03C2 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1\u03C2"
+        }),
+        action: () => {
+          if (typeof openHelperModal === "function") openHelperModal("pick");
+        }
+      },
+      {
+        id: "brainstorm",
+        title: tr({
+          de: "\u{1F9E0} Brainstorming Studio \u2013 Ideen & Gedanken erfassen",
+          en: "\u{1F9E0} Brainstorming Studio \u2013 Capture ideas & thoughts",
+          fr: "\u{1F9E0} Brainstorming Studio \u2013 Capturer des id\xE9es et pens\xE9es",
+          it: "\u{1F9E0} Brainstorming Studio \u2013 Cattura idee e pensieri",
+          es: "\u{1F9E0} Brainstorming Studio \u2013 Capturar ideas y pensamientos",
+          el: "\u{1F9E0} Brainstorming Studio \u2013 \u039A\u03B1\u03C4\u03B1\u03B3\u03C1\u03B1\u03C6\u03AE \u03B9\u03B4\u03B5\u03CE\u03BD \u03BA\u03B1\u03B9 \u03C3\u03BA\u03AD\u03C8\u03B5\u03C9\u03BD"
+        }),
+        action: () => {
+          if (typeof openBrainstormModal === "function") openBrainstormModal();
+        }
+      },
+      {
+        id: "zen",
+        title: tr({
+          de: "\u{1F441}\uFE0F Fokus-Modus (Zen) an / aus",
+          en: "\u{1F441}\uFE0F Focus Mode (Zen) on / off",
+          fr: "\u{1F441}\uFE0F Mode Focus (Zen) activer / d\xE9sactiver",
+          it: "\u{1F441}\uFE0F Modalit\xE0 Focus (Zen) attiva / disattiva",
+          es: "\u{1F441}\uFE0F Modo Focus (Zen) activar / desactivar",
+          el: "\u{1F441}\uFE0F \u039B\u03B5\u03B9\u03C4\u03BF\u03C5\u03C1\u03B3\u03AF\u03B1 \u0395\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7\u03C2 (Zen) \u03B5\u03BD\u03B5\u03C1\u03B3\u03BF\u03C0\u03BF\u03AF\u03B7\u03C3\u03B7"
+        }),
+        action: () => {
+          if (typeof toggleMinimalist2 === "function") toggleMinimalist2();
+        }
+      },
+      {
+        id: "pause_breath",
+        title: tr({
+          de: "\u{1F9D8} 4-4-4 Atem-Flow (Nervensystem beruhigen)",
+          en: "\u{1F9D8} 4-4-4 Box Breathing (Calm nervous system)",
+          fr: "\u{1F9D8} Respiration 4-4-4 (Calmer le syst\xE8me nerveux)",
+          it: "\u{1F9D8} Respirazione 4-4-4 (Calma il sistema nervoso)",
+          es: "\u{1F9D8} Respiraci\xF3n 4-4-4 (Calmar sistema nervioso)",
+          el: "\u{1F9D8} \u0391\u03BD\u03B1\u03C0\u03BD\u03BF\u03AE 4-4-4 (\u0397\u03C1\u03B5\u03BC\u03AF\u03B1 \u03BD\u03B5\u03C5\u03C1\u03B9\u03BA\u03BF\u03CD \u03C3\u03C5\u03C3\u03C4\u03AE\u03BC\u03B1\u03C4\u03BF\u03C2)"
+        }),
+        action: () => {
+          if (typeof openBreakModal === "function") openBreakModal("breath");
+        }
+      },
+      {
+        id: "dashboard",
+        title: tr({
+          de: "\u{1F4CA} Produktivit\xE4ts- & Analyse-Dashboard",
+          en: "\u{1F4CA} Productivity & Analytics Dashboard",
+          fr: "\u{1F4CA} Tableau de bord Productivit\xE9 & Analyse",
+          it: "\u{1F4CA} Dashboard Produttivit\xE0 & Analisi",
+          es: "\u{1F4CA} Panel de Productividad y An\xE1lisis",
+          el: "\u{1F4CA} \u03A0\u03AF\u03BD\u03B1\u03BA\u03B1\u03C2 \u03A0\u03B1\u03C1\u03B1\u03B3\u03C9\u03B3\u03B9\u03BA\u03CC\u03C4\u03B7\u03C4\u03B1\u03C2 & \u0391\u03BD\u03B1\u03BB\u03CD\u03C3\u03B5\u03C9\u03BD"
+        }),
+        action: () => {
+          if (typeof openReportDashboard === "function") openReportDashboard();
+        }
+      },
+      {
+        id: "undo",
+        title: tr({
+          de: "\u21A9\uFE0F Letzte Aktion r\xFCckg\xE4ngig machen (Ctrl+Z)",
+          en: "\u21A9\uFE0F Undo last action (Ctrl+Z)",
+          fr: "\u21A9\uFE0F Annuler la derni\xE8re action (Ctrl+Z)",
+          it: "\u21A9\uFE0F Annulla ultima azione (Ctrl+Z)",
+          es: "\u21A9\uFE0F Deshacer \xFAltima acci\xF3n (Ctrl+Z)",
+          el: "\u21A9\uFE0F \u0391\u03BD\u03B1\u03AF\u03C1\u03B5\u03C3\u03B7 \u03C4\u03B5\u03BB\u03B5\u03C5\u03C4\u03B1\u03AF\u03B1\u03C2 \u03B5\u03BD\u03AD\u03C1\u03B3\u03B5\u03B9\u03B1\u03C2 (Ctrl+Z)"
+        }),
+        action: () => {
+          if (typeof handleUndo === "function") handleUndo();
+        }
+      },
+      {
+        id: "reset",
+        title: tr({
+          de: "\u{1F504} Board zur\xFCcksetzen (Reset)",
+          en: "\u{1F504} Reset board",
+          fr: "\u{1F504} R\xE9initialiser le tableau",
+          it: "\u{1F504} Ripristina lavagna",
+          es: "\u{1F504} Restablecer tablero",
+          el: "\u{1F504} \u0395\u03C0\u03B1\u03BD\u03B1\u03C6\u03BF\u03C1\u03AC \u03C0\u03AF\u03BD\u03B1\u03BA\u03B1"
+        }),
+        action: () => {
+          if (typeof handleReset === "function") handleReset();
+        }
+      },
+      {
+        id: "theme_honey",
+        title: "\u{1F36F} Theme: Honig (Warmes Gold)",
+        action: () => {
+          setTheme("honey");
+        }
+      },
+      {
+        id: "theme_sage",
+        title: "\u{1F33F} Theme: Salbei (Botanisch Gr\xFCn)",
+        action: () => {
+          setTheme("sage");
+        }
+      },
+      {
+        id: "theme_aurora",
+        title: "\u{1F30C} Theme: Aurora (Nacht-Violett)",
+        action: () => {
+          setTheme("aurora");
+        }
+      },
+      {
+        id: "theme_ocean",
+        title: "\u{1F30A} Theme: Ozean (Meeres-Cyan)",
+        action: () => {
+          setTheme("ocean");
+        }
+      },
+      {
+        id: "settings",
+        title: tr({
+          de: "\u2699\uFE0F Einstellungen, Impressum & Datenschutz",
+          en: "\u2699\uFE0F Settings, Legal & Privacy",
+          fr: "\u2699\uFE0F Param\xE8tres, Mentions l\xE9gales & Confidentialit\xE9",
+          it: "\u2699\uFE0F Impostazioni, Note legali & Privacy",
+          es: "\u2699\uFE0F Ajustes, Legal y Privacidad",
+          el: "\u2699\uFE0F \u03A1\u03C5\u03B8\u03BC\u03AF\u03C3\u03B5\u03B9\u03C2, \u039D\u03BF\u03BC\u03B9\u03BA\u03AC & \u0391\u03C0\u03CC\u03C1\u03C1\u03B7\u03C4\u03BF"
+        }),
+        action: () => {
+          openSettingsModal("general");
+        }
+      }
     ];
   }
   function filterCommandPalette(query = "") {
@@ -11841,15 +14597,15 @@ ${listStr}`;
     if (curItems && typeof curItems === "object") {
       Object.keys(curItems).forEach((col) => {
         const items2 = curItems[col] || [];
-        items2.forEach((item2, idx) => {
-          const text = typeof item2 === "object" ? item2.task : item2;
+        items2.forEach((item, idx) => {
+          const text = typeof item === "object" ? item.task : item;
           if (text && (!q || text.toLowerCase().includes(q))) {
             matchedTasks.push({
               title: `\u{1F4CC} [${typeof t === "function" ? t(col) : col}] ${text}`,
               action: () => {
                 if (typeof startTaskTimerByIndex === "function") startTaskTimerByIndex(col, idx);
                 else {
-                  if (typeof setTimer === "function") setTimer(25);
+                  if (typeof setTimerMinutes === "function") setTimerMinutes(25);
                   if (typeof startTimer === "function") startTimer();
                 }
               }
@@ -11861,51 +14617,97 @@ ${listStr}`;
     const combined = [];
     if (matchedCommands.length > 0) {
       combined.push({ isHeader: true, label: typeof t === "function" ? t("cmd_actions") : "Schnell-Aktionen" });
-      matchedCommands.slice(0, 6).forEach((c) => combined.push({ ...c, isAction: true }));
+      matchedCommands.slice(0, 7).forEach((c) => combined.push({ ...c, isAction: true }));
     }
     if (matchedTasks.length > 0) {
       combined.push({ isHeader: true, label: typeof t === "function" ? t("cmd_tasks") : "Gefundene Aufgaben" });
       matchedTasks.slice(0, 8).forEach((t3) => combined.push({ ...t3, isAction: true }));
     }
-    if (combined.filter((c) => c.isAction).length === 0) {
+    commandPaletteItems = combined.filter((c) => c.isAction);
+    if (commandPaletteItems.length === 0) {
       resultsContainer.innerHTML = `
       <div class="p-6 text-center text-gray-500 text-xs">
         <i data-lucide="search-x" class="w-6 h-6 mx-auto mb-1 opacity-50"></i>
-        <span>Keine passenden Befehle oder Aufgaben gefunden</span>
+        <span>${tr({
+        de: "Keine passenden Befehle oder Aufgaben gefunden",
+        en: "No matching commands or tasks found",
+        fr: "Aucune commande ou t\xE2che correspondante trouv\xE9e",
+        it: "Nessun comando o attivit\xE0 corrispondente trovato",
+        es: "No se encontraron comandos o tareas coincidentes",
+        el: "\u0394\u03B5\u03BD \u03B2\u03C1\u03AD\u03B8\u03B7\u03BA\u03B1\u03BD \u03B5\u03BD\u03C4\u03BF\u03BB\u03AD\u03C2 \u03AE \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B5\u03C2"
+      })}</span>
       </div>
     `;
-      renderLucideIcons();
+      if (typeof renderLucideIcons === "function") renderLucideIcons();
       return;
     }
     let actionIdx = 0;
-    combined.forEach((item2) => {
-      if (item2.isHeader) {
+    combined.forEach((item) => {
+      if (item.isHeader) {
         const h = document.createElement("div");
         h.className = "px-3 py-1 text-[10px] font-bold text-gray-500 uppercase tracking-wider font-mono";
-        h.innerText = item2.label;
+        h.innerText = item.label;
         resultsContainer.appendChild(h);
       } else {
         const thisIdx = actionIdx++;
         const btn = document.createElement("button");
-        btn.className = `w-full px-3 py-2 text-left rounded-xl flex items-center justify-between text-xs transition cursor-pointer ${thisIdx === 0 ? "bg-purple-600/30 border border-purple-500/40 text-white font-semibold" : "text-gray-300 hover:bg-white/5 hover:text-white"}`;
+        btn.id = `cmd-item-${thisIdx}`;
+        btn.className = `w-full px-3 py-2 text-left rounded-xl flex items-center justify-between text-xs transition cursor-pointer ${thisIdx === commandPaletteActiveIndex ? "bg-purple-600/30 border border-purple-500/40 text-white font-semibold" : "text-gray-300 hover:bg-white/5 hover:text-white"}`;
         btn.setAttribute("data-cmd-idx", thisIdx);
         btn.innerHTML = `
-        <span class="truncate">${escapeHtml(item2.title)}</span>
+        <span class="truncate">${escapeHtml(item.title)}</span>
         <i data-lucide="arrow-right" class="w-3.5 h-3.5 opacity-40 shrink-0"></i>
       `;
         btn.onclick = () => {
           closeCommandPalette();
-          item2.action();
+          item.action();
         };
         resultsContainer.appendChild(btn);
       }
     });
-    commandPaletteActiveIndex = 0;
-    renderLucideIcons();
+    if (typeof renderLucideIcons === "function") renderLucideIcons();
+  }
+  function handleCommandPaletteKeyDown(e) {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      closeCommandPalette();
+      return;
+    }
+    if (!commandPaletteItems || commandPaletteItems.length === 0) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      commandPaletteActiveIndex = (commandPaletteActiveIndex + 1) % commandPaletteItems.length;
+      updateCommandPaletteHighlight();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      commandPaletteActiveIndex = (commandPaletteActiveIndex - 1 + commandPaletteItems.length) % commandPaletteItems.length;
+      updateCommandPaletteHighlight();
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      const activeItem = commandPaletteItems[commandPaletteActiveIndex];
+      if (activeItem && typeof activeItem.action === "function") {
+        closeCommandPalette();
+        activeItem.action();
+      }
+    }
+  }
+  function updateCommandPaletteHighlight() {
+    commandPaletteItems.forEach((_, idx) => {
+      const el = document.getElementById(`cmd-item-${idx}`);
+      if (el) {
+        if (idx === commandPaletteActiveIndex) {
+          el.className = "w-full px-3 py-2 text-left rounded-xl flex items-center justify-between text-xs transition cursor-pointer bg-purple-600/30 border border-purple-500/40 text-white font-semibold";
+          el.scrollIntoView({ block: "nearest" });
+        } else {
+          el.className = "w-full px-3 py-2 text-left rounded-xl flex items-center justify-between text-xs transition cursor-pointer text-gray-300 hover:bg-white/5 hover:text-white";
+        }
+      }
+    });
   }
   window.openCommandPalette = openCommandPalette;
   window.closeCommandPalette = closeCommandPalette;
   window.filterCommandPalette = filterCommandPalette;
+  window.handleCommandPaletteKeyDown = handleCommandPaletteKeyDown;
   function openSettingsModal(tab = "general") {
     const modal = document.getElementById("modal-settings");
     if (!modal) return;
@@ -12029,7 +14831,7 @@ ${listStr}`;
     }
     updateDateAndStreak();
     updateWorkspaceSwitchUI();
-    renderApp();
+    if (typeof renderApp === "function") renderApp();
     updateZenView();
     populateHelperTaskSelect();
     suggestBoostActivity2();
@@ -12042,49 +14844,50 @@ ${listStr}`;
     renderLucideIcons();
   });
   var ALL_VALID_THEMES = [
-    "honey",
-    "sage",
+    "cyberpunk",
     "aurora",
-    "peach",
+    "matrix",
     "ocean",
-    "terracotta"
+    "honey",
+    "crimson",
+    "obsidian",
+    "nebula",
+    "peach",
+    "sage",
+    "terracotta",
+    "royal"
   ];
   var THEME_ALIASES = {
+    "neon-cyber": "cyberpunk",
+    "synthwave": "cyberpunk",
+    "aurora-violet": "aurora",
+    "lavender-cloud": "aurora",
+    "forest": "matrix",
+    "matcha": "matrix",
+    "lagoon": "ocean",
+    "glacier": "ocean",
+    "glacier-frost": "ocean",
+    "holo-chrome": "ocean",
+    "architect": "ocean",
+    "amber": "honey",
     "honey-chamomile": "honey",
     "cozy-amber": "honey",
     "cozy": "honey",
     "citrus": "honey",
-    "carbon": "honey",
-    "sage-breeze": "sage",
-    "eucalyptus-dew": "sage",
-    "forest": "sage",
-    "matcha": "sage",
-    "matcha-latte": "sage",
-    "charcoal": "sage",
-    "aurora-violet": "aurora",
-    "lavender-cloud": "aurora",
-    "spatial-orbit": "aurora",
-    "spatial-galaxy": "aurora",
-    "synthwave": "aurora",
-    "peach-cashmere": "peach",
+    "carbon": "obsidian",
+    "charcoal": "obsidian",
+    "executive": "obsidian",
     "sakura": "peach",
     "sakura-blossom": "peach",
-    "neon-cyber": "peach",
-    "lagoon": "ocean",
-    "lagoon-serenity": "ocean",
-    "glacier": "ocean",
-    "glacier-frost": "ocean",
-    "spatial-sanctuary": "ocean",
-    "spatial-island": "ocean",
-    "spatial-metropolis": "ocean",
-    "holo-chrome": "ocean",
-    "architect": "ocean",
-    "executive": "ocean",
+    "peach-cashmere": "peach",
+    "sage-breeze": "sage",
+    "eucalyptus-dew": "sage",
+    "matcha-latte": "sage",
     "terracotta-sun": "terracotta"
   };
   function setTheme(theme) {
     if (THEME_ALIASES[theme]) theme = THEME_ALIASES[theme];
-    if (!ALL_VALID_THEMES.includes(theme)) theme = "honey";
+    if (!ALL_VALID_THEMES.includes(theme)) theme = "aurora";
     if (typeof window !== "undefined") window.currentTheme = theme;
     if (typeof globalThis !== "undefined") globalThis.currentTheme = theme;
     try {
@@ -12098,6 +14901,16 @@ ${listStr}`;
     try {
       localStorage.setItem("flowPlannerTheme", theme);
     } catch (e) {
+    }
+    if (typeof document !== "undefined") {
+      document.querySelectorAll("[data-theme-swatch]").forEach((el) => {
+        const swTheme = el.getAttribute("data-theme-swatch");
+        if (swTheme === theme) {
+          el.classList.add("ring-2", "ring-white", "scale-110", "shadow-lg");
+        } else {
+          el.classList.remove("ring-2", "ring-white", "scale-110", "shadow-lg");
+        }
+      });
     }
   }
   function setLanguage(lang) {
@@ -12118,7 +14931,7 @@ ${listStr}`;
       textEl.innerText = isMinimalist ? t("standard_mode") : t("minimal_mode");
     }
     updateDateAndStreak();
-    renderApp();
+    if (typeof renderApp === "function") renderApp();
     updateZenView();
     populateHelperTaskSelect();
     renderLucideIcons();
@@ -12193,12 +15006,18 @@ ${listStr}`;
     localStorage.setItem("flowPlannerMinimalist", String(isMinimalist));
     const iconEl = document.getElementById("zen-btn-icon");
     const textEl = document.getElementById("minimal-mode-btn-text");
+    const btnEl = document.getElementById("btn-focus-mode");
     const zenView = document.getElementById("zen-chill-view");
     const mainEl = document.querySelector("main");
     if (isMinimalist) {
       document.body.classList.add("minimalist");
       if (iconEl) iconEl.setAttribute("data-lucide", "eye-off");
       if (textEl) textEl.innerText = t("standard_mode");
+      if (btnEl) {
+        btnEl.classList.remove("bg-purple-500/10", "border-purple-500/30", "text-purple-200");
+        btnEl.classList.add("bg-purple-600/30", "border-purple-400", "text-white", "shadow-[0_0_15px_rgba(168,85,247,0.4)]");
+        btnEl.title = t("standard_mode") + " [F]";
+      }
       if (zenView) {
         zenView.classList.remove("hidden");
         zenView.classList.add("flex");
@@ -12211,6 +15030,11 @@ ${listStr}`;
       document.body.classList.remove("minimalist");
       if (iconEl) iconEl.setAttribute("data-lucide", "eye");
       if (textEl) textEl.innerText = t("minimal_mode");
+      if (btnEl) {
+        btnEl.classList.remove("bg-purple-600/30", "border-purple-400", "text-white", "shadow-[0_0_15px_rgba(168,85,247,0.4)]");
+        btnEl.classList.add("bg-purple-500/10", "border-purple-500/30", "text-purple-200");
+        btnEl.title = t("minimal_mode") + " [F]";
+      }
       if (zenView) {
         zenView.classList.add("hidden");
         zenView.classList.remove("flex");
@@ -12223,19 +15047,23 @@ ${listStr}`;
     showToast(isMinimalist ? t("toast_zen_active") : t("toast_zen_inactive"));
   }
   var editingTerminIndex = null;
+  if (typeof isTerminFormOpen2 === "undefined") {
+    isTerminFormOpen2 = false;
+  }
+  var isTerminFormOpen2;
   function toggleTerminForm2(open, prefilledDate) {
-    isTerminFormOpen = open !== void 0 ? open : !isTerminFormOpen;
-    if (!isTerminFormOpen) {
+    isTerminFormOpen2 = open !== void 0 ? open : !isTerminFormOpen2;
+    if (!isTerminFormOpen2) {
       editingTerminIndex = null;
       selectedCalendarDate2 = null;
     } else if (prefilledDate) {
       selectedCalendarDate2 = prefilledDate;
     }
-    renderApp();
-    if (isTerminFormOpen) {
+    if (typeof renderApp === "function") renderApp();
+    if (isTerminFormOpen2) {
       setTimeout(() => {
         const inputTitle = document.getElementById("add-termin-title");
-        if (inputTitle) inputTitle.focus();
+        if (inputTitle && typeof inputTitle.focus === "function") inputTitle.focus();
       }, 50);
     }
   }
@@ -12251,37 +15079,43 @@ ${listStr}`;
       { rx: /medi|pill|tablett|vitam|pharmak|arzt|doctor|docteur|dottore|medico|therap|apothek|ordonnan|farmac|φαρμακ|γιατρ|ασθεν/, ic: "pill", col: "text-rose-400" },
       // 2. Zähne / Mundhygiene
       { rx: /zahn|zahne|dient|tooth|teeth|dent|dond|brush|bross|spazzol|δοντ|βουρτσ/, ic: "smile", col: "text-cyan-400" },
-      // 3. Geschirr spülen / Küche / Abwasch
+      // 3. Gesicht waschen / Hautpflege
+      { rx: /gesicht|face|visage|viso|προσωπ/, ic: "smile", col: "text-cyan-400" },
+      // 4. Herd / Kühlschrank / Ofen / Küche Geräte
+      { rx: /herd|kuhl|fridge|frigo|stov|four|horno|nevera|fornell|refrig|kuehl|backofen|oven|κουζιν|ψυγει/, ic: "cooking-pot", col: "text-orange-400" },
+      // 5. Waschbecken / Spiegel / Bad-Armaturen
+      { rx: /waschbeck|sink|lavabo|specch|miroir|espejo|spiegel|νιπτηρ|καθρεφτ/, ic: "droplets", col: "text-sky-400" },
+      // 6. Geschirr spülen / Küche / Abwasch
       { rx: /spul|dish|vaissel|piat|plato|geschirr|spuel|πιατ|abwasch/, ic: "utensils", col: "text-emerald-400" },
-      // 4. Wäsche waschen / Waschmaschine
+      // 7. Wäsche waschen / Waschmaschine
       { rx: /laund|colad|lessiv|bucat|clothes|linge|roux|ρουχ|πλυντηρ|wasch.*wasch|wasche/, ic: "washing-machine", col: "text-indigo-400" },
-      // 5. Wäsche aufhängen / Trocknen
+      // 8. Wäsche aufhängen / Trocknen
       { rx: /aufhang|hang|colg|etend|stend|aplon|dry|sech|asciug|απλωμ/, ic: "shirt", col: "text-violet-400" },
-      // 6. Duschen / Baden / Gesicht waschen
-      { rx: /dusch|shower|baign|doccia|duch|ντους|μπανι|gesicht|face|visage|viso|hyg|bath/, ic: "bath", col: "text-sky-400" },
-      // 7. Haare / Frisur / Schneiden
+      // 9. Duschen / Baden
+      { rx: /dusch|shower|baign|doccia|duch|ντους|μπανι|bath/, ic: "bath", col: "text-sky-400" },
+      // 10. Haare / Frisur / Schneiden
       { rx: /haare|haar|hair|pelo|cabell|cheveux|capell|fris|kour|coiff|tagli|μαλλι|κουρεμ|λουσιμ/, ic: "scissors", col: "text-pink-400" },
-      // 8. Nägel / Maniküre
-      { rx: /nagel|nail|ungl|un|ungh|nych|pedicur|manicur|νυχ/, ic: "sparkles", col: "text-indigo-400" },
-      // 9. Trinken / Wasser / Hydration
+      // 11. Nägel / Maniküre
+      { rx: /nagel|nail|ungl|un|ungh|nych|pedicur|manicur|νυχ/, ic: "scissors", col: "text-indigo-400" },
+      // 12. Trinken / Wasser / Hydration
       { rx: /trink|wat|agu|eau|ner|glass|hydrat|bever|bere|boire|νερο|πινω|ποτηρ/, ic: "glass-water", col: "text-blue-400" },
-      // 10. Bett / Schlafen / Bettwäsche
+      // 13. Bett / Schlafen / Bettwäsche
       { rx: /bett|bed|cama|lit|lett|krevat|schlaf|sleep|sommeil|dorm|drap|sabana|lenzuol|κρεβατ|σεντον|υπν/, ic: "bed", col: "text-amber-400" },
-      // 11. Aufräumen / Ordnung / Organisation
-      { rx: /aufraum|tidy|orden|rang|riordin|clean|putz|organi|nettoy|limp|puliz|τακτοπ|καθαρισ|οργαν/, ic: "package", col: "text-yellow-500" },
-      // 12. Staub wischen / Abstauben
+      // 14. Aufräumen / Ordnung / Putzen
+      { rx: /aufraum|tidy|orden|rang|riordin|clean|putz|organi|nettoy|limp|puliz|τακτοπ|καθαρισ|οργαν/, ic: "sparkles", col: "text-yellow-400" },
+      // 15. Staub wischen / Abstauben
       { rx: /staub|dust|polv|poussi|spolver|epousset|xesk|ξεσκον/, ic: "feather", col: "text-amber-300" },
-      // 13. Staubsaugen / Saugen
+      // 16. Staubsaugen / Saugen
       { rx: /saugen|staubsaug|vacu|aspir|skoupi|σκουπ/, ic: "tornado", col: "text-cyan-500" },
-      // 14. Boden wischen / Feuchtwischen
+      // 17. Boden wischen / Feuchtwischen
       { rx: /wisch|mop|freg|sfoug|paviment|sol|σφουγγαρ/, ic: "droplets", col: "text-sky-500" },
-      // 15. Bad / WC / Sanitär / Spiegel
-      { rx: /klo|wc|toil|vater|lekan|lavabo|sink|miroir|specch|espejo|spiegel|bad|fliesen|νιπτηρ|λεκαν/, ic: "sparkles", col: "text-teal-500" },
-      // 16. Müll wegbringen / Entsorgung
+      // 18. Bad / WC / Sanitär / Fliesen
+      { rx: /klo|wc|toil|vater|lekan|bad|fliesen|λεκαν/, ic: "sparkles", col: "text-teal-500" },
+      // 19. Müll wegbringen / Entsorgung
       { rx: /mull|trash|basur|poubelle|spazzatur|waste|abfall|skoupid|σκουπιδ|πεταμ/, ic: "trash-2", col: "text-rose-500" },
-      // 17. Pfandflaschen / Recycling
+      // 20. Pfandflaschen / Recycling
       { rx: /pfand|bottle|bouteill|bottigl|envase|boukal|recycle|recyc|μπουκαλ|ανακυκλ/, ic: "recycle", col: "text-emerald-500" },
-      // 18. Kochen / Mahlzeiten / Rezepte
+      // 21. Kochen / Mahlzeiten / Rezepte
       { rx: /koch|food|cook|comid|cena|recept|recet|cuisin|cucin|magir|essen|lunch|dinner|breakfast|dejeun|pranz|past|mahlzeit|φαγητ|μαγειρ|γευμα/, ic: "cooking-pot", col: "text-orange-400" },
       // 19. Einkauf / Supermarkt / Laden
       { rx: /einkauf|shop|compr|achat|spesa|supermarkt|market|store|kauf|epicerie|agor|αγορ|σουπερ/, ic: "shopping-cart", col: "text-emerald-400" },
@@ -12335,7 +15169,7 @@ ${listStr}`;
   function downloadFullBackup() {
     try {
       const backupData = {
-        app: "Flow Organiser",
+        app: "Noodle",
         version: "2.5.0",
         exportedAt: (/* @__PURE__ */ new Date()).toISOString(),
         items: typeof items !== "undefined" ? items : {},
@@ -12352,7 +15186,7 @@ ${listStr}`;
       const a = document.createElement("a");
       const dateStr = (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
       a.href = url;
-      a.download = `flow-organiser-backup-${dateStr}.json`;
+      a.download = `noodle-backup-${dateStr}.json`;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -12374,7 +15208,7 @@ ${listStr}`;
       try {
         const data = JSON.parse(e.target.result);
         if (!data || !data.items && !data.daily && !Array.isArray(data)) {
-          throw new Error("Ung\xFCltiges Flow Organiser Backup-Format");
+          throw new Error("Ung\xFCltiges Noodle / Flow Backup-Format");
         }
         if (confirm("M\xF6chtest du dieses Backup wirklich wiederherstellen? Bestehende Daten werden aktualisiert.")) {
           if (data.items) {
@@ -12419,7 +15253,7 @@ ${listStr}`;
       const banner = document.getElementById("pwa-install-banner");
       if (banner) banner.classList.add("hidden");
       if (typeof showToast === "function") {
-        showToast("Flow Organiser erfolgreich installiert! \u{1F389}");
+        showToast("Noodle erfolgreich installiert! \u{1F389}");
       }
     });
   }
@@ -12436,7 +15270,7 @@ ${listStr}`;
       });
     } else {
       if (typeof showToast === "function") {
-        showToast("Installiere Flow \xFCber das Browsermen\xFC (\u201EZum Startbildschirm hinzuf\xFCgen\u201C)");
+        showToast("Installiere Noodle \xFCber das Browsermen\xFC (\u201EZum Startbildschirm hinzuf\xFCgen\u201C)");
       }
     }
   }
@@ -12570,5 +15404,5 @@ ${listStr}`;
   }
 
   // main.js
-  console.log("\u26A1 [Flow Organiser] Alle Module erfolgreich initialisiert.");
+  console.log("\u26A1 [Noodle] Alle Module erfolgreich initialisiert.");
 })();

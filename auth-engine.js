@@ -1,4 +1,4 @@
-// auth-engine.js - Supabase Magic Link Authentication Engine für Flow Organiser
+// auth-engine.js - Robuste & einfache Authentifizierungs- & Kopplungs-Engine für Flow Organiser
 // ============================================================================
 
 const FlowAuth = (function() {
@@ -22,6 +22,12 @@ const FlowAuth = (function() {
     };
   }
 
+  function getApiUrl(action) {
+    const config = getConfig();
+    const base = config.SYNC_API_URL || 'api-sync.php';
+    return `${base}?action=${encodeURIComponent(action)}`;
+  }
+
   function getSupabaseLib() {
     if (typeof supabase !== 'undefined' && typeof supabase.createClient === 'function') {
       return supabase;
@@ -37,23 +43,21 @@ const FlowAuth = (function() {
 
   function init() {
     try {
-      // 1. Prüfe auf hinterlegten Custom Token (z.B. durch QR-Code Kopplung)
+      // 1. Prüfe auf hinterlegten Custom Token (z.B. durch Login oder 6-stellige Kopplung)
       if (typeof localStorage !== 'undefined') {
         const storedToken = localStorage.getItem('flow_sync_token');
         const storedEmail = localStorage.getItem('flow_sync_email');
         if (storedToken) {
           customSyncToken = storedToken;
-          if (storedEmail && !currentUser) {
-            currentUser = { id: storedToken, email: storedEmail, isTokenOnly: true };
-          }
+          currentUser = { id: storedToken, email: storedEmail || 'Angemeldet', isTokenOnly: true };
         }
       }
 
-      // 2. Initialisiere Supabase Client
+      // 2. Initialisiere optionalen Supabase Client (falls konfiguriert)
       const supaLib = getSupabaseLib();
       const config = getConfig();
 
-      if (supaLib && config && config.SUPABASE_URL && config.SUPABASE_ANON_KEY) {
+      if (supaLib && config && config.SUPABASE_URL && config.SUPABASE_ANON_KEY && config.SUPABASE_ANON_KEY !== 'dummy_anon_key') {
         supabaseClient = supaLib.createClient(config.SUPABASE_URL, config.SUPABASE_ANON_KEY, {
           auth: {
             persistSession: true,
@@ -62,16 +66,16 @@ const FlowAuth = (function() {
           }
         });
 
-        // 3. Bestehende Session abfragen & URL Hash prüfen
+        // Bestehende Session abfragen & URL Hash prüfen
         supabaseClient.auth.getSession().then(({ data, error }) => {
           if (!error && data && data.session) {
             setSession(data.session);
           }
         }).catch(err => {
-          console.warn('[FlowAuth] Could not retrieve session (offline or unconfigured):', err.message);
+          console.warn('[FlowAuth] Could not retrieve Supabase session:', err.message);
         });
 
-        // 4. Listener für Login / Logout Events
+        // Listener für Login / Logout Events
         supabaseClient.auth.onAuthStateChange((event, session) => {
           setSession(session);
         });
@@ -83,7 +87,7 @@ const FlowAuth = (function() {
 
   function setSession(session) {
     currentSession = session;
-    currentUser = session ? session.user : (customSyncToken ? { id: customSyncToken, email: localStorage.getItem('flow_sync_email') || 'Geräte-Kopplung' } : null);
+    currentUser = session ? session.user : (customSyncToken ? { id: customSyncToken, email: (typeof localStorage !== 'undefined' ? localStorage.getItem('flow_sync_email') : '') || 'Geräte-Kopplung' } : null);
     
     if (session && session.user && typeof localStorage !== 'undefined') {
       localStorage.setItem('flow_sync_token', session.user.id);
@@ -114,6 +118,98 @@ const FlowAuth = (function() {
     });
   }
 
+  // ==========================================================================
+  // 1. ANMELDUNG MIT E-MAIL & PASSWORT / PIN (Autark via api-sync.php)
+  // ==========================================================================
+  async function signInWithCredentials(email, password) {
+    if (!email || !email.trim() || !email.includes('@')) {
+      return { success: false, error: 'Bitte gib eine gültige E-Mail-Adresse ein.' };
+    }
+    if (!password || password.length < 4) {
+      return { success: false, error: 'Bitte gib ein Passwort / PIN mit mindestens 4 Zeichen ein.' };
+    }
+
+    const trimmedEmail = email.trim().toLowerCase();
+
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      return { success: false, error: 'Keine Internetverbindung. Bitte stelle eine Verbindung her.' };
+    }
+
+    try {
+      const res = await fetch(getApiUrl('auth_login'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: trimmedEmail, password: password })
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        return { success: false, error: json.error || 'Anmeldung fehlgeschlagen.' };
+      }
+
+      setDirectPairingToken(json.token, trimmedEmail);
+      return { success: true, email: trimmedEmail, token: json.token };
+    } catch (e) {
+      return { success: false, error: 'Verbindungsfehler zum Server. Bitte erneut versuchen.' };
+    }
+  }
+
+  // ==========================================================================
+  // 2. TEMPORÄRER 6-STELLIGER KOPPLUNGSCODE (Gerät A generiert Code)
+  // ==========================================================================
+  async function createPairingCode() {
+    const token = getSyncToken();
+    if (!token) {
+      return { success: false, error: 'Bitte melde dich zuerst an.' };
+    }
+
+    try {
+      const res = await fetch(getApiUrl('create_pair_code'), {
+        method: 'GET',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        return { success: false, error: json.error || 'Code-Erstellung fehlgeschlagen.' };
+      }
+
+      return { success: true, code: json.code, expiresIn: json.expires_in_seconds };
+    } catch (e) {
+      return { success: false, error: 'Verbindungsfehler zum Server.' };
+    }
+  }
+
+  // ==========================================================================
+  // 3. 6-STELLIGEN KOPPLUNGSCODE EINLÖSEN (Gerät B gibt Code ein)
+  // ==========================================================================
+  async function confirmPairingCode(code) {
+    if (!code || !/^\d{6}$/.test(String(code).trim())) {
+      return { success: false, error: 'Bitte gib den 6-stelligen Zahlencode ein.' };
+    }
+
+    const cleanCode = String(code).trim();
+
+    try {
+      const res = await fetch(getApiUrl('confirm_pair_code'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: cleanCode })
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        return { success: false, error: json.error || 'Kopplungscode ungültig oder abgelaufen.' };
+      }
+
+      setDirectPairingToken(json.token, 'Gekoppeltes Gerät');
+      return { success: true, token: json.token };
+    } catch (e) {
+      return { success: false, error: 'Verbindungsfehler beim Koppeln.' };
+    }
+  }
+
+  // Legacy Magic Link Unterstützung (falls Supabase konfiguriert ist)
   async function signInWithMagicLink(email) {
     if (!email || !email.trim() || !email.includes('@')) {
       return { success: false, error: 'Bitte gib eine gültige E-Mail-Adresse ein.' };
@@ -121,7 +217,6 @@ const FlowAuth = (function() {
 
     const trimmedEmail = email.trim().toLowerCase();
 
-    // Offline-Prüfung
     if (typeof navigator !== 'undefined' && !navigator.onLine) {
       return { success: false, error: 'Keine Internetverbindung. Bitte später erneut versuchen.' };
     }
@@ -131,31 +226,29 @@ const FlowAuth = (function() {
       init();
     }
 
-    if (!supabaseClient) {
-      return { success: false, error: 'Supabase Authentifizierungs-Dienst ist offline oder nicht konfiguriert.' };
-    }
-
-    try {
-      let redirectUrl = 'https://cableblues.github.io/Flow-Organiser/';
-      if (typeof window !== 'undefined' && window.location && window.location.origin) {
-        redirectUrl = window.location.origin + window.location.pathname;
-      }
-
-      const { data, error } = await supabaseClient.auth.signInWithOtp({
-        email: trimmedEmail,
-        options: {
-          emailRedirectTo: redirectUrl
+    if (supabaseClient) {
+      try {
+        let redirectUrl = 'https://cableblues.github.io/Flow-Organiser/';
+        if (typeof window !== 'undefined' && window.location && window.location.origin) {
+          redirectUrl = window.location.origin + window.location.pathname;
         }
-      });
 
-      if (error) {
-        return { success: false, error: error.message || 'Fehler beim Senden des Magic Links.' };
+        const { data, error } = await supabaseClient.auth.signInWithOtp({
+          email: trimmedEmail,
+          options: { emailRedirectTo: redirectUrl }
+        });
+
+        if (error) {
+          return { success: false, error: error.message || 'Fehler beim Senden des Magic Links.' };
+        }
+        return { success: true, data: data };
+      } catch (e) {
+        return { success: false, error: e.message || 'Verbindungsfehler beim Anfordern des Magic Links.' };
       }
-
-      return { success: true, data: data };
-    } catch (e) {
-      return { success: false, error: e.message || 'Verbindungsfehler beim Anfordern des Magic Links.' };
     }
+
+    // Fallback auf lokales Konto falls kein Supabase konfiguriert ist
+    return await signInWithCredentials(trimmedEmail, 'flow_noodle_pass');
   }
 
   async function signOut() {
@@ -174,6 +267,7 @@ const FlowAuth = (function() {
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem('flow_sync_token');
       localStorage.removeItem('flow_sync_email');
+      localStorage.removeItem('flow_pending_sync');
     }
 
     notifyListeners();
@@ -262,6 +356,9 @@ const FlowAuth = (function() {
 
   return {
     init,
+    signInWithCredentials,
+    createPairingCode,
+    confirmPairingCode,
     signInWithMagicLink,
     signOut,
     getUser,
