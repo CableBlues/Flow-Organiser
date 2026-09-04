@@ -47,6 +47,7 @@ import './helper-tools-2.js';
 import './helper-tools-3.js';
 import './helper-clarity.js';
 import './helper-brainstorm.js';
+import './helper-cleaning.js';
 
 // 7. Domain Features & Haupt-App
 import './app-shopping.js';

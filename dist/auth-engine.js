@@ -150,7 +150,10 @@ const FlowAuth = (function() {
       setDirectPairingToken(json.token, trimmedEmail);
       return { success: true, email: trimmedEmail, token: json.token };
     } catch (e) {
-      return { success: false, error: 'Verbindungsfehler zum Server. Bitte erneut versuchen.' };
+      if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+        return { success: false, error: 'App über file:// geöffnet. Bitte starte XAMPP (Apache) und öffne: http://localhost/QuizProject/Flow-Organiser/' };
+      }
+      return { success: false, error: 'Server nicht erreichbar. Bitte prüfe, ob Apache in XAMPP gestartet ist.' };
     }
   }
 
@@ -176,7 +179,10 @@ const FlowAuth = (function() {
 
       return { success: true, code: json.code, expiresIn: json.expires_in_seconds };
     } catch (e) {
-      return { success: false, error: 'Verbindungsfehler zum Server.' };
+      if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+        return { success: false, error: 'App über file:// geöffnet. Bitte starte XAMPP (Apache) und öffne: http://localhost/QuizProject/Flow-Organiser/' };
+      }
+      return { success: false, error: 'Server nicht erreichbar. Bitte prüfe, ob Apache in XAMPP gestartet ist.' };
     }
   }
 
@@ -205,7 +211,10 @@ const FlowAuth = (function() {
       setDirectPairingToken(json.token, 'Gekoppeltes Gerät');
       return { success: true, token: json.token };
     } catch (e) {
-      return { success: false, error: 'Verbindungsfehler beim Koppeln.' };
+      if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+        return { success: false, error: 'App über file:// geöffnet. Bitte starte XAMPP (Apache) und öffne: http://localhost/QuizProject/Flow-Organiser/' };
+      }
+      return { success: false, error: 'Verbindungsfehler beim Koppeln. Läuft Apache in XAMPP?' };
     }
   }
 

@@ -1,7 +1,7 @@
 .mac-floating-wrapper {
   position: fixed !important;
   left: 50% !important;
-  bottom: 110px !important;
+  bottom: 28px !important;
   transform: translateX(-50%) !important;
   z-index: 200 !important;
   pointer-events: none;

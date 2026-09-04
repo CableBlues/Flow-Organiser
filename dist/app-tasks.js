@@ -435,6 +435,11 @@ function renderApp() {
             </svg>
           </button>
         ` : ''}
+        ${(id === 'weekly' || id === 'work_in_progress') ? `
+          <button onclick="if(typeof openCleaningGuideModal === 'function') openCleaningGuideModal(); if(event) event.stopPropagation();" class="p-1 px-1.5 bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/30 text-emerald-300 hover:text-white rounded-lg shadow-sm hover:scale-105 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1" title="${tr({ de: 'Wohnungs-Reset & Level-Putz-Guide 🧹', en: 'Apartment Reset & Cleaning Guide 🧹', es: 'Guía de limpieza 🧹', el: 'Οδηγός καθαρισμού 🧹', fr: 'Guide de nettoyage 🧹', it: 'Guida alle pulizie 🧹' })}">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-400"></i>
+          </button>
+        ` : ''}
         ${!isDone ? `
           <button onclick="quickAddTaskTop('${id}', event)" class="p-1 text-gray-300 hover:text-[var(--accent-light)] hover:bg-white/10 rounded-lg transition cursor-pointer flex items-center justify-center" title="${tr({ de: 'Aufgabe hinzufügen ➕', en: 'Add task ➕', es: 'Añadir tarea ➕', el: 'Προσθήκη εργασίας ➕', fr: 'Ajouter tâche ➕', it: 'Aggiungi attività ➕' })}">
             <i data-lucide="plus" class="w-3.5 h-3.5"></i>

@@ -69,4 +69,30 @@ describe('UI Architecture, Modals & Components (Production Code)', () => {
     expect(testState.customColumns).toHaveLength(0);
     expect(testState.items['col_custom_1']).toBeUndefined();
   });
+
+  it('Wohnungs-Reset & Level-Putz-Guide modal exists and provides structured cleaning levels', async () => {
+    await import('../helper-cleaning.js');
+    expect(document.getElementById('helper-cleaning-modal')).not.toBeNull();
+    expect(typeof window.openCleaningGuideModal).toBe('function');
+    expect(typeof window.switchCleaningLevel).toBe('function');
+    expect(typeof window.transferCleaningStepsToBoard).toBe('function');
+
+    // Modal öffnen
+    window.openCleaningGuideModal('express');
+    expect(document.getElementById('helper-cleaning-modal').classList.contains('hidden')).toBe(false);
+
+    // Auf 45m Standard umschalten
+    window.switchCleaningLevel('standard');
+    expect(document.getElementById('cleaning-guide-title').innerText).toContain('Standard-Grundreinigung');
+
+    // Transfer in Board testen
+    window.state = { items: { weekly: [] } };
+    window.transferCleaningStepsToBoard('weekly');
+    expect(window.state.items.weekly.length).toBeGreaterThan(0);
+    expect(window.state.items.weekly[0].task).toContain('🧹');
+
+    window.closeCleaningGuideModal();
+    expect(document.getElementById('helper-cleaning-modal').classList.contains('hidden')).toBe(true);
+  });
 });
+

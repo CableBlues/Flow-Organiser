@@ -4947,7 +4947,10 @@
         setDirectPairingToken(json.token, trimmedEmail);
         return { success: true, email: trimmedEmail, token: json.token };
       } catch (e) {
-        return { success: false, error: "Verbindungsfehler zum Server. Bitte erneut versuchen." };
+        if (typeof window !== "undefined" && window.location && window.location.protocol === "file:") {
+          return { success: false, error: "App \xFCber file:// ge\xF6ffnet. Bitte starte XAMPP (Apache) und \xF6ffne: http://localhost/QuizProject/Flow-Organiser/" };
+        }
+        return { success: false, error: "Server nicht erreichbar. Bitte pr\xFCfe, ob Apache in XAMPP gestartet ist." };
       }
     }
     async function createPairingCode() {
@@ -4966,7 +4969,10 @@
         }
         return { success: true, code: json.code, expiresIn: json.expires_in_seconds };
       } catch (e) {
-        return { success: false, error: "Verbindungsfehler zum Server." };
+        if (typeof window !== "undefined" && window.location && window.location.protocol === "file:") {
+          return { success: false, error: "App \xFCber file:// ge\xF6ffnet. Bitte starte XAMPP (Apache) und \xF6ffne: http://localhost/QuizProject/Flow-Organiser/" };
+        }
+        return { success: false, error: "Server nicht erreichbar. Bitte pr\xFCfe, ob Apache in XAMPP gestartet ist." };
       }
     }
     async function confirmPairingCode(code) {
@@ -4987,7 +4993,10 @@
         setDirectPairingToken(json.token, "Gekoppeltes Ger\xE4t");
         return { success: true, token: json.token };
       } catch (e) {
-        return { success: false, error: "Verbindungsfehler beim Koppeln." };
+        if (typeof window !== "undefined" && window.location && window.location.protocol === "file:") {
+          return { success: false, error: "App \xFCber file:// ge\xF6ffnet. Bitte starte XAMPP (Apache) und \xF6ffne: http://localhost/QuizProject/Flow-Organiser/" };
+        }
+        return { success: false, error: "Verbindungsfehler beim Koppeln. L\xE4uft Apache in XAMPP?" };
       }
     }
     async function signInWithMagicLink(email) {
@@ -12077,6 +12086,427 @@ ${listStr}`;
     globalThis.saveBrainstormIdeas = saveBrainstormIdeas;
   }
 
+  // helper-cleaning.js
+  var CLEANING_LEVELS_DATA = {
+    express: {
+      id: "express",
+      title: "15-Minuten Blitz-Reset",
+      subtitle: "Schnelle optische Ordnung & frischer Wohlf\xFChl-Effekt",
+      icon: "zap",
+      color: "amber",
+      durationMin: 15,
+      badge: "Express",
+      introTip: "Perfekt f\xFCr spontanen Besuch oder wenn der Kopf voll ist. Wir fokussieren uns nur auf das, was sofort Ruhe ins Auge bringt!",
+      steps: [
+        {
+          id: "exp_1",
+          title: "M\xFCll & Leergut-Runde (3 Min)",
+          desc: "Mit einer M\xFCllt\xFCte einmal durch alle Zimmer gehen: Papier, Verpackungen, Flaschen und Leergut direkt einsammeln und in den M\xFClleimer werfen.",
+          why: "M\xFCll nimmt unbemerkt viel visuellen Raum ein. Wenn er weg ist, wirkt der Raum sofort 50 % aufger\xE4umter.",
+          icon: "trash-2"
+        },
+        {
+          id: "exp_2",
+          title: "Geschirr in die K\xFCche bringen (3 Min)",
+          desc: "Alle Tassen, Teller und Gl\xE4ser von Schreibtisch, Couchtisch und Nachttisch in die Sp\xFClmaschine oder Sp\xFCle stellen.",
+          why: "Kein stehendes Geschirr = kein Geruch und freie Tische.",
+          icon: "coffee"
+        },
+        {
+          id: "exp_3",
+          title: "Oberfl\xE4chen freir\xE4umen (4 Min)",
+          desc: "Dinge, die herumliegen (Klamotten, Kabel, Post), an ihren Platz legen oder kurz im \u201EVerirrte-Dinge-Korb\u201C sammeln.",
+          why: "Freie Tische und B\xF6den signalisieren dem Gehirn sofortige Entspannung.",
+          icon: "layers"
+        },
+        {
+          id: "exp_4",
+          title: "Kissen aufsch\xFCtteln & Decken falten (2 Min)",
+          desc: "Bett kurz glattziehen, Sofakissen aufsch\xFCtteln und Kuscheldecke ordentlich zusammenlegen.",
+          why: "Kostet nur 1 Minute, l\xE4sst Schlaf- und Wohnzimmer aber sofort wie neu aussehen.",
+          icon: "bed-double"
+        },
+        {
+          id: "exp_5",
+          title: "5 Minuten Sto\xDFl\xFCften & Frische-Finish (3 Min)",
+          desc: "Fenster f\xFCr 3-5 Minuten weit \xF6ffnen (Durchzug). Frische Luft hineinlassen \u2013 fertig!",
+          why: "Verbrauchte Luft macht m\xFCde. Frische Luft bringt neuen Schwung und hebt die Stimmung.",
+          icon: "wind"
+        }
+      ]
+    },
+    standard: {
+      id: "standard",
+      title: "45-Minuten Standard-Grundreinigung",
+      subtitle: "Alle Kernzonen frisch, sauber & hygienisch",
+      icon: "sparkles",
+      color: "emerald",
+      durationMin: 45,
+      badge: "Beliebt",
+      introTip: "Die solide Grundreinigung nach der goldenen Regel: Von oben nach unten, von innen nach au\xDFen, trocken vor nass!",
+      steps: [
+        {
+          id: "std_1",
+          title: "Vorbereitung & Einwirken lassen (5 Min)",
+          desc: "Badreiniger/Kalkl\xF6ser in Dusche, Waschbecken & WC spr\xFChen. Fettl\xF6ser/Sp\xFClmittel auf Herd & K\xFCchensp\xFCle geben. NICHT sofort schrubben, sondern einwirken lassen!",
+          why: "Profi-Trick: Der Reiniger zersetzt Kalk und Fett von selbst. W\xE4hrend er wirkt, putzt du woanders \u2013 das spart 80 % Kraft!",
+          icon: "spray-can"
+        },
+        {
+          id: "std_2",
+          title: "Entr\xFCmpeln & M\xFCll entsorgen (5 Min)",
+          desc: "Mit Korb und M\xFCllt\xFCte durch alle R\xE4ume: Alles an seinen Platz r\xE4umen und M\xFCll einsacken.",
+          why: "Putzen auf zugestellten Fl\xE4chen ist anstrengend. Erst frei r\xE4umen, dann wischen.",
+          icon: "trash-2"
+        },
+        {
+          id: "std_3",
+          title: "Staubwischen & Tische feucht abwischen (10 Min)",
+          desc: "Mit einem leicht feuchten Mikrofasertuch von oben nach unten wischen: Regale, Fensterb\xE4nke, Tische, Schreibtisch und Sideboards.",
+          why: "Immer von oben nach unten arbeiten, damit herabfallender Staub sp\xE4ter einfach aufgesaugt wird.",
+          icon: "feather"
+        },
+        {
+          id: "std_4",
+          title: "K\xFCche fertigstellen (7 Min)",
+          desc: "Der Reiniger hat gewirkt: Herd, Arbeitsplatten und Sp\xFCle mit gelbem Tuch abwischen, mit Wasser nachsp\xFClen und trockenreiben.",
+          why: "Trockenreiben verhindert Wasserflecken und l\xE4sst Edelstahl sofort gl\xE4nzen.",
+          icon: "utensils"
+        },
+        {
+          id: "std_5",
+          title: "Bad & Sanit\xE4r fertigstellen (8 Min)",
+          desc: "Waschbecken, Armaturen und Dusche mit rotem/blauem Tuch absp\xFClen. WC-B\xFCrste durchs WC f\xFChren und Toilettensitz desinfizieren/abwischen.",
+          why: "Eigenes Tuch f\xFCr WC nutzen (Hygiene-Farbleitsystem: Rot = WC!).",
+          icon: "bath"
+        },
+        {
+          id: "std_6",
+          title: "B\xF6den saugen & Wischen (10 Min)",
+          desc: "Von der hintersten Zimmerecke r\xFCckw\xE4rts Richtung Flur/Wohnungst\xFCr staubsaugen. Bei Hartb\xF6den kurz feucht nachwischen und Fenster \xF6ffnen.",
+          why: "Wenn du r\xFCckw\xE4rts Richtung T\xFCr saugst, trittst du nicht auf die frisch geputzte Fl\xE4che.",
+          icon: "sparkles"
+        }
+      ]
+    },
+    deep: {
+      id: "deep",
+      title: "90-Minuten Tiefenreinigung (Deep Clean)",
+      subtitle: "Der komplette Wohlf\xFChl-Reset f\xFCr die ganze Wohnung",
+      icon: "gem",
+      color: "indigo",
+      durationMin: 90,
+      badge: "Intensiv",
+      introTip: "G\xF6nn deiner Wohnung und dir selbst einen echten Neuanfang. Nimm dir ein Kaltgetr\xE4nk, schalte gute Musik ein und freue dich auf das frischeste Gef\xFChl der Woche!",
+      steps: [
+        {
+          id: "deep_1",
+          title: "Textilien-Start & Betten abziehen (10 Min)",
+          desc: "Bettw\xE4sche, Handt\xFCcher und Badematten abziehen und direkt die Waschmaschine starten. Frische Bettw\xE4sche bereitlegen.",
+          why: "Die Waschmaschine w\xE4scht im Hintergrund, w\xE4hrend du den Rest erledigst.",
+          icon: "shirt"
+        },
+        {
+          id: "deep_2",
+          title: "K\xFChlschrank & M\xFClleimer Grundreinigung (15 Min)",
+          desc: "Abgelaufene Lebensmittel aussortieren. K\xFChlschrank-F\xE4cher kurz auswischen. M\xFClleimer leeren, mit Sp\xFClmittel auswaschen und neue Beutel einsetzen.",
+          why: "Saubere M\xFClleimer und K\xFChlschr\xE4nke neutralisieren 90 % aller Ger\xFCche im Haushalt.",
+          icon: "refrigerator"
+        },
+        {
+          id: "deep_3",
+          title: "Sanit\xE4r & K\xFCche Intensiv-Einwirkzeit (10 Min)",
+          desc: "Kalkl\xF6ser auf Duschw\xE4nde, Fliesen und Armaturen spr\xFChen. Backofen/Mikrowelle einspr\xFChen. WC-Reiniger unter den Rand geben.",
+          why: "Lange Einwirkzeit l\xF6st hartn\xE4ckigen Kalk ganz ohne Schrubben.",
+          icon: "spray-can"
+        },
+        {
+          id: "deep_4",
+          title: "High & Low Dusting (Spinnweben & Leisten) (15 Min)",
+          desc: "Zuerst Decken-Ecken nach Spinnweben absuchen. Danach Lampen, Bilderrahmen, Monitore, Schalter und Fu\xDFleisten feucht abwischen.",
+          why: "Saubere Sockelleisten und Schalter lassen eine Wohnung sofort hochwertig und gepflegt wirken.",
+          icon: "layers"
+        },
+        {
+          id: "deep_5",
+          title: "K\xFCche & Bad auf Hochglanz polieren (15 Min)",
+          desc: "Duschkabine, Waschbecken, K\xFCchensp\xFCle und Herd absp\xFClen. Spiegel mit Glasreiniger streifenfrei polieren.",
+          why: "Gl\xE4nzende Spiegel und Armaturen sind das optische Highlight jedes Raumes.",
+          icon: "sparkles"
+        },
+        {
+          id: "deep_6",
+          title: "Polster & Matratzen absaugen (10 Min)",
+          desc: "Sofa-Ritzen mit der Polsterd\xFCse absaugen. Matratze kurz wenden/absaugen und das frische Bett beziehen.",
+          why: "Entfernt Milben und Staub \u2013 herrlich frisches Gef\xFChl beim n\xE4chsten Einschlafen.",
+          icon: "bed-double"
+        },
+        {
+          id: "deep_7",
+          title: "B\xF6den intensiv saugen & feucht wischen (15 Min)",
+          desc: "Gr\xFCndlich auch unter Sofas und Betten saugen. Danach mit warmem Wasser und Bodenreiniger von hinten nach vorn wischen. 10 Min durchl\xFCften.",
+          why: "Der kr\xF6nende Abschluss: Der Duft von frischem Bodenwischwasser erf\xFCllt die ganze Wohnung.",
+          icon: "sparkles"
+        }
+      ]
+    }
+  };
+  var activeCleaningLevel = "standard";
+  var activeCleaningCompletedSteps = {};
+  var cleaningTimerInterval = null;
+  var cleaningTimerSecondsLeft = 45 * 60;
+  var isCleaningTimerRunning = false;
+  var isCleaningLoFiActive = false;
+  function openCleaningGuideModal(defaultLevel = null) {
+    const modal = document.getElementById("helper-cleaning-modal");
+    if (!modal) return;
+    if (defaultLevel && CLEANING_LEVELS_DATA[defaultLevel]) {
+      activeCleaningLevel = defaultLevel;
+    }
+    try {
+      const saved = localStorage.getItem("flow_cleaning_state");
+      if (saved) {
+        activeCleaningCompletedSteps = JSON.parse(saved);
+      }
+    } catch (e) {
+    }
+    modal.classList.remove("hidden");
+    renderCleaningGuideUI();
+  }
+  function closeCleaningGuideModal() {
+    const modal = document.getElementById("helper-cleaning-modal");
+    if (modal) modal.classList.add("hidden");
+    pauseCleaningTimer();
+  }
+  function switchCleaningLevel(levelKey) {
+    if (!CLEANING_LEVELS_DATA[levelKey]) return;
+    activeCleaningLevel = levelKey;
+    resetCleaningTimer(CLEANING_LEVELS_DATA[levelKey].durationMin * 60);
+    renderCleaningGuideUI();
+  }
+  function toggleCleaningStep(stepId, event) {
+    if (event) event.stopPropagation();
+    activeCleaningCompletedSteps[stepId] = !activeCleaningCompletedSteps[stepId];
+    try {
+      localStorage.setItem("flow_cleaning_state", JSON.stringify(activeCleaningCompletedSteps));
+    } catch (e) {
+    }
+    renderCleaningGuideUI();
+  }
+  function resetCleaningProgress() {
+    const data = CLEANING_LEVELS_DATA[activeCleaningLevel];
+    if (!data) return;
+    data.steps.forEach((s) => {
+      delete activeCleaningCompletedSteps[s.id];
+    });
+    try {
+      localStorage.setItem("flow_cleaning_state", JSON.stringify(activeCleaningCompletedSteps));
+    } catch (e) {
+    }
+    renderCleaningGuideUI();
+    if (typeof showToast === "function") {
+      showToast("Fortschritt zur\xFCckgesetzt");
+    }
+  }
+  function renderCleaningGuideUI() {
+    const data = CLEANING_LEVELS_DATA[activeCleaningLevel];
+    if (!data) return;
+    ["express", "standard", "deep"].forEach((lvl) => {
+      const btn = document.getElementById(`cleaning-tab-btn-${lvl}`);
+      if (btn) {
+        if (lvl === activeCleaningLevel) {
+          btn.className = "py-2 px-3 rounded-2xl text-white bg-[var(--accent)]/30 border border-[var(--accent)]/60 font-bold transition flex items-center justify-center gap-1.5 shadow-md text-xs cursor-pointer";
+        } else {
+          btn.className = "py-2 px-3 rounded-2xl text-gray-400 hover:text-white bg-white/5 border border-white/5 font-medium transition flex items-center justify-center gap-1.5 text-xs cursor-pointer";
+        }
+      }
+    });
+    const titleEl = document.getElementById("cleaning-guide-title");
+    const subtitleEl = document.getElementById("cleaning-guide-subtitle");
+    const tipEl = document.getElementById("cleaning-guide-intro-tip");
+    if (titleEl) titleEl.innerText = data.title;
+    if (subtitleEl) subtitleEl.innerText = data.subtitle;
+    if (tipEl) tipEl.innerText = data.introTip;
+    const listContainer = document.getElementById("cleaning-guide-steps-list");
+    if (!listContainer) return;
+    let completedCount = 0;
+    listContainer.innerHTML = "";
+    data.steps.forEach((step, idx) => {
+      const isDone = !!activeCleaningCompletedSteps[step.id];
+      if (isDone) completedCount++;
+      const card = document.createElement("div");
+      card.className = `p-3 sm:p-4 rounded-2xl border transition-all duration-200 ${isDone ? "bg-emerald-500/10 border-emerald-500/30 opacity-75" : "bg-white/[0.03] border-white/10 hover:border-white/20"}`;
+      card.innerHTML = `
+      <div class="flex items-start gap-3">
+        <input type="checkbox" ${isDone ? "checked" : ""} onchange="toggleCleaningStep('${step.id}', event)" class="w-5 h-5 mt-0.5 rounded text-[var(--accent)] cursor-pointer accent-[var(--accent)] shrink-0" />
+        <div class="flex-1 space-y-1.5 cursor-pointer" onclick="toggleCleaningStep('${step.id}', event)">
+          <div class="flex items-center justify-between gap-2">
+            <h4 class="text-xs sm:text-sm font-bold ${isDone ? "line-through text-emerald-200" : "text-white"} flex items-center gap-1.5">
+              <span class="w-5 h-5 rounded-full bg-white/10 text-[10px] font-mono flex items-center justify-center text-gray-300 font-bold shrink-0">${idx + 1}</span>
+              <span>${step.title}</span>
+            </h4>
+            <span class="text-[10px] px-2 py-0.5 rounded-full ${isDone ? "bg-emerald-500/20 text-emerald-300 font-bold" : "bg-white/5 text-gray-400"} font-mono shrink-0">
+              ${isDone ? "\u2713 Erledigt" : "Schritt " + (idx + 1)}
+            </span>
+          </div>
+          <p class="text-xs text-gray-300 leading-relaxed font-normal">${step.desc}</p>
+          <div class="bg-black/40 border border-white/5 p-2 rounded-xl text-[11px] text-amber-200/90 flex items-start gap-2 mt-1">
+            <span class="text-amber-400 font-bold shrink-0">\u{1F4A1} Warum:</span>
+            <span>${step.why}</span>
+          </div>
+        </div>
+      </div>
+    `;
+      listContainer.appendChild(card);
+    });
+    const total = data.steps.length;
+    const pct = Math.round(completedCount / total * 100);
+    const progressBar = document.getElementById("cleaning-progress-bar");
+    const progressText = document.getElementById("cleaning-progress-text");
+    const progressStatus = document.getElementById("cleaning-progress-status");
+    if (progressBar) progressBar.style.width = `${pct}%`;
+    if (progressText) progressText.innerText = `${pct}% (${completedCount}/${total})`;
+    if (progressStatus) {
+      if (pct === 100) {
+        progressStatus.innerHTML = '<span class="text-emerald-400 font-bold animate-pulse">\u{1F389} Gro\xDFartig! Deine Wohnung ist komplett erfrischt!</span>';
+      } else if (pct >= 50) {
+        progressStatus.innerHTML = '<span class="text-amber-300 font-medium">\u{1F4AA} Mehr als die H\xE4lfte geschafft \u2013 weiter so!</span>';
+      } else if (pct > 0) {
+        progressStatus.innerHTML = '<span class="text-purple-300 font-medium">\u2728 Sch\xF6ner Start \u2013 Schritt f\xFCr Schritt!</span>';
+      } else {
+        progressStatus.innerHTML = '<span class="text-gray-400 font-medium">Bereit? W\xE4hle einen Schritt oder starte den Timer!</span>';
+      }
+    }
+    if (typeof lucide !== "undefined") lucide.createIcons();
+  }
+  function formatTimeMinSec(totalSec) {
+    const m = Math.floor(totalSec / 60);
+    const s = totalSec % 60;
+    return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  }
+  function updateCleaningTimerDisplay() {
+    const display = document.getElementById("cleaning-timer-display");
+    if (display) {
+      display.innerText = formatTimeMinSec(cleaningTimerSecondsLeft);
+    }
+  }
+  function startCleaningTimer() {
+    if (isCleaningTimerRunning) return;
+    isCleaningTimerRunning = true;
+    const playBtn = document.getElementById("cleaning-timer-play");
+    const pauseBtn = document.getElementById("cleaning-timer-pause");
+    if (playBtn) playBtn.classList.add("hidden");
+    if (pauseBtn) pauseBtn.classList.remove("hidden");
+    cleaningTimerInterval = setInterval(() => {
+      if (cleaningTimerSecondsLeft > 0) {
+        cleaningTimerSecondsLeft--;
+        updateCleaningTimerDisplay();
+      } else {
+        pauseCleaningTimer();
+        if (typeof showToast === "function") {
+          showToast("\u23F0 Zeit abgelaufen! Gro\xDFartige Arbeit!", { duration: 6e3 });
+        }
+        if (typeof playSoundEffect === "function") {
+          playSoundEffect("success");
+        }
+      }
+    }, 1e3);
+  }
+  function pauseCleaningTimer() {
+    isCleaningTimerRunning = false;
+    if (cleaningTimerInterval) {
+      clearInterval(cleaningTimerInterval);
+      cleaningTimerInterval = null;
+    }
+    const playBtn = document.getElementById("cleaning-timer-play");
+    const pauseBtn = document.getElementById("cleaning-timer-pause");
+    if (playBtn) playBtn.classList.remove("hidden");
+    if (pauseBtn) pauseBtn.classList.add("hidden");
+  }
+  function resetCleaningTimer(newSeconds = null) {
+    pauseCleaningTimer();
+    if (newSeconds !== null) {
+      cleaningTimerSecondsLeft = newSeconds;
+    } else {
+      const data = CLEANING_LEVELS_DATA[activeCleaningLevel];
+      cleaningTimerSecondsLeft = (data ? data.durationMin : 45) * 60;
+    }
+    updateCleaningTimerDisplay();
+  }
+  function toggleCleaningLoFi() {
+    if (typeof startAmbientSound === "function") {
+      if (!isCleaningLoFiActive) {
+        startAmbientSound("lofi_sunshine");
+        isCleaningLoFiActive = true;
+        if (typeof showToast === "function") showToast("\u{1F3B5} LoFi-Putz-Musik gestartet");
+      } else {
+        if (typeof stopAmbientSound === "function") stopAmbientSound();
+        isCleaningLoFiActive = false;
+        if (typeof showToast === "function") showToast("\u{1F507} Musik pausiert");
+      }
+    }
+    const lofiBtn = document.getElementById("cleaning-lofi-btn");
+    if (lofiBtn) {
+      lofiBtn.classList.toggle("text-emerald-400", isCleaningLoFiActive);
+      lofiBtn.classList.toggle("border-emerald-500/50", isCleaningLoFiActive);
+    }
+  }
+  function transferCleaningStepsToBoard(targetCategory = "weekly") {
+    const data = CLEANING_LEVELS_DATA[activeCleaningLevel];
+    if (!data) return;
+    const curState = typeof window !== "undefined" && window.state ? window.state : state;
+    if (!curState || !curState.items) return;
+    const cat = curState.items[targetCategory] ? targetCategory : "weekly";
+    if (!curState.items[cat]) curState.items[cat] = [];
+    let addedCount = 0;
+    const nowISO = (/* @__PURE__ */ new Date()).toISOString();
+    data.steps.forEach((step, idx) => {
+      if (!activeCleaningCompletedSteps[step.id]) {
+        const taskText = `\u{1F9F9} ${step.title.split("(")[0].trim()}`;
+        const exists = curState.items[cat].some((item) => typeof item === "object" ? item.task === taskText : item === taskText);
+        if (!exists) {
+          curState.items[cat].push({
+            id: `clean_${step.id}_${Date.now()}_${idx}`,
+            task: taskText,
+            createdAt: nowISO,
+            updatedAt: nowISO
+          });
+          addedCount++;
+        }
+      }
+    });
+    if (typeof saveState === "function") saveState();
+    if (typeof renderApp === "function") renderApp();
+    closeCleaningGuideModal();
+    if (typeof showToast === "function") {
+      showToast(`\u2728 ${addedCount} Schritte in deine Haushalts-Kategorie \xFCbernommen!`);
+    }
+  }
+  if (typeof window !== "undefined") {
+    window.openCleaningGuideModal = openCleaningGuideModal;
+    window.closeCleaningGuideModal = closeCleaningGuideModal;
+    window.switchCleaningLevel = switchCleaningLevel;
+    window.toggleCleaningStep = toggleCleaningStep;
+    window.resetCleaningProgress = resetCleaningProgress;
+    window.startCleaningTimer = startCleaningTimer;
+    window.pauseCleaningTimer = pauseCleaningTimer;
+    window.resetCleaningTimer = resetCleaningTimer;
+    window.toggleCleaningLoFi = toggleCleaningLoFi;
+    window.transferCleaningStepsToBoard = transferCleaningStepsToBoard;
+  }
+  if (typeof globalThis !== "undefined") {
+    globalThis.openCleaningGuideModal = openCleaningGuideModal;
+    globalThis.closeCleaningGuideModal = closeCleaningGuideModal;
+    globalThis.switchCleaningLevel = switchCleaningLevel;
+    globalThis.toggleCleaningStep = toggleCleaningStep;
+    globalThis.resetCleaningProgress = resetCleaningProgress;
+    globalThis.startCleaningTimer = startCleaningTimer;
+    globalThis.pauseCleaningTimer = pauseCleaningTimer;
+    globalThis.resetCleaningTimer = resetCleaningTimer;
+    globalThis.toggleCleaningLoFi = toggleCleaningLoFi;
+    globalThis.transferCleaningStepsToBoard = transferCleaningStepsToBoard;
+  }
+
   // app-shopping.js
   var SHOPPING_DEPARTMENTS = {
     produce: {
@@ -13985,6 +14415,11 @@ ${listStr}`;
               <circle cx="14.8" cy="17.2" r="0.9" fill="currentColor" stroke="none" />
               <circle cx="18" cy="15.5" r="0.9" fill="currentColor" stroke="none" />
             </svg>
+          </button>
+        ` : ""}
+        ${id === "weekly" || id === "work_in_progress" ? `
+          <button onclick="if(typeof openCleaningGuideModal === 'function') openCleaningGuideModal(); if(event) event.stopPropagation();" class="p-1 px-1.5 bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/30 text-emerald-300 hover:text-white rounded-lg shadow-sm hover:scale-105 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1" title="${tr({ de: "Wohnungs-Reset & Level-Putz-Guide \u{1F9F9}", en: "Apartment Reset & Cleaning Guide \u{1F9F9}", es: "Gu\xEDa de limpieza \u{1F9F9}", el: "\u039F\u03B4\u03B7\u03B3\u03CC\u03C2 \u03BA\u03B1\u03B8\u03B1\u03C1\u03B9\u03C3\u03BC\u03BF\u03CD \u{1F9F9}", fr: "Guide de nettoyage \u{1F9F9}", it: "Guida alle pulizie \u{1F9F9}" })}">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-400"></i>
           </button>
         ` : ""}
         ${!isDone ? `
