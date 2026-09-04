@@ -11511,7 +11511,8 @@ ${listStr}`;
         `;
           listEl.appendChild(itemDiv);
         });
-        if (!isTerminFormOpen) {
+        const isFormOpen = typeof isTerminFormOpen !== "undefined" ? isTerminFormOpen : window.isTerminFormOpen || false;
+        if (!isFormOpen) {
           const btnEl = document.createElement("button");
           btnEl.onclick = () => toggleTerminForm(true);
           btnEl.className = "w-full min-h-[30px] p-1.5 rounded-xl border border-dashed border-orange-500/30 bg-orange-500/5 hover:bg-orange-500/15 hover:border-orange-400/60 text-center text-xs text-orange-300/90 hover:text-orange-200 font-semibold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 shadow-xs group/addbtn mt-1";
@@ -11574,7 +11575,7 @@ ${listStr}`;
           const taskText = taskObj.task;
           const taskColor = taskObj.color || "none";
           const colorStyle = TASK_COLOR_MAP[taskColor] || TASK_COLOR_MAP.none;
-          const iconDetails = getTaskIconDetails(taskText, id);
+          const iconDetails = typeof getTaskIconDetails === "function" ? getTaskIconDetails(taskText, id) : { icon: "check-circle", color: "text-purple-400" };
           const isTaskActive = typeof activeTimerTask !== "undefined" && activeTimerTask && activeTimerTask.category === id && activeTimerTask.index === index;
           const itemDiv = document.createElement("div");
           itemDiv.draggable = true;
@@ -15051,10 +15052,7 @@ ${listStr}`;
     showToast(isMinimalist ? t("toast_zen_active") : t("toast_zen_inactive"));
   }
   var editingTerminIndex = null;
-  if (typeof isTerminFormOpen2 === "undefined") {
-    isTerminFormOpen2 = false;
-  }
-  var isTerminFormOpen2;
+  var isTerminFormOpen2 = false;
   function toggleTerminForm2(open, prefilledDate) {
     isTerminFormOpen2 = open !== void 0 ? open : !isTerminFormOpen2;
     if (!isTerminFormOpen2) {

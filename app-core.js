@@ -1190,9 +1190,7 @@ function zenCompleteCurrentTask() {
 }
 
 let editingTerminIndex = null;
-if (typeof isTerminFormOpen === 'undefined') {
-  var isTerminFormOpen = false;
-}
+let isTerminFormOpen = false;
 
 function toggleTerminForm(open, prefilledDate) {
   isTerminFormOpen = open !== undefined ? open : !isTerminFormOpen;

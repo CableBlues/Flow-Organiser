@@ -3,7 +3,6 @@ let currentLang = localStorage.getItem('flowPlannerLanguage') || 'en';
 let rawTheme = localStorage.getItem('flowPlannerTheme') || 'aurora';
 let currentTheme = ['mono-hand', 'parchment', 'minimalist-light', 'terracotta-light'].includes(rawTheme) ? 'aurora' : rawTheme;
 let isMinimalist = localStorage.getItem('flowPlannerMinimalist') === 'true';
-let isTerminFormOpen = false;
 let openTaskAddColumns = {};
 let categoriesOrder = null;
 let state = null;
