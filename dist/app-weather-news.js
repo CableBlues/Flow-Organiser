@@ -810,9 +810,29 @@ function initWeatherSystem() {
   }
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initWeatherSystem);
-} else {
-  initWeatherSystem();
+if (typeof window !== 'undefined') {
+  window.fetchLocalWeather = fetchLocalWeather;
+  window.toggleWeatherDropdown = typeof toggleWeatherDropdown !== 'undefined' ? toggleWeatherDropdown : undefined;
+  window.toggleWeatherUnit = typeof toggleWeatherUnit !== 'undefined' ? toggleWeatherUnit : undefined;
+  window.useDeviceLocationWeather = typeof useDeviceLocationWeather !== 'undefined' ? useDeviceLocationWeather : undefined;
+  window.handleWeatherSearchInput = typeof handleWeatherSearchInput !== 'undefined' ? handleWeatherSearchInput : undefined;
+  window.searchWeatherCityInstant = typeof searchWeatherCityInstant !== 'undefined' ? searchWeatherCityInstant : undefined;
+  window.selectWeatherCity = typeof selectWeatherCity !== 'undefined' ? selectWeatherCity : undefined;
+  window.renderNewsBriefing = typeof renderNewsBriefing !== 'undefined' ? renderNewsBriefing : undefined;
+  window.toggleNewsBookmark = typeof toggleNewsBookmark !== 'undefined' ? toggleNewsBookmark : undefined;
+  window.refreshNewsFeed = typeof refreshNewsFeed !== 'undefined' ? refreshNewsFeed : undefined;
+}
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.fetchLocalWeather = fetchLocalWeather;
+  globalThis.toggleWeatherDropdown = typeof toggleWeatherDropdown !== 'undefined' ? toggleWeatherDropdown : undefined;
+  globalThis.toggleWeatherUnit = typeof toggleWeatherUnit !== 'undefined' ? toggleWeatherUnit : undefined;
+  globalThis.useDeviceLocationWeather = typeof useDeviceLocationWeather !== 'undefined' ? useDeviceLocationWeather : undefined;
+  globalThis.handleWeatherSearchInput = typeof handleWeatherSearchInput !== 'undefined' ? handleWeatherSearchInput : undefined;
+  globalThis.searchWeatherCityInstant = typeof searchWeatherCityInstant !== 'undefined' ? searchWeatherCityInstant : undefined;
+  globalThis.selectWeatherCity = typeof selectWeatherCity !== 'undefined' ? selectWeatherCity : undefined;
+  globalThis.renderNewsBriefing = typeof renderNewsBriefing !== 'undefined' ? renderNewsBriefing : undefined;
+  globalThis.toggleNewsBookmark = typeof toggleNewsBookmark !== 'undefined' ? toggleNewsBookmark : undefined;
+  globalThis.refreshNewsFeed = typeof refreshNewsFeed !== 'undefined' ? refreshNewsFeed : undefined;
 }
 

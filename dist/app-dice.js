@@ -309,7 +309,16 @@ function ensureDiceModalExists() {
   if (typeof renderLucideIcons === 'function') renderLucideIcons();
 }
 
-window.rollTaskDice = rollTaskDice;
-window.closeDiceModal = closeDiceModal;
-window.startDiceWinnerTimer = startDiceWinnerTimer;
-window.completeDiceWinnerTask = completeDiceWinnerTask;
+if (typeof window !== 'undefined') {
+  window.rollTaskDice = rollTaskDice;
+  window.closeDiceModal = closeDiceModal;
+  window.startDiceWinnerTimer = startDiceWinnerTimer;
+  window.completeDiceWinnerTask = completeDiceWinnerTask;
+}
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.rollTaskDice = rollTaskDice;
+  globalThis.closeDiceModal = closeDiceModal;
+  globalThis.startDiceWinnerTimer = startDiceWinnerTimer;
+  globalThis.completeDiceWinnerTask = completeDiceWinnerTask;
+}

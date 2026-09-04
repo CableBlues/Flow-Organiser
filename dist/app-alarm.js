@@ -458,6 +458,15 @@ if (typeof window !== 'undefined') {
   window.checkAlarmsLoop = checkAlarmsLoop;
   window.triggerAlarmModal = triggerAlarmModal;
   window.snoozeAlarm = snoozeAlarm;
+  window.switchAlarmTab = switchAlarmTab;
+  window.openAlarmModal = openAlarmModal;
+  window.requestAlarmNotificationPermission = requestAlarmNotificationPermission;
+  window.handleAddAlarm = handleAddAlarm;
+  window.handleToggleAlarm = handleToggleAlarm;
+  window.handleDeleteAlarm = handleDeleteAlarm;
+  window.handleAddReminder = handleAddReminder;
+  window.handleToggleReminder = handleToggleReminder;
+  window.handleDeleteReminder = handleDeleteReminder;
 }
 if (typeof globalThis !== 'undefined') {
   globalThis.alarmState = alarmState;
@@ -467,4 +476,13 @@ if (typeof globalThis !== 'undefined') {
   globalThis.checkAlarmsLoop = checkAlarmsLoop;
   globalThis.triggerAlarmModal = triggerAlarmModal;
   globalThis.snoozeAlarm = snoozeAlarm;
+  globalThis.switchAlarmTab = switchAlarmTab;
+  globalThis.openAlarmModal = openAlarmModal;
+  globalThis.requestAlarmNotificationPermission = requestAlarmNotificationPermission;
+  globalThis.handleAddAlarm = handleAddAlarm;
+  globalThis.handleToggleAlarm = handleToggleAlarm;
+  globalThis.handleDeleteAlarm = handleDeleteAlarm;
+  globalThis.handleAddReminder = handleAddReminder;
+  globalThis.handleToggleReminder = handleToggleReminder;
+  globalThis.handleDeleteReminder = handleDeleteReminder;
 }

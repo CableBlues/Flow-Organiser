@@ -557,19 +557,47 @@ function renderSupermarketModal() {
   renderLucideIcons();
 }
 
+function openShoppingModal() {
+  openSupermarketModal();
+}
+
+function closeShoppingModal() {
+  closeSupermarketModal();
+}
+
 if (typeof window !== 'undefined') {
   window.SHOPPING_DEPARTMENTS = SHOPPING_DEPARTMENTS;
   window.getDepartmentForItem = getDepartmentForItem;
   window.handleAddShoppingItem = handleAddShoppingItem;
+  window.handleToggleShoppingItem = handleToggleShoppingItem;
+  window.handleDeleteShoppingItem = handleDeleteShoppingItem;
+  window.adjustShoppingItemQty = adjustShoppingItemQty;
+  window.restoreShoppingHistoryItem = restoreShoppingHistoryItem;
+  window.toggleShoppingHistory = toggleShoppingHistory;
+  window.clearShoppingList = clearShoppingList;
+  window.clearShoppingHistory = clearShoppingHistory;
+  window.addIngredientsToShoppingList = addIngredientsToShoppingList;
   window.openSupermarketModal = openSupermarketModal;
   window.closeSupermarketModal = closeSupermarketModal;
+  window.openShoppingModal = openShoppingModal;
+  window.closeShoppingModal = closeShoppingModal;
   window.renderSupermarketModal = renderSupermarketModal;
 }
 if (typeof globalThis !== 'undefined') {
   globalThis.SHOPPING_DEPARTMENTS = SHOPPING_DEPARTMENTS;
   globalThis.getDepartmentForItem = getDepartmentForItem;
   globalThis.handleAddShoppingItem = handleAddShoppingItem;
+  globalThis.handleToggleShoppingItem = handleToggleShoppingItem;
+  globalThis.handleDeleteShoppingItem = handleDeleteShoppingItem;
+  globalThis.adjustShoppingItemQty = adjustShoppingItemQty;
+  globalThis.restoreShoppingHistoryItem = restoreShoppingHistoryItem;
+  globalThis.toggleShoppingHistory = toggleShoppingHistory;
+  globalThis.clearShoppingList = clearShoppingList;
+  globalThis.clearShoppingHistory = clearShoppingHistory;
+  globalThis.addIngredientsToShoppingList = addIngredientsToShoppingList;
   globalThis.openSupermarketModal = openSupermarketModal;
   globalThis.closeSupermarketModal = closeSupermarketModal;
+  globalThis.openShoppingModal = openShoppingModal;
+  globalThis.closeShoppingModal = closeShoppingModal;
   globalThis.renderSupermarketModal = renderSupermarketModal;
 }

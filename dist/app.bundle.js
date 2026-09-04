@@ -6961,7 +6961,7 @@ ${listStr}`;
     }
   }
   window.toggleCalendarDropdown = toggleCalendarDropdown;
-  function toggleWeatherDropdown(event) {
+  function toggleWeatherDropdown2(event) {
     if (event) event.stopPropagation();
     const calEl = document.getElementById("panel-calendar-dropdown");
     if (calEl) calEl.classList.add("hidden");
@@ -6976,7 +6976,7 @@ ${listStr}`;
       }
     }
   }
-  window.toggleWeatherDropdown = toggleWeatherDropdown;
+  window.toggleWeatherDropdown = toggleWeatherDropdown2;
   function openCalendarHover() {
     if (calendarHoverTimeout) {
       clearTimeout(calendarHoverTimeout);
@@ -11726,6 +11726,131 @@ ${listStr}`;
       }));
     }
   }
+  function adjustShoppingItemQty(index, delta) {
+    if (!state.shoppingList || !state.shoppingList[index]) return;
+    saveHistory();
+    const current = state.shoppingList[index].qty || 1;
+    const newQty = current + delta;
+    if (newQty <= 0) {
+      handleDeleteShoppingItem(index);
+      return;
+    }
+    state.shoppingList[index].qty = newQty;
+    saveState();
+    renderApp();
+    renderSupermarketModal();
+  }
+  function handleDeleteShoppingItem(index) {
+    if (!state.shoppingList || !state.shoppingList[index]) return;
+    saveHistory();
+    const removed = state.shoppingList.splice(index, 1)[0];
+    saveState();
+    renderApp();
+    renderSupermarketModal();
+    showToast(tr({
+      de: `"${removed.name}" gel\xF6scht.`,
+      en: `Deleted "${removed.name}".`,
+      fr: `"${removed.name}" supprim\xE9.`,
+      it: `"${removed.name}" eliminato.`,
+      es: `"${removed.name}" eliminado.`,
+      el: `\u03A4\u03BF "${removed.name}" \u03B4\u03B9\u03B1\u03B3\u03C1\u03AC\u03C6\u03B7\u03BA\u03B5.`
+    }));
+  }
+  function handleToggleShoppingItem(index) {
+    if (!state.shoppingList || !state.shoppingList[index]) return;
+    saveHistory();
+    const item = state.shoppingList.splice(index, 1)[0];
+    if (!Array.isArray(state.shoppingHistory)) state.shoppingHistory = [];
+    const todayStr = (/* @__PURE__ */ new Date()).toLocaleDateString(currentLang === "de" ? "de-DE" : "en-US", { month: "2-digit", day: "2-digit" });
+    state.shoppingHistory.push({
+      name: item.name,
+      qty: item.qty || 1,
+      unit: item.unit || "",
+      dept: item.dept || "other",
+      date: todayStr
+    });
+    saveState();
+    if (typeof playProceduralSound === "function") playProceduralSound(3);
+    renderApp();
+    renderSupermarketModal();
+    showToast(tr({
+      de: `"${item.name}" eingekauft! \u2705`,
+      en: `Bought "${item.name}"! \u2705`,
+      fr: `"${item.name}" achet\xE9 ! \u2705`,
+      it: `"${item.name}" acquistato! \u2705`,
+      es: `\xA1"${item.name}" comprado! \u2705`,
+      el: `\u03A4\u03BF "${item.name}" \u03B1\u03B3\u03BF\u03C1\u03AC\u03C3\u03C4\u03B7\u03BA\u03B5! \u2705`
+    }));
+  }
+  function restoreShoppingHistoryItem(historyIndex) {
+    if (!state.shoppingHistory || !state.shoppingHistory[historyIndex]) return;
+    saveHistory();
+    const hItem = state.shoppingHistory.splice(historyIndex, 1)[0];
+    handleAddShoppingItem(hItem.name);
+  }
+  function toggleShoppingHistory() {
+    const visible = localStorage.getItem("flow_shop_history_visible") === "true";
+    localStorage.setItem("flow_shop_history_visible", String(!visible));
+    renderApp();
+  }
+  function clearShoppingList() {
+    if (!state.shoppingList || state.shoppingList.length === 0) return;
+    const confirmMsg = tr({
+      de: "Gesamte Einkaufsliste leeren?",
+      en: "Clear entire shopping list?",
+      fr: "Vider toute la liste de courses ?",
+      it: "Svuotare l'intera lista della spesa?",
+      es: "\xBFVaciar toda la lista de compras?",
+      el: "\u0395\u03BA\u03BA\u03B1\u03B8\u03AC\u03C1\u03B9\u03C3\u03B7 \u03CC\u03BB\u03B7\u03C2 \u03C4\u03B7\u03C2 \u03BB\u03AF\u03C3\u03C4\u03B1\u03C2 \u03B1\u03B3\u03BF\u03C1\u03CE\u03BD;"
+    });
+    if (confirm(confirmMsg)) {
+      saveHistory();
+      state.shoppingList = [];
+      saveState();
+      renderApp();
+      renderSupermarketModal();
+    }
+  }
+  function clearShoppingHistory() {
+    if (!state.shoppingHistory || state.shoppingHistory.length === 0) return;
+    const confirmMsg = tr({
+      de: "Einkaufs-Protokoll leeren?",
+      en: "Clear shopping history?",
+      fr: "Vider l'historique des achats ?",
+      it: "Svuotare la cronologia degli acquisti?",
+      es: "\xBFVaciar el historial de compras?",
+      el: "\u0395\u03BA\u03BA\u03B1\u03B8\u03AC\u03C1\u03B9\u03C3\u03B7 \u03B9\u03C3\u03C4\u03BF\u03C1\u03B9\u03BA\u03BF\u03CD \u03B1\u03B3\u03BF\u03C1\u03CE\u03BD;"
+    });
+    if (confirm(confirmMsg)) {
+      saveHistory();
+      state.shoppingHistory = [];
+      saveState();
+      renderApp();
+      renderSupermarketModal();
+    }
+  }
+  function addIngredientsToShoppingList2(ingredients, recipeTitle = "") {
+    if (!Array.isArray(ingredients) || ingredients.length === 0) return;
+    saveHistory();
+    if (!Array.isArray(state.shoppingList)) state.shoppingList = [];
+    let count = 0;
+    ingredients.forEach((ing) => {
+      const name = String(ing).trim();
+      if (name) {
+        handleAddShoppingItem(name);
+        count++;
+      }
+    });
+    if (typeof triggerCelebration === "function") triggerCelebration();
+    showToast(tr({
+      de: `${count} Zutaten zu deiner Einkaufsliste hinzugef\xFCgt! \u{1F6D2}`,
+      en: `Added ${count} ingredients to shopping list! \u{1F6D2}`,
+      fr: `${count} ingr\xE9dients ajout\xE9s \xE0 la liste de courses ! \u{1F6D2}`,
+      it: `${count} ingredienti aggiunti alla lista della spesa! \u{1F6D2}`,
+      es: `\xA1${count} ingredientes a\xF1adidos a la lista! \u{1F6D2}`,
+      el: `${count} \u03C5\u03BB\u03B9\u03BA\u03AC \u03C0\u03C1\u03BF\u03C3\u03C4\u03AD\u03B8\u03B7\u03BA\u03B1\u03BD \u03C3\u03C4\u03B7 \u03BB\u03AF\u03C3\u03C4\u03B1 \u03B1\u03B3\u03BF\u03C1\u03CE\u03BD! \u{1F6D2}`
+    }));
+  }
   function generateSmartShoppingTips(container) {
     const tipEl = document.getElementById("shopping-smart-tip-text");
     if (!tipEl) return;
@@ -11843,20 +11968,46 @@ ${listStr}`;
     container.innerHTML = html;
     renderLucideIcons();
   }
+  function openShoppingModal() {
+    openSupermarketModal();
+  }
+  function closeShoppingModal() {
+    closeSupermarketModal();
+  }
   if (typeof window !== "undefined") {
     window.SHOPPING_DEPARTMENTS = SHOPPING_DEPARTMENTS;
     window.getDepartmentForItem = getDepartmentForItem;
     window.handleAddShoppingItem = handleAddShoppingItem;
+    window.handleToggleShoppingItem = handleToggleShoppingItem;
+    window.handleDeleteShoppingItem = handleDeleteShoppingItem;
+    window.adjustShoppingItemQty = adjustShoppingItemQty;
+    window.restoreShoppingHistoryItem = restoreShoppingHistoryItem;
+    window.toggleShoppingHistory = toggleShoppingHistory;
+    window.clearShoppingList = clearShoppingList;
+    window.clearShoppingHistory = clearShoppingHistory;
+    window.addIngredientsToShoppingList = addIngredientsToShoppingList2;
     window.openSupermarketModal = openSupermarketModal;
     window.closeSupermarketModal = closeSupermarketModal;
+    window.openShoppingModal = openShoppingModal;
+    window.closeShoppingModal = closeShoppingModal;
     window.renderSupermarketModal = renderSupermarketModal;
   }
   if (typeof globalThis !== "undefined") {
     globalThis.SHOPPING_DEPARTMENTS = SHOPPING_DEPARTMENTS;
     globalThis.getDepartmentForItem = getDepartmentForItem;
     globalThis.handleAddShoppingItem = handleAddShoppingItem;
+    globalThis.handleToggleShoppingItem = handleToggleShoppingItem;
+    globalThis.handleDeleteShoppingItem = handleDeleteShoppingItem;
+    globalThis.adjustShoppingItemQty = adjustShoppingItemQty;
+    globalThis.restoreShoppingHistoryItem = restoreShoppingHistoryItem;
+    globalThis.toggleShoppingHistory = toggleShoppingHistory;
+    globalThis.clearShoppingList = clearShoppingList;
+    globalThis.clearShoppingHistory = clearShoppingHistory;
+    globalThis.addIngredientsToShoppingList = addIngredientsToShoppingList2;
     globalThis.openSupermarketModal = openSupermarketModal;
     globalThis.closeSupermarketModal = closeSupermarketModal;
+    globalThis.openShoppingModal = openShoppingModal;
+    globalThis.closeShoppingModal = closeShoppingModal;
     globalThis.renderSupermarketModal = renderSupermarketModal;
   }
 
@@ -12464,6 +12615,57 @@ ${listStr}`;
   `;
     renderLucideIcons();
   }
+  function handleAddAlarm() {
+    const time = document.getElementById("new-alarm-time")?.value;
+    const label = document.getElementById("new-alarm-label")?.value || "Wecker";
+    if (!time) return;
+    alarmState.alarms.push({ id: Date.now().toString(), time, label, active: true });
+    saveAlarmState();
+    renderAlarmPanel2();
+    if (typeof showToast === "function") showToast(`Wecker f\xFCr ${time} aktiviert \u23F0`);
+  }
+  function handleToggleAlarm(id) {
+    const a = alarmState.alarms.find((x) => x.id === id);
+    if (a) {
+      a.active = !a.active;
+      saveAlarmState();
+      renderAlarmPanel2();
+    }
+  }
+  function handleDeleteAlarm(id) {
+    alarmState.alarms = alarmState.alarms.filter((x) => x.id !== id);
+    saveAlarmState();
+    renderAlarmPanel2();
+  }
+  function handleAddReminder() {
+    const txt = document.getElementById("new-reminder-text");
+    const sel = document.getElementById("new-reminder-mins");
+    if (!txt || !txt.value.trim()) return;
+    const mins = parseInt(sel.value) || 10;
+    alarmState.reminders.push({
+      id: Date.now().toString(),
+      text: txt.value.trim(),
+      time: Date.now() + mins * 6e4,
+      completed: false
+    });
+    saveAlarmState();
+    renderAlarmPanel2();
+    if (typeof showToast === "function") showToast(`Erinnerung in ${mins} Min gesetzt! \u{1F514}`);
+    txt.value = "";
+  }
+  function handleToggleReminder(id) {
+    const r = alarmState.reminders.find((x) => x.id === id);
+    if (r) {
+      r.completed = !r.completed;
+      saveAlarmState();
+      renderAlarmPanel2();
+    }
+  }
+  function handleDeleteReminder(id) {
+    alarmState.reminders = alarmState.reminders.filter((x) => x.id !== id);
+    saveAlarmState();
+    renderAlarmPanel2();
+  }
   var lastTriggeredMinuteKey = "";
   function checkAlarmsLoop() {
     const now = /* @__PURE__ */ new Date();
@@ -12550,6 +12752,15 @@ ${listStr}`;
     window.checkAlarmsLoop = checkAlarmsLoop;
     window.triggerAlarmModal = triggerAlarmModal;
     window.snoozeAlarm = snoozeAlarm;
+    window.switchAlarmTab = switchAlarmTab;
+    window.openAlarmModal = openAlarmModal;
+    window.requestAlarmNotificationPermission = requestAlarmNotificationPermission;
+    window.handleAddAlarm = handleAddAlarm;
+    window.handleToggleAlarm = handleToggleAlarm;
+    window.handleDeleteAlarm = handleDeleteAlarm;
+    window.handleAddReminder = handleAddReminder;
+    window.handleToggleReminder = handleToggleReminder;
+    window.handleDeleteReminder = handleDeleteReminder;
   }
   if (typeof globalThis !== "undefined") {
     globalThis.alarmState = alarmState;
@@ -12559,6 +12770,15 @@ ${listStr}`;
     globalThis.checkAlarmsLoop = checkAlarmsLoop;
     globalThis.triggerAlarmModal = triggerAlarmModal;
     globalThis.snoozeAlarm = snoozeAlarm;
+    globalThis.switchAlarmTab = switchAlarmTab;
+    globalThis.openAlarmModal = openAlarmModal;
+    globalThis.requestAlarmNotificationPermission = requestAlarmNotificationPermission;
+    globalThis.handleAddAlarm = handleAddAlarm;
+    globalThis.handleToggleAlarm = handleToggleAlarm;
+    globalThis.handleDeleteAlarm = handleDeleteAlarm;
+    globalThis.handleAddReminder = handleAddReminder;
+    globalThis.handleToggleReminder = handleToggleReminder;
+    globalThis.handleDeleteReminder = handleDeleteReminder;
   }
 
   // app-tasks.js
@@ -15072,6 +15292,57 @@ ${listStr}`;
     </div>
   `;
   }
+  async function searchWeatherCityInstant(cityName) {
+    if (!cityName || cityName.trim().length < 2) return;
+    const clean = cityName.split(",")[0].trim();
+    try {
+      const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(clean)}&count=1&language=de&format=json`);
+      const data = await res.json();
+      if (data.results && data.results.length > 0) {
+        const top = data.results[0];
+        selectWeatherCity(top.name, top.country || "", top.latitude, top.longitude);
+        const searchInput = document.getElementById("weather-city-input");
+        if (searchInput) searchInput.value = `${top.name}${top.country ? " (" + top.country + ")" : ""}`;
+      }
+    } catch (e) {
+      console.error("Sofortsuche Fehler:", e);
+    }
+  }
+  function selectWeatherCity(name, country, lat, lon) {
+    currentWeatherLocation = { name, country, lat, lon };
+    localStorage.setItem("flow_weather_loc", JSON.stringify(currentWeatherLocation));
+    const resultsContainer = document.getElementById("weather-search-results");
+    if (resultsContainer) resultsContainer.classList.add("hidden");
+    const searchInput = document.getElementById("weather-city-input");
+    if (searchInput) searchInput.value = `${name}${country ? " (" + country + ")" : ""}`;
+    fetchLocalWeather2(true);
+  }
+  function useDeviceLocationWeather() {
+    if (!navigator.geolocation) {
+      showToast(tr({ de: "GPS wird von diesem Browser nicht unterst\xFCtzt.", en: "GPS not supported by browser." }));
+      return;
+    }
+    showToast(tr({ de: "Ermittle Standort... \u{1F4CD}", en: "Detecting location... \u{1F4CD}" }));
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        currentWeatherLocation = { name: "Mein Standort", country: "Lokal", lat, lon };
+        localStorage.setItem("flow_weather_loc", JSON.stringify(currentWeatherLocation));
+        fetchLocalWeather2(true);
+        showToast(tr({ de: "Wetter auf deinen Standort aktualisiert! \u2600\uFE0F", en: "Weather updated to your location! \u2600\uFE0F" }));
+      },
+      (err) => {
+        console.warn("Geolocation error:", err);
+        showToast(tr({ de: "Standortzugriff nicht erlaubt. Bitte Stadt manuell suchen.", en: "Location access denied. Please search city manually." }));
+      }
+    );
+  }
+  function toggleWeatherUnit() {
+    weatherUnit = weatherUnit === "c" ? "f" : "c";
+    localStorage.setItem("flow_weather_unit", weatherUnit);
+    if (cachedWeatherData) renderWeatherData(cachedWeatherData);
+  }
   var currentNewsLocation = localStorage.getItem("flow_news_loc") || "de_all";
   var currentNewsCategory = "all";
   var newsSearchKeyword = "";
@@ -15250,38 +15521,44 @@ ${listStr}`;
     }).join("");
     renderLucideIcons();
   }
-  function initWeatherSystem() {
-    if (cachedWeatherData) {
-      updateDateWeatherWidget(cachedWeatherData);
+  function refreshNewsFeed() {
+    const container = document.getElementById("news-content-area");
+    if (container) {
+      container.innerHTML = `
+      <div class="py-8 text-center text-gray-400 space-y-2">
+        <div class="w-6 h-6 mx-auto border-2 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
+        <div class="text-[11px] font-semibold">${tr({ de: "Aktualisiere regionale Nachrichten...", en: "Refreshing regional news briefing..." })}</div>
+      </div>
+    `;
     }
-    fetchLocalWeather2(false);
-    if (document.getElementById("news-content-area")) {
+    setTimeout(() => {
       renderNewsBriefing2();
-    }
-    if (typeof window !== "undefined" && !window._weatherPollingInterval) {
-      window._weatherPollingInterval = setInterval(() => {
-        fetchLocalWeather2(true);
-      }, 10 * 60 * 1e3);
-    }
-    if (typeof document !== "undefined" && !window._weatherVisibilityListenerBound) {
-      window._weatherVisibilityListenerBound = true;
-      document.addEventListener("visibilitychange", () => {
-        if (!document.hidden) {
-          fetchLocalWeather2(false);
-        }
-      });
-    }
-    if (typeof window !== "undefined" && !window._weatherOnlineListenerBound) {
-      window._weatherOnlineListenerBound = true;
-      window.addEventListener("online", () => {
-        fetchLocalWeather2(true);
-      });
-    }
+      showToast(tr({ de: "Nachrichten & Region aktualisiert! \u{1F4F0}", en: "News & region updated! \u{1F4F0}", fr: "Actualit\xE9s r\xE9gionales mises \xE0 jour ! \u{1F4F0}", it: "Notizie aggiornate! \u{1F4F0}", es: "\xA1Noticias actualizadas! \u{1F4F0}", el: "\u0395\u03B9\u03B4\u03AE\u03C3\u03B5\u03B9\u03C2 \u03B5\u03BD\u03B7\u03BC\u03B5\u03C1\u03CE\u03B8\u03B7\u03BA\u03B1\u03BD! \u{1F4F0}" }));
+    }, 400);
   }
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initWeatherSystem);
-  } else {
-    initWeatherSystem();
+  if (typeof window !== "undefined") {
+    window.fetchLocalWeather = fetchLocalWeather2;
+    window.toggleWeatherDropdown = typeof toggleWeatherDropdown !== "undefined" ? toggleWeatherDropdown : void 0;
+    window.toggleWeatherUnit = typeof toggleWeatherUnit !== "undefined" ? toggleWeatherUnit : void 0;
+    window.useDeviceLocationWeather = typeof useDeviceLocationWeather !== "undefined" ? useDeviceLocationWeather : void 0;
+    window.handleWeatherSearchInput = typeof handleWeatherSearchInput !== "undefined" ? handleWeatherSearchInput : void 0;
+    window.searchWeatherCityInstant = typeof searchWeatherCityInstant !== "undefined" ? searchWeatherCityInstant : void 0;
+    window.selectWeatherCity = typeof selectWeatherCity !== "undefined" ? selectWeatherCity : void 0;
+    window.renderNewsBriefing = typeof renderNewsBriefing2 !== "undefined" ? renderNewsBriefing2 : void 0;
+    window.toggleNewsBookmark = typeof toggleNewsBookmark !== "undefined" ? toggleNewsBookmark : void 0;
+    window.refreshNewsFeed = typeof refreshNewsFeed !== "undefined" ? refreshNewsFeed : void 0;
+  }
+  if (typeof globalThis !== "undefined") {
+    globalThis.fetchLocalWeather = fetchLocalWeather2;
+    globalThis.toggleWeatherDropdown = typeof toggleWeatherDropdown !== "undefined" ? toggleWeatherDropdown : void 0;
+    globalThis.toggleWeatherUnit = typeof toggleWeatherUnit !== "undefined" ? toggleWeatherUnit : void 0;
+    globalThis.useDeviceLocationWeather = typeof useDeviceLocationWeather !== "undefined" ? useDeviceLocationWeather : void 0;
+    globalThis.handleWeatherSearchInput = typeof handleWeatherSearchInput !== "undefined" ? handleWeatherSearchInput : void 0;
+    globalThis.searchWeatherCityInstant = typeof searchWeatherCityInstant !== "undefined" ? searchWeatherCityInstant : void 0;
+    globalThis.selectWeatherCity = typeof selectWeatherCity !== "undefined" ? selectWeatherCity : void 0;
+    globalThis.renderNewsBriefing = typeof renderNewsBriefing2 !== "undefined" ? renderNewsBriefing2 : void 0;
+    globalThis.toggleNewsBookmark = typeof toggleNewsBookmark !== "undefined" ? toggleNewsBookmark : void 0;
+    globalThis.refreshNewsFeed = typeof refreshNewsFeed !== "undefined" ? refreshNewsFeed : void 0;
   }
 
   // app-dice.js
@@ -15560,10 +15837,18 @@ ${listStr}`;
     document.body.insertAdjacentHTML("beforeend", modalHtml);
     if (typeof renderLucideIcons === "function") renderLucideIcons();
   }
-  window.rollTaskDice = rollTaskDice;
-  window.closeDiceModal = closeDiceModal2;
-  window.startDiceWinnerTimer = startDiceWinnerTimer;
-  window.completeDiceWinnerTask = completeDiceWinnerTask;
+  if (typeof window !== "undefined") {
+    window.rollTaskDice = rollTaskDice;
+    window.closeDiceModal = closeDiceModal2;
+    window.startDiceWinnerTimer = startDiceWinnerTimer;
+    window.completeDiceWinnerTask = completeDiceWinnerTask;
+  }
+  if (typeof globalThis !== "undefined") {
+    globalThis.rollTaskDice = rollTaskDice;
+    globalThis.closeDiceModal = closeDiceModal2;
+    globalThis.startDiceWinnerTimer = startDiceWinnerTimer;
+    globalThis.completeDiceWinnerTask = completeDiceWinnerTask;
+  }
 
   // app-core.js
   window.addEventListener("error", (event) => {
