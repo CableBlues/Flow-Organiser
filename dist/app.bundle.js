@@ -12428,10 +12428,14 @@ ${listStr}`;
     dragDemoTimer = setInterval(triggerDragDemonstration, 12e4);
   }
   if (typeof document !== "undefined") {
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", initDragDemonstrationEngine);
-    } else {
+    const initTasksUI = () => {
+      if (typeof renderApp2 === "function") renderApp2();
       initDragDemonstrationEngine();
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initTasksUI);
+    } else {
+      initTasksUI();
     }
   }
   if (typeof window !== "undefined") {

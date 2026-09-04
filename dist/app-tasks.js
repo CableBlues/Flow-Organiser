@@ -1861,10 +1861,14 @@ function initDragDemonstrationEngine() {
 }
 
 if (typeof document !== 'undefined') {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initDragDemonstrationEngine);
-  } else {
+  const initTasksUI = () => {
+    if (typeof renderApp === 'function') renderApp();
     initDragDemonstrationEngine();
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTasksUI);
+  } else {
+    initTasksUI();
   }
 }
 
