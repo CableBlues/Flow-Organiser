@@ -168,6 +168,65 @@ function saveCategoriesOrder() {
   }
 }
 
+function computeStringHash(str) {
+  let hash = 0;
+  const s = String(str || '');
+  for (let i = 0; i < s.length; i++) {
+    hash = ((hash << 5) - hash) + s.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash).toString(36);
+}
+
+function getStableId(item, prefix = 'item') {
+  if (!item) return null;
+  if (typeof item === 'object' && item.id) return item.id;
+  const str = typeof item === 'object' ? (item.task || item.name || item.text || item.title || JSON.stringify(item)) : String(item);
+  return `${prefix}_h${computeStringHash(str)}`;
+}
+
+function generateStableId(prefix = 'item') {
+  return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+}
+
+function ensureItemIdentity(item, fallbackPrefix = 'item') {
+  if (!item) return null;
+  const nowISO = new Date().toISOString();
+  if (typeof item === 'string') {
+    return {
+      id: getStableId(item, fallbackPrefix),
+      task: item,
+      createdAt: nowISO,
+      updatedAt: nowISO
+    };
+  }
+  if (typeof item === 'object') {
+    const copy = { ...item };
+    if (!copy.id) {
+      copy.id = getStableId(copy, fallbackPrefix);
+    }
+    if (!copy.createdAt) {
+      copy.createdAt = nowISO;
+    }
+    if (!copy.updatedAt) {
+      copy.updatedAt = copy.createdAt || nowISO;
+    }
+    return copy;
+  }
+  return item;
+}
+
+function trackTombstone(id) {
+  if (!id) return;
+  const currentState = (typeof window !== 'undefined' && window.state) ? window.state : (typeof state !== 'undefined' ? state : null);
+  if (!currentState) return;
+  if (!currentState._tombstones || typeof currentState._tombstones !== 'object') {
+    currentState._tombstones = {};
+  }
+  currentState._tombstones[id] = new Date().toISOString();
+}
+
+
 function migrateState(raw, lang) {
   const currentL = lang || (typeof currentLang !== 'undefined' ? currentLang : 'en');
   const localizedDefaults = (typeof DEFAULT_TASKS_BY_LANG !== 'undefined' && DEFAULT_TASKS_BY_LANG[currentL]) 
@@ -180,6 +239,7 @@ function migrateState(raw, lang) {
       version: 3,
       lastDate: todayStr,
       activeWorkspace: 'private',
+      _tombstones: {},
       items: {
         daily: [...(localizedDefaults.daily || [])],
         weekly: [...(localizedDefaults.weekly || [])],
@@ -207,6 +267,19 @@ function migrateState(raw, lang) {
   s.version = 3;
   if (!s.lastDate) s.lastDate = todayStr;
 
+  // 0. Tombstones initialisieren & aufräumen (> 30 Tage)
+  if (!s._tombstones || typeof s._tombstones !== 'object') {
+    s._tombstones = {};
+  } else {
+    const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+    for (const [tId, tTime] of Object.entries(s._tombstones)) {
+      const ts = new Date(tTime).getTime();
+      if (isNaN(ts) || ts < thirtyDaysAgo) {
+        delete s._tombstones[tId];
+      }
+    }
+  }
+
   // 1. Items normalisieren
   if (!s.items || typeof s.items !== 'object') {
     s.items = {
@@ -219,7 +292,9 @@ function migrateState(raw, lang) {
     };
   } else {
     ['daily', 'weekly', 'occasionally', 'todo', 'termine'].forEach(k => {
-      if (!Array.isArray(s.items[k])) s.items[k] = [];
+      if (!Array.isArray(s.items[k])) {
+        s.items[k] = [];
+      }
     });
     if (typeof s.items.notes === 'string') {
       s.items.notes = s.items.notes.split('\n').map(x => x.trim()).filter(Boolean);
@@ -240,21 +315,27 @@ function migrateState(raw, lang) {
   s.activeWorkspace = (s.activeWorkspace === 'work') ? 'work' : 'private';
   if (!s.workItems || typeof s.workItems !== 'object') {
     s.workItems = typeof createDefaultWorkItems === 'function' ? createDefaultWorkItems(currentL) : {};
-  } else {
+  }
+  if (s.workItems && typeof s.workItems === 'object') {
     ['work_focus', 'work_in_progress', 'work_waiting', 'work_backlog', 'termine', 'notes'].forEach(k => {
       if (!Array.isArray(s.workItems[k])) s.workItems[k] = [];
     });
   }
   if (!Array.isArray(s.workDone)) s.workDone = [];
 
+
   // 4. Shopping & Cooking
-  if (!Array.isArray(s.shoppingList)) s.shoppingList = [];
+  if (!Array.isArray(s.shoppingList)) {
+    s.shoppingList = [];
+  } else {
+    s.shoppingList = s.shoppingList.map(item => ensureItemIdentity(item, 'shop')).filter(Boolean);
+  }
   if (!Array.isArray(s.shoppingHistory)) s.shoppingHistory = [];
   if (!s.cooking || typeof s.cooking !== 'object') {
     s.cooking = typeof createDefaultCookingState === 'function' ? createDefaultCookingState() : {};
   } else {
     s.cooking = {
-      pantryItems: Array.isArray(s.cooking.pantryItems) ? s.cooking.pantryItems : [],
+      pantryItems: Array.isArray(s.cooking.pantryItems) ? s.cooking.pantryItems.map(p => ensureItemIdentity(p, 'pantry')).filter(Boolean) : [],
       recipes: Array.isArray(s.cooking.recipes) && s.cooking.recipes.length ? s.cooking.recipes : (typeof createDefaultCookingState === 'function' ? createDefaultCookingState().recipes : []),
       activeRecipeId: s.cooking.activeRecipeId || null,
       activeRecipe: s.cooking.activeRecipe || null
@@ -311,6 +392,7 @@ function migrateState(raw, lang) {
 
   return s;
 }
+
 window.migrateState = migrateState;
 
 function loadState() {
@@ -612,6 +694,11 @@ function copyNoteText(noteIndex, event) {
 }
 
 if (typeof window !== 'undefined') {
+  window.computeStringHash = computeStringHash;
+  window.getStableId = getStableId;
+  window.generateStableId = generateStableId;
+  window.ensureItemIdentity = ensureItemIdentity;
+  window.trackTombstone = trackTombstone;
   window.saveState = saveState;
   window.loadState = loadState;
   window.saveHistory = saveHistory;
@@ -622,6 +709,11 @@ if (typeof window !== 'undefined') {
   window.tr = tr;
 }
 if (typeof globalThis !== 'undefined') {
+  globalThis.computeStringHash = computeStringHash;
+  globalThis.getStableId = getStableId;
+  globalThis.generateStableId = generateStableId;
+  globalThis.ensureItemIdentity = ensureItemIdentity;
+  globalThis.trackTombstone = trackTombstone;
   globalThis.saveState = saveState;
   globalThis.loadState = loadState;
   globalThis.saveHistory = saveHistory;
@@ -631,3 +723,5 @@ if (typeof globalThis !== 'undefined') {
   globalThis.t = t;
   globalThis.tr = tr;
 }
+
+

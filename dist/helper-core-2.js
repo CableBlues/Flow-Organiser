@@ -34,7 +34,7 @@ function generateTaskSteps(specificTask) {
   const completedIndices = state.completedSteps[val] || [];
   
   if (steps.length === 0) {
-    resBox.innerHTML = `<div class="text-center py-3 text-xs text-gray-400">Noch keine Teilschritte vorhanden. Füge unten eigene Schritte hinzu oder klicke auf "Vorschläge laden".</div>`;
+    resBox.innerHTML = `<div class="text-center py-3 text-xs text-gray-400">Noch keine Teilschritte vorhanden. Füge unten eigene Schritte hinzu.</div>`;
   } else {
     steps.forEach((stepText, idx) => {
       const isChecked = completedIndices.includes(idx);

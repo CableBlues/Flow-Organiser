@@ -330,6 +330,9 @@ function handleToggleAlarm(id) {
 }
 
 function handleDeleteAlarm(id) {
+  if (id && typeof trackTombstone === 'function') {
+    trackTombstone(id);
+  }
   alarmState.alarms = alarmState.alarms.filter(x => x.id !== id);
   saveAlarmState();
   renderAlarmPanel();
@@ -358,10 +361,14 @@ function handleToggleReminder(id) {
 }
 
 function handleDeleteReminder(id) {
+  if (id && typeof trackTombstone === 'function') {
+    trackTombstone(id);
+  }
   alarmState.reminders = alarmState.reminders.filter(x => x.id !== id);
   saveAlarmState();
   renderAlarmPanel();
 }
+
 
 let lastTriggeredMinuteKey = '';
 function checkAlarmsLoop() {

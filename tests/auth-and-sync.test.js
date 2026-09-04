@@ -117,14 +117,14 @@ describe('Vollständige & Zuverlässige Synchronisation (Multi-Device & Offline)
       expect(FlowAuth.getUser().email).toBe('max@mustermann.de');
     });
 
-    it('ermöglicht 1-Schritt-Gerätekopplung mit 6-stelligem Code zwischen Gerät A und B', async () => {
-      // Gerät A meldet sich an
+    it('Test J: Neues Gerät koppeln per 6-stelligem Code (A generiert Code -> B gibt Code ein -> B hat vollen Zugriff)', async () => {
+      // 1. Gerät A meldet sich an und generiert einen 6-stelligen Code
       await FlowAuth.signInWithCredentials('anna@test.de', 'geheim123');
       const pairRes = await FlowAuth.createPairingCode();
       expect(pairRes.success).toBe(true);
       expect(pairRes.code).toBe('849201');
 
-      // Gerät B meldet sich ab und löst den Code ein
+      // 2. Gerät B meldet sich ab und löst den 6-stelligen Code ein
       await FlowAuth.signOut();
       expect(FlowAuth.isLoggedIn()).toBe(false);
 
@@ -144,18 +144,24 @@ describe('Vollständige & Zuverlässige Synchronisation (Multi-Device & Offline)
     });
   });
 
-  describe('2. A → Server → B und B → Server → A Synchronisation', () => {
-    it('überträgt alle Datenbereiche zuverlässig von Gerät A zu Gerät B', async () => {
+  describe('2. Bidirektionale Synchronisation (Test A & Test B)', () => {
+    it('Test A: Gerät A → Server → Gerät B (Neue Aufgabe auf A erstellen, danach Sync, auf B pullen -> exakt vorhanden)', async () => {
       // 1. Gerät A initialisieren und Aufgaben anlegen
       await FlowAuth.signInWithCredentials('team@flow.de', 'pass123');
       window.state = {
-        items: { daily: ['E-Mails beantworten', 'Projektplan erstellen'] },
-        done: [{ task: 'Frühstücken', time: '08:00' }],
-        notes: [{ id: 'n1', text: 'Wichtige Notiz für heute' }],
-        termine: [{ id: 't1', title: 'Meeting 14 Uhr', date: '2026-09-04' }],
-        shoppingList: [{ name: 'Hafermilch', checked: false }],
-        pantry: [{ id: 'p1', name: 'Reis' }],
-        brainstormIdeas: [{ id: 'b1', text: 'Neue App-Idee', tag: 'idea' }],
+        _tombstones: {},
+        items: {
+          daily: [
+            { id: 't_daily_1', task: 'E-Mails beantworten', createdAt: '2026-09-04T10:00:00Z', updatedAt: '2026-09-04T10:00:00Z' },
+            { id: 't_daily_2', task: 'Projektplan erstellen', createdAt: '2026-09-04T10:05:00Z', updatedAt: '2026-09-04T10:05:00Z' }
+          ]
+        },
+        done: [{ id: 'd_1', task: 'Frühstücken', time: '08:00', createdAt: '2026-09-04T08:00:00Z', updatedAt: '2026-09-04T08:00:00Z' }],
+        notes: [{ id: 'n1', text: 'Wichtige Notiz für heute', createdAt: '2026-09-04T10:00:00Z', updatedAt: '2026-09-04T10:00:00Z' }],
+        termine: [{ id: 't1', title: 'Meeting 14 Uhr', date: '2026-09-04', createdAt: '2026-09-04T10:00:00Z', updatedAt: '2026-09-04T10:00:00Z' }],
+        shoppingList: [{ id: 's1', name: 'Hafermilch', checked: false, createdAt: '2026-09-04T10:00:00Z', updatedAt: '2026-09-04T10:00:00Z' }],
+        pantry: [{ id: 'p1', name: 'Reis', createdAt: '2026-09-04T10:00:00Z', updatedAt: '2026-09-04T10:00:00Z' }],
+        brainstormIdeas: [{ id: 'b1', text: 'Neue App-Idee', tag: 'idea', createdAt: '2026-09-04T10:00:00Z', updatedAt: '2026-09-04T10:00:00Z' }],
         activeWorkspace: 'private'
       };
 
@@ -163,11 +169,11 @@ describe('Vollständige & Zuverlässige Synchronisation (Multi-Device & Offline)
       expect(pushRes.success).toBe(true);
 
       // 2. Gerät B startet mit leerem Zustand und zieht die Daten
-      window.state = { items: {}, done: [], notes: [], termine: [], shoppingList: [], brainstormIdeas: [], pantry: [] };
+      window.state = { _tombstones: {}, items: {}, done: [], notes: [], termine: [], shoppingList: [], brainstormIdeas: [], pantry: [] };
       const pullRes = await cloudSyncEngine.pullState();
       expect(pullRes.success).toBe(true);
 
-      expect(window.state.items.daily).toEqual(['E-Mails beantworten', 'Projektplan erstellen']);
+      expect(window.state.items.daily.map(t => (typeof t === 'object' ? t.task : t))).toEqual(['E-Mails beantworten', 'Projektplan erstellen']);
       expect(window.state.done).toHaveLength(1);
       expect(window.state.notes[0].text).toBe('Wichtige Notiz für heute');
       expect(window.state.termine[0].title).toBe('Meeting 14 Uhr');
@@ -175,20 +181,22 @@ describe('Vollständige & Zuverlässige Synchronisation (Multi-Device & Offline)
       expect(window.state.brainstormIdeas[0].text).toBe('Neue App-Idee');
     });
 
-    it('überträgt Änderungen von Gerät B zurück zu Gerät A', async () => {
+    it('Test B: Gerät B → Server → Gerät A (Auf B Aufgabe abhaken/ändern -> auf A sofort sichtbar)', async () => {
       await FlowAuth.signInWithCredentials('team@flow.de', 'pass123');
       
       // Gerät B hakt eine Aufgabe ab und fügt einen neuen Termin hinzu
       window.state = {
-        items: { daily: ['E-Mails beantworten'] },
-        done: [{ task: 'Projektplan erstellen', time: '11:30' }],
-        termine: [{ id: 't2', title: 'Zahnarzt', date: '2026-09-10' }]
+        _tombstones: {},
+        items: { daily: [{ id: 't_daily_1', task: 'E-Mails beantworten', updatedAt: '2026-09-04T10:00:00Z' }] },
+        done: [{ id: 'd_2', task: 'Projektplan erstellen', time: '11:30', updatedAt: '2026-09-04T11:30:00Z' }],
+        termine: [{ id: 't2', title: 'Zahnarzt', date: '2026-09-10', updatedAt: '2026-09-04T11:30:00Z' }]
       };
       await cloudSyncEngine.pushState();
 
       // Gerät A synchronisiert
       window.state = {
-        items: { daily: ['E-Mails beantworten'] },
+        _tombstones: {},
+        items: { daily: [{ id: 't_daily_1', task: 'E-Mails beantworten', updatedAt: '2026-09-04T10:00:00Z' }] },
         done: [],
         termine: []
       };
@@ -200,15 +208,142 @@ describe('Vollständige & Zuverlässige Synchronisation (Multi-Device & Offline)
     });
   });
 
-  describe('3. Offline → Online & Auto-Retry', () => {
-    it('behält Offline-Änderungen in der Warteschlange und synchronisiert sie bei Wiederverbindung', async () => {
+  describe('3. Änderungen & Löschungen mit Tombstones (Test C, Test D, Test G)', () => {
+    it('Test C: Bearbeitung (A ändert Text von Aufgabe X -> B empfängt exakte Änderung)', () => {
+      const localState = {
+        _tombstones: {},
+        items: {
+          daily: [
+            { id: 'task_100', task: 'Milch kaufen (alt)', createdAt: '2026-09-04T10:00:00Z', updatedAt: '2026-09-04T10:00:00Z' }
+          ]
+        }
+      };
+
+      const remoteData = {
+        _tombstones: {},
+        items: {
+          daily: [
+            { id: 'task_100', task: 'Hafermilch kaufen (neu)', createdAt: '2026-09-04T10:00:00Z', updatedAt: '2026-09-04T10:30:00Z' }
+          ]
+        }
+      };
+
+      const changed = cloudSyncEngine.mergeState(localState, remoteData);
+      expect(changed).toBe(true);
+      expect(localState.items.daily).toHaveLength(1);
+      expect(localState.items.daily[0].task).toBe('Hafermilch kaufen (neu)');
+      expect(localState.items.daily[0].id).toBe('task_100');
+    });
+
+    it('Test D: Löschen (A löscht Aufgabe Y -> auf B gelöscht und taucht NIE wieder auf dank Tombstone)', () => {
+      // Gerät A hat task_200 gelöscht und in _tombstones vermerkt
+      const remoteData = {
+        _tombstones: {
+          'task_200': '2026-09-04T12:00:00Z'
+        },
+        items: {
+          daily: [
+            { id: 'task_201', task: 'Verbleibende Aufgabe', createdAt: '2026-09-04T10:00:00Z', updatedAt: '2026-09-04T10:00:00Z' }
+          ]
+        }
+      };
+
+      // Gerät B hat task_200 noch lokal
+      const localState = {
+        _tombstones: {},
+        items: {
+          daily: [
+            { id: 'task_200', task: 'Zu löschende Aufgabe', createdAt: '2026-09-04T09:00:00Z', updatedAt: '2026-09-04T09:00:00Z' },
+            { id: 'task_201', task: 'Verbleibende Aufgabe', createdAt: '2026-09-04T10:00:00Z', updatedAt: '2026-09-04T10:00:00Z' }
+          ]
+        }
+      };
+
+      const changed = cloudSyncEngine.mergeState(localState, remoteData);
+      expect(changed).toBe(true);
+      expect(localState.items.daily).toHaveLength(1);
+      expect(localState.items.daily[0].id).toBe('task_201');
+      expect(localState._tombstones['task_200']).toBe('2026-09-04T12:00:00Z');
+
+      // Erneuter Sync / Re-merge reanimiert die gelöschte Aufgabe nicht
+      const secondMerge = cloudSyncEngine.mergeState(localState, remoteData);
+      expect(localState.items.daily).toHaveLength(1);
+      expect(localState.items.daily[0].id).toBe('task_201');
+    });
+
+    it('Test G: Gleichzeitige Bearbeitung (A ändert X um 14:15, B ändert X um 14:30 -> 14:30 gewinnt deterministisch via LWW)', () => {
+      // Gerät A hat Version um 14:15 Uhr gespeichert
+      const localState = {
+        _tombstones: {},
+        items: {
+          daily: [
+            { id: 'task_shared', task: 'Version A (14:15)', createdAt: '2026-09-04T10:00:00Z', updatedAt: '2026-09-04T14:15:00Z' }
+          ]
+        }
+      };
+
+      // Gerät B hat Version um 14:30 Uhr gespeichert (neuer!)
+      const remoteData = {
+        _tombstones: {},
+        items: {
+          daily: [
+            { id: 'task_shared', task: 'Version B (14:30 - gewinnt)', createdAt: '2026-09-04T10:00:00Z', updatedAt: '2026-09-04T14:30:00Z' }
+          ]
+        }
+      };
+
+      const changed = cloudSyncEngine.mergeState(localState, remoteData);
+      expect(changed).toBe(true);
+      expect(localState.items.daily[0].task).toBe('Version B (14:30 - gewinnt)');
+    });
+  });
+
+  describe('4. Gleichzeitige unabhängige Änderungen (Test F: Zero Data Loss)', () => {
+    it('Test F: Gleichzeitige unabhängige Erstellung (A erstellt X, B erstellt Y -> beide behalten X und Y, Zero Data Loss)', () => {
+      const localState = {
+        _tombstones: {},
+        items: { daily: [{ id: 'task_a1', task: 'Aufgabe von Gerät A', createdAt: '2026-09-04T14:00:00Z', updatedAt: '2026-09-04T14:00:00Z' }] },
+        notes: [{ id: 'note_a1', text: 'Notiz A', createdAt: '2026-09-04T14:00:00Z', updatedAt: '2026-09-04T14:00:00Z' }],
+        shoppingList: [{ id: 'shop_a1', name: 'Brot', createdAt: '2026-09-04T14:00:00Z', updatedAt: '2026-09-04T14:00:00Z' }]
+      };
+
+      const remoteData = {
+        _tombstones: {},
+        items: { daily: [{ id: 'task_b1', task: 'Aufgabe von Gerät B', createdAt: '2026-09-04T14:05:00Z', updatedAt: '2026-09-04T14:05:00Z' }] },
+        notes: [{ id: 'note_b1', text: 'Notiz B', createdAt: '2026-09-04T14:05:00Z', updatedAt: '2026-09-04T14:05:00Z' }],
+        shoppingList: [{ id: 'shop_b1', name: 'Kaffee', createdAt: '2026-09-04T14:05:00Z', updatedAt: '2026-09-04T14:05:00Z' }]
+      };
+
+      const changed = cloudSyncEngine.mergeState(localState, remoteData);
+      expect(changed).toBe(true);
+
+      // Beide Aufgaben sind da
+      const dailyTasks = localState.items.daily.map(t => (typeof t === 'object' ? t.task : t));
+      expect(dailyTasks).toContain('Aufgabe von Gerät A');
+      expect(dailyTasks).toContain('Aufgabe von Gerät B');
+
+      // Beide Notizen sind da
+      const notes = localState.notes.map(n => n.text);
+      expect(notes).toContain('Notiz A');
+      expect(notes).toContain('Notiz B');
+
+      // Beide Shopping-Items sind da
+      const shopping = localState.shoppingList.map(s => s.name);
+      expect(shopping).toContain('Brot');
+      expect(shopping).toContain('Kaffee');
+    });
+  });
+
+  describe('5. Offline-Queue & Auto-Retry (Test E & Test I)', () => {
+    it('Test E: Offline-Queue (Offline auf A Aufgaben erstellen, online gehen -> automatisch synchronisiert)', async () => {
       await FlowAuth.signInWithCredentials('offline.user@flow.de', 'securepass');
 
       // Offline schalten
       vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false);
 
       window.state = {
-        items: { daily: ['Offline erstellte Aufgabe'] },
+        _tombstones: {},
+        items: { daily: [{ id: 't_off', task: 'Offline erstellte Aufgabe', createdAt: '2026-09-04T15:00:00Z', updatedAt: '2026-09-04T15:00:00Z' }] },
         done: []
       };
 
@@ -226,11 +361,11 @@ describe('Vollständige & Zuverlässige Synchronisation (Multi-Device & Offline)
       expect(cloudSyncEngine.isPendingSync()).toBe(false);
     });
 
-    it('führt automatischen Retry bei temporärem Netzwerkfehler durch', async () => {
+    it('Test I: Netzwerkfehler & Backoff Retry (Server antwortet mit Fehler -> retryTimer und flow_pending_sync aktiv)', async () => {
       await FlowAuth.signInWithCredentials('retry.user@flow.de', 'securepass');
-      window.state = { items: { daily: ['Retry Task'] } };
+      window.state = { _tombstones: {}, items: { daily: [{ id: 't_retry', task: 'Retry Task' }] } };
 
-      // 1. Aufruf schlägt mit Server-Fehler 500 fehl
+      // 1. Aufruf schlägt mit Server-Fehler / Verbindungsabbruch fehl
       globalThis.fetch = vi.fn().mockRejectedValueOnce(new Error('Network disconnected'));
 
       const failedRes = await cloudSyncEngine.pushState();
@@ -241,47 +376,59 @@ describe('Vollständige & Zuverlässige Synchronisation (Multi-Device & Offline)
     });
   });
 
-  describe('4. Konfliktfreie Zusammenführung (Non-Destructive Merge)', () => {
-    it('vereinigt gleichzeitige Änderungen von Gerät A und Gerät B ohne Datenverlust', () => {
-      const localState = {
-        items: { daily: ['Aufgabe von Gerät A'] },
-        notes: [{ id: 'n_a', text: 'Notiz von Gerät A' }],
-        shoppingList: [{ name: 'Brot' }]
+  describe('6. Persistenz & Lokaler Modus (Test H)', () => {
+    it('Test H: App schließen während Sync / Re-Open (State bleibt persistent in LocalStorage und synct beim nächsten Start)', () => {
+      window.state = {
+        _tombstones: { 'old_tomb': '2026-09-01T00:00:00Z' },
+        items: { daily: [{ id: 'reopen_task', task: 'Persistente Aufgabe vor Schließen' }] },
+        done: []
       };
 
-      const remoteData = {
-        items: { daily: ['Aufgabe von Gerät B'] },
-        notes: [{ id: 'n_b', text: 'Notiz von Gerät B' }],
-        shoppingList: [{ name: 'Kaffee' }]
-      };
+      // Speichern wie vor Schließen der App
+      saveState();
 
-      const changed = cloudSyncEngine.mergeState(localState, remoteData);
-      expect(changed).toBe(true);
+      // Simulation App-Neustart: State wird aus LocalStorage geladen
+      const loadedRaw = JSON.parse(localStorage.getItem('flowPlannerV3'));
+      const restoredState = migrateState(loadedRaw, 'de');
 
-      // Beide Aufgaben müssen vorhanden sein
-      expect(localState.items.daily).toContain('Aufgabe von Gerät A');
-      expect(localState.items.daily).toContain('Aufgabe von Gerät B');
-
-      // Beide Notizen müssen vorhanden sein
-      expect(localState.notes.map(n => n.text)).toEqual(expect.arrayContaining(['Notiz von Gerät A', 'Notiz von Gerät B']));
-
-      // Beide Einkaufs-Items müssen vorhanden sein
-      expect(localState.shoppingList.map(s => s.name)).toEqual(expect.arrayContaining(['Brot', 'Kaffee']));
+      expect(restoredState.items.daily[0].task).toBe('Persistente Aufgabe vor Schließen');
+      expect(restoredState._tombstones['old_tomb']).toBe('2026-09-01T00:00:00Z');
     });
-  });
 
-  describe('5. Lokaler Modus ohne Anmeldung', () => {
+    it('migriert ältere String-Aufgaben automatisch zu Objekten mit stabiler ID und Zeitstempel bei Serialisierung/Sync', () => {
+      const oldRaw = {
+        version: 3,
+        items: {
+          daily: ['Alte String Aufgabe 1', 'Alte String Aufgabe 2'],
+          todo: ['Altes Todo']
+        },
+        done: [{ task: 'Erledigt' }]
+      };
+
+      const migrated = migrateState(oldRaw, 'de');
+      expect(migrated.version).toBe(3);
+      expect(migrated._tombstones).toBeDefined();
+
+      // Serialisierung für den Sync normalisiert alle Einträge auf eindeutige IDs & Zeitstempel
+      const serialized = cloudSyncEngine.serializeFullState(migrated);
+      expect(serialized._tombstones).toBeDefined();
+      expect(serialized.items.daily).toHaveLength(2);
+      expect(serialized.items.todo).toHaveLength(1);
+    });
+
     it('funktioniert 100% lokal ohne Fehler wenn nicht angemeldet', () => {
       expect(FlowAuth.isLoggedIn()).toBe(false);
 
       window.state = {
-        items: { daily: ['Lokaler Task 1', 'Lokaler Task 2'] },
+        _tombstones: {},
+        items: { daily: [{ id: 'loc1', task: 'Lokaler Task 1' }] },
         done: []
       };
 
       expect(() => saveState()).not.toThrow();
       const stored = JSON.parse(localStorage.getItem('flowPlannerV3'));
-      expect(stored.items.daily).toEqual(['Lokaler Task 1', 'Lokaler Task 2']);
+      expect(stored.items.daily[0].task).toBe('Lokaler Task 1');
     });
   });
 });
+

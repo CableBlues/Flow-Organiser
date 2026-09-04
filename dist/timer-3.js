@@ -572,6 +572,41 @@ function updateTimerDisplay() {
   if (countEl) {
     countEl.innerText = str;
   }
-} 
- 
- 
+}
+
+if (typeof window !== 'undefined') {
+  window.startTaskTimer = startTaskTimer;
+  window.updateActiveTimerLabels = updateActiveTimerLabels;
+  window.updateActiveTimerBadge = updateActiveTimerBadge;
+  window.setTimerPreset = setTimerPreset;
+  window.openTimerPresetMenu = openTimerPresetMenu;
+  window.closeTimerPresetMenu = closeTimerPresetMenu;
+  window.toggleTimerPresetMenu = toggleTimerPresetMenu;
+  window.selectTimerPreset = selectTimerPreset;
+  window.syncTimerWithTimestamp = syncTimerWithTimestamp;
+  window.startTimer = startTimer;
+  window.pauseTimer = pauseTimer;
+  window.stopTimer = stopTimer;
+  window.toggleTimer = toggleTimer;
+  window.resetTimer = resetTimer;
+  window.updateTimerUI = updateTimerUI;
+  window.updateTimerDisplay = updateTimerDisplay;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.startTaskTimer = startTaskTimer;
+  globalThis.updateActiveTimerLabels = updateActiveTimerLabels;
+  globalThis.updateActiveTimerBadge = updateActiveTimerBadge;
+  globalThis.setTimerPreset = setTimerPreset;
+  globalThis.openTimerPresetMenu = openTimerPresetMenu;
+  globalThis.closeTimerPresetMenu = closeTimerPresetMenu;
+  globalThis.toggleTimerPresetMenu = toggleTimerPresetMenu;
+  globalThis.selectTimerPreset = selectTimerPreset;
+  globalThis.syncTimerWithTimestamp = syncTimerWithTimestamp;
+  globalThis.startTimer = startTimer;
+  globalThis.pauseTimer = pauseTimer;
+  globalThis.stopTimer = stopTimer;
+  globalThis.toggleTimer = toggleTimer;
+  globalThis.resetTimer = resetTimer;
+  globalThis.updateTimerUI = updateTimerUI;
+  globalThis.updateTimerDisplay = updateTimerDisplay;
+}

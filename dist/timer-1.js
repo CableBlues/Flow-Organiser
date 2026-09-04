@@ -709,13 +709,22 @@ function getContextMotivation(remSec, totSec) {
 
 if (typeof window !== 'undefined') {
   window.toggleTimerSound = toggleTimerSound;
+  window.updateMuteButtonsUI = updateMuteButtonsUI;
+  window.playRandomTimerAmbient = playRandomTimerAmbient;
+  window.updateSpeechVoices = updateSpeechVoices;
   window.speakWithProfile = speakWithProfile;
   window.speakSoftlyDynamic = speakSoftlyDynamic;
   window.getContextMotivation = getContextMotivation;
+  window.getCurrentPresetMinutes = getCurrentPresetMinutes;
 }
 if (typeof globalThis !== 'undefined') {
   globalThis.toggleTimerSound = toggleTimerSound;
+  globalThis.updateMuteButtonsUI = updateMuteButtonsUI;
+  globalThis.playRandomTimerAmbient = playRandomTimerAmbient;
+  globalThis.updateSpeechVoices = updateSpeechVoices;
   globalThis.speakWithProfile = speakWithProfile;
   globalThis.speakSoftlyDynamic = speakSoftlyDynamic;
   globalThis.getContextMotivation = getContextMotivation;
+  globalThis.getCurrentPresetMinutes = getCurrentPresetMinutes;
 }
+

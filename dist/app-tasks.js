@@ -181,9 +181,16 @@ function setTaskColor(columnId, index, color, e) {
   if (!curItems[columnId] || !curItems[columnId][index]) return;
   const current = curItems[columnId][index];
   if (typeof current === 'object') {
-    current.color = color === 'none' ? undefined : color;
+    if (color === 'none') {
+      delete curItems[columnId][index].color;
+    } else {
+      curItems[columnId][index].color = color;
+    }
+    curItems[columnId][index].updatedAt = new Date().toISOString();
   } else {
-    curItems[columnId][index] = { task: current, color: color === 'none' ? undefined : color };
+    curItems[columnId][index] = (typeof ensureItemIdentity === 'function') 
+      ? ensureItemIdentity({ task: current, color: color === 'none' ? undefined : color }, `task_${columnId}`)
+      : { task: current, color: color === 'none' ? undefined : color };
   }
   saveState();
   renderApp();
@@ -699,12 +706,15 @@ function renderApp() {
       addInput.onkeydown = (e) => {
         if (e.key === 'Enter' && addInput.value.trim()) {
           saveHistory();
-          const curItems = getCurrentWorkspaceItems();
-          if (!curItems[id]) curItems[id] = [];
-          curItems[id].push(addInput.value.trim());
+          const taskText = addInput.value.trim();
+          const taskObj = (typeof ensureItemIdentity === 'function') 
+            ? ensureItemIdentity(taskText, `task_${id}`)
+            : { task: taskText };
+          curItems[id].push(taskObj);
           addInput.value = '';
           openTaskAddColumns[id] = false;
           saveState(); renderApp(); populateHelperTaskSelect();
+
           if (typeof lucide !== 'undefined') lucide.createIcons();
         }
         if (e.key === 'Escape') { openTaskAddColumns[id] = false; renderApp(); }
@@ -876,13 +886,27 @@ window.closeFeierabendModal = closeFeierabendModal;
 window.startFeierabendChillMode = startFeierabendChillMode;
 
 function deleteTask(category, index, event) {
-  if (event) event.stopPropagation(); saveHistory();
+  if (event) event.stopPropagation();
+  saveHistory();
   const curItems = getCurrentWorkspaceItems();
-  const taskObj = curItems[category]?.[index]; const taskText = typeof taskObj === 'object' ? taskObj?.task : taskObj;
+  const taskObj = curItems[category]?.[index];
+  const taskText = typeof taskObj === 'object' ? taskObj?.task : taskObj;
+  const taskId = (taskObj && typeof taskObj === 'object' && taskObj.id) 
+    ? taskObj.id 
+    : ((typeof getStableId === 'function') ? getStableId(taskObj, `task_${category}`) : null);
+  if (taskId && typeof trackTombstone === 'function') {
+    trackTombstone(taskId);
+  }
+
   if (curItems[category]) curItems[category].splice(index, 1);
   if (taskText && state.completedSteps) delete state.completedSteps[taskText];
-  saveState(); showToast(t('toast_task_deleted'), { undo: true, duration: 5000 }); renderApp(); updateZenView(); populateHelperTaskSelect();
+  saveState();
+  showToast(t('toast_task_deleted'), { undo: true, duration: 5000 });
+  renderApp();
+  updateZenView();
+  populateHelperTaskSelect();
 }
+
 
 function handleRestoreDoneTask(doneIndex) {
   saveHistory();
@@ -1592,10 +1616,14 @@ function editTaskInline(cat, index, event) {
       saveHistory();
       if (typeof curItems[cat][index] === 'object') {
         curItems[cat][index].task = newText;
+        curItems[cat][index].updatedAt = new Date().toISOString();
       } else {
-        curItems[cat][index] = newText;
+        curItems[cat][index] = (typeof ensureItemIdentity === 'function')
+          ? ensureItemIdentity(newText, `task_${cat}`)
+          : { task: newText };
       }
       saveState();
+
       const safeEscaped = escapeHtml(newText);
       span.innerHTML = safeEscaped.replace(/ &amp; /g, '&nbsp;&amp; ').replace(/ & /g, '&nbsp;& ');
       span.title = `${newText} (${tr({ de: 'Klicken zum Bearbeiten', en: 'Click to edit', fr: 'Cliquer pour modifier', it: 'Clicca per modificare', es: 'Clic para editar', el: 'Κλικ για επεξεργασία' })})`;

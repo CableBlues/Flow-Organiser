@@ -184,7 +184,14 @@ function handleDeleteShoppingItem(index) {
   if (!state.shoppingList || !state.shoppingList[index]) return;
   saveHistory();
   const removed = state.shoppingList.splice(index, 1)[0];
+  const shopId = (removed && typeof removed === 'object' && removed.id) 
+    ? removed.id 
+    : ((typeof getStableId === 'function') ? getStableId(removed, 'shop') : null);
+  if (shopId && typeof trackTombstone === 'function') {
+    trackTombstone(shopId);
+  }
   saveState();
+
   renderApp();
   renderSupermarketModal();
   showToast(tr({

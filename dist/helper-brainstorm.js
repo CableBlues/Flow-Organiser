@@ -266,10 +266,14 @@ function setIdeaTag(id, newTag) {
 }
 
 function deleteBrainstormIdea(id) {
+  if (id && typeof trackTombstone === 'function') {
+    trackTombstone(id);
+  }
   brainstormIdeas = brainstormIdeas.filter(i => i.id !== id);
   saveBrainstormIdeas();
   renderBrainstormUI();
 }
+
 
 function clearAllBrainstormIdeas() {
   if (brainstormIdeas.length === 0) return;

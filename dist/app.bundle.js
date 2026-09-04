@@ -5365,6 +5365,59 @@
       activeRecipe: null
     };
   }
+  function computeStringHash(str) {
+    let hash = 0;
+    const s = String(str || "");
+    for (let i = 0; i < s.length; i++) {
+      hash = (hash << 5) - hash + s.charCodeAt(i);
+      hash |= 0;
+    }
+    return Math.abs(hash).toString(36);
+  }
+  function getStableId2(item, prefix = "item") {
+    if (!item) return null;
+    if (typeof item === "object" && item.id) return item.id;
+    const str = typeof item === "object" ? item.task || item.name || item.text || item.title || JSON.stringify(item) : String(item);
+    return `${prefix}_h${computeStringHash(str)}`;
+  }
+  function generateStableId(prefix = "item") {
+    return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+  }
+  function ensureItemIdentity2(item, fallbackPrefix = "item") {
+    if (!item) return null;
+    const nowISO = (/* @__PURE__ */ new Date()).toISOString();
+    if (typeof item === "string") {
+      return {
+        id: getStableId2(item, fallbackPrefix),
+        task: item,
+        createdAt: nowISO,
+        updatedAt: nowISO
+      };
+    }
+    if (typeof item === "object") {
+      const copy = { ...item };
+      if (!copy.id) {
+        copy.id = getStableId2(copy, fallbackPrefix);
+      }
+      if (!copy.createdAt) {
+        copy.createdAt = nowISO;
+      }
+      if (!copy.updatedAt) {
+        copy.updatedAt = copy.createdAt || nowISO;
+      }
+      return copy;
+    }
+    return item;
+  }
+  function trackTombstone2(id) {
+    if (!id) return;
+    const currentState = typeof window !== "undefined" && window.state ? window.state : typeof state2 !== "undefined" ? state2 : null;
+    if (!currentState) return;
+    if (!currentState._tombstones || typeof currentState._tombstones !== "object") {
+      currentState._tombstones = {};
+    }
+    currentState._tombstones[id] = (/* @__PURE__ */ new Date()).toISOString();
+  }
   function migrateState(raw, lang) {
     const currentL = lang || (typeof currentLang2 !== "undefined" ? currentLang2 : "en");
     const localizedDefaults = typeof DEFAULT_TASKS_BY_LANG !== "undefined" && DEFAULT_TASKS_BY_LANG[currentL] ? DEFAULT_TASKS_BY_LANG[currentL] : typeof DEFAULT_TASKS_BY_LANG !== "undefined" && DEFAULT_TASKS_BY_LANG["en"] ? DEFAULT_TASKS_BY_LANG["en"] : { daily: [], weekly: [], occasionally: [] };
@@ -5374,6 +5427,7 @@
         version: 3,
         lastDate: todayStr,
         activeWorkspace: "private",
+        _tombstones: {},
         items: {
           daily: [...localizedDefaults.daily || []],
           weekly: [...localizedDefaults.weekly || []],
@@ -5399,6 +5453,17 @@
     const s = { ...raw };
     s.version = 3;
     if (!s.lastDate) s.lastDate = todayStr;
+    if (!s._tombstones || typeof s._tombstones !== "object") {
+      s._tombstones = {};
+    } else {
+      const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1e3;
+      for (const [tId, tTime] of Object.entries(s._tombstones)) {
+        const ts = new Date(tTime).getTime();
+        if (isNaN(ts) || ts < thirtyDaysAgo) {
+          delete s._tombstones[tId];
+        }
+      }
+    }
     if (!s.items || typeof s.items !== "object") {
       s.items = {
         daily: [...localizedDefaults.daily || []],
@@ -5410,7 +5475,9 @@
       };
     } else {
       ["daily", "weekly", "occasionally", "todo", "termine"].forEach((k) => {
-        if (!Array.isArray(s.items[k])) s.items[k] = [];
+        if (!Array.isArray(s.items[k])) {
+          s.items[k] = [];
+        }
       });
       if (typeof s.items.notes === "string") {
         s.items.notes = s.items.notes.split("\n").map((x) => x.trim()).filter(Boolean);
@@ -5427,19 +5494,24 @@
     s.activeWorkspace = s.activeWorkspace === "work" ? "work" : "private";
     if (!s.workItems || typeof s.workItems !== "object") {
       s.workItems = typeof createDefaultWorkItems2 === "function" ? createDefaultWorkItems2(currentL) : {};
-    } else {
+    }
+    if (s.workItems && typeof s.workItems === "object") {
       ["work_focus", "work_in_progress", "work_waiting", "work_backlog", "termine", "notes"].forEach((k) => {
         if (!Array.isArray(s.workItems[k])) s.workItems[k] = [];
       });
     }
     if (!Array.isArray(s.workDone)) s.workDone = [];
-    if (!Array.isArray(s.shoppingList)) s.shoppingList = [];
+    if (!Array.isArray(s.shoppingList)) {
+      s.shoppingList = [];
+    } else {
+      s.shoppingList = s.shoppingList.map((item) => ensureItemIdentity2(item, "shop")).filter(Boolean);
+    }
     if (!Array.isArray(s.shoppingHistory)) s.shoppingHistory = [];
     if (!s.cooking || typeof s.cooking !== "object") {
       s.cooking = typeof createDefaultCookingState2 === "function" ? createDefaultCookingState2() : {};
     } else {
       s.cooking = {
-        pantryItems: Array.isArray(s.cooking.pantryItems) ? s.cooking.pantryItems : [],
+        pantryItems: Array.isArray(s.cooking.pantryItems) ? s.cooking.pantryItems.map((p) => ensureItemIdentity2(p, "pantry")).filter(Boolean) : [],
         recipes: Array.isArray(s.cooking.recipes) && s.cooking.recipes.length ? s.cooking.recipes : typeof createDefaultCookingState2 === "function" ? createDefaultCookingState2().recipes : [],
         activeRecipeId: s.cooking.activeRecipeId || null,
         activeRecipe: s.cooking.activeRecipe || null
@@ -5640,6 +5712,11 @@
     populateHelperTaskSelect();
   }
   if (typeof window !== "undefined") {
+    window.computeStringHash = computeStringHash;
+    window.getStableId = getStableId2;
+    window.generateStableId = generateStableId;
+    window.ensureItemIdentity = ensureItemIdentity2;
+    window.trackTombstone = trackTombstone2;
     window.saveState = saveState2;
     window.loadState = loadState;
     window.saveHistory = saveHistory2;
@@ -5650,6 +5727,11 @@
     window.tr = tr2;
   }
   if (typeof globalThis !== "undefined") {
+    globalThis.computeStringHash = computeStringHash;
+    globalThis.getStableId = getStableId2;
+    globalThis.generateStableId = generateStableId;
+    globalThis.ensureItemIdentity = ensureItemIdentity2;
+    globalThis.trackTombstone = trackTombstone2;
     globalThis.saveState = saveState2;
     globalThis.loadState = loadState;
     globalThis.saveHistory = saveHistory2;
@@ -5810,10 +5892,11 @@
       } catch (e) {
       }
     },
-    // Vollständige State-Serialisierung (alle Datenbereiche)
+    // Vollständige State-Serialisierung (alle Datenbereiche inkl. Tombstones)
     serializeFullState(stateObj) {
       const s = stateObj || {};
       return {
+        _tombstones: s._tombstones || {},
         items: s.items || {},
         done: s.done || [],
         workItems: s.workItems || {},
@@ -5836,68 +5919,183 @@
         clientTimestamp: (/* @__PURE__ */ new Date()).toISOString()
       };
     },
-    // Intelligenter, nicht-destruktiver 2-Wege-Merge
+    // Deterministischer, verlustfreier 3-Wege / Item-Level LWW-Merge mit Tombstones
     mergeState(localState, remoteData) {
       if (!localState || !remoteData) return false;
       let modified = false;
-      function mergeArray(localArr, remoteArr, keyProp = null) {
-        if (!Array.isArray(remoteArr) || remoteArr.length === 0) return localArr || [];
-        if (!Array.isArray(localArr) || localArr.length === 0) return JSON.parse(JSON.stringify(remoteArr));
-        const result = [...localArr];
-        for (const rItem of remoteArr) {
-          if (!rItem) continue;
-          let exists = false;
-          if (keyProp && typeof rItem === "object") {
-            exists = result.some((lItem) => lItem && (lItem[keyProp] === rItem[keyProp] || lItem.id && lItem.id === rItem.id || lItem.text && lItem.text === rItem.text));
-          } else if (typeof rItem === "object") {
-            exists = result.some((lItem) => lItem && (lItem.id && lItem.id === rItem.id || lItem.task && lItem.task === rItem.task || lItem.name && lItem.name === rItem.name || lItem.text && lItem.text === rItem.text || JSON.stringify(lItem) === JSON.stringify(rItem)));
-          } else {
-            exists = result.includes(rItem);
+      function computeStringHash2(str) {
+        let hash = 0;
+        const s = String(str || "");
+        for (let i = 0; i < s.length; i++) {
+          hash = (hash << 5) - hash + s.charCodeAt(i);
+          hash |= 0;
+        }
+        return Math.abs(hash).toString(36);
+      }
+      function normalizeItem(item, fallbackPrefix = "item") {
+        if (!item) return null;
+        const nowISO = (/* @__PURE__ */ new Date()).toISOString();
+        if (typeof item === "string") {
+          return {
+            id: `${fallbackPrefix}_h${computeStringHash2(item)}`,
+            task: item,
+            _wasString: true,
+            createdAt: nowISO,
+            updatedAt: nowISO
+          };
+        }
+        if (typeof item === "object") {
+          const copy = { ...item };
+          if (!copy.id) {
+            const itemText = copy.task || copy.name || copy.text || copy.title || JSON.stringify(copy);
+            copy.id = `${fallbackPrefix}_h${computeStringHash2(itemText)}`;
           }
-          if (!exists) {
-            result.push(rItem);
+          if (!copy.createdAt) copy.createdAt = nowISO;
+          if (!copy.updatedAt) copy.updatedAt = copy.createdAt || nowISO;
+          return copy;
+        }
+        return item;
+      }
+      const localTombstones = localState._tombstones && typeof localState._tombstones === "object" ? { ...localState._tombstones } : {};
+      const remoteTombstones = remoteData._tombstones && typeof remoteData._tombstones === "object" ? remoteData._tombstones : {};
+      const mergedTombstones = { ...localTombstones };
+      for (const [tId, rTime] of Object.entries(remoteTombstones)) {
+        if (!mergedTombstones[tId]) {
+          mergedTombstones[tId] = rTime;
+          modified = true;
+        } else {
+          const lTs = new Date(mergedTombstones[tId]).getTime();
+          const rTs = new Date(rTime).getTime();
+          if (rTs > lTs) {
+            mergedTombstones[tId] = rTime;
             modified = true;
           }
         }
+      }
+      localState._tombstones = mergedTombstones;
+      function mergeList(localList, remoteList, prefix) {
+        const lArr = Array.isArray(localList) ? localList.map((item) => normalizeItem(item, prefix)).filter(Boolean) : [];
+        const rArr = Array.isArray(remoteList) ? remoteList.map((item) => normalizeItem(item, prefix)).filter(Boolean) : [];
+        const lMap = /* @__PURE__ */ new Map();
+        lArr.forEach((item) => {
+          if (item && item.id) lMap.set(item.id, item);
+        });
+        const rMap = /* @__PURE__ */ new Map();
+        rArr.forEach((item) => {
+          if (item && item.id) rMap.set(item.id, item);
+        });
+        const allIds = /* @__PURE__ */ new Set([...lMap.keys(), ...rMap.keys()]);
+        const mergedMap = /* @__PURE__ */ new Map();
+        for (const id of allIds) {
+          const lItem = lMap.get(id);
+          const rItem = rMap.get(id);
+          if (mergedTombstones[id]) {
+            const delTs = new Date(mergedTombstones[id]).getTime();
+            const lUp = lItem ? new Date(lItem.updatedAt || lItem.createdAt || 0).getTime() : 0;
+            const rUp = rItem ? new Date(rItem.updatedAt || rItem.createdAt || 0).getTime() : 0;
+            const maxUp = Math.max(lUp, rUp);
+            if (delTs >= maxUp) {
+              if (lMap.has(id)) modified = true;
+              continue;
+            }
+          }
+          if (lItem && rItem) {
+            const lTime = new Date(lItem.updatedAt || lItem.createdAt || 0).getTime();
+            const rTime = new Date(rItem.updatedAt || rItem.createdAt || 0).getTime();
+            if (rTime > lTime) {
+              mergedMap.set(id, rItem);
+              modified = true;
+            } else {
+              mergedMap.set(id, lItem);
+            }
+          } else if (rItem) {
+            mergedMap.set(id, rItem);
+            modified = true;
+          } else if (lItem) {
+            mergedMap.set(id, lItem);
+          }
+        }
+        const result = [];
+        const seenIds = /* @__PURE__ */ new Set();
+        function formatOutput(item) {
+          if (!item) return item;
+          if (item._wasString) {
+            const extraKeys = Object.keys(item).filter((k) => !["_wasString", "id", "createdAt", "updatedAt", "task"].includes(k));
+            if (extraKeys.length === 0 && typeof item.task === "string") {
+              return item.task;
+            }
+          }
+          return item;
+        }
+        lArr.forEach((item) => {
+          if (item && mergedMap.has(item.id) && !seenIds.has(item.id)) {
+            result.push(formatOutput(mergedMap.get(item.id)));
+            seenIds.add(item.id);
+          }
+        });
+        rArr.forEach((item) => {
+          if (item && mergedMap.has(item.id) && !seenIds.has(item.id)) {
+            result.push(formatOutput(mergedMap.get(item.id)));
+            seenIds.add(item.id);
+          }
+        });
         return result;
       }
-      function mergeCategoryMap(localMap, remoteMap) {
-        const merged = { ...localMap || {} };
-        if (!remoteMap || typeof remoteMap !== "object") return merged;
-        for (const [cat, rTasks] of Object.entries(remoteMap)) {
-          if (!Array.isArray(rTasks)) continue;
-          if (!merged[cat] || !Array.isArray(merged[cat])) {
-            merged[cat] = [...rTasks];
-            modified = true;
-          } else {
-            const lTasks = merged[cat];
-            const combined = [...lTasks];
-            for (const rt of rTasks) {
-              if (!combined.includes(rt)) {
-                combined.push(rt);
-                modified = true;
-              }
-            }
-            merged[cat] = combined;
-          }
+      function mergeCategoryMap(localMap, remoteMap, prefix) {
+        const merged = {};
+        const lObj = localMap && typeof localMap === "object" ? localMap : {};
+        const rObj = remoteMap && typeof remoteMap === "object" ? remoteMap : {};
+        const allCats = /* @__PURE__ */ new Set([...Object.keys(lObj), ...Object.keys(rObj)]);
+        for (const cat of allCats) {
+          merged[cat] = mergeList(lObj[cat] || [], rObj[cat] || [], `${prefix}_${cat}`);
         }
         return merged;
       }
-      if (remoteData.items) localState.items = mergeCategoryMap(localState.items, remoteData.items);
-      if (remoteData.workItems) localState.workItems = mergeCategoryMap(localState.workItems, remoteData.workItems);
-      if (remoteData.done) localState.done = mergeArray(localState.done, remoteData.done, "task");
-      if (remoteData.workDone) localState.workDone = mergeArray(localState.workDone, remoteData.workDone, "task");
-      if (remoteData.notes) localState.notes = mergeArray(localState.notes, remoteData.notes, "id");
-      if (remoteData.termine) localState.termine = mergeArray(localState.termine, remoteData.termine, "id");
-      if (remoteData.shoppingList) localState.shoppingList = mergeArray(localState.shoppingList, remoteData.shoppingList, "name");
-      if (remoteData.shoppingHistory) localState.shoppingHistory = mergeArray(localState.shoppingHistory, remoteData.shoppingHistory);
-      if (remoteData.pantry) localState.pantry = mergeArray(localState.pantry, remoteData.pantry, "id");
-      if (remoteData.recipes) localState.recipes = mergeArray(localState.recipes, remoteData.recipes, "id");
-      if (remoteData.cookingList) localState.cookingList = mergeArray(localState.cookingList, remoteData.cookingList, "id");
-      if (remoteData.alarms) localState.alarms = mergeArray(localState.alarms, remoteData.alarms, "id");
-      if (remoteData.brainstormIdeas) localState.brainstormIdeas = mergeArray(localState.brainstormIdeas, remoteData.brainstormIdeas, "id");
-      if (remoteData.clarityLog) localState.clarityLog = mergeArray(localState.clarityLog, remoteData.clarityLog, "id");
-      if (remoteData.archive) localState.archive = mergeArray(localState.archive, remoteData.archive, "id");
+      if (remoteData.items || localState.items) {
+        localState.items = mergeCategoryMap(localState.items, remoteData.items, "task");
+      }
+      if (remoteData.workItems || localState.workItems) {
+        localState.workItems = mergeCategoryMap(localState.workItems, remoteData.workItems, "wtask");
+      }
+      if (remoteData.done || localState.done) {
+        localState.done = mergeList(localState.done, remoteData.done, "done");
+      }
+      if (remoteData.workDone || localState.workDone) {
+        localState.workDone = mergeList(localState.workDone, remoteData.workDone, "wdone");
+      }
+      if (remoteData.notes || localState.notes) {
+        localState.notes = mergeList(localState.notes, remoteData.notes, "note");
+      }
+      if (remoteData.termine || localState.termine) {
+        localState.termine = mergeList(localState.termine, remoteData.termine, "termin");
+      }
+      if (remoteData.shoppingList || localState.shoppingList) {
+        localState.shoppingList = mergeList(localState.shoppingList, remoteData.shoppingList, "shop");
+      }
+      if (remoteData.shoppingHistory || localState.shoppingHistory) {
+        localState.shoppingHistory = mergeList(localState.shoppingHistory, remoteData.shoppingHistory, "shophist");
+      }
+      if (remoteData.pantry || localState.pantry) {
+        localState.pantry = mergeList(localState.pantry, remoteData.pantry, "pantry");
+      }
+      if (remoteData.recipes || localState.recipes) {
+        localState.recipes = mergeList(localState.recipes, remoteData.recipes, "recipe");
+      }
+      if (remoteData.cookingList || localState.cookingList) {
+        localState.cookingList = mergeList(localState.cookingList, remoteData.cookingList, "cook");
+      }
+      if (remoteData.alarms || localState.alarms) {
+        localState.alarms = mergeList(localState.alarms, remoteData.alarms, "alarm");
+      }
+      if (remoteData.brainstormIdeas || localState.brainstormIdeas) {
+        localState.brainstormIdeas = mergeList(localState.brainstormIdeas, remoteData.brainstormIdeas, "idea");
+      }
+      if (remoteData.clarityLog || localState.clarityLog) {
+        localState.clarityLog = mergeList(localState.clarityLog, remoteData.clarityLog, "clarity");
+      }
+      if (remoteData.archive || localState.archive) {
+        localState.archive = mergeList(localState.archive, remoteData.archive, "archive");
+      }
       return modified;
     },
     async pushState(isRetry = false) {
@@ -6075,20 +6273,25 @@
         badgeHtml = '<span class="w-2 h-2 rounded-full bg-gray-500"></span><span>Lokaler Modus</span>';
         badgeClass = "px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-gray-400 text-xs font-medium flex items-center justify-center gap-2";
       } else if (overrideStatus === "error" || overrideStatus === "offline") {
-        statusText = "\u26A0 Synchronisation konnte nicht abgeschlossen werden \u2013 wir versuchen es erneut.";
+        statusText = "\u26A0 Verbindung unterbrochen \u2013 erneuter Versuch";
         dotClass = "w-2 h-2 rounded-full bg-amber-400 animate-pulse";
-        badgeHtml = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span><span>\u26A0 Sync pausiert \u2013 erneuter Versuch...</span>';
+        badgeHtml = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span><span>\u26A0 Verbindung unterbrochen \u2013 erneuter Versuch</span>';
         badgeClass = "px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-medium flex items-center justify-center gap-2";
       } else if (this.isSyncing || overrideStatus === "syncing") {
-        statusText = "Synchronisiere...";
+        statusText = "\u21BB Synchronisiere\u2026";
         dotClass = "w-2 h-2 rounded-full bg-amber-400 animate-spin";
-        badgeHtml = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-spin"></span><span>Synchronisiere...</span>';
+        badgeHtml = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-spin"></span><span>\u21BB Synchronisiere\u2026</span>';
         badgeClass = "px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-medium flex items-center justify-center gap-2";
       } else if (this.lastSyncTime) {
         const timeStr = this.lastSyncTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
         statusText = `\u2713 Synchronisiert (${timeStr} Uhr)`;
         dotClass = "w-2 h-2 rounded-full bg-emerald-400";
         badgeHtml = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span><span>\u2713 Synchronisiert (${timeStr} Uhr)</span>`;
+        badgeClass = "px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center justify-center gap-2";
+      } else {
+        statusText = "\u2713 Synchronisiert";
+        dotClass = "w-2 h-2 rounded-full bg-emerald-400";
+        badgeHtml = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span><span>\u2713 Synchronisiert</span>';
         badgeClass = "px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center justify-center gap-2";
       }
       if (statusLabel) statusLabel.innerText = statusText;
@@ -9662,19 +9865,362 @@ ${listStr}`;
   }
   if (typeof window !== "undefined") {
     window.toggleTimerSound = toggleTimerSound;
+    window.updateMuteButtonsUI = updateMuteButtonsUI2;
+    window.playRandomTimerAmbient = playRandomTimerAmbient2;
+    window.updateSpeechVoices = updateSpeechVoices;
     window.speakWithProfile = speakWithProfile2;
     window.speakSoftlyDynamic = speakSoftlyDynamic2;
     window.getContextMotivation = getContextMotivation2;
+    window.getCurrentPresetMinutes = getCurrentPresetMinutes2;
   }
   if (typeof globalThis !== "undefined") {
     globalThis.toggleTimerSound = toggleTimerSound;
+    globalThis.updateMuteButtonsUI = updateMuteButtonsUI2;
+    globalThis.playRandomTimerAmbient = playRandomTimerAmbient2;
+    globalThis.updateSpeechVoices = updateSpeechVoices;
     globalThis.speakWithProfile = speakWithProfile2;
     globalThis.speakSoftlyDynamic = speakSoftlyDynamic2;
     globalThis.getContextMotivation = getContextMotivation2;
+    globalThis.getCurrentPresetMinutes = getCurrentPresetMinutes2;
+  }
+
+  // timer-2.js
+  function playMinuteChime2() {
+    if (!timerSoundEnabled) return;
+    try {
+      initAudioContext();
+      if (!audioCtx) return;
+      const ctx = audioCtx;
+      const dest = typeof getMasterAudioDestination === "function" ? getMasterAudioDestination() : ctx.destination;
+      if (!dest) return;
+      const now = ctx.currentTime;
+      let patternIdx;
+      do {
+        patternIdx = Math.floor(Math.random() * 8);
+      } while (patternIdx === lastChimePatternIndex && 8 > 1);
+      lastChimePatternIndex = patternIdx;
+      const playTone = (freq, startAt, dur, type = "sine", peakGain = 0.05) => {
+        const osc = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now + startAt);
+        gainNode.gain.setValueAtTime(0, now + startAt);
+        gainNode.gain.linearRampToValueAtTime(peakGain, now + startAt + 0.03);
+        gainNode.gain.exponentialRampToValueAtTime(1e-4, now + startAt + dur);
+        osc.connect(gainNode);
+        gainNode.connect(dest);
+        osc.start(now + startAt);
+        osc.stop(now + startAt + dur + 0.05);
+        if (typeof activeNodes !== "undefined") activeNodes.push(osc);
+      };
+      if (patternIdx === 0) {
+        playTone(523.25, 0, 1.1, "sine", 0.045);
+        playTone(659.25, 0.1, 1, "sine", 0.03);
+      } else if (patternIdx === 1) {
+        playTone(392, 0, 0.6, "triangle", 0.05);
+        playTone(587.33, 0.09, 0.5, "triangle", 0.035);
+      } else if (patternIdx === 2) {
+        playTone(783.99, 0, 0.9, "sine", 0.025);
+        playTone(987.77, 0.05, 0.8, "sine", 0.02);
+        playTone(1174.66, 0.11, 0.7, "sine", 0.015);
+      } else if (patternIdx === 3) {
+        playTone(220, 0, 0.8, "sine", 0.05);
+        playTone(329.63, 0.14, 0.65, "triangle", 0.03);
+      } else if (patternIdx === 4) {
+        playTone(880, 0, 0.5, "sine", 0.03);
+        playTone(1046.5, 0.07, 0.45, "sine", 0.022);
+        playTone(1318.51, 0.14, 0.4, "sine", 0.016);
+      } else if (patternIdx === 5) {
+        playTone(587.33, 0, 0.7, "sine", 0.035);
+        playTone(739.99, 0.08, 0.7, "sine", 0.03);
+        playTone(880, 0.16, 0.9, "sine", 0.025);
+      } else if (patternIdx === 6) {
+        playTone(432, 0, 1.8, "sine", 0.04);
+        playTone(864, 0.02, 1.2, "sine", 0.015);
+      } else {
+        playTone(1318.51, 0, 0.6, "sine", 0.025);
+        playTone(1567.98, 0.09, 0.6, "sine", 0.02);
+        playTone(2093, 0.18, 0.8, "sine", 0.015);
+      }
+    } catch (e) {
+      console.error("Fehler beim Minuten-Glockenton:", e);
+    }
+  }
+  function startPleasantRinging2() {
+    stopPleasantRinging2();
+    if (!timerSoundEnabled) return;
+    currentEndingPatternIndex = (currentEndingPatternIndex + 1) % 6;
+    const patternId = currentEndingPatternIndex;
+    const playSynthPattern = () => {
+      try {
+        initAudioContext();
+        if (!audioCtx) return;
+        const ctx = audioCtx;
+        const dest = typeof getMasterAudioDestination === "function" ? getMasterAudioDestination() : ctx.destination;
+        if (!dest) return;
+        const now = ctx.currentTime;
+        if (patternId === 0) {
+          const notes = [174.61, 220, 261.63, 329.63];
+          notes.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gainNode = ctx.createGain();
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(freq, now + i * 0.12);
+            gainNode.gain.setValueAtTime(0, now);
+            gainNode.gain.linearRampToValueAtTime(0.06, now + i * 0.12 + 0.15);
+            gainNode.gain.exponentialRampToValueAtTime(1e-4, now + 2.8);
+            osc.connect(gainNode);
+            gainNode.connect(dest);
+            osc.start(now);
+            osc.stop(now + 3);
+            if (typeof activeNodes !== "undefined") activeNodes.push(osc);
+          });
+        } else if (patternId === 1) {
+          const notes = [392, 440, 523.25, 587.33, 659.25];
+          notes.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gainNode = ctx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(freq, now + i * 0.08);
+            gainNode.gain.setValueAtTime(0, now);
+            gainNode.gain.linearRampToValueAtTime(0.05, now + i * 0.08 + 0.03);
+            gainNode.gain.exponentialRampToValueAtTime(1e-4, now + 1.4);
+            osc.connect(gainNode);
+            gainNode.connect(dest);
+            osc.start(now);
+            osc.stop(now + 1.5);
+            if (typeof activeNodes !== "undefined") activeNodes.push(osc);
+          });
+        } else if (patternId === 2) {
+          const notes = [108, 216, 324, 432];
+          notes.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const filter = ctx.createBiquadFilter();
+            const gainNode = ctx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(freq, now);
+            filter.type = "lowpass";
+            filter.frequency.setValueAtTime(90, now);
+            filter.frequency.exponentialRampToValueAtTime(750, now + 1.2);
+            gainNode.gain.setValueAtTime(0, now);
+            gainNode.gain.linearRampToValueAtTime(0.07, now + 0.8);
+            gainNode.gain.exponentialRampToValueAtTime(1e-4, now + 3);
+            osc.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(dest);
+            osc.start(now);
+            osc.stop(now + 3);
+            if (typeof activeNodes !== "undefined") activeNodes.push(osc);
+          });
+        } else if (patternId === 3) {
+          const notes = [523.25, 659.25, 783.99, 1046.5, 1318.51];
+          notes.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gainNode = ctx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(freq, now + i * 0.1);
+            gainNode.gain.setValueAtTime(0, now + i * 0.1);
+            gainNode.gain.linearRampToValueAtTime(0.04, now + i * 0.1 + 0.02);
+            gainNode.gain.exponentialRampToValueAtTime(1e-4, now + i * 0.1 + 1.8);
+            osc.connect(gainNode);
+            gainNode.connect(dest);
+            osc.start(now + i * 0.1);
+            osc.stop(now + i * 0.1 + 2);
+            if (typeof activeNodes !== "undefined") activeNodes.push(osc);
+          });
+        } else if (patternId === 4) {
+          const notes = [216, 432, 648];
+          notes.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gainNode = ctx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(freq, now);
+            gainNode.gain.setValueAtTime(0, now);
+            gainNode.gain.linearRampToValueAtTime(0.06 / (i + 1), now + 0.1);
+            gainNode.gain.exponentialRampToValueAtTime(1e-4, now + 3.5);
+            osc.connect(gainNode);
+            gainNode.connect(dest);
+            osc.start(now);
+            osc.stop(now + 3.6);
+            if (typeof activeNodes !== "undefined") activeNodes.push(osc);
+          });
+        } else {
+          const notes = [220, 261.63, 329.63, 392, 523.25];
+          notes.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const filter = ctx.createBiquadFilter();
+            const gainNode = ctx.createGain();
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(freq, now + i * 0.09);
+            filter.type = "lowpass";
+            filter.frequency.setValueAtTime(600, now);
+            gainNode.gain.setValueAtTime(0, now + i * 0.09);
+            gainNode.gain.linearRampToValueAtTime(0.05, now + i * 0.09 + 0.04);
+            gainNode.gain.exponentialRampToValueAtTime(1e-4, now + 2.4);
+            osc.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(dest);
+            osc.start(now + i * 0.09);
+            osc.stop(now + i * 0.09 + 2.5);
+            if (typeof activeNodes !== "undefined") activeNodes.push(osc);
+          });
+        }
+      } catch (e) {
+        console.error("Synthesizer-Wiedergabefehler:", e);
+      }
+    };
+    playSynthPattern();
+    ringInterval = setTimeout(playSynthPattern, 3500);
+    showRingingModal();
+  }
+  function dismissRingingModalOnly2() {
+    if (ringInterval) {
+      clearTimeout(ringInterval);
+      clearInterval(ringInterval);
+      ringInterval = null;
+    }
+    if (ringTimeout) {
+      clearTimeout(ringTimeout);
+      ringTimeout = null;
+    }
+    hideRingingModal();
+  }
+  function stopPleasantRinging2() {
+    dismissRingingModalOnly2();
+    if (typeof stopAmbientSound === "function") {
+      stopAmbientSound(true);
+    }
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  }
+  function showRingingModal() {
+    if (document.getElementById("timer-ringing-modal")) return;
+    const modal = document.createElement("div");
+    modal.id = "timer-ringing-modal";
+    modal.className = "fixed top-4 right-4 z-[200000] w-[calc(100%-2rem)] max-w-sm animate-bounce-short pointer-events-auto";
+    const lang = typeof currentLang !== "undefined" ? currentLang : "de";
+    const title = {
+      de: "Fokus-Sitzung beendet! \u{1F389}",
+      en: "Focus Session Finished! \u{1F389}",
+      es: "\xA1Sesi\xF3n de enfoque terminada! \u{1F389}",
+      el: "\u0397 \u03C3\u03C5\u03BD\u03B5\u03B4\u03C1\u03AF\u03B1 \u03B5\u03C3\u03C4\u03AF\u03B1\u03C3\u03B7\u03C2 \u03BF\u03BB\u03BF\u03BA\u03BB\u03B7\u03C1\u03CE\u03B8\u03B7\u03BA\u03B5! \u{1F389}",
+      fr: "Session de focus termin\xE9e ! \u{1F389}",
+      it: "Sessione di focus terminata! \u{1F389}"
+    }[lang] || "Session Finished! \u{1F389}";
+    const initialMins = Math.floor(timerInitialSeconds / 60);
+    const initialSecs = timerInitialSeconds % 60;
+    const totalDurationStr = `${initialMins}:${String(initialSecs).padStart(2, "0")}`;
+    const durationLabel = {
+      de: `Geplante Fokusdauer: ${totalDurationStr} Min.`,
+      en: `Target focus duration: ${totalDurationStr} Min.`,
+      es: `Duraci\xF3n prevista: ${totalDurationStr} Min.`,
+      el: `\u03A0\u03C1\u03BF\u03B2\u03BB\u03B5\u03C0\u03CC\u03BC\u03B5\u03BD\u03B7 \u03B4\u03B9\u03AC\u03C1\u03BA\u03B5\u03B9\u03B1: ${totalDurationStr} \u03BB\u03B5\u03C0\u03C4\u03AC.`,
+      fr: `Dur\xE9e pr\xE9vue : ${totalDurationStr} min.`,
+      it: `Durata prevista: ${totalDurationStr} min.`
+    }[lang] || `Focus: ${totalDurationStr}`;
+    const overdueHint = {
+      de: "Timer l\xE4uft im Minus weiter",
+      en: "Timer counting in overtime",
+      es: "Temporizador en tiempo extra",
+      el: "\u03A7\u03C1\u03BF\u03BD\u03CC\u03BC\u03B5\u03C4\u03C1\u03BF \u03C3\u03B5 \u03BA\u03B1\u03B8\u03C5\u03C3\u03C4\u03AD\u03C1\u03B7\u03C3\u03B7",
+      fr: "Minuteur en d\xE9passement",
+      it: "Timer in straordinario"
+    }[lang] || "Timer counting in overtime";
+    const keepWorkingText = {
+      de: "Weiterarbeiten \u23F3",
+      en: "Keep working \u23F3",
+      es: "Seguir trabajando \u23F3",
+      el: "\u03A3\u03C5\u03BD\u03AD\u03C7\u03B9\u03C3\u03B7 \u03B5\u03C1\u03B3\u03B1\u03C3\u03AF\u03B1\u03C2 \u23F3",
+      fr: "Continuer \u23F3",
+      it: "Continua \u23F3"
+    }[lang] || "Keep working \u23F3";
+    const stopBtnText = {
+      de: "Stoppen & Reset \u{1F515}",
+      en: "Stop & Reset \u{1F515}",
+      es: "Detener y reiniciar \u{1F515}",
+      el: "\u0394\u03B9\u03B1\u03BA\u03BF\u03C0\u03AE & \u0395\u03C0\u03B1\u03BD\u03B1\u03C6\u03BF\u03C1\u03AC \u{1F515}",
+      fr: "Arr\xEAter \u{1F515}",
+      it: "Ferma \u{1F515}"
+    }[lang] || "Stop & Reset \u{1F515}";
+    modal.innerHTML = `
+    <div class="relative w-full bg-[#111116]/95 border border-purple-500/50 p-4 rounded-2xl shadow-[0_10px_40px_rgba(139,92,246,0.35)] backdrop-blur-xl text-center text-white flex flex-col items-center gap-3">
+      <button onclick="dismissRingingModalOnly()" class="absolute top-2.5 right-2.5 text-gray-400 hover:text-white text-sm font-bold p-1 cursor-pointer transition" title="Schlie\xDFen (Timer l\xE4uft im Minus weiter)">\u2715</button>
+      
+      <div class="flex items-center gap-3 w-full pr-6 text-left">
+        <div class="h-10 w-10 shrink-0 bg-purple-500/20 border border-purple-500/40 rounded-xl flex items-center justify-center text-xl animate-pulse">
+          \u2728
+        </div>
+        <div>
+          <h2 class="font-display font-black text-sm text-white">${title}</h2>
+          <p class="text-[10px] text-purple-300 font-bold">${durationLabel}</p>
+        </div>
+      </div>
+      
+      <div class="w-full flex items-center justify-between px-3 py-1.5 rounded-xl bg-rose-500/15 border border-rose-500/30">
+        <div class="flex items-center gap-2">
+          <span class="h-2 w-2 rounded-full bg-rose-400 animate-ping"></span>
+          <span class="text-[10px] text-rose-300 font-medium">${overdueHint}</span>
+        </div>
+        <p id="ringing-live-counter" class="text-xs text-rose-300 font-black font-mono tracking-widest">-00:00</p>
+      </div>
+
+      <div class="w-full grid grid-cols-2 gap-2 pt-0.5">
+        <button onclick="dismissRingingModalOnly()" class="w-full py-1.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white text-[11px] font-bold rounded-xl shadow-md transition duration-150 transform active:scale-95 cursor-pointer">
+          ${keepWorkingText}
+        </button>
+        <button onclick="stopTimer()" class="w-full py-1.5 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-rose-300 border border-white/10 text-[11px] font-semibold rounded-xl transition cursor-pointer">
+          ${stopBtnText}
+        </button>
+      </div>
+    </div>
+  `;
+    document.body.appendChild(modal);
+  }
+  function hideRingingModal() {
+    const modal = document.getElementById("timer-ringing-modal");
+    if (modal) modal.remove();
+  }
+  if (typeof window !== "undefined") {
+    window.playMinuteChime = playMinuteChime2;
+    window.startPleasantRinging = startPleasantRinging2;
+    window.dismissRingingModalOnly = dismissRingingModalOnly2;
+    window.stopPleasantRinging = stopPleasantRinging2;
+    window.showRingingModal = showRingingModal;
+    window.hideRingingModal = hideRingingModal;
+  }
+  if (typeof globalThis !== "undefined") {
+    globalThis.playMinuteChime = playMinuteChime2;
+    globalThis.startPleasantRinging = startPleasantRinging2;
+    globalThis.dismissRingingModalOnly = dismissRingingModalOnly2;
+    globalThis.stopPleasantRinging = stopPleasantRinging2;
+    globalThis.showRingingModal = showRingingModal;
+    globalThis.hideRingingModal = hideRingingModal;
   }
 
   // timer-3.js
   var timerHasTriggeredZero = false;
+  function startTaskTimer2(taskName, event) {
+    if (event) event.stopPropagation();
+    if (!taskName) return;
+    activeTimerTask = taskName;
+    const mins = getCurrentPresetMinutes();
+    timerSeconds = mins * 60;
+    timerInitialSeconds = mins * 60;
+    timerHasTriggeredZero = false;
+    updateActiveTimerLabels2();
+    startTimer2();
+    updateTimerDisplay2();
+    updateTimerUI2();
+    showToast(`\u23F1\uFE0F Focus: "${taskName}" (${mins}m)`);
+  }
+  function updateActiveTimerLabels2() {
+    const text = activeTimerTask || "";
+    const pickLabel = document.getElementById("helper-pick-timer-task");
+    if (pickLabel) pickLabel.innerText = text;
+    const stepsLabel = document.getElementById("helper-steps-timer-task");
+    if (stepsLabel) stepsLabel.innerText = text;
+  }
   function updateActiveTimerBadge() {
     const badge = document.getElementById("active-timer-badge");
     if (badge) {
@@ -9801,6 +10347,264 @@ ${listStr}`;
       syncTimerWithTimestamp();
     });
   }
+  function startTimer2() {
+    if (timerRunning) return;
+    if (timerSeconds === 0 && !timerTargetEndTime) {
+      const mins = getCurrentPresetMinutes();
+      timerSeconds = mins * 60;
+      timerInitialSeconds = mins * 60;
+      timerHasTriggeredZero = false;
+    }
+    const isFreshStart = timerSeconds === timerInitialSeconds;
+    if (isFreshStart) {
+      timerHasTriggeredZero = false;
+    }
+    timerRunning = true;
+    timerTargetEndTime = Date.now() + timerSeconds * 1e3;
+    updateTimerDisplay2();
+    updateTimerUI2();
+    updateMuteButtonsUI();
+    try {
+      if (localStorage.getItem("flow_audio_timer_sync") === "true" && typeof playAmbientSound === "function") {
+        if (!currentSoundType && (!activeUserAudio || activeUserAudio.paused)) {
+          playAmbientSound(typeof lastSelectedSound !== "undefined" && lastSelectedSound ? lastSelectedSound : "lofi");
+        }
+      } else {
+        playRandomTimerAmbient();
+      }
+    } catch (e) {
+      console.warn("Ambient play notice:", e);
+    }
+    if (isFreshStart && timerSoundEnabled) {
+      try {
+        const lang = typeof currentLang !== "undefined" ? currentLang : "de";
+        const startMins = Math.round(timerInitialSeconds / 60);
+        const phraseList = SESSION_START_PHRASES[lang] || SESSION_START_PHRASES.de;
+        const phrase = pickWithoutImmediateRepeat(phraseList, lastSessionStartPhrase);
+        lastSessionStartPhrase = phrase;
+        let startText = phrase.replace("{mins}", startMins);
+        if (startMins === 1) {
+          startText = startText.replace("Minuten", "Minute").replace("minutes", "minute").replace("minutos", "minuto").replace("\u03BB\u03B5\u03C0\u03C4\u03AC", "\u03BB\u03B5\u03C0\u03C4\u03CC");
+        }
+        const startSessionToken = currentSpeechSessionId;
+        const startTimeout = setTimeout(() => {
+          if (!timerRunning || currentSpeechSessionId !== startSessionToken) return;
+          speakSoftlyDynamic(startText, timerSeconds, timerInitialSeconds);
+        }, 400);
+        if (typeof activeTimeouts !== "undefined" && Array.isArray(activeTimeouts)) {
+          activeTimeouts.push(startTimeout);
+        }
+      } catch (e) {
+      }
+    }
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      if (!timerRunning || !timerTargetEndTime) return;
+      const now = Date.now();
+      const prevSecs = timerSeconds;
+      timerSeconds = Math.round((timerTargetEndTime - now) / 1e3);
+      if (timerSeconds <= 0 && !timerHasTriggeredZero && prevSecs > 0) {
+        timerHasTriggeredZero = true;
+        if (typeof playProceduralSound === "function") playProceduralSound();
+        startPleasantRinging();
+        if (typeof stopAmbientSound === "function") {
+          stopAmbientSound(true);
+        }
+        if (timerSoundEnabled) {
+          const lang = typeof currentLang !== "undefined" ? currentLang : "de";
+          const timeUp = typeof TIME_UP_PHRASES !== "undefined" && TIME_UP_PHRASES[lang] ? TIME_UP_PHRASES[lang] : "Die Zeit ist abgelaufen!";
+          const timeUpSessionToken = currentSpeechSessionId;
+          const timeUpTimeout = setTimeout(() => {
+            if (!timerRunning || currentSpeechSessionId !== timeUpSessionToken) return;
+            speakSoftlyDynamic(timeUp, 0, timerInitialSeconds);
+          }, 600);
+          if (typeof activeTimeouts !== "undefined" && Array.isArray(activeTimeouts)) {
+            activeTimeouts.push(timeUpTimeout);
+          }
+        }
+      }
+      if (timerSeconds > 0 && timerSeconds % 60 === 0 && timerSeconds !== prevSecs && timerSeconds !== timerInitialSeconds) {
+        const minsLeft = timerSeconds / 60;
+        const shouldSpeak = minsLeft % 2 === 1;
+        if (shouldSpeak) {
+          let speechText = "";
+          const lang = typeof currentLang !== "undefined" ? currentLang : "de";
+          if (minsLeft === 1) {
+            if (lang === "de") speechText = "Noch eine Minute";
+            else if (lang === "es") speechText = "Queda un minuto";
+            else if (lang === "el") speechText = "\u0391\u03C0\u03BF\u03BC\u03AD\u03BD\u03B5\u03B9 \u03AD\u03BD\u03B1 \u03BB\u03B5\u03C0\u03C4\u03CC";
+            else if (lang === "fr") speechText = "Il reste une minute";
+            else if (lang === "it") speechText = "Resta un minuto";
+            else speechText = "One minute remaining";
+          } else {
+            if (lang === "de") speechText = `Noch ${minsLeft} Minuten`;
+            else if (lang === "es") speechText = `Quedan ${minsLeft} minutos`;
+            else if (lang === "el") speechText = `\u0391\u03C0\u03BF\u03BC\u03AD\u03BD\u03BF\u03C5\u03BD ${minsLeft} \u03BB\u03B5\u03C0\u03C4\u03AC`;
+            else if (lang === "fr") speechText = `Il reste ${minsLeft} minutes`;
+            else if (lang === "it") speechText = `Restano ${minsLeft} minuti`;
+            else speechText = `${minsLeft} minutes remaining`;
+          }
+          if (Math.random() < 0.55) {
+            const motiv = getContextMotivation(timerSeconds, timerInitialSeconds);
+            speechText += `. ${motiv}`;
+          }
+          speakSoftlyDynamic(speechText, timerSeconds, timerInitialSeconds);
+        } else {
+          playMinuteChime();
+        }
+        try {
+          playRandomTimerAmbient(true);
+        } catch (e) {
+        }
+      }
+      if (timerSeconds < 0 && timerSeconds !== prevSecs) {
+        const absSec = Math.abs(timerSeconds);
+        const lang = typeof currentLang !== "undefined" ? currentLang : "de";
+        if (absSec === 30) {
+          const text30 = typeof OVERDUE_30S_LABELS !== "undefined" && OVERDUE_30S_LABELS[lang] ? OVERDUE_30S_LABELS[lang] : "30 Sekunden \xFCber der Zeit.";
+          speakSoftlyDynamic(text30, timerSeconds, timerInitialSeconds);
+        } else if (absSec % 60 === 0) {
+          const overdueMins = absSec / 60;
+          const labelFn = typeof OVERDUE_MINUTE_LABELS !== "undefined" && OVERDUE_MINUTE_LABELS[lang] ? OVERDUE_MINUTE_LABELS[lang] : ((n) => `${n} Minuten \xFCberzogen`);
+          let speechText = labelFn(overdueMins);
+          const overdueList = typeof MOTIVATIONAL_CHUNKS !== "undefined" && (MOTIVATIONAL_CHUNKS[lang] || MOTIVATIONAL_CHUNKS.de) ? (MOTIVATIONAL_CHUNKS[lang] || MOTIVATIONAL_CHUNKS.de).overdue : [];
+          if (overdueList && overdueList.length > 0) {
+            const motiv = pickWithoutImmediateRepeat(overdueList, lastMotivationByTier["overdue"]);
+            lastMotivationByTier["overdue"] = motiv;
+            if (motiv) speechText += `. ${motiv}`;
+          }
+          speakSoftlyDynamic(speechText, timerSeconds, timerInitialSeconds);
+        } else if (absSec % 30 === 0) {
+          playMinuteChime();
+        }
+      }
+      updateTimerDisplay2();
+    }, 250);
+  }
+  function pauseTimer() {
+    if (!timerRunning) return;
+    if (typeof currentSpeechSessionId !== "undefined") {
+      currentSpeechSessionId++;
+    }
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+    timerTargetEndTime = null;
+    timerRunning = false;
+    updateTimerUI2();
+    if (typeof stopPleasantRinging === "function") {
+      stopPleasantRinging();
+    }
+    if (typeof ringInterval !== "undefined" && ringInterval) {
+      clearTimeout(ringInterval);
+      clearInterval(ringInterval);
+      ringInterval = null;
+    }
+    if (typeof ringTimeout !== "undefined" && ringTimeout) {
+      clearTimeout(ringTimeout);
+      ringTimeout = null;
+    }
+    if (typeof activeTimeouts !== "undefined" && Array.isArray(activeTimeouts)) {
+      activeTimeouts.forEach((t3) => clearTimeout(t3));
+      activeTimeouts.length = 0;
+    }
+    if (typeof stopAmbientSound === "function") {
+      stopAmbientSound(true);
+    }
+    if (typeof stopLookaheadSequencer === "function") {
+      stopLookaheadSequencer();
+    }
+    if ("speechSynthesis" in window) {
+      try {
+        window.speechSynthesis.cancel();
+      } catch (e) {
+        console.warn("[Timer] pause speech cancel warning:", e);
+      }
+      setTimeout(() => {
+        try {
+          window.speechSynthesis.cancel();
+        } catch (e) {
+        }
+      }, 0);
+      setTimeout(() => {
+        try {
+          window.speechSynthesis.cancel();
+        } catch (e) {
+        }
+      }, 50);
+    }
+    updateTimerDisplay2();
+  }
+  function stopTimer2() {
+    if (typeof currentSpeechSessionId !== "undefined") {
+      currentSpeechSessionId++;
+    }
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+    timerTargetEndTime = null;
+    timerRunning = false;
+    timerHasTriggeredZero = false;
+    timerSeconds = timerInitialSeconds;
+    activeTimerTask = null;
+    if (typeof stopPleasantRinging === "function") {
+      stopPleasantRinging();
+    } else if (typeof dismissRingingModalOnly === "function") {
+      dismissRingingModalOnly();
+    }
+    if (typeof ringInterval !== "undefined" && ringInterval) {
+      clearTimeout(ringInterval);
+      clearInterval(ringInterval);
+      ringInterval = null;
+    }
+    if (typeof ringTimeout !== "undefined" && ringTimeout) {
+      clearTimeout(ringTimeout);
+      ringTimeout = null;
+    }
+    if (typeof activeTimeouts !== "undefined" && Array.isArray(activeTimeouts)) {
+      activeTimeouts.forEach((t3) => clearTimeout(t3));
+      activeTimeouts.length = 0;
+    }
+    document.title = "Noodle Studio";
+    updateActiveTimerLabels2();
+    updateTimerDisplay2();
+    updateTimerUI2();
+    if (typeof renderApp === "function") renderApp();
+    if (typeof stopAmbientSound === "function") {
+      stopAmbientSound(true);
+    }
+    if (typeof stopLookaheadSequencer === "function") {
+      stopLookaheadSequencer();
+    }
+    if ("speechSynthesis" in window) {
+      try {
+        window.speechSynthesis.cancel();
+      } catch (e) {
+        console.warn("[Timer] stop speech cancel warning:", e);
+      }
+      setTimeout(() => {
+        try {
+          window.speechSynthesis.cancel();
+        } catch (e) {
+        }
+      }, 0);
+      setTimeout(() => {
+        try {
+          window.speechSynthesis.cancel();
+        } catch (e) {
+        }
+      }, 50);
+    }
+  }
+  function toggleTimer2() {
+    if (timerRunning) pauseTimer();
+    else startTimer2();
+  }
+  function resetTimer() {
+    stopTimer2();
+  }
   function updateTimerUI2() {
     const playBtns = ["timer-play-btn", "helper-pick-timer-play-btn", "helper-steps-timer-play"];
     const pauseBtns = ["timer-pause-btn", "helper-pick-timer-pause-btn", "helper-steps-timer-pause"];
@@ -9911,6 +10715,42 @@ ${listStr}`;
     if (countEl) {
       countEl.innerText = str;
     }
+  }
+  if (typeof window !== "undefined") {
+    window.startTaskTimer = startTaskTimer2;
+    window.updateActiveTimerLabels = updateActiveTimerLabels2;
+    window.updateActiveTimerBadge = updateActiveTimerBadge;
+    window.setTimerPreset = setTimerPreset2;
+    window.openTimerPresetMenu = openTimerPresetMenu;
+    window.closeTimerPresetMenu = closeTimerPresetMenu;
+    window.toggleTimerPresetMenu = toggleTimerPresetMenu;
+    window.selectTimerPreset = selectTimerPreset;
+    window.syncTimerWithTimestamp = syncTimerWithTimestamp;
+    window.startTimer = startTimer2;
+    window.pauseTimer = pauseTimer;
+    window.stopTimer = stopTimer2;
+    window.toggleTimer = toggleTimer2;
+    window.resetTimer = resetTimer;
+    window.updateTimerUI = updateTimerUI2;
+    window.updateTimerDisplay = updateTimerDisplay2;
+  }
+  if (typeof globalThis !== "undefined") {
+    globalThis.startTaskTimer = startTaskTimer2;
+    globalThis.updateActiveTimerLabels = updateActiveTimerLabels2;
+    globalThis.updateActiveTimerBadge = updateActiveTimerBadge;
+    globalThis.setTimerPreset = setTimerPreset2;
+    globalThis.openTimerPresetMenu = openTimerPresetMenu;
+    globalThis.closeTimerPresetMenu = closeTimerPresetMenu;
+    globalThis.toggleTimerPresetMenu = toggleTimerPresetMenu;
+    globalThis.selectTimerPreset = selectTimerPreset;
+    globalThis.syncTimerWithTimestamp = syncTimerWithTimestamp;
+    globalThis.startTimer = startTimer2;
+    globalThis.pauseTimer = pauseTimer;
+    globalThis.stopTimer = stopTimer2;
+    globalThis.toggleTimer = toggleTimer2;
+    globalThis.resetTimer = resetTimer;
+    globalThis.updateTimerUI = updateTimerUI2;
+    globalThis.updateTimerDisplay = updateTimerDisplay2;
   }
 
   // sport.js
@@ -10367,7 +11207,7 @@ ${listStr}`;
     if (!state.completedSteps) state.completedSteps = {};
     const completedIndices = state.completedSteps[val] || [];
     if (steps.length === 0) {
-      resBox.innerHTML = `<div class="text-center py-3 text-xs text-gray-400">Noch keine Teilschritte vorhanden. F\xFCge unten eigene Schritte hinzu oder klicke auf "Vorschl\xE4ge laden".</div>`;
+      resBox.innerHTML = `<div class="text-center py-3 text-xs text-gray-400">Noch keine Teilschritte vorhanden. F\xFCge unten eigene Schritte hinzu.</div>`;
     } else {
       steps.forEach((stepText, idx) => {
         const isChecked = completedIndices.includes(idx);
@@ -10938,6 +11778,9 @@ ${listStr}`;
     }
   }
   function deleteBrainstormIdea(id) {
+    if (id && typeof trackTombstone === "function") {
+      trackTombstone(id);
+    }
     brainstormIdeas = brainstormIdeas.filter((i) => i.id !== id);
     saveBrainstormIdeas();
     renderBrainstormUI();
@@ -10958,8 +11801,8 @@ ${listStr}`;
     const item = brainstormIdeas.find((i) => i.id === id);
     if (!item) return;
     if (typeof saveHistory === "function") saveHistory();
-    const curItems = typeof getCurrentWorkspaceItems === "function" ? getCurrentWorkspaceItems() : null;
-    if (!curItems) return;
+    const curItems2 = typeof getCurrentWorkspaceItems === "function" ? getCurrentWorkspaceItems() : null;
+    if (!curItems2) return;
     const targetTitle = {
       heute: tr({ de: "Heute", en: "Today" }),
       morgen: tr({ de: "Demn\xE4chst", en: "Next" }),
@@ -10968,20 +11811,20 @@ ${listStr}`;
       termine: tr({ de: "Termine", en: "Appointments" })
     };
     if (targetColumn === "notes") {
-      if (!curItems.notes) curItems.notes = [];
-      curItems.notes.push(item.text);
+      if (!curItems2.notes) curItems2.notes = [];
+      curItems2.notes.push(item.text);
     } else if (targetColumn === "termine") {
-      if (!curItems.termine) curItems.termine = [];
+      if (!curItems2.termine) curItems2.termine = [];
       const today = typeof getLocalDateISO === "function" ? getLocalDateISO() : (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
-      curItems.termine.push({
+      curItems2.termine.push({
         task: item.text,
         date: today,
         time: "12:00",
         location: ""
       });
     } else {
-      if (!curItems[targetColumn]) curItems[targetColumn] = [];
-      curItems[targetColumn].push(item.text);
+      if (!curItems2[targetColumn]) curItems2[targetColumn] = [];
+      curItems2[targetColumn].push(item.text);
     }
     if (typeof saveState === "function") saveState();
     if (typeof renderApp === "function") renderApp();
@@ -11004,12 +11847,12 @@ ${listStr}`;
     const step2 = `${tr({ de: "2. Ersten Entwurf / Prototyp erstellen f\xFCr", en: "2. Create first draft / prototype for" })}: ${baseText}`;
     const step3 = `${tr({ de: "3. Finalisieren & Umsetzen von", en: "3. Finalize & implement" })}: ${baseText}`;
     if (typeof saveHistory === "function") saveHistory();
-    const curItems = typeof getCurrentWorkspaceItems === "function" ? getCurrentWorkspaceItems() : null;
-    if (curItems) {
-      if (!curItems.morgen) curItems.morgen = [];
-      curItems.morgen.push(step1);
-      curItems.morgen.push(step2);
-      curItems.morgen.push(step3);
+    const curItems2 = typeof getCurrentWorkspaceItems === "function" ? getCurrentWorkspaceItems() : null;
+    if (curItems2) {
+      if (!curItems2.morgen) curItems2.morgen = [];
+      curItems2.morgen.push(step1);
+      curItems2.morgen.push(step2);
+      curItems2.morgen.push(step3);
       if (typeof saveState === "function") saveState();
       if (typeof renderApp === "function") renderApp();
     }
@@ -11744,6 +12587,10 @@ ${listStr}`;
     if (!state.shoppingList || !state.shoppingList[index]) return;
     saveHistory();
     const removed = state.shoppingList.splice(index, 1)[0];
+    const shopId = removed && typeof removed === "object" && removed.id ? removed.id : typeof getStableId === "function" ? getStableId(removed, "shop") : null;
+    if (shopId && typeof trackTombstone === "function") {
+      trackTombstone(shopId);
+    }
     saveState();
     renderApp();
     renderSupermarketModal();
@@ -12633,6 +13480,9 @@ ${listStr}`;
     }
   }
   function handleDeleteAlarm(id) {
+    if (id && typeof trackTombstone === "function") {
+      trackTombstone(id);
+    }
     alarmState.alarms = alarmState.alarms.filter((x) => x.id !== id);
     saveAlarmState();
     renderAlarmPanel2();
@@ -12662,6 +13512,9 @@ ${listStr}`;
     }
   }
   function handleDeleteReminder(id) {
+    if (id && typeof trackTombstone === "function") {
+      trackTombstone(id);
+    }
     alarmState.reminders = alarmState.reminders.filter((x) => x.id !== id);
     saveAlarmState();
     renderAlarmPanel2();
@@ -12824,8 +13677,8 @@ ${listStr}`;
     }
     menu.onmouseenter = cancelCloseTaskMenu;
     menu.onmouseleave = scheduleCloseTaskMenu;
-    const curItems = getCurrentWorkspaceItems2();
-    const rawTask = curItems[colId]?.[index];
+    const curItems2 = getCurrentWorkspaceItems2();
+    const rawTask = curItems2[colId]?.[index];
     if (!rawTask) return;
     const taskObj = typeof rawTask === "object" ? rawTask : { task: rawTask };
     const taskColor = taskObj.color || "none";
@@ -13228,9 +14081,9 @@ ${listStr}`;
           if (e.key === "Enter" && !e.shiftKey && addInput.value.trim()) {
             e.preventDefault();
             saveHistory();
-            const curItems = getCurrentWorkspaceItems2();
-            if (!curItems.notes) curItems.notes = [];
-            curItems.notes.push(addInput.value.trim());
+            const curItems2 = getCurrentWorkspaceItems2();
+            if (!curItems2.notes) curItems2.notes = [];
+            curItems2.notes.push(addInput.value.trim());
             addInput.value = "";
             openTaskAddColumns["notes"] = false;
             saveState();
@@ -13424,9 +14277,9 @@ ${listStr}`;
         addInput.onkeydown = (e) => {
           if (e.key === "Enter" && addInput.value.trim()) {
             saveHistory();
-            const curItems = getCurrentWorkspaceItems2();
-            if (!curItems[id]) curItems[id] = [];
-            curItems[id].push(addInput.value.trim());
+            const taskText = addInput.value.trim();
+            const taskObj = typeof ensureItemIdentity === "function" ? ensureItemIdentity(taskText, `task_${id}`) : { task: taskText };
+            curItems[id].push(taskObj);
             addInput.value = "";
             openTaskAddColumns[id] = false;
             saveState();
@@ -13464,7 +14317,7 @@ ${listStr}`;
   function renderMobileCategoryTabs() {
     const bar = document.getElementById("mobile-category-tabs");
     if (!bar) return;
-    const curItems = getCurrentWorkspaceItems2();
+    const curItems2 = getCurrentWorkspaceItems2();
     const doneList = getCurrentWorkspaceDone();
     const isWork = state && state.activeWorkspace === "work";
     const activeOrder = isWork ? workCategoriesOrder || WORK_CATEGORIES_ORDER : categoriesOrder;
@@ -13476,7 +14329,7 @@ ${listStr}`;
     bar.innerHTML = activeOrder.map(([id, iconKey, customTitle]) => {
       const isActive = id === activeCat;
       const isDone = id === "done";
-      const activeCount = (curItems[id] || []).length;
+      const activeCount = (curItems2[id] || []).length;
       const count = isDone ? doneList.length : activeCount;
       const shortLabel = (customTitle || t(id)).replace(/\s*\(.*?\)\s*$/, "");
       return `
@@ -13508,12 +14361,12 @@ ${listStr}`;
     const clientX = event?.clientX || (taskEl ? taskEl.getBoundingClientRect().left + 40 : null);
     const clientY = event?.clientY || (taskEl ? taskEl.getBoundingClientRect().top + 20 : null);
     const onComplete = () => {
-      const curItems = getCurrentWorkspaceItems2();
+      const curItems2 = getCurrentWorkspaceItems2();
       const curDone = getCurrentWorkspaceDone();
-      const rawTask = curItems[category]?.[index];
+      const rawTask = curItems2[category]?.[index];
       if (!rawTask) return;
       saveHistory();
-      curItems[category].splice(index, 1);
+      curItems2[category].splice(index, 1);
       const now = /* @__PURE__ */ new Date();
       const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
       const todayStr = now.toISOString().split("T")[0];
@@ -13531,9 +14384,9 @@ ${listStr}`;
       updateZenView();
       populateHelperTaskSelect();
       const isDailyCat = category === "daily" || category === "work_focus";
-      if (isDailyCat && (curItems[category] || []).length === 0) {
+      if (isDailyCat && (curItems2[category] || []).length === 0) {
         setTimeout(() => openFeierabendModal(), 450);
-      } else if ((curItems[category] || []).length === 0) {
+      } else if ((curItems2[category] || []).length === 0) {
         showToast(tr({
           de: `Spalte "${t(category)}" zu 100% erledigt! \u{1F31F}`,
           en: `Column "${t(category)}" 100% completed! \u{1F31F}`,
@@ -13588,10 +14441,14 @@ ${listStr}`;
   function deleteTask(category, index, event) {
     if (event) event.stopPropagation();
     saveHistory();
-    const curItems = getCurrentWorkspaceItems2();
-    const taskObj = curItems[category]?.[index];
+    const curItems2 = getCurrentWorkspaceItems2();
+    const taskObj = curItems2[category]?.[index];
     const taskText = typeof taskObj === "object" ? taskObj?.task : taskObj;
-    if (curItems[category]) curItems[category].splice(index, 1);
+    const taskId = taskObj && typeof taskObj === "object" && taskObj.id ? taskObj.id : typeof getStableId === "function" ? getStableId(taskObj, `task_${category}`) : null;
+    if (taskId && typeof trackTombstone === "function") {
+      trackTombstone(taskId);
+    }
+    if (curItems2[category]) curItems2[category].splice(index, 1);
     if (taskText && state.completedSteps) delete state.completedSteps[taskText];
     saveState();
     showToast(t("toast_task_deleted"), { undo: true, duration: 5e3 });
@@ -13602,15 +14459,15 @@ ${listStr}`;
   function handleRestoreDoneTask(doneIndex) {
     saveHistory();
     const curDone = getCurrentWorkspaceDone();
-    const curItems = getCurrentWorkspaceItems2();
+    const curItems2 = getCurrentWorkspaceItems2();
     const reversedIndex = curDone.length - 1 - doneIndex;
     const item = curDone[reversedIndex];
     if (!item) return;
     curDone.splice(reversedIndex, 1);
     const fallbackCat = state.activeWorkspace === "work" ? "work_focus" : "daily";
-    const targetCat = curItems[item.origin] ? item.origin : fallbackCat;
-    if (!curItems[targetCat]) curItems[targetCat] = [];
-    curItems[targetCat].push(item.task);
+    const targetCat = curItems2[item.origin] ? item.origin : fallbackCat;
+    if (!curItems2[targetCat]) curItems2[targetCat] = [];
+    curItems2[targetCat].push(item.task);
     saveState();
     showToast(t("toast_task_restored"));
     renderApp2();
@@ -13692,8 +14549,8 @@ ${listStr}`;
         optBtn.onclick = (e) => toggleTaskOptionsMenu(colId, idx, e);
       }
     });
-    const curItems = getCurrentWorkspaceItems2();
-    const count = (curItems[colId] || []).length;
+    const curItems2 = getCurrentWorkspaceItems2();
+    const count = (curItems2[colId] || []).length;
     const article = list.closest("article");
     const badgeEl = article ? article.querySelector(".cat-count-badge") : null;
     if (badgeEl) {
@@ -13756,17 +14613,17 @@ ${listStr}`;
     if (!data || data.category === void 0 || data.index === void 0) return;
     const { category: srcCat, index: srcIdx } = data;
     if (srcCat === "done" || targetCategory === "done") return;
-    const curItems = getCurrentWorkspaceItems2();
-    if (!curItems[srcCat] || !curItems[targetCategory]) return;
+    const curItems2 = getCurrentWorkspaceItems2();
+    if (!curItems2[srcCat] || !curItems2[targetCategory]) return;
     let insertIdx = isTopHalf ? targetIndex : targetIndex + 1;
     saveHistory();
-    const [item] = curItems[srcCat].splice(srcIdx, 1);
+    const [item] = curItems2[srcCat].splice(srcIdx, 1);
     if (srcCat === targetCategory && srcIdx < insertIdx) {
       insertIdx--;
     }
     if (insertIdx < 0) insertIdx = 0;
-    if (insertIdx > curItems[targetCategory].length) insertIdx = curItems[targetCategory].length;
-    curItems[targetCategory].splice(insertIdx, 0, item);
+    if (insertIdx > curItems2[targetCategory].length) insertIdx = curItems2[targetCategory].length;
+    curItems2[targetCategory].splice(insertIdx, 0, item);
     draggedItemInfo = null;
     saveState();
     const moved = moveTaskDOM(srcCat, srcIdx, targetCategory, insertIdx);
@@ -13784,12 +14641,12 @@ ${listStr}`;
     if (!data || data.category === void 0 || data.index === void 0) return;
     const { category: srcCat, index: srcIdx } = data;
     if (srcCat === "done" || targetCategory === "done") return;
-    const curItems = getCurrentWorkspaceItems2();
-    if (!curItems[srcCat] || !curItems[targetCategory]) return;
-    const insertIdx = curItems[targetCategory].length;
+    const curItems2 = getCurrentWorkspaceItems2();
+    if (!curItems2[srcCat] || !curItems2[targetCategory]) return;
+    const insertIdx = curItems2[targetCategory].length;
     saveHistory();
-    const [item] = curItems[srcCat].splice(srcIdx, 1);
-    curItems[targetCategory].push(item);
+    const [item] = curItems2[srcCat].splice(srcIdx, 1);
+    curItems2[targetCategory].push(item);
     draggedItemInfo = null;
     saveState();
     const moved = moveTaskDOM(srcCat, srcIdx, targetCategory, insertIdx);
@@ -14090,8 +14947,8 @@ ${listStr}`;
   window.copyTaskText = copyTaskText;
   function copyTaskTextByIndex(cat, index, event) {
     if (event) event.stopPropagation();
-    const curItems = getCurrentWorkspaceItems2();
-    const item = curItems[cat]?.[index];
+    const curItems2 = getCurrentWorkspaceItems2();
+    const item = curItems2[cat]?.[index];
     if (!item) return;
     const text = typeof item === "object" ? item.task : item;
     copyTaskText(text, event);
@@ -14099,8 +14956,8 @@ ${listStr}`;
   window.copyTaskTextByIndex = copyTaskTextByIndex;
   function startTaskTimerByIndex2(cat, index, event) {
     if (event) event.stopPropagation();
-    const curItems = getCurrentWorkspaceItems2();
-    const item = curItems[cat]?.[index];
+    const curItems2 = getCurrentWorkspaceItems2();
+    const item = curItems2[cat]?.[index];
     if (!item) return;
     const text = typeof item === "object" ? item.task : item;
     if (typeof startTaskTimer === "function") {
@@ -14117,8 +14974,8 @@ ${listStr}`;
     if (span.isContentEditable) return;
     const itemDiv = span.closest(".group");
     if (itemDiv) itemDiv.draggable = false;
-    const curItems = getCurrentWorkspaceItems2();
-    const rawTask = curItems[cat]?.[index];
+    const curItems2 = getCurrentWorkspaceItems2();
+    const rawTask = curItems2[cat]?.[index];
     if (!rawTask) return;
     const originalText = typeof rawTask === "object" ? rawTask.task : rawTask;
     span.textContent = originalText;
@@ -14149,10 +15006,11 @@ ${listStr}`;
       const newText = span.textContent.trim();
       if (save && newText && newText !== originalText) {
         saveHistory();
-        if (typeof curItems[cat][index] === "object") {
-          curItems[cat][index].task = newText;
+        if (typeof curItems2[cat][index] === "object") {
+          curItems2[cat][index].task = newText;
+          curItems2[cat][index].updatedAt = (/* @__PURE__ */ new Date()).toISOString();
         } else {
-          curItems[cat][index] = newText;
+          curItems2[cat][index] = typeof ensureItemIdentity === "function" ? ensureItemIdentity(newText, `task_${cat}`) : { task: newText };
         }
         saveState();
         const safeEscaped = escapeHtml(newText);
@@ -16461,11 +17319,11 @@ ${listStr}`;
     const q = (query || "").toLowerCase().trim();
     const allCommands = getAvailableCommands();
     const matchedCommands = allCommands.filter((c) => c.title.toLowerCase().includes(q));
-    const curItems = typeof getCurrentWorkspaceItems === "function" ? getCurrentWorkspaceItems() : typeof state !== "undefined" ? state.items : {};
+    const curItems2 = typeof getCurrentWorkspaceItems === "function" ? getCurrentWorkspaceItems() : typeof state !== "undefined" ? state.items : {};
     const matchedTasks = [];
-    if (curItems && typeof curItems === "object") {
-      Object.keys(curItems).forEach((col) => {
-        const items2 = curItems[col] || [];
+    if (curItems2 && typeof curItems2 === "object") {
+      Object.keys(curItems2).forEach((col) => {
+        const items2 = curItems2[col] || [];
         items2.forEach((item, idx) => {
           const text = typeof item === "object" ? item.task : item;
           if (text && (!q || text.toLowerCase().includes(q))) {

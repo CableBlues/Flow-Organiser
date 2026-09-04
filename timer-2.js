@@ -361,3 +361,21 @@ function hideRingingModal() {
   if (modal) modal.remove();
 }
 
+if (typeof window !== 'undefined') {
+  window.playMinuteChime = playMinuteChime;
+  window.startPleasantRinging = startPleasantRinging;
+  window.dismissRingingModalOnly = dismissRingingModalOnly;
+  window.stopPleasantRinging = stopPleasantRinging;
+  window.showRingingModal = showRingingModal;
+  window.hideRingingModal = hideRingingModal;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.playMinuteChime = playMinuteChime;
+  globalThis.startPleasantRinging = startPleasantRinging;
+  globalThis.dismissRingingModalOnly = dismissRingingModalOnly;
+  globalThis.stopPleasantRinging = stopPleasantRinging;
+  globalThis.showRingingModal = showRingingModal;
+  globalThis.hideRingingModal = hideRingingModal;
+}
+
+

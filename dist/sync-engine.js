@@ -172,10 +172,11 @@ const cloudSyncEngine = {
     } catch (e) {}
   },
 
-  // Vollständige State-Serialisierung (alle Datenbereiche)
+  // Vollständige State-Serialisierung (alle Datenbereiche inkl. Tombstones)
   serializeFullState(stateObj) {
     const s = stateObj || {};
     return {
+      _tombstones: s._tombstones || {},
       items: s.items || {},
       done: s.done || [],
       workItems: s.workItems || {},
@@ -199,91 +200,228 @@ const cloudSyncEngine = {
     };
   },
 
-  // Intelligenter, nicht-destruktiver 2-Wege-Merge
+  // Deterministischer, verlustfreier 3-Wege / Item-Level LWW-Merge mit Tombstones
   mergeState(localState, remoteData) {
     if (!localState || !remoteData) return false;
     let modified = false;
 
-    // Helper: Array-Vereinigung mit Deduplizierung
-    function mergeArray(localArr, remoteArr, keyProp = null) {
-      if (!Array.isArray(remoteArr) || remoteArr.length === 0) return localArr || [];
-      if (!Array.isArray(localArr) || localArr.length === 0) return JSON.parse(JSON.stringify(remoteArr));
+    // Helper: Stabile Identität & Zeitstempel sicherstellen
+    function computeStringHash(str) {
+      let hash = 0;
+      const s = String(str || '');
+      for (let i = 0; i < s.length; i++) {
+        hash = ((hash << 5) - hash) + s.charCodeAt(i);
+        hash |= 0;
+      }
+      return Math.abs(hash).toString(36);
+    }
 
-      const result = [...localArr];
-      for (const rItem of remoteArr) {
-        if (!rItem) continue;
-        let exists = false;
-        if (keyProp && typeof rItem === 'object') {
-          exists = result.some(lItem => lItem && (lItem[keyProp] === rItem[keyProp] || (lItem.id && lItem.id === rItem.id) || (lItem.text && lItem.text === rItem.text)));
-        } else if (typeof rItem === 'object') {
-          exists = result.some(lItem => lItem && ((lItem.id && lItem.id === rItem.id) || (lItem.task && lItem.task === rItem.task) || (lItem.name && lItem.name === rItem.name) || (lItem.text && lItem.text === rItem.text) || JSON.stringify(lItem) === JSON.stringify(rItem)));
-        } else {
-          exists = result.includes(rItem);
+    function normalizeItem(item, fallbackPrefix = 'item') {
+      if (!item) return null;
+      const nowISO = new Date().toISOString();
+      if (typeof item === 'string') {
+        return {
+          id: `${fallbackPrefix}_h${computeStringHash(item)}`,
+          task: item,
+          _wasString: true,
+          createdAt: nowISO,
+          updatedAt: nowISO
+        };
+      }
+      if (typeof item === 'object') {
+        const copy = { ...item };
+        if (!copy.id) {
+          const itemText = copy.task || copy.name || copy.text || copy.title || JSON.stringify(copy);
+          copy.id = `${fallbackPrefix}_h${computeStringHash(itemText)}`;
         }
-        if (!exists) {
-          result.push(rItem);
+        if (!copy.createdAt) copy.createdAt = nowISO;
+        if (!copy.updatedAt) copy.updatedAt = copy.createdAt || nowISO;
+        return copy;
+      }
+      return item;
+    }
+
+    // 1. Tombstones (Lösch-Protokolle) beider Seiten zusammenführen
+    const localTombstones = (localState._tombstones && typeof localState._tombstones === 'object') ? { ...localState._tombstones } : {};
+    const remoteTombstones = (remoteData._tombstones && typeof remoteData._tombstones === 'object') ? remoteData._tombstones : {};
+    const mergedTombstones = { ...localTombstones };
+
+    for (const [tId, rTime] of Object.entries(remoteTombstones)) {
+      if (!mergedTombstones[tId]) {
+        mergedTombstones[tId] = rTime;
+        modified = true;
+      } else {
+        const lTs = new Date(mergedTombstones[tId]).getTime();
+        const rTs = new Date(rTime).getTime();
+        if (rTs > lTs) {
+          mergedTombstones[tId] = rTime;
           modified = true;
         }
       }
+    }
+    localState._tombstones = mergedTombstones;
+
+    // Helper: Item-Level LWW Merge für eine Liste
+    function mergeList(localList, remoteList, prefix) {
+      const lArr = Array.isArray(localList) ? localList.map(item => normalizeItem(item, prefix)).filter(Boolean) : [];
+      const rArr = Array.isArray(remoteList) ? remoteList.map(item => normalizeItem(item, prefix)).filter(Boolean) : [];
+
+      const lMap = new Map();
+      lArr.forEach(item => { if (item && item.id) lMap.set(item.id, item); });
+
+      const rMap = new Map();
+      rArr.forEach(item => { if (item && item.id) rMap.set(item.id, item); });
+
+      const allIds = new Set([...lMap.keys(), ...rMap.keys()]);
+      const mergedMap = new Map();
+
+      for (const id of allIds) {
+        const lItem = lMap.get(id);
+        const rItem = rMap.get(id);
+
+        // Prüfen, ob Item gelöscht wurde
+        if (mergedTombstones[id]) {
+          const delTs = new Date(mergedTombstones[id]).getTime();
+          const lUp = lItem ? new Date(lItem.updatedAt || lItem.createdAt || 0).getTime() : 0;
+          const rUp = rItem ? new Date(rItem.updatedAt || rItem.createdAt || 0).getTime() : 0;
+          const maxUp = Math.max(lUp, rUp);
+
+          if (delTs >= maxUp) {
+            // Item ist gelöscht -> nicht in aktiver Liste behalten!
+            if (lMap.has(id)) modified = true;
+            continue;
+          }
+        }
+
+        if (lItem && rItem) {
+          // Konfliktauflösung via Last-Write-Wins (LWW)
+          const lTime = new Date(lItem.updatedAt || lItem.createdAt || 0).getTime();
+          const rTime = new Date(rItem.updatedAt || rItem.createdAt || 0).getTime();
+
+          if (rTime > lTime) {
+            // Remote-Version ist neuer
+            mergedMap.set(id, rItem);
+            modified = true;
+          } else {
+            // Lokale Version ist neuer oder gleich
+            mergedMap.set(id, lItem);
+          }
+        } else if (rItem) {
+          // Neues Item von Remote
+          mergedMap.set(id, rItem);
+          modified = true;
+        } else if (lItem) {
+          // Lokales Item beibehalten
+          mergedMap.set(id, lItem);
+        }
+      }
+
+      // Reihenfolge: Zuerst lokale Reihenfolge (gefiltert), dann neue Remote-Items anhängen
+      const result = [];
+      const seenIds = new Set();
+
+      function formatOutput(item) {
+        if (!item) return item;
+        if (item._wasString) {
+          const extraKeys = Object.keys(item).filter(k => !['_wasString', 'id', 'createdAt', 'updatedAt', 'task'].includes(k));
+          if (extraKeys.length === 0 && typeof item.task === 'string') {
+            return item.task;
+          }
+        }
+        return item;
+      }
+
+      lArr.forEach(item => {
+        if (item && mergedMap.has(item.id) && !seenIds.has(item.id)) {
+          result.push(formatOutput(mergedMap.get(item.id)));
+          seenIds.add(item.id);
+        }
+      });
+
+      rArr.forEach(item => {
+        if (item && mergedMap.has(item.id) && !seenIds.has(item.id)) {
+          result.push(formatOutput(mergedMap.get(item.id)));
+          seenIds.add(item.id);
+        }
+      });
+
       return result;
     }
 
-    // Helper: Aufgaben-Kategorien zusammenführen
-    function mergeCategoryMap(localMap, remoteMap) {
-      const merged = { ...(localMap || {}) };
-      if (!remoteMap || typeof remoteMap !== 'object') return merged;
 
-      for (const [cat, rTasks] of Object.entries(remoteMap)) {
-        if (!Array.isArray(rTasks)) continue;
-        if (!merged[cat] || !Array.isArray(merged[cat])) {
-          merged[cat] = [...rTasks];
-          modified = true;
-        } else {
-          const lTasks = merged[cat];
-          const combined = [...lTasks];
-          for (const rt of rTasks) {
-            if (!combined.includes(rt)) {
-              combined.push(rt);
-              modified = true;
-            }
-          }
-          merged[cat] = combined;
-        }
+    // Helper: Kategorien-Map (z.B. items, workItems) zusammenführen
+    function mergeCategoryMap(localMap, remoteMap, prefix) {
+      const merged = {};
+      const lObj = (localMap && typeof localMap === 'object') ? localMap : {};
+      const rObj = (remoteMap && typeof remoteMap === 'object') ? remoteMap : {};
+
+      const allCats = new Set([...Object.keys(lObj), ...Object.keys(rObj)]);
+      for (const cat of allCats) {
+        merged[cat] = mergeList(lObj[cat] || [], rObj[cat] || [], `${prefix}_${cat}`);
       }
       return merged;
     }
 
-    // 1. Items & WorkItems
-    if (remoteData.items) localState.items = mergeCategoryMap(localState.items, remoteData.items);
-    if (remoteData.workItems) localState.workItems = mergeCategoryMap(localState.workItems, remoteData.workItems);
+    // 1. Items & WorkItems (Aufgaben-Kategorien)
+    if (remoteData.items || localState.items) {
+      localState.items = mergeCategoryMap(localState.items, remoteData.items, 'task');
+    }
+    if (remoteData.workItems || localState.workItems) {
+      localState.workItems = mergeCategoryMap(localState.workItems, remoteData.workItems, 'wtask');
+    }
 
     // 2. Erledigte Aufgaben
-    if (remoteData.done) localState.done = mergeArray(localState.done, remoteData.done, 'task');
-    if (remoteData.workDone) localState.workDone = mergeArray(localState.workDone, remoteData.workDone, 'task');
+    if (remoteData.done || localState.done) {
+      localState.done = mergeList(localState.done, remoteData.done, 'done');
+    }
+    if (remoteData.workDone || localState.workDone) {
+      localState.workDone = mergeList(localState.workDone, remoteData.workDone, 'wdone');
+    }
 
     // 3. Notizen & Termine
-    if (remoteData.notes) localState.notes = mergeArray(localState.notes, remoteData.notes, 'id');
-    if (remoteData.termine) localState.termine = mergeArray(localState.termine, remoteData.termine, 'id');
+    if (remoteData.notes || localState.notes) {
+      localState.notes = mergeList(localState.notes, remoteData.notes, 'note');
+    }
+    if (remoteData.termine || localState.termine) {
+      localState.termine = mergeList(localState.termine, remoteData.termine, 'termin');
+    }
 
     // 4. Einkaufsliste & Historie
-    if (remoteData.shoppingList) localState.shoppingList = mergeArray(localState.shoppingList, remoteData.shoppingList, 'name');
-    if (remoteData.shoppingHistory) localState.shoppingHistory = mergeArray(localState.shoppingHistory, remoteData.shoppingHistory);
+    if (remoteData.shoppingList || localState.shoppingList) {
+      localState.shoppingList = mergeList(localState.shoppingList, remoteData.shoppingList, 'shop');
+    }
+    if (remoteData.shoppingHistory || localState.shoppingHistory) {
+      localState.shoppingHistory = mergeList(localState.shoppingHistory, remoteData.shoppingHistory, 'shophist');
+    }
 
     // 5. Vorrat, Rezepte, Kochen
-    if (remoteData.pantry) localState.pantry = mergeArray(localState.pantry, remoteData.pantry, 'id');
-    if (remoteData.recipes) localState.recipes = mergeArray(localState.recipes, remoteData.recipes, 'id');
-    if (remoteData.cookingList) localState.cookingList = mergeArray(localState.cookingList, remoteData.cookingList, 'id');
+    if (remoteData.pantry || localState.pantry) {
+      localState.pantry = mergeList(localState.pantry, remoteData.pantry, 'pantry');
+    }
+    if (remoteData.recipes || localState.recipes) {
+      localState.recipes = mergeList(localState.recipes, remoteData.recipes, 'recipe');
+    }
+    if (remoteData.cookingList || localState.cookingList) {
+      localState.cookingList = mergeList(localState.cookingList, remoteData.cookingList, 'cook');
+    }
 
-    // 6. Alarme, Brainstorming, Klarheit
-    if (remoteData.alarms) localState.alarms = mergeArray(localState.alarms, remoteData.alarms, 'id');
-    if (remoteData.brainstormIdeas) localState.brainstormIdeas = mergeArray(localState.brainstormIdeas, remoteData.brainstormIdeas, 'id');
-    if (remoteData.clarityLog) localState.clarityLog = mergeArray(localState.clarityLog, remoteData.clarityLog, 'id');
-
-    // 7. Archiv
-    if (remoteData.archive) localState.archive = mergeArray(localState.archive, remoteData.archive, 'id');
+    // 6. Alarme, Brainstorming, Klarheit, Archiv
+    if (remoteData.alarms || localState.alarms) {
+      localState.alarms = mergeList(localState.alarms, remoteData.alarms, 'alarm');
+    }
+    if (remoteData.brainstormIdeas || localState.brainstormIdeas) {
+      localState.brainstormIdeas = mergeList(localState.brainstormIdeas, remoteData.brainstormIdeas, 'idea');
+    }
+    if (remoteData.clarityLog || localState.clarityLog) {
+      localState.clarityLog = mergeList(localState.clarityLog, remoteData.clarityLog, 'clarity');
+    }
+    if (remoteData.archive || localState.archive) {
+      localState.archive = mergeList(localState.archive, remoteData.archive, 'archive');
+    }
 
     return modified;
   },
+
 
   async pushState(isRetry = false) {
     if (typeof FlowAuth === 'undefined' || !FlowAuth.isLoggedIn()) return { skipped: true };
@@ -493,14 +631,14 @@ const cloudSyncEngine = {
       badgeHtml = '<span class="w-2 h-2 rounded-full bg-gray-500"></span><span>Lokaler Modus</span>';
       badgeClass = 'px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-gray-400 text-xs font-medium flex items-center justify-center gap-2';
     } else if (overrideStatus === 'error' || overrideStatus === 'offline') {
-      statusText = '⚠ Synchronisation konnte nicht abgeschlossen werden – wir versuchen es erneut.';
+      statusText = '⚠ Verbindung unterbrochen – erneuter Versuch';
       dotClass = 'w-2 h-2 rounded-full bg-amber-400 animate-pulse';
-      badgeHtml = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span><span>⚠ Sync pausiert – erneuter Versuch...</span>';
+      badgeHtml = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span><span>⚠ Verbindung unterbrochen – erneuter Versuch</span>';
       badgeClass = 'px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-medium flex items-center justify-center gap-2';
     } else if (this.isSyncing || overrideStatus === 'syncing') {
-      statusText = 'Synchronisiere...';
+      statusText = '↻ Synchronisiere…';
       dotClass = 'w-2 h-2 rounded-full bg-amber-400 animate-spin';
-      badgeHtml = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-spin"></span><span>Synchronisiere...</span>';
+      badgeHtml = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-spin"></span><span>↻ Synchronisiere…</span>';
       badgeClass = 'px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-medium flex items-center justify-center gap-2';
     } else if (this.lastSyncTime) {
       const timeStr = this.lastSyncTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -508,7 +646,13 @@ const cloudSyncEngine = {
       dotClass = 'w-2 h-2 rounded-full bg-emerald-400';
       badgeHtml = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span><span>✓ Synchronisiert (${timeStr} Uhr)</span>`;
       badgeClass = 'px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center justify-center gap-2';
+    } else {
+      statusText = '✓ Synchronisiert';
+      dotClass = 'w-2 h-2 rounded-full bg-emerald-400';
+      badgeHtml = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span><span>✓ Synchronisiert</span>';
+      badgeClass = 'px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center justify-center gap-2';
     }
+
 
     if (statusLabel) statusLabel.innerText = statusText;
     if (syncDot) syncDot.className = dotClass;
