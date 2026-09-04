@@ -204,14 +204,8 @@
 
         <!-- Was nun? (Mit lebendiger Ideen-Funken Animation & leuchtender Aura) -->
         <button id="btn-whatnow-dance" onclick="openHelperModal('pick')" class="whatnow-animated-btn flex items-center justify-center gap-1.5 h-9 px-3 rounded-xl text-amber-300 hover:text-amber-200 bg-amber-500/15 hover:bg-amber-500/25 active:scale-95 border border-amber-500/35 hover:border-amber-400 cursor-pointer transition-all duration-300 shrink-0 shadow-sm group" title="Was soll ich als Nächstes tun? (Entscheidungshilfe) [W]" data-i18n-title="whatnow_tooltip" aria-label="Was nun?">
-          <i data-lucide="help-circle" class="whatnow-animated-bulb w-4 h-4 text-amber-300 group-hover:scale-110 transition-transform shrink-0"></i>
+          <i data-lucide="lightbulb" class="whatnow-animated-bulb w-4 h-4 text-amber-300 group-hover:scale-110 transition-transform shrink-0"></i>
           <span class="text-xs font-bold text-amber-200 whitespace-nowrap" data-i18n="whatnow">Was nun?</span>
-        </button>
-
-        <!-- Brainstorming Studio Schnellzugriff [B] -->
-        <button id="btn-header-brainstorm" onclick="openBrainstormModal()" class="flex items-center justify-center gap-1.5 h-9 px-2.5 rounded-xl text-amber-300 hover:text-amber-200 bg-amber-500/15 hover:bg-amber-500/25 active:scale-95 border border-amber-500/35 hover:border-amber-400 cursor-pointer transition-all duration-300 shrink-0 shadow-sm group" title="Brainstorming Studio: Ideen erfassen & Mikrofon-Aufnahme [B]" aria-label="Brainstorming">
-          <i data-lucide="lightbulb" class="w-4 h-4 text-amber-300 group-hover:scale-110 transition-transform shrink-0"></i>
-          <span class="text-xs font-bold text-amber-200 whitespace-nowrap hidden xl:inline">Brainstorm</span>
         </button>
 
         <!-- Zentrales Datum & Monatskalender Dropdown (HERZSTÜCK DES HEADERS) -->
@@ -295,6 +289,11 @@
             </div>
           </div>
         </div>
+
+        <!-- Brainstorming Studio Schnellzugriff [B] (Rechts vom Datum, Icon-Only mit Tooltip) -->
+        <button id="btn-header-brainstorm" onclick="openBrainstormModal()" class="flex items-center justify-center h-9 w-9 rounded-xl text-teal-300 hover:text-white bg-teal-500/15 hover:bg-teal-500/25 active:scale-95 border border-teal-500/35 hover:border-teal-400 cursor-pointer transition-all duration-300 shrink-0 shadow-sm group" title="Brainstorming Studio: Ideen erfassen & Mikrofon [B]" aria-label="Brainstorming Studio">
+          <i data-lucide="sparkles" class="w-4 h-4 text-teal-300 group-hover:scale-110 group-hover:text-teal-200 transition-transform shrink-0"></i>
+        </button>
 
         <!-- Focus Mode Hook (Unsichtbar im Header, vollständig integriert in 'Was nun?' & Shortcut [F]) -->
         <button id="btn-focus-mode" onclick="toggleMinimalist()" class="hidden" title="Fokus [F]" data-i18n-title="minimal_mode" aria-label="Fokus">
