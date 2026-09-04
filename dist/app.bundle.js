@@ -14200,8 +14200,7 @@ ${listStr}`;
         break;
       case "b":
         e.preventDefault();
-        togglePanel("daily");
-        switchDailyTab2("impulse");
+        if (typeof openBrainstormModal === "function") openBrainstormModal();
         break;
       case "i":
         e.preventDefault();

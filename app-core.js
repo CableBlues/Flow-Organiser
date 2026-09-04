@@ -257,8 +257,7 @@ document.addEventListener('keydown', (e) => {
       break;
     case 'b':
       e.preventDefault();
-      togglePanel('daily');
-      switchDailyTab('impulse');
+      if (typeof openBrainstormModal === 'function') openBrainstormModal();
       break;
     case 'i':
       e.preventDefault();
