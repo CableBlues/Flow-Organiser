@@ -137,10 +137,10 @@ const distAssets = [
   './styles-mobile.css',
   './vendor/tailwindcss.js',
   './vendor/lucide.min.js',
+  './vendor/supabase.min.js',
   './vendor/three.min.js',
   './vendor/OrbitControls.js',
-  './vendor/qrcode.min.js',
-  './vendor/html2canvas.min.js'
+  './vendor/qrcode.min.js'
 ];
 const distAssetsBlock = `const ASSETS_TO_CACHE = [\n  ${distAssets.map(a => `'${a}'`).join(',\n  ')}\n];`;
 swContent = swContent.replace(/const ASSETS_TO_CACHE = \[[\s\S]*?\];/m, distAssetsBlock);

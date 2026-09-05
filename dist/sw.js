@@ -1,4 +1,4 @@
-const CACHE_NAME = 'noodle-cache-v145';
+const CACHE_NAME = 'noodle-cache-v146';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -31,10 +31,10 @@ const ASSETS_TO_CACHE = [
   './styles-mobile.css',
   './vendor/tailwindcss.js',
   './vendor/lucide.min.js',
+  './vendor/supabase.min.js',
   './vendor/three.min.js',
   './vendor/OrbitControls.js',
-  './vendor/qrcode.min.js',
-  './vendor/html2canvas.min.js'
+  './vendor/qrcode.min.js'
 ];
 
 self.addEventListener('install', (event) => {

@@ -149,6 +149,14 @@ const FlowAuth = (function() {
 
         if (authRes.error) {
           const errMsg = authRes.error.message || '';
+          
+          if (errMsg.toLowerCase().includes('email not confirmed') || errMsg.toLowerCase().includes('email_not_confirmed')) {
+            return {
+              success: false,
+              error: 'E-Mail noch nicht bestätigt. Bitte klicke auf den Bestätigungslink in deiner E-Mail oder deaktiviere "Confirm email" im Supabase Dashboard (Authentication -> Providers -> Email).'
+            };
+          }
+
           // Wenn User nicht existiert oder fehlerhafte Anmeldedaten (Auto-Registrierung wie im PHP-Backend)
           if (errMsg.toLowerCase().includes('invalid login credentials') || errMsg.toLowerCase().includes('user not found') || authRes.error.status === 400) {
             const signUpRes = await supabaseClient.auth.signUp({
@@ -157,11 +165,24 @@ const FlowAuth = (function() {
             });
 
             if (signUpRes.error) {
-              return { success: false, error: signUpRes.error.message || 'Registrierung fehlgeschlagen.' };
+              const signErr = signUpRes.error.message || '';
+              if (signErr.toLowerCase().includes('already registered')) {
+                return { success: false, error: 'Passwort falsch. Bitte überprüfe dein Passwort.' };
+              }
+              return { success: false, error: signErr || 'Registrierung fehlgeschlagen.' };
             }
+
             if (signUpRes.data && signUpRes.data.user) {
-              setSession(signUpRes.data.session || { user: signUpRes.data.user });
-              return { success: true, email: trimmedEmail, token: signUpRes.data.user.id };
+              if (signUpRes.data.session) {
+                setSession(signUpRes.data.session);
+                return { success: true, email: trimmedEmail, token: signUpRes.data.user.id };
+              } else {
+                // Bestätigungs-E-Mail erforderlich
+                return {
+                  success: false,
+                  error: 'Konto erstellt! Bitte bestätige die E-Mail von Supabase oder deaktiviere "Confirm email" im Supabase Dashboard.'
+                };
+              }
             }
           }
           return { success: false, error: authRes.error.message || 'Anmeldung fehlgeschlagen.' };

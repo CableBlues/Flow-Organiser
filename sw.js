@@ -1,4 +1,4 @@
-const CACHE_NAME = 'noodle-cache-v145';
+const CACHE_NAME = 'noodle-cache-v146';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -30,8 +30,13 @@ const ASSETS_TO_CACHE = [
   './styles-mobile.css',
   './vendor/tailwindcss.js',
   './vendor/lucide.min.js',
+  './vendor/supabase.min.js',
   './vendor/qrcode.min.js',
+  './config.js',
+  './auth-engine.js',
+  './storage.js',
   './state.js',
+  './sync-engine.js',
   './data-translations-1.js',
   './data-translations-2.js',
   './data-translations.js',
@@ -49,6 +54,7 @@ const ASSETS_TO_CACHE = [
   './helper-tools-3.js',
   './helper-clarity.js',
   './helper-brainstorm.js',
+  './helper-cleaning.js',
   './sport.js',
   './app-core.js',
   './app-tasks.js',
@@ -64,8 +70,6 @@ const ASSETS_TO_CACHE = [
   './audio-scheduler-1.js',
   './audio-scheduler-2.js',
   './audio-scheduler-3.js',
-  './sync-engine.js',
-  './storage.js',
   './timer-1.js',
   './timer-2.js',
   './timer-3.js',
