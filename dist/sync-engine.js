@@ -441,8 +441,37 @@ const cloudSyncEngine = {
 
     try {
       const currentState = (typeof window !== 'undefined' && window.state) ? window.state : (typeof state !== 'undefined' ? state : {});
+      const serializedData = this.serializeFullState(currentState);
+
+      // 1. Supabase Cloud Sync (wenn Supabase authentifiziert ist)
+      if (typeof FlowAuth !== 'undefined' && FlowAuth.getSupabaseClient) {
+        const supa = FlowAuth.getSupabaseClient();
+        const user = FlowAuth.getUser();
+        if (supa && user && user.id && !user.isTokenOnly) {
+          const { error } = await supa.from('flow_sync').upsert({
+            user_id: user.id,
+            data: serializedData,
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'user_id' });
+
+          if (error) throw error;
+
+          this.clearPendingSync();
+          this.retryCount = 0;
+          if (this.retryTimer) {
+            clearTimeout(this.retryTimer);
+            this.retryTimer = null;
+          }
+          this.lastSyncTime = new Date();
+          this.syncError = null;
+          this.updateSyncUI('synced');
+          return { success: true, time: this.lastSyncTime };
+        }
+      }
+
+      // 2. Fallback: PHP API Relay (api-sync.php)
       const payload = {
-        data: this.serializeFullState(currentState)
+        data: serializedData
       };
 
       const res = await fetch(this.getApiUrl('push'), {
@@ -498,6 +527,56 @@ const cloudSyncEngine = {
     this.updateSyncUI('syncing');
 
     try {
+      // 1. Supabase Cloud Sync (wenn Supabase authentifiziert ist)
+      if (typeof FlowAuth !== 'undefined' && FlowAuth.getSupabaseClient) {
+        const supa = FlowAuth.getSupabaseClient();
+        const user = FlowAuth.getUser();
+        if (supa && user && user.id && !user.isTokenOnly) {
+          const { data, error } = await supa.from('flow_sync').select('data, updated_at').eq('user_id', user.id).maybeSingle();
+          if (error) throw error;
+
+          if (!data || !data.data) {
+            // Noch kein State auf Server -> aktuellen Zustand hochladen
+            this.isSyncing = false;
+            return await this.pushState();
+          }
+
+          const remoteData = data.data;
+          const targetState = (typeof window !== 'undefined' && window.state) ? window.state : (typeof state !== 'undefined' ? state : null);
+
+          if (targetState) {
+            // Sicherheits-Backup vor Merge anlegen
+            try {
+              if (typeof localStorage !== 'undefined') {
+                localStorage.setItem('flow_backup_before_sync', JSON.stringify(targetState));
+              }
+            } catch (err) {}
+
+            // Intelligenter Merge
+            const hasChanges = this.mergeState(targetState, remoteData);
+
+            if (typeof saveState === 'function') saveState(true);
+            if (typeof renderApp === 'function') renderApp();
+
+            // Falls lokaler Zustand neue Elemente hatte, Server aktualisieren
+            if (hasChanges || this.isPendingSync()) {
+              this.pushState();
+            }
+          }
+
+          this.retryCount = 0;
+          if (this.retryTimer) {
+            clearTimeout(this.retryTimer);
+            this.retryTimer = null;
+          }
+          this.lastSyncTime = new Date();
+          this.syncError = null;
+          this.updateSyncUI('synced');
+          return { success: true, data: remoteData };
+        }
+      }
+
+      // 2. Fallback: PHP API Relay (api-sync.php)
       const res = await fetch(this.getApiUrl('pull'), {
         method: 'GET',
         headers: {

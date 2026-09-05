@@ -57,7 +57,7 @@ const FlowAuth = (function() {
       const supaLib = getSupabaseLib();
       const config = getConfig();
 
-      if (supaLib && config && config.SUPABASE_URL && config.SUPABASE_ANON_KEY && config.SUPABASE_ANON_KEY !== 'dummy_anon_key') {
+      if (supaLib && config && config.SUPABASE_URL && config.SUPABASE_ANON_KEY && !config.SUPABASE_ANON_KEY.includes('dummy_anon_key')) {
         supabaseClient = supaLib.createClient(config.SUPABASE_URL, config.SUPABASE_ANON_KEY, {
           auth: {
             persistSession: true,
@@ -135,6 +135,49 @@ const FlowAuth = (function() {
       return { success: false, error: 'Keine Internetverbindung. Bitte stelle eine Verbindung her.' };
     }
 
+    // 1. Wenn Supabase konfiguriert ist, direkt über Supabase Auth anmelden oder registrieren
+    if (!supabaseClient) {
+      init();
+    }
+
+    if (supabaseClient) {
+      try {
+        let authRes = await supabaseClient.auth.signInWithPassword({
+          email: trimmedEmail,
+          password: password
+        });
+
+        if (authRes.error) {
+          const errMsg = authRes.error.message || '';
+          // Wenn User nicht existiert oder fehlerhafte Anmeldedaten (Auto-Registrierung wie im PHP-Backend)
+          if (errMsg.toLowerCase().includes('invalid login credentials') || errMsg.toLowerCase().includes('user not found') || authRes.error.status === 400) {
+            const signUpRes = await supabaseClient.auth.signUp({
+              email: trimmedEmail,
+              password: password
+            });
+
+            if (signUpRes.error) {
+              return { success: false, error: signUpRes.error.message || 'Registrierung fehlgeschlagen.' };
+            }
+            if (signUpRes.data && signUpRes.data.user) {
+              setSession(signUpRes.data.session || { user: signUpRes.data.user });
+              return { success: true, email: trimmedEmail, token: signUpRes.data.user.id };
+            }
+          }
+          return { success: false, error: authRes.error.message || 'Anmeldung fehlgeschlagen.' };
+        }
+
+        if (authRes.data && authRes.data.user) {
+          setSession(authRes.data.session || { user: authRes.data.user });
+          return { success: true, email: trimmedEmail, token: authRes.data.user.id };
+        }
+      } catch (err) {
+        console.warn('[FlowAuth] Supabase Auth notice:', err);
+        return { success: false, error: err.message || getFriendlyNetworkErrorMessage() };
+      }
+    }
+
+    // 2. Fallback für lokale PHP-Server (z.B. XAMPP)
     try {
       const res = await fetch(getApiUrl('auth_login'), {
         method: 'POST',
@@ -150,11 +193,20 @@ const FlowAuth = (function() {
       setDirectPairingToken(json.token, trimmedEmail);
       return { success: true, email: trimmedEmail, token: json.token };
     } catch (e) {
-      if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
-        return { success: false, error: 'App über file:// geöffnet. Bitte starte XAMPP (Apache) und öffne: http://localhost/QuizProject/Flow-Organiser/' };
-      }
-      return { success: false, error: 'Server nicht erreichbar. Bitte prüfe, ob Apache in XAMPP gestartet ist.' };
+      return { success: false, error: getFriendlyNetworkErrorMessage() };
     }
+  }
+
+  function getFriendlyNetworkErrorMessage() {
+    if (typeof window !== 'undefined' && window.location) {
+      if (window.location.protocol === 'file:') {
+        return 'App über file:// geöffnet (PHP nicht ausführbar). Bitte über http://localhost/QuizProject/Flow-Organiser/ öffnen.';
+      }
+      if (window.location.hostname.includes('github.io')) {
+        return 'GitHub Pages führt kein PHP aus (api-sync.php). Trage Supabase in config.js ein oder hoste mit PHP-Backend.';
+      }
+    }
+    return 'Server nicht erreichbar. Bitte prüfe, ob Apache/PHP läuft oder die Internetverbindung aktiv ist.';
   }
 
   // ==========================================================================
@@ -179,10 +231,7 @@ const FlowAuth = (function() {
 
       return { success: true, code: json.code, expiresIn: json.expires_in_seconds };
     } catch (e) {
-      if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
-        return { success: false, error: 'App über file:// geöffnet. Bitte starte XAMPP (Apache) und öffne: http://localhost/QuizProject/Flow-Organiser/' };
-      }
-      return { success: false, error: 'Server nicht erreichbar. Bitte prüfe, ob Apache in XAMPP gestartet ist.' };
+      return { success: false, error: getFriendlyNetworkErrorMessage() };
     }
   }
 
@@ -211,10 +260,7 @@ const FlowAuth = (function() {
       setDirectPairingToken(json.token, 'Gekoppeltes Gerät');
       return { success: true, token: json.token };
     } catch (e) {
-      if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
-        return { success: false, error: 'App über file:// geöffnet. Bitte starte XAMPP (Apache) und öffne: http://localhost/QuizProject/Flow-Organiser/' };
-      }
-      return { success: false, error: 'Verbindungsfehler beim Koppeln. Läuft Apache in XAMPP?' };
+      return { success: false, error: getFriendlyNetworkErrorMessage() };
     }
   }
 
@@ -377,6 +423,7 @@ const FlowAuth = (function() {
     setDirectPairingToken,
     subscribe,
     updateAuthUI,
+    getSupabaseClient: () => supabaseClient,
     _setSupabaseClientForTesting: (mock) => { supabaseClient = mock; }
   };
 })();

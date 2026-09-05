@@ -1,6 +1,6 @@
 # ============================================================================== 
 # FLOW ORGANISER — GESAMTER QUELLCODE DER ANWENDUNG 
-# Stand: 04.09.2026 20:50:58,89 
+# Stand: 04.09.2026 22:26:10,80 
 # ============================================================================== 
  
  
@@ -96,15 +96,15 @@ DATEI: index.html
       <!-- ====================================================================== -->
       <div class="flex items-center gap-3.5 md:gap-4.5 shrink-0">
         
-        <!-- Logo (Rahmenlos & organisch schwebend) -->
+        <!-- Logo (Rahmenlos & organisch schwebend, 4 abwechselnde Luxus-Animationen) -->
         <div class="relative inline-block">
-          <div class="flow-logo-container relative inline-flex flex-col items-center justify-center p-1.5 md:p-2 rounded-2xl bg-transparent hover:bg-white/[0.04] active:scale-95 transition-all duration-300 group/logo select-none shrink-0 border-none outline-none" title="Noodle Studio">
+          <div class="flow-logo-container relative inline-flex flex-col items-center justify-center p-1.5 md:p-2 rounded-2xl bg-transparent hover:bg-white/[0.04] active:scale-95 transition-all duration-500 group/logo select-none shrink-0 border-none outline-none cursor-pointer" title="Noodle Studio • Klicken für nächsten Modus" onclick="cycleNextLogoMode(event)">
             <!-- Subtile Ambient Nebula Aura im Hintergrund -->
-            <div class="logo-ambient-aura absolute inset-0 -z-10 rounded-2xl opacity-30 group-hover/logo:opacity-80 blur-md transition-opacity duration-500 pointer-events-none"></div>
+            <div class="logo-ambient-aura absolute inset-0 -z-10 rounded-2xl blur-md pointer-events-none"></div>
 
-            <!-- Noodle 3D Clay Wordmark mit Lichtstrahl-Effekt (Vollständig sichtbar mit sicherem Padding) -->
+            <!-- Noodle 3D Clay Wordmark mit Lichtstrahl-Effekt -->
             <div class="relative overflow-hidden rounded-xl px-2 py-0.5 flex items-center justify-center">
-              <img id="header-noodle-logo" src="logo-noodle.png" alt="Noodle" class="h-[18px] md:h-[20px] w-auto max-w-none object-contain select-none pointer-events-none transition-transform duration-300" />
+              <img id="header-noodle-logo" src="logo-noodle.png" alt="Noodle" class="h-[18px] md:h-[20px] w-auto max-w-none object-contain select-none pointer-events-none transition-transform duration-500" />
               <!-- Glanz-Lichtstrahl Sweep Animation -->
               <div class="logo-light-sweep absolute inset-0 pointer-events-none"></div>
             </div>
@@ -594,12 +594,39 @@ DATEI: index.html
                 </div>
               </div>
 
-              <!-- SECTION 2: 12 ELEGANTE FARBSCHEMATA (Kompakt, edel & rund als Juwelen-Dots) -->
-              <div class="space-y-1.5 pt-1 border-t border-white/5">
+              <!-- SECTION 2: FARBSCHEMATA & COZY WOHLFÜHL-THEMES -->
+              <div class="space-y-2 pt-1 border-t border-white/5">
                 <div class="text-[9px] font-bold uppercase tracking-wider text-gray-400 font-mono flex items-center justify-between">
-                  <span data-i18n="settings_section_theme">🎨 Farbschema</span>
-                  <span class="text-[8px] text-gray-500 font-mono">12 Themes</span>
+                  <span data-i18n="settings_section_theme">🎨 Farbschema & Atmosphäre</span>
+                  <span class="text-[8px] text-amber-300/90 font-mono">16 Themes</span>
                 </div>
+
+                <!-- COZY SPECIAL ROW -->
+                <div class="space-y-1">
+                  <div class="text-[8px] text-amber-300 font-mono font-bold uppercase tracking-widest flex items-center gap-1">
+                    <span>✨ Warme Wohlfühl-Themes (Cozy)</span>
+                  </div>
+                  <div class="grid grid-cols-4 gap-1.5 p-1.5 bg-amber-500/10 border border-amber-500/25 rounded-2xl">
+                    <button onclick="setTheme('latte')" data-theme-swatch="latte" class="py-1.5 px-1 rounded-xl bg-amber-900/30 hover:bg-amber-800/40 border border-amber-600/40 hover:scale-105 active:scale-95 transition flex flex-col items-center justify-center gap-0.5 text-center cursor-pointer shadow-sm group/cozy" title="Oat & Latte (Cozy Milchkaffee & Hafer)">
+                      <span class="w-3.5 h-3.5 rounded-full bg-gradient-to-tr from-amber-800 via-amber-600 to-amber-200 border border-amber-300/60 shadow-xs"></span>
+                      <span class="text-[9px] text-amber-200 font-bold">☕ Latte</span>
+                    </button>
+                    <button onclick="setTheme('sunset')" data-theme-swatch="sunset" class="py-1.5 px-1 rounded-xl bg-orange-900/30 hover:bg-orange-800/40 border border-orange-600/40 hover:scale-105 active:scale-95 transition flex flex-col items-center justify-center gap-0.5 text-center cursor-pointer shadow-sm group/cozy" title="Warm Sunset (Goldene Abendsonne & Pfirsich)">
+                      <span class="w-3.5 h-3.5 rounded-full bg-gradient-to-tr from-orange-700 via-rose-500 to-amber-200 border border-orange-300/60 shadow-xs"></span>
+                      <span class="text-[9px] text-orange-200 font-bold">🌅 Sunset</span>
+                    </button>
+                    <button onclick="setTheme('matcha')" data-theme-swatch="matcha" class="py-1.5 px-1 rounded-xl bg-emerald-900/30 hover:bg-emerald-800/40 border border-emerald-600/40 hover:scale-105 active:scale-95 transition flex flex-col items-center justify-center gap-0.5 text-center cursor-pointer shadow-sm group/cozy" title="Matcha & Salbei (Milde Naturfrische)">
+                      <span class="w-3.5 h-3.5 rounded-full bg-gradient-to-tr from-emerald-800 via-teal-500 to-emerald-200 border border-emerald-300/60 shadow-xs"></span>
+                      <span class="text-[9px] text-emerald-200 font-bold">🍵 Matcha</span>
+                    </button>
+                    <button onclick="setTheme('candlelight')" data-theme-swatch="candlelight" class="py-1.5 px-1 rounded-xl bg-rose-950/30 hover:bg-rose-900/40 border border-orange-700/40 hover:scale-105 active:scale-95 transition flex flex-col items-center justify-center gap-0.5 text-center cursor-pointer shadow-sm group/cozy" title="Candlelight (Sanfter Kerzenschein & Kaminfeuer)">
+                      <span class="w-3.5 h-3.5 rounded-full bg-gradient-to-tr from-orange-900 via-amber-600 to-yellow-100 border border-yellow-300/60 shadow-xs"></span>
+                      <span class="text-[9px] text-amber-200 font-bold">🕯️ Kerze</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- ALL THEME DOTS -->
                 <div class="grid grid-cols-6 gap-2 p-2 bg-black/40 border border-white/10 rounded-2xl shadow-inner items-center justify-items-center">
                   <!-- Row 1: Cyberpunk, Matrix, Twilight, Ocean, Solar, Crimson -->
                   <button onclick="setTheme('default')" data-theme-swatch="default" class="h-5 w-5 rounded-full bg-gradient-to-tr from-purple-700 via-purple-500 to-pink-400 border border-white/40 hover:scale-125 active:scale-90 transition-all duration-200 cursor-pointer shadow-[0_0_8px_rgba(168,85,247,0.35)] relative group/swatch" title="Cyberpunk Neon (Violet & Fuchsia)">
@@ -1352,19 +1379,31 @@ DATEI: index.html
                   </div>
                   <button onclick="suggestBoostActivity()" class="w-full py-2 bg-amber-500 text-black text-xs font-bold rounded-xl hover:opacity-90 transition cursor-pointer shadow-md" data-i18n="boost_new">Neuer Vorschlag 🔄</button>
                   
-                  <div class="pt-2 border-t border-white/10 grid grid-cols-3 gap-1.5">
-                    <button onclick="togglePanel('daily'); openBrainstormModal();" class="p-2 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 rounded-xl text-left transition text-amber-200 flex items-center gap-1.5 cursor-pointer text-xs font-bold">
-                      <i data-lucide="brain" class="w-3.5 h-3.5 text-amber-400"></i>
-                      <span>Brainstorm</span>
+                  <div class="pt-2 border-t border-white/10 space-y-1.5">
+                    <button onclick="togglePanel('daily'); openCleaningGuideModal();" class="w-full p-2 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 rounded-xl text-left transition text-emerald-200 flex items-center justify-between cursor-pointer">
+                      <div class="flex items-center gap-2">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-emerald-400"></i>
+                        <div>
+                          <div class="font-bold text-xs text-white">Wohnungs-Reset & Putz-Guide 🧹</div>
+                          <div class="text-[9px] text-gray-400">15m Blitz, 45m Standard & 90m Deep Clean</div>
+                        </div>
+                      </div>
+                      <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-emerald-400"></i>
                     </button>
-                    <button onclick="togglePanel('daily'); openClarityModal();" class="p-2 bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/30 rounded-xl text-left transition text-teal-200 flex items-center gap-1.5 cursor-pointer text-xs font-bold">
-                      <i data-lucide="anchor" class="w-3.5 h-3.5 text-teal-400"></i>
-                      <span>Klarheit</span>
-                    </button>
-                    <button onclick="togglePanel('daily'); openSafeSpaceModal('anchor');" class="p-2 bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 rounded-xl text-left transition text-cyan-200 flex items-center gap-1.5 cursor-pointer text-xs font-bold">
-                      <i data-lucide="shield" class="w-3.5 h-3.5 text-cyan-400"></i>
-                      <span>5-4-3-2-1</span>
-                    </button>
+                    <div class="grid grid-cols-3 gap-1.5">
+                      <button onclick="togglePanel('daily'); openBrainstormModal();" class="p-2 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 rounded-xl text-left transition text-amber-200 flex items-center gap-1.5 cursor-pointer text-xs font-bold">
+                        <i data-lucide="brain" class="w-3.5 h-3.5 text-amber-400"></i>
+                        <span>Brainstorm</span>
+                      </button>
+                      <button onclick="togglePanel('daily'); openClarityModal();" class="p-2 bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/30 rounded-xl text-left transition text-teal-200 flex items-center gap-1.5 cursor-pointer text-xs font-bold">
+                        <i data-lucide="anchor" class="w-3.5 h-3.5 text-teal-400"></i>
+                        <span>Klarheit</span>
+                      </button>
+                      <button onclick="togglePanel('daily'); openSafeSpaceModal('anchor');" class="p-2 bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 rounded-xl text-left transition text-cyan-200 flex items-center gap-1.5 cursor-pointer text-xs font-bold">
+                        <i data-lucide="shield" class="w-3.5 h-3.5 text-cyan-400"></i>
+                        <span>5-4-3-2-1</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -2724,7 +2763,6 @@ DATEI: index.html
       <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-lg font-bold shadow-lg shadow-purple-500/30 shrink-0">
         ✨
       </div>
-      <div class="flex-1 min-w-0">
         <div class="flex items-center justify-between">
           <h4 class="font-bold text-xs text-white" data-i18n="pwa_install_title">App installieren</h4>
           <button onclick="dismissPwaBanner()" class="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition cursor-pointer">
@@ -2751,15 +2789,11 @@ DATEI: index.html
     <div class="mobile-modal-card animate-spring-modal w-full max-w-lg bg-[#111116]/95 border border-[var(--accent)]/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
       <span onclick="closeHelperModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
 
-      <div class="flex items-center justify-between mb-3 pb-2 border-b border-white/10">
+      <div class="flex items-center justify-between mb-3 pb-2 border-b border-white/10 pr-6">
         <h3 class="text-white font-bold text-sm font-display flex items-center gap-2">
           <i data-lucide="footprints" class="w-4 h-4 text-[var(--accent-light)]"></i>
           <span>Teilschritte & Checkliste</span>
         </h3>
-        <button onclick="loadDefaultStepSuggestions()" class="text-[10px] px-2.5 py-1 bg-white/5 hover:bg-white/10 hover:text-[var(--accent-light)] border border-white/10 rounded-lg font-semibold transition cursor-pointer flex items-center gap-1" title="Vordefinierte Noodle-Vorschläge laden">
-          <i data-lucide="sparkles" class="w-3 h-3 text-amber-400"></i>
-          <span>Vorschläge laden</span>
-        </button>
       </div>
 
       <div class="space-y-3">
@@ -2781,27 +2815,161 @@ DATEI: index.html
           </button>
         </div>
 
-        <!-- Focus Mode & Timer Actions -->
-        <div class="flex items-center justify-between gap-2 pt-2 border-t border-white/10">
-          <button onclick="startZenFromStepsModal()" class="px-3 py-1.5 bg-gradient-to-r from-[var(--accent)] to-indigo-600 hover:opacity-90 text-white text-xs font-bold rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-md">
-            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-300"></i>
-            <span>Im Fokus-Modus starten</span>
-          </button>
-          
+        <!-- Timer / Speed Widget -->
+        <div class="flex items-center justify-between pt-2 border-t border-white/10 text-xs">
+          <span class="text-[10px] text-gray-400 font-mono">Schritt-Fokus-Timer:</span>
           <div id="helper-steps-timer-widget" class="flex items-center gap-1.5 bg-black/40 border border-white/10 px-2 py-1 rounded-xl">
             <span id="helper-steps-timer-task" class="hidden"></span>
             <span id="helper-steps-timer-display" class="font-mono font-bold text-xs text-gray-300">02:00</span>
             <button id="helper-steps-timer-play" onclick="startTimer()" class="p-1 hover:bg-emerald-500/20 text-emerald-400 rounded transition cursor-pointer">
-              <i data-lucide="play" class="w-3.5 h-3.5"></i>
+              <i data-lucide="play" class="w-3 h-3"></i>
             </button>
             <button id="helper-steps-timer-pause" onclick="pauseTimer()" class="p-1 hover:bg-amber-500/20 text-amber-400 rounded transition cursor-pointer hidden">
-              <i data-lucide="pause" class="w-3.5 h-3.5"></i>
+              <i data-lucide="pause" class="w-3 h-3"></i>
             </button>
             <button id="helper-steps-timer-stop" onclick="stopTimer()" class="p-1 hover:bg-rose-500/20 text-rose-400 rounded transition cursor-pointer">
               <i data-lucide="square" class="w-3 h-3"></i>
             </button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HELPER WOHNUNGS-RESET & LEVEL-PUTZ-GUIDE MODAL -->
+  <div id="helper-cleaning-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md">
+    <div class="mobile-modal-card animate-spring-modal w-full max-w-xl bg-[#111116]/98 border border-emerald-500/30 p-5 sm:p-6 rounded-3xl shadow-2xl backdrop-blur-2xl text-white relative transition-all duration-300 max-h-[90vh] flex flex-col text-left">
+      <span onclick="closeCleaningGuideModal()" class="modal-close-btn text-gray-400 hover:text-white text-lg font-bold p-1 cursor-pointer transition">✕</span>
+
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-white/10 pb-3 pr-6 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300 shadow-sm">
+            <i data-lucide="sparkles" class="w-4 h-4 text-emerald-400"></i>
+          </div>
+          <div>
+            <h3 class="text-white font-bold text-sm sm:text-base font-display flex items-center gap-2">
+              <span>Wohnungs-Reset & Putz-Guide</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono font-bold">Profi-Flow</span>
+            </h3>
+            <div class="text-[10px] text-gray-400 font-mono">Schritt-für-Schritt Begleitung für echte Wohlfühl-Klarheit</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scrollable Body -->
+      <div class="overflow-y-auto pr-1 space-y-4 pt-3 flex-1">
+        
+        <!-- 3 Level Tabs -->
+        <div class="grid grid-cols-3 gap-1.5 p-1 bg-black/60 rounded-2xl border border-white/10 shadow-inner">
+          <button id="cleaning-tab-btn-express" onclick="switchCleaningLevel('express')" class="py-2 px-2 rounded-xl text-gray-400 hover:text-white bg-white/5 border border-white/5 font-medium transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[11px] cursor-pointer">
+            <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
+            <span class="font-bold">⚡ 15m Blitz</span>
+          </button>
+          <button id="cleaning-tab-btn-standard" onclick="switchCleaningLevel('standard')" class="py-2 px-2 rounded-xl text-white bg-emerald-500/30 border border-emerald-500/60 font-bold transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[11px] cursor-pointer shadow-sm">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span class="font-bold">🧹 45m Standard</span>
+          </button>
+          <button id="cleaning-tab-btn-deep" onclick="switchCleaningLevel('deep')" class="py-2 px-2 rounded-xl text-gray-400 hover:text-white bg-white/5 border border-white/5 font-medium transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[11px] cursor-pointer">
+            <i data-lucide="gem" class="w-3.5 h-3.5 text-indigo-400"></i>
+            <span class="font-bold">✨ 90m Deep</span>
+          </button>
+        </div>
+
+        <!-- Level Info & Motivation Card -->
+        <div class="p-3.5 bg-gradient-to-r from-emerald-950/40 via-teal-950/30 to-purple-950/30 border border-emerald-500/20 rounded-2xl">
+          <div class="flex items-center justify-between mb-1">
+            <h4 id="cleaning-guide-title" class="text-xs sm:text-sm font-bold text-emerald-200">45-Minuten Standard-Grundreinigung</h4>
+            <span id="cleaning-guide-subtitle" class="text-[10px] text-gray-400 font-mono">Alle Kernzonen frisch</span>
+          </div>
+          <p id="cleaning-guide-intro-tip" class="text-[11px] text-gray-300 leading-relaxed font-normal">Die solide Grundreinigung nach der goldenen Regel: Von oben nach unten, von innen nach außen, trocken vor nass!</p>
+        </div>
+
+        <!-- Timer & Controls Bar -->
+        <div class="flex flex-wrap items-center justify-between gap-2 p-2.5 bg-black/40 border border-white/10 rounded-2xl">
+          <!-- Timer Widget -->
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-mono font-bold text-gray-400">Timer:</span>
+            <div class="flex items-center gap-1.5 bg-white/5 border border-white/10 px-2.5 py-1 rounded-xl">
+              <span id="cleaning-timer-display" class="font-mono font-bold text-xs text-emerald-300">45:00</span>
+              <button id="cleaning-timer-play" onclick="startCleaningTimer()" class="p-1 hover:bg-emerald-500/20 text-emerald-400 rounded transition cursor-pointer" title="Timer starten">
+                <i data-lucide="play" class="w-3 h-3"></i>
+              </button>
+              <button id="cleaning-timer-pause" onclick="pauseCleaningTimer()" class="p-1 hover:bg-amber-500/20 text-amber-400 rounded transition cursor-pointer hidden" title="Timer pausieren">
+                <i data-lucide="pause" class="w-3 h-3"></i>
+              </button>
+              <button onclick="resetCleaningTimer()" class="p-1 hover:bg-white/10 text-gray-400 hover:text-white rounded transition cursor-pointer" title="Timer zurücksetzen">
+                <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Audio & Board Actions -->
+          <div class="flex items-center gap-1.5">
+            <button id="cleaning-lofi-btn" onclick="toggleCleaningLoFi()" class="px-2.5 py-1 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[10px] font-bold text-gray-300 hover:text-white transition cursor-pointer flex items-center gap-1" title="LoFi-Hintergrundmusik an/aus">
+              <i data-lucide="music" class="w-3 h-3 text-purple-400"></i>
+              <span>LoFi-Musik</span>
+            </button>
+            <button onclick="transferCleaningStepsToBoard('weekly')" class="px-2.5 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 rounded-xl text-[10px] font-bold text-emerald-300 transition cursor-pointer flex items-center gap-1" title="Als Aufgaben ins Noodle-Board übernehmen">
+              <i data-lucide="plus-circle" class="w-3 h-3"></i>
+              <span>In Board übernehmen</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between text-[10px] font-mono">
+            <span id="cleaning-progress-status" class="text-gray-400">Bereit für den Start!</span>
+            <span id="cleaning-progress-text" class="text-emerald-400 font-bold">0% (0/6)</span>
+          </div>
+          <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/10 p-0.5">
+            <div id="cleaning-progress-bar" class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-300 w-0"></div>
+          </div>
+        </div>
+
+        <!-- Steps List -->
+        <div id="cleaning-guide-steps-list" class="space-y-2"></div>
+
+        <!-- Beginner Tips Accordion / Cheat Sheet -->
+        <details class="group p-3 bg-white/[0.02] border border-white/10 rounded-2xl text-xs">
+          <summary class="font-bold text-gray-300 cursor-pointer flex items-center justify-between">
+            <span class="flex items-center gap-1.5 text-amber-300">
+              <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-amber-400"></i>
+              <span>Profi-Spickzettel für Einsteiger (Farben & Regeln)</span>
+            </span>
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-gray-500 transition-transform group-open:rotate-180"></i>
+          </summary>
+          <div class="pt-2.5 space-y-2 text-[11px] text-gray-300 leading-relaxed border-t border-white/5 mt-2">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <div class="p-2 rounded-xl bg-blue-500/10 border border-blue-500/20">
+                <div class="font-bold text-blue-300">🔵 Blaues Tuch</div>
+                <div class="text-[10px] text-gray-400">Für Staub, Regale, Schreibtisch & Spiegel</div>
+              </div>
+              <div class="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                <div class="font-bold text-amber-300">🟡 Gelbes Tuch</div>
+                <div class="text-[10px] text-gray-400">Für Küche, Herd, Tische & Oberflächen</div>
+              </div>
+              <div class="p-2 rounded-xl bg-rose-500/10 border border-rose-500/20">
+                <div class="font-bold text-rose-300">🔴 Rotes Tuch</div>
+                <div class="text-[10px] text-gray-400">Nur für WC & Sanitärbereich (Hygiene!)</div>
+              </div>
+            </div>
+            <div class="p-2.5 rounded-xl bg-white/5 space-y-1">
+              <div class="font-bold text-emerald-300">Die 3 goldenen Haushalts-Regeln:</div>
+              <p>1. <strong>Von oben nach unten:</strong> Zuerst Regale & Tische entstauben, ganz zum Schluss saugen & wischen.</p>
+              <p>2. <strong>Einwirken lassen:</strong> Sprühe Kalklöser & Badreiniger ein und mache 5 Min was anderes – kein Schrubben nötig!</p>
+              <p>3. <strong>Trocken vor nass:</strong> Erst Krümel und Staub trocken wegfegen/saugen, bevor du mit Wasser wischst.</p>
+            </div>
+          </div>
+        </details>
+
+        <div class="flex justify-end pt-1">
+          <button onclick="resetCleaningProgress()" class="text-[10px] text-gray-500 hover:text-rose-400 transition cursor-pointer">
+            Fortschritt zurücksetzen
+          </button>
+        </div>
+
       </div>
     </div>
   </div>
@@ -3874,6 +4042,7 @@ DATEI: index.html
   <script src="helper-tools-3.js"></script>
   <script src="helper-clarity.js"></script>
   <script src="helper-brainstorm.js"></script>
+  <script src="helper-cleaning.js"></script>
   <script src="sport.js"></script>
   <script src="app-tasks.js"></script>
   <script src="app-shopping.js"></script>
@@ -5709,6 +5878,90 @@ body.theme-royal {
   --border-main: rgba(217, 70, 239, 0.2);
 }
 
+/* 13. ☕ Oat & Latte (Cozy Hafermilch, Mocca & warmer Crema-Glow) */
+body.theme-latte,
+body.theme-oat-latte,
+body.theme-coffee {
+  --accent: #d97706;
+  --accent-light: #fde68a;
+  --accent-border: rgba(217, 119, 6, 0.35);
+  --bg-app: #120e0b;
+  --bg-header: rgba(36, 26, 20, 0.9);
+  --bg-card: rgba(28, 20, 15, 0.85);
+  --bg-card-hover: rgba(48, 35, 26, 0.95);
+  --bg-dock: rgba(36, 26, 20, 0.95);
+  --bg-panel: #1e1510;
+  --bg-modal: #1e1510;
+  --text-main: #fef3c7;
+  --text-muted: #fde68a;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(217, 119, 6, 0.22);
+}
+
+/* 14. 🌅 Warm Sunset (Goldener Abendhimmel, Pfirsich & milder Amber-Glow) */
+body.theme-sunset,
+body.theme-warm-sunset,
+body.theme-apricot {
+  --accent: #fb923c;
+  --accent-light: #fed7aa;
+  --accent-border: rgba(251, 146, 60, 0.35);
+  --bg-app: #140909;
+  --bg-header: rgba(38, 18, 18, 0.9);
+  --bg-card: rgba(30, 14, 14, 0.85);
+  --bg-card-hover: rgba(52, 24, 24, 0.95);
+  --bg-dock: rgba(38, 18, 18, 0.95);
+  --bg-panel: #200d0d;
+  --bg-modal: #200d0d;
+  --text-main: #fff7ed;
+  --text-muted: #fdba74;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(251, 146, 60, 0.22);
+}
+
+/* 15. 🍵 Matcha & Salbei (Milde Naturfrische & sanftes Kräuter-Teal) */
+body.theme-matcha,
+body.theme-matcha-sage,
+body.theme-sage-latte {
+  --accent: #10b981;
+  --accent-light: #6ee7b7;
+  --accent-border: rgba(16, 185, 129, 0.35);
+  --bg-app: #08110c;
+  --bg-header: rgba(18, 34, 24, 0.9);
+  --bg-card: rgba(14, 28, 20, 0.85);
+  --bg-card-hover: rgba(24, 48, 34, 0.95);
+  --bg-dock: rgba(18, 34, 24, 0.95);
+  --bg-panel: #0d1e15;
+  --bg-modal: #0d1e15;
+  --text-main: #ecfdf5;
+  --text-muted: #a7f3d0;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(16, 185, 129, 0.22);
+}
+
+/* 16. 🕯️ Cozy Candlelight (Sanfter Kerzenschein, Kaminfeuer & Holz-Nuancen) */
+body.theme-candlelight,
+body.theme-cozy-candlelight,
+body.theme-fireplace {
+  --accent: #ea580c;
+  --accent-light: #ffedd5;
+  --accent-border: rgba(234, 88, 12, 0.35);
+  --bg-app: #120904;
+  --bg-header: rgba(34, 16, 8, 0.9);
+  --bg-card: rgba(26, 12, 6, 0.85);
+  --bg-card-hover: rgba(48, 22, 10, 0.95);
+  --bg-dock: rgba(34, 16, 8, 0.95);
+  --bg-panel: #1c0d05;
+  --bg-modal: #1c0d05;
+  --text-main: #fffbeb;
+  --text-muted: #fed7aa;
+  --text-header: #ffffff;
+  --text-dock: #ffffff;
+  --border-main: rgba(234, 88, 12, 0.22);
+}
+
 /* --- 3D SPATIAL TIEFEN- & GLOW-EFFEKTE --- */
 body[class*="theme-spatial-"] main article {
   transform: perspective(1000px) translateZ(0);
@@ -5875,70 +6128,384 @@ button:hover .steam-cup-icon .steam-line-3 {
   stroke: #2dd4bf !important;
 }
 
-/* --- HOCHWERTIGE NOODLE STUDIO LOGO ANIMATION (GLANZ-SWEEP & AMBIENT NEBULA) --- */
-.logo-ambient-aura {
-  background: radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.3), rgba(56, 189, 248, 0.2) 50%, transparent 75%);
-  animation: logoNebulaPulse 5s ease-in-out infinite;
+/* ========================================================================== */
+/* 🌟 HOCHWERTIGE & WECHSELNDE NOODLE STUDIO LOGO ANIMATIONEN (4 MODI)        */
+/* Langsam, luxuriös, modern und abwechslungsreich (Aurora, Prism, Velvet, HiFi) */
+/* ========================================================================== */
+
+.flow-logo-container {
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  perspective: 700px;
+  cursor: pointer;
 }
 
-@keyframes logoNebulaPulse {
+.flow-logo-container:hover {
+  transform: translateY(-1.5px);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.flow-logo-container:active {
+  transform: scale(0.96);
+}
+
+#header-noodle-logo {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, filter;
+}
+
+.logo-ambient-aura {
+  transition: background 1.2s ease-in-out, opacity 1.2s ease-in-out;
+  will-change: transform, opacity;
+}
+
+.logo-light-sweep {
+  transform: translateX(-160%);
+  will-change: transform, opacity;
+}
+
+.noodle-studio-badge {
+  display: block;
+  transition: color 0.8s ease, text-shadow 0.8s ease, letter-spacing 0.8s ease;
+  will-change: transform, opacity, letter-spacing;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 🌌 MODUS 1: COSMIC AURORA FLOW (Eisblau, Violett, Sanftes Schweben)       */
+/* -------------------------------------------------------------------------- */
+.anim-mode-aurora #header-noodle-logo,
+.flow-logo-container:not([class*="anim-mode-"]) #header-noodle-logo {
+  animation: logoAnimAurora 8.5s ease-in-out infinite;
+}
+
+.anim-mode-aurora .logo-ambient-aura,
+.flow-logo-container:not([class*="anim-mode-"]) .logo-ambient-aura {
+  background: radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.4), rgba(56, 189, 248, 0.25) 50%, transparent 75%);
+  animation: auraAnimAurora 8.5s ease-in-out infinite;
+}
+
+.anim-mode-aurora .logo-light-sweep,
+.flow-logo-container:not([class*="anim-mode-"]) .logo-light-sweep {
+  background: linear-gradient(
+    110deg,
+    transparent 25%,
+    rgba(192, 132, 252, 0.35) 45%,
+    rgba(255, 255, 255, 0.65) 50%,
+    rgba(56, 189, 248, 0.35) 55%,
+    transparent 75%
+  );
+  animation: sweepAnimAurora 8.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.anim-mode-aurora .noodle-studio-badge,
+.flow-logo-container:not([class*="anim-mode-"]) .noodle-studio-badge {
+  animation: badgeAnimAurora 8.5s ease-in-out infinite;
+}
+
+@keyframes logoAnimAurora {
   0%, 100% {
-    transform: scale(0.95);
-    opacity: 0.35;
+    transform: translateY(0px) scale(1);
+    filter: drop-shadow(0 2px 8px rgba(168, 85, 247, 0.25)) brightness(1);
   }
   50% {
-    transform: scale(1.15);
-    opacity: 0.75;
+    transform: translateY(-2.5px) scale(1.025);
+    filter: drop-shadow(0 6px 18px rgba(168, 85, 247, 0.55)) drop-shadow(0 0 10px rgba(56, 189, 248, 0.4)) brightness(1.06);
   }
 }
 
-/* Lichtstrahl-Glanz (gleitet elegant über die bunten Knetebuchstaben) */
-.logo-light-sweep {
-  background: linear-gradient(
-    105deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.5) 50%,
-    transparent 70%
-  );
-  transform: translateX(-150%);
-  animation: logoLightSweep 5.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-@keyframes logoLightSweep {
-  0%, 60% {
-    transform: translateX(-150%);
-  }
-  80%, 100% {
-    transform: translateX(150%);
-  }
-}
-
-/* STUDIO Shimmer & Living Breathing Float */
-@keyframes noodleStudioLiving {
+@keyframes auraAnimAurora {
   0%, 100% {
-    opacity: 0.9;
-    letter-spacing: 0.32em;
+    transform: scale(0.92);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+@keyframes sweepAnimAurora {
+  0%, 55% {
+    transform: translateX(-160%);
+  }
+  75%, 100% {
+    transform: translateX(160%);
+  }
+}
+
+@keyframes badgeAnimAurora {
+  0%, 100% {
+    opacity: 0.85;
+    letter-spacing: 0.34em;
     transform: translateY(0);
     color: #d8b4fe;
     text-shadow: 0 0 8px rgba(168, 85, 247, 0.3);
   }
   50% {
     opacity: 1;
-    letter-spacing: 0.38em;
-    transform: translateY(-0.8px);
+    letter-spacing: 0.40em;
+    transform: translateY(-0.6px);
     color: #ffffff;
-    text-shadow: 0 0 16px rgba(192, 132, 252, 0.8), 0 0 30px rgba(56, 189, 248, 0.4);
+    text-shadow: 0 0 16px rgba(192, 132, 252, 0.85), 0 0 28px rgba(56, 189, 248, 0.45);
   }
 }
 
-.noodle-studio-badge {
-  display: block;
-  animation: noodleStudioLiving 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+/* -------------------------------------------------------------------------- */
+/* 💎 MODUS 2: PRISMATIC DIAMOND SHEEN (Prisma, Gold, Cyan, 3D-Kippung)      */
+/* -------------------------------------------------------------------------- */
+.anim-mode-prism #header-noodle-logo {
+  animation: logoAnimPrism 9s ease-in-out infinite;
+}
+
+.anim-mode-prism .logo-ambient-aura {
+  background: radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.38), rgba(6, 182, 212, 0.28) 50%, transparent 75%);
+  animation: auraAnimPrism 9s ease-in-out infinite;
+}
+
+.anim-mode-prism .logo-light-sweep {
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(251, 191, 36, 0.4) 40%,
+    rgba(255, 255, 255, 0.85) 50%,
+    rgba(6, 182, 212, 0.45) 60%,
+    transparent 80%
+  );
+  animation: sweepAnimPrism 9s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+.anim-mode-prism .noodle-studio-badge {
+  animation: badgeAnimPrism 9s ease-in-out infinite;
+}
+
+@keyframes logoAnimPrism {
+  0%, 100% {
+    transform: translateY(0px) rotateX(0deg) rotateY(0deg) scale(1);
+    filter: drop-shadow(0 2px 8px rgba(251, 191, 36, 0.2)) brightness(1);
+  }
+  35% {
+    transform: translateY(-2px) rotateX(3deg) rotateY(3deg) scale(1.03);
+    filter: drop-shadow(0 6px 18px rgba(251, 191, 36, 0.5)) drop-shadow(0 0 12px rgba(6, 182, 212, 0.4)) brightness(1.08);
+  }
+  70% {
+    transform: translateY(-1.5px) rotateX(-2deg) rotateY(-2deg) scale(1.02);
+    filter: drop-shadow(0 4px 14px rgba(6, 182, 212, 0.45)) drop-shadow(0 0 10px rgba(251, 191, 36, 0.35)) brightness(1.05);
+  }
+}
+
+@keyframes auraAnimPrism {
+  0%, 100% {
+    transform: scale(0.9);
+    opacity: 0.25;
+  }
+  50% {
+    transform: scale(1.22);
+    opacity: 0.75;
+  }
+}
+
+@keyframes sweepAnimPrism {
+  0%, 50% {
+    transform: translateX(-160%);
+  }
+  72%, 100% {
+    transform: translateX(160%);
+  }
+}
+
+@keyframes badgeAnimPrism {
+  0%, 100% {
+    opacity: 0.85;
+    letter-spacing: 0.33em;
+    color: #fef08a;
+    text-shadow: 0 0 8px rgba(251, 191, 36, 0.3);
+  }
+  50% {
+    opacity: 1;
+    letter-spacing: 0.42em;
+    transform: translateY(-0.8px);
+    color: #ffffff;
+    text-shadow: 0 0 18px rgba(251, 191, 36, 0.85), 0 0 30px rgba(6, 182, 212, 0.5);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 🍑 MODUS 3: LIVING CLAY & VELVET HARMONY (Organische Welle, Sunset & Rose) */
+/* -------------------------------------------------------------------------- */
+.anim-mode-velvet #header-noodle-logo {
+  animation: logoAnimVelvet 9.5s ease-in-out infinite;
+}
+
+.anim-mode-velvet .logo-ambient-aura {
+  background: radial-gradient(circle at 50% 50%, rgba(249, 115, 22, 0.38), rgba(236, 72, 153, 0.28) 50%, transparent 75%);
+  animation: auraAnimVelvet 9.5s ease-in-out infinite;
+}
+
+.anim-mode-velvet .logo-light-sweep {
+  background: linear-gradient(
+    105deg,
+    transparent 25%,
+    rgba(251, 146, 60, 0.35) 45%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(244, 114, 182, 0.35) 55%,
+    transparent 75%
+  );
+  animation: sweepAnimVelvet 9.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.anim-mode-velvet .noodle-studio-badge {
+  animation: badgeAnimVelvet 9.5s ease-in-out infinite;
+}
+
+@keyframes logoAnimVelvet {
+  0%, 100% {
+    transform: scale(1, 1) translateY(0);
+    filter: drop-shadow(0 2px 8px rgba(249, 115, 22, 0.2));
+  }
+  30% {
+    transform: scale(1.035, 0.975) translateY(-2px);
+    filter: drop-shadow(0 6px 20px rgba(249, 115, 22, 0.55)) drop-shadow(0 0 10px rgba(236, 72, 153, 0.4)) brightness(1.07);
+  }
+  60% {
+    transform: scale(0.98, 1.025) translateY(-1px);
+    filter: drop-shadow(0 5px 16px rgba(236, 72, 153, 0.5)) drop-shadow(0 0 10px rgba(249, 115, 22, 0.35)) brightness(1.05);
+  }
+}
+
+@keyframes auraAnimVelvet {
+  0%, 100% {
+    transform: scale(0.93);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 0.8;
+  }
+}
+
+@keyframes sweepAnimVelvet {
+  0%, 55% {
+    transform: translateX(-160%);
+  }
+  78%, 100% {
+    transform: translateX(160%);
+  }
+}
+
+@keyframes badgeAnimVelvet {
+  0%, 100% {
+    opacity: 0.85;
+    letter-spacing: 0.34em;
+    color: #fed7aa;
+    text-shadow: 0 0 8px rgba(249, 115, 22, 0.3);
+  }
+  50% {
+    opacity: 1;
+    letter-spacing: 0.39em;
+    transform: translateY(-0.6px);
+    color: #ffffff;
+    text-shadow: 0 0 16px rgba(249, 115, 22, 0.8), 0 0 28px rgba(236, 72, 153, 0.5);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 🎛️ MODUS 4: HIFI STUDIO DESK & CYBER PULSE (Emerald, Indigo, Laser-Sweep)   */
+/* -------------------------------------------------------------------------- */
+.anim-mode-studio #header-noodle-logo {
+  animation: logoAnimStudio 8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.anim-mode-studio .logo-ambient-aura {
+  background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.38), rgba(99, 102, 241, 0.28) 50%, transparent 75%);
+  animation: auraAnimStudio 8s ease-in-out infinite;
+}
+
+.anim-mode-studio .logo-light-sweep {
+  background: linear-gradient(
+    120deg,
+    transparent 20%,
+    rgba(52, 211, 153, 0.45) 45%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(129, 140, 248, 0.45) 55%,
+    transparent 80%
+  );
+  animation: sweepAnimStudio 8s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}
+
+.anim-mode-studio .noodle-studio-badge {
+  animation: badgeAnimStudio 8s ease-in-out infinite;
+}
+
+@keyframes logoAnimStudio {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    filter: drop-shadow(0 2px 8px rgba(16, 185, 129, 0.2)) brightness(1);
+  }
+  40% {
+    transform: translateY(-2.2px) scale(1.035);
+    filter: drop-shadow(0 6px 18px rgba(16, 185, 129, 0.55)) drop-shadow(0 0 12px rgba(99, 102, 241, 0.45)) brightness(1.09);
+  }
+  70% {
+    transform: translateY(-1.2px) scale(1.015);
+    filter: drop-shadow(0 4px 14px rgba(99, 102, 241, 0.45)) brightness(1.04);
+  }
+}
+
+@keyframes auraAnimStudio {
+  0%, 100% {
+    transform: scale(0.9);
+    opacity: 0.25;
+  }
+  50% {
+    transform: scale(1.22);
+    opacity: 0.8;
+  }
+}
+
+@keyframes sweepAnimStudio {
+  0%, 50% {
+    transform: translateX(-160%);
+  }
+  70%, 100% {
+    transform: translateX(160%);
+  }
+}
+
+@keyframes badgeAnimStudio {
+  0%, 100% {
+    opacity: 0.85;
+    letter-spacing: 0.35em;
+    color: #6ee7b7;
+    text-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+  }
+  50% {
+    opacity: 1;
+    letter-spacing: 0.44em;
+    transform: translateY(-0.8px);
+    color: #ffffff;
+    text-shadow: 0 0 18px rgba(52, 211, 153, 0.9), 0 0 32px rgba(99, 102, 241, 0.55);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* HOVER-ACCELERATOR & INTERAKTIVE HIGHLIGHTS                                 */
+/* -------------------------------------------------------------------------- */
+.flow-logo-container:hover #header-noodle-logo {
+  animation-duration: 4s !important;
+  transform: translateY(-2.5px) scale(1.04);
+}
+
+.flow-logo-container:hover .logo-ambient-aura {
+  opacity: 0.9 !important;
+  transform: scale(1.25) !important;
+}
+
+.flow-logo-container:hover .logo-light-sweep {
+  animation-duration: 3.5s !important;
+}
+
 .flow-logo-container:hover .noodle-studio-badge {
-  animation-duration: 2s;
-  letter-spacing: 0.4em;
-  color: #ffffff;
-  text-shadow: 0 0 18px rgba(217, 70, 239, 0.9), 0 0 35px rgba(56, 189, 248, 0.6);
+  animation-duration: 3.5s !important;
+  color: #ffffff !important;
 }
 
 /* ========================================================================== */
@@ -6125,7 +6692,7 @@ DATEI: styles-dock.css
 .mac-floating-wrapper {
   position: fixed !important;
   left: 50% !important;
-  bottom: 110px !important;
+  bottom: 28px !important;
   transform: translateX(-50%) !important;
   z-index: 200 !important;
   pointer-events: none;
@@ -8817,6 +9384,26 @@ function getAvailableCommands() {
       action: () => { if (typeof handleReset === 'function') handleReset(); }
     },
     {
+      id: 'theme_latte',
+      title: '☕ Theme: Oat & Latte (Cozy Milchkaffee & Hafer)',
+      action: () => { setTheme('latte'); }
+    },
+    {
+      id: 'theme_sunset',
+      title: '🌅 Theme: Warm Sunset (Abendsonne & Pfirsich)',
+      action: () => { setTheme('sunset'); }
+    },
+    {
+      id: 'theme_matcha',
+      title: '🍵 Theme: Matcha (Creme & Kräuter-Salbei)',
+      action: () => { setTheme('matcha'); }
+    },
+    {
+      id: 'theme_candlelight',
+      title: '🕯️ Theme: Candlelight (Kerzenschein & Kaminfeuer)',
+      action: () => { setTheme('candlelight'); }
+    },
+    {
       id: 'theme_honey',
       title: '🍯 Theme: Honig (Warmes Gold)',
       action: () => { setTheme('honey'); }
@@ -9198,11 +9785,12 @@ document.addEventListener('DOMContentLoaded', () => {
 // Gruppiert alle Farbschemata nach visueller Verwandtschaft, damit der automatische
 // Gruppiert alle Farbschemata nach visueller Verwandtschaft
 const THEME_FAMILIES = {
-  'purple-dreams': ['aurora', 'neon-cyber', 'synthwave', 'sakura'],
+  'cozy-warm': ['latte', 'sunset', 'matcha', 'candlelight', 'terracotta'],
+  'purple-dreams': ['aurora', 'neon-cyber', 'synthwave', 'sakura', 'royal'],
   'green-nature': ['sage', 'forest', 'matcha'],
-  'warm-earthy': ['cozy', 'citrus'],
-  'cool-icy': ['architect', 'glacier', 'charcoal', 'holo-chrome', 'lagoon'],
-  'luxury-mono': ['executive', 'carbon']
+  'warm-earthy': ['cozy', 'citrus', 'honey'],
+  'cool-icy': ['architect', 'glacier', 'charcoal', 'holo-chrome', 'lagoon', 'ocean'],
+  'luxury-mono': ['executive', 'carbon', 'obsidian']
 };
 
 function getThemeFamily(theme) {
@@ -9223,16 +9811,17 @@ function getSimilarTheme(current) {
 
 const ALL_VALID_THEMES = [
   'cyberpunk', 'aurora', 'matrix', 'ocean', 'honey', 'crimson',
-  'obsidian', 'nebula', 'peach', 'sage', 'terracotta', 'royal'
+  'obsidian', 'nebula', 'peach', 'sage', 'terracotta', 'royal',
+  'latte', 'sunset', 'matcha', 'candlelight'
 ];
 
 const THEME_ALIASES = {
+  'default': 'aurora',
   'neon-cyber': 'cyberpunk',
   'synthwave': 'cyberpunk',
   'aurora-violet': 'aurora',
   'lavender-cloud': 'aurora',
   'forest': 'matrix',
-  'matcha': 'matrix',
   'lagoon': 'ocean',
   'glacier': 'ocean',
   'glacier-frost': 'ocean',
@@ -9251,8 +9840,16 @@ const THEME_ALIASES = {
   'peach-cashmere': 'peach',
   'sage-breeze': 'sage',
   'eucalyptus-dew': 'sage',
-  'matcha-latte': 'sage',
-  'terracotta-sun': 'terracotta'
+  'matcha-latte': 'matcha',
+  'matcha-sage': 'matcha',
+  'sage-latte': 'matcha',
+  'terracotta-sun': 'terracotta',
+  'oat-latte': 'latte',
+  'coffee': 'latte',
+  'warm-sunset': 'sunset',
+  'apricot': 'sunset',
+  'cozy-candlelight': 'candlelight',
+  'fireplace': 'candlelight'
 };
 
 function setTheme(theme) {
@@ -12292,6 +12889,11 @@ function renderApp() {
               <circle cx="14.8" cy="17.2" r="0.9" fill="currentColor" stroke="none" />
               <circle cx="18" cy="15.5" r="0.9" fill="currentColor" stroke="none" />
             </svg>
+          </button>
+        ` : ''}
+        ${(id === 'weekly' || id === 'work_in_progress') ? `
+          <button onclick="if(typeof openCleaningGuideModal === 'function') openCleaningGuideModal(); if(event) event.stopPropagation();" class="p-1 px-1.5 bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/30 text-emerald-300 hover:text-white rounded-lg shadow-sm hover:scale-105 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1" title="${tr({ de: 'Wohnungs-Reset & Level-Putz-Guide 🧹', en: 'Apartment Reset & Cleaning Guide 🧹', es: 'Guía de limpieza 🧹', el: 'Οδηγός καθαρισμού 🧹', fr: 'Guide de nettoyage 🧹', it: 'Guida alle pulizie 🧹' })}">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-400"></i>
           </button>
         ` : ''}
         ${!isDone ? `
@@ -18038,7 +18640,10 @@ const FlowAuth = (function() {
       setDirectPairingToken(json.token, trimmedEmail);
       return { success: true, email: trimmedEmail, token: json.token };
     } catch (e) {
-      return { success: false, error: 'Verbindungsfehler zum Server. Bitte erneut versuchen.' };
+      if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+        return { success: false, error: 'App über file:// geöffnet. Bitte starte XAMPP (Apache) und öffne: http://localhost/QuizProject/Flow-Organiser/' };
+      }
+      return { success: false, error: 'Server nicht erreichbar. Bitte prüfe, ob Apache in XAMPP gestartet ist.' };
     }
   }
 
@@ -18064,7 +18669,10 @@ const FlowAuth = (function() {
 
       return { success: true, code: json.code, expiresIn: json.expires_in_seconds };
     } catch (e) {
-      return { success: false, error: 'Verbindungsfehler zum Server.' };
+      if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+        return { success: false, error: 'App über file:// geöffnet. Bitte starte XAMPP (Apache) und öffne: http://localhost/QuizProject/Flow-Organiser/' };
+      }
+      return { success: false, error: 'Server nicht erreichbar. Bitte prüfe, ob Apache in XAMPP gestartet ist.' };
     }
   }
 
@@ -18093,7 +18701,10 @@ const FlowAuth = (function() {
       setDirectPairingToken(json.token, 'Gekoppeltes Gerät');
       return { success: true, token: json.token };
     } catch (e) {
-      return { success: false, error: 'Verbindungsfehler beim Koppeln.' };
+      if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+        return { success: false, error: 'App über file:// geöffnet. Bitte starte XAMPP (Apache) und öffne: http://localhost/QuizProject/Flow-Organiser/' };
+      }
+      return { success: false, error: 'Verbindungsfehler beim Koppeln. Läuft Apache in XAMPP?' };
     }
   }
 
@@ -27527,6 +28138,484 @@ function resetClarityStreak() {
  
  
 ============================================================================== 
+DATEI: helper-cleaning.js 
+============================================================================== 
+ 
+// helper-cleaning.js: Interaktiver Wohnungs-Reset & Level-Putz-Guide für Noodle
+
+const CLEANING_LEVELS_DATA = {
+  express: {
+    id: 'express',
+    title: '15-Minuten Blitz-Reset',
+    subtitle: 'Schnelle optische Ordnung & frischer Wohlfühl-Effekt',
+    icon: 'zap',
+    color: 'amber',
+    durationMin: 15,
+    badge: 'Express',
+    introTip: 'Perfekt für spontanen Besuch oder wenn der Kopf voll ist. Wir fokussieren uns nur auf das, was sofort Ruhe ins Auge bringt!',
+    steps: [
+      {
+        id: 'exp_1',
+        title: 'Müll & Leergut-Runde (3 Min)',
+        desc: 'Mit einer Mülltüte einmal durch alle Zimmer gehen: Papier, Verpackungen, Flaschen und Leergut direkt einsammeln und in den Mülleimer werfen.',
+        why: 'Müll nimmt unbemerkt viel visuellen Raum ein. Wenn er weg ist, wirkt der Raum sofort 50 % aufgeräumter.',
+        icon: 'trash-2'
+      },
+      {
+        id: 'exp_2',
+        title: 'Geschirr in die Küche bringen (3 Min)',
+        desc: 'Alle Tassen, Teller und Gläser von Schreibtisch, Couchtisch und Nachttisch in die Spülmaschine oder Spüle stellen.',
+        why: 'Kein stehendes Geschirr = kein Geruch und freie Tische.',
+        icon: 'coffee'
+      },
+      {
+        id: 'exp_3',
+        title: 'Oberflächen freiräumen (4 Min)',
+        desc: 'Dinge, die herumliegen (Klamotten, Kabel, Post), an ihren Platz legen oder kurz im „Verirrte-Dinge-Korb“ sammeln.',
+        why: 'Freie Tische und Böden signalisieren dem Gehirn sofortige Entspannung.',
+        icon: 'layers'
+      },
+      {
+        id: 'exp_4',
+        title: 'Kissen aufschütteln & Decken falten (2 Min)',
+        desc: 'Bett kurz glattziehen, Sofakissen aufschütteln und Kuscheldecke ordentlich zusammenlegen.',
+        why: 'Kostet nur 1 Minute, lässt Schlaf- und Wohnzimmer aber sofort wie neu aussehen.',
+        icon: 'bed-double'
+      },
+      {
+        id: 'exp_5',
+        title: '5 Minuten Stoßlüften & Frische-Finish (3 Min)',
+        desc: 'Fenster für 3-5 Minuten weit öffnen (Durchzug). Frische Luft hineinlassen – fertig!',
+        why: 'Verbrauchte Luft macht müde. Frische Luft bringt neuen Schwung und hebt die Stimmung.',
+        icon: 'wind'
+      }
+    ]
+  },
+  standard: {
+    id: 'standard',
+    title: '45-Minuten Standard-Grundreinigung',
+    subtitle: 'Alle Kernzonen frisch, sauber & hygienisch',
+    icon: 'sparkles',
+    color: 'emerald',
+    durationMin: 45,
+    badge: 'Beliebt',
+    introTip: 'Die solide Grundreinigung nach der goldenen Regel: Von oben nach unten, von innen nach außen, trocken vor nass!',
+    steps: [
+      {
+        id: 'std_1',
+        title: 'Vorbereitung & Einwirken lassen (5 Min)',
+        desc: 'Badreiniger/Kalklöser in Dusche, Waschbecken & WC sprühen. Fettlöser/Spülmittel auf Herd & Küchenspüle geben. NICHT sofort schrubben, sondern einwirken lassen!',
+        why: 'Profi-Trick: Der Reiniger zersetzt Kalk und Fett von selbst. Während er wirkt, putzt du woanders – das spart 80 % Kraft!',
+        icon: 'spray-can'
+      },
+      {
+        id: 'std_2',
+        title: 'Entrümpeln & Müll entsorgen (5 Min)',
+        desc: 'Mit Korb und Mülltüte durch alle Räume: Alles an seinen Platz räumen und Müll einsacken.',
+        why: 'Putzen auf zugestellten Flächen ist anstrengend. Erst frei räumen, dann wischen.',
+        icon: 'trash-2'
+      },
+      {
+        id: 'std_3',
+        title: 'Staubwischen & Tische feucht abwischen (10 Min)',
+        desc: 'Mit einem leicht feuchten Mikrofasertuch von oben nach unten wischen: Regale, Fensterbänke, Tische, Schreibtisch und Sideboards.',
+        why: 'Immer von oben nach unten arbeiten, damit herabfallender Staub später einfach aufgesaugt wird.',
+        icon: 'feather'
+      },
+      {
+        id: 'std_4',
+        title: 'Küche fertigstellen (7 Min)',
+        desc: 'Der Reiniger hat gewirkt: Herd, Arbeitsplatten und Spüle mit gelbem Tuch abwischen, mit Wasser nachspülen und trockenreiben.',
+        why: 'Trockenreiben verhindert Wasserflecken und lässt Edelstahl sofort glänzen.',
+        icon: 'utensils'
+      },
+      {
+        id: 'std_5',
+        title: 'Bad & Sanitär fertigstellen (8 Min)',
+        desc: 'Waschbecken, Armaturen und Dusche mit rotem/blauem Tuch abspülen. WC-Bürste durchs WC führen und Toilettensitz desinfizieren/abwischen.',
+        why: 'Eigenes Tuch für WC nutzen (Hygiene-Farbleitsystem: Rot = WC!).',
+        icon: 'bath'
+      },
+      {
+        id: 'std_6',
+        title: 'Böden saugen & Wischen (10 Min)',
+        desc: 'Von der hintersten Zimmerecke rückwärts Richtung Flur/Wohnungstür staubsaugen. Bei Hartböden kurz feucht nachwischen und Fenster öffnen.',
+        why: 'Wenn du rückwärts Richtung Tür saugst, trittst du nicht auf die frisch geputzte Fläche.',
+        icon: 'sparkles'
+      }
+    ]
+  },
+  deep: {
+    id: 'deep',
+    title: '90-Minuten Tiefenreinigung (Deep Clean)',
+    subtitle: 'Der komplette Wohlfühl-Reset für die ganze Wohnung',
+    icon: 'gem',
+    color: 'indigo',
+    durationMin: 90,
+    badge: 'Intensiv',
+    introTip: 'Gönn deiner Wohnung und dir selbst einen echten Neuanfang. Nimm dir ein Kaltgetränk, schalte gute Musik ein und freue dich auf das frischeste Gefühl der Woche!',
+    steps: [
+      {
+        id: 'deep_1',
+        title: 'Textilien-Start & Betten abziehen (10 Min)',
+        desc: 'Bettwäsche, Handtücher und Badematten abziehen und direkt die Waschmaschine starten. Frische Bettwäsche bereitlegen.',
+        why: 'Die Waschmaschine wäscht im Hintergrund, während du den Rest erledigst.',
+        icon: 'shirt'
+      },
+      {
+        id: 'deep_2',
+        title: 'Kühlschrank & Mülleimer Grundreinigung (15 Min)',
+        desc: 'Abgelaufene Lebensmittel aussortieren. Kühlschrank-Fächer kurz auswischen. Mülleimer leeren, mit Spülmittel auswaschen und neue Beutel einsetzen.',
+        why: 'Saubere Mülleimer und Kühlschränke neutralisieren 90 % aller Gerüche im Haushalt.',
+        icon: 'refrigerator'
+      },
+      {
+        id: 'deep_3',
+        title: 'Sanitär & Küche Intensiv-Einwirkzeit (10 Min)',
+        desc: 'Kalklöser auf Duschwände, Fliesen und Armaturen sprühen. Backofen/Mikrowelle einsprühen. WC-Reiniger unter den Rand geben.',
+        why: 'Lange Einwirkzeit löst hartnäckigen Kalk ganz ohne Schrubben.',
+        icon: 'spray-can'
+      },
+      {
+        id: 'deep_4',
+        title: 'High & Low Dusting (Spinnweben & Leisten) (15 Min)',
+        desc: 'Zuerst Decken-Ecken nach Spinnweben absuchen. Danach Lampen, Bilderrahmen, Monitore, Schalter und Fußleisten feucht abwischen.',
+        why: 'Saubere Sockelleisten und Schalter lassen eine Wohnung sofort hochwertig und gepflegt wirken.',
+        icon: 'layers'
+      },
+      {
+        id: 'deep_5',
+        title: 'Küche & Bad auf Hochglanz polieren (15 Min)',
+        desc: 'Duschkabine, Waschbecken, Küchenspüle und Herd abspülen. Spiegel mit Glasreiniger streifenfrei polieren.',
+        why: 'Glänzende Spiegel und Armaturen sind das optische Highlight jedes Raumes.',
+        icon: 'sparkles'
+      },
+      {
+        id: 'deep_6',
+        title: 'Polster & Matratzen absaugen (10 Min)',
+        desc: 'Sofa-Ritzen mit der Polsterdüse absaugen. Matratze kurz wenden/absaugen und das frische Bett beziehen.',
+        why: 'Entfernt Milben und Staub – herrlich frisches Gefühl beim nächsten Einschlafen.',
+        icon: 'bed-double'
+      },
+      {
+        id: 'deep_7',
+        title: 'Böden intensiv saugen & feucht wischen (15 Min)',
+        desc: 'Gründlich auch unter Sofas und Betten saugen. Danach mit warmem Wasser und Bodenreiniger von hinten nach vorn wischen. 10 Min durchlüften.',
+        why: 'Der krönende Abschluss: Der Duft von frischem Bodenwischwasser erfüllt die ganze Wohnung.',
+        icon: 'sparkles'
+      }
+    ]
+  }
+};
+
+let activeCleaningLevel = 'standard';
+let activeCleaningCompletedSteps = {};
+let cleaningTimerInterval = null;
+let cleaningTimerSecondsLeft = 45 * 60;
+let isCleaningTimerRunning = false;
+let isCleaningLoFiActive = false;
+
+function openCleaningGuideModal(defaultLevel = null) {
+  const modal = document.getElementById('helper-cleaning-modal');
+  if (!modal) return;
+  
+  if (defaultLevel && CLEANING_LEVELS_DATA[defaultLevel]) {
+    activeCleaningLevel = defaultLevel;
+  }
+  
+  // Gespeicherten Zustand aus localStorage laden
+  try {
+    const saved = localStorage.getItem('flow_cleaning_state');
+    if (saved) {
+      activeCleaningCompletedSteps = JSON.parse(saved);
+    }
+  } catch (e) {}
+
+  modal.classList.remove('hidden');
+  renderCleaningGuideUI();
+}
+
+function closeCleaningGuideModal() {
+  const modal = document.getElementById('helper-cleaning-modal');
+  if (modal) modal.classList.add('hidden');
+  pauseCleaningTimer();
+}
+
+function switchCleaningLevel(levelKey) {
+  if (!CLEANING_LEVELS_DATA[levelKey]) return;
+  activeCleaningLevel = levelKey;
+  resetCleaningTimer(CLEANING_LEVELS_DATA[levelKey].durationMin * 60);
+  renderCleaningGuideUI();
+}
+
+function toggleCleaningStep(stepId, event) {
+  if (event) event.stopPropagation();
+  activeCleaningCompletedSteps[stepId] = !activeCleaningCompletedSteps[stepId];
+  
+  try {
+    localStorage.setItem('flow_cleaning_state', JSON.stringify(activeCleaningCompletedSteps));
+  } catch (e) {}
+  
+  renderCleaningGuideUI();
+}
+
+function resetCleaningProgress() {
+  const data = CLEANING_LEVELS_DATA[activeCleaningLevel];
+  if (!data) return;
+  data.steps.forEach(s => {
+    delete activeCleaningCompletedSteps[s.id];
+  });
+  try {
+    localStorage.setItem('flow_cleaning_state', JSON.stringify(activeCleaningCompletedSteps));
+  } catch (e) {}
+  renderCleaningGuideUI();
+  if (typeof showToast === 'function') {
+    showToast('Fortschritt zurückgesetzt');
+  }
+}
+
+function renderCleaningGuideUI() {
+  const data = CLEANING_LEVELS_DATA[activeCleaningLevel];
+  if (!data) return;
+
+  // 1. Level-Tabs stylen
+  ['express', 'standard', 'deep'].forEach(lvl => {
+    const btn = document.getElementById(`cleaning-tab-btn-${lvl}`);
+    if (btn) {
+      if (lvl === activeCleaningLevel) {
+        btn.className = 'py-2 px-3 rounded-2xl text-white bg-[var(--accent)]/30 border border-[var(--accent)]/60 font-bold transition flex items-center justify-center gap-1.5 shadow-md text-xs cursor-pointer';
+      } else {
+        btn.className = 'py-2 px-3 rounded-2xl text-gray-400 hover:text-white bg-white/5 border border-white/5 font-medium transition flex items-center justify-center gap-1.5 text-xs cursor-pointer';
+      }
+    }
+  });
+
+  // 2. Header & Intro
+  const titleEl = document.getElementById('cleaning-guide-title');
+  const subtitleEl = document.getElementById('cleaning-guide-subtitle');
+  const tipEl = document.getElementById('cleaning-guide-intro-tip');
+  
+  if (titleEl) titleEl.innerText = data.title;
+  if (subtitleEl) subtitleEl.innerText = data.subtitle;
+  if (tipEl) tipEl.innerText = data.introTip;
+
+  // 3. Schritte & Fortschritt berechnen
+  const listContainer = document.getElementById('cleaning-guide-steps-list');
+  if (!listContainer) return;
+
+  let completedCount = 0;
+  listContainer.innerHTML = '';
+
+  data.steps.forEach((step, idx) => {
+    const isDone = !!activeCleaningCompletedSteps[step.id];
+    if (isDone) completedCount++;
+
+    const card = document.createElement('div');
+    card.className = `p-3 sm:p-4 rounded-2xl border transition-all duration-200 ${isDone ? 'bg-emerald-500/10 border-emerald-500/30 opacity-75' : 'bg-white/[0.03] border-white/10 hover:border-white/20'}`;
+    
+    card.innerHTML = `
+      <div class="flex items-start gap-3">
+        <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleCleaningStep('${step.id}', event)" class="w-5 h-5 mt-0.5 rounded text-[var(--accent)] cursor-pointer accent-[var(--accent)] shrink-0" />
+        <div class="flex-1 space-y-1.5 cursor-pointer" onclick="toggleCleaningStep('${step.id}', event)">
+          <div class="flex items-center justify-between gap-2">
+            <h4 class="text-xs sm:text-sm font-bold ${isDone ? 'line-through text-emerald-200' : 'text-white'} flex items-center gap-1.5">
+              <span class="w-5 h-5 rounded-full bg-white/10 text-[10px] font-mono flex items-center justify-center text-gray-300 font-bold shrink-0">${idx + 1}</span>
+              <span>${step.title}</span>
+            </h4>
+            <span class="text-[10px] px-2 py-0.5 rounded-full ${isDone ? 'bg-emerald-500/20 text-emerald-300 font-bold' : 'bg-white/5 text-gray-400'} font-mono shrink-0">
+              ${isDone ? '✓ Erledigt' : 'Schritt ' + (idx + 1)}
+            </span>
+          </div>
+          <p class="text-xs text-gray-300 leading-relaxed font-normal">${step.desc}</p>
+          <div class="bg-black/40 border border-white/5 p-2 rounded-xl text-[11px] text-amber-200/90 flex items-start gap-2 mt-1">
+            <span class="text-amber-400 font-bold shrink-0">💡 Warum:</span>
+            <span>${step.why}</span>
+          </div>
+        </div>
+      </div>
+    `;
+    listContainer.appendChild(card);
+  });
+
+  // 4. Fortschrittsbalken aktualisieren
+  const total = data.steps.length;
+  const pct = Math.round((completedCount / total) * 100);
+  const progressBar = document.getElementById('cleaning-progress-bar');
+  const progressText = document.getElementById('cleaning-progress-text');
+  const progressStatus = document.getElementById('cleaning-progress-status');
+
+  if (progressBar) progressBar.style.width = `${pct}%`;
+  if (progressText) progressText.innerText = `${pct}% (${completedCount}/${total})`;
+  
+  if (progressStatus) {
+    if (pct === 100) {
+      progressStatus.innerHTML = '<span class="text-emerald-400 font-bold animate-pulse">🎉 Großartig! Deine Wohnung ist komplett erfrischt!</span>';
+    } else if (pct >= 50) {
+      progressStatus.innerHTML = '<span class="text-amber-300 font-medium">💪 Mehr als die Hälfte geschafft – weiter so!</span>';
+    } else if (pct > 0) {
+      progressStatus.innerHTML = '<span class="text-purple-300 font-medium">✨ Schöner Start – Schritt für Schritt!</span>';
+    } else {
+      progressStatus.innerHTML = '<span class="text-gray-400 font-medium">Bereit? Wähle einen Schritt oder starte den Timer!</span>';
+    }
+  }
+
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+// ============================================================================
+// TIMER & SOUND STEUERUNG
+// ============================================================================
+function formatTimeMinSec(totalSec) {
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+function updateCleaningTimerDisplay() {
+  const display = document.getElementById('cleaning-timer-display');
+  if (display) {
+    display.innerText = formatTimeMinSec(cleaningTimerSecondsLeft);
+  }
+}
+
+function startCleaningTimer() {
+  if (isCleaningTimerRunning) return;
+  isCleaningTimerRunning = true;
+  
+  const playBtn = document.getElementById('cleaning-timer-play');
+  const pauseBtn = document.getElementById('cleaning-timer-pause');
+  if (playBtn) playBtn.classList.add('hidden');
+  if (pauseBtn) pauseBtn.classList.remove('hidden');
+
+  cleaningTimerInterval = setInterval(() => {
+    if (cleaningTimerSecondsLeft > 0) {
+      cleaningTimerSecondsLeft--;
+      updateCleaningTimerDisplay();
+    } else {
+      pauseCleaningTimer();
+      if (typeof showToast === 'function') {
+        showToast('⏰ Zeit abgelaufen! Großartige Arbeit!', { duration: 6000 });
+      }
+      if (typeof playSoundEffect === 'function') {
+        playSoundEffect('success');
+      }
+    }
+  }, 1000);
+}
+
+function pauseCleaningTimer() {
+  isCleaningTimerRunning = false;
+  if (cleaningTimerInterval) {
+    clearInterval(cleaningTimerInterval);
+    cleaningTimerInterval = null;
+  }
+  const playBtn = document.getElementById('cleaning-timer-play');
+  const pauseBtn = document.getElementById('cleaning-timer-pause');
+  if (playBtn) playBtn.classList.remove('hidden');
+  if (pauseBtn) pauseBtn.classList.add('hidden');
+}
+
+function resetCleaningTimer(newSeconds = null) {
+  pauseCleaningTimer();
+  if (newSeconds !== null) {
+    cleaningTimerSecondsLeft = newSeconds;
+  } else {
+    const data = CLEANING_LEVELS_DATA[activeCleaningLevel];
+    cleaningTimerSecondsLeft = (data ? data.durationMin : 45) * 60;
+  }
+  updateCleaningTimerDisplay();
+}
+
+function toggleCleaningLoFi() {
+  if (typeof startAmbientSound === 'function') {
+    if (!isCleaningLoFiActive) {
+      startAmbientSound('lofi_sunshine');
+      isCleaningLoFiActive = true;
+      if (typeof showToast === 'function') showToast('🎵 LoFi-Putz-Musik gestartet');
+    } else {
+      if (typeof stopAmbientSound === 'function') stopAmbientSound();
+      isCleaningLoFiActive = false;
+      if (typeof showToast === 'function') showToast('🔇 Musik pausiert');
+    }
+  }
+  const lofiBtn = document.getElementById('cleaning-lofi-btn');
+  if (lofiBtn) {
+    lofiBtn.classList.toggle('text-emerald-400', isCleaningLoFiActive);
+    lofiBtn.classList.toggle('border-emerald-500/50', isCleaningLoFiActive);
+  }
+}
+
+// ============================================================================
+// 1-KLICK TRANSFER INS NOODLE BOARD
+// ============================================================================
+function transferCleaningStepsToBoard(targetCategory = 'weekly') {
+  const data = CLEANING_LEVELS_DATA[activeCleaningLevel];
+  if (!data) return;
+
+  const curState = (typeof window !== 'undefined' && window.state) ? window.state : state;
+  if (!curState || !curState.items) return;
+
+  const cat = (curState.items[targetCategory]) ? targetCategory : 'weekly';
+  if (!curState.items[cat]) curState.items[cat] = [];
+
+  let addedCount = 0;
+  const nowISO = new Date().toISOString();
+
+  data.steps.forEach((step, idx) => {
+    // Falls noch nicht als erledigt markiert
+    if (!activeCleaningCompletedSteps[step.id]) {
+      const taskText = `🧹 ${step.title.split('(')[0].trim()}`;
+      // Prüfen ob bereits vorhanden
+      const exists = curState.items[cat].some(item => (typeof item === 'object' ? item.task === taskText : item === taskText));
+      if (!exists) {
+        curState.items[cat].push({
+          id: `clean_${step.id}_${Date.now()}_${idx}`,
+          task: taskText,
+          createdAt: nowISO,
+          updatedAt: nowISO
+        });
+        addedCount++;
+      }
+    }
+  });
+
+  if (typeof saveState === 'function') saveState();
+  if (typeof renderApp === 'function') renderApp();
+
+  closeCleaningGuideModal();
+  if (typeof showToast === 'function') {
+    showToast(`✨ ${addedCount} Schritte in deine Haushalts-Kategorie übernommen!`);
+  }
+}
+
+// Globale Bereitstellung
+if (typeof window !== 'undefined') {
+  window.openCleaningGuideModal = openCleaningGuideModal;
+  window.closeCleaningGuideModal = closeCleaningGuideModal;
+  window.switchCleaningLevel = switchCleaningLevel;
+  window.toggleCleaningStep = toggleCleaningStep;
+  window.resetCleaningProgress = resetCleaningProgress;
+  window.startCleaningTimer = startCleaningTimer;
+  window.pauseCleaningTimer = pauseCleaningTimer;
+  window.resetCleaningTimer = resetCleaningTimer;
+  window.toggleCleaningLoFi = toggleCleaningLoFi;
+  window.transferCleaningStepsToBoard = transferCleaningStepsToBoard;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.openCleaningGuideModal = openCleaningGuideModal;
+  globalThis.closeCleaningGuideModal = closeCleaningGuideModal;
+  globalThis.switchCleaningLevel = switchCleaningLevel;
+  globalThis.toggleCleaningStep = toggleCleaningStep;
+  globalThis.resetCleaningProgress = resetCleaningProgress;
+  globalThis.startCleaningTimer = startCleaningTimer;
+  globalThis.pauseCleaningTimer = pauseCleaningTimer;
+  globalThis.resetCleaningTimer = resetCleaningTimer;
+  globalThis.toggleCleaningLoFi = toggleCleaningLoFi;
+  globalThis.transferCleaningStepsToBoard = transferCleaningStepsToBoard;
+}
+ 
+ 
+============================================================================== 
 DATEI: helper-core-2.js 
 ============================================================================== 
  
@@ -27566,7 +28655,7 @@ function generateTaskSteps(specificTask) {
   const completedIndices = state.completedSteps[val] || [];
   
   if (steps.length === 0) {
-    resBox.innerHTML = `<div class="text-center py-3 text-xs text-gray-400">Noch keine Teilschritte vorhanden. Füge unten eigene Schritte hinzu oder klicke auf "Vorschläge laden".</div>`;
+    resBox.innerHTML = `<div class="text-center py-3 text-xs text-gray-400">Noch keine Teilschritte vorhanden. Füge unten eigene Schritte hinzu.</div>`;
   } else {
     steps.forEach((stepText, idx) => {
       const isChecked = completedIndices.includes(idx);
@@ -29675,6 +30764,7 @@ import './helper-tools-2.js';
 import './helper-tools-3.js';
 import './helper-clarity.js';
 import './helper-brainstorm.js';
+import './helper-cleaning.js';
 
 // 7. Domain Features & Haupt-App
 import './app-shopping.js';
@@ -35333,11 +36423,77 @@ function triggerCelebrationParticles(customX, customY) {
 let _lastNoodleAnim = '';
 let _noodleIsAnimating = false;
 
-function animateNoodleLogo(type) {
+// 4 hochwertige, abwechselnde Logo-Animationsmodi (Langsam, edel & abwechslungsreich)
+const NOODLE_LOGO_MODES = [
+  { id: 'anim-mode-aurora', name: 'Cosmic Aurora Flow', desc: 'Sanftes Nordlicht & Eisblau-Violett Schwebe-Aura' },
+  { id: 'anim-mode-prism', name: 'Prismatic Diamond Sheen', desc: 'Kristall-Reflexion, Champagnergold & 3D-Prisma' },
+  { id: 'anim-mode-velvet', name: 'Living Clay Velvet', desc: 'Organische Knete-Welle, Sunset-Peach & Kamin-Glow' },
+  { id: 'anim-mode-studio', name: 'HiFi Studio Desk Pulse', desc: 'Cyber-Emerald, Laser-Lichtstrahl & Studio-Mastering' }
+];
+let _currentLogoModeIdx = 0;
+let _logoCycleTimer = null;
+
+function setLogoAnimationMode(modeIndexOrName) {
+  if (typeof document === 'undefined') return;
+  const container = document.querySelector('.flow-logo-container');
+  if (!container) return;
+
+  let nextIdx = 0;
+  if (typeof modeIndexOrName === 'number') {
+    nextIdx = (modeIndexOrName + NOODLE_LOGO_MODES.length) % NOODLE_LOGO_MODES.length;
+  } else if (typeof modeIndexOrName === 'string') {
+    const found = NOODLE_LOGO_MODES.findIndex(m => m.id === modeIndexOrName || m.id.includes(modeIndexOrName));
+    nextIdx = found >= 0 ? found : 0;
+  }
+  _currentLogoModeIdx = nextIdx;
+  
+  // Alle vorherigen Modus-Klassen entfernen
+  NOODLE_LOGO_MODES.forEach(m => container.classList.remove(m.id));
+  
+  // Neuen Modus setzen
+  const targetMode = NOODLE_LOGO_MODES[_currentLogoModeIdx];
+  container.classList.add(targetMode.id);
+  container.setAttribute('data-logo-mode', targetMode.id);
+  container.setAttribute('title', `Noodle Studio • ${targetMode.name} (Klick für nächsten Modus)`);
+
+  // Tab-Favicon synchron mitbewegen
+  if (typeof animateFavicon === 'function') {
+    animateFavicon('breathe');
+  }
+}
+window.setLogoAnimationMode = setLogoAnimationMode;
+
+function cycleNextLogoMode(event) {
+  if (event && typeof event.stopPropagation === 'function') {
+    event.stopPropagation();
+    const container = document.querySelector('.flow-logo-container');
+    if (container) {
+      container.classList.add('scale-95');
+      setTimeout(() => container.classList.remove('scale-95'), 180);
+    }
+  }
+  setLogoAnimationMode(_currentLogoModeIdx + 1);
+}
+window.cycleNextLogoMode = cycleNextLogoMode;
+
+function animateNoodleLogo(type = 'random') {
   if (typeof document === 'undefined') return;
   const logo = document.getElementById('header-noodle-logo');
+  const container = document.querySelector('.flow-logo-container');
   if (!logo) return;
+
+  // Modus-Wechsel bei speziellem Aufruf oder Favicon-Trigger
+  if (type === 'next' || type === 'cycle') {
+    cycleNextLogoMode();
+    return;
+  }
   
+  // Bei direktem Typen ggf. Modus wechseln
+  if (type === 'aurora') setLogoAnimationMode(0);
+  else if (type === 'shimmer' || type === 'prism') setLogoAnimationMode(1);
+  else if (type === 'breathe' || type === 'velvet') setLogoAnimationMode(2);
+  else if (type === 'float' || type === 'studio') setLogoAnimationMode(3);
+
   const allAnimClasses = [
     'noodle-anim-float',
     'noodle-anim-breathe',
@@ -35525,23 +36681,22 @@ function initNoodlePlayfulEngine() {
   if (typeof window === 'undefined' || window._noodlePlayfulEngineInitialized) return;
   window._noodlePlayfulEngineInitialized = true;
 
-  function scheduleNextNoodleMove() {
-    // Ruhiger, edler Zyklus alle 45 bis 75 Sekunden
-    const delay = Math.floor(Math.random() * 30000) + 45000;
-    setTimeout(() => {
-      if (!document.hidden && !_noodleIsAnimating && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
-        animateNoodleLogo('random');
+  // Initialer Modus 0 (Cosmic Aurora Flow)
+  setLogoAnimationMode(0);
+
+  // Kontinuierlicher, langsamer & eleganter Modus-Wechsel alle 14 Sekunden
+  function scheduleNextModeCycle() {
+    if (_logoCycleTimer) clearTimeout(_logoCycleTimer);
+    const delay = 14000;
+    _logoCycleTimer = setTimeout(() => {
+      if (!document.hidden && !_noodleIsAnimating) {
+        cycleNextLogoMode();
       }
-      scheduleNextNoodleMove();
+      scheduleNextModeCycle();
     }, delay);
   }
 
-  // Sanfter Begrüßungs-Glow kurz nach dem Start (2.5s)
-  setTimeout(() => {
-    animateNoodleLogo('float');
-  }, 2500);
-
-  scheduleNextNoodleMove();
+  scheduleNextModeCycle();
 
   // Hover-Effekt: startet einen sanften, edlen Shimmer
   const container = document.querySelector('.flow-logo-container');
@@ -37358,7 +38513,33 @@ describe('UI Architecture, Modals & Components (Production Code)', () => {
     expect(testState.customColumns).toHaveLength(0);
     expect(testState.items['col_custom_1']).toBeUndefined();
   });
+
+  it('Wohnungs-Reset & Level-Putz-Guide modal exists and provides structured cleaning levels', async () => {
+    await import('../helper-cleaning.js');
+    expect(document.getElementById('helper-cleaning-modal')).not.toBeNull();
+    expect(typeof window.openCleaningGuideModal).toBe('function');
+    expect(typeof window.switchCleaningLevel).toBe('function');
+    expect(typeof window.transferCleaningStepsToBoard).toBe('function');
+
+    // Modal öffnen
+    window.openCleaningGuideModal('express');
+    expect(document.getElementById('helper-cleaning-modal').classList.contains('hidden')).toBe(false);
+
+    // Auf 45m Standard umschalten
+    window.switchCleaningLevel('standard');
+    expect(document.getElementById('cleaning-guide-title').innerText).toContain('Standard-Grundreinigung');
+
+    // Transfer in Board testen
+    window.state = { items: { weekly: [] } };
+    window.transferCleaningStepsToBoard('weekly');
+    expect(window.state.items.weekly.length).toBeGreaterThan(0);
+    expect(window.state.items.weekly[0].task).toContain('🧹');
+
+    window.closeCleaningGuideModal();
+    expect(document.getElementById('helper-cleaning-modal').classList.contains('hidden')).toBe(true);
+  });
 });
+
  
  
 ============================================================================== 

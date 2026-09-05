@@ -4796,8 +4796,8 @@
   (function() {
     const DEFAULT_CONFIG = {
       // Supabase Projekt-Konfiguration (vom Admin / Host anpassbar oder via Env/Storage überschreibbar)
-      SUPABASE_URL: typeof window !== "undefined" && window.__FLOW_SUPABASE_URL || "https://flow-organiser.supabase.co",
-      SUPABASE_ANON_KEY: typeof window !== "undefined" && window.__FLOW_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dummy_anon_key_flow_organiser",
+      SUPABASE_URL: typeof window !== "undefined" && window.__FLOW_SUPABASE_URL || "https://myrnwelpewgnyejylgna.supabase.co",
+      SUPABASE_ANON_KEY: typeof window !== "undefined" && window.__FLOW_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15cm53ZWxwZXdnbnllanlsZ25hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0NzA0MTYsImV4cCI6MjEwMDA0NjQxNn0.Xy6UnBLMw9nbiSxBJMHwiyXt7f_H4GeaEKUipKaCUq4",
       // Lokaler / Webserver Relay-Endpunkt
       SYNC_API_URL: "api-sync.php",
       // Auto-Sync Intervall (ms)
@@ -4872,7 +4872,7 @@
         }
         const supaLib = getSupabaseLib();
         const config = getConfig();
-        if (supaLib && config && config.SUPABASE_URL && config.SUPABASE_ANON_KEY && config.SUPABASE_ANON_KEY !== "dummy_anon_key") {
+        if (supaLib && config && config.SUPABASE_URL && config.SUPABASE_ANON_KEY && !config.SUPABASE_ANON_KEY.includes("dummy_anon_key")) {
           supabaseClient = supaLib.createClient(config.SUPABASE_URL, config.SUPABASE_ANON_KEY, {
             auth: {
               persistSession: true,
@@ -4934,6 +4934,41 @@
       if (typeof navigator !== "undefined" && !navigator.onLine) {
         return { success: false, error: "Keine Internetverbindung. Bitte stelle eine Verbindung her." };
       }
+      if (!supabaseClient) {
+        init();
+      }
+      if (supabaseClient) {
+        try {
+          let authRes = await supabaseClient.auth.signInWithPassword({
+            email: trimmedEmail,
+            password
+          });
+          if (authRes.error) {
+            const errMsg = authRes.error.message || "";
+            if (errMsg.toLowerCase().includes("invalid login credentials") || errMsg.toLowerCase().includes("user not found") || authRes.error.status === 400) {
+              const signUpRes = await supabaseClient.auth.signUp({
+                email: trimmedEmail,
+                password
+              });
+              if (signUpRes.error) {
+                return { success: false, error: signUpRes.error.message || "Registrierung fehlgeschlagen." };
+              }
+              if (signUpRes.data && signUpRes.data.user) {
+                setSession(signUpRes.data.session || { user: signUpRes.data.user });
+                return { success: true, email: trimmedEmail, token: signUpRes.data.user.id };
+              }
+            }
+            return { success: false, error: authRes.error.message || "Anmeldung fehlgeschlagen." };
+          }
+          if (authRes.data && authRes.data.user) {
+            setSession(authRes.data.session || { user: authRes.data.user });
+            return { success: true, email: trimmedEmail, token: authRes.data.user.id };
+          }
+        } catch (err) {
+          console.warn("[FlowAuth] Supabase Auth notice:", err);
+          return { success: false, error: err.message || getFriendlyNetworkErrorMessage() };
+        }
+      }
       try {
         const res = await fetch(getApiUrl("auth_login"), {
           method: "POST",
@@ -4947,11 +4982,19 @@
         setDirectPairingToken(json.token, trimmedEmail);
         return { success: true, email: trimmedEmail, token: json.token };
       } catch (e) {
-        if (typeof window !== "undefined" && window.location && window.location.protocol === "file:") {
-          return { success: false, error: "App \xFCber file:// ge\xF6ffnet. Bitte starte XAMPP (Apache) und \xF6ffne: http://localhost/QuizProject/Flow-Organiser/" };
-        }
-        return { success: false, error: "Server nicht erreichbar. Bitte pr\xFCfe, ob Apache in XAMPP gestartet ist." };
+        return { success: false, error: getFriendlyNetworkErrorMessage() };
       }
+    }
+    function getFriendlyNetworkErrorMessage() {
+      if (typeof window !== "undefined" && window.location) {
+        if (window.location.protocol === "file:") {
+          return "App \xFCber file:// ge\xF6ffnet (PHP nicht ausf\xFChrbar). Bitte \xFCber http://localhost/QuizProject/Flow-Organiser/ \xF6ffnen.";
+        }
+        if (window.location.hostname.includes("github.io")) {
+          return "GitHub Pages f\xFChrt kein PHP aus (api-sync.php). Trage Supabase in config.js ein oder hoste mit PHP-Backend.";
+        }
+      }
+      return "Server nicht erreichbar. Bitte pr\xFCfe, ob Apache/PHP l\xE4uft oder die Internetverbindung aktiv ist.";
     }
     async function createPairingCode() {
       const token = getSyncToken();
@@ -4969,10 +5012,7 @@
         }
         return { success: true, code: json.code, expiresIn: json.expires_in_seconds };
       } catch (e) {
-        if (typeof window !== "undefined" && window.location && window.location.protocol === "file:") {
-          return { success: false, error: "App \xFCber file:// ge\xF6ffnet. Bitte starte XAMPP (Apache) und \xF6ffne: http://localhost/QuizProject/Flow-Organiser/" };
-        }
-        return { success: false, error: "Server nicht erreichbar. Bitte pr\xFCfe, ob Apache in XAMPP gestartet ist." };
+        return { success: false, error: getFriendlyNetworkErrorMessage() };
       }
     }
     async function confirmPairingCode(code) {
@@ -4993,10 +5033,7 @@
         setDirectPairingToken(json.token, "Gekoppeltes Ger\xE4t");
         return { success: true, token: json.token };
       } catch (e) {
-        if (typeof window !== "undefined" && window.location && window.location.protocol === "file:") {
-          return { success: false, error: "App \xFCber file:// ge\xF6ffnet. Bitte starte XAMPP (Apache) und \xF6ffne: http://localhost/QuizProject/Flow-Organiser/" };
-        }
-        return { success: false, error: "Verbindungsfehler beim Koppeln. L\xE4uft Apache in XAMPP?" };
+        return { success: false, error: getFriendlyNetworkErrorMessage() };
       }
     }
     async function signInWithMagicLink(email) {
@@ -5130,6 +5167,7 @@
       setDirectPairingToken,
       subscribe,
       updateAuthUI,
+      getSupabaseClient: () => supabaseClient,
       _setSupabaseClientForTesting: (mock) => {
         supabaseClient = mock;
       }
@@ -6121,8 +6159,31 @@
       this.updateSyncUI("syncing");
       try {
         const currentState = typeof window !== "undefined" && window.state ? window.state : typeof state !== "undefined" ? state : {};
+        const serializedData = this.serializeFullState(currentState);
+        if (typeof FlowAuth !== "undefined" && FlowAuth.getSupabaseClient) {
+          const supa = FlowAuth.getSupabaseClient();
+          const user = FlowAuth.getUser();
+          if (supa && user && user.id && !user.isTokenOnly) {
+            const { error } = await supa.from("flow_sync").upsert({
+              user_id: user.id,
+              data: serializedData,
+              updated_at: (/* @__PURE__ */ new Date()).toISOString()
+            }, { onConflict: "user_id" });
+            if (error) throw error;
+            this.clearPendingSync();
+            this.retryCount = 0;
+            if (this.retryTimer) {
+              clearTimeout(this.retryTimer);
+              this.retryTimer = null;
+            }
+            this.lastSyncTime = /* @__PURE__ */ new Date();
+            this.syncError = null;
+            this.updateSyncUI("synced");
+            return { success: true, time: this.lastSyncTime };
+          }
+        }
         const payload = {
-          data: this.serializeFullState(currentState)
+          data: serializedData
         };
         const res = await fetch(this.getApiUrl("push"), {
           method: "POST",
@@ -6170,6 +6231,43 @@
       this.isSyncing = true;
       this.updateSyncUI("syncing");
       try {
+        if (typeof FlowAuth !== "undefined" && FlowAuth.getSupabaseClient) {
+          const supa = FlowAuth.getSupabaseClient();
+          const user = FlowAuth.getUser();
+          if (supa && user && user.id && !user.isTokenOnly) {
+            const { data, error } = await supa.from("flow_sync").select("data, updated_at").eq("user_id", user.id).maybeSingle();
+            if (error) throw error;
+            if (!data || !data.data) {
+              this.isSyncing = false;
+              return await this.pushState();
+            }
+            const remoteData = data.data;
+            const targetState = typeof window !== "undefined" && window.state ? window.state : typeof state !== "undefined" ? state : null;
+            if (targetState) {
+              try {
+                if (typeof localStorage !== "undefined") {
+                  localStorage.setItem("flow_backup_before_sync", JSON.stringify(targetState));
+                }
+              } catch (err) {
+              }
+              const hasChanges = this.mergeState(targetState, remoteData);
+              if (typeof saveState === "function") saveState(true);
+              if (typeof renderApp === "function") renderApp();
+              if (hasChanges || this.isPendingSync()) {
+                this.pushState();
+              }
+            }
+            this.retryCount = 0;
+            if (this.retryTimer) {
+              clearTimeout(this.retryTimer);
+              this.retryTimer = null;
+            }
+            this.lastSyncTime = /* @__PURE__ */ new Date();
+            this.syncError = null;
+            this.updateSyncUI("synced");
+            return { success: true, data: remoteData };
+          }
+        }
         const res = await fetch(this.getApiUrl("pull"), {
           method: "GET",
           headers: {
@@ -6847,10 +6945,61 @@
   }
   var _lastNoodleAnim = "";
   var _noodleIsAnimating = false;
-  function animateNoodleLogo(type) {
+  var NOODLE_LOGO_MODES = [
+    { id: "anim-mode-aurora", name: "Cosmic Aurora Flow", desc: "Sanftes Nordlicht & Eisblau-Violett Schwebe-Aura" },
+    { id: "anim-mode-prism", name: "Prismatic Diamond Sheen", desc: "Kristall-Reflexion, Champagnergold & 3D-Prisma" },
+    { id: "anim-mode-velvet", name: "Living Clay Velvet", desc: "Organische Knete-Welle, Sunset-Peach & Kamin-Glow" },
+    { id: "anim-mode-studio", name: "HiFi Studio Desk Pulse", desc: "Cyber-Emerald, Laser-Lichtstrahl & Studio-Mastering" }
+  ];
+  var _currentLogoModeIdx = 0;
+  var _logoCycleTimer = null;
+  function setLogoAnimationMode(modeIndexOrName) {
+    if (typeof document === "undefined") return;
+    const container = document.querySelector(".flow-logo-container");
+    if (!container) return;
+    let nextIdx = 0;
+    if (typeof modeIndexOrName === "number") {
+      nextIdx = (modeIndexOrName + NOODLE_LOGO_MODES.length) % NOODLE_LOGO_MODES.length;
+    } else if (typeof modeIndexOrName === "string") {
+      const found = NOODLE_LOGO_MODES.findIndex((m) => m.id === modeIndexOrName || m.id.includes(modeIndexOrName));
+      nextIdx = found >= 0 ? found : 0;
+    }
+    _currentLogoModeIdx = nextIdx;
+    NOODLE_LOGO_MODES.forEach((m) => container.classList.remove(m.id));
+    const targetMode = NOODLE_LOGO_MODES[_currentLogoModeIdx];
+    container.classList.add(targetMode.id);
+    container.setAttribute("data-logo-mode", targetMode.id);
+    container.setAttribute("title", `Noodle Studio \u2022 ${targetMode.name} (Klick f\xFCr n\xE4chsten Modus)`);
+    if (typeof animateFavicon === "function") {
+      animateFavicon("breathe");
+    }
+  }
+  window.setLogoAnimationMode = setLogoAnimationMode;
+  function cycleNextLogoMode(event) {
+    if (event && typeof event.stopPropagation === "function") {
+      event.stopPropagation();
+      const container = document.querySelector(".flow-logo-container");
+      if (container) {
+        container.classList.add("scale-95");
+        setTimeout(() => container.classList.remove("scale-95"), 180);
+      }
+    }
+    setLogoAnimationMode(_currentLogoModeIdx + 1);
+  }
+  window.cycleNextLogoMode = cycleNextLogoMode;
+  function animateNoodleLogo(type = "random") {
     if (typeof document === "undefined") return;
     const logo = document.getElementById("header-noodle-logo");
+    const container = document.querySelector(".flow-logo-container");
     if (!logo) return;
+    if (type === "next" || type === "cycle") {
+      cycleNextLogoMode();
+      return;
+    }
+    if (type === "aurora") setLogoAnimationMode(0);
+    else if (type === "shimmer" || type === "prism") setLogoAnimationMode(1);
+    else if (type === "breathe" || type === "velvet") setLogoAnimationMode(2);
+    else if (type === "float" || type === "studio") setLogoAnimationMode(3);
     const allAnimClasses = [
       "noodle-anim-float",
       "noodle-anim-breathe",
@@ -7009,19 +7158,18 @@
   function initNoodlePlayfulEngine() {
     if (typeof window === "undefined" || window._noodlePlayfulEngineInitialized) return;
     window._noodlePlayfulEngineInitialized = true;
-    function scheduleNextNoodleMove() {
-      const delay = Math.floor(Math.random() * 3e4) + 45e3;
-      setTimeout(() => {
-        if (!document.hidden && !_noodleIsAnimating && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") {
-          animateNoodleLogo("random");
+    setLogoAnimationMode(0);
+    function scheduleNextModeCycle() {
+      if (_logoCycleTimer) clearTimeout(_logoCycleTimer);
+      const delay = 14e3;
+      _logoCycleTimer = setTimeout(() => {
+        if (!document.hidden && !_noodleIsAnimating) {
+          cycleNextLogoMode();
         }
-        scheduleNextNoodleMove();
+        scheduleNextModeCycle();
       }, delay);
     }
-    setTimeout(() => {
-      animateNoodleLogo("float");
-    }, 2500);
-    scheduleNextNoodleMove();
+    scheduleNextModeCycle();
     const container = document.querySelector(".flow-logo-container");
     if (container) {
       container.addEventListener("mouseenter", () => {
@@ -17704,6 +17852,34 @@ ${listStr}`;
         }
       },
       {
+        id: "theme_latte",
+        title: "\u2615 Theme: Oat & Latte (Cozy Milchkaffee & Hafer)",
+        action: () => {
+          setTheme("latte");
+        }
+      },
+      {
+        id: "theme_sunset",
+        title: "\u{1F305} Theme: Warm Sunset (Abendsonne & Pfirsich)",
+        action: () => {
+          setTheme("sunset");
+        }
+      },
+      {
+        id: "theme_matcha",
+        title: "\u{1F375} Theme: Matcha (Creme & Kr\xE4uter-Salbei)",
+        action: () => {
+          setTheme("matcha");
+        }
+      },
+      {
+        id: "theme_candlelight",
+        title: "\u{1F56F}\uFE0F Theme: Candlelight (Kerzenschein & Kaminfeuer)",
+        action: () => {
+          setTheme("candlelight");
+        }
+      },
+      {
         id: "theme_honey",
         title: "\u{1F36F} Theme: Honig (Warmes Gold)",
         action: () => {
@@ -18006,8 +18182,8 @@ ${listStr}`;
     renderLucideIcons();
   });
   var ALL_VALID_THEMES = [
-    "cyberpunk",
     "aurora",
+    "cyberpunk",
     "matrix",
     "ocean",
     "honey",
@@ -18017,15 +18193,21 @@ ${listStr}`;
     "peach",
     "sage",
     "terracotta",
-    "royal"
+    "royal",
+    "latte",
+    "sunset",
+    "matcha",
+    "candlelight",
+    "daylight",
+    "paper"
   ];
   var THEME_ALIASES = {
+    "default": "aurora",
     "neon-cyber": "cyberpunk",
     "synthwave": "cyberpunk",
     "aurora-violet": "aurora",
     "lavender-cloud": "aurora",
     "forest": "matrix",
-    "matcha": "matrix",
     "lagoon": "ocean",
     "glacier": "ocean",
     "glacier-frost": "ocean",
@@ -18044,8 +18226,21 @@ ${listStr}`;
     "peach-cashmere": "peach",
     "sage-breeze": "sage",
     "eucalyptus-dew": "sage",
-    "matcha-latte": "sage",
-    "terracotta-sun": "terracotta"
+    "matcha-latte": "matcha",
+    "matcha": "sage",
+    "matcha-sage": "sage",
+    "sage-latte": "sage",
+    "terracotta-sun": "terracotta",
+    "oat-latte": "latte",
+    "coffee": "latte",
+    "warm-sunset": "sunset",
+    "apricot": "sunset",
+    "cozy-candlelight": "candlelight",
+    "candlelight": "candlelight",
+    "fireplace": "candlelight",
+    "paper": "daylight",
+    "white": "daylight",
+    "light": "daylight"
   };
   function setTheme(theme) {
     if (THEME_ALIASES[theme]) theme = THEME_ALIASES[theme];

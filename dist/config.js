@@ -4,8 +4,8 @@
 (function() {
   const DEFAULT_CONFIG = {
     // Supabase Projekt-Konfiguration (vom Admin / Host anpassbar oder via Env/Storage überschreibbar)
-    SUPABASE_URL: (typeof window !== 'undefined' && window.__FLOW_SUPABASE_URL) || 'https://flow-organiser.supabase.co',
-    SUPABASE_ANON_KEY: (typeof window !== 'undefined' && window.__FLOW_SUPABASE_ANON_KEY) || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dummy_anon_key_flow_organiser',
+    SUPABASE_URL: (typeof window !== 'undefined' && window.__FLOW_SUPABASE_URL) || 'https://myrnwelpewgnyejylgna.supabase.co',
+    SUPABASE_ANON_KEY: (typeof window !== 'undefined' && window.__FLOW_SUPABASE_ANON_KEY) || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15cm53ZWxwZXdnbnllanlsZ25hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0NzA0MTYsImV4cCI6MjEwMDA0NjQxNn0.Xy6UnBLMw9nbiSxBJMHwiyXt7f_H4GeaEKUipKaCUq4',
     
     // Lokaler / Webserver Relay-Endpunkt
     SYNC_API_URL: 'api-sync.php',

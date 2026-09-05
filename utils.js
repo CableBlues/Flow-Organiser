@@ -348,11 +348,77 @@ function triggerCelebrationParticles(customX, customY) {
 let _lastNoodleAnim = '';
 let _noodleIsAnimating = false;
 
-function animateNoodleLogo(type) {
+// 4 hochwertige, abwechselnde Logo-Animationsmodi (Langsam, edel & abwechslungsreich)
+const NOODLE_LOGO_MODES = [
+  { id: 'anim-mode-aurora', name: 'Cosmic Aurora Flow', desc: 'Sanftes Nordlicht & Eisblau-Violett Schwebe-Aura' },
+  { id: 'anim-mode-prism', name: 'Prismatic Diamond Sheen', desc: 'Kristall-Reflexion, Champagnergold & 3D-Prisma' },
+  { id: 'anim-mode-velvet', name: 'Living Clay Velvet', desc: 'Organische Knete-Welle, Sunset-Peach & Kamin-Glow' },
+  { id: 'anim-mode-studio', name: 'HiFi Studio Desk Pulse', desc: 'Cyber-Emerald, Laser-Lichtstrahl & Studio-Mastering' }
+];
+let _currentLogoModeIdx = 0;
+let _logoCycleTimer = null;
+
+function setLogoAnimationMode(modeIndexOrName) {
+  if (typeof document === 'undefined') return;
+  const container = document.querySelector('.flow-logo-container');
+  if (!container) return;
+
+  let nextIdx = 0;
+  if (typeof modeIndexOrName === 'number') {
+    nextIdx = (modeIndexOrName + NOODLE_LOGO_MODES.length) % NOODLE_LOGO_MODES.length;
+  } else if (typeof modeIndexOrName === 'string') {
+    const found = NOODLE_LOGO_MODES.findIndex(m => m.id === modeIndexOrName || m.id.includes(modeIndexOrName));
+    nextIdx = found >= 0 ? found : 0;
+  }
+  _currentLogoModeIdx = nextIdx;
+  
+  // Alle vorherigen Modus-Klassen entfernen
+  NOODLE_LOGO_MODES.forEach(m => container.classList.remove(m.id));
+  
+  // Neuen Modus setzen
+  const targetMode = NOODLE_LOGO_MODES[_currentLogoModeIdx];
+  container.classList.add(targetMode.id);
+  container.setAttribute('data-logo-mode', targetMode.id);
+  container.setAttribute('title', `Noodle Studio • ${targetMode.name} (Klick für nächsten Modus)`);
+
+  // Tab-Favicon synchron mitbewegen
+  if (typeof animateFavicon === 'function') {
+    animateFavicon('breathe');
+  }
+}
+window.setLogoAnimationMode = setLogoAnimationMode;
+
+function cycleNextLogoMode(event) {
+  if (event && typeof event.stopPropagation === 'function') {
+    event.stopPropagation();
+    const container = document.querySelector('.flow-logo-container');
+    if (container) {
+      container.classList.add('scale-95');
+      setTimeout(() => container.classList.remove('scale-95'), 180);
+    }
+  }
+  setLogoAnimationMode(_currentLogoModeIdx + 1);
+}
+window.cycleNextLogoMode = cycleNextLogoMode;
+
+function animateNoodleLogo(type = 'random') {
   if (typeof document === 'undefined') return;
   const logo = document.getElementById('header-noodle-logo');
+  const container = document.querySelector('.flow-logo-container');
   if (!logo) return;
+
+  // Modus-Wechsel bei speziellem Aufruf oder Favicon-Trigger
+  if (type === 'next' || type === 'cycle') {
+    cycleNextLogoMode();
+    return;
+  }
   
+  // Bei direktem Typen ggf. Modus wechseln
+  if (type === 'aurora') setLogoAnimationMode(0);
+  else if (type === 'shimmer' || type === 'prism') setLogoAnimationMode(1);
+  else if (type === 'breathe' || type === 'velvet') setLogoAnimationMode(2);
+  else if (type === 'float' || type === 'studio') setLogoAnimationMode(3);
+
   const allAnimClasses = [
     'noodle-anim-float',
     'noodle-anim-breathe',
@@ -540,23 +606,22 @@ function initNoodlePlayfulEngine() {
   if (typeof window === 'undefined' || window._noodlePlayfulEngineInitialized) return;
   window._noodlePlayfulEngineInitialized = true;
 
-  function scheduleNextNoodleMove() {
-    // Ruhiger, edler Zyklus alle 45 bis 75 Sekunden
-    const delay = Math.floor(Math.random() * 30000) + 45000;
-    setTimeout(() => {
-      if (!document.hidden && !_noodleIsAnimating && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
-        animateNoodleLogo('random');
+  // Initialer Modus 0 (Cosmic Aurora Flow)
+  setLogoAnimationMode(0);
+
+  // Kontinuierlicher, langsamer & eleganter Modus-Wechsel alle 14 Sekunden
+  function scheduleNextModeCycle() {
+    if (_logoCycleTimer) clearTimeout(_logoCycleTimer);
+    const delay = 14000;
+    _logoCycleTimer = setTimeout(() => {
+      if (!document.hidden && !_noodleIsAnimating) {
+        cycleNextLogoMode();
       }
-      scheduleNextNoodleMove();
+      scheduleNextModeCycle();
     }, delay);
   }
 
-  // Sanfter Begrüßungs-Glow kurz nach dem Start (2.5s)
-  setTimeout(() => {
-    animateNoodleLogo('float');
-  }, 2500);
-
-  scheduleNextNoodleMove();
+  scheduleNextModeCycle();
 
   // Hover-Effekt: startet einen sanften, edlen Shimmer
   const container = document.querySelector('.flow-logo-container');

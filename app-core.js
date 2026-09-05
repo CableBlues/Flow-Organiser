@@ -585,6 +585,26 @@ function getAvailableCommands() {
       action: () => { if (typeof handleReset === 'function') handleReset(); }
     },
     {
+      id: 'theme_latte',
+      title: '☕ Theme: Oat & Latte (Cozy Milchkaffee & Hafer)',
+      action: () => { setTheme('latte'); }
+    },
+    {
+      id: 'theme_sunset',
+      title: '🌅 Theme: Warm Sunset (Abendsonne & Pfirsich)',
+      action: () => { setTheme('sunset'); }
+    },
+    {
+      id: 'theme_matcha',
+      title: '🍵 Theme: Matcha (Creme & Kräuter-Salbei)',
+      action: () => { setTheme('matcha'); }
+    },
+    {
+      id: 'theme_candlelight',
+      title: '🕯️ Theme: Candlelight (Kerzenschein & Kaminfeuer)',
+      action: () => { setTheme('candlelight'); }
+    },
+    {
       id: 'theme_honey',
       title: '🍯 Theme: Honig (Warmes Gold)',
       action: () => { setTheme('honey'); }
@@ -966,11 +986,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // Gruppiert alle Farbschemata nach visueller Verwandtschaft, damit der automatische
 // Gruppiert alle Farbschemata nach visueller Verwandtschaft
 const THEME_FAMILIES = {
-  'purple-dreams': ['aurora', 'neon-cyber', 'synthwave', 'sakura'],
-  'green-nature': ['sage', 'forest', 'matcha'],
-  'warm-earthy': ['cozy', 'citrus'],
-  'cool-icy': ['architect', 'glacier', 'charcoal', 'holo-chrome', 'lagoon'],
-  'luxury-mono': ['executive', 'carbon']
+  'cozy-warm': ['latte', 'sunset', 'candlelight', 'honey', 'terracotta'],
+  'purple-dreams': ['aurora', 'cyberpunk', 'peach', 'royal', 'nebula'],
+  'green-nature': ['sage', 'matrix', 'matcha'],
+  'cool-icy': ['ocean', 'obsidian', 'daylight'],
+  'light-day': ['daylight', 'paper']
 };
 
 function getThemeFamily(theme) {
@@ -990,17 +1010,18 @@ function getSimilarTheme(current) {
 }
 
 const ALL_VALID_THEMES = [
-  'cyberpunk', 'aurora', 'matrix', 'ocean', 'honey', 'crimson',
-  'obsidian', 'nebula', 'peach', 'sage', 'terracotta', 'royal'
+  'aurora', 'cyberpunk', 'matrix', 'ocean', 'honey', 'crimson',
+  'obsidian', 'nebula', 'peach', 'sage', 'terracotta', 'royal',
+  'latte', 'sunset', 'matcha', 'candlelight', 'daylight', 'paper'
 ];
 
 const THEME_ALIASES = {
+  'default': 'aurora',
   'neon-cyber': 'cyberpunk',
   'synthwave': 'cyberpunk',
   'aurora-violet': 'aurora',
   'lavender-cloud': 'aurora',
   'forest': 'matrix',
-  'matcha': 'matrix',
   'lagoon': 'ocean',
   'glacier': 'ocean',
   'glacier-frost': 'ocean',
@@ -1019,8 +1040,21 @@ const THEME_ALIASES = {
   'peach-cashmere': 'peach',
   'sage-breeze': 'sage',
   'eucalyptus-dew': 'sage',
-  'matcha-latte': 'sage',
-  'terracotta-sun': 'terracotta'
+  'matcha-latte': 'matcha',
+  'matcha': 'sage',
+  'matcha-sage': 'sage',
+  'sage-latte': 'sage',
+  'terracotta-sun': 'terracotta',
+  'oat-latte': 'latte',
+  'coffee': 'latte',
+  'warm-sunset': 'sunset',
+  'apricot': 'sunset',
+  'cozy-candlelight': 'candlelight',
+  'candlelight': 'candlelight',
+  'fireplace': 'candlelight',
+  'paper': 'daylight',
+  'white': 'daylight',
+  'light': 'daylight'
 };
 
 function setTheme(theme) {

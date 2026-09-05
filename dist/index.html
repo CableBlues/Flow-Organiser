@@ -86,15 +86,15 @@
       <!-- ====================================================================== -->
       <div class="flex items-center gap-3.5 md:gap-4.5 shrink-0">
         
-        <!-- Logo (Rahmenlos & organisch schwebend) -->
+        <!-- Logo (Rahmenlos & organisch schwebend, 4 abwechselnde Luxus-Animationen) -->
         <div class="relative inline-block">
-          <div class="flow-logo-container relative inline-flex flex-col items-center justify-center p-1.5 md:p-2 rounded-2xl bg-transparent hover:bg-white/[0.04] active:scale-95 transition-all duration-300 group/logo select-none shrink-0 border-none outline-none" title="Noodle Studio">
+          <div class="flow-logo-container relative inline-flex flex-col items-center justify-center p-1.5 md:p-2 rounded-2xl bg-transparent hover:bg-white/[0.04] active:scale-95 transition-all duration-500 group/logo select-none shrink-0 border-none outline-none cursor-pointer" title="Noodle Studio • Klicken für nächsten Modus" onclick="cycleNextLogoMode(event)">
             <!-- Subtile Ambient Nebula Aura im Hintergrund -->
-            <div class="logo-ambient-aura absolute inset-0 -z-10 rounded-2xl opacity-30 group-hover/logo:opacity-80 blur-md transition-opacity duration-500 pointer-events-none"></div>
+            <div class="logo-ambient-aura absolute inset-0 -z-10 rounded-2xl blur-md pointer-events-none"></div>
 
-            <!-- Noodle 3D Clay Wordmark mit Lichtstrahl-Effekt (Vollständig sichtbar mit sicherem Padding) -->
+            <!-- Noodle 3D Clay Wordmark mit Lichtstrahl-Effekt -->
             <div class="relative overflow-hidden rounded-xl px-2 py-0.5 flex items-center justify-center">
-              <img id="header-noodle-logo" src="logo-noodle.png" alt="Noodle" class="h-[18px] md:h-[20px] w-auto max-w-none object-contain select-none pointer-events-none transition-transform duration-300" />
+              <img id="header-noodle-logo" src="logo-noodle.png" alt="Noodle" class="h-[18px] md:h-[20px] w-auto max-w-none object-contain select-none pointer-events-none transition-transform duration-500" />
               <!-- Glanz-Lichtstrahl Sweep Animation -->
               <div class="logo-light-sweep absolute inset-0 pointer-events-none"></div>
             </div>
@@ -584,52 +584,41 @@
                 </div>
               </div>
 
-              <!-- SECTION 2: 12 ELEGANTE FARBSCHEMATA (Kompakt, edel & rund als Juwelen-Dots) -->
+              <!-- SECTION 2: FARBSCHEMATA (Kompakt & Sinnvoll kuratiert) -->
               <div class="space-y-1.5 pt-1 border-t border-white/5">
                 <div class="text-[9px] font-bold uppercase tracking-wider text-gray-400 font-mono flex items-center justify-between">
                   <span data-i18n="settings_section_theme">🎨 Farbschema</span>
-                  <span class="text-[8px] text-gray-500 font-mono">12 Themes</span>
+                  <span class="text-[8px] text-purple-300/90 font-mono">9 kuratierte Themes</span>
                 </div>
-                <div class="grid grid-cols-6 gap-2 p-2 bg-black/40 border border-white/10 rounded-2xl shadow-inner items-center justify-items-center">
-                  <!-- Row 1: Cyberpunk, Matrix, Twilight, Ocean, Solar, Crimson -->
-                  <button onclick="setTheme('default')" data-theme-swatch="default" class="h-5 w-5 rounded-full bg-gradient-to-tr from-purple-700 via-purple-500 to-pink-400 border border-white/40 hover:scale-125 active:scale-90 transition-all duration-200 cursor-pointer shadow-[0_0_8px_rgba(168,85,247,0.35)] relative group/swatch" title="Cyberpunk Neon (Violet & Fuchsia)">
-                    <span class="sr-only">Cyberpunk</span>
-                  </button>
-                  <button onclick="setTheme('forest')" data-theme-swatch="forest" class="h-5 w-5 rounded-full bg-gradient-to-tr from-emerald-800 via-emerald-500 to-teal-300 border border-white/40 hover:scale-125 active:scale-90 transition-all duration-200 cursor-pointer shadow-[0_0_8px_rgba(16,185,129,0.35)] relative group/swatch" title="Matrix Forest (Emerald Glow)">
-                    <span class="sr-only">Forest</span>
-                  </button>
-                  <button onclick="setTheme('midnight')" data-theme-swatch="midnight" class="h-5 w-5 rounded-full bg-gradient-to-tr from-violet-900 via-purple-600 to-indigo-400 border border-white/40 hover:scale-125 active:scale-90 transition-all duration-200 cursor-pointer shadow-[0_0_8px_rgba(139,92,246,0.35)] relative group/swatch" title="Deep Twilight (Electric Violet)">
-                    <span class="sr-only">Midnight</span>
-                  </button>
-                  <button onclick="setTheme('ocean')" data-theme-swatch="ocean" class="h-5 w-5 rounded-full bg-gradient-to-tr from-cyan-700 via-cyan-500 to-sky-300 border border-white/40 hover:scale-125 active:scale-90 transition-all duration-200 cursor-pointer shadow-[0_0_8px_rgba(6,182,212,0.35)] relative group/swatch" title="Oceanic Abyss (Laser Cyan)">
-                    <span class="sr-only">Ocean</span>
-                  </button>
-                  <button onclick="setTheme('honey')" data-theme-swatch="honey" class="h-5 w-5 rounded-full bg-gradient-to-tr from-amber-700 via-amber-500 to-yellow-300 border border-white/40 hover:scale-125 active:scale-90 transition-all duration-200 cursor-pointer shadow-[0_0_8px_rgba(245,158,11,0.35)] relative group/swatch" title="Solar Gold (Cyber Amber)">
-                    <span class="sr-only">Solar</span>
-                  </button>
-                  <button onclick="setTheme('crimson')" data-theme-swatch="crimson" class="h-5 w-5 rounded-full bg-gradient-to-tr from-red-800 via-red-500 to-rose-400 border border-white/40 hover:scale-125 active:scale-90 transition-all duration-200 cursor-pointer shadow-[0_0_8px_rgba(239,68,68,0.35)] relative group/swatch" title="Crimson Protocol (Gamer Ruby)">
-                    <span class="sr-only">Crimson</span>
-                  </button>
+
+                <!-- SINGLE COMPACT MICRO-SWATCH GRID -->
+                <div class="grid grid-cols-9 gap-1 p-1.5 bg-black/40 border border-white/10 rounded-xl shadow-inner items-center justify-items-center">
+                  <!-- 1. Aurora (Signature Violett) -->
+                  <button onclick="setTheme('aurora')" data-theme-swatch="aurora" class="h-4 w-4 md:h-4.5 md:w-4.5 rounded-full bg-gradient-to-tr from-purple-700 via-purple-500 to-pink-400 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Aurora (Noodle Signature Violett)"></button>
                   
-                  <!-- Row 2: Obsidian, Nebula, Sakura, Sage, Terracotta, Royal -->
-                  <button onclick="setTheme('obsidian')" data-theme-swatch="obsidian" class="h-5 w-5 rounded-full bg-gradient-to-tr from-slate-800 via-zinc-500 to-slate-200 border border-white/40 hover:scale-125 active:scale-90 transition-all duration-200 cursor-pointer shadow-[0_0_8px_rgba(255,255,255,0.2)] relative group/swatch" title="Obsidian Stealth (Titanium Slate)">
-                    <span class="sr-only">Obsidian</span>
-                  </button>
-                  <button onclick="setTheme('nebula')" data-theme-swatch="nebula" class="h-5 w-5 rounded-full bg-gradient-to-tr from-indigo-800 via-indigo-500 to-blue-300 border border-white/40 hover:scale-125 active:scale-90 transition-all duration-200 cursor-pointer shadow-[0_0_8px_rgba(99,102,241,0.35)] relative group/swatch" title="Cosmic Nebula (Electric Indigo)">
-                    <span class="sr-only">Nebula</span>
-                  </button>
-                  <button onclick="setTheme('peach')" data-theme-swatch="peach" class="h-5 w-5 rounded-full bg-gradient-to-tr from-pink-700 via-rose-400 to-pink-200 border border-white/40 hover:scale-125 active:scale-90 transition-all duration-200 cursor-pointer shadow-[0_0_8px_rgba(244,114,182,0.35)] relative group/swatch" title="Tokyo Sakura (Blossom Rosé)">
-                    <span class="sr-only">Sakura</span>
-                  </button>
-                  <button onclick="setTheme('sage')" data-theme-swatch="sage" class="h-5 w-5 rounded-full bg-gradient-to-tr from-teal-800 via-teal-500 to-emerald-300 border border-white/40 hover:scale-125 active:scale-90 transition-all duration-200 cursor-pointer shadow-[0_0_8px_rgba(20,184,166,0.35)] relative group/swatch" title="Botanical Sage (Eucalyptus Teal)">
-                    <span class="sr-only">Sage</span>
-                  </button>
-                  <button onclick="setTheme('terracotta')" data-theme-swatch="terracotta" class="h-5 w-5 rounded-full bg-gradient-to-tr from-orange-800 via-orange-500 to-amber-300 border border-white/40 hover:scale-125 active:scale-90 transition-all duration-200 cursor-pointer shadow-[0_0_8px_rgba(249,115,22,0.35)] relative group/swatch" title="Sunset Terracotta (Warm Tuscan Clay)">
-                    <span class="sr-only">Terracotta</span>
-                  </button>
-                  <button onclick="setTheme('royal')" data-theme-swatch="royal" class="h-5 w-5 rounded-full bg-gradient-to-tr from-fuchsia-800 via-fuchsia-500 to-pink-300 border border-white/40 hover:scale-125 active:scale-90 transition-all duration-200 cursor-pointer shadow-[0_0_8px_rgba(217,70,239,0.35)] relative group/swatch" title="Royal Velvet (Imperial Amethyst)">
-                    <span class="sr-only">Royal</span>
-                  </button>
+                  <!-- 2. Obsidian (OLED Tiefschwarz & Titanium) -->
+                  <button onclick="setTheme('obsidian')" data-theme-swatch="obsidian" class="h-4 w-4 md:h-4.5 md:w-4.5 rounded-full bg-gradient-to-tr from-slate-950 via-zinc-700 to-slate-200 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Obsidian (OLED Tiefschwarz & Titanium)"></button>
+                  
+                  <!-- 3. Ocean (Meeres-Cyan & Ice) -->
+                  <button onclick="setTheme('ocean')" data-theme-swatch="ocean" class="h-4 w-4 md:h-4.5 md:w-4.5 rounded-full bg-gradient-to-tr from-cyan-700 via-cyan-500 to-sky-300 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Ocean (Meeres-Cyan & Ice)"></button>
+                  
+                  <!-- 4. Sage & Matcha (Milder Natur-Salbei) -->
+                  <button onclick="setTheme('sage')" data-theme-swatch="sage" class="h-4 w-4 md:h-4.5 md:w-4.5 rounded-full bg-gradient-to-tr from-emerald-800 via-teal-500 to-emerald-300 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Sage & Matcha (Milder Natur-Salbei)"></button>
+                  
+                  <!-- 5. Oat & Latte (Cozy Milchkaffee & Hafer) -->
+                  <button onclick="setTheme('latte')" data-theme-swatch="latte" class="h-4 w-4 md:h-4.5 md:w-4.5 rounded-full bg-gradient-to-tr from-amber-900 via-amber-600 to-amber-200 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Oat & Latte (Cozy Milchkaffee & Hafer)"></button>
+                  
+                  <!-- 6. Warm Sunset (Goldene Abendsonne & Pfirsich) -->
+                  <button onclick="setTheme('sunset')" data-theme-swatch="sunset" class="h-4 w-4 md:h-4.5 md:w-4.5 rounded-full bg-gradient-to-tr from-orange-700 via-rose-500 to-amber-200 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Warm Sunset (Goldene Abendsonne & Pfirsich)"></button>
+                  
+                  <!-- 7. Sakura Blossom (Japanisches Blüten-Rosé) -->
+                  <button onclick="setTheme('peach')" data-theme-swatch="peach" class="h-4 w-4 md:h-4.5 md:w-4.5 rounded-full bg-gradient-to-tr from-pink-700 via-rose-400 to-pink-200 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Sakura Blossom (Japanisches Blüten-Rosé)"></button>
+                  
+                  <!-- 8. Crimson Ruby (Dunkelroter Deep-Focus) -->
+                  <button onclick="setTheme('crimson')" data-theme-swatch="crimson" class="h-4 w-4 md:h-4.5 md:w-4.5 rounded-full bg-gradient-to-tr from-red-800 via-red-500 to-rose-400 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Crimson Ruby (Dunkelroter Deep-Focus)"></button>
+                  
+                  <!-- 9. Paper Daylight (Klares Weiß für Tageslicht) -->
+                  <button onclick="setTheme('daylight')" data-theme-swatch="daylight" class="h-4 w-4 md:h-4.5 md:w-4.5 rounded-full bg-gradient-to-tr from-slate-300 via-white to-indigo-100 border border-slate-400/50 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Paper Daylight (Klares Weiß für Tageslicht)"></button>
                 </div>
               </div>
 
