@@ -293,6 +293,10 @@ function playCheerfulSuccessJingle() {
       
       osc.start(startTime);
       osc.stop(startTime + 0.5);
+      osc.onended = () => {
+        try { osc.disconnect(); } catch (e) {}
+        try { gain.disconnect(); } catch (e) {}
+      };
     });
   } catch (e) {
     console.warn('[Audio] playCheerfulSuccessJingle warning:', e);

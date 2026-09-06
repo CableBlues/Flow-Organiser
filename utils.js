@@ -1,6 +1,4 @@
-// utils.js Teil 1/2: State, Toast/Konfetti/Praise-Anzeige, Sound-Effekte
-
-// XSS-Schutz: Sichere HTML-Maskierung für Benutzereingaben
+// XSS-Schutz: Sichere HTML-Maskierung & URL-Sanitization für Benutzereingaben
 function escapeHtml(str) {
   if (str === null || str === undefined) return '';
   if (typeof str !== 'string') str = String(str);
@@ -9,9 +7,27 @@ function escapeHtml(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+    .replace(/'/g, '&#039;')
+    .replace(/`/g, '&#96;');
 }
-window.escapeHtml = escapeHtml;
+
+function sanitizeUrl(url, fallback = '#') {
+  if (!url || typeof url !== 'string') return fallback;
+  const trimmed = url.trim();
+  if (/^(https?:\/\/|mailto:|tel:|\/|\.\/|#|data:image\/)/i.test(trimmed)) {
+    return trimmed;
+  }
+  return fallback;
+}
+
+if (typeof window !== 'undefined') {
+  window.escapeHtml = escapeHtml;
+  window.sanitizeUrl = sanitizeUrl;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.escapeHtml = escapeHtml;
+  globalThis.sanitizeUrl = sanitizeUrl;
+}
 
 // Zentraler Panel-Manager (für Dropdowns & Werkzeug-Panels)
 const PanelManager = {
