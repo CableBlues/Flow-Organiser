@@ -20,8 +20,8 @@ echo # Stand: %DATE% %TIME% >> %OUTPUT_FILE%
 echo # ============================================================================== >> %OUTPUT_FILE%
 echo. >> %OUTPUT_FILE%
 
-:: 1. HTML, Manifest, PHP & Configs
-for %%f in (index.html manifest.json api-sync.php package.json vitest.config.js data_sync\index.php data_sync\.htaccess data_sync\web.config) do (
+:: 1. HTML, Manifest & Configs
+for %%f in (index.html manifest.json package.json vitest.config.js config.js) do (
     if exist "%%f" (
         echo [x] Fuege %%f hinzu...
         echo. >> %OUTPUT_FILE%

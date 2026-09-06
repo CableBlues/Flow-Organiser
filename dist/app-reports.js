@@ -8,29 +8,46 @@ function togglePanel(panelName) {
   const isCurrentlyHidden = el.classList.contains('hidden');
 
   // Andere Popover-Panels schließen
-  ['feedback', 'report', 'settings', 'settings-dropdown', 'soundscape', 'language', 'boost', 'music', 'theme', 'calendar-dropdown', 'inspiration', 'impulse', 'shopping', 'cooking', 'alarm', 'weather', 'news', 'pause-dropdown', 'audio', 'daily'].forEach(p => {
+  ['feedback', 'report', 'settings', 'settings-dropdown', 'soundscape', 'language', 'boost', 'music', 'theme', 'calendar-dropdown', 'inspiration', 'impulse', 'shopping', 'cooking', 'alarm', 'weather', 'news', 'radio', 'pause-dropdown', 'audio', 'daily', 'collab-chat', 'radio-news', 'timer-presets'].forEach(p => {
     if (p !== panelName) {
       const other = document.getElementById(`panel-${p}`);
       if (other) other.classList.add('hidden');
     }
   });
 
-  const dockContainer = document.querySelector('.mac-dock-container');
+  const dockContainer = document.querySelector('.desktop-tools-sidebar, .mac-dock-container');
 
   if (isCurrentlyHidden) { 
     el.classList.remove('hidden'); 
-    if (typeof window !== 'undefined') window.currentlyOpenPanel = panelName;
+    if (typeof window !== 'undefined') {
+      window.currentlyOpenPanel = panelName;
+      window.pinnedPanel = panelName;
+    }
     if (typeof currentlyOpenPanel !== 'undefined') currentlyOpenPanel = panelName;
+    if (typeof pinnedPanel !== 'undefined') pinnedPanel = panelName;
 
-    if (dockContainer && ['audio', 'daily', 'alarm'].includes(panelName)) {
+    if (dockContainer && ['audio', 'daily', 'alarm', 'radio-news', 'shopping', 'cooking', 'radio', 'news'].includes(panelName)) {
       dockContainer.classList.add('is-active');
     }
 
     if (panelName === 'report') updateReportPanel(); 
+    if (panelName === 'shopping' && typeof renderShoppingList === 'function') renderShoppingList();
     if (panelName === 'cooking' && typeof renderCookingPanel === 'function') renderCookingPanel(true); 
     if (panelName === 'alarm' && typeof renderAlarmPanel === 'function') renderAlarmPanel();
     if (panelName === 'weather' && typeof fetchLocalWeather === 'function') fetchLocalWeather();
-    if (panelName === 'news' && typeof renderNewsBriefing === 'function') renderNewsBriefing();
+    if (panelName === 'news') {
+      if (typeof RadioNewsEngine !== 'undefined' && typeof RadioNewsEngine.initNewsPanel === 'function') {
+        RadioNewsEngine.initNewsPanel();
+      } else if (typeof renderNewsBriefing === 'function') {
+        renderNewsBriefing();
+      }
+    }
+    if (panelName === 'radio' && typeof RadioNewsEngine !== 'undefined' && typeof RadioNewsEngine.initRadioPanel === 'function') {
+      RadioNewsEngine.initRadioPanel();
+    }
+    if (panelName === 'radio-news' && typeof RadioNewsEngine !== 'undefined' && typeof RadioNewsEngine.initPanel === 'function') {
+      RadioNewsEngine.initPanel();
+    }
     if (panelName === 'impulse') {
       if (typeof suggestBoostActivity === 'function') suggestBoostActivity();
       if (typeof suggestInspirationQuote === 'function') suggestInspirationQuote();
@@ -47,11 +64,15 @@ function togglePanel(panelName) {
     if (typeof renderLucideIcons === 'function') renderLucideIcons();
   } else {
     el.classList.add('hidden');
-    if (typeof window !== 'undefined' && window.currentlyOpenPanel === panelName) {
-      window.currentlyOpenPanel = null;
+    if (typeof window !== 'undefined') {
+      if (window.currentlyOpenPanel === panelName) window.currentlyOpenPanel = null;
+      if (window.pinnedPanel === panelName) window.pinnedPanel = null;
     }
     if (typeof currentlyOpenPanel !== 'undefined' && currentlyOpenPanel === panelName) {
       currentlyOpenPanel = null;
+    }
+    if (typeof pinnedPanel !== 'undefined' && pinnedPanel === panelName) {
+      pinnedPanel = null;
     }
     if (dockContainer) dockContainer.classList.remove('is-active');
   }
@@ -171,9 +192,10 @@ function renderWeeklyChart(targetElementId = 'report-weekly-chart', totalElement
     fr: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'], it: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
   };
 
+  const lang = typeof currentLang !== 'undefined' ? currentLang : (typeof state !== 'undefined' && state?.settings?.language ? state.settings.language : 'de');
   for (let i = 6; i >= 0; i--) {
     const d = new Date(); d.setDate(now.getDate() - i); const iso = d.toISOString().split('T')[0];
-    last7Days.push({ date: iso, label: weekdaysShort[currentLang]?.[d.getDay()] || weekdaysShort['en'][d.getDay()], count: 0 });
+    last7Days.push({ date: iso, label: weekdaysShort[lang]?.[d.getDay()] || weekdaysShort['de']?.[d.getDay()] || weekdaysShort['en'][d.getDay()], count: 0 });
   }
 
   let totalWeekCount = 0;
@@ -197,13 +219,13 @@ function renderWeeklyChart(targetElementId = 'report-weekly-chart', totalElement
     const barCol = isToday ? 'bg-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.5)]' : 'bg-purple-500 hover:bg-purple-400';
     const barBg = isToday ? 'bg-amber-500/15 border-amber-400/30' : 'bg-white/[0.04] border-white/10';
     const barWrapper = document.createElement('div');
-    barWrapper.className = `flex flex-col items-center gap-1.5 flex-1 ${isDashboard ? 'max-w-[54px]' : 'max-w-[40px]'}`;
+    barWrapper.className = `flex flex-col items-center justify-end gap-1 flex-1 ${isDashboard ? 'max-w-[54px]' : 'max-w-[40px]'}`;
     barWrapper.innerHTML = `
-      <span class="text-[10px] font-bold font-mono ${day.count > 0 ? (isToday ? 'text-amber-300' : 'text-white') : 'text-gray-600'}">${day.count}</span>
-      <div class="${isDashboard ? 'w-7 h-20' : 'w-5 h-12'} ${barBg} border rounded-xl relative flex items-end overflow-hidden cursor-pointer transition-transform hover:scale-105" title="${day.date}: ${day.count} erledigt">
+      <span class="text-[10px] font-bold font-mono leading-none mb-0.5 ${day.count > 0 ? (isToday ? 'text-amber-300' : 'text-white') : 'text-gray-500'}">${day.count}</span>
+      <div class="${isDashboard ? 'w-7 h-20' : 'w-5 h-11'} ${barBg} border rounded-xl relative flex items-end overflow-hidden cursor-pointer transition-transform hover:scale-105" title="${day.date}: ${day.count} erledigt">
         <div class="w-full ${barCol} transition-all duration-500 rounded-t" style="height: ${pct}%"></div>
       </div>
-      <span class="text-[10px] font-bold ${isToday ? 'text-amber-300 font-extrabold' : 'text-gray-400'}">${day.label}</span>
+      <span class="text-[10px] font-bold leading-none mt-1 ${isToday ? 'text-amber-300 font-extrabold' : 'text-gray-400'}">${day.label}</span>
     `;
     chartEl.appendChild(barWrapper);
   });
@@ -230,12 +252,12 @@ function updateReportPanel() {
       </div>
 
       <!-- 7-Tage Aktivitäts-Chart -->
-      <div class="p-3 bg-black/40 border border-white/10 rounded-xl space-y-2">
-        <div class="flex items-center justify-between text-[11px] font-bold">
+      <div class="p-3 bg-black/40 border border-white/10 rounded-xl space-y-2.5">
+        <div class="flex items-center justify-between text-[11px] font-bold border-b border-white/5 pb-1.5">
           <span class="text-gray-300">Aktivität (7 Tage)</span>
           <span id="report-total-week-tasks" class="font-mono text-purple-300">0 Tasks</span>
         </div>
-        <div id="report-weekly-chart" class="flex items-end justify-between h-16 pt-2 border-b border-white/5 pb-1"></div>
+        <div id="report-weekly-chart" class="flex items-end justify-between min-h-[82px] pt-1.5 pb-0.5"></div>
       </div>
 
       <!-- Motivations-Insight -->
@@ -265,7 +287,7 @@ function updateReportPanel() {
   const peak = calculateProductivePeakHours(filteredDone);
 
   const todayEl = document.getElementById('report-today-count');
-  if (todayEl) todayEl.innerText = count;
+  if (todayEl) todayEl.textContent = String(count);
 
   const focusEl = document.getElementById('report-focus-time');
   if (focusEl) focusEl.innerText = focus.text;
@@ -318,6 +340,32 @@ function closeReportDashboard() {
   if (modal) modal.classList.add('hidden');
 }
 
+
+function switchDashboardMainTab(tab) {
+  const statsSec = document.getElementById('dash-section-stats');
+  const learnSec = document.getElementById('dash-section-learning');
+  const tabStats = document.getElementById('dash-main-tab-stats');
+  const tabLearn = document.getElementById('dash-main-tab-learning');
+  const timeframeWrap = document.getElementById('dash-timeframe-selector-wrap');
+
+  if (tab === 'learning') {
+    if (statsSec) statsSec.classList.add('hidden');
+    if (learnSec) learnSec.classList.remove('hidden');
+    if (timeframeWrap) timeframeWrap.classList.add('hidden');
+    if (tabStats) tabStats.className = 'px-3 py-1.5 rounded-xl text-gray-400 hover:text-white transition cursor-pointer flex items-center gap-1.5';
+    if (tabLearn) tabLearn.className = 'px-3 py-1.5 rounded-xl text-amber-300 bg-amber-500/20 font-bold border border-amber-500/30 transition cursor-pointer flex items-center gap-1.5 shadow-sm';
+    if (typeof renderLearningHub === 'function') renderLearningHub();
+  } else {
+    if (statsSec) statsSec.classList.remove('hidden');
+    if (learnSec) learnSec.classList.add('hidden');
+    if (timeframeWrap) timeframeWrap.classList.remove('hidden');
+    if (tabStats) tabStats.className = 'px-3 py-1.5 rounded-xl text-purple-300 bg-purple-500/20 font-bold border border-purple-500/30 transition cursor-pointer flex items-center gap-1.5 shadow-sm';
+    if (tabLearn) tabLearn.className = 'px-3 py-1.5 rounded-xl text-gray-400 hover:text-white transition cursor-pointer flex items-center gap-1.5';
+    renderDashboardView();
+  }
+  if (typeof renderLucideIcons === 'function') renderLucideIcons();
+}
+
 function setDashboardTimeframe(tf) {
   dashboardTimeframe = tf;
   ['today', 'week', 'month'].forEach(t => {
@@ -362,7 +410,7 @@ function renderDashboardView() {
 
   // Kachel 1: Abgeschlossen
   const compEl = document.getElementById('dash-stat-completed');
-  if (compEl) compEl.innerText = count;
+  if (compEl) compEl.textContent = String(count);
 
   // Kachel 2: Fokus
   const focEl = document.getElementById('dash-stat-focus');
@@ -428,7 +476,7 @@ function renderDashboardHistoryList() {
     });
   }
 
-  if (badgeEl) badgeEl.innerText = filtered.length;
+  if (badgeEl) badgeEl.textContent = String(filtered.length);
 
   if (filtered.length === 0) {
     listEl.innerHTML = `<div class="text-gray-500 italic text-center py-6 text-xs">Keine passenden erledigten Aufgaben gefunden.</div>`;
@@ -782,18 +830,17 @@ async function exportReportAsImage() {
         const script = document.createElement('script');
         script.src = 'vendor/html2canvas.min.js';
         script.onload = resolve;
-        script.onerror = () => {
-          const fallbackScript = document.createElement('script');
-          fallbackScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-          fallbackScript.onload = resolve;
-          fallbackScript.onerror = reject;
-          document.head.appendChild(fallbackScript);
-        };
+        script.onerror = reject;
         document.head.appendChild(script);
       });
     } catch (e) {
       console.warn('[Reports] Failed to load html2canvas:', e);
-      if (typeof showToast === 'function') showToast(tr({ de: "Export fehlgeschlagen.", en: "Export failed." }));
+      if (typeof showToast === 'function') {
+        showToast(tr({
+          de: 'Bildexport aktuell nicht verfügbar.',
+          en: 'Image export currently not available.'
+        }));
+      }
       return;
     }
   }
@@ -882,6 +929,7 @@ if (typeof window !== 'undefined') {
   window.setReportTimeframe = setReportTimeframe;
   window.updateReportPanel = updateReportPanel;
   window.openReportDashboard = openReportDashboard;
+  window.switchDashboardMainTab = switchDashboardMainTab;
   window.closeReportDashboard = closeReportDashboard;
   window.setDashboardTimeframe = setDashboardTimeframe;
   window.filterDashboardHistory = filterDashboardHistory;

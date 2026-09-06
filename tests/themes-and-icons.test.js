@@ -9,9 +9,9 @@ import '../state.js';
 import '../utils.js';
 import '../app-core.js';
 
-describe('6 Distinct & Unique Human Themes (Production Code)', () => {
-  it('applies all 6 distinct themes with unique character and contrast', () => {
-    const distinctThemes = ['honey', 'sage', 'aurora', 'peach', 'ocean', 'terracotta'];
+describe('Distinct & Unique Human Themes (Production Code)', () => {
+  it('applies all distinct themes including signature botanical with unique character and contrast', () => {
+    const distinctThemes = ['botanical', 'honey', 'sage', 'aurora', 'peach', 'ocean', 'terracotta'];
     distinctThemes.forEach(theme => {
       setTheme(theme);
       expect(document.body.classList.contains(`theme-${theme}`)).toBe(true);
@@ -19,7 +19,16 @@ describe('6 Distinct & Unique Human Themes (Production Code)', () => {
     });
   });
 
-  it('smoothly maps legacy theme aliases to the 6 distinct themes', () => {
+  it('smoothly maps legacy theme aliases to the distinct themes', () => {
+    setTheme('daylight');
+    expect(document.body.classList.contains('theme-botanical')).toBe(true);
+
+    setTheme('paper');
+    expect(document.body.classList.contains('theme-botanical')).toBe(true);
+
+    setTheme('eco');
+    expect(document.body.classList.contains('theme-botanical')).toBe(true);
+
     setTheme('honey-chamomile');
     expect(document.body.classList.contains('theme-honey')).toBe(true);
 

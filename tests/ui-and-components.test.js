@@ -27,7 +27,7 @@ describe('UI Architecture, Modals & Components (Production Code)', () => {
     expect(document.getElementById('modal-command-palette')).not.toBeNull();
     expect(document.getElementById('modal-p2p-sync')).not.toBeNull();
     expect(document.getElementById('mobile-bottom-nav')).not.toBeNull();
-    expect(document.getElementById('mobile-fab-add')).not.toBeNull();
+    expect(document.getElementById('mobile-category-tabs')).not.toBeNull();
   });
 
   it('closeAllPanelsAndModals closes active panels and resets currentlyOpenPanel', () => {

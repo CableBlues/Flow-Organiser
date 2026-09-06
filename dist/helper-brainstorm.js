@@ -275,13 +275,21 @@ function deleteBrainstormIdea(id) {
 }
 
 
-function clearAllBrainstormIdeas() {
+async function clearAllBrainstormIdeas() {
   if (brainstormIdeas.length === 0) return;
   const msg = tr({
     de: 'Möchtest du wirklich alle gesammelten Ideen in dieser Brainstorming-Session löschen?',
     en: 'Are you sure you want to clear all collected ideas in this brainstorming session?'
   });
-  if (window.confirm(msg)) {
+  const confirmed = typeof showConfirmDialog === 'function' ? await showConfirmDialog({
+    title: typeof tr === 'function' ? tr({ de: 'Alle Ideen löschen?', en: 'Clear all ideas?' }) : 'Alle Ideen löschen?',
+    message: msg,
+    confirmText: typeof tr === 'function' ? tr({ de: 'Löschen', en: 'Delete' }) : 'Löschen',
+    isDanger: true,
+    icon: 'trash-2'
+  }) : confirm(msg);
+
+  if (confirmed) {
     brainstormIdeas = [];
     saveBrainstormIdeas();
     renderBrainstormUI();
@@ -488,7 +496,7 @@ function renderBrainstormUI() {
         
         <!-- Action Buttons -->
         <div class="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition">
-          <button onclick="deleteBrainstormIdea('${item.id}')" class="p-1 rounded-md text-gray-500 hover:text-red-400 hover:bg-white/10 transition cursor-pointer" title="${tr({ de: 'Idee löschen', en: 'Delete idea' })}">
+          <button onclick="deleteBrainstormIdea('${item.id}')" aria-label="${tr({ de: 'Idee löschen', en: 'Delete idea' })}" class="p-1 rounded-md text-gray-500 hover:text-red-400 hover:bg-white/10 transition cursor-pointer" title="${tr({ de: 'Idee löschen', en: 'Delete idea' })}">
             <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
           </button>
         </div>

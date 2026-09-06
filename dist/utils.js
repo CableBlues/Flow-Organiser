@@ -49,7 +49,7 @@ window.PanelManager = PanelManager;
 
 // Zentraler Modal-Manager (für Dialoge & Overlays)
 const ModalManager = {
-  modals: ['brainstorm-modal', 'helper-whatnow-modal', 'helper-sport-modal', 'clarity-modal', 'feierabend-modal', 'game-mode-container', 'mobile-menu-drawer', 'mobile-tools-sheet'],
+  modals: ['brainstorm-modal', 'helper-whatnow-modal', 'helper-sport-modal', 'clarity-modal', 'feierabend-modal', 'mobile-menu-drawer', 'mobile-tools-sheet', 'app-confirm-modal'],
   open(id) {
     const el = document.getElementById(id);
     if (el) el.classList.remove('hidden');
@@ -67,6 +67,102 @@ const ModalManager = {
 };
 window.ModalManager = ModalManager;
 
+// Wiederverwendbarer Bestätigungsdialog (Ersatz für natives confirm())
+function showConfirmDialog(options = {}) {
+  return new Promise((resolve) => {
+    if (typeof document === 'undefined') {
+      return resolve(true);
+    }
+
+    let title = '';
+    let message = '';
+    let confirmText = (typeof tr === 'function' ? tr({ de: 'Bestätigen', en: 'Confirm', fr: 'Confirmer', it: 'Conferma', es: 'Confirmar', el: 'Επιβεβαίωση' }) : 'Bestätigen');
+    let cancelText = (typeof tr === 'function' ? tr({ de: 'Abbrechen', en: 'Cancel', fr: 'Annuler', it: 'Annulla', es: 'Cancelar', el: 'Άκυρο' }) : 'Abbrechen');
+    let isDanger = true;
+    let icon = 'alert-triangle';
+
+    if (typeof options === 'string') {
+      message = options;
+      title = (typeof tr === 'function' ? tr({ de: 'Bist du sicher?', en: 'Are you sure?', fr: 'Êtes-vous sûr ?', it: 'Sei sicuro?', es: '¿Estás seguro?', el: 'Είσαι σίγουρος;' }) : 'Bist du sicher?');
+    } else if (typeof options === 'object' && options !== null) {
+      message = options.message || options.text || '';
+      title = options.title || (typeof tr === 'function' ? tr({ de: 'Bist du sicher?', en: 'Are you sure?', fr: 'Êtes-vous sûr ?', it: 'Sei sicuro?', es: '¿Estás seguro?', el: 'Είσαι σίγουρος;' }) : 'Bist du sicher?');
+      if (options.confirmText) confirmText = options.confirmText;
+      if (options.cancelText) cancelText = options.cancelText;
+      if (options.isDanger !== undefined) isDanger = options.isDanger;
+      if (options.icon) icon = options.icon;
+    }
+
+    let modal = document.getElementById('app-confirm-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'app-confirm-modal';
+      document.body.appendChild(modal);
+    }
+
+    modal.className = 'fixed inset-0 z-[200000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in';
+    modal.innerHTML = `
+      <div class="mobile-modal-card animate-spring-modal w-full max-w-sm bg-[#111116]/98 border border-white/15 p-5 sm:p-6 rounded-3xl shadow-2xl backdrop-blur-2xl text-white relative text-center flex flex-col items-center gap-4">
+        <div class="w-12 h-12 rounded-2xl ${isDanger ? 'bg-rose-500/20 border border-rose-500/40 text-rose-400' : 'bg-purple-500/20 border border-purple-500/40 text-purple-300'} flex items-center justify-center shrink-0">
+          <i data-lucide="${icon}" class="w-6 h-6"></i>
+        </div>
+        <div class="space-y-1.5 w-full">
+          <h3 class="text-base font-bold font-display text-white leading-snug">${escapeHtml(title)}</h3>
+          <p class="text-xs text-gray-300 leading-relaxed max-h-36 overflow-y-auto px-1">${escapeHtml(message)}</p>
+        </div>
+        <div class="grid grid-cols-2 gap-2.5 w-full pt-2">
+          <button type="button" id="confirm-modal-cancel-btn" aria-label="${escapeHtml(cancelText)}" class="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 active:scale-95 text-gray-300 hover:text-white border border-white/10 text-xs font-bold transition cursor-pointer">
+            ${escapeHtml(cancelText)}
+          </button>
+          <button type="button" id="confirm-modal-ok-btn" aria-label="${escapeHtml(confirmText)}" class="px-4 py-2.5 rounded-xl ${isDanger ? 'bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-900/40' : 'bg-[var(--accent)] hover:brightness-110 text-white shadow-lg shadow-purple-900/40'} active:scale-95 text-xs font-bold transition cursor-pointer">
+            ${escapeHtml(confirmText)}
+          </button>
+        </div>
+      </div>
+    `;
+
+    if (typeof doRenderLucideIcons === 'function') {
+      doRenderLucideIcons();
+    } else if (typeof lucide !== 'undefined' && lucide.createIcons) {
+      try { lucide.createIcons(); } catch (e) {}
+    }
+
+    let settled = false;
+    const cleanup = (result) => {
+      if (settled) return;
+      settled = true;
+      modal.classList.add('hidden');
+      document.removeEventListener('keydown', keyHandler);
+      resolve(result);
+    };
+
+    const keyHandler = (e) => {
+      if (e.key === 'Escape') {
+        cleanup(false);
+      } else if (e.key === 'Enter') {
+        cleanup(true);
+      }
+    };
+
+    document.addEventListener('keydown', keyHandler);
+
+    const cancelBtn = modal.querySelector('#confirm-modal-cancel-btn');
+    const okBtn = modal.querySelector('#confirm-modal-ok-btn');
+
+    if (cancelBtn) cancelBtn.onclick = () => cleanup(false);
+    if (okBtn) okBtn.onclick = () => cleanup(true);
+    modal.onclick = (e) => {
+      if (e.target === modal) cleanup(false);
+    };
+
+    modal.classList.remove('hidden');
+    if (okBtn) okBtn.focus();
+  });
+}
+window.showConfirmDialog = showConfirmDialog;
+window.confirmModal = showConfirmDialog;
+
+
 // Globaler Escape-Key Handler
 if (typeof document !== 'undefined') {
   document.addEventListener('keydown', (e) => {
@@ -77,15 +173,48 @@ if (typeof document !== 'undefined') {
   });
 }
 
-let lucideBatchScheduled = false;
+const _lucideSvgCache = new Map();
 
-function doRenderLucideIcons() {
+function getLucideSvg(name, classNames = '', extraAttrs = '') {
+  if (!name) return '';
+  const cacheKey = `${name}:::${classNames}:::${extraAttrs}`;
+  if (_lucideSvgCache.has(cacheKey)) return _lucideSvgCache.get(cacheKey);
+
+  if (typeof lucide !== 'undefined' && lucide.icons && lucide.icons[name]) {
+    try {
+      const svg = lucide.icons[name].toSvg({ class: classNames });
+      if (extraAttrs) {
+        const modified = svg.replace('<svg ', `<svg ${extraAttrs} `);
+        _lucideSvgCache.set(cacheKey, modified);
+        return modified;
+      }
+      _lucideSvgCache.set(cacheKey, svg);
+      return svg;
+    } catch (e) {}
+  }
+  return `<i data-lucide="${name}" class="${classNames}" ${extraAttrs}></i>`;
+}
+
+let lucideBatchScheduled = false;
+const pendingLucideRoots = new Set();
+
+function doRenderLucideIcons(root = null) {
+  const targetRoot = (root && root.querySelectorAll) ? root : (typeof document !== 'undefined' ? document : null);
+  if (!targetRoot) return;
+
   if (typeof lucide === 'undefined' || !lucide.createIcons) {
     if (typeof window !== 'undefined') {
-      [50, 150, 350, 800].forEach(delay => {
+      [50, 150, 350].forEach(delay => {
         setTimeout(() => {
           if (typeof lucide !== 'undefined' && lucide.createIcons) {
-            try { lucide.createIcons(); } catch(e) {}
+            try {
+              if (targetRoot !== document) {
+                const nodes = targetRoot.querySelectorAll('[data-lucide]');
+                if (nodes.length > 0) lucide.createIcons({ root: targetRoot });
+              } else {
+                lucide.createIcons();
+              }
+            } catch(e) {}
           }
         }, delay);
       });
@@ -93,29 +222,46 @@ function doRenderLucideIcons() {
     return;
   }
   try {
-    lucide.createIcons();
-  } catch (e) {
-    console.warn('[Lucide] Batch createIcons notice:', e);
-    // Fallback: Einzel-Element-Verarbeitung, damit ein einzelner fehlerhafter Icon-Name nicht alle anderen blockiert
-    try {
-      const iconNodes = document.querySelectorAll('[data-lucide]');
-      iconNodes.forEach(node => {
-        const name = node.getAttribute('data-lucide');
-        if (!name) return;
+    const iconNodes = targetRoot.querySelectorAll('[data-lucide]');
+    if (iconNodes.length === 0) return; // Sofortiger Return ohne teure DOM-Arbeit
+    
+    let needsFullLucide = false;
+    iconNodes.forEach(node => {
+      const name = node.getAttribute('data-lucide');
+      if (!name) return;
+      if (typeof lucide !== 'undefined' && lucide.icons && lucide.icons[name]) {
         try {
-          if (lucide.icons && lucide.icons[name]) {
-            const svg = lucide.icons[name].toSvg({ class: node.className });
-            node.outerHTML = svg;
+          const svgStr = getLucideSvg(name, node.className || '');
+          if (svgStr && svgStr.startsWith('<svg')) {
+            node.outerHTML = svgStr;
+            return;
           }
         } catch(err) {}
-      });
-    } catch(err2) {}
+      }
+      needsFullLucide = true;
+    });
+
+    if (needsFullLucide) {
+      if (targetRoot !== document) {
+        lucide.createIcons({ root: targetRoot });
+      } else {
+        lucide.createIcons();
+      }
+    }
+  } catch (e) {
+    console.warn('[Lucide] Batch createIcons notice:', e);
   }
 }
 
-function renderLucideIcons(immediate = false) {
+function renderLucideIcons(immediate = false, root = null) {
+  if (root) pendingLucideRoots.add(root);
   if (immediate) {
-    doRenderLucideIcons();
+    if (pendingLucideRoots.size > 0) {
+      pendingLucideRoots.forEach(r => doRenderLucideIcons(r));
+      pendingLucideRoots.clear();
+    } else {
+      doRenderLucideIcons(root || (typeof document !== 'undefined' ? document : null));
+    }
     return;
   }
   if (lucideBatchScheduled) return;
@@ -123,16 +269,31 @@ function renderLucideIcons(immediate = false) {
   if (typeof requestAnimationFrame !== 'undefined') {
     requestAnimationFrame(() => {
       lucideBatchScheduled = false;
-      doRenderLucideIcons();
+      if (pendingLucideRoots.size > 0) {
+        pendingLucideRoots.forEach(r => doRenderLucideIcons(r));
+        pendingLucideRoots.clear();
+      } else {
+        doRenderLucideIcons(document);
+      }
     });
   } else {
     setTimeout(() => {
       lucideBatchScheduled = false;
-      doRenderLucideIcons();
+      if (pendingLucideRoots.size > 0) {
+        pendingLucideRoots.forEach(r => doRenderLucideIcons(r));
+        pendingLucideRoots.clear();
+      } else {
+        doRenderLucideIcons(document);
+      }
     }, 0);
   }
 }
 window.renderLucideIcons = renderLucideIcons;
+window.getLucideSvg = getLucideSvg;
+if (typeof globalThis !== 'undefined') {
+  globalThis.renderLucideIcons = renderLucideIcons;
+  globalThis.getLucideSvg = getLucideSvg;
+}
 
 // Shuffler-Pools zur vollständigen Absicherung gegen Wiederholungen
 let praisePool = [];
@@ -567,41 +728,6 @@ function animateFavicon(move = 'bounce') {
 }
 window.animateFavicon = animateFavicon;
 
-function toggleLogoGuide(event) {
-  if (event) event.stopPropagation();
-  const guide = document.getElementById('panel-logo-guide');
-  if (!guide) return;
-  
-  const isHidden = guide.classList.contains('hidden');
-  if (isHidden) {
-    guide.classList.remove('hidden');
-    animateNoodleLogo('shimmer');
-    const searchInput = document.getElementById('logo-guide-search');
-    if (searchInput) {
-      searchInput.value = '';
-      filterLogoGuideItems('');
-      setTimeout(() => searchInput.focus(), 60);
-    }
-  } else {
-    guide.classList.add('hidden');
-  }
-}
-window.toggleLogoGuide = toggleLogoGuide;
-
-function filterLogoGuideItems(query) {
-  const q = (query || '').toLowerCase().trim();
-  const items = document.querySelectorAll('#panel-logo-guide .group\\/guide-item');
-  items.forEach(item => {
-    const text = (item.textContent || '').toLowerCase();
-    if (!q || text.includes(q)) {
-      item.style.display = '';
-    } else {
-      item.style.display = 'none';
-    }
-  });
-}
-window.filterLogoGuideItems = filterLogoGuideItems;
-
 function initNoodlePlayfulEngine() {
   if (typeof window === 'undefined' || window._noodlePlayfulEngineInitialized) return;
   window._noodlePlayfulEngineInitialized = true;
@@ -632,27 +758,6 @@ function initNoodlePlayfulEngine() {
       }
     });
   }
-
-  // Klick außerhalb schließt den Guide
-  document.addEventListener('click', (e) => {
-    const guide = document.getElementById('panel-logo-guide');
-    const container = document.querySelector('.flow-logo-container');
-    if (guide && !guide.classList.contains('hidden')) {
-      if (!guide.contains(e.target) && (!container || !container.contains(e.target))) {
-        guide.classList.add('hidden');
-      }
-    }
-  });
-
-  // ESC schließt den Guide
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      const guide = document.getElementById('panel-logo-guide');
-      if (guide && !guide.classList.contains('hidden')) {
-        guide.classList.add('hidden');
-      }
-    }
-  });
 }
 window.initNoodlePlayfulEngine = initNoodlePlayfulEngine;
 
@@ -717,6 +822,31 @@ function showPraise() {
     const randomProfileIdx = Math.floor(Math.random() * 12);
     speakWithProfile(msg, randomProfileIdx);
   }
+}
+
+// Haptisches Feedback für Touch- & Mobilgeräte
+function triggerHapticFeedback(type = 'light') {
+  if (typeof navigator === 'undefined' || !navigator.vibrate) return;
+  try {
+    if (type === 'light') {
+      navigator.vibrate(8);
+    } else if (type === 'medium') {
+      navigator.vibrate(15);
+    } else if (type === 'success') {
+      navigator.vibrate([10, 30, 15]);
+    } else if (type === 'warning') {
+      navigator.vibrate([20, 40, 20]);
+    } else if (Array.isArray(type) || typeof type === 'number') {
+      navigator.vibrate(type);
+    }
+  } catch (e) {}
+}
+window.triggerHapticFeedback = triggerHapticFeedback;
+
+function triggerPraise() {
+  triggerHapticFeedback('success');
+  const soundPool = getStoragePool('flow_sound_pool', 12);
+  const animationPool = getStoragePool('flow_animation_pool', 10);
 
   const soundIdx = getNextFromPool(soundPool, 12);
   playProceduralSound(soundIdx);

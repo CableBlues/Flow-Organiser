@@ -136,7 +136,7 @@ function renderAlarmPanel() {
           <div class="text-[8px] text-gray-400 font-mono">Präzise Zeit- & Fokus-Steuerung</div>
         </div>
       </div>
-      <button onclick="togglePanel('alarm')" class="text-gray-400 hover:text-white text-xs font-bold p-1 cursor-pointer">✕</button>
+      <button onclick="togglePanel('alarm')" aria-label="Wecker-Hub schließen" class="text-gray-400 hover:text-white text-xs font-bold p-1 cursor-pointer">✕</button>
     </div>
 
     <!-- 2 Separate, Funktionale Tabs -->
@@ -179,7 +179,7 @@ function renderAlarmPanel() {
         <div class="flex gap-2 bg-black/40 p-2 rounded-2xl border border-white/5">
           <input type="time" id="new-alarm-time" value="09:00" class="p-2 bg-[#12121c] border border-white/10 rounded-xl text-xs text-white outline-none focus:border-cyan-500 font-semibold cursor-pointer" />
           <input type="text" id="new-alarm-label" placeholder="Bezeichnung (z.B. Aufstehen, Meeting)..." class="flex-1 p-2 bg-[#12121c] border border-white/10 rounded-xl text-xs text-white outline-none focus:border-cyan-500 font-semibold placeholder:text-gray-500" />
-          <button onclick="handleAddAlarm()" class="px-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center shadow-sm">
+          <button onclick="handleAddAlarm()" aria-label="Wecker hinzufügen" class="px-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center shadow-sm">
             <i data-lucide="plus" class="w-4 h-4"></i>
           </button>
         </div>
@@ -198,7 +198,7 @@ function renderAlarmPanel() {
                 <div class="text-[10px] text-gray-400 leading-none">${safeEscape(a.label || 'Wecker')}</div>
               </div>
             </div>
-            <button onclick="handleDeleteAlarm('${a.id}')" class="text-gray-500 hover:text-rose-400 p-1 transition cursor-pointer" title="Löschen">
+            <button onclick="handleDeleteAlarm('${a.id}')" aria-label="Wecker löschen" class="text-gray-500 hover:text-rose-400 p-1 transition cursor-pointer" title="Löschen">
               <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
             </button>
           </div>
@@ -222,7 +222,7 @@ function renderAlarmPanel() {
             <option value="45">in 45m</option>
             <option value="60">in 60m</option>
           </select>
-          <button onclick="handleAddReminder()" class="px-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center shadow-sm">
+          <button onclick="handleAddReminder()" aria-label="Erinnerung hinzufügen" class="px-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center shadow-sm">
             <i data-lucide="plus" class="w-3.5 h-3.5"></i>
           </button>
         </div>
@@ -240,7 +240,7 @@ function renderAlarmPanel() {
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
                   <span class="text-[9px] font-mono text-amber-400 font-bold">${r.completed ? 'Erledigt' : `${leftMin}m`}</span>
-                  <button onclick="handleDeleteReminder('${r.id}')" class="text-gray-500 hover:text-rose-400 p-0.5 transition cursor-pointer">
+                  <button onclick="handleDeleteReminder('${r.id}')" aria-label="Erinnerung löschen" class="text-gray-500 hover:text-rose-400 p-0.5 transition cursor-pointer" title="Löschen">
                     <i data-lucide="trash-2" class="w-3 h-3"></i>
                   </button>
                 </div>

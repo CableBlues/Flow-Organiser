@@ -1,4 +1,4 @@
-const CACHE_NAME = 'noodle-cache-v146';
+const CACHE_NAME = 'noodle-cache-v157';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -32,10 +32,15 @@ const ASSETS_TO_CACHE = [
   './vendor/tailwindcss.js',
   './vendor/lucide.min.js',
   './vendor/supabase.min.js',
-  './vendor/three.min.js',
-  './vendor/OrbitControls.js',
-  './vendor/qrcode.min.js'
+  './vendor/qrcode.min.js',
+  './vendor/html2canvas.min.js'
 ];
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.action === 'skipWaiting') {
+    self.skipWaiting();
+  }
+});
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

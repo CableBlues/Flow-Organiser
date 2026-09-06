@@ -272,6 +272,18 @@ function changeBeatBpm(delta) {
 }
 window.changeBeatBpm = changeBeatBpm;
 
+function toggleGenreBeat(genre) {
+  if (typeof playAmbientSound === 'function') {
+    playAmbientSound(genre);
+  }
+}
+window.toggleGenreBeat = toggleGenreBeat;
+
+function setSequencerBpm(bpm) {
+  setBeatBpm(bpm);
+}
+window.setSequencerBpm = setSequencerBpm;
+
 // --- INSTRUMENT SYNTHESIS MODULES ---
 
 function playDrumKick(time, punch = true, pitch = 135, decay = 0.28, vol = 0.45) {

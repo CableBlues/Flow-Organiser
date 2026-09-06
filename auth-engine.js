@@ -1,5 +1,14 @@
-// auth-engine.js - Robuste & einfache Authentifizierungs- & Kopplungs-Engine für Flow Organiser
-// ============================================================================
+/**
+ * ============================================================================
+ * Noodle - Authentifizierungs- & Account-Engine (auth-engine.js)
+ * ============================================================================
+ * Verwaltet die Benutzer-Authentifizierung und Session-Lebenszyklen:
+ * - Registrierung & Anmeldung (E-Mail / Passwort)
+ * - Cloud-Sync Token-Verwaltung & Kopplung
+ * - Supabase Client Integration mit Fallback-API
+ * - Reaktive Auth-State Listener für die Benutzeroberfläche
+ * ============================================================================
+ */
 
 const FlowAuth = (function() {
   let supabaseClient = null;
@@ -17,15 +26,8 @@ const FlowAuth = (function() {
     }
     return {
       SUPABASE_URL: 'https://flow-organiser.supabase.co',
-      SUPABASE_ANON_KEY: 'dummy_anon_key',
-      SYNC_API_URL: 'api-sync.php'
+      SUPABASE_ANON_KEY: 'dummy_anon_key'
     };
-  }
-
-  function getApiUrl(action) {
-    const config = getConfig();
-    const base = config.SYNC_API_URL || 'api-sync.php';
-    return `${base}?action=${encodeURIComponent(action)}`;
   }
 
   function getSupabaseLib() {
@@ -119,14 +121,14 @@ const FlowAuth = (function() {
   }
 
   // ==========================================================================
-  // 1. ANMELDUNG MIT E-MAIL & PASSWORT / PIN (Autark via api-sync.php)
+  // 1. ANMELDUNG (LOGIN) MIT E-MAIL & PASSWORT
   // ==========================================================================
   async function signInWithCredentials(email, password) {
     if (!email || !email.trim() || !email.includes('@')) {
       return { success: false, error: 'Bitte gib eine gültige E-Mail-Adresse ein.' };
     }
     if (!password || password.length < 4) {
-      return { success: false, error: 'Bitte gib ein Passwort / PIN mit mindestens 4 Zeichen ein.' };
+      return { success: false, error: 'Bitte gib dein Passwort (mind. 4 Zeichen) ein.' };
     }
 
     const trimmedEmail = email.trim().toLowerCase();
@@ -135,7 +137,7 @@ const FlowAuth = (function() {
       return { success: false, error: 'Keine Internetverbindung. Bitte stelle eine Verbindung her.' };
     }
 
-    // 1. Wenn Supabase konfiguriert ist, direkt über Supabase Auth anmelden oder registrieren
+    // 1. Supabase Auth
     if (!supabaseClient) {
       init();
     }
@@ -149,41 +151,14 @@ const FlowAuth = (function() {
 
         if (authRes.error) {
           const errMsg = authRes.error.message || '';
-          
           if (errMsg.toLowerCase().includes('email not confirmed') || errMsg.toLowerCase().includes('email_not_confirmed')) {
             return {
               success: false,
-              error: 'E-Mail noch nicht bestätigt. Bitte klicke auf den Bestätigungslink in deiner E-Mail oder deaktiviere "Confirm email" im Supabase Dashboard (Authentication -> Providers -> Email).'
+              error: 'E-Mail noch nicht bestätigt. Bitte klicke auf den Bestätigungslink in deiner E-Mail.'
             };
           }
-
-          // Wenn User nicht existiert oder fehlerhafte Anmeldedaten (Auto-Registrierung wie im PHP-Backend)
-          if (errMsg.toLowerCase().includes('invalid login credentials') || errMsg.toLowerCase().includes('user not found') || authRes.error.status === 400) {
-            const signUpRes = await supabaseClient.auth.signUp({
-              email: trimmedEmail,
-              password: password
-            });
-
-            if (signUpRes.error) {
-              const signErr = signUpRes.error.message || '';
-              if (signErr.toLowerCase().includes('already registered')) {
-                return { success: false, error: 'Passwort falsch. Bitte überprüfe dein Passwort.' };
-              }
-              return { success: false, error: signErr || 'Registrierung fehlgeschlagen.' };
-            }
-
-            if (signUpRes.data && signUpRes.data.user) {
-              if (signUpRes.data.session) {
-                setSession(signUpRes.data.session);
-                return { success: true, email: trimmedEmail, token: signUpRes.data.user.id };
-              } else {
-                // Bestätigungs-E-Mail erforderlich
-                return {
-                  success: false,
-                  error: 'Konto erstellt! Bitte bestätige die E-Mail von Supabase oder deaktiviere "Confirm email" im Supabase Dashboard.'
-                };
-              }
-            }
+          if (errMsg.toLowerCase().includes('invalid login credentials') || errMsg.toLowerCase().includes('user not found')) {
+            return { success: false, error: 'E-Mail oder Passwort falsch. Noch kein Konto? Bitte wähle "Registrieren".' };
           }
           return { success: false, error: authRes.error.message || 'Anmeldung fehlgeschlagen.' };
         }
@@ -198,91 +173,75 @@ const FlowAuth = (function() {
       }
     }
 
-    // 2. Fallback für lokale PHP-Server (z.B. XAMPP)
-    try {
-      const res = await fetch(getApiUrl('auth_login'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: trimmedEmail, password: password })
-      });
+    return { success: false, error: 'Anmeldung derzeit nicht möglich. Bitte prüfe deine Internetverbindung.' };
+  }
 
-      const json = await res.json();
-      if (!res.ok || !json.success) {
-        return { success: false, error: json.error || 'Anmeldung fehlgeschlagen.' };
-      }
-
-      setDirectPairingToken(json.token, trimmedEmail);
-      return { success: true, email: trimmedEmail, token: json.token };
-    } catch (e) {
-      return { success: false, error: getFriendlyNetworkErrorMessage() };
+  // ==========================================================================
+  // 1b. REGISTRIERUNG (SIGN UP) MIT E-MAIL & PASSWORT
+  // ==========================================================================
+  async function signUpWithCredentials(email, password) {
+    if (!email || !email.trim() || !email.includes('@')) {
+      return { success: false, error: 'Bitte gib eine gültige E-Mail-Adresse ein.' };
     }
+    if (!password || password.length < 4) {
+      return { success: false, error: 'Bitte wähle ein Passwort mit mindestens 4 Zeichen.' };
+    }
+
+    const trimmedEmail = email.trim().toLowerCase();
+
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      return { success: false, error: 'Keine Internetverbindung. Bitte stelle eine Verbindung her.' };
+    }
+
+    // 1. Supabase Auth
+    if (!supabaseClient) {
+      init();
+    }
+
+    if (supabaseClient) {
+      try {
+        const signUpRes = await supabaseClient.auth.signUp({
+          email: trimmedEmail,
+          password: password
+        });
+
+        if (signUpRes.error) {
+          const signErr = signUpRes.error.message || '';
+          if (signErr.toLowerCase().includes('already registered')) {
+            return { success: false, error: 'Diese E-Mail ist bereits registriert. Bitte wechsle zu "Anmelden".' };
+          }
+          return { success: false, error: signErr || 'Registrierung fehlgeschlagen.' };
+        }
+
+        if (signUpRes.data && signUpRes.data.user) {
+          if (signUpRes.data.session) {
+            setSession(signUpRes.data.session);
+            return { success: true, email: trimmedEmail, token: signUpRes.data.user.id };
+          } else {
+            return {
+              success: true,
+              needEmailConfirm: true,
+              email: trimmedEmail,
+              message: 'Konto erstellt! Bitte prüfe deine E-Mails zur Bestätigung oder melde dich an.'
+            };
+          }
+        }
+      } catch (err) {
+        console.warn('[FlowAuth] Supabase SignUp notice:', err);
+        return { success: false, error: err.message || getFriendlyNetworkErrorMessage() };
+      }
+    }
+
+    return { success: false, error: 'Registrierung derzeit nicht möglich. Bitte prüfe deine Internetverbindung.' };
   }
 
   function getFriendlyNetworkErrorMessage() {
     if (typeof window !== 'undefined' && window.location) {
       if (window.location.protocol === 'file:') {
-        return 'App über file:// geöffnet (PHP nicht ausführbar). Bitte über http://localhost/QuizProject/Flow-Organiser/ öffnen.';
-      }
-      if (window.location.hostname.includes('github.io')) {
-        return 'GitHub Pages führt kein PHP aus (api-sync.php). Trage Supabase in config.js ein oder hoste mit PHP-Backend.';
+        return 'App über file:// geöffnet. Bitte über einen Webserver oder GitHub Pages öffnen.';
       }
     }
-    return 'Server nicht erreichbar. Bitte prüfe, ob Apache/PHP läuft oder die Internetverbindung aktiv ist.';
-  }
-
-  // ==========================================================================
-  // 2. TEMPORÄRER 6-STELLIGER KOPPLUNGSCODE (Gerät A generiert Code)
-  // ==========================================================================
-  async function createPairingCode() {
-    const token = getSyncToken();
-    if (!token) {
-      return { success: false, error: 'Bitte melde dich zuerst an.' };
-    }
-
-    try {
-      const res = await fetch(getApiUrl('create_pair_code'), {
-        method: 'GET',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      const json = await res.json();
-      if (!res.ok || !json.success) {
-        return { success: false, error: json.error || 'Code-Erstellung fehlgeschlagen.' };
-      }
-
-      return { success: true, code: json.code, expiresIn: json.expires_in_seconds };
-    } catch (e) {
-      return { success: false, error: getFriendlyNetworkErrorMessage() };
-    }
-  }
-
-  // ==========================================================================
-  // 3. 6-STELLIGEN KOPPLUNGSCODE EINLÖSEN (Gerät B gibt Code ein)
-  // ==========================================================================
-  async function confirmPairingCode(code) {
-    if (!code || !/^\d{6}$/.test(String(code).trim())) {
-      return { success: false, error: 'Bitte gib den 6-stelligen Zahlencode ein.' };
-    }
-
-    const cleanCode = String(code).trim();
-
-    try {
-      const res = await fetch(getApiUrl('confirm_pair_code'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: cleanCode })
-      });
-
-      const json = await res.json();
-      if (!res.ok || !json.success) {
-        return { success: false, error: json.error || 'Kopplungscode ungültig oder abgelaufen.' };
-      }
-
-      setDirectPairingToken(json.token, 'Gekoppeltes Gerät');
-      return { success: true, token: json.token };
-    } catch (e) {
-      return { success: false, error: getFriendlyNetworkErrorMessage() };
-    }
+    return 'Supabase nicht erreichbar. Bitte prüfe deine Internetverbindung.';
   }
 
   // Legacy Magic Link Unterstützung (falls Supabase konfiguriert ist)
@@ -325,6 +284,46 @@ const FlowAuth = (function() {
 
     // Fallback auf lokales Konto falls kein Supabase konfiguriert ist
     return await signInWithCredentials(trimmedEmail, 'flow_noodle_pass');
+  }
+
+  // Passwort-Reset anfordern (Supabase Auth)
+  async function requestPasswordReset(email) {
+    if (!email || !email.trim() || !email.includes('@')) {
+      return { success: false, error: 'Bitte gib eine gültige E-Mail-Adresse ein.' };
+    }
+
+    const trimmedEmail = email.trim().toLowerCase();
+
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      return { success: false, error: 'Keine Internetverbindung. Bitte später erneut versuchen.' };
+    }
+
+    const supaLib = getSupabaseLib();
+    if (!supabaseClient && supaLib) {
+      init();
+    }
+
+    if (supabaseClient) {
+      try {
+        let redirectUrl = 'https://cableblues.github.io/Flow-Organiser/';
+        if (typeof window !== 'undefined' && window.location && window.location.origin) {
+          redirectUrl = window.location.origin + window.location.pathname;
+        }
+
+        const { data, error } = await supabaseClient.auth.resetPasswordForEmail(trimmedEmail, {
+          redirectTo: redirectUrl
+        });
+
+        if (error) {
+          return { success: false, error: error.message || 'Fehler beim Anfordern des Links zum Zurücksetzen des Passworts.' };
+        }
+        return { success: true, data: data, message: 'Link zum Zurücksetzen des Passworts wurde per E-Mail versendet.' };
+      } catch (e) {
+        return { success: false, error: e.message || 'Verbindungsfehler beim Anfordern des Passwort-Resets.' };
+      }
+    }
+
+    return { success: false, error: 'Supabase-Dienst nicht verfügbar.' };
   }
 
   async function signOut() {
@@ -433,9 +432,9 @@ const FlowAuth = (function() {
   return {
     init,
     signInWithCredentials,
-    createPairingCode,
-    confirmPairingCode,
+    signUpWithCredentials,
     signInWithMagicLink,
+    requestPasswordReset,
     signOut,
     getUser,
     getSession,

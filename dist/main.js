@@ -18,6 +18,7 @@ import './auth-engine.js';
 import './storage.js';
 import './state.js';
 import './sync-engine.js';
+import './collab-engine.js';
 
 // 3. Utilities
 import './utils-data.js';
@@ -42,12 +43,10 @@ import './sport.js';
 import './helper-core-data.js';
 import './helper-core.js';
 import './helper-core-2.js';
-import './helper-tools-1.js';
-import './helper-tools-2.js';
-import './helper-tools-3.js';
 import './helper-clarity.js';
 import './helper-brainstorm.js';
 import './helper-cleaning.js';
+import './helper-learning.js';
 
 // 7. Domain Features & Haupt-App
 import './app-shopping.js';
@@ -56,7 +55,11 @@ import './app-alarm.js';
 import './app-tasks.js';
 import './app-reports.js';
 import './app-weather-news.js';
+import './app-radio-news.js';
 import './app-dice.js';
+import './app-command-palette.js';
+import './onboarding.js';
+import './app-feedback.js';
 import './app-core.js';
 
 console.log('⚡ [Noodle] Alle Module erfolgreich initialisiert.');

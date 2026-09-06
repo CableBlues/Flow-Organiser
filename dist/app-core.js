@@ -1,14 +1,31 @@
-// app-core.js: Kernlogik (Theme, Sprache, Icons, UI-Verhalten). Uebersetzungsdaten siehe data-custom-translations.js
+/**
+ * ============================================================================
+ * Noodle - App Core & Orchestrierung (app-core.js)
+ * ============================================================================
+ * Zentrale Steuerungseinheit der Benutzeroberfläche:
+ * - Globale Fehlerbehandlung (Error Boundaries)
+ * - Workspace-Verwaltung (Personal / Work Wechsel)
+ * - Theme- & Farb-Engine (12 Themes, sanfte Übergänge, Minimalist-Modus)
+ * - Mobile Navigation (5-Tab Leiste, Bottom-Sheets, Swipe-Gesten)
+ * - Fokus- & Zen-Modus Orchestrierung
+ * - Lokalisierung & dynamische UI-Übersetzungen
+ * ============================================================================
+ */
 
-// Global Error Boundary & Crash-Protection (Produktionsreife)
-window.addEventListener('error', (event) => {
-  console.warn('[Flow Global Error Boundary Guard]', event.error || event.message);
-});
-window.addEventListener('unhandledrejection', (event) => {
-  console.warn('[Flow Unhandled Promise Guard]', event.reason);
-});
+// Global Error Boundary & Crash-Protection
+if (typeof window !== 'undefined') {
+  window.addEventListener('error', (event) => {
+    console.warn('[Noodle Global Error Guard]', event.error || event.message);
+  });
+  window.addEventListener('unhandledrejection', (event) => {
+    console.warn('[Noodle Unhandled Promise Guard]', event.reason);
+  });
+}
 
-let currentZenTaskInfo = null; let lastSelectedSound = 'birds'; let draggedColumnId = null; let selectedCalendarDate = null; 
+let currentZenTaskInfo = null;
+let lastSelectedSound = 'birds';
+let draggedColumnId = null;
+let selectedCalendarDate = null; 
 
 const HOVER_COLOR_PAIRS = [
   { hoverIcon: 'group-hover/task:text-emerald-400', text: 'group-hover/task:text-emerald-300' },
@@ -217,7 +234,45 @@ document.addEventListener('keydown', (e) => {
     return;
   }
 
+  const pickModal = document.getElementById('helper-pick-modal');
+  const isPickModalOpen = pickModal && !pickModal.classList.contains('hidden');
   const key = e.key.toLowerCase();
+
+  if (isPickModalOpen) {
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      if (typeof currentWhatNowChosen !== 'undefined' && currentWhatNowChosen && currentWhatNowChosen.task) {
+        startZenWithTask(currentWhatNowChosen.task, currentWhatNowChosen.cat || 'todo');
+      }
+      return;
+    }
+    if (key === 'w' || key === 'r' || key === 'n') {
+      e.preventDefault();
+      if (typeof pickRandomTask === 'function') pickRandomTask();
+      return;
+    }
+    if (key === '1') {
+      e.preventDefault();
+      if (typeof setWhatNowEnergyLevel === 'function') setWhatNowEnergyLevel('low');
+      return;
+    }
+    if (key === '2') {
+      e.preventDefault();
+      if (typeof setWhatNowEnergyLevel === 'function') setWhatNowEnergyLevel('med');
+      return;
+    }
+    if (key === '3') {
+      e.preventDefault();
+      if (typeof setWhatNowEnergyLevel === 'function') setWhatNowEnergyLevel('high');
+      return;
+    }
+    if (key === '4') {
+      e.preventDefault();
+      if (typeof setWhatNowEnergyLevel === 'function') setWhatNowEnergyLevel('random');
+      return;
+    }
+  }
+
   switch(key) {
     case 'f':
       e.preventDefault();
@@ -261,13 +316,11 @@ document.addEventListener('keydown', (e) => {
       break;
     case 'i':
       e.preventDefault();
-      togglePanel('daily');
-      switchDailyTab('impulse');
+      togglePanel('inspiration');
       break;
     case 'o':
       e.preventDefault();
-      togglePanel('daily');
-      switchDailyTab('sport');
+      if (typeof openSportModal === 'function') openSportModal();
       break;
     case 'h':
       e.preventDefault();
@@ -276,10 +329,6 @@ document.addEventListener('keydown', (e) => {
     case 'a':
       e.preventDefault();
       toggleTerminForm(true);
-      break;
-    case 'g':
-      e.preventDefault();
-      if (typeof toggleGameMode === 'function') toggleGameMode();
       break;
   }
 });
@@ -310,7 +359,6 @@ function closeAllPanelsAndModals() {
   if (typeof closeImportModal === 'function') closeImportModal();
   if (typeof closeDiceModal === 'function') closeDiceModal();
   if (typeof closeRouletteModal === 'function') closeRouletteModal();
-  if (typeof closeGameModal === 'function') closeGameModal();
   if (typeof closeReportDashboard === 'function') closeReportDashboard();
   if (typeof closeSettingsModal === 'function') closeSettingsModal();
   if (typeof closeCommandPalette === 'function') closeCommandPalette();
@@ -336,7 +384,7 @@ function closeAllPanelsAndModals() {
     'modal-report-dashboard', 'modal-settings', 'modal-command-palette',
     'modal-keyboard-shortcuts', 'text-import-modal', 'report-export-modal',
     'mobile-menu-drawer', 'mobile-tools-sheet', 'modal-mobile-quick-menu',
-    'modal-custom-item', 'modal-dice', 'modal-roulette', 'modal-game', 'modal-archive'
+    'modal-custom-item', 'modal-dice', 'modal-roulette', 'modal-archive'
   ];
   modalIds.forEach(id => {
     const el = document.getElementById(id);
@@ -898,7 +946,7 @@ function renderHistoryGallery() {
           <span class="truncate font-semibold text-white block">${escapeHtml(shot.title)}</span>
           <span class="text-[9px] text-gray-500 font-mono">${escapeHtml(shot.date || '')}</span>
         </div>
-        <button onclick="deleteHistoryScreenshot('${escapeHtml(shot.id)}')" class="p-1 rounded-lg bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-300 transition cursor-pointer shrink-0" title="Screenshot löschen">
+        <button onclick="deleteHistoryScreenshot('${escapeHtml(shot.id)}')" aria-label="Screenshot löschen" class="p-1 rounded-lg bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-300 transition cursor-pointer shrink-0" title="Screenshot löschen">
           <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
         </button>
       </div>
@@ -943,13 +991,21 @@ function saveGeneralSetting(key, val) {
   }
 }
 
-function clearAllApplicationData() {
+async function clearAllApplicationData() {
   const msg = typeof tr === 'function' ? tr({
     de: 'Möchtest du wirklich alle lokalen Daten unwiderruflich löschen und die App zurücksetzen?',
     en: 'Are you sure you want to completely erase all local data and reset the app?'
   }) : 'Möchtest du wirklich alle lokalen Daten unwiderruflich löschen und die App zurücksetzen?';
 
-  if (confirm(msg)) {
+  const confirmed = typeof showConfirmDialog === 'function' ? await showConfirmDialog({
+    title: typeof tr === 'function' ? tr({ de: 'App zurücksetzen?', en: 'Reset App?' }) : 'App zurücksetzen?',
+    message: msg,
+    confirmText: typeof tr === 'function' ? tr({ de: 'Alles löschen', en: 'Erase all' }) : 'Alles löschen',
+    isDanger: true,
+    icon: 'trash-2'
+  }) : confirm(msg);
+
+  if (confirmed) {
     try {
       localStorage.clear();
       sessionStorage.clear();
@@ -960,6 +1016,7 @@ function clearAllApplicationData() {
     }
   }
 }
+window.clearAllApplicationData = clearAllApplicationData;
 
 document.addEventListener('DOMContentLoaded', () => {
   setTheme(currentTheme); setLanguage(currentLang);
@@ -986,11 +1043,10 @@ document.addEventListener('DOMContentLoaded', () => {
 // Gruppiert alle Farbschemata nach visueller Verwandtschaft, damit der automatische
 // Gruppiert alle Farbschemata nach visueller Verwandtschaft
 const THEME_FAMILIES = {
+  'green-nature': ['botanical', 'sage', 'matrix', 'matcha'],
   'cozy-warm': ['latte', 'sunset', 'candlelight', 'honey', 'terracotta'],
   'purple-dreams': ['aurora', 'cyberpunk', 'peach', 'royal', 'nebula'],
-  'green-nature': ['sage', 'matrix', 'matcha'],
-  'cool-icy': ['ocean', 'obsidian', 'daylight'],
-  'light-day': ['daylight', 'paper']
+  'cool-icy': ['ocean', 'obsidian', 'crimson']
 };
 
 function getThemeFamily(theme) {
@@ -1010,13 +1066,18 @@ function getSimilarTheme(current) {
 }
 
 const ALL_VALID_THEMES = [
-  'aurora', 'cyberpunk', 'matrix', 'ocean', 'honey', 'crimson',
-  'obsidian', 'nebula', 'peach', 'sage', 'terracotta', 'royal',
-  'latte', 'sunset', 'matcha', 'candlelight', 'daylight', 'paper'
+  'botanical', 'aurora', 'obsidian', 'ocean', 'sage', 'latte',
+  'sunset', 'peach', 'crimson', 'honey', 'cyberpunk', 'matrix',
+  'terracotta', 'royal', 'nebula', 'candlelight', 'matcha'
 ];
 
 const THEME_ALIASES = {
-  'default': 'aurora',
+  'default': 'botanical',
+  'botanic': 'botanical',
+  'eco': 'botanical',
+  'nature': 'botanical',
+  'journal': 'botanical',
+  'handcrafted': 'botanical',
   'neon-cyber': 'cyberpunk',
   'synthwave': 'cyberpunk',
   'aurora-violet': 'aurora',
@@ -1052,14 +1113,15 @@ const THEME_ALIASES = {
   'cozy-candlelight': 'candlelight',
   'candlelight': 'candlelight',
   'fireplace': 'candlelight',
-  'paper': 'daylight',
-  'white': 'daylight',
-  'light': 'daylight'
+  'paper': 'botanical',
+  'white': 'botanical',
+  'light': 'botanical',
+  'daylight': 'botanical'
 };
 
 function setTheme(theme) {
   if (THEME_ALIASES[theme]) theme = THEME_ALIASES[theme];
-  if (!ALL_VALID_THEMES.includes(theme)) theme = 'aurora';
+  if (!ALL_VALID_THEMES.includes(theme)) theme = 'botanical';
   if (typeof window !== 'undefined') window.currentTheme = theme;
   if (typeof globalThis !== 'undefined') globalThis.currentTheme = theme;
   try { currentTheme = theme; } catch(e) {}
@@ -1083,6 +1145,27 @@ function setTheme(theme) {
   }
 }
 
+function toggleExtraThemesAccordion(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  const container = document.getElementById('container-extra-themes');
+  const icon = document.getElementById('icon-extra-themes-arrow');
+  if (container) {
+    const isHidden = container.classList.contains('hidden');
+    if (isHidden) {
+      container.classList.remove('hidden');
+      container.classList.add('grid');
+      if (icon) icon.classList.add('rotate-180', 'text-purple-400');
+    } else {
+      container.classList.add('hidden');
+      container.classList.remove('grid');
+      if (icon) icon.classList.remove('rotate-180', 'text-purple-400');
+    }
+  }
+}
+
 // Sanfter, langsamer Farbwechsel (z.B. nach dem Erledigen einer Aufgabe): aktiviert kurzzeitig
 // eine deutlich langsamere Übergangsdauer für den gesamten Seitenbaum und wechselt dann das Theme.
 function setThemeSlow(theme) {
@@ -1098,9 +1181,6 @@ function setLanguage(lang) {
   if (!lang || !TRANSLATIONS[lang] || !DEFAULT_TASKS_BY_LANG[lang]) { lang = 'en'; }
   const oldLang = currentLang; currentLang = lang; localStorage.setItem('flowPlannerLanguage', lang);
   document.documentElement.lang = lang; translateUserTasks(oldLang, lang);
-  const flagMap = { de: '🇩🇪', en: '🇬🇧', es: '🇪🇸', el: '🇬🇷', fr: '🇫🇷', it: '🇮🇹' };
-  const flagEl = document.getElementById('current-lang-flag') || document.getElementById('active-lang-flag');
-  if (flagEl) flagEl.innerText = flagMap[lang] || '🇬🇧';
   translateUI(); const textEl = document.getElementById('minimal-mode-btn-text');
   if (textEl) { textEl.innerText = isMinimalist ? t('standard_mode') : t('minimal_mode'); }
   updateDateAndStreak(); if (typeof renderApp === 'function') renderApp(); updateZenView(); populateHelperTaskSelect();
@@ -1425,7 +1505,9 @@ function downloadFullBackup() {
     }
   } catch (e) {
     console.error('Backup download error:', e);
-    alert('Fehler beim Erstellen des Backups: ' + e.message);
+    if (typeof showToast === 'function') {
+      showToast('Fehler beim Erstellen des Backups: ' + e.message);
+    }
   }
 }
 window.downloadFullBackup = downloadFullBackup;
@@ -1435,14 +1517,27 @@ function handleRestoreBackupFile(event) {
   if (!file) return;
 
   const reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onload = async function(e) {
     try {
       const data = JSON.parse(e.target.result);
       if (!data || (!data.items && !data.daily && !Array.isArray(data))) {
         throw new Error('Ungültiges Noodle / Flow Backup-Format');
       }
 
-      if (confirm('Möchtest du dieses Backup wirklich wiederherstellen? Bestehende Daten werden aktualisiert.')) {
+      const msg = typeof tr === 'function' ? tr({
+        de: 'Möchtest du dieses Backup wirklich wiederherstellen? Bestehende Daten werden aktualisiert.',
+        en: 'Do you really want to restore this backup? Existing data will be updated.'
+      }) : 'Möchtest du dieses Backup wirklich wiederherstellen? Bestehende Daten werden aktualisiert.';
+
+      const confirmed = typeof showConfirmDialog === 'function' ? await showConfirmDialog({
+        title: typeof tr === 'function' ? tr({ de: 'Backup wiederherstellen?', en: 'Restore Backup?' }) : 'Backup wiederherstellen?',
+        message: msg,
+        confirmText: typeof tr === 'function' ? tr({ de: 'Wiederherstellen', en: 'Restore' }) : 'Wiederherstellen',
+        isDanger: false,
+        icon: 'rotate-ccw'
+      }) : confirm(msg);
+
+      if (confirmed) {
         if (data.items) {
           items = data.items;
           localStorage.setItem('flow_items_v2', JSON.stringify(items));
@@ -1464,13 +1559,38 @@ function handleRestoreBackupFile(event) {
         }
       }
     } catch (err) {
-      alert('Fehler beim Wiederherstellen: ' + err.message);
+      if (typeof showToast === 'function') {
+        showToast('Fehler beim Wiederherstellen: ' + err.message);
+      }
     }
   };
   reader.readAsText(file);
   event.target.value = '';
 }
 window.handleRestoreBackupFile = handleRestoreBackupFile;
+
+function exportData() {
+  if (typeof downloadFullBackup === 'function') {
+    downloadFullBackup();
+  }
+}
+window.exportData = exportData;
+
+function importData() {
+  const fileInput = document.getElementById('backup-restore-file-input');
+  if (fileInput) {
+    fileInput.click();
+  } else {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = (e) => {
+      if (typeof handleRestoreBackupFile === 'function') handleRestoreBackupFile(e);
+    };
+    input.click();
+  }
+}
+window.importData = importData;
 
 // ===== PWA INSTALLATION ENGINE =====
 window.deferredPwaPrompt = null;
@@ -1689,23 +1809,11 @@ function initAmbientFlowCanvas() {
 // ============================================================================
 
 function switchMobileNavTab(tabName) {
-  if (tabName === 'game') {
-    if (typeof toggleGameMode === 'function') {
-      toggleGameMode();
-    }
-    return;
-  }
-
-  // Falls das 3D-Game aktiv war, schließen
-  if (typeof gameActive !== 'undefined' && gameActive) {
-    if (typeof toggleGameMode === 'function') toggleGameMode();
-  }
-
   document.body.dataset.mobileNav = tabName;
   localStorage.setItem('flow_active_mobile_tab', tabName);
 
   // Update Nav-Bar Buttons
-  const navTabs = ['planer', 'focus', 'audio', 'tools', 'game'];
+  const navTabs = ['planer', 'focus', 'audio', 'tools'];
   navTabs.forEach(t => {
     const btn = document.getElementById(`mob-nav-${t}`);
     if (btn) {
@@ -1729,47 +1837,213 @@ function switchMobileNavTab(tabName) {
 }
 window.switchMobileNavTab = switchMobileNavTab;
 
+let selectedMobileQuickAddCat = 'daily';
+let selectedMobileQuickAddPrio = 'normal';
+let mobileSpeechRecognition = null;
+
 function openMobileQuickAddModal() {
-  const activeCat = document.body.dataset.mobileCat || 'daily';
+  const modal = document.getElementById('modal-mobile-quick-add');
+  if (!modal) return;
   
-  // Prüfe, ob das Desktop-Input-Feld existiert, und fokussiere es
-  const inputEl = document.querySelector(`main article[data-category="${activeCat}"] input[type="text"]`);
-  if (inputEl) {
-    inputEl.focus();
-    inputEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    return;
-  }
-
-  // Fallback: Eleganter nativer Dialog
-  const taskText = prompt(tr({
-    en: 'Add new task:',
-    de: 'Neue Aufgabe eingeben:',
-    fr: 'Ajouter une nouvelle tâche :',
-    it: 'Aggiungi nuova attività:',
-    es: 'Añadir nueva tarea:',
-    el: 'Προσθήκη νέας εργασίας:'
-  }));
-
-  if (taskText && taskText.trim()) {
-    if (typeof addTaskDirectly === 'function') {
-      addTaskDirectly(activeCat, taskText.trim());
-    } else if (typeof state !== 'undefined' && state.items) {
-      if (!state.items[activeCat]) state.items[activeCat] = [];
-      state.items[activeCat].unshift({ task: taskText.trim(), done: false, date: new Date().toISOString() });
-      if (typeof saveState === 'function') saveState();
-      if (typeof renderBoard === 'function') renderBoard();
-    }
+  selectedMobileQuickAddCat = document.body.dataset.mobileCat || 'daily';
+  selectedMobileQuickAddPrio = 'normal';
+  
+  const textarea = document.getElementById('mobile-quick-add-input');
+  if (textarea) textarea.value = '';
+  
+  renderMobileQuickAddChips();
+  selectMobilePriority('normal');
+  
+  modal.classList.remove('hidden');
+  if (textarea) {
+    setTimeout(() => textarea.focus(), 100);
   }
 }
-window.openMobileQuickAddModal = openMobileQuickAddModal;
 
-// Auto-Wiederherstellung des letzten mobilen Tabs beim Start
+function closeMobileQuickAddModal() {
+  const modal = document.getElementById('modal-mobile-quick-add');
+  if (modal) modal.classList.add('hidden');
+  if (mobileSpeechRecognition) {
+    try { mobileSpeechRecognition.stop(); } catch(e){}
+    mobileSpeechRecognition = null;
+  }
+}
+
+function renderMobileQuickAddChips() {
+  const container = document.getElementById('mobile-quick-add-cat-chips');
+  const label = document.getElementById('mobile-quick-add-cat-label');
+  if (!container) return;
+  
+  const isWork = state && state.activeWorkspace === 'work';
+  const activeOrder = isWork ? (workCategoriesOrder || WORK_CATEGORIES_ORDER) : categoriesOrder;
+  
+  if (label) {
+    const found = activeOrder.find(([id]) => id === selectedMobileQuickAddCat);
+    label.textContent = found ? (found[2] || t(found[0])) : t(selectedMobileQuickAddCat);
+  }
+  
+  container.innerHTML = activeOrder.map(([id, iconKey, customTitle]) => {
+    const isSel = id === selectedMobileQuickAddCat;
+    const title = customTitle || t(id);
+    return `
+      <button type="button" onclick="selectMobileQuickAddCategory('${id}')" class="px-3 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+        isSel 
+          ? 'bg-purple-600 text-white border border-purple-400 shadow-sm scale-105' 
+          : 'bg-white/5 hover:bg-white/10 text-gray-300 border border-white/10'
+      }">
+        <i data-lucide="${iconKey}" class="w-3.5 h-3.5"></i>
+        <span>${title}</span>
+      </button>
+    `;
+  }).join('');
+  
+  if (typeof renderLucideIcons === 'function') renderLucideIcons();
+  else if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
+}
+
+function selectMobileQuickAddCategory(catId) {
+  selectedMobileQuickAddCat = catId;
+  renderMobileQuickAddChips();
+}
+
+function selectMobilePriority(prio) {
+  selectedMobileQuickAddPrio = prio;
+  ['high', 'medium', 'normal'].forEach(p => {
+    const btn = document.getElementById(`mob-prio-${p}`);
+    if (btn) {
+      if (p === prio) {
+        if (p === 'high') btn.className = 'mob-prio-btn py-2 px-2.5 rounded-xl border border-rose-400 bg-rose-500/30 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-md scale-105';
+        else if (p === 'medium') btn.className = 'mob-prio-btn py-2 px-2.5 rounded-xl border border-amber-400 bg-amber-500/30 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-md scale-105';
+        else btn.className = 'mob-prio-btn py-2 px-2.5 rounded-xl border border-purple-400 bg-purple-500/30 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-md scale-105';
+      } else {
+        btn.className = `mob-prio-btn py-2 px-2.5 rounded-xl border border-white/10 bg-white/5 text-gray-400 text-xs font-bold transition flex items-center justify-center gap-1.5 opacity-60`;
+      }
+    }
+  });
+}
+
+function toggleMobileVoiceInput() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    if (typeof showToast === 'function') showToast(tr({ de: 'Spracheingabe im Browser nicht verfügbar.', en: 'Voice input not available in this browser.' }));
+    return;
+  }
+  
+  const micBtn = document.getElementById('mobile-mic-voice-btn');
+  if (mobileSpeechRecognition) {
+    try { mobileSpeechRecognition.stop(); } catch(e){}
+    mobileSpeechRecognition = null;
+    if (micBtn) micBtn.classList.remove('bg-rose-500', 'text-white', 'animate-pulse');
+    return;
+  }
+  
+  mobileSpeechRecognition = new SpeechRecognition();
+  mobileSpeechRecognition.continuous = false;
+  mobileSpeechRecognition.interimResults = false;
+  mobileSpeechRecognition.lang = typeof currentLang !== 'undefined' ? (currentLang === 'de' ? 'de-DE' : currentLang === 'fr' ? 'fr-FR' : currentLang === 'el' ? 'el-GR' : 'en-US') : 'de-DE';
+  
+  if (micBtn) micBtn.classList.add('bg-rose-500', 'text-white', 'animate-pulse');
+  
+  mobileSpeechRecognition.onresult = (e) => {
+    const transcript = e.results[0][0].transcript;
+    const textarea = document.getElementById('mobile-quick-add-input');
+    if (textarea) {
+      textarea.value = (textarea.value ? textarea.value + ' ' : '') + transcript;
+    }
+  };
+  
+  mobileSpeechRecognition.onend = () => {
+    mobileSpeechRecognition = null;
+    if (micBtn) micBtn.classList.remove('bg-rose-500', 'text-white', 'animate-pulse');
+  };
+  
+  mobileSpeechRecognition.onerror = () => {
+    mobileSpeechRecognition = null;
+    if (micBtn) micBtn.classList.remove('bg-rose-500', 'text-white', 'animate-pulse');
+  };
+  
+  mobileSpeechRecognition.start();
+}
+
+function submitMobileQuickAdd() {
+  const textarea = document.getElementById('mobile-quick-add-input');
+  if (!textarea) return;
+  const text = textarea.value.trim();
+  if (!text) {
+    if (typeof showToast === 'function') showToast(tr({ de: 'Bitte gib einen Aufgabentext ein.', en: 'Please enter a task description.' }));
+    return;
+  }
+  
+  const cat = selectedMobileQuickAddCat || 'daily';
+  let formattedText = text;
+  if (selectedMobileQuickAddPrio === 'high') formattedText = '🔥 ' + formattedText;
+  else if (selectedMobileQuickAddPrio === 'medium') formattedText = '⚡ ' + formattedText;
+  
+  if (typeof addTaskDirectly === 'function') {
+    addTaskDirectly(cat, formattedText);
+  } else {
+    const curItems = getCurrentWorkspaceItems();
+    if (!curItems[cat]) curItems[cat] = [];
+    curItems[cat].unshift({ task: formattedText, done: false, date: new Date().toISOString() });
+    if (typeof saveState === 'function') saveState();
+    if (typeof renderBoard === 'function') renderBoard();
+  }
+  
+  closeMobileQuickAddModal();
+  setMobileCategory(cat);
+  if (typeof showToast === 'function') {
+    showToast(tr({ de: `✨ Aufgabe zu "${t(cat)}" hinzugefügt!`, en: `✨ Task added to "${t(cat)}"!` }));
+  }
+}
+
+// Swipe Gesture Controller for Mobile Column Switching
+function initMobileSwipeGestures() {
+  if (typeof window === 'undefined') return;
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchEndX = 0;
+  let touchEndY = 0;
+  
+  document.addEventListener('touchstart', (e) => {
+    if (window.innerWidth > 768) return;
+    if (document.body.dataset.mobileNav && document.body.dataset.mobileNav !== 'planer') return;
+    if (e.target.closest('#modal-mobile-quick-add, #modal-mobile-quick-menu, .mobile-category-tabs, input[type="range"], .modal-card, [data-no-swipe]')) return;
+    
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+  }, { passive: true });
+  
+  document.addEventListener('touchend', (e) => {
+    if (window.innerWidth > 768) return;
+    if (document.body.dataset.mobileNav && document.body.dataset.mobileNav !== 'planer') return;
+    if (e.target.closest('#modal-mobile-quick-add, #modal-mobile-quick-menu, .mobile-category-tabs, input[type="range"], .modal-card, [data-no-swipe]')) return;
+    
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    
+    const diffX = touchEndX - touchStartX;
+    const diffY = touchEndY - touchStartY;
+    
+    if (Math.abs(diffX) > 55 && Math.abs(diffX) > Math.abs(diffY) * 1.4) {
+      if (typeof stepMobileCategory === 'function') {
+        if (diffX < 0) {
+          stepMobileCategory(1);
+        } else {
+          stepMobileCategory(-1);
+        }
+      }
+    }
+  }, { passive: true });
+}
+
+// Auto-Wiederherstellung des letzten mobilen Tabs beim Start & Swipe-Init
 if (typeof document !== 'undefined') {
   document.addEventListener('DOMContentLoaded', () => {
     if (window.innerWidth <= 768) {
       const savedTab = localStorage.getItem('flow_active_mobile_tab') || 'planer';
       switchMobileNavTab(savedTab);
     }
+    initMobileSwipeGestures();
   });
 }
 
@@ -1784,6 +2058,12 @@ if (typeof window !== 'undefined') {
   window.closeCommandPalette = closeCommandPalette;
   window.switchMobileNavTab = switchMobileNavTab;
   window.openMobileQuickAddModal = openMobileQuickAddModal;
+  window.closeMobileQuickAddModal = closeMobileQuickAddModal;
+  window.selectMobileQuickAddCategory = selectMobileQuickAddCategory;
+  window.selectMobilePriority = selectMobilePriority;
+  window.toggleMobileVoiceInput = toggleMobileVoiceInput;
+  window.submitMobileQuickAdd = submitMobileQuickAdd;
+  window.toggleExtraThemesAccordion = toggleExtraThemesAccordion;
 }
 if (typeof globalThis !== 'undefined') {
   globalThis.setTheme = setTheme;
@@ -1796,5 +2076,11 @@ if (typeof globalThis !== 'undefined') {
   globalThis.closeCommandPalette = closeCommandPalette;
   globalThis.switchMobileNavTab = switchMobileNavTab;
   globalThis.openMobileQuickAddModal = openMobileQuickAddModal;
+  globalThis.closeMobileQuickAddModal = closeMobileQuickAddModal;
+  globalThis.selectMobileQuickAddCategory = selectMobileQuickAddCategory;
+  globalThis.selectMobilePriority = selectMobilePriority;
+  globalThis.toggleMobileVoiceInput = toggleMobileVoiceInput;
+  globalThis.submitMobileQuickAdd = submitMobileQuickAdd;
+  globalThis.toggleExtraThemesAccordion = toggleExtraThemesAccordion;
 }
 

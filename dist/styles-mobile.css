@@ -6,7 +6,6 @@
 
 /* Auf Desktop standardmäßig ausblenden */
 #mobile-bottom-nav,
-#mobile-fab-add,
 .mobile-view-pane,
 .mobile-category-tabs,
 .mobile-only {
@@ -48,16 +47,16 @@
     overflow-x: hidden !important;
   }
 
-  /* ---------------- 2. ULTRA-SCHLANKER MOBILER HEADER (46px) ---------------- */
+  /* ---------------- 2. ULTRA-SCHLANKER MOBILER HEADER (40px, -12%) ---------------- */
   header {
     flex-wrap: nowrap !important;
-    height: 46px !important;
-    min-height: 46px !important;
-    padding: 4px 10px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 2px 8px !important;
     margin-bottom: 8px !important;
     justify-content: space-between !important;
     align-items: center !important;
-    border-radius: 18px !important;
+    border-radius: 16px !important;
     background: rgba(18, 18, 28, 0.96) !important;
     backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
@@ -133,39 +132,14 @@
     box-shadow: 0 0 10px var(--accent-border, rgba(168, 85, 247, 0.8)) !important;
   }
 
-  /* ---------------- 4. FLOATING ACTION BUTTON (FAB: + NEUE AUFGABE) ---------------- */
-  #mobile-fab-add {
-    display: flex !important;
-    position: fixed !important;
-    bottom: calc(70px + env(safe-area-inset-bottom)) !important;
-    right: 18px !important;
-    width: 52px !important;
-    height: 52px !important;
-    border-radius: 9999px !important;
-    background: linear-gradient(135deg, var(--accent, #a855f7), #ec4899) !important;
-    color: #ffffff !important;
-    align-items: center !important;
-    justify-content: center !important;
-    box-shadow: 0 10px 25px rgba(168, 85, 247, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.25) !important;
-    z-index: 99980 !important;
-    cursor: pointer !important;
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s !important;
-  }
-
-  #mobile-fab-add:active {
-    transform: scale(0.9) !important;
-    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4) !important;
-  }
-
-  /* ---------------- 5. VIEW-SWITCHING LOGIK (5 HAUPT-PANELS) ---------------- */
+  /* ---------------- 4. VIEW-SWITCHING LOGIK (HAUPT-PANELS) ---------------- */
   body:not([data-mobile-nav]) main,
   body[data-mobile-nav="planer"] main {
     display: flex !important;
   }
 
   body[data-mobile-nav]:not([data-mobile-nav="planer"]) main,
-  body[data-mobile-nav]:not([data-mobile-nav="planer"]) .mobile-category-tabs,
-  body[data-mobile-nav]:not([data-mobile-nav="planer"]) #mobile-fab-add {
+  body[data-mobile-nav]:not([data-mobile-nav="planer"]) .mobile-category-tabs {
     display: none !important;
   }
 
@@ -270,10 +244,6 @@
     display: none !important;
   }
 
-  #game-mode-toggle-wrapper {
-    display: none !important;
-  }
-
   /* ---------------- 7. NATIVE BOTTOM-SHEETS FÜR MODALS ---------------- */
   .mobile-modal-card {
     width: calc(100vw - 16px) !important;
@@ -292,6 +262,26 @@
     padding: 8px !important;
     font-size: 1.25rem !important;
   }
+
+  /* Quick Add Bottom Sheet & Micro-interactions */
+  .mob-prio-btn {
+    user-select: none;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .mob-prio-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* Horizontal swipe chip scrollbar styling */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 /* ==========================================================================
@@ -304,12 +294,12 @@
     overflow-x: hidden !important;
   }
 
-  /* Header spacing for tablets */
+  /* Header spacing for tablets (-12%) */
   header {
-    height: 52px !important;
-    min-height: 52px !important;
-    padding: 6px 14px !important;
-    margin-bottom: 12px !important;
+    height: 46px !important;
+    min-height: 46px !important;
+    padding: 4px 12px !important;
+    margin-bottom: 10px !important;
     gap: 8px !important;
   }
 
@@ -334,22 +324,6 @@
     border-radius: 20px !important;
   }
 
-  /* Mac Dock positioning & touch ergonomics */
-  .mac-floating-wrapper {
-    display: flex !important;
-    bottom: 12px !important;
-  }
-
-  .mac-dock-container {
-    padding: 6px 12px !important;
-    gap: 6px !important;
-  }
-
-  .mac-dock-item-wrapper {
-    width: 58px !important;
-    height: 58px !important;
-  }
-
   /* Modals on Tablet */
   .mobile-modal-card {
     max-width: 580px !important;
@@ -358,3 +332,33 @@
     border-radius: 24px !important;
   }
 }
+
+/* ==========================================================================
+   9. TOUCH ERGONOMIE, SCHRIFTGRÖSSEN & KONTRAST-OPTIMIERUNG (NUR MOBIL / TOUCH)
+   ========================================================================== */
+
+/* 1. Hover-only Buttons auf Touch-Geräten & Mobile dauerhaft sichtbar/klickbar */
+@media (hover: none), (max-width: 767px) {
+  .group-hover\:opacity-100,
+  .group-hover\:pointer-events-auto {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+}
+
+/* 2. Schriftgrößen unter 10px anheben & 5. Kontrast von Sekundärtext nur mobil */
+@media (max-width: 767px) {
+  .text-\[8px\],
+  .text-\[9px\] {
+    font-size: 10px !important;
+  }
+
+  .text-gray-500:not(.text-muted-intentional) {
+    color: #9ca3af !important; /* entspricht text-gray-400 für >4.5:1 Kontrast */
+  }
+
+  .text-gray-600:not(.text-muted-intentional) {
+    color: #9ca3af !important;
+  }
+}
+

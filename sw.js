@@ -1,4 +1,4 @@
-const CACHE_NAME = 'noodle-cache-v146';
+const CACHE_NAME = 'noodle-cache-v157';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -32,11 +32,13 @@ const ASSETS_TO_CACHE = [
   './vendor/lucide.min.js',
   './vendor/supabase.min.js',
   './vendor/qrcode.min.js',
+  './vendor/html2canvas.min.js',
   './config.js',
   './auth-engine.js',
   './storage.js',
   './state.js',
   './sync-engine.js',
+  './collab-engine.js',
   './data-translations-1.js',
   './data-translations-2.js',
   './data-translations.js',
@@ -49,12 +51,10 @@ const ASSETS_TO_CACHE = [
   './helper-core-data.js',
   './helper-core.js',
   './helper-core-2.js',
-  './helper-tools-1.js',
-  './helper-tools-2.js',
-  './helper-tools-3.js',
   './helper-clarity.js',
   './helper-brainstorm.js',
   './helper-cleaning.js',
+  './helper-learning.js',
   './sport.js',
   './app-core.js',
   './app-tasks.js',
@@ -63,6 +63,7 @@ const ASSETS_TO_CACHE = [
   './app-reports.js',
   './app-alarm.js',
   './app-weather-news.js',
+  './app-radio-news.js',
   './app-dice.js',
   './audio-core.js',
   './audio-generators.js',
@@ -75,8 +76,17 @@ const ASSETS_TO_CACHE = [
   './timer-3.js',
   './utils.js',
   './utils-2.js',
-  './utils-data.js'
+  './utils-data.js',
+  './app-command-palette.js',
+  './onboarding.js',
+  './app-feedback.js'
 ];
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.action === 'skipWaiting') {
+    self.skipWaiting();
+  }
+});
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

@@ -11,131 +11,129 @@ import '../storage.js';
 import '../state.js';
 import '../sync-engine.js';
 
-describe('Vollständige & Zuverlässige Synchronisation (Multi-Device & Offline)', () => {
-  let serverDatabase = {};
-  let pairCodes = {};
+function createMockSupabase() {
+  const users = new Map(); // email -> { id, email, password }
+  const tableData = new Map(); // user_id -> { user_id, data, updated_at }
+  let currentSession = null;
+
+  const auth = {
+    async signInWithPassword({ email, password }) {
+      const user = users.get(email);
+      if (!user || user.password !== password) {
+        return { data: { user: null, session: null }, error: { message: 'Invalid login credentials' } };
+      }
+      currentSession = { user, access_token: `token_${user.id}` };
+      return { data: { user, session: currentSession }, error: null };
+    },
+    async signUp({ email, password }) {
+      if (users.has(email)) {
+        return { data: { user: null, session: null }, error: { message: 'User already registered' } };
+      }
+      const user = { id: `uid_${email.replace(/[^a-zA-Z0-9]/g, '_')}`, email, password };
+      users.set(email, user);
+      currentSession = { user, access_token: `token_${user.id}` };
+      return { data: { user, session: currentSession }, error: null };
+    },
+    async signOut() {
+      currentSession = null;
+      return { error: null };
+    },
+    async resetPasswordForEmail(email, options = {}) {
+      if (!email || !email.includes('@')) {
+        return { data: null, error: { message: 'Invalid email' } };
+      }
+      return { data: { email, redirectTo: options.redirectTo }, error: null };
+    },
+    async getSession() {
+      return { data: { session: currentSession }, error: null };
+    },
+    onAuthStateChange() {
+      return { data: { subscription: { unsubscribe: () => {} } } };
+    }
+  };
+
+  const from = (table) => {
+    if (table === 'flow_sync') {
+      return {
+        select(fields) {
+          return {
+            eq(col, val) {
+              return {
+                async maybeSingle() {
+                  const row = tableData.get(val);
+                  return { data: row || null, error: null };
+                }
+              };
+            }
+          };
+        },
+        async upsert(record, options = {}) {
+          tableData.set(record.user_id, {
+            user_id: record.user_id,
+            data: record.data,
+            updated_at: record.updated_at || new Date().toISOString()
+          });
+          return { data: record, error: null };
+        }
+      };
+    }
+    throw new Error(`Unknown table: ${table}`);
+  };
+
+  return {
+    auth,
+    from,
+    _tableData: tableData,
+    _users: users
+  };
+}
+
+describe('Vollständige & Zuverlässige Synchronisation (Supabase-only & Offline)', () => {
+  let mockSupabase;
 
   beforeEach(async () => {
     localStorage.clear();
+    mockSupabase = createMockSupabase();
+    FlowAuth._setSupabaseClientForTesting(mockSupabase);
     await FlowAuth.signOut();
-    serverDatabase = {};
-    pairCodes = {};
     vi.restoreAllMocks();
-
-    globalThis.fetch = vi.fn(async (url, options = {}) => {
-      const parsedUrl = new URL(url, 'http://localhost/Flow-Organiser/');
-      const action = parsedUrl.searchParams.get('action');
-      const authHeader = options.headers?.['Authorization'] || '';
-      const token = authHeader.replace(/^Bearer\s+/i, '');
-
-      // 1. Auth: Login & Register
-      if (action === 'auth_login' || action === 'auth') {
-        const body = JSON.parse(options.body || '{}');
-        const email = body.email;
-        const password = body.password;
-        if (!email || !email.includes('@')) {
-          return { ok: false, status: 400, json: async () => ({ success: false, error: 'Ungültige E-Mail' }) };
-        }
-        const userToken = `token_for_${email.replace(/[^a-zA-Z0-9]/g, '_')}`;
-        return {
-          ok: true,
-          status: 200,
-          json: async () => ({ success: true, email, token: userToken })
-        };
-      }
-
-      // 2. Create Pair Code
-      if (action === 'create_pair_code') {
-        if (!token) return { ok: false, status: 401, json: async () => ({ success: false, error: 'Unauthorized' }) };
-        const code = '849201';
-        pairCodes[code] = { token, expiresAt: Date.now() + 600000 };
-        return {
-          ok: true,
-          status: 200,
-          json: async () => ({ success: true, code, expires_in_seconds: 600 })
-        };
-      }
-
-      // 3. Confirm Pair Code
-      if (action === 'confirm_pair_code') {
-        const body = JSON.parse(options.body || '{}');
-        const code = body.code;
-        if (pairCodes[code]) {
-          const t = pairCodes[code].token;
-          delete pairCodes[code];
-          return {
-            ok: true,
-            status: 200,
-            json: async () => ({ success: true, token: t })
-          };
-        }
-        return { ok: false, status: 404, json: async () => ({ success: false, error: 'Code ungültig' }) };
-      }
-
-      // 4. Push State
-      if (action === 'push') {
-        if (!token) return { ok: false, status: 401, json: async () => ({ success: false, error: 'Unauthorized' }) };
-        const body = JSON.parse(options.body || '{}');
-        serverDatabase[token] = {
-          data: body.data,
-          updated_at: new Date().toISOString()
-        };
-        return {
-          ok: true,
-          status: 200,
-          json: async () => ({ success: true, time: serverDatabase[token].updated_at })
-        };
-      }
-
-      // 5. Pull State
-      if (action === 'pull') {
-        if (!token) return { ok: false, status: 401, json: async () => ({ success: false, error: 'Unauthorized' }) };
-        if (!serverDatabase[token]) {
-          return { ok: false, status: 404, json: async () => ({ success: false, error: 'No state' }) };
-        }
-        return {
-          ok: true,
-          status: 200,
-          json: async () => ({
-            success: true,
-            data: serverDatabase[token].data,
-            updated_at: serverDatabase[token].updated_at
-          })
-        };
-      }
-
-      return { ok: false, status: 400, json: async () => ({ success: false, error: 'Unknown action' }) };
-    });
   });
 
-  describe('1. Authentifizierung & 6-stellige Gerätekopplung', () => {
-    it('erlaubt unkomplizierte Anmeldung mit E-Mail und Passwort', async () => {
-      const res = await FlowAuth.signInWithCredentials('max@mustermann.de', 'meinpasswort');
-      expect(res.success).toBe(true);
-      expect(FlowAuth.isLoggedIn()).toBe(true);
-      expect(FlowAuth.getSyncToken()).toBe('token_for_max_mustermann_de');
-      expect(FlowAuth.getUser().email).toBe('max@mustermann.de');
+  describe('1. Authentifizierung & Gerätekopplung entfernt', () => {
+    it('bestätigt dass die veralteten PHP-Pairing-Funktionen vollständig entfernt wurden', () => {
+      expect(FlowAuth.createPairingCode).toBeUndefined();
+      expect(FlowAuth.confirmPairingCode).toBeUndefined();
     });
 
-    it('Test J: Neues Gerät koppeln per 6-stelligem Code (A generiert Code -> B gibt Code ein -> B hat vollen Zugriff)', async () => {
-      // 1. Gerät A meldet sich an und generiert einen 6-stelligen Code
-      await FlowAuth.signInWithCredentials('anna@test.de', 'geheim123');
-      const pairRes = await FlowAuth.createPairingCode();
-      expect(pairRes.success).toBe(true);
-      expect(pairRes.code).toBe('849201');
+    it('erlaubt Registrierung und Anmeldung mit E-Mail und Passwort über Supabase', async () => {
+      // 1. Registrieren
+      const regRes = await FlowAuth.signUpWithCredentials('max@mustermann.de', 'meinpasswort');
+      expect(regRes.success).toBe(true);
+      expect(FlowAuth.isLoggedIn()).toBe(true);
+      expect(FlowAuth.getUser().email).toBe('max@mustermann.de');
 
-      // 2. Gerät B meldet sich ab und löst den 6-stelligen Code ein
+      // 2. Abmelden
       await FlowAuth.signOut();
       expect(FlowAuth.isLoggedIn()).toBe(false);
 
-      const confirmRes = await FlowAuth.confirmPairingCode('849201');
-      expect(confirmRes.success).toBe(true);
+      // 3. Wieder Anmelden
+      const loginRes = await FlowAuth.signInWithCredentials('max@mustermann.de', 'meinpasswort');
+      expect(loginRes.success).toBe(true);
       expect(FlowAuth.isLoggedIn()).toBe(true);
-      expect(FlowAuth.getSyncToken()).toBe('token_for_anna_test_de');
+      expect(FlowAuth.getUser().email).toBe('max@mustermann.de');
+    });
+
+    it('erlaubt das Anfordern eines Links zum Zurücksetzen des Passworts über Supabase', async () => {
+      const resetRes = await FlowAuth.requestPasswordReset('max@mustermann.de');
+      expect(resetRes.success).toBe(true);
+      expect(resetRes.message).toContain('E-Mail');
+
+      const invalidRes = await FlowAuth.requestPasswordReset('keine-email');
+      expect(invalidRes.success).toBe(false);
     });
 
     it('signOut setzt den Auth-Status vollständig zurück', async () => {
-      FlowAuth.setDirectPairingToken('custom_token', 'user@test.de');
+      await FlowAuth.signUpWithCredentials('user@test.de', 'geheim123');
       expect(FlowAuth.isLoggedIn()).toBe(true);
 
       await FlowAuth.signOut();
@@ -144,10 +142,10 @@ describe('Vollständige & Zuverlässige Synchronisation (Multi-Device & Offline)
     });
   });
 
-  describe('2. Bidirektionale Synchronisation (Test A & Test B)', () => {
-    it('Test A: Gerät A → Server → Gerät B (Neue Aufgabe auf A erstellen, danach Sync, auf B pullen -> exakt vorhanden)', async () => {
-      // 1. Gerät A initialisieren und Aufgaben anlegen
-      await FlowAuth.signInWithCredentials('team@flow.de', 'pass123');
+  describe('2. Bidirektionale Synchronisation mit Supabase flow_sync', () => {
+    it('Test A: Gerät A → Supabase → Gerät B (Neue Aufgabe auf A erstellen, danach Push, auf B Pull -> exakt vorhanden)', async () => {
+      // 1. Gerät A registriert sich / meldet sich an und legt Aufgaben an
+      await FlowAuth.signUpWithCredentials('team@flow.de', 'pass123');
       window.state = {
         _tombstones: {},
         items: {
@@ -168,7 +166,7 @@ describe('Vollständige & Zuverlässige Synchronisation (Multi-Device & Offline)
       const pushRes = await cloudSyncEngine.pushState();
       expect(pushRes.success).toBe(true);
 
-      // 2. Gerät B startet mit leerem Zustand und zieht die Daten
+      // 2. Gerät B startet mit leerem Zustand und zieht die Daten aus Supabase
       window.state = { _tombstones: {}, items: {}, done: [], notes: [], termine: [], shoppingList: [], brainstormIdeas: [], pantry: [] };
       const pullRes = await cloudSyncEngine.pullState();
       expect(pullRes.success).toBe(true);
@@ -181,9 +179,9 @@ describe('Vollständige & Zuverlässige Synchronisation (Multi-Device & Offline)
       expect(window.state.brainstormIdeas[0].text).toBe('Neue App-Idee');
     });
 
-    it('Test B: Gerät B → Server → Gerät A (Auf B Aufgabe abhaken/ändern -> auf A sofort sichtbar)', async () => {
-      await FlowAuth.signInWithCredentials('team@flow.de', 'pass123');
-      
+    it('Test B: Gerät B → Supabase → Gerät A (Auf B Aufgabe abhaken/ändern -> auf A sofort sichtbar)', async () => {
+      await FlowAuth.signUpWithCredentials('team@flow.de', 'pass123');
+
       // Gerät B hakt eine Aufgabe ab und fügt einen neuen Termin hinzu
       window.state = {
         _tombstones: {},
@@ -236,7 +234,6 @@ describe('Vollständige & Zuverlässige Synchronisation (Multi-Device & Offline)
     });
 
     it('Test D: Löschen (A löscht Aufgabe Y -> auf B gelöscht und taucht NIE wieder auf dank Tombstone)', () => {
-      // Gerät A hat task_200 gelöscht und in _tombstones vermerkt
       const remoteData = {
         _tombstones: {
           'task_200': '2026-09-04T12:00:00Z'
@@ -248,7 +245,6 @@ describe('Vollständige & Zuverlässige Synchronisation (Multi-Device & Offline)
         }
       };
 
-      // Gerät B hat task_200 noch lokal
       const localState = {
         _tombstones: {},
         items: {
@@ -272,7 +268,6 @@ describe('Vollständige & Zuverlässige Synchronisation (Multi-Device & Offline)
     });
 
     it('Test G: Gleichzeitige Bearbeitung (A ändert X um 14:15, B ändert X um 14:30 -> 14:30 gewinnt deterministisch via LWW)', () => {
-      // Gerät A hat Version um 14:15 Uhr gespeichert
       const localState = {
         _tombstones: {},
         items: {
@@ -282,7 +277,6 @@ describe('Vollständige & Zuverlässige Synchronisation (Multi-Device & Offline)
         }
       };
 
-      // Gerät B hat Version um 14:30 Uhr gespeichert (neuer!)
       const remoteData = {
         _tombstones: {},
         items: {
@@ -336,7 +330,7 @@ describe('Vollständige & Zuverlässige Synchronisation (Multi-Device & Offline)
 
   describe('5. Offline-Queue & Auto-Retry (Test E & Test I)', () => {
     it('Test E: Offline-Queue (Offline auf A Aufgaben erstellen, online gehen -> automatisch synchronisiert)', async () => {
-      await FlowAuth.signInWithCredentials('offline.user@flow.de', 'securepass');
+      await FlowAuth.signUpWithCredentials('offline.user@flow.de', 'securepass');
 
       // Offline schalten
       vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false);
@@ -361,12 +355,18 @@ describe('Vollständige & Zuverlässige Synchronisation (Multi-Device & Offline)
       expect(cloudSyncEngine.isPendingSync()).toBe(false);
     });
 
-    it('Test I: Netzwerkfehler & Backoff Retry (Server antwortet mit Fehler -> retryTimer und flow_pending_sync aktiv)', async () => {
-      await FlowAuth.signInWithCredentials('retry.user@flow.de', 'securepass');
+    it('Test I: Netzwerkfehler & Backoff Retry (Supabase antwortet mit Fehler -> retryTimer und flow_pending_sync aktiv)', async () => {
+      await FlowAuth.signUpWithCredentials('retry.user@flow.de', 'securepass');
       window.state = { _tombstones: {}, items: { daily: [{ id: 't_retry', task: 'Retry Task' }] } };
 
-      // 1. Aufruf schlägt mit Server-Fehler / Verbindungsabbruch fehl
-      globalThis.fetch = vi.fn().mockRejectedValueOnce(new Error('Network disconnected'));
+      // Mock Supabase to throw error
+      const failingSupabase = {
+        ...mockSupabase,
+        from: () => ({
+          upsert: async () => ({ error: new Error('Supabase network error') })
+        })
+      };
+      FlowAuth._setSupabaseClientForTesting(failingSupabase);
 
       const failedRes = await cloudSyncEngine.pushState();
       expect(failedRes.success).toBe(false);

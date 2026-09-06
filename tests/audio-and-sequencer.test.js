@@ -47,4 +47,25 @@ describe('Web Audio Generators & Sequencer Engine (Production Code)', () => {
     expect(disconnected).toBe(true);
     expect(mockGainNode.gain.value).toBe(0);
   });
+
+  it('audio-core.js provides mobile touch unlock, MediaSession and stopAllSounds', () => {
+    const audioCoreCode = fs.readFileSync(path.join(rootDir, 'audio-core.js'), 'utf8');
+    expect(audioCoreCode).toContain('unlockMobileAudio');
+    expect(audioCoreCode).toContain('touchstart');
+    expect(audioCoreCode).toContain('touchend');
+    expect(audioCoreCode).toContain('pointerdown');
+    expect(audioCoreCode).toContain('stopAllSounds');
+    expect(audioCoreCode).toContain('updateMediaSession');
+    expect(audioCoreCode).toContain('playCheerfulSuccessJingle');
+    expect(audioCoreCode).toContain('triggerHapticFeedback');
+  });
+
+  it('app-radio-news.js exports Live Radio & News Engine with stations', () => {
+    const radioNewsCode = fs.readFileSync(path.join(rootDir, 'app-radio-news.js'), 'utf8');
+    expect(radioNewsCode).toContain('RADIO_STATIONS');
+    expect(radioNewsCode).toContain('Deutschlandfunk');
+    expect(radioNewsCode).toContain('SomaFM Groove Salad');
+    expect(radioNewsCode).toContain('playRadioStation');
+    expect(radioNewsCode).toContain('toggleRadioPlayback');
+  });
 });

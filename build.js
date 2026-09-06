@@ -41,8 +41,7 @@ const staticFiles = [
   'icon-512.svg',
   'service-worker.js',
   'sw.js',
-  'fonts.css',
-  'api-sync.php'
+  'fonts.css'
 ];
 staticFiles.forEach(file => {
   const src = path.join(rootDir, file);
@@ -76,7 +75,7 @@ try {
   const result = esbuild.buildSync({
     entryPoints: [path.join(rootDir, 'main.js')],
     bundle: true,
-    minify: false,
+    minify: true,
     format: 'iife',
     write: false
   });
@@ -138,9 +137,8 @@ const distAssets = [
   './vendor/tailwindcss.js',
   './vendor/lucide.min.js',
   './vendor/supabase.min.js',
-  './vendor/three.min.js',
-  './vendor/OrbitControls.js',
-  './vendor/qrcode.min.js'
+  './vendor/qrcode.min.js',
+  './vendor/html2canvas.min.js'
 ];
 const distAssetsBlock = `const ASSETS_TO_CACHE = [\n  ${distAssets.map(a => `'${a}'`).join(',\n  ')}\n];`;
 swContent = swContent.replace(/const ASSETS_TO_CACHE = \[[\s\S]*?\];/m, distAssetsBlock);

@@ -247,7 +247,7 @@ function toggleShoppingHistory() {
   renderApp();
 }
 
-function clearShoppingList() {
+async function clearShoppingList() {
   if (!state.shoppingList || state.shoppingList.length === 0) return;
   const confirmMsg = tr({
     de: "Gesamte Einkaufsliste leeren?",
@@ -257,7 +257,15 @@ function clearShoppingList() {
     es: "¿Vaciar toda la lista de compras?",
     el: "Εκκαθάριση όλης της λίστας αγορών;"
   });
-  if (confirm(confirmMsg)) {
+  const confirmed = typeof showConfirmDialog === 'function' ? await showConfirmDialog({
+    title: typeof tr === 'function' ? tr({ de: 'Einkaufsliste leeren?', en: 'Clear shopping list?' }) : 'Einkaufsliste leeren?',
+    message: confirmMsg,
+    confirmText: typeof tr === 'function' ? tr({ de: 'Leeren', en: 'Clear' }) : 'Leeren',
+    isDanger: true,
+    icon: 'trash-2'
+  }) : confirm(confirmMsg);
+
+  if (confirmed) {
     saveHistory();
     state.shoppingList = [];
     saveState();
@@ -266,7 +274,7 @@ function clearShoppingList() {
   }
 }
 
-function clearShoppingHistory() {
+async function clearShoppingHistory() {
   if (!state.shoppingHistory || state.shoppingHistory.length === 0) return;
   const confirmMsg = tr({
     de: "Einkaufs-Protokoll leeren?",
@@ -276,7 +284,15 @@ function clearShoppingHistory() {
     es: "¿Vaciar el historial de compras?",
     el: "Εκκαθάριση ιστορικού αγορών;"
   });
-  if (confirm(confirmMsg)) {
+  const confirmed = typeof showConfirmDialog === 'function' ? await showConfirmDialog({
+    title: typeof tr === 'function' ? tr({ de: 'Protokoll leeren?', en: 'Clear history?' }) : 'Protokoll leeren?',
+    message: confirmMsg,
+    confirmText: typeof tr === 'function' ? tr({ de: 'Leeren', en: 'Clear' }) : 'Leeren',
+    isDanger: true,
+    icon: 'trash-2'
+  }) : confirm(confirmMsg);
+
+  if (confirmed) {
     saveHistory();
     state.shoppingHistory = [];
     saveState();
@@ -328,6 +344,11 @@ function updateShoppingListPopup(skipLucide = false) {
     }
   }
 
+  const panel = rowsContainer.closest('.dock-popover-panel') || document.getElementById('panel-shopping');
+  if (skipLucide && panel && panel.classList.contains('hidden')) {
+    return;
+  }
+
   // Quick Chips rendern
   const chipsContainer = document.getElementById('shop-quick-chips');
   if (chipsContainer) {
@@ -375,7 +396,7 @@ function updateShoppingListPopup(skipLucide = false) {
               <button onclick="adjustShoppingItemQty(${originalIdx}, -1)" class="w-4 h-4 rounded bg-white/5 hover:bg-white/10 text-gray-400 text-[10px] flex items-center justify-center cursor-pointer font-bold">-</button>
               <span class="text-[10px] font-mono text-emerald-400 px-0.5">${item.qty || 1}</span>
               <button onclick="adjustShoppingItemQty(${originalIdx}, 1)" class="w-4 h-4 rounded bg-white/5 hover:bg-white/10 text-gray-400 text-[10px] flex items-center justify-center cursor-pointer font-bold">+</button>
-              <button onclick="handleDeleteShoppingItem(${originalIdx})" class="p-1 text-gray-500 hover:text-red-400 rounded transition cursor-pointer ml-1">
+              <button onclick="handleDeleteShoppingItem(${originalIdx})" aria-label="Artikel löschen" class="p-1 text-gray-500 hover:text-red-400 rounded transition cursor-pointer ml-1">
                 <i data-lucide="trash-2" class="w-3 h-3"></i>
               </button>
             </div>
@@ -411,7 +432,7 @@ function updateShoppingListPopup(skipLucide = false) {
           <span class="truncate max-w-[140px] line-through text-gray-400 font-medium">${safeEscape(hItem.name)}</span>
           <div class="flex items-center gap-1.5">
             <span class="font-mono text-[8px] text-gray-500">${hItem.date || ''}</span>
-            <button onclick="restoreShoppingHistoryItem(${realIdx})" class="text-emerald-400 hover:text-emerald-300 text-[9px] font-bold cursor-pointer" title="Wieder auf Liste setzen">＋</button>
+            <button onclick="restoreShoppingHistoryItem(${realIdx})" aria-label="Wieder auf Liste setzen" class="text-emerald-400 hover:text-emerald-300 text-[9px] font-bold cursor-pointer" title="Wieder auf Liste setzen">＋</button>
           </div>
         `;
         historyList.appendChild(hDiv);
@@ -519,7 +540,7 @@ function renderSupermarketModal() {
           </div>
           <div class="flex items-center gap-2" onclick="event.stopPropagation()">
             ${qtyLabel}
-            <button onclick="handleDeleteShoppingItem(${originalIdx})" class="p-1.5 text-gray-500 hover:text-red-400 rounded-lg transition cursor-pointer">
+            <button onclick="handleDeleteShoppingItem(${originalIdx})" aria-label="Artikel löschen" class="p-1.5 text-gray-500 hover:text-red-400 rounded-lg transition cursor-pointer">
               <i data-lucide="trash-2" class="w-4 h-4"></i>
             </button>
           </div>
@@ -572,16 +593,38 @@ function closeShoppingModal() {
   closeSupermarketModal();
 }
 
+function quickAddShopItem(name) {
+  handleAddShoppingItem(name);
+}
+
+function clearCompletedShopItems() {
+  if (!Array.isArray(state.shoppingList)) return;
+  saveHistory();
+  const completed = state.shoppingList.filter(item => item.checked);
+  state.shoppingList = state.shoppingList.filter(item => !item.checked);
+  saveState();
+  if (typeof renderShoppingRows === 'function') renderShoppingRows();
+  if (typeof renderSupermarketModal === 'function') renderSupermarketModal();
+  if (completed.length > 0) {
+    showToast(typeof tr === 'function' ? tr({
+      de: `${completed.length} erledigte Artikel gelöscht! 🗑️`,
+      en: `${completed.length} completed items cleared! 🗑️`
+    }) : `${completed.length} Artikel gelöscht! 🗑️`);
+  }
+}
+
 if (typeof window !== 'undefined') {
   window.SHOPPING_DEPARTMENTS = SHOPPING_DEPARTMENTS;
   window.getDepartmentForItem = getDepartmentForItem;
   window.handleAddShoppingItem = handleAddShoppingItem;
+  window.quickAddShopItem = quickAddShopItem;
   window.handleToggleShoppingItem = handleToggleShoppingItem;
   window.handleDeleteShoppingItem = handleDeleteShoppingItem;
   window.adjustShoppingItemQty = adjustShoppingItemQty;
   window.restoreShoppingHistoryItem = restoreShoppingHistoryItem;
   window.toggleShoppingHistory = toggleShoppingHistory;
   window.clearShoppingList = clearShoppingList;
+  window.clearCompletedShopItems = clearCompletedShopItems;
   window.clearShoppingHistory = clearShoppingHistory;
   window.addIngredientsToShoppingList = addIngredientsToShoppingList;
   window.openSupermarketModal = openSupermarketModal;
@@ -594,12 +637,14 @@ if (typeof globalThis !== 'undefined') {
   globalThis.SHOPPING_DEPARTMENTS = SHOPPING_DEPARTMENTS;
   globalThis.getDepartmentForItem = getDepartmentForItem;
   globalThis.handleAddShoppingItem = handleAddShoppingItem;
+  globalThis.quickAddShopItem = quickAddShopItem;
   globalThis.handleToggleShoppingItem = handleToggleShoppingItem;
   globalThis.handleDeleteShoppingItem = handleDeleteShoppingItem;
   globalThis.adjustShoppingItemQty = adjustShoppingItemQty;
   globalThis.restoreShoppingHistoryItem = restoreShoppingHistoryItem;
   globalThis.toggleShoppingHistory = toggleShoppingHistory;
   globalThis.clearShoppingList = clearShoppingList;
+  globalThis.clearCompletedShopItems = clearCompletedShopItems;
   globalThis.clearShoppingHistory = clearShoppingHistory;
   globalThis.addIngredientsToShoppingList = addIngredientsToShoppingList;
   globalThis.openSupermarketModal = openSupermarketModal;

@@ -477,7 +477,13 @@ function handleHeaderVolumeInput(val) {
 window.handleHeaderVolumeInput = handleHeaderVolumeInput;
 window.handleStudioMasterVolume = handleHeaderVolumeInput;
 
+let soundHoverSliderTimer = null;
+
 function showSoundHoverSlider() {
+  if (soundHoverSliderTimer) {
+    clearTimeout(soundHoverSliderTimer);
+    soundHoverSliderTimer = null;
+  }
   const popover = document.getElementById('header-sound-volume-popover');
   if (popover) {
     popover.classList.remove('hidden');
@@ -487,12 +493,17 @@ function showSoundHoverSlider() {
 }
 window.showSoundHoverSlider = showSoundHoverSlider;
 
-function hideSoundHoverSlider() {
-  const popover = document.getElementById('header-sound-volume-popover');
-  if (popover) {
-    popover.classList.add('hidden');
-    popover.classList.remove('flex');
+function hideSoundHoverSlider(delay = 650) {
+  if (soundHoverSliderTimer) {
+    clearTimeout(soundHoverSliderTimer);
   }
+  soundHoverSliderTimer = setTimeout(() => {
+    const popover = document.getElementById('header-sound-volume-popover');
+    if (popover) {
+      popover.classList.add('hidden');
+      popover.classList.remove('flex');
+    }
+  }, delay);
 }
 window.hideSoundHoverSlider = hideSoundHoverSlider;
 
@@ -539,12 +550,68 @@ function updateSoundscapeUI() {
     }
   });
   const indicator = document.getElementById('soundscape-indicator');
+  const dockSoundBadge = document.getElementById('dock-sound-active-badge');
+  const isAudioActive = (typeof currentSoundType !== 'undefined' && Boolean(currentSoundType)) || (typeof isBeatPlaying !== 'undefined' && Boolean(isBeatPlaying));
   if (indicator) {
-    if (typeof currentSoundType !== 'undefined' && currentSoundType) indicator.classList.remove('hidden');
+    if (isAudioActive) indicator.classList.remove('hidden');
     else indicator.classList.add('hidden');
+  }
+  if (dockSoundBadge) {
+    if (isAudioActive) dockSoundBadge.classList.remove('hidden');
+    else dockSoundBadge.classList.add('hidden');
   }
   updateAudioStudioHeader();
   updateHeaderSoundBtnUI();
+}
+
+function updateMediaSession(title, artist = 'Flow Organiser', album = 'Focus Sound Studio') {
+  if (typeof navigator !== 'undefined' && 'mediaSession' in navigator) {
+    try {
+      if (typeof MediaMetadata !== 'undefined') {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: title || 'Flow Focus Sound',
+          artist: artist,
+          album: album,
+          artwork: [
+            { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+            { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' }
+          ]
+        });
+      }
+
+      navigator.mediaSession.setActionHandler('play', () => {
+        if (typeof toggleMasterSound === 'function') toggleMasterSound();
+      });
+      navigator.mediaSession.setActionHandler('pause', () => {
+        if (typeof stopAllSounds === 'function') stopAllSounds();
+      });
+      navigator.mediaSession.setActionHandler('stop', () => {
+        if (typeof stopAllSounds === 'function') stopAllSounds();
+      });
+    } catch (e) {
+      // MediaSession fallback
+    }
+  }
+}
+
+function stopAllSounds() {
+  if (typeof stopAllStudioAudio === 'function') stopAllStudioAudio();
+  if (typeof stopAmbientSound === 'function') stopAmbientSound(true);
+  if (typeof stopLoFiBeats === 'function') stopLoFiBeats();
+  if (typeof stopBeatSequencer === 'function') stopBeatSequencer();
+  if (typeof RadioNewsEngine !== 'undefined') {
+    if (typeof RadioNewsEngine.toggleRadioPlayback === 'function' && window.isRadioPlaying) {
+      RadioNewsEngine.toggleRadioPlayback();
+    }
+    if (typeof RadioNewsEngine.stopNewsReader === 'function') {
+      RadioNewsEngine.stopNewsReader();
+    }
+  }
+  if (typeof navigator !== 'undefined' && 'mediaSession' in navigator) {
+    try {
+      navigator.mediaSession.playbackState = 'none';
+    } catch (e) {}
+  }
 }
 
 if (typeof document !== 'undefined') {
@@ -571,6 +638,8 @@ if (typeof window !== 'undefined') {
   window.applyAudioMoodPreset = applyAudioMoodPreset;
   window.updateAudioStudioHeader = updateAudioStudioHeader;
   window.stopAllStudioAudio = stopAllStudioAudio;
+  window.stopAllSounds = stopAllSounds;
+  window.updateMediaSession = updateMediaSession;
   window.toggleAudioTimerSync = toggleAudioTimerSync;
   window.toggleMasterSound = toggleMasterSound;
   window.isAnyAudioPlaying = isAnyAudioPlaying;
@@ -585,6 +654,8 @@ if (typeof globalThis !== 'undefined') {
   globalThis.applyAudioMoodPreset = applyAudioMoodPreset;
   globalThis.updateAudioStudioHeader = updateAudioStudioHeader;
   globalThis.stopAllStudioAudio = stopAllStudioAudio;
+  globalThis.stopAllSounds = stopAllSounds;
+  globalThis.updateMediaSession = updateMediaSession;
   globalThis.toggleAudioTimerSync = toggleAudioTimerSync;
   globalThis.toggleMasterSound = toggleMasterSound;
   globalThis.isAnyAudioPlaying = isAnyAudioPlaying;

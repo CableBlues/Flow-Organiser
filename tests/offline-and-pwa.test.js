@@ -71,8 +71,7 @@ describe('Offline Capability & PWA Assets (Production Code)', () => {
     const vendorFiles = [
       'tailwindcss.js',
       'lucide.min.js',
-      'three.min.js',
-      'OrbitControls.js',
+      'supabase.min.js',
       'qrcode.min.js',
       'html2canvas.min.js'
     ];

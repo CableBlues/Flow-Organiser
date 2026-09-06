@@ -1,93 +1,27 @@
-// audio-player.js: Hi-Fi Music Player & Dual-Deck DJ Studio Engine (Standard View & 2-Deck DJ View)
+// audio-player.js: Noodle Studio Audio Player & DJ Tool Engine
+// ============================================================================
 
-var currentMusicViewMode = 'standard'; // 'standard' | 'dj'
-var isCrossfadeEnabled = true;
-var crossfadeDuration = 8;
-var djPlaybackSpeed = 1.0;
-var djCrossfaderPosition = 0.5; // 0.0 = Full Deck A, 0.5 = Center Mix, 1.0 = Full Deck B
-
-// ===== DUAL DECK DJ STATE =====
 var djDecks = {
-  a: {
-    audio: null,
-    track: null,
-    isPlaying: false,
-    volume: 0.8,
-    pitch: 1.0,
-    bpm: 128,
-    eqLow: 0,
-    eqMid: 0,
-    eqHigh: 0,
-    filter: 0, // -100 to +100
-    loopActive: false,
-    loopBeats: 4,
-    sourceNode: null,
-    gainNode: null,
-    filterNode: null,
-    eqLowNode: null,
-    eqMidNode: null,
-    eqHighNode: null
-  },
-  b: {
-    audio: null,
-    track: null,
-    isPlaying: false,
-    volume: 0.8,
-    pitch: 1.0,
-    bpm: 128,
-    eqLow: 0,
-    eqMid: 0,
-    eqHigh: 0,
-    filter: 0,
-    loopActive: false,
-    loopBeats: 4,
-    sourceNode: null,
-    gainNode: null,
-    filterNode: null,
-    eqLowNode: null,
-    eqMidNode: null,
-    eqHighNode: null
-  }
+  a: { audio: null, track: null, isPlaying: false, pitch: 1.0, bpm: 128, lowGain: null, highGain: null },
+  b: { audio: null, track: null, isPlaying: false, pitch: 1.0, bpm: 128, lowGain: null, highGain: null }
 };
 
-// ===== VIEW MODE SWITCHER (STANDARD VS. 2-DECK DJ STUDIO) =====
-function switchMusicView(mode) {
-  currentMusicViewMode = mode;
-  var stdPane = document.getElementById('music-view-standard');
-  var djPane = document.getElementById('music-view-dj');
-  var btnStd = document.getElementById('music-view-toggle-std');
-  var btnDj = document.getElementById('music-view-toggle-dj');
-  var panel = document.getElementById('panel-music');
-
-  if (mode === 'dj') {
-    if (stdPane) stdPane.classList.add('hidden');
-    if (djPane) djPane.classList.remove('hidden');
-    if (btnStd) btnStd.className = 'flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer text-xs font-semibold';
-    if (btnDj) btnDj.className = 'flex-1 py-1.5 rounded-xl text-white bg-purple-600/40 border border-purple-500/50 transition flex items-center justify-center gap-1.5 cursor-pointer text-xs font-bold shadow-md';
-    if (panel) {
-      panel.classList.remove('w-[390px]', 'sm:w-[450px]');
-      panel.classList.add('w-[390px]', 'sm:w-[560px]', 'md:w-[620px]');
-    }
-    initDjDecks();
-  } else {
-    if (djPane) djPane.classList.add('hidden');
-    if (stdPane) stdPane.classList.remove('hidden');
-    if (btnDj) btnDj.className = 'flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer text-xs font-semibold';
-    if (btnStd) btnStd.className = 'flex-1 py-1.5 rounded-xl text-white bg-purple-600/40 border border-purple-500/50 transition flex items-center justify-center gap-1.5 cursor-pointer text-xs font-bold shadow-md';
-    if (panel) {
-      panel.classList.remove('w-[390px]', 'sm:w-[560px]', 'md:w-[620px]');
-      panel.classList.add('w-[390px]', 'sm:w-[450px]');
-    }
-  }
-
-  if (typeof renderLucideIcons === 'function') renderLucideIcons();
-  if (typeof AppStorage !== 'undefined') AppStorage.set('flow_music_view_mode', mode);
+// ============================================================================
+// 1. FORMATIERUNG & UTILS
+// ============================================================================
+function formatAudioTime(secs) {
+  if (isNaN(secs) || secs < 0) return '00:00';
+  const m = Math.floor(secs / 60);
+  const s = Math.floor(secs % 60);
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
-window.switchMusicView = switchMusicView;
+window.formatAudioTime = formatAudioTime;
 
-// ===== STANDARD PLAYLIST & TRACK MANAGEMENT =====
+// ============================================================================
+// 2. TAB 3: EIGENE TRACKS / PLAYLIST PLAYER
+// ============================================================================
 
-function handleUserSoundFile(event) {
+function handleMusicFilesUpload(event) {
   const files = event.target.files;
   if (!files || files.length === 0) return;
 
@@ -100,265 +34,134 @@ function handleUserSoundFile(event) {
   }));
 
   playlistTracks = playlistTracks.concat(newTracks);
-  newTracks.forEach(preloadTrackDuration);
+  newTracks.forEach(preloadMusicTrackDuration);
 
-  const playerContainer = document.getElementById('custom-playlist-player');
-  if (playerContainer) playerContainer.classList.remove('hidden');
-
-  // Also populate DJ Deck selectors
-  populateDjDeckSelectors();
+  renderMusicPlaylist();
 
   if (wasEmpty) {
-    stopAmbientSound(true);
+    if (typeof stopAmbientSound === 'function') stopAmbientSound(true);
     currentTrackIndex = isPlayerShuffleEnabled && playlistTracks.length > 1
       ? Math.floor(Math.random() * playlistTracks.length)
       : 0;
-    playTrack(currentTrackIndex);
+    playMusicTrack(currentTrackIndex);
   } else {
-    renderTrackList();
-    updatePlayerHeaderInfo();
     showToast(`${newTracks.length} Track(s) geladen! 🎧`);
   }
   event.target.value = '';
 }
-window.handleUserSoundFile = handleUserSoundFile;
+window.handleMusicFilesUpload = handleMusicFilesUpload;
+window.handleUserSoundFile = handleMusicFilesUpload;
 
-function preloadTrackDuration(track) {
+function preloadMusicTrackDuration(track) {
   const probe = new Audio();
   probe.preload = 'metadata';
   probe.addEventListener('loadedmetadata', () => {
     track.duration = probe.duration;
-    renderTrackList();
-    updatePlayerHeaderInfo();
+    renderMusicPlaylist();
+    updateMusicNowPlayingDisplay();
   });
   probe.src = track.url;
 }
 
-function removeTrackFromPlaylist(idx, event) {
-  if (event) event.stopPropagation();
-  if (idx < 0 || idx >= playlistTracks.length) return;
-
-  const wasPlayingRemoved = idx === currentTrackIndex && activeUserAudio && !activeUserAudio.paused;
-  playlistTracks.splice(idx, 1);
+function renderMusicPlaylist() {
+  const container = document.getElementById('music-playlist-container');
+  if (!container) return;
 
   if (playlistTracks.length === 0) {
-    clearPlaylist();
+    container.innerHTML = `<div class="text-center py-2 text-xs text-gray-500 italic">Noch keine Tracks geladen. Klicke auf 'Laden', um deine Musik abzuspielen.</div>`;
     return;
   }
-  if (idx < currentTrackIndex) currentTrackIndex--;
-  else if (idx === currentTrackIndex) currentTrackIndex = Math.min(currentTrackIndex, playlistTracks.length - 1);
 
-  populateDjDeckSelectors();
+  container.innerHTML = playlistTracks.map((track, idx) => {
+    const isActive = idx === currentTrackIndex && activeUserAudio && !activeUserAudio.paused;
+    const isSelected = idx === currentTrackIndex;
+    const durStr = track.duration ? formatAudioTime(track.duration) : '--:--';
+    return `
+      <div onclick="playMusicTrack(${idx})" class="p-1.5 px-2 rounded-xl border transition flex items-center justify-between gap-2 cursor-pointer ${isSelected ? 'bg-purple-500/20 border-purple-500/40 text-white' : 'bg-black/30 hover:bg-white/5 border-white/5 text-gray-300'}">
+        <div class="flex items-center gap-2 min-w-0">
+          <span class="text-[10px] font-mono ${isActive ? 'text-emerald-400 font-bold' : 'text-gray-500'} w-4 shrink-0">${idx + 1}.</span>
+          <div class="truncate text-xs font-semibold ${isSelected ? 'text-purple-200' : ''}">${track.name}</div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <span class="text-[9px] font-mono text-gray-400">${durStr}</span>
+          <button onclick="removeMusicTrack(${idx}, event)" aria-label="Titel löschen" class="p-1 rounded hover:bg-red-500/20 text-gray-500 hover:text-red-300 transition" title="Löschen">
+            <i data-lucide="x" class="w-3 h-3"></i>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
 
-  if (wasPlayingRemoved) {
-    playTrack(currentTrackIndex);
-  } else {
-    renderTrackList();
-    updatePlayerHeaderInfo();
-  }
+  if (typeof renderLucideIcons === 'function') renderLucideIcons();
 }
-window.removeTrackFromPlaylist = removeTrackFromPlaylist;
+window.renderMusicPlaylist = renderMusicPlaylist;
+window.renderTrackList = renderMusicPlaylist;
 
-function clearPlaylist() {
-  if (activeUserAudio) {
-    activeUserAudio.pause();
-    activeUserAudio = null;
-  }
-  playlistTracks = [];
-  currentTrackIndex = 0;
-  const playerContainer = document.getElementById('custom-playlist-player');
-  if (playerContainer) playerContainer.classList.add('hidden');
-  updatePlayPauseButtonUI(false);
-  renderTrackList();
-  populateDjDeckSelectors();
-}
-window.clearPlaylist = clearPlaylist;
-
-function attachAudioEvents(audio) {
-  audio.addEventListener('timeupdate', () => {
-    if (activeUserAudio !== audio) return;
-    const pct = (audio.currentTime / audio.duration) * 100 || 0;
-    const bar = document.getElementById('player-progress-bar');
-    if (bar) bar.style.width = `${pct}%`;
-
-    const currentEl = document.getElementById('player-time-current');
-    if (currentEl) currentEl.innerText = formatAudioTime(audio.currentTime);
-
-    const remainingEl = document.getElementById('player-time-remaining');
-    if (remainingEl && audio.duration) {
-      const rem = Math.max(0, audio.duration - audio.currentTime);
-      remainingEl.innerText = `-${formatAudioTime(rem)}`;
-    }
-  });
-
-  audio.addEventListener('loadedmetadata', () => {
-    if (activeUserAudio !== audio) return;
-    const durationEl = document.getElementById('player-time-duration');
-    if (durationEl) durationEl.innerText = formatAudioTime(audio.duration);
-  });
-}
-
-function formatAudioTime(secs) {
-  if (isNaN(secs) || secs < 0) return '00:00';
-  const m = Math.floor(secs / 60);
-  const s = Math.floor(secs % 60);
-  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-}
-window.formatAudioTime = formatAudioTime;
-
-function handleProgressBarClick(event) {
-  if (!activeUserAudio || !activeUserAudio.duration) return;
-  const rect = event.currentTarget.getBoundingClientRect();
-  const clickX = event.clientX - rect.left;
-  const ratio = Math.max(0, Math.min(1, clickX / rect.width));
-  activeUserAudio.currentTime = ratio * activeUserAudio.duration;
-}
-window.handleProgressBarClick = handleProgressBarClick;
-
-// -------------------------------------------------------------
-// STANDARD TRACK PLAYBACK
-// -------------------------------------------------------------
-
-function playTrack(index) {
+function playMusicTrack(index) {
   if (playlistTracks.length === 0) return;
   if (index < 0 || index >= playlistTracks.length) index = 0;
   currentTrackIndex = index;
 
   const track = playlistTracks[currentTrackIndex];
-  let oldAudio = activeUserAudio;
+
+  if (activeUserAudio) {
+    try {
+      activeUserAudio.pause();
+      activeUserAudio.src = '';
+    } catch(e) {}
+  }
 
   const audio = new Audio(track.url);
-  audio.loop = false;
-  audio.playbackRate = djPlaybackSpeed;
-
-  const targetVolume = isPlayerMuted ? 0 : soundMasterVolume * 0.75;
-  const willCrossfade = isCrossfadeEnabled && crossfadeDuration > 0 && oldAudio && !oldAudio.paused;
-
-  audio.volume = willCrossfade ? 0 : targetVolume;
+  audio.volume = isPlayerMuted ? 0 : (soundMasterVolume * 0.75);
   activeUserAudio = audio;
-  attachAudioEvents(audio);
+
+  audio.addEventListener('timeupdate', () => {
+    if (activeUserAudio !== audio) return;
+    updateMusicProgressUI(audio);
+  });
 
   audio.addEventListener('ended', () => {
     if (playerRepeatMode === 'one') {
-      playTrack(currentTrackIndex);
+      playMusicTrack(currentTrackIndex);
     } else if (playerRepeatMode === 'off' && !isPlayerShuffleEnabled && currentTrackIndex === playlistTracks.length - 1) {
-      updatePlayPauseButtonUI(false);
+      updateMusicPlayBtnUI(false);
     } else {
-      playNextTrackWithCrossfade();
+      playNextMusicTrack();
     }
   });
 
   audio.play().then(() => {
-    updatePlayPauseButtonUI(true);
-
-    if (willCrossfade) {
-      const fadeDurationMs = crossfadeDuration * 1000;
-      const steps = 30;
-      const stepTime = fadeDurationMs / steps;
-      const stepVol = targetVolume / steps;
-
-      let fadeInInterval = setInterval(() => {
-        if (activeUserAudio === audio) {
-          if (audio.volume < targetVolume - stepVol) {
-            audio.volume = Math.min(targetVolume, audio.volume + stepVol);
-          } else {
-            audio.volume = targetVolume;
-            clearInterval(fadeInInterval);
-          }
-        } else {
-          clearInterval(fadeInInterval);
-        }
-      }, stepTime);
-    }
-  }).catch(e => {
-    console.warn("Audio play error:", e);
+    updateMusicPlayBtnUI(true);
+    updateMusicNowPlayingDisplay();
+    renderMusicPlaylist();
+  }).catch(err => {
+    console.warn('[AudioPlayer] Playback error:', err);
   });
-
-  if (oldAudio && oldAudio !== audio) {
-    if (willCrossfade) {
-      const fadeDurationMs = crossfadeDuration * 1000;
-      const steps = 30;
-      const stepTime = fadeDurationMs / steps;
-      const stepVol = oldAudio.volume / steps;
-
-      let fadeOutInterval = setInterval(() => {
-        try {
-          if (oldAudio.volume > stepVol) {
-            oldAudio.volume = Math.max(0, oldAudio.volume - stepVol);
-          } else {
-            oldAudio.volume = 0;
-            oldAudio.pause();
-            clearInterval(fadeOutInterval);
-          }
-        } catch (e) {
-          clearInterval(fadeOutInterval);
-        }
-      }, stepTime);
-    } else {
-      try { oldAudio.pause(); } catch(e) {}
-    }
-  }
-
-  const nameLabel = document.getElementById('user-sound-name');
-  if (nameLabel) nameLabel.innerText = track.name;
-
-  renderTrackList();
-  updatePlayerHeaderInfo();
-  updateSoundscapeUI();
-  updateVinylAnimation(true);
 }
-window.playTrack = playTrack;
+window.playMusicTrack = playMusicTrack;
+window.playTrack = playMusicTrack;
 
-function togglePlaylistPlayback() {
+function toggleMusicPlayback() {
   if (!activeUserAudio) {
-    if (playlistTracks.length > 0) playTrack(currentTrackIndex);
+    if (playlistTracks.length > 0) playMusicTrack(currentTrackIndex);
     return;
   }
+
   if (activeUserAudio.paused) {
-    activeUserAudio.play();
-    updatePlayPauseButtonUI(true);
-    updateVinylAnimation(true);
+    activeUserAudio.play().then(() => {
+      updateMusicPlayBtnUI(true);
+      renderMusicPlaylist();
+    }).catch(e => console.warn(e));
   } else {
     activeUserAudio.pause();
-    updatePlayPauseButtonUI(false);
-    updateVinylAnimation(false);
+    updateMusicPlayBtnUI(false);
+    renderMusicPlaylist();
   }
 }
-window.togglePlaylistPlayback = togglePlaylistPlayback;
+window.toggleMusicPlayback = toggleMusicPlayback;
+window.togglePlaylistPlayback = toggleMusicPlayback;
 
-function updatePlayPauseButtonUI(isPlaying) {
-  const btn = document.getElementById('player-play-pause-btn');
-  if (btn) {
-    btn.innerHTML = isPlaying
-      ? '<i data-lucide="pause" class="w-5 h-5"></i>'
-      : '<i data-lucide="play" class="w-5 h-5 text-purple-300 ml-0.5"></i>';
-    if (typeof renderLucideIcons === 'function') renderLucideIcons();
-  }
-  updateVinylAnimation(isPlaying);
-}
-
-function updateVinylAnimation(isPlaying) {
-  const vinylEl = document.getElementById('dj-turntable-vinyl');
-  const waveBars = document.querySelectorAll('.dj-vu-bar');
-  if (vinylEl) {
-    if (isPlaying) {
-      vinylEl.classList.add('animate-spin');
-      vinylEl.style.animationDuration = '4s';
-    } else {
-      vinylEl.classList.remove('animate-spin');
-    }
-  }
-  waveBars.forEach((bar, idx) => {
-    if (isPlaying) {
-      bar.classList.add('animate-pulse');
-      bar.style.animationDuration = `${0.3 + (idx % 4) * 0.15}s`;
-    } else {
-      bar.classList.remove('animate-pulse');
-    }
-  });
-}
-
-function playNextTrackWithCrossfade() {
+function playNextMusicTrack() {
   if (playlistTracks.length === 0) return;
   let nextIndex = currentTrackIndex;
   if (isPlayerShuffleEnabled && playlistTracks.length > 1) {
@@ -369,385 +172,387 @@ function playNextTrackWithCrossfade() {
     nextIndex = currentTrackIndex + 1;
     if (nextIndex >= playlistTracks.length) nextIndex = 0;
   }
-  playTrack(nextIndex);
+  playMusicTrack(nextIndex);
 }
-window.playNextTrackWithCrossfade = playNextTrackWithCrossfade;
+window.playNextMusicTrack = playNextMusicTrack;
+window.playNextTrackWithCrossfade = playNextMusicTrack;
 
-function playPreviousTrack() {
+function playPrevMusicTrack() {
   if (playlistTracks.length === 0) return;
   if (activeUserAudio && activeUserAudio.currentTime > 3) {
     activeUserAudio.currentTime = 0;
     return;
   }
-  let prevIndex;
-  if (isPlayerShuffleEnabled && playlistTracks.length > 1) {
-    do {
-      prevIndex = Math.floor(Math.random() * playlistTracks.length);
-    } while (prevIndex === currentTrackIndex);
-  } else {
-    prevIndex = currentTrackIndex - 1;
-    if (prevIndex < 0) prevIndex = playlistTracks.length - 1;
-  }
-  playTrack(prevIndex);
+  let prevIndex = currentTrackIndex - 1;
+  if (prevIndex < 0) prevIndex = playlistTracks.length - 1;
+  playMusicTrack(prevIndex);
 }
-window.playPreviousTrack = playPreviousTrack;
+window.playPrevMusicTrack = playPrevMusicTrack;
+window.playPreviousTrack = playPrevMusicTrack;
 
-function cueTrackStart() {
+function seekMusicTrack(val) {
+  if (!activeUserAudio || !activeUserAudio.duration) return;
+  const pct = parseFloat(val);
+  activeUserAudio.currentTime = (pct / 100) * activeUserAudio.duration;
+}
+window.seekMusicTrack = seekMusicTrack;
+
+function setMusicPlayerVolume(val) {
+  soundMasterVolume = parseFloat(val);
   if (activeUserAudio) {
-    activeUserAudio.currentTime = 0;
-    if (activeUserAudio.paused) {
-      activeUserAudio.play();
-      updatePlayPauseButtonUI(true);
-    }
-  } else if (playlistTracks.length > 0) {
-    playTrack(currentTrackIndex);
+    activeUserAudio.volume = isPlayerMuted ? 0 : (soundMasterVolume * 0.75);
   }
 }
-window.cueTrackStart = cueTrackStart;
+window.setMusicPlayerVolume = setMusicPlayerVolume;
+window.setSoundVolume = setMusicPlayerVolume;
 
-function togglePlayerShuffle() {
+function toggleMusicShuffle() {
   isPlayerShuffleEnabled = !isPlayerShuffleEnabled;
-  const btn = document.getElementById('player-shuffle-toggle-btn');
+  const btn = document.getElementById('music-btn-shuffle');
   if (btn) {
     btn.className = isPlayerShuffleEnabled
-      ? 'p-1.5 bg-purple-500/30 text-purple-300 rounded-xl cursor-pointer transition border border-purple-400/50'
-      : 'p-1.5 bg-white/5 text-gray-400 rounded-xl cursor-pointer transition border border-white/10';
+      ? 'p-1 rounded-lg bg-purple-500/30 text-purple-300 border border-purple-400/40 cursor-pointer transition'
+      : 'p-1 rounded-lg text-gray-400 hover:text-white transition cursor-pointer';
   }
+  showToast(isPlayerShuffleEnabled ? 'Zufallswiedergabe aktiv 🔀' : 'Zufallswiedergabe aus');
 }
-window.togglePlayerShuffle = togglePlayerShuffle;
+window.toggleMusicShuffle = toggleMusicShuffle;
+window.togglePlayerShuffle = toggleMusicShuffle;
 
-function cyclePlayerRepeatMode() {
+function toggleMusicRepeat() {
   if (playerRepeatMode === 'all') playerRepeatMode = 'one';
   else if (playerRepeatMode === 'one') playerRepeatMode = 'off';
   else playerRepeatMode = 'all';
 
-  const btn = document.getElementById('player-repeat-toggle-btn');
-  const icon = document.getElementById('player-repeat-icon');
-  if (btn && icon) {
+  const btn = document.getElementById('music-btn-repeat');
+  if (btn) {
     if (playerRepeatMode === 'all') {
-      btn.className = 'p-1.5 bg-purple-500/30 text-purple-300 rounded-xl cursor-pointer transition border border-purple-400/50';
-      icon.setAttribute('data-lucide', 'repeat');
+      btn.className = 'p-1 rounded-lg bg-purple-500/30 text-purple-300 border border-purple-400/40 cursor-pointer transition';
+      btn.title = 'Alles wiederholen';
     } else if (playerRepeatMode === 'one') {
-      btn.className = 'p-1.5 bg-purple-500/40 text-purple-200 rounded-xl cursor-pointer transition border border-purple-400 font-bold';
-      icon.setAttribute('data-lucide', 'repeat-1');
+      btn.className = 'p-1 rounded-lg bg-purple-500/50 text-purple-100 border border-purple-300 font-bold cursor-pointer transition';
+      btn.title = 'Titel wiederholen';
     } else {
-      btn.className = 'p-1.5 bg-white/5 text-gray-400 rounded-xl cursor-pointer transition border border-white/10';
-      icon.setAttribute('data-lucide', 'repeat');
+      btn.className = 'p-1 rounded-lg text-gray-400 hover:text-white transition cursor-pointer';
+      btn.title = 'Keine Wiederholung';
     }
-    if (typeof renderLucideIcons === 'function') renderLucideIcons();
   }
 }
-window.cyclePlayerRepeatMode = cyclePlayerRepeatMode;
+window.toggleMusicRepeat = toggleMusicRepeat;
+window.cyclePlayerRepeatMode = toggleMusicRepeat;
 
-function renderTrackList() {
-  const container = document.getElementById('track-list-container');
-  if (!container) return;
+function removeMusicTrack(idx, event) {
+  if (event) event.stopPropagation();
+  if (idx < 0 || idx >= playlistTracks.length) return;
+
+  const wasPlaying = idx === currentTrackIndex && activeUserAudio && !activeUserAudio.paused;
+  playlistTracks.splice(idx, 1);
 
   if (playlistTracks.length === 0) {
-    container.innerHTML = `<div class="text-[11px] text-gray-500 text-center py-3">Keine Tracks in der Playlist</div>`;
+    if (activeUserAudio) {
+      activeUserAudio.pause();
+      activeUserAudio = null;
+    }
+    currentTrackIndex = 0;
+    updateMusicPlayBtnUI(false);
+    updateMusicNowPlayingDisplay();
+    renderMusicPlaylist();
     return;
   }
 
-  container.innerHTML = playlistTracks.map((track, idx) => {
-    const isActive = idx === currentTrackIndex;
-    const durStr = track.duration ? formatAudioTime(track.duration) : '--:--';
-    return `
-      <div onclick="playTrack(${idx})" class="p-1.5 rounded-xl border transition flex items-center justify-between gap-2 cursor-pointer ${isActive ? 'bg-purple-500/20 border-purple-500/40 text-white shadow-sm' : 'bg-black/30 hover:bg-white/5 border-white/5 text-gray-300'}" data-track-active="${isActive}">
-        <div class="flex items-center gap-2 min-w-0">
-          <span class="text-[10px] font-mono text-gray-500 w-4 shrink-0">${idx + 1}.</span>
-          <div class="truncate text-xs font-semibold">${track.name}</div>
-        </div>
-        <div class="flex items-center gap-2 shrink-0">
-          <span class="text-[9px] font-mono text-gray-400">${durStr}</span>
-          <button onclick="removeTrackFromPlaylist(${idx}, event)" class="p-1 rounded hover:bg-red-500/20 text-gray-500 hover:text-red-300 transition" title="Löschen">
-            <i data-lucide="x" class="w-3 h-3"></i>
-          </button>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  if (typeof renderLucideIcons === 'function') renderLucideIcons();
-}
-
-function updatePlayerHeaderInfo() {
-  const countEl = document.getElementById('player-track-count');
-  if (!countEl) return;
-  countEl.innerText = `${playlistTracks.length} Tracks`;
-}
-
-function setSoundVolume(val) {
-  soundMasterVolume = parseFloat(val);
-  if (soundMasterVolume < 0.02) soundMasterVolume = 0;
-  isPlayerMuted = false;
-
-  if (activeUserAudio) {
-    activeUserAudio.volume = soundMasterVolume * 0.75;
+  if (idx < currentTrackIndex) {
+    currentTrackIndex--;
+  } else if (idx === currentTrackIndex) {
+    currentTrackIndex = Math.min(currentTrackIndex, playlistTracks.length - 1);
+    if (wasPlaying) {
+      playMusicTrack(currentTrackIndex);
+      return;
+    }
   }
-  if (soundGainNode && audioCtx) {
-    try {
-      soundGainNode.gain.setValueAtTime(soundMasterVolume * 1.0, audioCtx.currentTime);
-    } catch(e) {}
-  }
-  applyDjMixerGains();
-}
-window.setSoundVolume = setSoundVolume;
 
-function togglePlayerMute() {
-  isPlayerMuted = !isPlayerMuted;
-  if (activeUserAudio) {
-    activeUserAudio.volume = isPlayerMuted ? 0 : soundMasterVolume * 0.75;
-  }
-  applyDjMixerGains();
-  const muteBtn = document.getElementById('player-mute-toggle-btn');
-  if (muteBtn) {
-    muteBtn.innerHTML = isPlayerMuted
-      ? '<i data-lucide="volume-x" class="w-3.5 h-3.5 text-red-400"></i>'
-      : '<i data-lucide="volume-2" class="w-3.5 h-3.5"></i>';
+  updateMusicNowPlayingDisplay();
+  renderMusicPlaylist();
+}
+window.removeMusicTrack = removeMusicTrack;
+window.removeTrackFromPlaylist = removeMusicTrack;
+
+function updateMusicPlayBtnUI(isPlaying) {
+  const btn = document.getElementById('music-play-pause-btn');
+  if (btn) {
+    btn.innerHTML = isPlaying
+      ? '<i data-lucide="pause" class="w-3.5 h-3.5"></i>'
+      : '<i data-lucide="play" class="w-3.5 h-3.5"></i>';
     if (typeof renderLucideIcons === 'function') renderLucideIcons();
   }
 }
-window.togglePlayerMute = togglePlayerMute;
 
-// =============================================================
-// ===== 🎛️ 2-DECK PROFESSIONAL DJ STUDIO ENGINE =====
-// =============================================================
+function updateMusicNowPlayingDisplay() {
+  const titleEl = document.getElementById('music-now-playing-title');
+  const timeEl = document.getElementById('music-now-playing-time');
+  const track = playlistTracks[currentTrackIndex];
 
-function initDjDecks() {
-  initAudioContext();
-  populateDjDeckSelectors();
+  if (titleEl) {
+    titleEl.innerText = track ? track.name : 'Kein Track aktiv';
+  }
+  if (timeEl && track && activeUserAudio) {
+    const cur = formatAudioTime(activeUserAudio.currentTime);
+    const dur = track.duration ? formatAudioTime(track.duration) : '--:--';
+    timeEl.innerText = `${cur} / ${dur}`;
+  }
 }
 
-function populateDjDeckSelectors() {
-  ['a', 'b'].forEach(deckId => {
-    const sel = document.getElementById(`dj-track-select-${deckId}`);
-    if (!sel) return;
-    const currentVal = sel.value;
-    sel.innerHTML = `<option value="">-- Track auswählen --</option>` +
-      playlistTracks.map((t, idx) => `<option value="${idx}">${idx + 1}. ${t.name}</option>`).join('');
-    if (currentVal !== '') sel.value = currentVal;
+function updateMusicProgressUI(audio) {
+  if (!audio || !audio.duration) return;
+  const pct = (audio.currentTime / audio.duration) * 100 || 0;
+  const slider = document.getElementById('music-progress-slider');
+  if (slider) slider.value = pct;
+
+  const timeEl = document.getElementById('music-now-playing-time');
+  if (timeEl) {
+    const cur = formatAudioTime(audio.currentTime);
+    const dur = formatAudioTime(audio.duration);
+    timeEl.innerText = `${cur} / ${dur}`;
+  }
+}
+
+// ============================================================================
+// 3. MULTI-SOURCE STREAMING (SPOTIFY & YOUTUBE)
+// ============================================================================
+
+function switchMusicSourceTab(tab) {
+  const tabs = ['dj', 'spotify', 'youtube'];
+  tabs.forEach(t => {
+    const btn = document.getElementById(`music-tab-btn-${t}`);
+    const pane = document.getElementById(`music-pane-${t}`);
+    if (btn) {
+      btn.className = (t === tab)
+        ? `flex-1 py-1 rounded-lg text-white bg-purple-600/30 border border-purple-500/40 transition flex items-center justify-center gap-1.5 cursor-pointer text-[11px] font-bold shadow-sm`
+        : `flex-1 py-1 rounded-lg text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer text-[11px] font-medium`;
+    }
+    if (pane) {
+      pane.classList.toggle('hidden', t !== tab);
+    }
   });
-}
 
-function handleDeckTrackSelect(deckId, trackIdx) {
-  if (trackIdx === '' || isNaN(parseInt(trackIdx, 10))) return;
-  const idx = parseInt(trackIdx, 10);
-  if (idx < 0 || idx >= playlistTracks.length) return;
-  loadTrackToDeck(deckId, playlistTracks[idx]);
+  if (typeof AppStorage !== 'undefined') {
+    AppStorage.set('flow_music_active_tab', tab);
+  }
+  if (typeof renderLucideIcons === 'function') renderLucideIcons();
 }
-window.handleDeckTrackSelect = handleDeckTrackSelect;
+window.switchMusicSourceTab = switchMusicSourceTab;
 
-function handleDeckFileUpload(deckId, event) {
+function loadSpotifyEmbed(urlOrId) {
+  let val = urlOrId;
+  if (!val) {
+    const input = document.getElementById('spotify-url-input');
+    val = input ? input.value.trim() : '';
+  }
+  if (!val) return;
+
+  const container = document.getElementById('spotify-embed-container');
+  if (!container) return;
+
+  let embedUrl = val;
+  if (val.includes('open.spotify.com/')) {
+    embedUrl = val.replace('open.spotify.com/', 'open.spotify.com/embed/');
+  } else if (!val.includes('spotify.com')) {
+    embedUrl = `https://open.spotify.com/embed/playlist/${val}`;
+  }
+
+  container.innerHTML = `
+    <iframe style="border-radius:16px" src="${embedUrl}?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+  `;
+
+  if (typeof AppStorage !== 'undefined') {
+    AppStorage.set('flow_spotify_url', val);
+  }
+  showToast('Spotify Playlist geladen! 🟢');
+}
+window.loadSpotifyEmbed = loadSpotifyEmbed;
+
+function loadYoutubeEmbed(urlOrId) {
+  let val = urlOrId;
+  if (!val) {
+    const input = document.getElementById('youtube-url-input');
+    val = input ? input.value.trim() : '';
+  }
+  if (!val) return;
+
+  const container = document.getElementById('youtube-embed-container');
+  if (!container) return;
+
+  let videoId = val;
+  const match = val.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+  if (match && match[1]) {
+    videoId = match[1];
+  }
+
+  container.innerHTML = `
+    <div class="relative w-full aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black shadow-lg">
+      <iframe class="w-full h-full" src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+    </div>
+  `;
+
+  if (typeof AppStorage !== 'undefined') {
+    AppStorage.set('flow_youtube_url', val);
+  }
+  showToast('YouTube Stream geladen! 🔴');
+}
+window.loadYoutubeEmbed = loadYoutubeEmbed;
+window.loadYouTubeEmbed = loadYoutubeEmbed;
+
+// ============================================================================
+// 4. TAB 4: 2-DECK DJ MIXER
+// ============================================================================
+
+function handleDjDeckUpload(deckId, event) {
   const file = event.target.files?.[0];
   if (!file) return;
+
+  const deck = djDecks[deckId];
+  if (!deck) return;
+
+  if (deck.audio) {
+    try { deck.audio.pause(); } catch(e) {}
+  }
+
   const track = {
     url: URL.createObjectURL(file),
     name: file.name.replace(/\.[^/.]+$/, ''),
     fullName: file.name
   };
-  playlistTracks.push(track);
-  populateDjDeckSelectors();
-  loadTrackToDeck(deckId, track);
-  event.target.value = '';
-}
-window.handleDeckFileUpload = handleDeckFileUpload;
-
-function loadTrackToDeck(deckId, track) {
-  const deck = djDecks[deckId];
-  if (!deck) return;
-
-  if (deck.audio) {
-    deck.audio.pause();
-    deck.audio.src = '';
-  }
 
   deck.track = track;
   deck.audio = new Audio(track.url);
-  deck.audio.loop = false;
   deck.audio.playbackRate = deck.pitch;
 
-  deck.audio.addEventListener('timeupdate', () => {
-    updateDeckTimeDisplay(deckId);
-  });
-  deck.audio.addEventListener('ended', () => {
-    deck.isPlaying = false;
-    updateDeckPlayBtn(deckId);
-    updateDeckVinylAnim(deckId);
-  });
-
-  // Connect Web Audio Graph for Deck
-  setupDeckAudioNodes(deckId);
-
-  const titleEl = document.getElementById(`dj-deck-${deckId}-title`);
+  const titleEl = document.getElementById(`dj-title-deck-${deckId}`);
   if (titleEl) titleEl.innerText = track.name;
 
-  applyDjMixerGains();
-  showToast(`Track in Deck ${deckId.toUpperCase()} geladen! 🎛️`);
+  deck.audio.addEventListener('timeupdate', () => {
+    if (!deck.audio || !deck.audio.duration) return;
+    const timeEl = document.getElementById(`dj-time-deck-${deckId}`);
+    if (timeEl) timeEl.innerText = formatAudioTime(deck.audio.currentTime);
+    const seekSlider = document.getElementById(`dj-seek-deck-${deckId}`);
+    if (seekSlider) seekSlider.value = (deck.audio.currentTime / deck.audio.duration) * 100 || 0;
+  });
+
+  deck.audio.addEventListener('ended', () => {
+    deck.isPlaying = false;
+    const btn = document.getElementById(`dj-play-btn-${deckId}`);
+    if (btn) btn.innerText = 'Play';
+  });
+
+  showToast(`Deck ${deckId.toUpperCase()}: "${track.name}" geladen! 🎛️`);
+  event.target.value = '';
 }
-window.loadTrackToDeck = loadTrackToDeck;
+window.handleDjDeckUpload = handleDjDeckUpload;
 
-function setupDeckAudioNodes(deckId) {
-  if (!audioCtx) initAudioContext();
-  if (!audioCtx) return;
-
-  const deck = djDecks[deckId];
-  if (!deck || !deck.audio) return;
-
-  try {
-    // Direct volume-gain routing
-    applyDjMixerGains();
-  } catch (e) {
-    console.warn("Deck node setup note:", e);
-  }
-}
-
-function toggleDeck(deckId) {
+function toggleDjDeckPlayback(deckId) {
   const deck = djDecks[deckId];
   if (!deck || !deck.audio) {
-    if (playlistTracks.length > 0) {
-      loadTrackToDeck(deckId, playlistTracks[deckId === 'a' ? 0 : Math.min(1, playlistTracks.length - 1)]);
-    } else {
-      document.getElementById(`dj-file-input-${deckId}`)?.click();
-      return;
-    }
+    showToast(`Bitte lade zuerst einen Track in Deck ${deckId.toUpperCase()}!`);
+    return;
   }
 
+  const btn = document.getElementById(`dj-play-btn-${deckId}`);
   if (deck.audio.paused) {
-    initAudioContext();
-    deck.audio.play();
-    deck.isPlaying = true;
+    if (typeof initAudioContext === 'function') initAudioContext();
+    deck.audio.play().then(() => {
+      deck.isPlaying = true;
+      if (btn) btn.innerText = 'Pause';
+    }).catch(e => console.warn(e));
   } else {
     deck.audio.pause();
     deck.isPlaying = false;
+    if (btn) btn.innerText = 'Play';
   }
-  updateDeckPlayBtn(deckId);
-  updateDeckVinylAnim(deckId);
 }
-window.toggleDeck = toggleDeck;
+window.toggleDjDeckPlayback = toggleDjDeckPlayback;
 
-function cueDeck(deckId) {
+function cueDjDeck(deckId) {
   const deck = djDecks[deckId];
   if (!deck || !deck.audio) return;
   deck.audio.currentTime = 0;
   if (deck.audio.paused) {
-    deck.audio.play();
-    deck.isPlaying = true;
-    updateDeckPlayBtn(deckId);
-    updateDeckVinylAnim(deckId);
+    toggleDjDeckPlayback(deckId);
   }
 }
-window.cueDeck = cueDeck;
+window.cueDjDeck = cueDjDeck;
 
-function syncDeck(deckId) {
-  const otherDeckId = deckId === 'a' ? 'b' : 'a';
+function syncDjDeck(deckId) {
+  const otherId = deckId === 'a' ? 'b' : 'a';
   const thisDeck = djDecks[deckId];
-  const otherDeck = djDecks[otherDeckId];
-  if (!thisDeck) return;
+  const otherDeck = djDecks[otherId];
+  if (!thisDeck || !thisDeck.audio) return;
 
-  thisDeck.pitch = otherDeck ? otherDeck.pitch : 1.0;
-  thisDeck.bpm = otherDeck ? otherDeck.bpm : 128;
-  if (thisDeck.audio) thisDeck.audio.playbackRate = thisDeck.pitch;
-
-  const slider = document.getElementById(`dj-pitch-slider-${deckId}`);
-  if (slider) slider.value = Math.round((thisDeck.pitch - 1.0) * 100);
-  const bpmVal = document.getElementById(`dj-bpm-val-${deckId}`);
-  if (bpmVal) bpmVal.innerText = `${Math.round(128 * thisDeck.pitch)} BPM`;
-
-  showToast(`Deck ${deckId.toUpperCase()} BPM synchronisiert! ⚡`);
+  if (otherDeck && otherDeck.pitch) {
+    thisDeck.pitch = otherDeck.pitch;
+    thisDeck.audio.playbackRate = thisDeck.pitch;
+    const slider = document.getElementById(`dj-pitch-slider-${deckId}`);
+    if (slider) slider.value = Math.round((thisDeck.pitch - 1.0) * 100);
+    const valDisplay = document.getElementById(`dj-pitch-val-${deckId}`);
+    if (valDisplay) valDisplay.innerText = `${((thisDeck.pitch - 1.0) * 100).toFixed(1)}%`;
+    showToast(`Deck ${deckId.toUpperCase()} synchronisiert! ⚡`);
+  }
 }
-window.syncDeck = syncDeck;
+window.syncDjDeck = syncDjDeck;
 
-function setDeckPitch(deckId, val) {
+function seekDjDeck(deckId, val) {
+  const deck = djDecks[deckId];
+  if (!deck || !deck.audio || !deck.audio.duration) return;
+  const pct = parseFloat(val);
+  deck.audio.currentTime = (pct / 100) * deck.audio.duration;
+}
+window.seekDjDeck = seekDjDeck;
+
+function setDjPitch(deckId, val) {
   const deck = djDecks[deckId];
   if (!deck) return;
-  const pct = parseFloat(val); // -16 to +16
-  deck.pitch = 1.0 + (pct / 100.0);
-  if (deck.audio) deck.audio.playbackRate = deck.pitch;
-
-  const bpmVal = document.getElementById(`dj-bpm-val-${deckId}`);
-  if (bpmVal) bpmVal.innerText = `${Math.round(128 * deck.pitch)} BPM`;
+  const pct = parseFloat(val);
+  deck.pitch = 1.0 + (pct / 100);
+  if (deck.audio) {
+    deck.audio.playbackRate = deck.pitch;
+  }
+  const valDisplay = document.getElementById(`dj-pitch-val-${deckId}`);
+  if (valDisplay) valDisplay.innerText = `${pct > 0 ? '+' : ''}${pct.toFixed(1)}%`;
 }
-window.setDeckPitch = setDeckPitch;
+window.setDjPitch = setDjPitch;
 
-function setDeckVolume(deckId, val) {
+function setDjEq(deckId, type, val) {
   const deck = djDecks[deckId];
-  if (!deck) return;
-  deck.volume = parseFloat(val);
-  applyDjMixerGains();
+  if (!deck || !deck.audio) return;
+  // Standard Web Audio gain scaling if needed
 }
-window.setDeckVolume = setDeckVolume;
+window.setDjEq = setDjEq;
 
-// Constant-Power Equal-Loudness Crossfader (cos / sin curve)
 function setDjCrossfader(val) {
-  djCrossfaderPosition = parseFloat(val); // 0.0 to 1.0
-  applyDjMixerGains();
+  const x = parseFloat(val);
+  const gainA = Math.cos(x * 0.5 * Math.PI);
+  const gainB = Math.sin(x * 0.5 * Math.PI);
+  const master = (typeof soundMasterVolume === 'number') ? soundMasterVolume : 0.5;
 
-  const slider = document.getElementById('dj-crossfader-slider');
-  if (slider) slider.value = djCrossfaderPosition;
+  if (djDecks.a && djDecks.a.audio) {
+    djDecks.a.audio.volume = Math.max(0, Math.min(1, gainA * master));
+  }
+  if (djDecks.b && djDecks.b.audio) {
+    djDecks.b.audio.volume = Math.max(0, Math.min(1, gainB * master));
+  }
 }
 window.setDjCrossfader = setDjCrossfader;
 
-function quickCrossfade(pos) {
-  setDjCrossfader(pos);
-}
-window.quickCrossfade = quickCrossfade;
+// ============================================================================
+// 5. REAL-TIME DJ SOUND FX
+// ============================================================================
 
-function applyDjMixerGains() {
-  const angle = djCrossfaderPosition * 0.5 * Math.PI;
-  const crossGainA = Math.cos(angle);
-  const crossGainB = Math.sin(angle);
-
-  const master = isPlayerMuted ? 0 : (soundMasterVolume || 0.5);
-
-  if (djDecks.a.audio) {
-    djDecks.a.audio.volume = Math.max(0, Math.min(1, djDecks.a.volume * crossGainA * master));
-  }
-  if (djDecks.b.audio) {
-    djDecks.b.audio.volume = Math.max(0, Math.min(1, djDecks.b.volume * crossGainB * master));
-  }
-}
-
-function updateDeckTimeDisplay(deckId) {
-  const deck = djDecks[deckId];
-  if (!deck || !deck.audio) return;
-  const curEl = document.getElementById(`dj-time-${deckId}`);
-  if (curEl) curEl.innerText = formatAudioTime(deck.audio.currentTime);
-}
-
-function updateDeckPlayBtn(deckId) {
-  const deck = djDecks[deckId];
-  const btn = document.getElementById(`dj-play-btn-${deckId}`);
-  if (btn) {
-    btn.innerHTML = deck.isPlaying
-      ? '<i data-lucide="pause" class="w-4 h-4"></i>'
-      : '<i data-lucide="play" class="w-4 h-4 ml-0.5"></i>';
-    if (typeof renderLucideIcons === 'function') renderLucideIcons();
-  }
-}
-
-function updateDeckVinylAnim(deckId) {
-  const deck = djDecks[deckId];
-  const vinyl = document.getElementById(`dj-vinyl-${deckId}`);
-  if (vinyl) {
-    if (deck.isPlaying) {
-      vinyl.classList.add('animate-spin');
-      vinyl.style.animationDuration = `${3.0 / (deck.pitch || 1.0)}s`;
-    } else {
-      vinyl.classList.remove('animate-spin');
-    }
-  }
-}
-
-// ===== REAL-TIME DJ SOUND FX SYNTHESIZERS =====
 function playDjSfx(type) {
-  initAudioContext();
-  if (!audioCtx) return;
+  if (typeof initAudioContext === 'function') initAudioContext();
+  if (typeof audioCtx === 'undefined' || !audioCtx) return;
 
   const now = audioCtx.currentTime;
 
   if (type === 'airhorn') {
-    // Classic Dancehall / Club Airhorn (Rich Multi-Osc Brass Blast)
-    const hornPitches = [466.16, 622.25, 932.33]; // Bb4, Eb5, Bb5 chord
+    const hornPitches = [466.16, 622.25, 932.33];
     hornPitches.forEach(freq => {
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
@@ -766,12 +571,9 @@ function playDjSfx(type) {
       gain.connect(audioCtx.destination);
       osc.start(now);
       osc.stop(now + 0.6);
-      activeNodes.push(osc);
     });
     showToast('📢 AIRHORN BLAST!');
-
   } else if (type === 'scratch') {
-    // Vinyl Backspin & Scratch Stutter
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     const filter = audioCtx.createBiquadFilter();
@@ -795,11 +597,8 @@ function playDjSfx(type) {
     gain.connect(audioCtx.destination);
     osc.start(now);
     osc.stop(now + 0.35);
-    activeNodes.push(osc);
     showToast('⚡ VINYL SCRATCH!');
-
   } else if (type === 'laser') {
-    // Club Laser Sweep
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.type = 'sawtooth';
@@ -814,11 +613,8 @@ function playDjSfx(type) {
     gain.connect(audioCtx.destination);
     osc.start(now);
     osc.stop(now + 0.35);
-    activeNodes.push(osc);
     showToast('🚨 LASER SWEEP!');
-
   } else if (type === 'subdrop') {
-    // Heavy 808 Sub Drop
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.type = 'sine';
@@ -833,64 +629,7 @@ function playDjSfx(type) {
     gain.connect(audioCtx.destination);
     osc.start(now);
     osc.stop(now + 0.9);
-    activeNodes.push(osc);
     showToast('💥 808 SUB DROP!');
   }
 }
 window.playDjSfx = playDjSfx;
-
-// ===== MULTI-SOURCE MUSIC PLAYER (SPOTIFY & YOUTUBE STREAMING) =====
-
-function switchMusicSourceTab(tab) {
-  const tabs = ['dj', 'spotify', 'youtube'];
-  tabs.forEach(t => {
-    const btn = document.getElementById(`music-tab-btn-${t}`);
-    const pane = document.getElementById(`music-pane-${t}`);
-    if (btn) {
-      btn.className = (t === tab)
-        ? `flex-1 py-1.5 rounded-xl text-white bg-purple-600/30 border border-purple-500/40 transition flex items-center justify-center gap-1.5 cursor-pointer text-[11px] font-bold shadow-sm`
-        : `flex-1 py-1.5 rounded-xl text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer text-[11px] font-medium`;
-    }
-    if (pane) {
-      pane.classList.toggle('hidden', t !== tab);
-    }
-  });
-
-  if (typeof AppStorage !== 'undefined') {
-    AppStorage.set('flow_music_active_tab', tab);
-  }
-  if (typeof renderLucideIcons === 'function') renderLucideIcons();
-}
-window.switchMusicSourceTab = switchMusicSourceTab;
-
-function loadSpotifyEmbed(urlOrId) {
-  const container = document.getElementById('spotify-embed-container');
-  if (!container) return;
-
-  container.innerHTML = `
-    <iframe style="border-radius:16px" src="https://open.spotify.com/embed/playlist/${urlOrId}?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-  `;
-
-  if (typeof AppStorage !== 'undefined') {
-    AppStorage.set('flow_spotify_url', urlOrId);
-  }
-  showToast('Spotify Playlist geladen! 🟢');
-}
-window.loadSpotifyEmbed = loadSpotifyEmbed;
-
-function loadYouTubeEmbed(urlOrId) {
-  const container = document.getElementById('youtube-embed-container');
-  if (!container) return;
-
-  container.innerHTML = `
-    <div class="relative w-full aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black shadow-lg">
-      <iframe class="w-full h-full" src="https://www.youtube-nocookie.com/embed/${urlOrId}?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
-    </div>
-  `;
-
-  if (typeof AppStorage !== 'undefined') {
-    AppStorage.set('flow_youtube_url', urlOrId);
-  }
-  showToast('YouTube Stream geladen! 🔴');
-}
-window.loadYouTubeEmbed = loadYouTubeEmbed;

@@ -57,4 +57,45 @@ describe('AppStorage Abstraction (Production Code)', () => {
     window.AppStorage.remove('str_key');
     expect(window.AppStorage.getString('str_key', 'defaultStr')).toBe('defaultStr');
   });
+
+  it('ErrorDiagnostics logs errors and retrieves recent history', () => {
+    expect(window.ErrorDiagnostics).toBeDefined();
+    window.ErrorDiagnostics.capture('Test error captured', { detail: 123 });
+    const logs = window.ErrorDiagnostics.getLogs();
+    expect(logs.length).toBeGreaterThan(0);
+    expect(logs[logs.length - 1].message).toBe('Test error captured');
+  });
 });
+
+describe('Haptic Feedback (Production Code)', () => {
+  it('triggerHapticFeedback gracefully handles environments without navigator.vibrate', () => {
+    expect(() => window.triggerHapticFeedback('light')).not.toThrow();
+    expect(() => window.triggerHapticFeedback('success')).not.toThrow();
+  });
+});
+
+describe('Command Palette (Production Code)', () => {
+  it('CommandPalette is exposed globally with open, close and toggle APIs', async () => {
+    await import('../app-command-palette.js');
+    expect(window.CommandPalette).toBeDefined();
+    expect(typeof window.CommandPalette.open).toBe('function');
+    expect(typeof window.CommandPalette.close).toBe('function');
+    expect(typeof window.CommandPalette.toggle).toBe('function');
+  });
+});
+
+describe('Onboarding Module (Production Code)', () => {
+  it('startOnboardingTour, handleOnboardingNext and closeOnboardingTour are exposed and callable', async () => {
+    await import('../onboarding.js');
+    expect(typeof window.startOnboardingTour).toBe('function');
+    expect(typeof window.closeOnboardingTour).toBe('function');
+    expect(typeof window.handleOnboardingNext).toBe('function');
+    expect(typeof window.handleOnboardingPrev).toBe('function');
+
+    expect(() => window.startOnboardingTour()).not.toThrow();
+    expect(() => window.handleOnboardingNext()).not.toThrow();
+    expect(() => window.closeOnboardingTour()).not.toThrow();
+  });
+});
+
+

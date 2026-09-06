@@ -1,4 +1,91 @@
-// storage.js: Zentrale, robuste Storage-Abstraktion mit JSON-Safeguards und Logging
+/**
+ * ============================================================================
+ * Noodle - Speicherabstraktion & Resilienz-Vault (storage.js)
+ * ============================================================================
+ * Stellt eine ausfallsichere Speicherschicht (`AppStorage`) bereit:
+ * - Schneller synchroner Zugriff via localStorage
+ * - Automatischer asynchroner IndexedDB-Sicherheitsspiegel (`IDB_VAULT`)
+ * - Robuster Schutz gegen Safari/iOS Storage-Eviction
+ * - Sichere JSON-Serialisierung mit Fallback-Garantie
+ * ============================================================================
+ */
+
+// 1. IndexedDB Vault (Asynchroner Sicherheitsspiegel gegen Safari/Mobile Eviction)
+const IDB_VAULT = {
+  dbPromise: null,
+  getDB() {
+    if (typeof indexedDB === 'undefined') return Promise.resolve(null);
+    if (!this.dbPromise) {
+      this.dbPromise = new Promise((resolve) => {
+        try {
+          const req = indexedDB.open('noodle_resilience_vault', 1);
+          req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains('keyval')) {
+              db.createObjectStore('keyval');
+            }
+          };
+          req.onsuccess = (e) => resolve(e.target.result);
+          req.onerror = () => resolve(null);
+        } catch (e) {
+          resolve(null);
+        }
+      });
+    }
+    return this.dbPromise;
+  },
+
+  async set(key, value) {
+    try {
+      const db = await this.getDB();
+      if (!db) return;
+      const tx = db.transaction('keyval', 'readwrite');
+      tx.objectStore('keyval').put(value, key);
+    } catch (e) {
+      // Stiller Fehler im Hintergrund
+    }
+  },
+
+  async get(key) {
+    try {
+      const db = await this.getDB();
+      if (!db) return null;
+      return new Promise((resolve) => {
+        const tx = db.transaction('keyval', 'readonly');
+        const req = tx.objectStore('keyval').get(key);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => resolve(null);
+      });
+    } catch (e) {
+      return null;
+    }
+  },
+
+  async getAllKeys() {
+    try {
+      const db = await this.getDB();
+      if (!db) return [];
+      return new Promise((resolve) => {
+        const tx = db.transaction('keyval', 'readonly');
+        const req = tx.objectStore('keyval').getAllKeys();
+        req.onsuccess = () => resolve(req.result || []);
+        req.onerror = () => resolve([]);
+      });
+    } catch (e) {
+      return [];
+    }
+  },
+
+  async remove(key) {
+    try {
+      const db = await this.getDB();
+      if (!db) return;
+      const tx = db.transaction('keyval', 'readwrite');
+      tx.objectStore('keyval').delete(key);
+    } catch (e) {}
+  }
+};
+
 const AppStorage = {
   get(key, defaultValue = null) {
     try {
@@ -13,10 +100,15 @@ const AppStorage = {
 
   set(key, value) {
     try {
-      localStorage.setItem(key, JSON.stringify(value));
+      const serialized = JSON.stringify(value);
+      localStorage.setItem(key, serialized);
+      // Asynchrone Spiegelung in IndexedDB
+      IDB_VAULT.set(key, value);
       return true;
     } catch (e) {
       console.error(`[AppStorage] Fehler beim Schreiben von '${key}':`, e);
+      // Notfall: Trotzdem in IndexedDB versuchen
+      IDB_VAULT.set(key, value);
       return false;
     }
   },
@@ -34,9 +126,11 @@ const AppStorage = {
   setString(key, value) {
     try {
       localStorage.setItem(key, String(value));
+      IDB_VAULT.set(key, String(value));
       return true;
     } catch (e) {
       console.error(`[AppStorage] Fehler beim Schreiben des Strings '${key}':`, e);
+      IDB_VAULT.set(key, String(value));
       return false;
     }
   },
@@ -44,17 +138,80 @@ const AppStorage = {
   remove(key) {
     try {
       localStorage.removeItem(key);
+      IDB_VAULT.remove(key);
       return true;
     } catch (e) {
       console.warn(`[AppStorage] Fehler beim Löschen von '${key}':`, e);
       return false;
     }
+  },
+
+  // Resilienz-Prüfung bei App-Start: Stellt Daten wieder her, falls Safari/Android localStorage geleert hat
+  async initResilience() {
+    try {
+      if (typeof localStorage === 'undefined') return false;
+      const hasLocalStorageData = localStorage.getItem('flow_state_v3') || localStorage.getItem('flow_items_v2');
+      if (!hasLocalStorageData) {
+        const idbKeys = await IDB_VAULT.getAllKeys();
+        if (idbKeys.length > 0) {
+          console.log('[AppStorage] LocalStorage war leer – stelle aus IndexedDB Vault wieder her...');
+          for (const key of idbKeys) {
+            const val = await IDB_VAULT.get(key);
+            if (val !== null && val !== undefined) {
+              if (typeof val === 'string') {
+                localStorage.setItem(key, val);
+              } else {
+                localStorage.setItem(key, JSON.stringify(val));
+              }
+            }
+          }
+          if (typeof window !== 'undefined' && typeof window.showToast === 'function') {
+            window.showToast('Daten erfolgreich aus sicherem Speicher wiederhergestellt! 🛡️');
+          }
+          return true;
+        }
+      }
+    } catch (e) {
+      console.warn('[AppStorage] Resilienz-Initialisierung Notiz:', e);
+    }
+    return false;
   }
 };
 
-// ===== GLOBALER CRASH-HANDLER & PRODUCTION ERROR BOUNDARY =====
+// Automatischer Resilienz-Check beim Laden
+if (typeof window !== 'undefined') {
+  window.addEventListener('DOMContentLoaded', () => {
+    AppStorage.initResilience();
+  });
+}
+
+const ErrorDiagnostics = {
+  logs: [],
+  record(type, error) {
+    const entry = {
+      timestamp: new Date().toISOString(),
+      type,
+      message: error ? (error.message || String(error)) : 'Unknown',
+      stack: error ? error.stack : null,
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'N/A'
+    };
+    this.logs.unshift(entry);
+    if (this.logs.length > 20) this.logs.pop();
+  },
+  capture(msg, details) {
+    this.record('manual', { message: msg, details });
+  },
+  getLogs() {
+    return this.logs;
+  },
+  export() {
+    return JSON.stringify(this.logs, null, 2);
+  }
+};
+
 window.addEventListener('error', (event) => {
   console.error('[Flow Global Error Boundary]:', event.error || event.message);
+  ErrorDiagnostics.record('error', event.error || event.message);
   const appContainer = document.getElementById('app');
   if (appContainer && appContainer.innerHTML.trim() === '') {
     showCrashRecoveryScreen(event.message);
@@ -63,6 +220,7 @@ window.addEventListener('error', (event) => {
 
 window.addEventListener('unhandledrejection', (event) => {
   console.warn('[Flow Unhandled Promise Rejection]:', event.reason);
+  ErrorDiagnostics.record('unhandledrejection', event.reason);
 });
 
 function showCrashRecoveryScreen(errorMsg = '') {
@@ -87,9 +245,12 @@ function showCrashRecoveryScreen(errorMsg = '') {
 
 if (typeof window !== 'undefined') {
   window.AppStorage = AppStorage;
+  window.ErrorDiagnostics = ErrorDiagnostics;
   window.showCrashRecoveryScreen = showCrashRecoveryScreen;
 }
 if (typeof globalThis !== 'undefined') {
   globalThis.AppStorage = AppStorage;
+  globalThis.ErrorDiagnostics = ErrorDiagnostics;
   globalThis.showCrashRecoveryScreen = showCrashRecoveryScreen;
 }
+

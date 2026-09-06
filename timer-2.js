@@ -323,7 +323,7 @@ function showRingingModal() {
 
   modal.innerHTML = `
     <div class="relative w-full bg-[#111116]/95 border border-purple-500/50 p-4 rounded-2xl shadow-[0_10px_40px_rgba(139,92,246,0.35)] backdrop-blur-xl text-center text-white flex flex-col items-center gap-3">
-      <button onclick="dismissRingingModalOnly()" class="absolute top-2.5 right-2.5 text-gray-400 hover:text-white text-sm font-bold p-1 cursor-pointer transition" title="Schließen (Timer läuft im Minus weiter)">✕</button>
+      <button onclick="dismissRingingModalOnly()" aria-label="Schließen (Timer läuft im Minus weiter)" class="absolute top-2.5 right-2.5 text-gray-400 hover:text-white text-sm font-bold p-1 cursor-pointer transition" title="Schließen (Timer läuft im Minus weiter)">✕</button>
       
       <div class="flex items-center gap-3 w-full pr-6 text-left">
         <div class="h-10 w-10 shrink-0 bg-purple-500/20 border border-purple-500/40 rounded-xl flex items-center justify-center text-xl animate-pulse">

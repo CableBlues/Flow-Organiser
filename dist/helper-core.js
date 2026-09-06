@@ -98,8 +98,26 @@ function closeHelperModal() {
   stopSpeaking();
 }
 
-function populateHelperTaskSelect() {
+let _lastPopulatedHelperTaskKey = null;
+
+function populateHelperTaskSelect(force = false) {
   const select = document.getElementById('helper-task-select'); if (!select) return;
+  
+  const pickModal = document.getElementById('helper-pick-modal');
+  const stepsModal = document.getElementById('helper-steps-modal');
+  const isModalVisible = (pickModal && !pickModal.classList.contains('hidden')) || (stepsModal && !stepsModal.classList.contains('hidden'));
+
+  if (!isModalVisible && !force) return;
+
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'en';
+  const totalItemCount = state?.items ? Object.values(state.items).reduce((acc, l) => acc + (Array.isArray(l) ? l.length : 0), 0) : 0;
+  const stateKey = `${lang}-${totalItemCount}`;
+
+  if (!force && _lastPopulatedHelperTaskKey === stateKey && select.options.length > 1) {
+    return;
+  }
+  _lastPopulatedHelperTaskKey = stateKey;
+
   select.innerHTML = `<option value="">${safeTranslate('dropdown_placeholder')}</option>`;
   const allTasks = [];
   ['daily', 'weekly', 'todo', 'occasionally'].forEach(cat => {
@@ -109,7 +127,6 @@ function populateHelperTaskSelect() {
     });
   });
   
-  const lang = typeof currentLang !== 'undefined' ? currentLang : 'en';
   const presetsExist = typeof DEFAULT_TASKS_BY_LANG !== 'undefined' && DEFAULT_TASKS_BY_LANG[lang];
   const standardPresetsInCurrentLang = presetsExist 
     ? [...(DEFAULT_TASKS_BY_LANG[lang].daily || []), ...(DEFAULT_TASKS_BY_LANG[lang].weekly || []), ...(DEFAULT_TASKS_BY_LANG[lang].occasionally || [])]
@@ -149,80 +166,40 @@ let currentWhatNowEnergyLevel = 'med';
 let currentWhatNowChosen = null;
 
 function switchWhatNowTab(tabName) {
-  ['energy', 'zen', 'micro'].forEach(t => {
+  const normTab = (tabName === 'energy' || tabName === 'micro' || tabName === 'zen') ? 'suggestion' : tabName;
+  const TABS = ['suggestion', 'dilemma', 'braindump'];
+  
+  TABS.forEach(t => {
     const pane = document.getElementById(`whatnow-pane-${t}`);
     const tabBtn = document.getElementById(`whatnow-tab-${t}`);
     if (pane) {
-      if (t === tabName) pane.classList.remove('hidden');
+      if (t === normTab) pane.classList.remove('hidden');
       else pane.classList.add('hidden');
     }
     if (tabBtn) {
-      if (t === tabName) {
-        tabBtn.className = 'py-1.5 px-1 rounded-xl bg-purple-600 text-white text-center transition cursor-pointer flex items-center justify-center gap-1 font-bold shadow-sm';
+      if (t === normTab) {
+        tabBtn.className = 'py-2 px-2 rounded-xl bg-gradient-to-r from-amber-500/30 to-amber-600/30 border border-amber-400/50 text-amber-200 text-center transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm font-bold';
       } else {
-        tabBtn.className = 'py-1.5 px-1 rounded-xl text-gray-400 hover:text-white text-center transition cursor-pointer flex items-center justify-center gap-1 font-bold';
+        tabBtn.className = 'py-2 px-2 rounded-xl text-gray-400 hover:text-white text-center transition cursor-pointer flex items-center justify-center gap-1.5 border border-transparent font-bold';
       }
     }
   });
 
-  if (tabName === 'zen') {
-    updateWhatNowZenTab();
-  } else if (tabName === 'micro') {
-    if (currentWhatNowChosen) {
-      prepareWhatNowMicroStep(currentWhatNowChosen.task);
-    } else {
-      pickRandomTask();
-      if (currentWhatNowChosen) prepareWhatNowMicroStep(currentWhatNowChosen.task);
-    }
+  if (normTab === 'dilemma') {
+    populateWhatNowDilemmaDefaults();
   }
-}
-
-function updateWhatNowZenTab() {
-  const titleEl = document.getElementById('whatnow-zen-suggested-title');
-  if (!titleEl) return;
-  
-  if (currentWhatNowChosen && currentWhatNowChosen.task) {
-    titleEl.innerText = currentWhatNowChosen.task;
-  } else {
-    const all = [
-      ...(state?.items?.daily || []).map(t => ({ cat: 'daily', task: typeof t === 'object' ? t.task : t })),
-      ...(state?.items?.todo || []).map(t => ({ cat: 'todo', task: typeof t === 'object' ? t.task : t })),
-      ...(state?.items?.weekly || []).map(t => ({ cat: 'weekly', task: typeof t === 'object' ? t.task : t }))
-    ].filter(t => t.task && !isEveningTeethTask(t.task));
-
-    if (all.length > 0) {
-      currentWhatNowChosen = all[0];
-      titleEl.innerText = all[0].task;
-    } else {
-      titleEl.innerText = tr({ de: "Keine offene Aufgabe – Zeit für eine freie Fokus-Session!", en: "No open task – Time for a free focus session!", fr: "Aucune tâche en cours – Session libre !", it: "Nessuna attività – Sessione libera!", es: "¡Sin tareas pendientes!", el: "Καμία εκκρεμής εργασία!" });
-    }
-  }
-}
-
-function launchZenFromWhatNow() {
-  if (currentWhatNowChosen && currentWhatNowChosen.task) {
-    startZenWithTask(currentWhatNowChosen.task, currentWhatNowChosen.cat || 'todo');
-  } else {
-    startZenWithTask(tr({ de: "Fokus-Session", en: "Focus Session", fr: "Session Focus", it: "Sessione Focus", es: "Sesión de Enfoque", el: "Συνεδρία Εστίασης" }), 'todo');
-  }
-}
-
-function launchCustomZenFromWhatNow() {
-  const input = document.getElementById('whatnow-custom-zen-input');
-  const task = input ? input.value.trim() : '';
-  if (!task) return;
-  startZenWithTask(task, 'todo');
+  if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
 }
 
 function setWhatNowEnergyLevel(level) {
   currentWhatNowEnergyLevel = level;
-  ['low', 'med', 'high'].forEach(l => {
+  ['low', 'med', 'high', 'random'].forEach(l => {
     const btn = document.getElementById(`whatnow-energy-${l}`);
     if (!btn) return;
     if (l === level) {
-      btn.className = 'flex-1 py-1.5 px-2 rounded-lg text-[10px] font-bold text-purple-200 transition cursor-pointer bg-purple-500/20 border border-purple-500/40 flex items-center justify-center gap-1 shadow-sm';
+      btn.className = 'py-1.5 px-1.5 rounded-xl text-[10px] font-bold text-amber-200 bg-amber-500/20 border border-amber-500/40 transition cursor-pointer flex flex-col items-center gap-0.5 shadow-sm';
     } else {
-      btn.className = 'flex-1 py-1.5 px-2 rounded-lg text-[10px] font-bold text-gray-400 hover:text-white transition cursor-pointer bg-white/5 flex items-center justify-center gap-1';
+      btn.className = 'py-1.5 px-1.5 rounded-xl text-[10px] font-bold text-gray-400 hover:text-white transition cursor-pointer flex flex-col items-center gap-0.5 border border-transparent';
     }
   });
   suggestedTaskNamesInCurrentRun = [];
@@ -245,103 +222,164 @@ function startZenWithTask(taskText, cat = 'todo') {
   renderZenSubtasks(taskText);
   
   showToast(tr({
-    de: `Fokus gestartet: ${taskText} 🧘`,
-    en: `Focus started: ${taskText} 🧘`,
-    es: `Enfoque iniciado: ${taskText} 🧘`,
-    el: `Η εστίαση ξεκίνησε: ${taskText} 🧘`,
-    fr: `Focus démarré : ${taskText} 🧘`,
-    it: `Focus avviato: ${taskText} 🧘`
+    de: `Fokus gestartet: "${taskText}" 🧘`,
+    en: `Focus started: "${taskText}" 🧘`,
+    es: `Enfoque iniciado: "${taskText}" 🧘`,
+    el: `Η εστίαση ξεκίνησε: "${taskText}" 🧘`,
+    fr: `Focus démarré : "${taskText}" 🧘`,
+    it: `Focus avviato: "${taskText}" 🧘`
   }));
 }
 
-function generateTripleTaskChoices() {
-  const container = document.getElementById('whatnow-triple-cards');
-  if (!container) return;
-  container.innerHTML = '';
-  
-  const allTasks = [];
-  ['daily', 'todo', 'weekly', 'occasionally', 'termine'].forEach(cat => {
-    (state?.items?.[cat] || []).filter(Boolean).forEach(t => {
-      const taskText = typeof t === 'object' ? t.task : t;
-      allTasks.push({ cat, task: taskText });
-    });
-  });
-  
-  if (allTasks.length === 0) {
-    container.innerHTML = `<div class="p-4 text-center text-emerald-400 text-xs font-bold bg-white/5 rounded-xl">🎉 Keine offenen Aufgaben vorhanden!</div>`;
-    return;
-  }
-  
-  const shuffled = [...allTasks].sort(() => 0.5 - Math.random());
-  const selected = shuffled.slice(0, 3);
-  
-  selected.forEach((item, idx) => {
-    const card = document.createElement('div');
-    card.className = 'group p-3 bg-white/[0.03] hover:bg-purple-950/20 border border-white/10 hover:border-purple-500/50 rounded-xl transition cursor-pointer flex items-center justify-between gap-2 shadow-sm';
-    card.onclick = () => {
-      startZenWithTask(item.task, item.cat);
-    };
-    card.innerHTML = `
-      <div class="flex items-center gap-2.5 flex-1 min-w-0">
-        <span class="w-6 h-6 rounded-lg bg-purple-500/20 text-purple-300 font-display font-bold text-xs flex items-center justify-center shrink-0">${idx + 1}</span>
-        <div class="flex flex-col min-w-0 flex-1">
-          <span class="text-xs font-bold text-white group-hover:text-purple-200 truncate transition">${escapeHtml(item.task)}</span>
-          <span class="text-[9px] text-gray-500 uppercase font-mono tracking-wider">${escapeHtml(t(item.cat))}</span>
-        </div>
-      </div>
-      <button class="px-2.5 py-1 bg-purple-600/80 group-hover:bg-purple-500 text-white text-[10px] font-bold rounded-lg transition shrink-0 flex items-center gap-1">
-        <span>Starten</span>
-        <i data-lucide="arrow-right" class="w-3 h-3"></i>
-      </button>
-    `;
-    container.appendChild(card);
-  });
-  if (typeof lucide !== 'undefined') lucide.createIcons();
-}
-
-function prepareWhatNowMicroStep(taskText) {
-  const titleEl = document.getElementById('whatnow-micro-task-title');
-  const stepEl = document.getElementById('whatnow-micro-first-step');
-  if (titleEl) titleEl.innerText = taskText;
-  
-  let firstStep = "Schritt 1: Bereite alles vor und starte mit nur 2 Minuten.";
-  const standardKey = typeof getGermanStandardKey === 'function' ? getGermanStandardKey(taskText) : taskText;
-  const predefinedSteps = (typeof TASK_STEPS_BY_TASK !== 'undefined' && TASK_STEPS_BY_TASK[standardKey]) || null;
-  if (predefinedSteps && predefinedSteps.length > 0) {
-    firstStep = `Schritt 1: ${predefinedSteps[0]}`;
-  }
-  if (stepEl) stepEl.innerText = firstStep;
-}
-
-function startMicroStepInFocus() {
-  if (currentWhatNowChosen) {
-    startZenWithTask(currentWhatNowChosen.task, currentWhatNowChosen.cat);
-  } else {
+function start2MinKickstart(taskText, cat = 'todo') {
+  closeHelperModal();
+  if (!isMinimalist) {
     toggleMinimalist();
   }
+  currentZenTaskInfo = { cat, task: taskText };
+  const zenTaskText = document.getElementById('zen-task-text');
+  const zenCatEl = document.getElementById('zen-task-cat');
+  if (zenTaskText) zenTaskText.innerText = taskText;
+  if (zenCatEl) zenCatEl.innerText = `${t(cat)} · 2-Min Kickstart`;
+  
+  setTimerPreset(2);
+  startTimer();
+  renderZenSubtasks(taskText);
+  
+  showToast(tr({
+    de: `2-Minuten-Kickstart: Nur anfangen! ⏱️`,
+    en: `2-Minute Kickstart: Just start! ⏱️`,
+    es: `¡Inicio de 2 minutos: solo empieza! ⏱️`,
+    el: `Εκκίνηση 2 λεπτών: Απλά ξεκίνα! ⏱️`,
+    fr: `Démarrage 2 min : Juste commencer ! ⏱️`,
+    it: `Kickstart di 2 minuti: Inizia subito! ⏱️`
+  }));
 }
 
-function flipWhatNowCoin() {
-  const optA = document.getElementById('whatnow-coin-a')?.value.trim() || 'Option A';
-  const optB = document.getElementById('whatnow-coin-b')?.value.trim() || 'Option B';
-  const resBox = document.getElementById('whatnow-coin-result');
-  if (!resBox) return;
-  resBox.classList.remove('hidden');
-  resBox.innerHTML = `<span class="animate-spin inline-block">🪙</span> Münze dreht sich...`;
+function completeWhatNowTask(cat, taskIndex) {
+  if (typeof handleCompleteTask === 'function') {
+    handleCompleteTask(cat, taskIndex);
+  }
+  if (typeof playProceduralSound === 'function') playProceduralSound(3);
+  if (typeof triggerCelebration === 'function') triggerCelebration();
   
+  showToast(tr({
+    de: `Stark gemacht! +30 XP Belohnung 🎉`,
+    en: `Great job! +30 XP Reward 🎉`,
+    fr: `Bravo ! +30 XP Récompense 🎉`,
+    it: `Ottimo lavoro! +30 XP Ricompensa 🎉`,
+    es: `¡Excelente! +30 XP Recompensa 🎉`,
+    el: `Υπέροχα! +30 XP Επιβράβευση 🎉`
+  }));
+
+  setTimeout(() => {
+    pickRandomTask();
+  }, 200);
+}
+
+function populateWhatNowDilemmaDefaults() {
+  const inputA = document.getElementById('whatnow-dilemma-a');
+  const inputB = document.getElementById('whatnow-dilemma-b');
+  if (!inputA || !inputB) return;
+
+  if (!inputA.value.trim() && !inputB.value.trim()) {
+    const all = [];
+    ['daily', 'todo', 'weekly', 'occasionally'].forEach(cat => {
+      (state?.items?.[cat] || []).filter(Boolean).forEach(t => {
+        const text = typeof t === 'object' ? t.task : t;
+        if (text && !all.includes(text)) all.push(text);
+      });
+    });
+
+    if (all.length >= 2) {
+      inputA.value = all[0];
+      inputB.value = all[1];
+    } else if (all.length === 1) {
+      inputA.value = all[0];
+      inputB.value = tr({ de: '30 Min Pause & Spaziergang', en: '30 min break & walk' });
+    }
+  }
+}
+
+function flipWhatNowDilemma() {
+  const optA = document.getElementById('whatnow-dilemma-a')?.value.trim() || 'Option A';
+  const optB = document.getElementById('whatnow-dilemma-b')?.value.trim() || 'Option B';
+  const resBox = document.getElementById('whatnow-dilemma-result');
+  if (!resBox) return;
+  
+  resBox.classList.remove('hidden');
+  resBox.innerHTML = `
+    <div class="flex items-center justify-center gap-2 py-3 text-amber-300 font-bold">
+      <span class="text-xl animate-spin">🪙</span>
+      <span class="text-xs">Münze dreht sich in der Luft...</span>
+    </div>
+  `;
+
+  if (typeof playProceduralSound === 'function') playProceduralSound(6);
+
   setTimeout(() => {
     const winner = Math.random() < 0.5 ? optA : optB;
+    const loser = (winner === optA) ? optB : optA;
     const safeWinner = winner.replace(/'/g, "\\'");
+
     resBox.innerHTML = `
-      <div class="space-y-2">
-        <div class="text-amber-300 font-display font-black text-sm">Gewählt: ${winner} 🎉</div>
-        <button onclick="startZenWithTask('${safeWinner}', 'todo')" class="px-3 py-1 bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-500/40 rounded-lg text-xs font-bold transition cursor-pointer">
-          Jetzt mit ${winner} im Fokus-Modus starten ➔
+      <div class="space-y-2.5 text-center">
+        <div class="text-[10px] uppercase font-bold tracking-wider text-amber-400 font-mono">Die Münze hat entschieden:</div>
+        <div class="text-base sm:text-lg font-display font-black text-white px-2 break-words">🏆 ${escapeHtml(winner)}</div>
+        <p class="text-[11px] text-gray-300 italic px-2 leading-relaxed">
+          Spürst du Erleichterung? Dann starte sofort! Fühlt es sich falsch an? Dann nimm dein echtes Ziel: <strong>${escapeHtml(loser)}</strong>.
+        </p>
+        <button onclick="startZenWithTask('${safeWinner}', 'todo')" class="w-full py-2.5 px-4 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-black font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+          <i data-lucide="play" class="w-3.5 h-3.5 fill-black"></i>
+          <span>Mit "${escapeHtml(winner)}" im Fokus starten ➔</span>
         </button>
       </div>
     `;
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-  }, 600);
+    if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
+  }, 650);
+}
+
+function launchBrainDumpAsFocus() {
+  const input = document.getElementById('whatnow-braindump-input');
+  const text = input ? input.value.trim() : '';
+  if (!text) {
+    showToast(tr({ de: 'Bitte zuerst einen Gedanken eingeben!', en: 'Please enter a thought first!' }));
+    return;
+  }
+
+  saveHistory();
+  if (!state.items.todo) state.items.todo = [];
+  state.items.todo.unshift({
+    task: text,
+    created: new Date().toISOString(),
+    id: 'task-' + Date.now()
+  });
+  saveState();
+  renderApp();
+
+  input.value = '';
+  startZenWithTask(text, 'todo');
+}
+
+function saveBrainDumpAsTask() {
+  const input = document.getElementById('whatnow-braindump-input');
+  const text = input ? input.value.trim() : '';
+  if (!text) return;
+
+  saveHistory();
+  if (!state.items.todo) state.items.todo = [];
+  state.items.todo.unshift({
+    task: text,
+    created: new Date().toISOString(),
+    id: 'task-' + Date.now()
+  });
+  saveState();
+  renderApp();
+
+  input.value = '';
+  showToast(tr({ de: `Als Aufgabe gesichert! 📋`, en: `Saved as task! 📋` }));
+  switchWhatNowTab('suggestion');
+  pickRandomTask();
 }
 
 function pickRandomTask() {
@@ -351,69 +389,94 @@ function pickRandomTask() {
   const incompleteDailies = (state?.items?.daily || [])
     .filter(Boolean)
     .map(t => ({ cat: 'daily', task: typeof t === 'object' ? t.task : t }))
-    .filter(t => !isEveningTeethTask(t.task));
+    .filter(t => t.task && !isEveningTeethTask(t.task));
 
   const houseworkTasks = [];
-  const otherFallbackTasks = [];
+  const todoTasks = [];
+  const otherTasks = [];
 
   ['weekly', 'todo', 'occasionally', 'termine'].forEach(cat => {
     (state?.items?.[cat] || []).filter(Boolean).forEach(t => {
       const taskText = typeof t === 'object' ? t.task : t;
+      if (!taskText) return;
       const taskObj = { cat, task: taskText };
       if (isHouseworkTask(taskText)) {
         houseworkTasks.push(taskObj);
+      } else if (cat === 'todo') {
+        todoTasks.push(taskObj);
       } else {
-        otherFallbackTasks.push(taskObj);
+        otherTasks.push(taskObj);
       }
     });
   });
 
   let poolDailies = incompleteDailies.filter(t => !suggestedTaskNamesInCurrentRun.includes(t.task));
   let poolHousework = houseworkTasks.filter(t => !suggestedTaskNamesInCurrentRun.includes(t.task));
-  let poolOthers = otherFallbackTasks.filter(t => !suggestedTaskNamesInCurrentRun.includes(t.task));
+  let poolTodo = todoTasks.filter(t => !suggestedTaskNamesInCurrentRun.includes(t.task));
+  let poolOther = otherTasks.filter(t => !suggestedTaskNamesInCurrentRun.includes(t.task));
 
-  if (poolDailies.length === 0 && poolHousework.length === 0 && poolOthers.length === 0) {
-    if (incompleteDailies.length > 0 || houseworkTasks.length > 0 || otherFallbackTasks.length > 0) {
-      suggestedTaskNamesInCurrentRun = [];
-      poolDailies = incompleteDailies;
-      poolHousework = houseworkTasks;
-      poolOthers = otherFallbackTasks;
-    }
+  const totalAvailable = poolDailies.length + poolHousework.length + poolTodo.length + poolOther.length;
+  if (totalAvailable === 0) {
+    suggestedTaskNamesInCurrentRun = [];
+    poolDailies = incompleteDailies;
+    poolHousework = houseworkTasks;
+    poolTodo = todoTasks;
+    poolOther = otherTasks;
   }
 
   let chosen = null;
+  let estimatedMin = 15;
 
   if (currentWhatNowEnergyLevel === 'low') {
+    estimatedMin = 5;
     if (poolDailies.length > 0) chosen = poolDailies[0];
     else if (poolHousework.length > 0) chosen = poolHousework[0];
-    else if (poolOthers.length > 0) chosen = poolOthers[0];
+    else if (poolTodo.length > 0) chosen = poolTodo[0];
+    else chosen = poolOther[0] || null;
   } else if (currentWhatNowEnergyLevel === 'high') {
-    if (poolOthers.length > 0) chosen = poolOthers[0];
-    else if (poolHousework.length > 0) chosen = poolHousework[0];
+    estimatedMin = 45;
+    if (poolTodo.length > 0) chosen = poolTodo[0];
+    else if (poolOther.length > 0) chosen = poolOther[0];
     else if (poolDailies.length > 0) chosen = poolDailies[0];
+    else chosen = poolHousework[0] || null;
+  } else if (currentWhatNowEnergyLevel === 'random') {
+    const all = [...poolDailies, ...poolHousework, ...poolTodo, ...poolOther];
+    if (all.length > 0) {
+      chosen = all[Math.floor(Math.random() * all.length)];
+      estimatedMin = (chosen.cat === 'daily' || isHouseworkTask(chosen.task)) ? 10 : 25;
+    }
   } else {
-    if (poolHousework.length > 0 && Math.random() < 0.4) {
-      chosen = poolHousework[0];
-    } else if (poolDailies.length > 0) {
+    // Standard 'med' (Flow)
+    estimatedMin = 20;
+    if (poolDailies.length > 0 && Math.random() < 0.5) {
       chosen = poolDailies[0];
+    } else if (poolTodo.length > 0) {
+      chosen = poolTodo[0];
+    } else if (poolHousework.length > 0) {
+      chosen = poolHousework[0];
     } else {
-      chosen = poolOthers[0] || null;
+      chosen = poolOther[0] || poolDailies[0] || null;
     }
   }
 
   currentWhatNowChosen = chosen;
 
   if (!chosen) {
-    const doneMsg = { 
-      de: '🎉 Alle Aufgaben erledigt! Fantastisch, genieß deinen Tag!', 
+    const doneMsg = tr({ 
+      de: '🎉 Alle Aufgaben für heute erledigt! Fantastisch, genieß deinen Tag!', 
       en: '🎉 All tasks completed! Fantastic, enjoy your day!', 
       es: '🎉 ¡Todas las tareas completadas! ¡Disfruta de tu día!', 
       el: '🎉 Όλες οι εργασίες ολοκληρώθηκαν! Απολαύστε τη μέρα σας!' 
-    }[currentLang] || '🎉 All tasks completed!';
+    });
 
-    box.className = "p-6 rounded-2xl bg-[#111116] border border-white/10 text-center font-display shadow-inner";
-    box.innerHTML = `<div class="text-emerald-400 font-bold py-4 text-center font-display">${doneMsg}</div>`;
-    
+    box.className = "p-6 rounded-2xl bg-black/40 border border-emerald-500/30 text-center space-y-3";
+    box.innerHTML = `
+      <div class="text-3xl animate-bounce">🏆</div>
+      <div class="text-emerald-300 font-display font-bold text-sm leading-snug">${doneMsg}</div>
+      <button onclick="startZenWithTask('Freie Fokus-Session', 'todo')" class="mt-2 py-2 px-4 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 rounded-xl text-xs font-bold transition cursor-pointer">
+        Freie Fokus-Session starten 🧘
+      </button>
+    `;
     activeTimerTask = "";
     updateActiveTimerLabels();
   } else {
@@ -427,35 +490,65 @@ function pickRandomTask() {
 
     activeTimerTask = chosen.task;
     updateActiveTimerLabels();
-    
-    const theme = getNextNonRepeatingTheme();
-    box.className = `p-5 rounded-2xl border transition-all duration-300 helper-suggestion-card-active ${theme.box}`;
-    
-    const safeTask = chosen.task.replace(/'/g, "\\'");
 
+    // Ermittle den ersten Kickstart-Schritt
+    let firstStep = "Schritt 1: Bereite alles vor und starte mit nur 2 Minuten.";
+    const steps = getTaskStepsList(chosen.task);
+    if (steps && steps.length > 0) {
+      firstStep = cleanStepText(steps[0]);
+    }
+
+    const safeTask = chosen.task.replace(/'/g, "\\'");
+    const catLabel = typeof t === 'function' ? t(chosen.cat) : chosen.cat;
+
+    box.className = "p-5 rounded-2xl bg-gradient-to-br from-[#16121c] to-[#0d0d14] border border-amber-500/40 shadow-xl space-y-4 text-left transition-all duration-300";
     box.innerHTML = `
-      <div class="flex flex-col items-center gap-3 w-full py-1">
-        <span class="text-[9px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded-full bg-white/10 text-gray-300 font-mono">${t(chosen.cat)}</span>
-        <div class="text-xl md:text-2xl font-display font-black px-2 break-words text-center leading-tight tracking-tight text-white">${chosen.task}</div>
-        
-        <div class="flex flex-col sm:flex-row items-center gap-2 mt-2 w-full">
-          <button onclick="startZenWithTask('${safeTask}', '${chosen.cat}')" class="flex-1 w-full py-2.5 px-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-1.5 cursor-pointer">
-            <i data-lucide="play" class="w-3.5 h-3.5"></i>
-            <span>${tr({ de: 'Im Fokus starten 🧘', en: 'Start in Focus 🧘', fr: 'Démarrer en Focus 🧘', it: 'Avvia in Focus 🧘', es: 'Iniciar en Enfoque 🧘', el: 'Έναρξη σε Εστίαση 🧘' })}</span>
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <span class="px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/35 text-amber-300 font-bold text-[10px] uppercase tracking-wider font-mono">
+            ${escapeHtml(catLabel)}
+          </span>
+          <span class="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-gray-300 text-[10px] font-mono">
+            ⏱️ ~${estimatedMin} Min
+          </span>
+        </div>
+        <span class="text-[9px] text-gray-400 font-mono">Empfehlung #1</span>
+      </div>
+
+      <!-- Task Title -->
+      <div>
+        <h2 class="text-xl sm:text-2xl font-display font-black text-white leading-tight tracking-tight break-words">
+          ${escapeHtml(chosen.task)}
+        </h2>
+        <div class="mt-2 flex items-start gap-2 p-2.5 rounded-xl bg-black/40 border border-white/5 text-[11px] text-gray-300 font-medium">
+          <span class="text-amber-400 shrink-0">🪜</span>
+          <span class="leading-relaxed"><strong class="text-white">Kickstart:</strong> ${escapeHtml(firstStep)}</span>
+        </div>
+      </div>
+
+      <!-- Primary Action Buttons -->
+      <div class="space-y-2 pt-1">
+        <button onclick="startZenWithTask('${safeTask}', '${chosen.cat}')" class="w-full py-3 px-4 bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-500 hover:from-amber-400 hover:to-yellow-400 text-black font-black text-xs rounded-xl shadow-[0_0_20px_rgba(245,158,11,0.3)] transition transform active:scale-98 cursor-pointer flex items-center justify-center gap-2">
+          <i data-lucide="play" class="w-4 h-4 fill-black"></i>
+          <span>Im Fokus starten [Space] 🧘</span>
+        </button>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="start2MinKickstart('${safeTask}', '${chosen.cat}')" class="py-2.5 px-3 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 hover:text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer" title="2-Minuten-Timer starten">
+            <i data-lucide="timer" class="w-3.5 h-3.5 text-cyan-400"></i>
+            <span>2-Min Start</span>
           </button>
-          <button onclick="openTaskStepsModal('${chosen.cat}', ${taskIdx})" class="py-2.5 px-3 bg-white/10 hover:bg-white/15 text-gray-200 text-xs font-semibold rounded-xl transition flex items-center justify-center gap-1 cursor-pointer">
-            <i data-lucide="footprints" class="w-3.5 h-3.5"></i>
-            <span>Steps</span>
-          </button>
-          <button onclick="handleCompleteTask('${chosen.cat}', ${taskIdx}); pickRandomTask();" class="py-2.5 px-3 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1 cursor-pointer">
+
+          <button onclick="completeWhatNowTask('${chosen.cat}', ${taskIdx})" class="py-2.5 px-3 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer" title="Als erledigt markieren (+XP)">
             <i data-lucide="check" class="w-3.5 h-3.5"></i>
-            <span>Erledigt</span>
+            <span>Erledigt (+XP)</span>
           </button>
         </div>
       </div>
     `;
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
   }
 }
+
 
 

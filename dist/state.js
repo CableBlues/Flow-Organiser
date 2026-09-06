@@ -1,4 +1,17 @@
-// CONFIGURATION KEYS AND GLOBAL STATE DEFINITIONS
+/**
+ * ============================================================================
+ * Noodle - State Management & Datenpersistenz (state.js)
+ * ============================================================================
+ * Verwaltet den gesamten reaktiven Zustand der Applikation:
+ * - Aufgaben-Listen (Personal & Work Workspace)
+ * - Erledigte Aufgaben, Archiv & Wiederherstellung
+ * - Historie & Undo-Stack (bis zu 20 Schritte)
+ * - Schema-Versionierung & automatische Migrationen
+ * - Fallback-Trimming bei QuotaExceeded-Fehlern
+ * ============================================================================
+ */
+
+// Grundlegende Konfiguration & globale State-Deklarationen
 let currentLang = localStorage.getItem('flowPlannerLanguage') || 'en';
 let rawTheme = localStorage.getItem('flowPlannerTheme') || 'aurora';
 let currentTheme = ['mono-hand', 'parchment', 'minimalist-light', 'terracotta-light'].includes(rawTheme) ? 'aurora' : rawTheme;
@@ -420,18 +433,18 @@ function setWorkspace(mode) {
   if (typeof showToast === 'function') {
     showToast(mode === 'work' ? tr({
       de: '💼 Arbeitsmodus aktiviert!',
-      en: '💼 Work mode activated!',
-      es: '💼 ¡Modo trabajo activado!',
-      el: '💼 Ενεργοποιήθηκε ο χώρος εργασίας!',
-      fr: '💼 Mode travail activé !',
-      it: '💼 Modalità lavoro attivata!'
+      en: '💼 Work Mode activated!',
+      es: '💼 ¡Modo Trabajo activado!',
+      el: '💼 Ενεργοποιήθηκε ο Χώρος Εργασίας!',
+      fr: '💼 Mode Travail activé !',
+      it: '💼 Modalità Lavoro attivata!'
     }) : tr({
-      de: '🏠 Privatmodus aktiviert!',
-      en: '🏠 Personal mode activated!',
-      es: '🏠 ¡Modo personal activado!',
-      el: '🏠 Ενεργοποιήθηκε ο προσωπικός χώρος!',
-      fr: '🏠 Mode personnel activé !',
-      it: '🏠 Modalità personale attivata!'
+      de: '🏠 Privat-Modus aktiviert!',
+      en: '🏠 Personal Mode activated!',
+      es: '🏠 ¡Modo Personal activado!',
+      el: '🏠 Ενεργοποιήθηκε ο Προσωπικός Χώρος!',
+      fr: '🏠 Mode Personnel activé !',
+      it: '🏠 Modalità Personale attivata!'
     }));
   }
 }
@@ -449,34 +462,57 @@ function updateWorkspaceSwitchUI() {
   const iconEl = document.getElementById('ws-toggle-icon');
   const textEl = document.getElementById('ws-toggle-text');
   
-  if (toggleBtn && iconEl && textEl) {
-    if (currentWs === 'work') {
-      iconEl.textContent = '💼';
-      textEl.textContent = t('workspace_work');
-      textEl.className = 'text-[11px] font-bold text-blue-300';
-      toggleBtn.className = 'h-8 px-2.5 bg-blue-500/15 hover:bg-blue-500/25 border border-blue-500/40 hover:border-blue-500/60 rounded-xl text-blue-200 flex items-center gap-1.5 text-xs font-semibold cursor-pointer transition-all duration-300 shadow-sm';
-      toggleBtn.title = tr({
-        de: 'Arbeitsmodus aktiv (Klick zum Wechseln in Privatmodus)',
-        en: 'Work mode active (Click to switch to personal mode)',
-        es: 'Modo trabajo activo (Clic para cambiar a personal)',
-        el: 'Χώρος εργασίας ενεργός (Κλικ για εναλλαγή)',
-        fr: 'Mode travail actif (Cliquer pour passer en personnel)',
-        it: 'Modalità lavoro attiva (Clicca per passare a personale)'
+  const mobileToggleBtn = document.getElementById('mobile-btn-workspace-toggle');
+  const mobileIconEl = document.getElementById('mobile-ws-toggle-icon');
+  const mobileTextEl = document.getElementById('mobile-ws-toggle-text');
+
+  // When activeWorkspace is 'work', the toggle button displays the TARGET switch to Private mode
+  // When activeWorkspace is 'private', the toggle button displays the TARGET switch to Work mode
+  const targetIsWork = (currentWs === 'private');
+  const targetIcon = targetIsWork ? '💼' : '🏠';
+  const targetText = targetIsWork ? t('workspace_work') : t('workspace_private');
+  const targetTitle = targetIsWork
+    ? tr({
+        de: 'Zu Arbeitsmodus wechseln',
+        en: 'Switch to Work Mode',
+        es: 'Cambiar a Modo Trabajo',
+        el: 'Εναλλαγή σε Χώρο Εργασίας',
+        fr: 'Passer en Mode Travail',
+        it: 'Passa a Modalità Lavoro'
+      })
+    : tr({
+        de: 'Zu Privat-Modus wechseln',
+        en: 'Switch to Personal Mode',
+        es: 'Cambiar a Modo Personal',
+        el: 'Εναλλαγή σε Προσωπικό Χώρο',
+        fr: 'Passer en Mode Personnel',
+        it: 'Passa a Modalità Personale'
       });
-    } else {
-      iconEl.textContent = '🏠';
-      textEl.textContent = t('workspace_private');
-      textEl.className = 'text-[11px] font-bold text-purple-300';
-      toggleBtn.className = 'h-8 px-2.5 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 hover:border-purple-500/50 rounded-xl text-purple-200 flex items-center gap-1.5 text-xs font-semibold cursor-pointer transition-all duration-300 shadow-sm';
-      toggleBtn.title = tr({
-        de: 'Privatmodus aktiv (Klick zum Wechseln in Arbeitsmodus)',
-        en: 'Personal mode active (Click to switch to work mode)',
-        es: 'Modo personal activo (Clic para cambiar a trabajo)',
-        el: 'Προσωπικός χώρος ενεργός (Κλικ για εναλλαγή)',
-        fr: 'Mode personnel actif (Cliquer pour passer en travail)',
-        it: 'Modalità personale attiva (Clicca per passare a lavoro)'
-      });
-    }
+
+  const btnClass = targetIsWork
+    ? 'p-2.5 bg-blue-500/15 hover:bg-blue-500/25 border border-blue-500/40 hover:border-blue-500/60 rounded-xl text-blue-200 text-left text-xs font-bold flex items-center gap-2 transition cursor-pointer'
+    : 'p-2.5 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 hover:border-purple-500/50 rounded-xl text-purple-200 text-left text-xs font-bold flex items-center gap-2 transition cursor-pointer';
+
+  if (iconEl) iconEl.textContent = targetIcon;
+  if (textEl) {
+    textEl.textContent = targetText;
+    textEl.className = targetIsWork ? 'truncate text-blue-300' : 'truncate text-purple-300';
+  }
+  if (toggleBtn) {
+    toggleBtn.className = btnClass;
+    toggleBtn.title = targetTitle;
+  }
+
+  if (mobileIconEl) mobileIconEl.textContent = targetIcon;
+  if (mobileTextEl) {
+    mobileTextEl.textContent = targetText;
+    mobileTextEl.className = targetIsWork ? 'text-xs font-bold text-blue-300 hidden sm:inline' : 'text-xs font-bold text-purple-300 hidden sm:inline';
+  }
+  if (mobileToggleBtn) {
+    mobileToggleBtn.className = targetIsWork
+      ? 'h-9 px-2.5 bg-blue-500/15 hover:bg-blue-500/25 border border-blue-500/40 text-blue-200 rounded-xl flex items-center gap-1 text-xs font-bold transition cursor-pointer shadow-sm'
+      : 'h-9 px-2.5 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 text-purple-200 rounded-xl flex items-center gap-1 text-xs font-bold transition cursor-pointer shadow-sm';
+    mobileToggleBtn.title = targetTitle;
   }
 }
 window.updateWorkspaceSwitchUI = updateWorkspaceSwitchUI;
@@ -580,7 +616,7 @@ function handleUndo() {
   populateHelperTaskSelect();
 }
 
-function handleReset() {
+async function handleReset() {
   const confirmMsg = tr({
     de: 'Möchtest du den gesamten Plan wirklich zurücksetzen?',
     en: 'Do you really want to reset your entire plan?',
@@ -590,7 +626,15 @@ function handleReset() {
     el: 'Θέλεις πραγματικά να επαναφέρεις ολόκληρο το πλάνο σου;'
   });
   
-  if (confirm(confirmMsg)) {
+  const confirmed = typeof showConfirmDialog === 'function' ? await showConfirmDialog({
+    title: typeof tr === 'function' ? tr({ de: 'Plan zurücksetzen?', en: 'Reset Plan?' }) : 'Plan zurücksetzen?',
+    message: confirmMsg,
+    confirmText: typeof tr === 'function' ? tr({ de: 'Zurücksetzen', en: 'Reset' }) : 'Zurücksetzen',
+    isDanger: true,
+    icon: 'trash-2'
+  }) : confirm(confirmMsg);
+
+  if (confirmed) {
     saveHistory();
     const localizedDefaults = DEFAULT_TASKS_BY_LANG[currentLang] || DEFAULT_TASKS_BY_LANG['en'] || DEFAULT_TASKS_BY_LANG['de'];
     state = {
@@ -650,7 +694,9 @@ function handleOpenFile(e) {
         renderApp();
         populateHelperTaskSelect();
       }
-    } catch(err) { alert(t('toast_import_error')); }
+    } catch(err) {
+      showToast(t('toast_import_error'));
+    }
   };
   reader.readAsText(file);
 }

@@ -106,15 +106,27 @@ function triggerPraiseAnimation(idx) {
   }
 }
 
-function renderMiniCalendar() {
+let _lastRenderedCalDateKey = null;
+
+function renderMiniCalendar(force = false) {
   const grid = document.getElementById('cal-days-grid');
   const title = document.getElementById('cal-month-title');
   if (!grid || !title) return;
 
-  grid.innerHTML = '';
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth();
+  const todayDate = now.getDate();
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'en';
+  const termineList = (state && state.items && state.items.termine) ? state.items.termine : [];
+  const dateKey = `${year}-${month}-${todayDate}-${lang}-${termineList.length}`;
+
+  if (!force && _lastRenderedCalDateKey === dateKey && grid.children.length > 0) {
+    return;
+  }
+  _lastRenderedCalDateKey = dateKey;
+
+  grid.innerHTML = '';
 
   const locales = { de: 'de-DE', en: 'en-US', el: 'el-GR', es: 'es-ES', fr: 'fr-FR', it: 'it-IT' };
   const monthName = new Intl.DateTimeFormat(locales[currentLang] || 'en-US', { month: 'long', year: 'numeric' }).format(now);
@@ -133,7 +145,6 @@ function renderMiniCalendar() {
     grid.appendChild(empty);
   }
 
-  const todayDate = now.getDate();
   const todayMonth = now.getMonth();
   const todayYear = now.getFullYear();
 
@@ -325,6 +336,11 @@ function updateDateAndStreak() {
   }
 
   renderMiniCalendar();
+
+  if (typeof initWeatherSystem === 'function' && typeof window !== 'undefined' && !window._weatherInitialized) {
+    window._weatherInitialized = true;
+    initWeatherSystem();
+  }
 }
 window.updateDateAndStreak = updateDateAndStreak;
 
@@ -813,19 +829,7 @@ function setHeaderLayout(mode) {
     else reportContainer.classList.remove('hidden');
   }
 
-  // 3. Direct Undo & Reset Buttons in Header Bar (Klassik = Direkt sichtbar, Minimal/Smart = in Dropdown)
-  const directUndo = document.getElementById('header-btn-undo');
-  const directReset = document.getElementById('header-btn-reset');
-  if (directUndo) {
-    if (mode === 'classic') directUndo.classList.remove('hidden');
-    else directUndo.classList.add('hidden');
-  }
-  if (directReset) {
-    if (mode === 'classic') directReset.classList.remove('hidden');
-    else directReset.classList.add('hidden');
-  }
-
-  // 4. Update UI Buttons in Settings Dropdown
+  // 3. Update UI Buttons in Settings Dropdown
   const modes = ['smart_hubs', 'minimal', 'classic'];
   modes.forEach(m => {
     const btn = document.getElementById(`btn-layout-${m}`);
@@ -848,6 +852,28 @@ function initHeaderLayout() {
   setHeaderLayout(saved);
 }
 window.initHeaderLayout = initHeaderLayout;
+
+function toggleAllThemesDropdown() {
+  const extPanel = document.getElementById('panel-themes-extended');
+  const icon = document.getElementById('theme-expand-icon');
+  const label = document.getElementById('theme-expand-label');
+  if (!extPanel) return;
+  const isHidden = extPanel.classList.contains('hidden');
+  if (isHidden) {
+    extPanel.classList.remove('hidden');
+    extPanel.classList.add('grid');
+    if (icon) icon.classList.add('rotate-180');
+    if (label) label.textContent = (typeof tr === 'function') ? tr({ de: 'Weniger', en: 'Less', fr: 'Moins', it: 'Meno', es: 'Menos', el: 'Λιγότερα' }) : 'Weniger';
+  } else {
+    extPanel.classList.add('hidden');
+    extPanel.classList.remove('grid');
+    if (icon) icon.classList.remove('rotate-180');
+    if (label) label.textContent = (typeof tr === 'function') ? tr({ de: 'Alle (16)', en: 'All (16)', fr: 'Tous (16)', it: 'Tutti (16)', es: 'Todos (16)', el: 'Όλα (16)' }) : 'Alle (16)';
+  }
+  if (typeof renderLucideIcons === 'function') renderLucideIcons();
+  else if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') lucide.createIcons();
+}
+window.toggleAllThemesDropdown = toggleAllThemesDropdown;
 
 if (typeof document !== 'undefined') {
   if (document.readyState === 'loading') {

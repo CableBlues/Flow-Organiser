@@ -1,11 +1,28 @@
+/**
+ * ============================================================================
+ * Noodle - Aufgaben- & Board-Management (app-tasks.js)
+ * ============================================================================
+ * Dieses Modul steuert die Kernlogik des Kanban-Boards:
+ * - Rendering der Spalten und Aufgabenkarten (Personal & Work Workspace)
+ * - Aufgaben-Lebenszyklus: Erstellen, Inline-Editieren, Abhaken, Löschen & Wiederherstellen
+ * - Drag & Drop Sortierung (Spalten und Karten)
+ * - Kontextmenü für Fokus-Timer, Task-Steps und Farbmarkierungen
+ * - Mobile Touch-Navigation & Kalender-Terminverwaltung
+ * ============================================================================
+ */
+
 let inlineEditingTaskInfo = null;
 let openTaskMenuMeta = null;
 let taskMenuCloseTimer = null;
 
-function scheduleCloseTaskMenu() {
+/**
+ * Plant das automatische Schließen des Aufgaben-Kontextmenüs nach einer kurzen Verzögerung.
+ */
+function scheduleCloseTaskMenu(delay = 650) {
+  if (taskMenuCloseTimer) clearTimeout(taskMenuCloseTimer);
   taskMenuCloseTimer = setTimeout(() => {
     closeTaskOptionsMenu();
-  }, 250);
+  }, delay);
 }
 
 function cancelCloseTaskMenu() {
@@ -85,13 +102,13 @@ function openTaskOptionsMenu(colId, index, anchorBtn) {
     <div class="px-1.5 pt-0.5 pb-0.5">
       <span class="text-[8px] font-bold text-gray-400 uppercase tracking-wider block mb-1">${tr({ de: 'Farbe 🎨', en: 'Color 🎨', fr: 'Couleur 🎨', it: 'Colore 🎨', es: 'Color 🎨', el: 'Χρώμα 🎨' })}</span>
       <div class="flex items-center gap-1 justify-between">
-        <button onclick="setTaskColor('${colId}', ${index}, 'none', event); closeTaskOptionsMenu();" class="w-2.5 h-2.5 rounded-full border border-gray-400 bg-transparent hover:scale-125 transition cursor-pointer ${taskColor === 'none' ? 'ring-1 ring-white' : ''}" title="${tr({ de: 'Standard', en: 'Default', fr: 'Par défaut', it: 'Predefinito', es: 'Por defecto', el: 'Προεπιλογή' })}"></button>
-        <button onclick="setTaskColor('${colId}', ${index}, 'rose', event); closeTaskOptionsMenu();" class="w-2.5 h-2.5 rounded-full bg-rose-500 hover:scale-125 transition cursor-pointer shadow-sm ${taskColor === 'rose' ? 'ring-1 ring-white' : ''}" title="${tr({ de: 'Rot', en: 'Red', fr: 'Rouge', it: 'Rosso', es: 'Rojo', el: 'Κόκκινο' })}"></button>
-        <button onclick="setTaskColor('${colId}', ${index}, 'orange', event); closeTaskOptionsMenu();" class="w-2.5 h-2.5 rounded-full bg-orange-500 hover:scale-125 transition cursor-pointer shadow-sm ${taskColor === 'orange' ? 'ring-1 ring-white' : ''}" title="${tr({ de: 'Orange', en: 'Orange', fr: 'Orange', it: 'Arancione', es: 'Naranja', el: 'Πορτοκαλί' })}"></button>
-        <button onclick="setTaskColor('${colId}', ${index}, 'amber', event); closeTaskOptionsMenu();" class="w-2.5 h-2.5 rounded-full bg-amber-500 hover:scale-125 transition cursor-pointer shadow-sm ${taskColor === 'amber' ? 'ring-1 ring-white' : ''}" title="${tr({ de: 'Gelb', en: 'Yellow', fr: 'Jaune', it: 'Giallo', es: 'Amarillo', el: 'Κίτρινο' })}"></button>
-        <button onclick="setTaskColor('${colId}', ${index}, 'emerald', event); closeTaskOptionsMenu();" class="w-2.5 h-2.5 rounded-full bg-emerald-500 hover:scale-125 transition cursor-pointer shadow-sm ${taskColor === 'emerald' ? 'ring-1 ring-white' : ''}" title="${tr({ de: 'Grün', en: 'Green', fr: 'Vert', it: 'Verde', es: 'Verde', el: 'Πράσινο' })}"></button>
-        <button onclick="setTaskColor('${colId}', ${index}, 'sky', event); closeTaskOptionsMenu();" class="w-2.5 h-2.5 rounded-full bg-sky-500 hover:scale-125 transition cursor-pointer shadow-sm ${taskColor === 'sky' ? 'ring-1 ring-white' : ''}" title="${tr({ de: 'Blau', en: 'Blue', fr: 'Bleu', it: 'Blu', es: 'Azul', el: 'Μπλε' })}"></button>
-        <button onclick="setTaskColor('${colId}', ${index}, 'purple', event); closeTaskOptionsMenu();" class="w-2.5 h-2.5 rounded-full bg-purple-500 hover:scale-125 transition cursor-pointer shadow-sm ${taskColor === 'purple' ? 'ring-1 ring-white' : ''}" title="${tr({ de: 'Lila', en: 'Purple', fr: 'Violet', it: 'Viola', es: 'Morado', el: 'Μωβ' })}"></button>
+        <button onclick="setTaskColor('${colId}', ${index}, 'none', event); closeTaskOptionsMenu();" aria-label="${tr({ de: 'Standard', en: 'Default', fr: 'Par défaut', it: 'Predefinito', es: 'Por defecto', el: 'Προεπιλογή' })}" class="w-2.5 h-2.5 rounded-full border border-gray-400 bg-transparent hover:scale-125 transition cursor-pointer ${taskColor === 'none' ? 'ring-1 ring-white' : ''}" title="${tr({ de: 'Standard', en: 'Default', fr: 'Par défaut', it: 'Predefinito', es: 'Por defecto', el: 'Προεπιλογή' })}"></button>
+        <button onclick="setTaskColor('${colId}', ${index}, 'rose', event); closeTaskOptionsMenu();" aria-label="${tr({ de: 'Rot', en: 'Red', fr: 'Rouge', it: 'Rosso', es: 'Rojo', el: 'Κόκκινο' })}" class="w-2.5 h-2.5 rounded-full bg-rose-500 hover:scale-125 transition cursor-pointer shadow-sm ${taskColor === 'rose' ? 'ring-1 ring-white' : ''}" title="${tr({ de: 'Rot', en: 'Red', fr: 'Rouge', it: 'Rosso', es: 'Rojo', el: 'Κόκκινο' })}"></button>
+        <button onclick="setTaskColor('${colId}', ${index}, 'orange', event); closeTaskOptionsMenu();" aria-label="${tr({ de: 'Orange', en: 'Orange', fr: 'Orange', it: 'Arancione', es: 'Naranja', el: 'Πορτοκαλί' })}" class="w-2.5 h-2.5 rounded-full bg-orange-500 hover:scale-125 transition cursor-pointer shadow-sm ${taskColor === 'orange' ? 'ring-1 ring-white' : ''}" title="${tr({ de: 'Orange', en: 'Orange', fr: 'Orange', it: 'Arancione', es: 'Naranja', el: 'Πορτοκαλί' })}"></button>
+        <button onclick="setTaskColor('${colId}', ${index}, 'amber', event); closeTaskOptionsMenu();" aria-label="${tr({ de: 'Gelb', en: 'Yellow', fr: 'Jaune', it: 'Giallo', es: 'Amarillo', el: 'Κίτρινο' })}" class="w-2.5 h-2.5 rounded-full bg-amber-500 hover:scale-125 transition cursor-pointer shadow-sm ${taskColor === 'amber' ? 'ring-1 ring-white' : ''}" title="${tr({ de: 'Gelb', en: 'Yellow', fr: 'Jaune', it: 'Giallo', es: 'Amarillo', el: 'Κίτρινο' })}"></button>
+        <button onclick="setTaskColor('${colId}', ${index}, 'emerald', event); closeTaskOptionsMenu();" aria-label="${tr({ de: 'Grün', en: 'Green', fr: 'Vert', it: 'Verde', es: 'Verde', el: 'Πράσινο' })}" class="w-2.5 h-2.5 rounded-full bg-emerald-500 hover:scale-125 transition cursor-pointer shadow-sm ${taskColor === 'emerald' ? 'ring-1 ring-white' : ''}" title="${tr({ de: 'Grün', en: 'Green', fr: 'Vert', it: 'Verde', es: 'Verde', el: 'Πράσινο' })}"></button>
+        <button onclick="setTaskColor('${colId}', ${index}, 'sky', event); closeTaskOptionsMenu();" aria-label="${tr({ de: 'Blau', en: 'Blue', fr: 'Bleu', it: 'Blu', es: 'Azul', el: 'Μπλε' })}" class="w-2.5 h-2.5 rounded-full bg-sky-500 hover:scale-125 transition cursor-pointer shadow-sm ${taskColor === 'sky' ? 'ring-1 ring-white' : ''}" title="${tr({ de: 'Blau', en: 'Blue', fr: 'Bleu', it: 'Blu', es: 'Azul', el: 'Μπλε' })}"></button>
+        <button onclick="setTaskColor('${colId}', ${index}, 'purple', event); closeTaskOptionsMenu();" aria-label="${tr({ de: 'Lila', en: 'Purple', fr: 'Violet', it: 'Viola', es: 'Morado', el: 'Μωβ' })}" class="w-2.5 h-2.5 rounded-full bg-purple-500 hover:scale-125 transition cursor-pointer shadow-sm ${taskColor === 'purple' ? 'ring-1 ring-white' : ''}" title="${tr({ de: 'Lila', en: 'Purple', fr: 'Violet', it: 'Viola', es: 'Morado', el: 'Μωβ' })}"></button>
       </div>
     </div>
   `;
@@ -214,7 +231,7 @@ function renameColumn(colId, e) {
   }
 }
 
-function deleteColumn(colId, e) {
+async function deleteColumn(colId, e) {
   if (e) e.stopPropagation();
   const isWork = state && state.activeWorkspace === 'work';
   const activeOrder = isWork ? (workCategoriesOrder || WORK_CATEGORIES_ORDER) : categoriesOrder;
@@ -224,7 +241,15 @@ function deleteColumn(colId, e) {
   const taskCount = (curItems[colId] || []).length;
   
   const confirmMsg = (t('confirm_delete_column') || 'Möchtest du diese Spalte wirklich löschen?') + (taskCount > 0 ? ` (${taskCount} Aufgaben)` : '');
-  if (confirm(confirmMsg)) {
+  const confirmed = typeof showConfirmDialog === 'function' ? await showConfirmDialog({
+    title: typeof tr === 'function' ? tr({ de: 'Spalte löschen?', en: 'Delete column?' }) : 'Spalte löschen?',
+    message: confirmMsg,
+    confirmText: typeof tr === 'function' ? tr({ de: 'Löschen', en: 'Delete' }) : 'Löschen',
+    isDanger: true,
+    icon: 'trash-2'
+  }) : confirm(confirmMsg);
+
+  if (confirmed) {
     saveHistory();
     activeOrder.splice(idx, 1);
     delete curItems[colId];
@@ -320,10 +345,11 @@ function renderApp() {
     const pct = (!isDone && !isNotes && totalInCat > 0) ? Math.round((doneInCat / totalInCat) * 100) : 0;
     const isComplete = totalInCat > 0 && doneInCat === totalInCat;
     let countBadgeHTML = '';
+    const svgFn = (typeof getLucideSvg === 'function') ? getLucideSvg : ((name, cls) => `<i data-lucide="${name}" class="${cls}"></i>`);
     if (isDone) {
       countBadgeHTML = `
         <div class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-xs flex items-center gap-1 shrink-0" title="${doneList.length} erledigte Aufgaben">
-          <i data-lucide="check" class="w-3 h-3 text-emerald-400"></i>
+          ${svgFn('check', 'w-3 h-3 text-emerald-400')}
           <span>${doneList.length}</span>
         </div>
       `;
@@ -353,7 +379,8 @@ function renderApp() {
 
     const article = document.createElement('article');
     article.dataset.category = id;
-    article.className = 'group/col relative min-h-[380px] h-full flex flex-col p-3 pt-3.5 rounded-2xl transition-all duration-300 cursor-default column-card-breathing overflow-hidden';
+    article.dataset.columnType = isCustomCol ? 'custom' : 'system';
+    article.className = `group/col relative min-h-[380px] h-full flex flex-col p-3 pt-3.5 rounded-2xl transition-all duration-300 cursor-default column-card-breathing overflow-hidden ${isCustomCol ? 'border border-dashed border-purple-500/25' : ''}`;
 
     article.draggable = true;
     article.ondragstart = (e) => {
@@ -404,7 +431,7 @@ function renderApp() {
 
     const columnIconHTML = `
       <span class="w-5 h-5 rounded-md border ${theme.bg} flex items-center justify-center ${theme.color} shrink-0 pointer-events-none transition-transform group-hover/col:scale-105">
-        <i data-lucide="${finalIcon}" class="w-3 h-3"></i>
+        ${svgFn(finalIcon, 'w-3 h-3')}
       </span>
     `;
 
@@ -418,36 +445,30 @@ function renderApp() {
       <!-- Floating Action Mini-Capsule on Hover -->
       <div class="absolute right-2 top-2 hidden sm:group-hover/col:flex items-center gap-1 bg-[#13131e]/95 border border-white/15 px-1.5 py-1 rounded-xl shadow-xl z-20 backdrop-blur-md">
         ${hasDice ? `
-          <button onclick="rollTaskDice('${id}', event)" class="p-1 px-1.5 bg-gradient-to-r from-purple-500/20 to-pink-500/15 hover:from-purple-500/35 hover:to-pink-500/30 border border-purple-400/30 hover:border-purple-300 text-purple-200 hover:text-white rounded-lg shadow-sm hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer flex items-center justify-center gap-1 group/dice" title="${tr({ de: 'Aufgabe auswürfeln 🎲', en: 'Roll a task 🎲', es: 'Tirar dado 🎲', el: 'Ρίξε το ζάρι 🎲', fr: 'Tirer au sort 🎲', it: 'Lancia il dado 🎲' })}">
-            <svg class="w-3.5 h-3.5 text-purple-300 group-hover/dice:text-white group-hover/dice:scale-110 group-hover/dice:rotate-6 transition-all duration-200 shrink-0 overflow-visible" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <polygon points="12,2.2 20.8,6.8 12,11.8 3.2,6.8" fill="rgba(168,85,247,0.3)" stroke="currentColor" stroke-width="1.6" />
-              <polygon points="3.2,6.8 12,11.8 12,21.5 3.2,16.5" fill="rgba(168,85,247,0.15)" stroke="currentColor" stroke-width="1.6" />
-              <polygon points="12,11.8 20.8,6.8 20.8,16.5 12,21.5" fill="rgba(147,51,234,0.45)" stroke="currentColor" stroke-width="1.6" />
-              <circle cx="8" cy="5.2" r="0.9" fill="currentColor" stroke="none" />
-              <circle cx="12" cy="7" r="0.9" fill="currentColor" stroke="none" />
-              <circle cx="16" cy="8.8" r="0.9" fill="currentColor" stroke="none" />
-              <circle cx="7.5" cy="11.2" r="0.9" fill="currentColor" stroke="none" />
-              <circle cx="7.5" cy="17.2" r="0.9" fill="currentColor" stroke="none" />
-              <circle cx="14.8" cy="11.2" r="0.9" fill="currentColor" stroke="none" />
-              <circle cx="18" cy="9.5" r="0.9" fill="currentColor" stroke="none" />
-              <circle cx="14.8" cy="17.2" r="0.9" fill="currentColor" stroke="none" />
-              <circle cx="18" cy="15.5" r="0.9" fill="currentColor" stroke="none" />
+          <button onclick="rollTaskDice('${id}', event)" aria-label="${tr({ de: 'Aufgabe auswürfeln 🎲', en: 'Roll a task 🎲', es: 'Tirar dado 🎲', el: 'Ρίξε το ζάρι 🎲', fr: 'Tirer au sort 🎲', it: 'Lancia il dado 🎲' })}" class="p-1 px-1.5 bg-gradient-to-r from-purple-500/20 to-pink-500/15 hover:from-purple-500/35 hover:to-pink-500/30 border border-purple-400/30 hover:border-purple-300 text-purple-200 hover:text-white rounded-lg shadow-sm hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer flex items-center justify-center gap-1 group/dice" title="${tr({ de: 'Aufgabe auswürfeln 🎲', en: 'Roll a task 🎲', es: 'Tirar dado 🎲', el: 'Ρίξε το ζάρι 🎲', fr: 'Tirer au sort 🎲', it: 'Lancia il dado 🎲' })}">
+            <svg class="w-3.5 h-3.5 text-purple-300 group-hover/dice:text-white group-hover/dice:scale-110 group-hover/dice:rotate-6 transition-all duration-200 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="4" fill="currentColor" fill-opacity="0.15" stroke="currentColor" />
+              <circle cx="8" cy="8" r="1.5" fill="currentColor" stroke="none" />
+              <circle cx="16" cy="8" r="1.5" fill="currentColor" stroke="none" />
+              <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
+              <circle cx="8" cy="16" r="1.5" fill="currentColor" stroke="none" />
+              <circle cx="16" cy="16" r="1.5" fill="currentColor" stroke="none" />
             </svg>
           </button>
         ` : ''}
         ${(id === 'weekly' || id === 'work_in_progress') ? `
-          <button onclick="if(typeof openCleaningGuideModal === 'function') openCleaningGuideModal(); if(event) event.stopPropagation();" class="p-1 px-1.5 bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/30 text-emerald-300 hover:text-white rounded-lg shadow-sm hover:scale-105 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1" title="${tr({ de: 'Wohnungs-Reset & Level-Putz-Guide 🧹', en: 'Apartment Reset & Cleaning Guide 🧹', es: 'Guía de limpieza 🧹', el: 'Οδηγός καθαρισμού 🧹', fr: 'Guide de nettoyage 🧹', it: 'Guida alle pulizie 🧹' })}">
-            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <button onclick="if(typeof openCleaningGuideModal === 'function') openCleaningGuideModal(); if(event) event.stopPropagation();" aria-label="${tr({ de: 'Grundreinigung', en: 'Deep Cleaning', es: 'Limpieza a fondo', el: 'Γενική καθαριότητα', fr: 'Nettoyage en profondeur', it: 'Pulizia profonda' })}" class="p-1 px-1.5 bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/30 text-emerald-300 hover:text-white rounded-lg shadow-sm hover:scale-105 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1" title="${tr({ de: 'Grundreinigung', en: 'Deep Cleaning', es: 'Limpieza a fondo', el: 'Γενική καθαριότητα', fr: 'Nettoyage en profondeur', it: 'Pulizia profonda' })}">
+            ${svgFn('sparkles', 'w-3.5 h-3.5 text-emerald-400')}
           </button>
         ` : ''}
         ${!isDone ? `
-          <button onclick="quickAddTaskTop('${id}', event)" class="p-1 text-gray-300 hover:text-[var(--accent-light)] hover:bg-white/10 rounded-lg transition cursor-pointer flex items-center justify-center" title="${tr({ de: 'Aufgabe hinzufügen ➕', en: 'Add task ➕', es: 'Añadir tarea ➕', el: 'Προσθήκη εργασίας ➕', fr: 'Ajouter tâche ➕', it: 'Aggiungi attività ➕' })}">
-            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+          <button onclick="quickAddTaskTop('${id}', event)" aria-label="${tr({ de: 'Aufgabe hinzufügen ➕', en: 'Add task ➕', es: 'Añadir tarea ➕', el: 'Προσθήκη εργασίας ➕', fr: 'Ajouter tâche ➕', it: 'Aggiungi attività ➕' })}" class="p-1 text-gray-300 hover:text-[var(--accent-light)] hover:bg-white/10 rounded-lg transition cursor-pointer flex items-center justify-center" title="${tr({ de: 'Aufgabe hinzufügen ➕', en: 'Add task ➕', es: 'Añadir tarea ➕', el: 'Προσθήκη εργασίας ➕', fr: 'Ajouter tâche ➕', it: 'Aggiungi Aktivitäten ➕' })}">
+            ${svgFn('plus', 'w-3.5 h-3.5')}
           </button>
         ` : ''}
         ${isCustomCol ? `
-          <button onclick="renameColumn('${id}', event)" class="p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition cursor-pointer flex items-center justify-center" title="${t('rename_column') || 'Umbenennen'}"><i data-lucide="edit-3" class="w-3 h-3"></i></button>
-          <button onclick="deleteColumn('${id}', event)" class="p-1 text-gray-400 hover:text-red-400 hover:bg-red-500/15 rounded-lg transition cursor-pointer flex items-center justify-center" title="${t('delete_column') || 'Löschen'}"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
+          <button onclick="renameColumn('${id}', event)" aria-label="${t('rename_column') || 'Umbenennen'}" class="p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition cursor-pointer flex items-center justify-center" title="${t('rename_column') || 'Umbenennen'}">${svgFn('edit-3', 'w-3 h-3')}</button>
+          <button onclick="deleteColumn('${id}', event)" aria-label="${t('delete_column') || 'Löschen'}" class="p-1 text-gray-400 hover:text-red-400 hover:bg-red-500/15 rounded-lg transition cursor-pointer flex items-center justify-center" title="${t('delete_column') || 'Löschen'}">${svgFn('trash-2', 'w-3 h-3')}</button>
         ` : ''}
       </div>
 
@@ -459,13 +480,18 @@ function renderApp() {
           </h2>
         </div>
         <div class="flex items-center gap-1 shrink-0 ml-1">
+          ${id === 'weekly' ? `
+            <button onclick="if(typeof openCleaningGuideModal === 'function') openCleaningGuideModal(); if(event) event.stopPropagation();" aria-label="${tr({ de: 'Grundreinigung', en: 'Deep Cleaning', es: 'Limpieza a fondo', el: 'Γενική καθαριότητα', fr: 'Nettoyage en profondeur', it: 'Pulizia profonda' })}" class="p-1 px-1.5 bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/30 text-emerald-300 hover:text-white rounded-lg shadow-sm hover:scale-105 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1" title="${tr({ de: 'Grundreinigung', en: 'Deep Cleaning', es: 'Limpieza a fondo', el: 'Γενική καθαριότητα', fr: 'Nettoyage en profondeur', it: 'Pulizia profonda' })}">
+              ${svgFn('sparkles', 'w-3.5 h-3.5 text-emerald-400')}
+            </button>
+          ` : ''}
           ${countBadgeHTML}
         </div>
       </div>
       <div id="list-${id}" class="flex flex-col gap-1.5 flex-1 min-h-[100px] overflow-y-auto py-0.5 px-0.5 custom-scrollbar"></div>
       ${(!isDone) ? `
         <div class="flex items-center justify-start pt-1 px-0.5 mt-auto">
-          <button onclick="openTextImportModal('${id}', event)" class="p-1 rounded-md bg-transparent hover:bg-white/5 border border-transparent hover:border-white/10 text-gray-500 hover:text-gray-200 opacity-40 hover:opacity-100 transition-all duration-200 cursor-pointer flex items-center justify-center shrink-0" title="${isNotes ? tr({ de: 'Notizen importieren (.txt, .md, .csv, .json oder Zwischenablage)', en: 'Import notes (.txt, .md, .csv, .json or clipboard)', es: 'Importar notas (.txt, .md, .csv, .json o portapapeles)', el: 'Εισαγωγή σημειώσεων (.txt, .md, .csv, .json ή πρόχειρο)', fr: 'Importer des notes (.txt, .md, .csv, .json ou presse-papiers)', it: 'Importa note (.txt, .md, .csv, .json o appunti)' }) : (isTermine ? tr({ de: 'Termine aus Kalenderdatei (.ics) oder Text importieren', en: 'Import appointments from calendar file (.ics) or text', es: 'Importar citas desde archivo (.ics) o texto', el: 'Εισαγωγή ραντεβού από ημερολόγιο (.ics) ή κείμενο', fr: 'Importer des rendez-vous depuis un fichier (.ics) ou texte', it: 'Importa appuntamenti da file (.ics) o testo' }) : tr({ de: 'Aufgaben importieren (.txt, .md, .csv, .json oder Zwischenablage)', en: 'Import tasks (.txt, .md, .csv, .json or clipboard)', es: 'Importar tareas (.txt, .md, .csv, .json o portapapeles)', el: 'Εισαγωγή εργασιών (.txt, .md, .csv, .json ή πρόχειρο)', fr: 'Importer des tâches (.txt, .md, .csv, .json ou presse-papiers)', it: 'Importa attività (.txt, .md, .csv, .json o appunti)' }))}">
+          <button onclick="openTextImportModal('${id}', event)" aria-label="${isNotes ? 'Notizen importieren' : (isTermine ? 'Termine importieren' : 'Aufgaben importieren')}" class="p-1 rounded-md bg-transparent hover:bg-white/5 border border-transparent hover:border-white/10 text-gray-500 hover:text-gray-200 opacity-40 hover:opacity-100 transition-all duration-200 cursor-pointer flex items-center justify-center shrink-0" title="${isNotes ? tr({ de: 'Notizen importieren (.txt, .md, .csv, .json oder Zwischenablage)', en: 'Import notes (.txt, .md, .csv, .json or clipboard)', es: 'Importar notas (.txt, .md, .csv, .json o portapapeles)', el: 'Εισαγωγή σημειώσεων (.txt, .md, .csv, .json ή πρόχειρο)', fr: 'Importer des notes (.txt, .md, .csv, .json ou presse-papiers)', it: 'Importa note (.txt, .md, .csv, .json o appunti)' }) : (isTermine ? tr({ de: 'Termine aus Kalenderdatei (.ics) oder Text importieren', en: 'Import appointments from calendar file (.ics) or text', es: 'Importar citas desde archivo (.ics) o texto', el: 'Εισαγωγή ραντεβού από ημερολόγιο (.ics) ή κείμενο', fr: 'Importer des rendez-vous depuis un fichier (.ics) ou texte', it: 'Importa appuntamenti da file (.ics) o testo' }) : tr({ de: 'Aufgaben importieren (.txt, .md, .csv, .json oder Zwischenablage)', en: 'Import tasks (.txt, .md, .csv, .json or clipboard)', es: 'Importar tareas (.txt, .md, .csv, .json o portapapeles)', el: 'Εισαγωγή εργασιών (.txt, .md, .csv, .json ή πρόχειρο)', fr: 'Importer des tâches (.txt, .md, .csv, .json ou presse-papiers)', it: 'Importa attività (.txt, .md, .csv, .json o appunti)' }))}">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>
@@ -506,13 +532,13 @@ function renderApp() {
             <span class="text-xs text-amber-100 font-normal leading-snug break-normal whitespace-normal flex-1 select-text" title="${safeNoteEscaped}">${safeNoteEscaped}</span>
           </div>
           <div class="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-0.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-150 shrink-0 bg-[#141420]/95 border border-white/10 p-0.5 rounded-lg shadow-md z-40 backdrop-blur-md" onclick="event.stopPropagation()">
-            <button onclick="openNoteDetailModal(${index}, event)" class="p-1 text-amber-400 hover:text-amber-300 hover:bg-white/10 rounded-md transition cursor-pointer" title="${tr({ de: 'Notiz öffnen & bearbeiten', en: 'Open & edit note', fr: 'Ouvrir et modifier la note', it: 'Apri e modifica nota', es: 'Abrir y editar nota', el: 'Άνοιγμα & επεξεργασία σημείωσης' })}">
+            <button onclick="openNoteDetailModal(${index}, event)" aria-label="${tr({ de: 'Notiz öffnen & bearbeiten', en: 'Open & edit note', fr: 'Ouvrir et modifier la note', it: 'Apri e modifica nota', es: 'Abrir y editar nota', el: 'Άνοιγμα & επεξεργασία σημείωσης' })}" class="p-1 text-amber-400 hover:text-amber-300 hover:bg-white/10 rounded-md transition cursor-pointer" title="${tr({ de: 'Notiz öffnen & bearbeiten', en: 'Open & edit note', fr: 'Ouvrir et modifier la note', it: 'Apri e modifica nota', es: 'Abrir y editar nota', el: 'Άνοιγμα & επεξεργασία σημείωσης' })}">
               <i data-lucide="edit-3" class="w-3 h-3"></i>
             </button>
-            <button onclick="copyNoteText(${index}, event)" class="p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition cursor-pointer" title="${tr({ de: 'Kopieren', en: 'Copy', es: 'Copiar', el: 'Αντιγραφή', fr: 'Copier', it: 'Copia' })}">
+            <button onclick="copyNoteText(${index}, event)" aria-label="${tr({ de: 'Kopieren', en: 'Copy', es: 'Copiar', el: 'Αντιγραφή', fr: 'Copier', it: 'Copia' })}" class="p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition cursor-pointer" title="${tr({ de: 'Kopieren', en: 'Copy', es: 'Copiar', el: 'Αντιγραφή', fr: 'Copier', it: 'Copia' })}">
               <i data-lucide="copy" class="w-3 h-3"></i>
             </button>
-            <button onclick="deleteTask('notes', ${index}, event)" class="p-1 text-gray-500 hover:text-red-400 hover:bg-white/10 rounded-md transition cursor-pointer" title="${tr({ de: 'Notiz löschen', en: 'Delete note', fr: 'Supprimer la note', it: 'Elimina nota', es: 'Eliminar nota', el: 'Διαγραφή σημείωσης' })}">
+            <button onclick="deleteTask('notes', ${index}, event)" aria-label="${tr({ de: 'Notiz löschen', en: 'Delete note', fr: 'Supprimer la note', it: 'Elimina nota', es: 'Eliminar nota', el: 'Διαγραφή σημείωσης' })}" class="p-1 text-gray-500 hover:text-red-400 hover:bg-white/10 rounded-md transition cursor-pointer" title="${tr({ de: 'Notiz löschen', en: 'Delete note', fr: 'Supprimer la note', it: 'Elimina nota', es: 'Eliminar nota', el: 'Διαγραφή σημείωσης' })}">
               <i data-lucide="trash-2" class="w-3 h-3"></i>
             </button>
           </div>
@@ -523,7 +549,7 @@ function renderApp() {
       const addBtn = document.createElement('button');
       addBtn.onclick = () => { openTaskAddColumns['notes'] = true; renderApp(); };
       addBtn.className = 'w-full min-h-[30px] p-1.5 rounded-xl border border-dashed border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/15 hover:border-amber-400/60 text-center text-xs text-amber-300/90 hover:text-amber-200 font-semibold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 shadow-xs group/addbtn mt-1';
-      addBtn.innerHTML = `<i data-lucide="plus" class="w-3.5 h-3.5 text-amber-400 group-hover/addbtn:scale-110 transition-transform"></i><span>${tr({ de: 'Notiz hinzufügen', en: 'Add note', es: 'Añadir nota', el: 'Προσθήκη σημείωσης', fr: 'Ajouter une note', it: 'Aggiungi nota' })}</span>`;
+      addBtn.innerHTML = `${svgFn('plus', 'w-3.5 h-3.5 text-amber-400 group-hover/addbtn:scale-110 transition-transform')}<span>${tr({ de: 'Notiz hinzufügen', en: 'Add note', es: 'Añadir nota', el: 'Προσθήκη σημείωσης', fr: 'Ajouter une note', it: 'Aggiungi nota' })}</span>`;
 
       const addInput = document.createElement('textarea');
       addInput.rows = 2;
@@ -539,7 +565,6 @@ function renderApp() {
           addInput.value = '';
           openTaskAddColumns['notes'] = false;
           saveState(); renderApp();
-          if (typeof lucide !== 'undefined') lucide.createIcons();
         }
         if (e.key === 'Escape') { openTaskAddColumns['notes'] = false; renderApp(); }
       };
@@ -576,16 +601,16 @@ function renderApp() {
             console.warn('[Tasks] Date parsing warning:', e);
           }
         }
-        let locHTML = item.location ? `<span class="text-[9px] text-gray-400 truncate max-w-[90px] inline-flex items-center gap-0.5"><i data-lucide="map-pin" class="w-2.5 h-2.5 shrink-0 text-gray-500"></i>${escapeHtml(item.location)}</span>` : '';
+        let locHTML = item.location ? `<span class="text-[9px] text-gray-400 truncate max-w-[90px] inline-flex items-center gap-0.5">${svgFn('map-pin', 'w-3 h-3 shrink-0 text-gray-500')}${escapeHtml(item.location)}</span>` : '';
         const itemDiv = document.createElement('div');
         itemDiv.className = `group relative w-full h-auto min-h-[34px] flex items-center justify-between py-1.5 px-2.5 border-0 border-l-[3.5px] ${isToday ? 'border-amber-400 bg-amber-500/10' : 'border-amber-500/40 bg-white/[0.035]'} hover:bg-white/[0.07] text-gray-200 font-medium transition-all duration-150 ease-out rounded-xl shadow-xs cursor-pointer`;
         itemDiv.onclick = () => editTermin(originalIndex);
         itemDiv.innerHTML = `
           <div class="flex items-center gap-2 flex-1 min-w-0 pr-10 select-none">
-            <button onclick="handleCompleteTask('termine', ${originalIndex}, event)" class="task-check-btn p-0 bg-transparent border-0 cursor-pointer shrink-0" title="${tr({ de: 'Termin als erledigt markieren', en: 'Mark appointment as completed', fr: 'Marquer le rendez-vous comme terminé', it: 'Segna appuntamento come completato', es: 'Marcar cita como completada', el: 'Σήμανση ραντεβού ως ολοκληρωμένο' })}">
-              <span class="task-check-circle relative flex items-center justify-center w-4.5 h-4.5 rounded-full border border-orange-400/30 bg-orange-500/10 hover:border-emerald-400 hover:bg-emerald-500/20 hover:scale-110 active:scale-90 transition-all duration-200 shrink-0 shadow-xs group/check">
-                <i data-lucide="clock" class="task-default-icon w-2.5 h-2.5 text-orange-400 transition-all duration-200 group-hover/check:opacity-0 group-hover/check:scale-50"></i>
-                <i data-lucide="check" class="task-hover-check w-3 h-3 text-emerald-400 opacity-0 scale-50 group-hover/check:opacity-100 group-hover/check:scale-100 transition-all duration-200 absolute"></i>
+            <button onclick="handleCompleteTask('termine', ${originalIndex}, event)" aria-label="${tr({ de: 'Termin als erledigt markieren', en: 'Mark appointment as completed', fr: 'Marquer le rendez-vous comme terminé', it: 'Segna appuntamento come completato', es: 'Marcar cita como completada', el: 'Σήμανση ραντεβού ως ολοκληρωμένο' })}" class="task-check-btn p-0 bg-transparent border-0 cursor-pointer shrink-0" title="${tr({ de: 'Termin als erledigt markieren', en: 'Mark appointment as completed', fr: 'Marquer le rendez-vous comme terminé', it: 'Segna appuntamento come completato', es: 'Marcar cita como completada', el: 'Σήμανση ραντεβού ως ολοκληρωμένο' })}">
+              <span class="task-check-circle relative flex items-center justify-center w-5.5 h-5.5 rounded-full border border-orange-400/30 bg-orange-500/10 hover:border-emerald-400 hover:bg-emerald-500/20 hover:scale-110 active:scale-90 transition-all duration-200 shrink-0 shadow-xs group/check">
+                ${svgFn('clock', 'task-default-icon w-3.5 h-3.5 text-orange-400 transition-all duration-200 group-hover/check:opacity-0 group-hover/check:scale-50')}
+                ${svgFn('check', 'task-hover-check w-3.5 h-3.5 text-emerald-400 opacity-0 scale-50 group-hover/check:opacity-100 group-hover/check:scale-100 transition-all duration-200 absolute')}
               </span>
             </button>
             <div class="flex flex-col min-w-0 flex-1 cursor-pointer" onclick="editTermin(${originalIndex}, event)">
@@ -600,8 +625,8 @@ function renderApp() {
             </div>
           </div>
           <div class="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-0.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-150 shrink-0 bg-[#141420]/95 border border-white/10 p-0.5 rounded-lg shadow-md z-40 backdrop-blur-md">
-            <button onclick="editTermin(${originalIndex}, event)" class="p-1 text-amber-400 hover:text-amber-300 hover:bg-white/10 rounded-md transition cursor-pointer" title="${tr({ de: 'Termin bearbeiten', en: 'Edit appointment', fr: 'Modifier le rendez-vous', it: 'Modifica appuntamento', es: 'Editar cita', el: 'Επεξεργασία ραντεβού' })}"><i data-lucide="edit-3" class="w-3 h-3"></i></button>
-            <button onclick="deleteTask('termine', ${originalIndex}, event)" class="p-1 text-gray-500 hover:text-red-400 hover:bg-white/10 rounded-md transition cursor-pointer" title="${tr({ de: 'Termin löschen', en: 'Delete appointment', fr: 'Supprimer le rendez-vous', it: 'Elimina appuntamento', es: 'Eliminar cita', el: 'Διαγραφή ραντεβού' })}"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
+            <button onclick="editTermin(${originalIndex}, event)" aria-label="${tr({ de: 'Termin bearbeiten', en: 'Edit appointment', fr: 'Modifier le rendez-vous', it: 'Modifica appuntamento', es: 'Editar cita', el: 'Επεξεργασία ραντεβού' })}" class="p-1 text-amber-400 hover:text-amber-300 hover:bg-white/10 rounded-md transition cursor-pointer" title="${tr({ de: 'Termin bearbeiten', en: 'Edit appointment', fr: 'Modifier le rendez-vous', it: 'Modifica appuntamento', es: 'Editar cita', el: 'Επεξεργασία ραντεβού' })}">${svgFn('edit-3', 'w-3 h-3')}</button>
+            <button onclick="deleteTask('termine', ${originalIndex}, event)" aria-label="${tr({ de: 'Termin löschen', en: 'Delete appointment', fr: 'Supprimer le rendez-vous', it: 'Elimina appuntamento', es: 'Eliminar cita', el: 'Διαγραφή ραντεβού' })}" class="p-1 text-gray-500 hover:text-red-400 hover:bg-white/10 rounded-md transition cursor-pointer" title="${tr({ de: 'Termin löschen', en: 'Delete appointment', fr: 'Supprimer le rendez-vous', it: 'Elimina appuntamento', es: 'Eliminar cita', el: 'Διαγραφή ραντεβού' })}">${svgFn('trash-2', 'w-3 h-3')}</button>
           </div>
         `;
         listEl.appendChild(itemDiv);
@@ -611,7 +636,7 @@ function renderApp() {
         const btnEl = document.createElement('button'); btnEl.onclick = () => toggleTerminForm(true);
         btnEl.className = 'w-full min-h-[30px] p-1.5 rounded-xl border border-dashed border-orange-500/30 bg-orange-500/5 hover:bg-orange-500/15 hover:border-orange-400/60 text-center text-xs text-orange-300/90 hover:text-orange-200 font-semibold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 shadow-xs group/addbtn mt-1';
         const btnT = t('appointment_new_btn') || tr({ de: 'Neuer Termin', en: 'New appointment', es: 'Nueva cita', el: 'Νέο ραντεβού', fr: 'Nouveau rendez-vous', it: 'Nuovo appuntamento' });
-        btnEl.innerHTML = `<i data-lucide="calendar-plus" class="w-3.5 h-3.5 text-orange-400 group-hover/addbtn:scale-110 transition-transform"></i><span>${btnT}</span>`;
+        btnEl.innerHTML = `${svgFn('calendar-plus', 'w-3.5 h-3.5 text-orange-400 group-hover/addbtn:scale-110 transition-transform')}<span>${btnT}</span>`;
         listEl.appendChild(btnEl);
       } else {
         const formDiv = document.createElement('div'); formDiv.className = 'mt-1 p-3 bg-[#0e0e14] border border-[var(--accent)]/40 rounded-xl flex flex-col gap-2 shadow-lg';
@@ -629,8 +654,8 @@ function renderApp() {
         const dateValue = selectedCalendarDate || todayISO;
         formDiv.innerHTML = `
           <div class="flex items-center justify-between text-xs font-bold text-amber-300">
-            <span class="flex items-center gap-1.5"><i data-lucide="calendar" class="w-3.5 h-3.5"></i> ${formT}</span>
-            <button onclick="toggleTerminForm(false)" class="text-gray-400 hover:text-white p-0.5 cursor-pointer text-xs">✕</button>
+            <span class="flex items-center gap-1.5">${svgFn('calendar', 'w-3.5 h-3.5')} ${formT}</span>
+            <button onclick="toggleTerminForm(false)" aria-label="Termin-Formular schließen" class="text-gray-400 hover:text-white p-0.5 cursor-pointer text-xs">✕</button>
           </div>
           <input type="text" id="add-termin-title" placeholder="${nameT}" class="w-full p-2 bg-black/60 border border-white/15 rounded-lg text-xs text-white outline-none focus:border-[var(--accent)] font-semibold placeholder:text-gray-500 mb-2" />
           <input type="text" id="add-termin-location" placeholder="${locPlaceholder}" class="w-full p-2 bg-black/60 border border-white/15 rounded-lg text-xs text-white outline-none focus:border-[var(--accent)] font-semibold placeholder:text-gray-500 mb-2" />
@@ -639,7 +664,7 @@ function renderApp() {
             <div><label class="text-[10px] text-gray-400 mb-0.5 block font-medium">${timeT}</label><input type="time" id="add-termin-time" value="10:00" class="w-full p-1.5 bg-black/60 border border-white/15 rounded-lg text-xs text-gray-200 outline-none focus:border-[var(--accent)] cursor-pointer" /></div>
           </div>
           <div class="flex items-center gap-2 mt-1">
-            <button onclick="handleAddTermin()" class="flex-1 py-1.5 bg-[var(--accent)] hover:opacity-90 text-white font-bold text-xs rounded-lg transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm"><i data-lucide="check" class="w-3.5 h-3.5"></i><span>${saveT}</span></button>
+            <button onclick="handleAddTermin()" class="flex-1 py-1.5 bg-[var(--accent)] hover:opacity-90 text-white font-bold text-xs rounded-lg transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">${svgFn('check', 'w-3.5 h-3.5')}<span>${saveT}</span></button>
             <button onclick="toggleTerminForm(false)" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-gray-300 font-semibold text-xs rounded-lg transition cursor-pointer">${cancelT}</button>
           </div>
         `;
@@ -679,23 +704,23 @@ function renderApp() {
         const formattedTaskHtml = safeTaskEscaped.replace(/ &amp; /g, '&nbsp;&amp; ').replace(/ & /g, '&nbsp;& ');
         const pair = HOVER_COLOR_PAIRS[(index + id.charCodeAt(0)) % HOVER_COLOR_PAIRS.length];
         const recurrenceBadge = (taskObj.recurrence && taskObj.recurrence !== 'none')
-          ? `<span class="px-1.5 py-0.2 rounded text-[9px] font-mono bg-purple-500/20 text-purple-300 border border-purple-500/30 shrink-0 ml-1">🔁 ${t('recurrence_' + taskObj.recurrence) || taskObj.recurrence}</span>`
+          ? `<span class="px-1.5 py-0.2 rounded text-[9px] font-mono bg-purple-500/20 text-purple-300 border border-purple-500/30 shrink-0 ml-auto mr-1">🔁 ${t('recurrence_' + taskObj.recurrence) || taskObj.recurrence}</span>`
           : '';
         const editTooltip = tr({ de: 'Klicken zum Bearbeiten', en: 'Click to edit', fr: 'Cliquer pour modifier', it: 'Clicca per modificare', es: 'Clic para editar', el: 'Κλικ για επεξεργασία' });
         itemDiv.innerHTML = `
           <div class="flex items-center gap-2 flex-1 min-w-0 pr-6 select-none">
-            <button onclick="handleCompleteTask('${id}', ${index}, event)" class="task-check-btn p-0 bg-transparent border-0 cursor-pointer shrink-0" title="${tr({ de: 'Als erledigt markieren', en: 'Mark as completed', fr: 'Marquer comme terminé', it: 'Segna come completato', es: 'Marcar como completada', el: 'Σήμανση ως ολοκληρωμένο' })}">
-              <span class="task-check-circle relative flex items-center justify-center w-4.5 h-4.5 rounded-full border border-white/20 bg-white/[0.04] hover:border-emerald-400 hover:bg-emerald-500/20 hover:scale-110 active:scale-90 transition-all duration-200 shrink-0 shadow-xs group/check">
-                <i data-lucide="${iconDetails.icon}" class="task-default-icon w-2.5 h-2.5 ${isTaskActive ? 'text-amber-400 animate-pulse' : (taskColor !== 'none' ? colorStyle.iconColor : iconDetails.color)} transition-all duration-200 group-hover/check:opacity-0 group-hover/check:scale-50"></i>
-                <i data-lucide="check" class="task-hover-check w-3 h-3 text-emerald-400 opacity-0 scale-50 group-hover/check:opacity-100 group-hover/check:scale-100 transition-all duration-200 absolute"></i>
+            <button onclick="handleCompleteTask('${id}', ${index}, event)" aria-label="${tr({ de: 'Als erledigt markieren', en: 'Mark as completed', fr: 'Marquer comme terminé', it: 'Segna come completato', es: 'Marcar como completada', el: 'Σήμανση ως ολοκληρωμένο' })}" class="task-check-btn p-0 bg-transparent border-0 cursor-pointer shrink-0" title="${tr({ de: 'Als erledigt markieren', en: 'Mark as completed', fr: 'Marquer comme terminé', it: 'Segna come completato', es: 'Marcar como completada', el: 'Σήμανση ως ολοκληρωμένο' })}">
+              <span class="task-check-circle relative flex items-center justify-center w-5.5 h-5.5 rounded-full border border-white/20 bg-white/[0.04] hover:border-emerald-400 hover:bg-emerald-500/20 hover:scale-110 active:scale-90 transition-all duration-200 shrink-0 shadow-xs group/check">
+                ${svgFn(iconDetails.icon, `task-default-icon w-3.5 h-3.5 ${isTaskActive ? 'text-amber-400 animate-pulse' : (taskColor !== 'none' ? colorStyle.iconColor : iconDetails.color)} transition-all duration-200 group-hover/check:opacity-0 group-hover/check:scale-50`)}
+                ${svgFn('check', 'task-hover-check w-3.5 h-3.5 text-emerald-400 opacity-0 scale-50 group-hover/check:opacity-100 group-hover/check:scale-100 transition-all duration-200 absolute')}
               </span>
             </button>
             <span data-task-span="${id}-${index}" onclick="editTaskInline('${id}', ${index}, event)" class="task-text-span block text-xs leading-snug py-0.5 min-w-0 flex-1 font-medium text-gray-200 hover:text-white break-normal whitespace-normal cursor-pointer active:cursor-text ${isTaskActive ? 'text-amber-200 font-bold' : (taskColor !== 'none' ? colorStyle.text : '')} ${pair.text} transition-colors duration-150" title="${safeTaskEscaped} (${editTooltip})">${formattedTaskHtml}</span>
             ${recurrenceBadge}
           </div>
           <div class="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-150 shrink-0 z-40">
-            <button onmouseenter="cancelCloseTaskMenu(); openTaskOptionsMenu('${id}', ${index}, this);" onmouseleave="scheduleCloseTaskMenu();" onclick="toggleTaskOptionsMenu('${id}', ${index}, event)" class="p-1 px-1.5 text-gray-200 hover:text-white bg-[#1a1a28] hover:bg-[#252538] border border-white/20 rounded-lg shadow-md transition cursor-pointer" title="${tr({ de: 'Optionen (Steps, Focus, etc.)', en: 'Options (Steps, Focus, etc.)', fr: 'Options (Steps, Focus, etc.)', it: 'Opzioni (Steps, Focus, etc.)', es: 'Opciones (Steps, Focus, etc.)', el: 'Επιλογές (Steps, Focus, etc.)' })}">
-              <i data-lucide="more-horizontal" class="w-3.5 h-3.5 text-gray-200 hover:text-white"></i>
+            <button onmouseenter="cancelCloseTaskMenu(); openTaskOptionsMenu('${id}', ${index}, this);" onmouseleave="scheduleCloseTaskMenu();" onclick="toggleTaskOptionsMenu('${id}', ${index}, event)" aria-label="${tr({ de: 'Aufgabenoptionen öffnen', en: 'Open task options', fr: 'Ouvrir options', it: 'Apri opzioni', es: 'Abrir opciones', el: 'Επιλογές' })}" class="p-1 px-1.5 text-gray-200 hover:text-white bg-[#1a1a28] hover:bg-[#252538] border border-white/20 rounded-lg shadow-md transition cursor-pointer" title="${tr({ de: 'Optionen (Steps, Focus, etc.)', en: 'Options (Steps, Focus, etc.)', fr: 'Options (Steps, Focus, etc.)', it: 'Opzioni (Steps, Focus, etc.)', es: 'Opciones (Steps, Focus, etc.)', el: 'Επιλογές (Steps, Focus, etc.)' })}">
+              ${svgFn('more-horizontal', 'w-3.5 h-3.5 text-gray-200 hover:text-white')}
             </button>
           </div>
         `;
@@ -703,7 +728,7 @@ function renderApp() {
       });
       const addBtn = document.createElement('button'); addBtn.onclick = () => { openTaskAddColumns[id] = true; renderApp(); };
       addBtn.className = 'w-full min-h-[30px] p-1.5 rounded-xl border border-dashed border-white/15 bg-white/[0.02] hover:bg-white/[0.06] hover:border-[var(--accent)]/40 text-center text-xs text-gray-400 hover:text-white font-semibold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 shadow-xs group/addbtn mt-1';
-      addBtn.innerHTML = `<i data-lucide="plus" class="w-3.5 h-3.5 text-[var(--accent-light)] group-hover/addbtn:scale-110 transition-transform"></i><span>${t('add')}</span>`;
+      addBtn.innerHTML = `${svgFn('plus', 'w-3.5 h-3.5 text-[var(--accent-light)] group-hover/addbtn:scale-110 transition-transform')}<span>${t('add')}</span>`;
 
       const addInput = document.createElement('input'); addInput.type = 'text';
       addInput.placeholder = t('add');
@@ -719,8 +744,6 @@ function renderApp() {
           addInput.value = '';
           openTaskAddColumns[id] = false;
           saveState(); renderApp(); populateHelperTaskSelect();
-
-          if (typeof lucide !== 'undefined') lucide.createIcons();
         }
         if (e.key === 'Escape') { openTaskAddColumns[id] = false; renderApp(); }
       };
@@ -738,9 +761,8 @@ function renderApp() {
   });
 
   main.appendChild(fragment);
-  checkSampleBannerVisibility();
   updateShoppingListPopup(true); renderCookingPanel(true);
-  renderLucideIcons();
+  renderLucideIcons(false, main);
   renderMobileCategoryTabs();
 }
 
@@ -782,12 +804,28 @@ function setMobileCategory(id) {
   document.body.dataset.mobileCat = id;
   localStorage.setItem('flowPlannerMobileCategory', id);
   document.querySelectorAll('.mobile-tab-btn').forEach(btn => {
-    btn.classList.toggle('mobile-tab-active', btn.dataset.cat === id);
+    const isAct = btn.dataset.cat === id;
+    btn.classList.toggle('mobile-tab-active', isAct);
+    if (isAct) {
+      btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
   });
   const main = document.querySelector('main');
   if (main) main.scrollIntoView({ behavior: 'instant', block: 'start' });
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
+
+function stepMobileCategory(direction = 1) {
+  const isWork = state && state.activeWorkspace === 'work';
+  const activeOrder = isWork ? (workCategoriesOrder || WORK_CATEGORIES_ORDER) : categoriesOrder;
+  const currentCat = document.body.dataset.mobileCat || (activeOrder[0] ? activeOrder[0][0] : 'daily');
+  const idx = activeOrder.findIndex(([id]) => id === currentCat);
+  if (idx === -1) return;
+  const nextIdx = (idx + direction + activeOrder.length) % activeOrder.length;
+  setMobileCategory(activeOrder[nextIdx][0]);
+}
+window.setMobileCategory = setMobileCategory;
+window.stepMobileCategory = stepMobileCategory;
 
 function animateTaskToDone(taskEl, targetSelector, onComplete) {
   if (!taskEl) { onComplete(); return; }
@@ -821,6 +859,9 @@ function handleCompleteTask(category, index, event) {
     
     setThemeSlow(getSimilarTheme(currentTheme)); 
     saveState(); 
+    if (typeof CollabEngine !== 'undefined') {
+      CollabEngine.broadcastBoardEvent(`hat Aufgabe erledigt: "${taskText.substring(0, 32)}" ✅`);
+    }
     showPraise(); 
     renderApp(); 
     updateZenView(); 
@@ -1127,10 +1168,11 @@ function handleDrop(e, targetCategory) {
 
 if (typeof window !== 'undefined' && typeof window.currentlyOpenPanel === 'undefined') window.currentlyOpenPanel = null;
 var currentlyOpenPanel = (typeof window !== 'undefined' && window.currentlyOpenPanel) ? window.currentlyOpenPanel : null;
+var pinnedPanel = (typeof window !== 'undefined' && window.pinnedPanel) ? window.pinnedPanel : null;
 let hoverPanelShowTimeout = null;
 let hoverPanelHideTimeout = null;
 
-function showPanelHover(panelName, delay = 180) {
+function showPanelHover(panelName, delay = 160) {
   if (hoverPanelHideTimeout) {
     clearTimeout(hoverPanelHideTimeout);
     hoverPanelHideTimeout = null;
@@ -1140,23 +1182,49 @@ function showPanelHover(panelName, delay = 180) {
     hoverPanelShowTimeout = null;
   }
 
+  // Header-Tools Popover beim Logo sofort ohne Verzögerung anzeigen
+  if (panelName === 'header-tools') {
+    delay = 0;
+  }
+
+  const TOOL_SUBPANELS = ['shopping', 'cooking', 'radio', 'news', 'audio', 'alarm', 'daily', 'impulse', 'inspiration'];
+  // Wenn ein anderes Panel fest angeklickt (gepinnt) ist, nicht durch reines Drüberfahren schließen
+  if (pinnedPanel && pinnedPanel !== panelName) {
+    if (!(pinnedPanel === 'header-tools' && TOOL_SUBPANELS.includes(panelName))) {
+      return;
+    }
+  }
+
   const el = document.getElementById(`panel-${panelName}`);
   if (!el) return;
 
   if (!el.classList.contains('hidden')) {
     currentlyOpenPanel = panelName;
+    if (typeof window !== 'undefined') window.currentlyOpenPanel = panelName;
     return;
   }
 
   hoverPanelShowTimeout = setTimeout(() => {
+    // Nochmals prüfen ob zwischenzeitlich gepinnt wurde
+    if (pinnedPanel && pinnedPanel !== panelName) {
+      if (!(pinnedPanel === 'header-tools' && TOOL_SUBPANELS.includes(panelName))) {
+        return;
+      }
+    }
+
     const ALL_POPOVER_PANELS = [
-      'feedback', 'report', 'settings', 'settings-dropdown', 'soundscape', 'language',
+      'header-tools', 'feedback', 'report', 'settings', 'settings-dropdown', 'soundscape', 'language',
       'boost', 'music', 'theme', 'calendar-dropdown', 'inspiration', 'impulse',
-      'shopping', 'cooking', 'alarm', 'weather', 'news', 'pause-dropdown', 'timer-presets',
-      'audio', 'daily', 'logo-guide'
+      'shopping', 'cooking', 'alarm', 'weather', 'news', 'radio', 'pause-dropdown', 'timer-presets',
+      'audio', 'daily', 'logo-guide', 'collab-chat', 'radio-news'
     ];
+    const isSubpanelOfTools = TOOL_SUBPANELS.includes(panelName);
+
     ALL_POPOVER_PANELS.forEach(p => {
-      if (p !== panelName) {
+      // Wenn wir ein Tool-Untermenü öffnen, darf das übergeordnete Tools-Menü nicht geschlossen werden!
+      if (isSubpanelOfTools && p === 'header-tools') return;
+      if (p !== panelName && p !== pinnedPanel) {
+        // Falls wir im Header-Tools Hub sind, nur andere Tool-Flyouts schließen, nicht aber fremde Panels
         const other = document.getElementById(`panel-${p}`);
         if (other) other.classList.add('hidden');
       }
@@ -1164,16 +1232,30 @@ function showPanelHover(panelName, delay = 180) {
 
     el.classList.remove('hidden');
     currentlyOpenPanel = panelName;
+    if (typeof window !== 'undefined') window.currentlyOpenPanel = panelName;
 
-    const dockContainer = document.querySelector('.mac-dock-container');
-    if (dockContainer && ['audio', 'daily', 'alarm'].includes(panelName)) {
+    const dockContainer = document.querySelector('.desktop-tools-sidebar, .mac-dock-container');
+    if (dockContainer && ['audio', 'daily', 'alarm', 'radio-news', 'shopping', 'cooking', 'radio', 'news'].includes(panelName)) {
       dockContainer.classList.add('is-active');
     }
 
     if (panelName === 'report' && typeof updateReportPanel === 'function') updateReportPanel();
     if (panelName === 'weather' && typeof fetchLocalWeather === 'function') fetchLocalWeather();
+    if (panelName === 'shopping' && typeof renderShoppingList === 'function') renderShoppingList();
     if (panelName === 'cooking' && typeof renderCookingPanel === 'function') renderCookingPanel(true);
-    if (panelName === 'news' && typeof renderNewsBriefing === 'function') renderNewsBriefing();
+    if (panelName === 'news') {
+      if (typeof RadioNewsEngine !== 'undefined' && typeof RadioNewsEngine.initNewsPanel === 'function') {
+        RadioNewsEngine.initNewsPanel();
+      } else if (typeof renderNewsBriefing === 'function') {
+        renderNewsBriefing();
+      }
+    }
+    if (panelName === 'radio' && typeof RadioNewsEngine !== 'undefined' && typeof RadioNewsEngine.initRadioPanel === 'function') {
+      RadioNewsEngine.initRadioPanel();
+    }
+    if (panelName === 'radio-news' && typeof RadioNewsEngine !== 'undefined' && typeof RadioNewsEngine.initPanel === 'function') {
+      RadioNewsEngine.initPanel();
+    }
     if (panelName === 'alarm' && typeof renderAlarmPanel === 'function') renderAlarmPanel();
     if (panelName === 'daily') {
       if (typeof renderCookingPanel === 'function') renderCookingPanel(true);
@@ -1193,7 +1275,7 @@ function showPanelHover(panelName, delay = 180) {
 }
 window.showPanelHover = showPanelHover;
 
-function hidePanelHover(panelName, gracePeriod = 300) {
+function hidePanelHover(panelName, gracePeriod = 900) {
   if (hoverPanelShowTimeout) {
     clearTimeout(hoverPanelShowTimeout);
     hoverPanelShowTimeout = null;
@@ -1202,23 +1284,72 @@ function hidePanelHover(panelName, gracePeriod = 300) {
     clearTimeout(hoverPanelHideTimeout);
   }
 
+  // Wenn Panel per Klick fixiert (pinned) ist, niemals durch Mausbewegung schließen!
+  if (panelName && (pinnedPanel === panelName || (typeof window !== 'undefined' && window.pinnedPanel === panelName))) {
+    return;
+  }
+  if (!panelName && pinnedPanel) {
+    return;
+  }
+
   hoverPanelHideTimeout = setTimeout(() => {
+    // Nach Ablauf der Karenzzeit nochmals prüfen
+    if (panelName && (pinnedPanel === panelName || (typeof window !== 'undefined' && window.pinnedPanel === panelName))) {
+      return;
+    }
+    if (!panelName && pinnedPanel) {
+      return;
+    }
+
+    if (panelName === 'header-tools') {
+      const toolsPanel = document.getElementById('panel-header-tools');
+      if (toolsPanel) {
+        const isHovered = toolsPanel.matches(':hover');
+        const isWrapperHovered = document.getElementById('header-tools-wrapper')?.matches(':hover');
+        const openSubpanelHovered = document.querySelector('#panel-header-tools .dock-popover-panel:not(.hidden):hover');
+        if (isHovered || isWrapperHovered || openSubpanelHovered) {
+          return;
+        }
+        toolsPanel.classList.add('hidden');
+        document.querySelectorAll('#panel-header-tools .dock-popover-panel').forEach(p => p.classList.add('hidden'));
+        if (currentlyOpenPanel === 'header-tools' || ['shopping', 'cooking', 'radio', 'news', 'audio', 'alarm'].includes(currentlyOpenPanel)) {
+          currentlyOpenPanel = null;
+          if (typeof window !== 'undefined') window.currentlyOpenPanel = null;
+        }
+      }
+      return;
+    }
+
     if (panelName) {
       const el = document.getElementById(`panel-${panelName}`);
       if (el) {
+        if (el.matches(':hover')) return;
+        const toolsPanel = document.getElementById('panel-header-tools');
+        if (['shopping', 'cooking', 'radio', 'news', 'audio', 'alarm'].includes(panelName)) {
+          if (el.matches(':hover') || (toolsPanel && toolsPanel.matches(':hover'))) {
+            return;
+          }
+        }
         el.classList.add('hidden');
-        if (currentlyOpenPanel === panelName) currentlyOpenPanel = null;
+        if (currentlyOpenPanel === panelName) {
+          currentlyOpenPanel = null;
+          if (typeof window !== 'undefined') window.currentlyOpenPanel = null;
+        }
       }
-    } else if (currentlyOpenPanel) {
+    } else if (currentlyOpenPanel && currentlyOpenPanel !== pinnedPanel) {
       const el = document.getElementById(`panel-${currentlyOpenPanel}`);
-      if (el) el.classList.add('hidden');
+      if (el) {
+        if (el.matches(':hover')) return;
+        el.classList.add('hidden');
+      }
       currentlyOpenPanel = null;
+      if (typeof window !== 'undefined') window.currentlyOpenPanel = null;
     }
     
     // Check if any dock panel remains open
     const openDockPanel = document.querySelector('.dock-popover-panel:not(.hidden)');
     if (!openDockPanel) {
-      const dockContainer = document.querySelector('.mac-dock-container');
+      const dockContainer = document.querySelector('.desktop-tools-sidebar, .mac-dock-container');
       if (dockContainer) dockContainer.classList.remove('is-active');
     }
   }, gracePeriod);
@@ -1227,23 +1358,40 @@ window.hidePanelHover = hidePanelHover;
 
 // Globaler zuverlässiger Click-Away Listener für alle Popups/Panels
 document.addEventListener('pointerdown', (e) => {
-  if (!currentlyOpenPanel) return;
-  const openPanelEl = document.getElementById(`panel-${currentlyOpenPanel}`);
+  // 1. Wenn der Klick innerhalb des Tools-Hubs oder seines Wrappers ist: niemals schließen!
+  const toolsPanel = document.getElementById('panel-header-tools');
+  const toolsWrapper = document.getElementById('header-tools-wrapper');
+  if (toolsPanel && toolsPanel.contains(e.target)) return;
+  if (toolsWrapper && toolsWrapper.contains(e.target)) return;
+
+  const activeName = pinnedPanel || currentlyOpenPanel;
+  if (!activeName) return;
+
+  const openPanelEl = document.getElementById(`panel-${activeName}`);
   if (!openPanelEl || openPanelEl.classList.contains('hidden')) return;
 
   // Wenn der Klick innerhalb des Panels war: offen lassen!
   if (openPanelEl.contains(e.target)) return;
 
   // Wenn der Trigger-Button geklickt wurde: togglePanel übernimmt die Umschaltung
-  const clickedTrigger = e.target.closest(`[onclick*="togglePanel('${currentlyOpenPanel}')"]`) ||
-                         e.target.closest(`[onclick*="togglePanel(\"${currentlyOpenPanel}\")"]`) ||
+  const clickedTrigger = e.target.closest(`[onclick*="togglePanel('${activeName}')"]`) ||
+                         e.target.closest(`[onclick*="togglePanel(\"${activeName}\")"]`) ||
+                         e.target.closest(`[onclick*="showPanelHover('${activeName}')"]`) ||
+                         e.target.closest(`[onclick*="showPanelHover(\"${activeName}\")"]`) ||
                          e.target.closest(`[onclick*="handleSoundsMainClick"]`) ||
                          e.target.closest(`[onclick*="handleMusicMainClick"]`);
   if (clickedTrigger) return;
 
-  // Andernfalls: Panel stabil schließen
+  // Andernfalls: Panel stabil schließen & Pin aufheben
   openPanelEl.classList.add('hidden');
   currentlyOpenPanel = null;
+  pinnedPanel = null;
+  if (typeof window !== 'undefined') {
+    window.currentlyOpenPanel = null;
+    window.pinnedPanel = null;
+  }
+  const dockContainer = document.querySelector('.desktop-tools-sidebar, .mac-dock-container');
+  if (dockContainer) dockContainer.classList.remove('is-active');
 });
 
 let currentImportTargetCat = 'todo';
@@ -1662,80 +1810,6 @@ function editTaskInline(cat, index, event) {
   span.onblur = () => {
     finishEdit(true);
   };
-}
-
-// -------------------------------------------------------------
-// SAMPLE TASKS BANNER & SELECTION MANAGER
-// -------------------------------------------------------------
-let sampleBannerHoverTimer = null;
-
-function showSampleBannerOnHover(show) {
-  const banner = document.getElementById('sample-tasks-banner');
-  if (!banner) return;
-  clearTimeout(sampleBannerHoverTimer);
-  if (show) {
-    banner.classList.add('sample-banner-visible');
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-  } else {
-    sampleBannerHoverTimer = setTimeout(() => {
-      banner.classList.remove('sample-banner-visible');
-    }, 280);
-  }
-}
-
-function checkSampleBannerVisibility() {
-  const banner = document.getElementById('sample-tasks-banner');
-  if (!banner) return;
-  banner.classList.remove('sample-banner-visible');
-  if (typeof lucide !== 'undefined') lucide.createIcons();
-}
-
-function dismissSampleBanner(showConfirmationToast = true) {
-  state.sampleBannerDismissed = true;
-  saveState();
-  const banner = document.getElementById('sample-tasks-banner');
-  if (banner) banner.classList.remove('sample-banner-visible');
-  if (showConfirmationToast) {
-    showToast(tr({
-      de: 'Beispiel-Aufgaben übernommen! ✨',
-      en: 'Sample tasks kept! ✨',
-      fr: 'Tâches d\'exemple conservées ! ✨',
-      it: 'Attività di esempio mantenute! ✨',
-      es: '¡Tareas de ejemplo conservadas! ✨',
-      el: 'Οι παραδειγματικές εργασίες διατηρήθηκαν! ✨'
-    }));
-  }
-}
-
-function clearAllSampleTasks() {
-  const confirmMsg = tr({
-    de: 'Möchtest du wirklich alle Beispiel-Aufgaben entfernen und mit einem leeren Board starten?',
-    en: 'Do you really want to clear all sample tasks and start with an empty board?',
-    fr: 'Veux-tu vraiment effacer toutes les tâches d\'exemple et partir d\'un tableau vide ?',
-    it: 'Vuoi davvero cancellare tutte le attività di esempio e iniziare con una bacheca vuota?',
-    es: '¿Seguro que quieres borrar todas las tareas de ejemplo y empezar de cero?',
-    el: 'Θέλεις πραγματικά να διαγράψεις όλες τις εργασίες και να ξεκινήσεις με κενό πίνακα;'
-  });
-
-  if (confirm(confirmMsg)) {
-    saveHistory();
-    state.items.daily = [];
-    state.items.weekly = [];
-    state.items.occasionally = [];
-    state.items.todo = [];
-    state.sampleBannerDismissed = true;
-    saveState();
-    renderApp();
-    populateHelperTaskSelect();
-    showToast(tr({
-      de: 'Alle Aufgaben geleert. Dein Board ist bereit für dich! 🌱',
-      en: 'All tasks cleared. Your board is fresh and ready! 🌱',
-      fr: 'Toutes les tâches ont été effacées. Ton tableau est prêt ! 🌱',
-      it: 'Tutte le attività cancellate. La tua bacheca è pronta! 🌱',
-      es: 'Todas las tareas eliminadas. ¡Tu tablero está listo! 🌱',
-      el: 'Όλες οι εργασίες καθαρίστηκαν. Ο πίνακας είναι έτοιμος! 🌱'
-    }));
-  }
 }
 
 function openSampleManagerModal() {

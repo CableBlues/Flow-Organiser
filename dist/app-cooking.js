@@ -339,6 +339,7 @@ function toggleCookingStepCheckbox(stepIndex) {
 function renderCookingPanel(skipLucide = false) {
   const panel = document.getElementById('panel-cooking');
   if (!panel) return;
+  if (skipLucide && panel.classList.contains('hidden')) return;
 
   panel.style.width = "380px";
   panel.style.maxWidth = "95vw";
@@ -364,7 +365,7 @@ function renderCookingPanel(skipLucide = false) {
         <i data-lucide="cooking-pot" class="w-4 h-4 text-orange-400"></i>
         <span data-i18n="cooking">Kochen</span>
       </h4>
-      <button onclick="togglePanel('cooking')" class="text-gray-400 hover:text-white text-xs font-bold p-1 cursor-pointer">✕</button>
+      <button onclick="togglePanel('cooking')" aria-label="Koch-Panel schließen" class="text-gray-400 hover:text-white text-xs font-bold p-1 cursor-pointer">✕</button>
     </div>
 
     <div class="space-y-4 pt-3 max-h-[460px] overflow-y-auto pr-1 scrollbar-thin">
@@ -392,7 +393,7 @@ function renderCookingPanel(skipLucide = false) {
             ${pantry.map((item, index) => `
               <span class="inline-flex items-center gap-1.5 rounded-lg border border-orange-500/10 bg-orange-500/5 px-2.5 py-1 text-[11px] text-orange-200 font-semibold">
                 ${escapeHtml(capitalize(item))}
-                <button type="button" onclick="removeCookingIngredient(${index}); renderCookingPanel(true);" class="ml-1 text-orange-400/60 hover:text-red-400 font-bold transition cursor-pointer text-xs">×</button>
+                <button type="button" onclick="removeCookingIngredient(${index}); renderCookingPanel(true);" aria-label="Zutat entfernen" class="ml-1 text-orange-400/60 hover:text-red-400 font-bold transition cursor-pointer text-xs">×</button>
               </span>
             `).join('')}
           </div>

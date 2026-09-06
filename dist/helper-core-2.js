@@ -46,7 +46,7 @@ function generateTaskSteps(specificTask) {
       stepDiv.innerHTML = `
         <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleCustomStepCheck('${val.replace(/'/g, "\\'")}', ${idx}, event)" class="w-4 h-4 rounded text-[var(--accent)] cursor-pointer accent-[var(--accent)] shrink-0" />
         <span class="step-text flex-1 text-xs leading-snug break-words font-medium ${isChecked ? 'line-through text-gray-400' : 'text-gray-200'}" onclick="toggleCustomStepCheck('${val.replace(/'/g, "\\'")}', ${idx}, event)">${cleanedText}</span>
-        <button onclick="deleteCustomStep('${val.replace(/'/g, "\\'")}', ${idx}, event)" class="opacity-0 group-hover:opacity-100 p-1 text-gray-500 hover:text-red-400 rounded transition cursor-pointer shrink-0" title="Schritt entfernen">
+        <button onclick="deleteCustomStep('${val.replace(/'/g, "\\'")}', ${idx}, event)" aria-label="Schritt entfernen" class="opacity-0 group-hover:opacity-100 p-1 text-gray-500 hover:text-red-400 rounded transition cursor-pointer shrink-0" title="Schritt entfernen">
           <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
         </button>
       `;
@@ -250,8 +250,13 @@ function resetDopamineBox() {
   }
 }
 
+function openWhatNowModal() {
+  openHelperModal('pick');
+}
+
 if (typeof window !== 'undefined') {
   window.openHelperModal = openHelperModal;
+  window.openWhatNowModal = openWhatNowModal;
   window.closeHelperModal = closeHelperModal;
   window.openTaskStepsModal = openTaskStepsModal;
   window.speakText = speakText;
@@ -265,13 +270,19 @@ if (typeof window !== 'undefined') {
   window.resetDopamineBox = resetDopamineBox;
   window.switchWhatNowTab = typeof switchWhatNowTab !== 'undefined' ? switchWhatNowTab : undefined;
   window.setWhatNowEnergyLevel = typeof setWhatNowEnergyLevel !== 'undefined' ? setWhatNowEnergyLevel : undefined;
-  window.rerollEnergyTask = typeof rerollEnergyTask !== 'undefined' ? rerollEnergyTask : undefined;
-  window.acceptEnergyTask = typeof acceptEnergyTask !== 'undefined' ? acceptEnergyTask : undefined;
+  window.startZenWithTask = typeof startZenWithTask !== 'undefined' ? startZenWithTask : undefined;
+  window.start2MinKickstart = typeof start2MinKickstart !== 'undefined' ? start2MinKickstart : undefined;
+  window.completeWhatNowTask = typeof completeWhatNowTask !== 'undefined' ? completeWhatNowTask : undefined;
+  window.flipWhatNowDilemma = typeof flipWhatNowDilemma !== 'undefined' ? flipWhatNowDilemma : undefined;
+  window.launchBrainDumpAsFocus = typeof launchBrainDumpAsFocus !== 'undefined' ? launchBrainDumpAsFocus : undefined;
+  window.saveBrainDumpAsTask = typeof saveBrainDumpAsTask !== 'undefined' ? saveBrainDumpAsTask : undefined;
+  window.populateWhatNowDilemmaDefaults = typeof populateWhatNowDilemmaDefaults !== 'undefined' ? populateWhatNowDilemmaDefaults : undefined;
   window.suggestBoostActivity = typeof suggestBoostActivity !== 'undefined' ? suggestBoostActivity : undefined;
 }
 
 if (typeof globalThis !== 'undefined') {
   globalThis.openHelperModal = openHelperModal;
+  globalThis.openWhatNowModal = openWhatNowModal;
   globalThis.closeHelperModal = closeHelperModal;
   globalThis.openTaskStepsModal = openTaskStepsModal;
   globalThis.speakText = speakText;
@@ -285,7 +296,12 @@ if (typeof globalThis !== 'undefined') {
   globalThis.resetDopamineBox = resetDopamineBox;
   globalThis.switchWhatNowTab = typeof switchWhatNowTab !== 'undefined' ? switchWhatNowTab : undefined;
   globalThis.setWhatNowEnergyLevel = typeof setWhatNowEnergyLevel !== 'undefined' ? setWhatNowEnergyLevel : undefined;
-  globalThis.rerollEnergyTask = typeof rerollEnergyTask !== 'undefined' ? rerollEnergyTask : undefined;
-  globalThis.acceptEnergyTask = typeof acceptEnergyTask !== 'undefined' ? acceptEnergyTask : undefined;
+  globalThis.startZenWithTask = typeof startZenWithTask !== 'undefined' ? startZenWithTask : undefined;
+  globalThis.start2MinKickstart = typeof start2MinKickstart !== 'undefined' ? start2MinKickstart : undefined;
+  globalThis.completeWhatNowTask = typeof completeWhatNowTask !== 'undefined' ? completeWhatNowTask : undefined;
+  globalThis.flipWhatNowDilemma = typeof flipWhatNowDilemma !== 'undefined' ? flipWhatNowDilemma : undefined;
+  globalThis.launchBrainDumpAsFocus = typeof launchBrainDumpAsFocus !== 'undefined' ? launchBrainDumpAsFocus : undefined;
+  globalThis.saveBrainDumpAsTask = typeof saveBrainDumpAsTask !== 'undefined' ? saveBrainDumpAsTask : undefined;
+  globalThis.populateWhatNowDilemmaDefaults = typeof populateWhatNowDilemmaDefaults !== 'undefined' ? populateWhatNowDilemmaDefaults : undefined;
   globalThis.suggestBoostActivity = typeof suggestBoostActivity !== 'undefined' ? suggestBoostActivity : undefined;
 }

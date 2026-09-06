@@ -165,9 +165,7 @@ body.theme-synthwave {
 /* 2. 🔮 Aurora Borealis (Tiefes Nacht-Violett & Stardust) */
 body.theme-aurora,
 body.theme-aurora-violet,
-body.theme-lavender-cloud,
-body.theme-spatial-orbit,
-body.theme-spatial-galaxy {
+body.theme-lavender-cloud {
   --accent: #8b5cf6;
   --accent-light: #c084fc;
   --accent-border: rgba(139, 92, 246, 0.35);
@@ -481,51 +479,92 @@ body.theme-fireplace {
   --border-main: rgba(234, 88, 12, 0.22);
 }
 
-/* 17. ☀️ Paper Daylight (Klares, augenschonendes Papier-Weiß für Tageslicht) */
-body.theme-daylight,
-body.theme-paper {
-  --accent: #6366f1;
-  --accent-light: #4f46e5;
-  --accent-border: rgba(99, 102, 241, 0.35);
-  --bg-app: #f1f5f9;
-  --bg-header: rgba(255, 255, 255, 0.92);
-  --bg-card: rgba(255, 255, 255, 0.88);
-  --bg-card-hover: rgba(255, 255, 255, 0.98);
-  --bg-dock: rgba(255, 255, 255, 0.95);
-  --bg-panel: #ffffff;
-  --bg-modal: #ffffff;
-  --text-main: #0f172a;
-  --text-muted: #475569;
-  --text-header: #0f172a;
-  --text-dock: #0f172a;
-  --border-main: rgba(0, 0, 0, 0.12);
-  color: #0f172a !important;
+/* 0. 🌿 Botanical Journal & Handschrift (Menschlich, zärtlich, harmonisch & ökologisch) */
+body.theme-botanical,
+body.theme-botanic,
+body.theme-eco,
+body.theme-nature,
+body.theme-journal {
+  --accent: #4ade80;
+  --accent-light: #86efac;
+  --accent-border: rgba(74, 222, 128, 0.40);
+  --bg-app: #111915;
+  --bg-header: rgba(18, 28, 22, 0.90);
+  --bg-card: rgba(22, 34, 27, 0.85);
+  --bg-card-hover: rgba(28, 46, 36, 0.95);
+  --bg-dock: rgba(18, 28, 22, 0.95);
+  --bg-panel: #15241b;
+  --bg-modal: #15241b;
+  --text-main: #f4fbf6;
+  --text-muted: #a3c9b4;
+  --text-header: #f4fbf6;
+  --text-dock: #f4fbf6;
+  --border-main: rgba(74, 222, 128, 0.22);
 }
 
-body.theme-daylight header,
-body.theme-paper header {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+/* Handschrift & organische Ästhetik im Botanical Theme */
+body.theme-botanical,
+body.theme-botanical * {
+  font-family: 'Caveat', 'Plus Jakarta Sans', cursive, sans-serif !important;
 }
 
-body.theme-daylight main article,
-body.theme-paper main article {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04) !important;
-  color: #0f172a !important;
+body.theme-botanical .font-mono,
+body.theme-botanical [data-tabular="true"],
+body.theme-botanical input,
+body.theme-botanical textarea,
+body.theme-botanical select {
+  font-family: 'Space Grotesk', monospace !important;
 }
 
-/* --- 3D SPATIAL TIEFEN- & GLOW-EFFEKTE --- */
-body[class*="theme-spatial-"] main article {
-  transform: perspective(1000px) translateZ(0);
-  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.75), 0 0 24px -6px var(--accent, rgba(139, 92, 246, 0.25)), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
-  border-top: 1.5px solid color-mix(in srgb, var(--accent-light) 65%, rgba(255, 255, 255, 0.45)) !important;
+body.theme-botanical #timer-display,
+body.theme-botanical #mobile-timer-display {
+  font-family: 'Space Grotesk', 'Caveat', monospace !important;
+  letter-spacing: 0.05em !important;
 }
 
-body[class*="theme-spatial-"] .mac-dock {
-  box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.85), 0 0 28px -6px var(--accent, rgba(139, 92, 246, 0.3)), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+body.theme-botanical .task-item {
+  font-size: 1.18rem !important;
+  line-height: 1.35 !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(74, 222, 128, 0.20) !important;
+  background: rgba(22, 36, 28, 0.70) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
 }
 
-body[class*="theme-spatial-"] #date-container {
-  box-shadow: 0 12px 30px -4px var(--accent, rgba(139, 92, 246, 0.35)), inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
+body.theme-botanical .task-item:hover {
+  background: rgba(30, 50, 39, 0.90) !important;
+  border-color: rgba(134, 239, 172, 0.50) !important;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.55), 0 0 16px rgba(74, 222, 128, 0.18) !important;
+}
+
+body.theme-botanical main article {
+  border-radius: 20px !important;
+  border: 1.5px solid rgba(74, 222, 128, 0.22) !important;
+  border-top: 2px solid rgba(134, 239, 172, 0.45) !important;
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.65), 0 0 22px rgba(74, 222, 128, 0.10) !important;
+}
+
+body.theme-botanical header {
+  border-color: rgba(74, 222, 128, 0.28) !important;
+  border-top: 1.5px solid rgba(134, 239, 172, 0.45) !important;
+  box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.60), 0 0 25px -4px rgba(74, 222, 128, 0.22) !important;
+}
+
+body.theme-botanical [id$="-modal"] > div,
+body.theme-botanical .dock-popover-panel {
+  border-color: rgba(74, 222, 128, 0.30) !important;
+  border-top: 1.5px solid rgba(134, 239, 172, 0.45) !important;
+  box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.85), 0 0 30px rgba(74, 222, 128, 0.15) !important;
+}
+
+body.theme-botanical h1,
+body.theme-botanical h2,
+body.theme-botanical h3,
+body.theme-botanical h4,
+body.theme-botanical .column-title,
+body.theme-botanical .tools-sidebar-btn span,
+body.theme-botanical .noodle-studio-badge {
+  letter-spacing: 0.03em !important;
 }
 
 /* ========================================================================== */
@@ -688,6 +727,8 @@ button:hover .steam-cup-icon .steam-line-3 {
   transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   perspective: 700px;
   cursor: pointer;
+  overflow: hidden;
+  position: relative;
 }
 
 .flow-logo-container:hover {
@@ -707,15 +748,23 @@ button:hover .steam-cup-icon .steam-line-3 {
 .logo-ambient-aura {
   transition: background 1.2s ease-in-out, opacity 1.2s ease-in-out;
   will-change: transform, opacity;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .logo-light-sweep {
   transform: translateX(-160%);
   will-change: transform, opacity;
+  pointer-events: none;
+  overflow: hidden;
+  max-width: 100%;
 }
 
 .noodle-studio-badge {
   display: block;
+  font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.32em;
+  font-weight: 700;
   transition: color 0.8s ease, text-shadow 0.8s ease, letter-spacing 0.8s ease;
   will-change: transform, opacity, letter-spacing;
 }
@@ -1109,4 +1158,39 @@ button:hover .steam-cup-icon .steam-line-3 {
 .whatnow-animated-btn:hover .whatnow-animated-bulb {
   animation-duration: 1.2s;
 }
+
+/* ==========================================================================
+   STABILE HOVER-BRÜCKEN (Verhindert nervöses/plötzliches Schließen bei Mausbewegung)
+   ========================================================================== */
+#panel-report::before,
+#panel-settings-dropdown::before,
+#panel-weather::before,
+#panel-calendar-dropdown::before,
+#panel-pause-dropdown::before,
+#panel-timer-presets::before,
+#panel-logo-guide::before,
+#header-sound-volume-popover::before,
+#task-context-dropdown::before,
+.dock-popover-panel::after,
+.context-menu::before {
+  content: '';
+  position: absolute;
+  left: -16px;
+  right: -16px;
+  bottom: 100%;
+  height: 24px;
+  background: transparent;
+  pointer-events: auto;
+}
+
+#header-sound-volume-popover::after,
+#task-context-dropdown::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  z-index: -1;
+  pointer-events: auto;
+}
+
+
 

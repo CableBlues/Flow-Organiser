@@ -456,323 +456,6 @@ function toggleWeatherUnit() {
   if (cachedWeatherData) renderWeatherData(cachedWeatherData);
 }
 
-
-// ============================================================================
-// 2. NACHRICHTEN & DAILY DIGEST ENGINE (LOCAL & TOPICAL NEWS BRIEFING)
-// ============================================================================
-
-let currentNewsLocation = localStorage.getItem('flow_news_loc') || 'de_all';
-let currentNewsCategory = 'all'; // 'all' | 'local' | 'positive' | 'economy' | 'tech' | 'life' | 'science' | 'bookmarked'
-let newsSearchKeyword = '';
-let bookmarkedNews = JSON.parse(localStorage.getItem('flow_bookmarked_news') || '[]');
-
-// Regionen-Listen je nach Sprache
-const NEWS_LOCATIONS = {
-  de: [
-    { id: 'de_all', name: '🇩🇪 Deutschlandweit (D-A-CH)' },
-    { id: 'de_berlin', name: '🏛️ Berlin & Brandenburg' },
-    { id: 'de_munich', name: '🥨 München & Bayern' },
-    { id: 'de_hamburg', name: '⚓ Hamburg & Norddeutschland' },
-    { id: 'de_nrw', name: '🏰 Köln, Düsseldorf & NRW' },
-    { id: 'de_frankfurt', name: '💼 Frankfurt & Hessen' },
-    { id: 'de_stuttgart', name: '⚙️ Stuttgart & Baden-Württemberg' },
-    { id: 'de_leipzig', name: '🎨 Leipzig & Dresden' },
-    { id: 'at_vienna', name: '🇦🇹 Wien & Österreich' },
-    { id: 'ch_zurich', name: '🇨🇭 Zürich & Schweiz' },
-    { id: 'global', name: '🌍 International & Global' }
-  ],
-  en: [
-    { id: 'global', name: '🌍 Global & Worldwide' },
-    { id: 'en_london', name: '🇬🇧 London & UK' },
-    { id: 'en_ny', name: '🇺🇸 New York & East Coast' },
-    { id: 'en_sf', name: '🌉 San Francisco & Silicon Valley' },
-    { id: 'en_eu', name: '🇪🇺 Europe & International' }
-  ],
-  fr: [
-    { id: 'fr_all', name: '🇫🇷 France Nationale' },
-    { id: 'fr_paris', name: '🗼 Paris & Île-de-France' },
-    { id: 'fr_lyon', name: '🦁 Lyon & Auvergne-Rhône-Alpes' },
-    { id: 'global', name: '🌍 International & Monde' }
-  ],
-  it: [
-    { id: 'it_all', name: '🇮🇹 Italia Nazionale' },
-    { id: 'it_rome', name: '🏛️ Roma & Centro' },
-    { id: 'it_milan', name: '🏙️ Milano & Lombardia' },
-    { id: 'global', name: '🌍 Internazionale & Mondo' }
-  ],
-  es: [
-    { id: 'es_all', name: '🇪🇸 España Nacional' },
-    { id: 'es_madrid', name: '🏛️ Madrid & Centro' },
-    { id: 'es_barcelona', name: '🏖️ Barcelona & Cataluña' },
-    { id: 'global', name: '🌍 Internacional & Global' }
-  ],
-  el: [
-    { id: 'el_all', name: '🇬🇷 Ελλάδα Πανελλαδικά' },
-    { id: 'el_athens', name: '🏛️ Αθήνα & Αττική' },
-    { id: 'el_thessaloniki', name: '🌊 Θεσσαλονίκη & Βόρεια Ελλάδα' },
-    { id: 'global', name: '🌍 Διεθνή & Κόσμος' }
-  ]
-};
-
-// Lokale & thematische Nachrichtendaten
-const COMPREHENSIVE_NEWS_DATABASE = [
-  // --- DEUTSCHLANDWEIT & THEMEN ---
-  { id: 'de_n1', loc: 'de_all', category: 'positive', tag: '🌱 Nachhaltigkeit', time: 'Vor 1 Std.', title: 'Rekord: Über 56% des Stroms im Bundesnetz aus erneuerbaren Quellen', summary: 'Sonne und Windkraft erzielten im aktuellen Monat einen neuen Spitzenwert bei der sauberen Stromversorgung in Deutschland.', source: 'Bundesnetz Monitor', lang: 'de' },
-  { id: 'de_n2', loc: 'de_all', category: 'economy', tag: '💼 Wirtschaft', time: 'Vor 2 Std.', title: '4-Tage-Woche-Studie in Deutschland zeigt: Höhere Produktivität und Zufriedenheit', summary: 'Nach 6 Monaten Pilotphase berichten 85% der teilnehmenden Firmen von stabilen Umsätzen bei signifikant geringerem Krankenstand.', source: 'WirtschaftsWoche' },
-  { id: 'de_n3', loc: 'de_all', category: 'tech', tag: '💡 Innovation', time: 'Vor 3 Std.', title: 'Europäisches KI-Modell für Medizin erreicht Weltklasse-Bildanalyse', summary: 'Ein Forschungsverbund stellt ein Open-Source-Modell vor, das MRT-Scans doppelt so schnell und präzise auswertet.', source: 'Tech Germany' },
-  { id: 'de_n4', loc: 'de_all', category: 'life', tag: '⚡ Fokus & Alltag', time: 'Vor 4 Std.', title: 'Die 90-Minuten-Regel: Warum Arbeitsblöcke den Flow revolutionieren', summary: 'Kognitionswissenschaftler empfehlen, Konzentrationsphasen an biologische Ultradian-Rhythmen anzupassen.', source: 'Mind & Focus' },
-  { id: 'de_n5', loc: 'de_all', category: 'science', tag: '🔭 Wissenschaft', time: 'Vor 5 Std.', title: 'Durchbruch bei Feststoff-Batterien: Doppelte Reichweite in Sicht', summary: 'Materialforscher entwickeln eine keramische Schutzschicht, die Ladezeiten auf unter 10 Minuten verkürzt.', source: 'Science Journal' },
-
-  // --- BERLIN & BRANDENBURG ---
-  { id: 'ber_1', loc: 'de_berlin', category: 'local', tag: '📍 Berlin Lokal', time: 'Vor 45 Min.', title: 'Berlin baut 35 neue Fahrradstraßen und grüne Quartiere aus', summary: 'Der Senat beschließt den beschleunigten Ausbau verkehrsberuhigter Zonen in Mitte, Kreuzberg und Charlottenburg.', source: 'Berlin Tagesspiegel' },
-  { id: 'ber_2', loc: 'de_berlin', category: 'local', tag: '🎭 Kultur & Stadt', time: 'Vor 2 Std.', title: 'Lange Nacht der Museen & Open-Air-Konzerte auf der Museumsinsel', summary: 'Über 75 Museen und historische Stätten öffnen am Wochenende mit Sonderführungen und Lichtinstallationen.', source: 'RBB News' },
-  { id: 'ber_3', loc: 'de_berlin', category: 'economy', tag: '💼 Startup Hub', time: 'Vor 4 Std.', title: 'Berliner Startup-Ökosystem verzeichnet Rekord-Investitionen in Greentech', summary: 'Über 1,2 Milliarden Euro flossen in den letzten Monaten in nachhaltige Berliner Klimatechnologie-Unternehmen.', source: 'Gründerszene Berlin' },
-
-  // --- MÜNCHEN & BAYERN ---
-  { id: 'muc_1', loc: 'de_munich', category: 'local', tag: '📍 München Lokal', time: 'Vor 1 Std.', title: 'Neues 365-Euro-Ticket für Azubis und Ausbau der U9-Stammstrecke', summary: 'München investiert massiv in den öffentlichen Nahverkehr und beschleunigt die Entlastung des Hauptbahnhofs.', source: 'Süddeutsche Zeitung' },
-  { id: 'muc_2', loc: 'de_munich', category: 'economy', tag: '💼 Tech & Forschung', time: 'Vor 3 Std.', title: 'Münchner Quantencomputing-Campus eröffnet internationales Exzellenzzentrum', summary: 'Die TU München und Partnerunternehmen weihen eines der fortschrittlichsten Quantenlabore Europas in Garching ein.', source: 'Bayern Innovativ' },
-  { id: 'muc_3', loc: 'de_munich', category: 'positive', tag: '🌲 Natur & Isar', time: 'Vor 5 Std.', title: 'Isar-Renaturierung erfolgreich: Seltene Tier- und Pflanzenarten kehren zurück', summary: 'Der Abschluss der Flussbett-Sanierung südlich von München sorgt für kristallklares Wasser und neue Naherholungsräume.', source: 'Münchner Merkur' },
-
-  // --- HAMBURG & NORDDEUTSCHLAND ---
-  { id: 'ham_1', loc: 'de_hamburg', category: 'local', tag: '📍 Hamburg Lokal', time: 'Vor 1 Std.', title: 'Hamburger Hafen startet vollautomatisierte, emissionsfreie Wasserstoff-Schuten', summary: 'Die Hansestadt setzt weltweit neue Maßstäbe für klimaneutrale Binnenschifffahrt und saubere Hafenbecken.', source: 'Hamburger Abendblatt' },
-  { id: 'ham_2', loc: 'de_hamburg', category: 'local', tag: '⚓ Elbphilharmonie', time: 'Vor 3 Std.', title: 'Kostenlose Akustik-Konzerte auf dem Elbphilharmonie-Vorplatz begeistern Tausende', summary: 'Ein neues Kulturprogramm verbindet klassische Orchesterklänge mit modernen Ambient-Klängen direkt an der Elbe.', source: 'NDR Kultur' },
-
-  // --- NRW (KÖLN, DÜSSELDORF, RUHRGEBIET) ---
-  { id: 'nrw_1', loc: 'de_nrw', category: 'local', tag: '📍 NRW Lokal', time: 'Vor 2 Std.', title: 'Radschnellweg Ruhr (RS1) erhält 20 neue Kilometer durchs Ruhrgebiet', summary: 'Die direkte, kreuzungsfreie Verbindung zwischen Dortmund, Bochum und Essen wird für Pendler weiter freigegeben.', source: 'WDR Aktuell' },
-  { id: 'nrw_2', loc: 'de_nrw', category: 'economy', tag: '🏭 Transformation', time: 'Vor 4 Std.', title: 'Duisburg weiht erste Direktreduktionsanlage für grünen Stahl ein', summary: 'Ein historischer Schritt für NRW: Industrieproduktion ohne CO2-Ausstoß geht in den regulären Testbetrieb.', source: 'Rheinische Post' },
-
-  // --- FRANKFURT & HESSEN ---
-  { id: 'fra_1', loc: 'de_frankfurt', category: 'local', tag: '📍 Frankfurt Lokal', time: 'Vor 1 Std.', title: 'Frankfurter Grüngürtel wird um neue Uferpromenaden am Main erweitert', summary: 'Mehr schattige Parkflächen, Brunnen und Erholungszonen für heiße Sommertage in der Innenstadt beschlossen.', source: 'Frankfurter Allgemeine' },
-  { id: 'fra_2', loc: 'de_frankfurt', category: 'tech', tag: '🌐 Data Capital', time: 'Vor 3 Std.', title: 'DE-CIX Frankfurt bricht weltweiten Datendurchsatz-Rekord bei 17 Tbit/s', summary: 'Der weltgrößte Internetknoten in Frankfurt meldet stabilen Höchstbetrieb bei sinkendem Energieverbrauch.', source: 'Hessen Digital' },
-
-  // --- STUTTGART & BAWÜ ---
-  { id: 'str_1', loc: 'de_stuttgart', category: 'local', tag: '📍 Stuttgart Lokal', time: 'Vor 2 Std.', title: 'Stuttgarts neue Stadtbegrünung senkt Temperatur im Talkessel messbar', summary: 'Vertikale Gärten und bepflanzte Dächer reduzieren Hitzestaus und verbessern das Mikroklima spürbar.', source: 'Stuttgarter Zeitung' },
-
-  // --- LEIPZIG & DRESDEN ---
-  { id: 'lei_1', loc: 'de_leipzig', category: 'local', tag: '📍 Leipzig & Dresden', time: 'Vor 2 Std.', title: 'Silicon Saxony: Drei neue Halbleiter-Chipwerke sichern Tausende Zukunftsjobs', summary: 'Der Raum Dresden-Leipzig baut seine Spitzenposition als Europas wichtigste Mikrochip-Region weiter aus.', source: 'MDR Sachsen' },
-
-  // --- WIEN & ÖSTERREICH ---
-  { id: 'vie_1', loc: 'at_vienna', category: 'local', tag: '📍 Wien Lokal', time: 'Vor 1 Std.', title: 'Wien erneut zur lebenswertesten Stadt der Welt gewählt', summary: 'Öffentlicher Nahverkehr, soziale Wohnbauprojekte und großflächige Grünzonen sichern Wien die weltweite Spitzenposition.', source: 'Der Standard Wien' },
-  { id: 'vie_2', loc: 'at_vienna', category: 'positive', tag: '🇦🇹 Alpen & Natur', time: 'Vor 3 Std.', title: 'Österreichischer Klimaticket-Erfolg: 300.000 aktive Nutzer im gesamten Bundesgebiet', summary: 'Immer mehr Pendler steigen dauerhaft vom Auto auf die Bahn um – CO2-Einsparungen übertreffen alle Prognosen.', source: 'ORF News' },
-
-  // --- ZÜRICH & SCHWEIZ ---
-  { id: 'zrh_1', loc: 'ch_zurich', category: 'local', tag: '📍 Zürich Lokal', time: 'Vor 1 Std.', title: 'ETH Zürich entwickelt ultraleichte Solarzellen mit 32% Wirkungsgrad', summary: 'Die neue Technologie kann flexibel auf Fassaden und Fenstern angebracht werden und liefert doppelte Energie.', source: 'NZZ Zürich' },
-  { id: 'zrh_2', loc: 'ch_zurich', category: 'local', tag: '🇨🇭 Zürichsee', time: 'Vor 3 Std.', title: 'Erweiterung des Seeuferwegs und neue solarbetriebene Fähren auf dem Zürichsee', summary: 'Zürich treibt die CO2-freie Seeschifffahrt voran und schafft durchgehende Fußgänger- und Fahrradwege.', source: 'Tages-Anzeiger' },
-
-  // --- GLOBAL (ENGLISH & INTERNATIONAL) ---
-  { id: 'gl_1', loc: 'global', category: 'positive', tag: '🌱 Global Eco', time: '1h ago', title: 'Global Milestone: Over 40% of World Electricity Now Powered by Renewables', summary: 'Clean energy generation achieved a historic quarterly milestone across major international grids.', source: 'Global Green Monitor', lang: 'en' },
-  { id: 'gl_2', loc: 'global', category: 'tech', tag: '💡 AI & Tech', time: '2h ago', title: 'New Optical Microchips Process Data at the Speed of Light with 90% Less Energy', summary: 'Photonic computing reaches commercial testing, promising massive breakthroughs for everyday computers.', source: 'Tech Frontiers', lang: 'en' },
-  { id: 'gl_3', loc: 'global', category: 'life', tag: '⚡ Productivity', time: '3h ago', title: 'Deep Work Research: How Calmer Workspaces Double Creative Problem Solving', summary: 'Limiting continuous notifications and establishing rhythmic focus sprints protects long-term cognitive health.', source: 'Harvard Productivity Review', lang: 'en' },
-  { id: 'gl_4', loc: 'global', category: 'science', tag: '🔭 Astronomy', time: '4h ago', title: 'James Webb Telescope Maps Potential Ocean World in Nearby Star System', summary: 'Atmospheric spectroscopy reveals signatures of deep liquid water beneath protective cloud layers.', source: 'Astro Journal', lang: 'en' },
-
-  // --- LONDON & UK ---
-  { id: 'lon_1', loc: 'en_london', category: 'local', tag: '📍 London Local', time: '1h ago', title: 'London Expands Ultra-Low Emission Zones and Green Bus Fleets', summary: 'Air quality in central London hits its highest cleanliness scores in over four decades.', source: 'Evening Standard', lang: 'en' },
-  { id: 'lon_2', loc: 'en_london', category: 'economy', tag: '💼 FinTech', time: '3h ago', title: 'Tech City Hub Welcomes 120 Sustainable AI Startups in East London', summary: 'New venture incubator launches to support ethical computing and green technology.', source: 'London Tech Daily', lang: 'en' },
-
-  // --- NEW YORK & US ---
-  { id: 'ny_1', loc: 'en_ny', category: 'local', tag: '📍 NYC Local', time: '1h ago', title: 'High Line Expansion: New Elevated Green Corridor Opens to the Public', summary: 'The iconic park connects Hudson Yards directly with Manhattan West with native flora and seating.', source: 'NY Times Local', lang: 'en' },
-  { id: 'ny_2', loc: 'en_ny', category: 'tech', tag: '💡 Innovation', time: '3h ago', title: 'Brooklyn Tech Triangle Launches Urban Farming and Solar Roof Network', summary: 'Rooftop gardens across DUMBO and Downtown Brooklyn will supply local community markets.', source: 'NYC Daily News', lang: 'en' },
-
-  // --- PARIS & FRANCE ---
-  { id: 'par_1', loc: 'fr_paris', category: 'local', tag: '📍 Paris Local', time: 'Il y a 1h', title: 'Paris pérennise 60 km de nouvelles pistes cyclables et espaces piétons', summary: 'La capitale poursuit sa transformation urbaine avec de nouvelles rues végétalisées.', source: 'Le Parisien', lang: 'fr' },
-  { id: 'fr_1', loc: 'fr_all', category: 'positive', tag: '🌱 Écologie', time: 'Il y a 2h', title: 'Production d\'énergie propre record en France grâce aux parcs éoliens et solaires', summary: 'Les énergies renouvelables couvrent désormais une part historique des besoins nationaux.', source: 'Le Figaro', lang: 'fr' },
-
-  // --- ROMA & MILANO (ITALIA) ---
-  { id: 'it_1', loc: 'it_all', category: 'positive', tag: '🌱 Sostenibilità', time: '1 ora fa', title: 'Italia: raddoppiano gli investimenti nei treni ad alta velocità ecologici', summary: 'Nuovi collegamenti veloci riducono l\'uso di aerei e automobili in tutta la penisola.', source: 'Corriere della Sera', lang: 'it' },
-  { id: 'rom_1', loc: 'it_rome', category: 'local', tag: '📍 Roma Locale', time: '2 ore fa', title: 'Roma inaugura il nuovo anello verde ciclabile attorno ai Fori Imperiali', summary: 'Nuovi percorsi dedicati alla mobilità dolce valorizzano il patrimonio storico.', source: 'La Repubblica Roma', lang: 'it' },
-
-  // --- MADRID & BARCELONA (ESPAÑA) ---
-  { id: 'es_1', loc: 'es_all', category: 'positive', tag: '🌱 Sostenibilidad', time: 'Hace 1h', title: 'España lidera la producción de energía solar en el sur de Europa', summary: 'Las plantas solares proporcionan más del 50% de la demanda en las horas centrales del día.', source: 'El País', lang: 'es' },
-  { id: 'mad_1', loc: 'es_madrid', category: 'local', tag: '📍 Madrid Local', time: 'Hace 2h', title: 'Madrid Río amplía sus zonas arboladas y fuentes de agua pública', summary: 'Nuevos espacios de sombra y recreo se incorporan a lo largo del curso del río Manzanares.', source: 'El Mundo Madrid', lang: 'es' },
-
-  // --- ATHENS & THESSALONIKI (GREECE) ---
-  { id: 'el_1', loc: 'el_all', category: 'positive', tag: '🌱 Βιωσιμότητα', time: 'Πριν 1 ώρα', title: 'Ιστορικό ρεκόρ πράσινης ενέργειας στην Ελλάδα από αιολικά και φωτοβολταϊκά', summary: 'Οι ανανεώσιμες πηγές κάλυψαν πάνω από το 60% των αναγκών σε ώρες αιχμής.', source: 'Η Καθημερινή', lang: 'el' },
-  { id: 'ath_1', loc: 'el_athens', category: 'local', tag: '📍 Αθήνα Τοπικά', time: 'Πριν 2 ώρες', title: 'Ανάπλαση και δημιουργία νέων πάρκων τσέπης στο κέντρο της Αθήνας', summary: 'Περισσότερο πράσινο και δροσιά σε γειτονιές της πόλης.', source: 'Athens Voice', lang: 'el' }
-];
-
-function getAvailableLocationsForLang() {
-  const lang = typeof currentLang !== 'undefined' ? currentLang : 'en';
-  return NEWS_LOCATIONS[lang] || NEWS_LOCATIONS.en || NEWS_LOCATIONS.de;
-}
-
-function renderNewsBriefing() {
-  const container = document.getElementById('news-content-area');
-  const locSelect = document.getElementById('news-location-select');
-  if (!container) return;
-
-  const lang = typeof currentLang !== 'undefined' ? currentLang : 'en';
-
-  // Location-Dropdown synchronisieren falls nötig
-  if (locSelect) {
-    const locOptions = getAvailableLocationsForLang();
-    const currentLocExists = locOptions.some(l => l.id === currentNewsLocation);
-    if (!currentLocExists) {
-      currentNewsLocation = locOptions[0].id;
-      localStorage.setItem('flow_news_loc', currentNewsLocation);
-    }
-
-    locSelect.innerHTML = locOptions.map(l => `
-      <option value="${l.id}" ${l.id === currentNewsLocation ? 'selected' : ''}>${l.name}</option>
-    `).join('');
-  }
-
-  // Filterung anwenden
-  let articles = COMPREHENSIVE_NEWS_DATABASE.filter(item => {
-    // Falls Lesezeichen-Modus aktiv
-    if (currentNewsCategory === 'bookmarked') {
-      return bookmarkedNews.includes(item.id);
-    }
-
-    // Sprach- und Ortsfilter
-    const matchesLoc = (currentNewsLocation === 'global') 
-      ? true 
-      : (item.loc === currentNewsLocation || (currentNewsLocation.startsWith('de_') && item.loc === 'de_all') || (item.loc === 'global'));
-
-    // Kategorie
-    const matchesCat = (currentNewsCategory === 'all') 
-      ? true 
-      : (item.category === currentNewsCategory);
-
-    // Suchbegriff
-    const matchesSearch = !newsSearchKeyword 
-      || item.title.toLowerCase().includes(newsSearchKeyword.toLowerCase()) 
-      || item.summary.toLowerCase().includes(newsSearchKeyword.toLowerCase())
-      || item.tag.toLowerCase().includes(newsSearchKeyword.toLowerCase());
-
-    return matchesLoc && matchesCat && matchesSearch;
-  });
-
-  if (articles.length === 0) {
-    // Fallback falls die Kombination aus Ort & Thema noch keine spezifischen Daten hat
-    const isBookmarkedView = currentNewsCategory === 'bookmarked';
-    container.innerHTML = `
-      <div class="py-10 text-center text-gray-400 space-y-2">
-        <div class="text-2xl">${isBookmarkedView ? '🔖' : '🔍'}</div>
-        <div class="text-xs font-semibold text-gray-300">
-          ${isBookmarkedView 
-            ? tr({ de: 'Noch keine gemerkten Artikel vorhanden.', en: 'No bookmarked articles yet.', fr: 'Aucun article enregistré.', it: 'Nessun articolo salvato.', es: 'Sin artículos guardados.', el: 'Δεν υπάρχουν αποθηκευμένα άρθρα.' }) 
-            : tr({ de: 'Keine Nachrichten für diesen Filter gefunden.', en: 'No news found for this filter.', fr: 'Aucune actualité trouvée.', it: 'Nessuna notizia trovata.', es: 'No se encontraron noticias.', el: 'Δεν βρέθηκαν ειδήσεις.' })}
-        </div>
-        <p class="text-[10px] text-gray-500">
-          ${isBookmarkedView 
-            ? tr({ de: 'Tippe auf das Lesezeichen-Symbol bei Artikeln, um sie hier zu speichern.', en: 'Click the bookmark icon on any article to save it here.' }) 
-            : tr({ de: 'Wähle eine andere Kategorie oder setze den Suchbegriff zurück.', en: 'Try selecting another category or clear your search query.' })}
-        </p>
-      </div>
-    `;
-    return;
-  }
-
-  container.innerHTML = articles.map(item => {
-    const isBookmarked = bookmarkedNews.includes(item.id);
-    return `
-      <article class="p-3 bg-black/40 hover:bg-white/[0.04] border border-white/5 hover:border-amber-500/30 rounded-2xl transition flex flex-col gap-1.5 group">
-        <div class="flex items-center justify-between text-[9px] font-mono text-gray-400">
-          <span class="px-2 py-0.5 rounded-md bg-white/5 text-amber-300 font-semibold border border-white/5 flex items-center gap-1">
-            ${item.tag}
-          </span>
-          <div class="flex items-center gap-2">
-            <span>${item.time}</span>
-            <button onclick="toggleBookmarkNews('${item.id}', event)" class="hover:text-amber-400 transition cursor-pointer p-1" title="Artikel merken">
-              <i data-lucide="${isBookmarked ? 'bookmark-check' : 'bookmark'}" class="w-3.5 h-3.5 ${isBookmarked ? 'text-amber-400 fill-amber-400/20' : 'text-gray-500'}"></i>
-            </button>
-          </div>
-        </div>
-        <h5 class="text-xs font-bold text-white group-hover:text-amber-200 transition leading-snug">${item.title}</h5>
-        <p class="text-[11px] text-gray-300 leading-relaxed">${item.summary}</p>
-        <div class="flex items-center justify-between text-[8px] text-gray-500 font-mono pt-1 border-t border-white/5">
-          <span>Quelle: ${item.source}</span>
-          <span class="text-gray-600">${item.loc.replace('de_', '').replace('en_', '').toUpperCase()}</span>
-        </div>
-      </article>
-    `;
-  }).join('');
-
-  renderLucideIcons();
-}
-
-function setNewsLocation(locId) {
-  currentNewsLocation = locId;
-  localStorage.setItem('flow_news_loc', locId);
-  renderNewsBriefing();
-}
-
-function setNewsCategory(cat) {
-  currentNewsCategory = cat;
-  document.querySelectorAll('.news-category-pill').forEach(pill => {
-    if (pill.getAttribute('data-category') === cat) {
-      pill.className = 'news-category-pill px-2.5 py-1 rounded-xl text-[10px] font-bold bg-amber-500/25 text-amber-300 border border-amber-500/40 cursor-pointer transition shrink-0 shadow-sm';
-    } else {
-      pill.className = 'news-category-pill px-2.5 py-1 rounded-xl text-[10px] font-semibold bg-white/5 text-gray-400 hover:text-white border border-white/5 cursor-pointer transition shrink-0';
-    }
-  });
-  renderNewsBriefing();
-}
-
-function searchNewsKeywords(query) {
-  newsSearchKeyword = (query || '').trim();
-  renderNewsBriefing();
-}
-
-function handleNewsLocationInput(val) {
-  if (!val) return;
-  handleNewsLocationSelect(val);
-}
-
-function handleNewsLocationSelect(val) {
-  if (!val) return;
-  const v = val.toLowerCase().trim();
-  let targetLoc = 'de_all';
-  if (v.includes('berlin') || v.includes('brandenburg')) targetLoc = 'de_berlin';
-  else if (v.includes('münchen') || v.includes('munich') || v.includes('bayern')) targetLoc = 'de_munich';
-  else if (v.includes('hamburg') || v.includes('nord')) targetLoc = 'de_hamburg';
-  else if (v.includes('köln') || v.includes('cologne') || v.includes('düsseldorf') || v.includes('nrw') || v.includes('ruhr')) targetLoc = 'de_nrw';
-  else if (v.includes('frankfurt') || v.includes('hessen')) targetLoc = 'de_frankfurt';
-  else if (v.includes('stuttgart') || v.includes('baden') || v.includes('bawü')) targetLoc = 'de_stuttgart';
-  else if (v.includes('leipzig') || v.includes('dresden') || v.includes('sachsen')) targetLoc = 'de_leipzig';
-  else if (v.includes('wien') || v.includes('vienna') || v.includes('österreich') || v.includes('austria')) targetLoc = 'at_vienna';
-  else if (v.includes('zürich') || v.includes('zurich') || v.includes('schweiz') || v.includes('swiss')) targetLoc = 'ch_zurich';
-  else if (v.includes('london') || v.includes('uk') || v.includes('england')) targetLoc = 'en_london';
-  else if (v.includes('new york') || v.includes('nyc') || v.includes('us')) targetLoc = 'en_ny';
-  else if (v.includes('paris') || v.includes('france')) targetLoc = 'fr_paris';
-  else if (v.includes('rom') || v.includes('milan') || v.includes('italia')) targetLoc = 'it_rome';
-  else if (v.includes('madrid') || v.includes('barcelona') || v.includes('españa')) targetLoc = 'es_madrid';
-  else if (v.includes('athen') || v.includes('thessaloniki') || v.includes('ελλάδα')) targetLoc = 'el_athens';
-  else if (v.includes('global') || v.includes('international') || v.includes('welt')) targetLoc = 'global';
-  else targetLoc = 'de_all';
-
-  currentNewsLocation = targetLoc;
-  localStorage.setItem('flow_news_loc', targetLoc);
-  renderNewsBriefing();
-}
-
-function toggleBookmarkNews(id, event) {
-  if (event) event.stopPropagation();
-  if (bookmarkedNews.includes(id)) {
-    bookmarkedNews = bookmarkedNews.filter(x => x !== id);
-  } else {
-    bookmarkedNews.push(id);
-  }
-  localStorage.setItem('flow_bookmarked_news', JSON.stringify(bookmarkedNews));
-  renderNewsBriefing();
-}
-
-function refreshNewsFeed() {
-  const container = document.getElementById('news-content-area');
-  if (container) {
-    container.innerHTML = `
-      <div class="py-8 text-center text-gray-400 space-y-2">
-        <div class="w-6 h-6 mx-auto border-2 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
-        <div class="text-[11px] font-semibold">${tr({ de: 'Aktualisiere regionale Nachrichten...', en: 'Refreshing regional news briefing...' })}</div>
-      </div>
-    `;
-  }
-  setTimeout(() => {
-    renderNewsBriefing();
-    showToast(tr({ de: 'Nachrichten & Region aktualisiert! 📰', en: 'News & region updated! 📰', fr: 'Actualités régionales mises à jour ! 📰', it: 'Notizie aggiornate! 📰', es: '¡Noticias actualizadas! 📰', el: 'Ειδήσεις ενημερώθηκαν! 📰' }));
-  }, 400);
-}
-
 // Initialer Auto-Start beim Laden & Regelmäßige Hintergrund-Aktualisierung
 function initWeatherSystem() {
   if (cachedWeatherData) {
@@ -780,9 +463,6 @@ function initWeatherSystem() {
   }
   // Sofort frisches Wetter abrufen
   fetchLocalWeather(false);
-  if (document.getElementById('news-content-area')) {
-    renderNewsBriefing();
-  }
 
   // 1. Regelmäßige automatische Aktualisierung alle 10 Minuten
   if (typeof window !== 'undefined' && !window._weatherPollingInterval) {
@@ -811,6 +491,7 @@ function initWeatherSystem() {
 }
 
 if (typeof window !== 'undefined') {
+  window.initWeatherSystem = initWeatherSystem;
   window.fetchLocalWeather = fetchLocalWeather;
   window.toggleWeatherDropdown = typeof toggleWeatherDropdown !== 'undefined' ? toggleWeatherDropdown : undefined;
   window.toggleWeatherUnit = typeof toggleWeatherUnit !== 'undefined' ? toggleWeatherUnit : undefined;
@@ -818,12 +499,17 @@ if (typeof window !== 'undefined') {
   window.handleWeatherSearchInput = typeof handleWeatherSearchInput !== 'undefined' ? handleWeatherSearchInput : undefined;
   window.searchWeatherCityInstant = typeof searchWeatherCityInstant !== 'undefined' ? searchWeatherCityInstant : undefined;
   window.selectWeatherCity = typeof selectWeatherCity !== 'undefined' ? selectWeatherCity : undefined;
-  window.renderNewsBriefing = typeof renderNewsBriefing !== 'undefined' ? renderNewsBriefing : undefined;
-  window.toggleNewsBookmark = typeof toggleNewsBookmark !== 'undefined' ? toggleNewsBookmark : undefined;
-  window.refreshNewsFeed = typeof refreshNewsFeed !== 'undefined' ? refreshNewsFeed : undefined;
+  window.updateDateWeatherWidget = typeof updateDateWeatherWidget !== 'undefined' ? updateDateWeatherWidget : undefined;
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => initWeatherSystem());
+  } else {
+    initWeatherSystem();
+  }
 }
 
 if (typeof globalThis !== 'undefined') {
+  globalThis.initWeatherSystem = initWeatherSystem;
   globalThis.fetchLocalWeather = fetchLocalWeather;
   globalThis.toggleWeatherDropdown = typeof toggleWeatherDropdown !== 'undefined' ? toggleWeatherDropdown : undefined;
   globalThis.toggleWeatherUnit = typeof toggleWeatherUnit !== 'undefined' ? toggleWeatherUnit : undefined;
@@ -831,8 +517,6 @@ if (typeof globalThis !== 'undefined') {
   globalThis.handleWeatherSearchInput = typeof handleWeatherSearchInput !== 'undefined' ? handleWeatherSearchInput : undefined;
   globalThis.searchWeatherCityInstant = typeof searchWeatherCityInstant !== 'undefined' ? searchWeatherCityInstant : undefined;
   globalThis.selectWeatherCity = typeof selectWeatherCity !== 'undefined' ? selectWeatherCity : undefined;
-  globalThis.renderNewsBriefing = typeof renderNewsBriefing !== 'undefined' ? renderNewsBriefing : undefined;
-  globalThis.toggleNewsBookmark = typeof toggleNewsBookmark !== 'undefined' ? toggleNewsBookmark : undefined;
-  globalThis.refreshNewsFeed = typeof refreshNewsFeed !== 'undefined' ? refreshNewsFeed : undefined;
+  globalThis.updateDateWeatherWidget = typeof updateDateWeatherWidget !== 'undefined' ? updateDateWeatherWidget : undefined;
 }
 

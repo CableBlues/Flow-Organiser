@@ -140,14 +140,6 @@ const cloudSyncEngine = {
     }
   },
 
-  getApiUrl(action) {
-    let base = 'api-sync.php';
-    if (typeof FLOW_CONFIG !== 'undefined' && FLOW_CONFIG.SYNC_API_URL) {
-      base = FLOW_CONFIG.SYNC_API_URL;
-    }
-    return `${base}?action=${encodeURIComponent(action)}`;
-  },
-
   isPendingSync() {
     try {
       return typeof localStorage !== 'undefined' && localStorage.getItem('flow_pending_sync') === '1';
@@ -469,38 +461,8 @@ const cloudSyncEngine = {
         }
       }
 
-      // 2. Fallback: PHP API Relay (api-sync.php)
-      const payload = {
-        data: serializedData
-      };
-
-      const res = await fetch(this.getApiUrl('push'), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(payload)
-      });
-
-      if (!res.ok) {
-        throw new Error(`Server antwortete mit Status ${res.status}`);
-      }
-
-      const json = await res.json();
-      if (json && json.success) {
-        this.clearPendingSync();
-        this.retryCount = 0;
-        if (this.retryTimer) {
-          clearTimeout(this.retryTimer);
-          this.retryTimer = null;
-        }
-        this.lastSyncTime = new Date();
-        this.syncError = null;
-        this.updateSyncUI('synced');
-        return { success: true, time: this.lastSyncTime };
-      }
-      throw new Error(json.error || 'Fehler bei der Übertragung');
+      // Kein voll authentifizierter Supabase-User vorhanden
+      throw new Error('Kein aktives Supabase-Konto. Bitte neu anmelden.');
     } catch (e) {
       console.warn('[CloudSync] Push notice:', e.message);
       this.markPendingSync();
@@ -576,60 +538,7 @@ const cloudSyncEngine = {
         }
       }
 
-      // 2. Fallback: PHP API Relay (api-sync.php)
-      const res = await fetch(this.getApiUrl('pull'), {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (res.status === 404) {
-        // Noch kein State auf Server -> aktuellen Zustand hochladen
-        this.isSyncing = false;
-        return await this.pushState();
-      }
-
-      if (!res.ok) {
-        throw new Error(`Server antwortete mit Status ${res.status}`);
-      }
-
-      const json = await res.json();
-      if (json && json.success && json.data) {
-        const remoteData = json.data;
-        const targetState = (typeof window !== 'undefined' && window.state) ? window.state : (typeof state !== 'undefined' ? state : null);
-
-        if (targetState) {
-          // Sicherheits-Backup vor Merge anlegen
-          try {
-            if (typeof localStorage !== 'undefined') {
-              localStorage.setItem('flow_backup_before_sync', JSON.stringify(targetState));
-            }
-          } catch (err) {}
-
-          // Intelligenter Merge
-          const hasChanges = this.mergeState(targetState, remoteData);
-
-          if (typeof saveState === 'function') saveState(true);
-          if (typeof renderApp === 'function') renderApp();
-
-          // Falls lokaler Zustand neue Elemente hatte, Server aktualisieren
-          if (hasChanges || this.isPendingSync()) {
-            this.pushState();
-          }
-        }
-
-        this.retryCount = 0;
-        if (this.retryTimer) {
-          clearTimeout(this.retryTimer);
-          this.retryTimer = null;
-        }
-        this.lastSyncTime = new Date();
-        this.syncError = null;
-        this.updateSyncUI('synced');
-        return { success: true, data: remoteData };
-      }
-      throw new Error(json.error || 'Ungültige Serverantwort');
+      // Kein voll authentifizierter Supabase-User vorhanden
     } catch (e) {
       console.warn('[CloudSync] Pull notice:', e.message);
       this.scheduleRetry();
@@ -747,8 +656,9 @@ window.cloudSyncEngine = cloudSyncEngine;
 // ============================================================================
 // 2. MODAL & UI HANDLER FÜR AUTH & KOPPLUNG
 // ============================================================================
+let currentAuthMode = 'login';
 
-function openP2PSyncModal(preferredTab = null) {
+function openP2PSyncModal(preferredMode = 'login') {
   const modal = document.getElementById('modal-p2p-sync');
   if (modal) {
     modal.classList.remove('hidden');
@@ -760,8 +670,7 @@ function openP2PSyncModal(preferredTab = null) {
       cloudSyncEngine.updateSyncUI();
     }
 
-    const defaultTab = preferredTab || (typeof FlowAuth !== 'undefined' && FlowAuth.isLoggedIn() ? 'account' : 'account');
-    switchSyncModalTab(defaultTab);
+    switchAuthMode(preferredMode || 'login');
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
@@ -774,38 +683,65 @@ function closeP2PSyncModal() {
 }
 window.closeP2PSyncModal = closeP2PSyncModal;
 
-function switchSyncModalTab(tab) {
-  const paneAccount = document.getElementById('sync-pane-cloud') || document.getElementById('sync-pane-account');
-  const panePair = document.getElementById('p2p-pane-qr') || document.getElementById('sync-pane-pair');
+function switchAuthMode(mode = 'login') {
+  currentAuthMode = mode;
+  const isLogin = (mode === 'login');
 
-  const btnAccount = document.getElementById('sync-tab-btn-cloud') || document.getElementById('sync-tab-btn-account');
-  const btnPair = document.getElementById('p2p-tab-btn-qr') || document.getElementById('sync-tab-btn-pair');
+  const btnLogin = document.getElementById('sync-tab-btn-login');
+  const btnRegister = document.getElementById('sync-tab-btn-register');
+  const repeatWrapper = document.getElementById('sync-password-repeat-wrapper');
+  const submitBtn = document.getElementById('sync-auth-submit-btn');
+  const modeHint = document.getElementById('sync-auth-mode-hint');
+  const switchPrompt = document.getElementById('sync-auth-switch-prompt');
+  const errorMsg = document.getElementById('sync-auth-error-msg');
+  const successMsg = document.getElementById('sync-auth-success-msg');
 
-  const isAccount = (tab === 'account' || tab === 'cloud');
-  const isPair = (tab === 'pair' || tab === 'qr' || tab === 'manual');
+  if (errorMsg) errorMsg.classList.add('hidden');
+  if (successMsg) successMsg.classList.add('hidden');
 
-  if (paneAccount) paneAccount.classList.toggle('hidden', !isAccount);
-  if (panePair) panePair.classList.toggle('hidden', !isPair);
+  const activeClasses = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs';
+  const inactiveClasses = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer';
 
-  const activeClasses = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm';
-  const inactiveClasses = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold text-gray-400 hover:text-white transition cursor-pointer flex items-center justify-center gap-1.5';
+  if (btnLogin) btnLogin.className = isLogin ? activeClasses : inactiveClasses;
+  if (btnRegister) btnRegister.className = !isLogin ? activeClasses : inactiveClasses;
 
-  if (btnAccount) btnAccount.className = isAccount ? activeClasses : inactiveClasses;
-  if (btnPair) btnPair.className = isPair ? activeClasses : inactiveClasses;
+  if (repeatWrapper) {
+    repeatWrapper.classList.toggle('hidden', isLogin);
+  }
 
-  if (isPair && typeof FlowAuth !== 'undefined' && FlowAuth.isLoggedIn()) {
-    handleCreatePairCode();
+  if (submitBtn) {
+    submitBtn.innerHTML = isLogin
+      ? '<i data-lucide="log-in" class="w-4 h-4"></i><span>Anmelden</span>'
+      : '<i data-lucide="user-plus" class="w-4 h-4"></i><span>Konto erstellen</span>';
+  }
+
+  if (modeHint) {
+    modeHint.innerHTML = isLogin
+      ? (typeof tr === 'function' ? tr({ de: 'Melde dich an, um Aufgaben und Notizen <strong>automatisch im Hintergrund</strong> abzugleichen.', en: 'Sign in to <strong>automatically sync</strong> tasks and notes in the background.' }) : 'Melde dich an, um Aufgaben und Notizen <strong>automatisch im Hintergrund</strong> abzugleichen.')
+      : (typeof tr === 'function' ? tr({ de: 'Erstelle ein kostenloses Konto für <strong>automatischen Multi-Device Sync</strong>.', en: 'Create a free account for <strong>automatic multi-device sync</strong>.' }) : 'Erstelle ein kostenloses Konto für <strong>automatischen Multi-Device Sync</strong>.');
+  }
+
+  if (switchPrompt) {
+    switchPrompt.innerHTML = isLogin
+      ? '<span>Noch kein Konto?</span> <button type="button" onclick="switchAuthMode(\'register\')" class="text-emerald-400 font-bold hover:underline ml-1 cursor-pointer">Jetzt registrieren</button>'
+      : '<span>Bereits registriert?</span> <button type="button" onclick="switchAuthMode(\'login\')" class="text-emerald-400 font-bold hover:underline ml-1 cursor-pointer">Jetzt anmelden</button>';
   }
 
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }
-window.switchSyncModalTab = switchSyncModalTab;
-window.switchP2PTab = (tab) => switchSyncModalTab(tab);
+window.switchAuthMode = switchAuthMode;
+window.switchSyncModalTab = (tab) => {
+  if (tab === 'register') switchAuthMode('register');
+  else switchAuthMode('login');
+};
+window.switchP2PTab = (tab) => window.switchSyncModalTab(tab);
 
-// 1. E-Mail & Passwort Login
-async function handleEmailAuth() {
+// E-Mail & Passwort Authentifizierung (Anmelden / Registrieren)
+async function handleEmailAuth(forcedMode = null) {
+  const mode = forcedMode || currentAuthMode || 'login';
   const emailInput = document.getElementById('sync-email-input');
   const passwordInput = document.getElementById('sync-password-input');
+  const repeatInput = document.getElementById('sync-password-repeat-input');
   const btn = document.getElementById('sync-auth-submit-btn');
   const errorMsg = document.getElementById('sync-auth-error-msg');
   const successMsg = document.getElementById('sync-auth-success-msg');
@@ -813,20 +749,21 @@ async function handleEmailAuth() {
   if (!emailInput || !passwordInput) return;
   const email = emailInput.value.trim();
   const password = passwordInput.value.trim();
+  const repeatPassword = repeatInput ? repeatInput.value.trim() : '';
 
   if (errorMsg) errorMsg.classList.add('hidden');
   if (successMsg) successMsg.classList.add('hidden');
 
   if (!email || !email.includes('@')) {
     if (errorMsg) {
-      errorMsg.innerText = tr({
+      errorMsg.innerText = typeof tr === 'function' ? tr({
         de: 'Bitte gib eine gültige E-Mail-Adresse ein.',
         en: 'Please enter a valid email address.',
         es: 'Introduce una dirección de correo electrónico válida.',
         el: 'Παρακαλώ εισάγετε μια έγκυρη διεύθυνση email.',
         fr: 'Veuillez saisir une adresse e-mail valide.',
         it: 'Inserisci un indirizzo email valido.'
-      });
+      }) : 'Bitte gib eine gültige E-Mail-Adresse ein.';
       errorMsg.classList.remove('hidden');
     }
     return;
@@ -834,14 +771,29 @@ async function handleEmailAuth() {
 
   if (!password || password.length < 4) {
     if (errorMsg) {
-      errorMsg.innerText = tr({
-        de: 'Bitte gib ein Passwort / PIN mit mindestens 4 Zeichen ein.',
-        en: 'Please enter a password / PIN with at least 4 characters.',
-        es: 'Introduce una contraseña / PIN de al menos 4 caracteres.',
-        el: 'Εισάγετε κωδικό πρόσβασης με τουλάχιστον 4 χαρακτήρες.',
-        fr: 'Veuillez saisir un mot de passe d\'au moins 4 caractères.',
-        it: 'Inserisci una password di almeno 4 caratteri.'
-      });
+      errorMsg.innerText = typeof tr === 'function' ? tr({
+        de: 'Das Passwort muss mindestens 4 Zeichen lang sein.',
+        en: 'Password must be at least 4 characters long.',
+        es: 'La contraseña debe tener al menos 4 caracteres.',
+        el: 'Ο κωδικός πρόσβασης πρέπει να έχει τουλάχιστον 4 χαρακτήρες.',
+        fr: 'Le mot de passe doit comporter au moins 4 caractères.',
+        it: 'La password deve contenere almeno 4 caratteri.'
+      }) : 'Das Passwort muss mindestens 4 Zeichen lang sein.';
+      errorMsg.classList.remove('hidden');
+    }
+    return;
+  }
+
+  if (mode === 'register' && repeatInput && repeatPassword && password !== repeatPassword) {
+    if (errorMsg) {
+      errorMsg.innerText = typeof tr === 'function' ? tr({
+        de: 'Die Passwörter stimmen nicht überein.',
+        en: 'Passwords do not match.',
+        es: 'Las contraseñas no coinciden.',
+        el: 'Οι κωδικοί πρόσβασης δεν ταιριάζουν.',
+        fr: 'Les mots de passe ne correspondent pas.',
+        it: 'Le password non coincidono.'
+      }) : 'Die Passwörter stimmen nicht überein.';
       errorMsg.classList.remove('hidden');
     }
     return;
@@ -849,38 +801,52 @@ async function handleEmailAuth() {
 
   if (btn) {
     btn.disabled = true;
-    btn.innerHTML = '<span class="animate-spin inline-block mr-1">⏳</span> Anmelden...';
+    btn.innerHTML = `<span class="animate-spin inline-block mr-1">⏳</span> ${mode === 'register' ? 'Erstelle Konto...' : 'Anmelden...'}`;
   }
 
   try {
-    const res = await FlowAuth.signInWithCredentials(email, password);
+    const authMethod = (mode === 'register' && typeof FlowAuth.signUpWithCredentials === 'function')
+      ? FlowAuth.signUpWithCredentials
+      : FlowAuth.signInWithCredentials;
+
+    const res = await authMethod(email, password);
+
     if (res.success) {
-      if (typeof showToast === 'function') {
-        showToast(tr({
-          de: '✓ Erfolgreich angemeldet! Synchronisation läuft...',
-          en: '✓ Successfully signed in! Syncing...',
-          es: '✓ ¡Inicio de sesión correcto!',
-          el: '✓ Επιτυχής σύνδεση!',
-          fr: '✓ Connexion réussie !',
-          it: '✓ Accesso riuscito!'
-        }));
+      if (res.needEmailConfirm) {
+        if (successMsg) {
+          successMsg.innerText = res.message || 'Konto erstellt! Bitte prüfe deine E-Mails zur Bestätigung.';
+          successMsg.classList.remove('hidden');
+        }
+      } else {
+        if (typeof showToast === 'function') {
+          showToast(typeof tr === 'function' ? tr({
+            de: mode === 'register' ? '✓ Konto erfolgreich erstellt & angemeldet!' : '✓ Erfolgreich angemeldet! Synchronisation läuft...',
+            en: mode === 'register' ? '✓ Account created and signed in!' : '✓ Successfully signed in! Syncing...',
+            es: '✓ ¡Inicio de sesión correcto!',
+            el: '✓ Επιτυχής σύνδεση!',
+            fr: '✓ Connexion réussie !',
+            it: '✓ Accesso riuscito!'
+          }) : '✓ Erfolgreich angemeldet!');
+        }
+        await cloudSyncEngine.pullState();
       }
-      await cloudSyncEngine.pullState();
     } else {
       if (errorMsg) {
-        errorMsg.innerText = res.error || 'Anmeldung fehlgeschlagen.';
+        errorMsg.innerText = res.error || (mode === 'register' ? 'Registrierung fehlgeschlagen.' : 'Anmeldung fehlgeschlagen.');
         errorMsg.classList.remove('hidden');
       }
     }
   } catch (e) {
     if (errorMsg) {
-      errorMsg.innerText = 'Verbindungsfehler beim Anmelden.';
+      errorMsg.innerText = 'Verbindungsfehler beim Authentifizieren.';
       errorMsg.classList.remove('hidden');
     }
   } finally {
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = '<i data-lucide="log-in" class="w-4 h-4"></i><span>Anmelden / Registrieren</span>';
+      btn.innerHTML = mode === 'register'
+        ? '<i data-lucide="user-plus" class="w-4 h-4"></i><span>Konto erstellen</span>'
+        : '<i data-lucide="log-in" class="w-4 h-4"></i><span>Anmelden</span>';
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }
   }
@@ -888,103 +854,66 @@ async function handleEmailAuth() {
 window.handleEmailAuth = handleEmailAuth;
 window.handleSendMagicLink = handleEmailAuth;
 
-// 2. 6-Stelligen Code auf Gerät A generieren
-async function handleCreatePairCode() {
-  const codeDisplay = document.getElementById('pair-code-display') || document.getElementById('p2p-room-code');
-  const qrImg = document.getElementById('p2p-qr-img');
+async function handlePasswordReset() {
+  const emailInput = document.getElementById('sync-email-input');
+  const errorMsg = document.getElementById('sync-auth-error-msg');
+  const successMsg = document.getElementById('sync-auth-success-msg');
 
-  if (codeDisplay) {
-    codeDisplay.innerText = 'Code wird geladen...';
-  }
-
-  try {
-    const res = await FlowAuth.createPairingCode();
-    if (res && res.success && res.code) {
-      if (codeDisplay) {
-        // Formatieren als: 123 456
-        const formatted = `${res.code.slice(0, 3)} ${res.code.slice(3)}`;
-        codeDisplay.innerText = formatted;
-      }
-
-      if (qrImg) {
-        const qrSvg = MinimalQR.generateQRCodeSVG(res.code, 240);
-        if (qrSvg) qrImg.src = qrSvg;
-      }
-    } else {
-      if (codeDisplay) codeDisplay.innerText = 'Kopplung bereit';
-    }
-  } catch (e) {
-    if (codeDisplay) codeDisplay.innerText = 'Fehler beim Laden';
-  }
-}
-window.handleCreatePairCode = handleCreatePairCode;
-
-// 3. 6-Stelligen Code auf Gerät B eingeben & einlösen
-async function handleConfirmPairCode() {
-  const input = document.getElementById('pair-code-input');
-  const btn = document.getElementById('pair-code-submit-btn');
-  const errorMsg = document.getElementById('pair-code-error-msg');
-
-  if (!input) return;
-  const rawCode = input.value.replace(/\s+/g, '').trim();
+  if (!emailInput) return;
+  const email = emailInput.value.trim();
 
   if (errorMsg) errorMsg.classList.add('hidden');
+  if (successMsg) successMsg.classList.add('hidden');
 
-  if (!rawCode || !/^\d{6}$/.test(rawCode)) {
+  if (!email || !email.includes('@')) {
     if (errorMsg) {
-      errorMsg.innerText = tr({
-        de: 'Bitte gib den 6-stelligen Zahlencode ein.',
-        en: 'Please enter the 6-digit number code.',
-        es: 'Introduce el código numérico de 6 dígitos.',
-        el: 'Εισάγετε τον 6ψήφιο αριθμητικό κωδικό.',
-        fr: 'Veuillez saisir le code à 6 chiffres.',
-        it: 'Inserisci il codice numerico a 6 cifre.'
-      });
+      errorMsg.innerText = typeof tr === 'function' ? tr({
+        de: 'Bitte gib deine E-Mail-Adresse ein, um das Passwort zurückzusetzen.',
+        en: 'Please enter your email address to reset your password.',
+        es: 'Introduce tu correo electrónico para restablecer la contraseña.',
+        el: 'Εισάγετε το email σας για να επαναφέρετε τον κωδικό πρόσβασης.',
+        fr: 'Veuillez saisir votre adresse e-mail pour réinitialiser le mot de passe.',
+        it: 'Inserisci il tuo indirizzo email per reimpostare la password.'
+      }) : 'Bitte gib deine E-Mail-Adresse ein, um das Passwort zurückzusetzen.';
       errorMsg.classList.remove('hidden');
     }
     return;
   }
 
-  if (btn) {
-    btn.disabled = true;
-    btn.innerHTML = '<span class="animate-spin inline-block mr-1">⏳</span> Verbinde...';
-  }
-
-  try {
-    const res = await FlowAuth.confirmPairingCode(rawCode);
+  if (typeof FlowAuth !== 'undefined' && FlowAuth.requestPasswordReset) {
+    const res = await FlowAuth.requestPasswordReset(email);
     if (res && res.success) {
+      if (successMsg) {
+        successMsg.innerText = res.message || (typeof tr === 'function' ? tr({
+          de: 'E-Mail zum Zurücksetzen wurde gesendet! Bitte prüfe dein Postfach.',
+          en: 'Reset email sent! Please check your inbox.',
+          es: '¡Correo de restablecimiento enviado! Por favor revisa tu bandeja de entrada.',
+          el: 'Το email επαναφοράς στάλθηκε! Ελέγξτε τα εισερχόμενά σας.',
+          fr: 'E-mail de réinitialisation envoyé ! Veuillez vérifier votre boîte de réception.',
+          it: 'Email di reimpostazione inviata! Controlla la tua casella di posta.'
+        }) : 'E-Mail zum Zurücksetzen wurde gesendet! Bitte prüfe dein Postfach.');
+        successMsg.classList.remove('hidden');
+      }
       if (typeof showToast === 'function') {
         showToast(tr({
-          de: '📱 Gerät erfolgreich verbunden! ⚡',
-          en: '📱 Device successfully connected! ⚡',
-          es: '📱 ¡Dispositivo conectado con éxito! ⚡',
-          el: '📱 Η συσκευή συνδέθηκε επιτυχώς! ⚡',
-          fr: '📱 Appareil connecté avec succès ! ⚡',
-          it: '📱 Dispositivo connesso con successo! ⚡'
+          de: '✉️ Reset-Link per E-Mail gesendet!',
+          en: '✉️ Reset link sent via email!',
+          es: '✉️ ¡Enlace de restablecimiento enviado por correo!',
+          el: '✉️ Ο σύνδεσμος επαναφοράς στάλθηκε με email!',
+          fr: '✉️ Lien de réinitialisation envoyé par e-mail !',
+          it: '✉️ Link di ripristino inviato via email!'
         }));
       }
-      closeP2PSyncModal();
-      await cloudSyncEngine.pullState();
     } else {
       if (errorMsg) {
-        errorMsg.innerText = res.error || 'Ungültiger oder abgelaufener Code.';
+        errorMsg.innerText = res.error || 'Fehler beim Zurücksetzen des Passworts.';
         errorMsg.classList.remove('hidden');
       }
     }
-  } catch (e) {
-    if (errorMsg) {
-      errorMsg.innerText = 'Verbindungsfehler beim Koppeln.';
-      errorMsg.classList.remove('hidden');
-    }
-  } finally {
-    if (btn) {
-      btn.disabled = false;
-      btn.innerHTML = '<i data-lucide="link-2" class="w-4 h-4"></i><span>Gerät verbinden</span>';
-      if (typeof lucide !== 'undefined') lucide.createIcons();
-    }
   }
 }
-window.handleConfirmPairCode = handleConfirmPairCode;
+window.handlePasswordReset = handlePasswordReset;
+
 
 async function handleManualCloudSync() {
   if (typeof cloudSyncEngine !== 'undefined') {
@@ -1017,14 +946,24 @@ async function handleManualCloudSync() {
 window.handleManualCloudSync = handleManualCloudSync;
 
 async function handleLogout() {
-  if (confirm(tr({
+  const msg = tr({
     de: 'Möchtest du dich wirklich abmelden? Deine lokalen Daten bleiben erhalten.',
     en: 'Do you really want to log out? Your local data will be preserved.',
     es: '¿Seguro que quieres cerrar sesión? Tus datos locales se conservarán.',
     el: 'Θέλετε σίγουρα να αποσυνδεθείτε; Τα τοπικά δεδομένα διατηρούνται.',
     fr: 'Voulez-vous vraiment vous déconnecter ? Vos données locales seront conservées.',
     it: 'Vuoi davvero disconnetterti? I tuoi dati locali saranno conservati.'
-  }))) {
+  });
+
+  const confirmed = typeof showConfirmDialog === 'function' ? await showConfirmDialog({
+    title: typeof tr === 'function' ? tr({ de: 'Abmelden?', en: 'Log out?' }) : 'Abmelden?',
+    message: msg,
+    confirmText: typeof tr === 'function' ? tr({ de: 'Abmelden', en: 'Log out' }) : 'Abmelden',
+    isDanger: false,
+    icon: 'log-out'
+  }) : confirm(msg);
+
+  if (confirmed) {
     if (typeof FlowAuth !== 'undefined') {
       await FlowAuth.signOut();
       if (typeof showToast === 'function') {
@@ -1050,6 +989,7 @@ if (typeof window !== 'undefined') {
   window.closeP2PSyncModal = closeP2PSyncModal;
   window.switchP2PTab = switchP2PTab;
   window.switchSyncModalTab = switchSyncModalTab;
+  window.handlePasswordReset = handlePasswordReset;
 
   window.addEventListener('DOMContentLoaded', () => {
     cloudSyncEngine.init();
@@ -1062,4 +1002,5 @@ if (typeof globalThis !== 'undefined') {
   globalThis.closeP2PSyncModal = closeP2PSyncModal;
   globalThis.switchP2PTab = switchP2PTab;
   globalThis.switchSyncModalTab = switchSyncModalTab;
+  globalThis.handlePasswordReset = handlePasswordReset;
 }
