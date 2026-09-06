@@ -20,14 +20,26 @@ const IDB_VAULT = {
         try {
           const req = indexedDB.open('noodle_resilience_vault', 1);
           req.onupgradeneeded = (e) => {
-            const db = e.target.result;
-            if (!db.objectStoreNames.contains('keyval')) {
-              db.createObjectStore('keyval');
+            try {
+              const db = e.target.result;
+              if (db && !db.objectStoreNames.contains('keyval')) {
+                db.createObjectStore('keyval');
+              }
+            } catch (err) {
+              // Graceful upgrade catch
             }
           };
           req.onsuccess = (e) => resolve(e.target.result);
-          req.onerror = () => resolve(null);
+          req.onerror = () => {
+            this.dbPromise = null;
+            resolve(null);
+          };
+          req.onblocked = () => {
+            this.dbPromise = null;
+            resolve(null);
+          };
         } catch (e) {
+          this.dbPromise = null;
           resolve(null);
         }
       });
@@ -40,6 +52,8 @@ const IDB_VAULT = {
       const db = await this.getDB();
       if (!db) return;
       const tx = db.transaction('keyval', 'readwrite');
+      tx.onerror = () => {};
+      tx.onabort = () => {};
       tx.objectStore('keyval').put(value, key);
     } catch (e) {
       // Stiller Fehler im Hintergrund
@@ -51,10 +65,16 @@ const IDB_VAULT = {
       const db = await this.getDB();
       if (!db) return null;
       return new Promise((resolve) => {
-        const tx = db.transaction('keyval', 'readonly');
-        const req = tx.objectStore('keyval').get(key);
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = () => resolve(null);
+        try {
+          const tx = db.transaction('keyval', 'readonly');
+          tx.onerror = () => resolve(null);
+          tx.onabort = () => resolve(null);
+          const req = tx.objectStore('keyval').get(key);
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => resolve(null);
+        } catch (err) {
+          resolve(null);
+        }
       });
     } catch (e) {
       return null;
@@ -66,10 +86,16 @@ const IDB_VAULT = {
       const db = await this.getDB();
       if (!db) return [];
       return new Promise((resolve) => {
-        const tx = db.transaction('keyval', 'readonly');
-        const req = tx.objectStore('keyval').getAllKeys();
-        req.onsuccess = () => resolve(req.result || []);
-        req.onerror = () => resolve([]);
+        try {
+          const tx = db.transaction('keyval', 'readonly');
+          tx.onerror = () => resolve([]);
+          tx.onabort = () => resolve([]);
+          const req = tx.objectStore('keyval').getAllKeys();
+          req.onsuccess = () => resolve(req.result || []);
+          req.onerror = () => resolve([]);
+        } catch (err) {
+          resolve([]);
+        }
       });
     } catch (e) {
       return [];
@@ -81,6 +107,8 @@ const IDB_VAULT = {
       const db = await this.getDB();
       if (!db) return;
       const tx = db.transaction('keyval', 'readwrite');
+      tx.onerror = () => {};
+      tx.onabort = () => {};
       tx.objectStore('keyval').delete(key);
     } catch (e) {}
   }
@@ -89,6 +117,7 @@ const IDB_VAULT = {
 const AppStorage = {
   get(key, defaultValue = null) {
     try {
+      if (typeof localStorage === 'undefined') return defaultValue;
       const val = localStorage.getItem(key);
       if (val === null || val === undefined) return defaultValue;
       return JSON.parse(val);
@@ -100,6 +129,7 @@ const AppStorage = {
 
   set(key, value) {
     try {
+      if (typeof localStorage === 'undefined') return false;
       const serialized = JSON.stringify(value);
       localStorage.setItem(key, serialized);
       // Asynchrone Spiegelung in IndexedDB
@@ -107,7 +137,18 @@ const AppStorage = {
       return true;
     } catch (e) {
       console.error(`[AppStorage] Fehler beim Schreiben von '${key}':`, e);
-      // Notfall: Trotzdem in IndexedDB versuchen
+      // Notfall-Trim bei QuotaExceededError
+      if (e && (e.name === 'QuotaExceededError' || e.code === 22 || String(e).includes('QuotaExceeded'))) {
+        try {
+          const hist = localStorage.getItem('flow_history');
+          if (hist) localStorage.removeItem('flow_history');
+          const backup = localStorage.getItem('flow_backup_before_sync');
+          if (backup) localStorage.removeItem('flow_backup_before_sync');
+          localStorage.setItem(key, JSON.stringify(value));
+          IDB_VAULT.set(key, value);
+          return true;
+        } catch (retryErr) {}
+      }
       IDB_VAULT.set(key, value);
       return false;
     }

@@ -1,0 +1,81 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import '../utils.js';
+import '../storage.js';
+
+describe('Advanced Security & Sanitization', () => {
+  it('escapeHtml safely handles backticks and template string injection attempts', () => {
+    const payload = 'Hello `${alert(1)}` World';
+    const escaped = window.escapeHtml(payload);
+    expect(escaped).toBe('Hello &#96;${alert(1)}&#96; World');
+  });
+
+  it('escapeHtml safely converts booleans and numbers to safe string representations', () => {
+    expect(window.escapeHtml(true)).toBe('true');
+    expect(window.escapeHtml(false)).toBe('false');
+    expect(window.escapeHtml(42)).toBe('42');
+  });
+
+  it('sanitizeUrl correctly allows safe http, https, mailto and tel protocols', () => {
+    expect(window.sanitizeUrl('https://example.com/path?q=1')).toBe('https://example.com/path?q=1');
+    expect(window.sanitizeUrl('http://localhost:3000')).toBe('http://localhost:3000');
+    expect(window.sanitizeUrl('mailto:test@example.com')).toBe('mailto:test@example.com');
+    expect(window.sanitizeUrl('tel:+49123456789')).toBe('tel:+49123456789');
+    expect(window.sanitizeUrl('/local/path/file.html')).toBe('/local/path/file.html');
+    expect(window.sanitizeUrl('#anchor')).toBe('#anchor');
+  });
+
+  it('sanitizeUrl blocks javascript: and dangerous execution schemes', () => {
+    expect(window.sanitizeUrl('javascript:alert(1)')).toBe('#');
+    expect(window.sanitizeUrl('JAVASCRIPT:alert(document.cookie)', '')).toBe('');
+    expect(window.sanitizeUrl('  javascript:alert(1)  ', '#fallback')).toBe('#fallback');
+    expect(window.sanitizeUrl('data:text/html,<script>alert(1)</script>', '')).toBe('');
+    expect(window.sanitizeUrl('vbscript:msgbox(1)', '#default')).toBe('#default');
+  });
+
+  it('sanitizeUrl handles invalid URLs and non-string inputs safely', () => {
+    expect(window.sanitizeUrl(null)).toBe('#');
+    expect(window.sanitizeUrl(undefined, 'fallback')).toBe('fallback');
+    expect(window.sanitizeUrl('', 'fallback')).toBe('fallback');
+  });
+});
+
+describe('Storage Quota & Resilience', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it('AppStorage safely handles corrupt data and missing keys', () => {
+    expect(window.AppStorage.get('missing_key', { def: true })).toEqual({ def: true });
+    localStorage.setItem('bad_json', '{not valid');
+    expect(window.AppStorage.get('bad_json', 'safe')).toBe('safe');
+  });
+
+  it('AppStorage attempts emergency cleanup on QuotaExceededError', () => {
+    let callCount = 0;
+    localStorage.setItem('flow_history', 'heavy history');
+    localStorage.setItem('flow_backup_before_sync', 'old backup');
+
+    const spy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation((key, val) => {
+      callCount++;
+      if (callCount === 1) {
+        const err = new Error('QuotaExceededError');
+        err.name = 'QuotaExceededError';
+        throw err;
+      }
+    });
+
+    const success = window.AppStorage.set('flow_critical_data', { ready: true });
+    expect(success).toBe(true);
+    expect(callCount).toBe(2);
+    expect(localStorage.getItem('flow_history')).toBe(null);
+
+    spy.mockRestore();
+  });
+
+  it('IDB_VAULT functions safely when indexedDB is undefined or inaccessible', async () => {
+    if (typeof window.IDB_VAULT !== 'undefined') {
+      const getRes = await window.IDB_VAULT.get('any_key');
+      expect(getRes).toBe(null);
+    }
+  });
+});

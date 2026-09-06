@@ -12,16 +12,6 @@
  * ============================================================================
  */
 
-// Global Error Boundary & Crash-Protection
-if (typeof window !== 'undefined') {
-  window.addEventListener('error', (event) => {
-    console.warn('[Noodle Global Error Guard]', event.error || event.message);
-  });
-  window.addEventListener('unhandledrejection', (event) => {
-    console.warn('[Noodle Unhandled Promise Guard]', event.reason);
-  });
-}
-
 let currentZenTaskInfo = null;
 let lastSelectedSound = 'birds';
 let draggedColumnId = null;

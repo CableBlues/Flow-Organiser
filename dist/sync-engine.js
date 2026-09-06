@@ -551,8 +551,10 @@ const cloudSyncEngine = {
 
   scheduleRetry() {
     if (this.retryTimer) clearTimeout(this.retryTimer);
-    // Exponential Backoff: 3s, 6s, 12s, max 30s
-    const delay = Math.min(3000 * Math.pow(2, this.retryCount), 30000);
+    // Exponential Backoff with jitter: 3s, 6s, 12s, max 30s + 0-500ms
+    const baseDelay = Math.min(3000 * Math.pow(2, this.retryCount), 30000);
+    const jitter = Math.floor(Math.random() * 500);
+    const delay = baseDelay + jitter;
     this.retryCount++;
 
     this.retryTimer = setTimeout(() => {

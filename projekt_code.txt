@@ -1,6 +1,6 @@
 # ============================================================================== 
 # FLOW ORGANISER — GESAMTER QUELLCODE DER ANWENDUNG 
-# Stand: 06.09.2026 17:31:50,86 
+# Stand: 06.09.2026 18:11:11,88 
 # ============================================================================== 
  
  
@@ -8898,16 +8898,6 @@ DATEI: app-core.js
  * ============================================================================
  */
 
-// Global Error Boundary & Crash-Protection
-if (typeof window !== 'undefined') {
-  window.addEventListener('error', (event) => {
-    console.warn('[Noodle Global Error Guard]', event.error || event.message);
-  });
-  window.addEventListener('unhandledrejection', (event) => {
-    console.warn('[Noodle Unhandled Promise Guard]', event.reason);
-  });
-}
-
 let currentZenTaskInfo = null;
 let lastSelectedSound = 'birds';
 let draggedColumnId = null;
@@ -17264,6 +17254,10 @@ function playCheerfulSuccessJingle() {
       
       osc.start(startTime);
       osc.stop(startTime + 0.5);
+      osc.onended = () => {
+        try { osc.disconnect(); } catch (e) {}
+        try { gain.disconnect(); } catch (e) {}
+      };
     });
   } catch (e) {
     console.warn('[Audio] playCheerfulSuccessJingle warning:', e);
@@ -20120,7 +20114,7 @@ const FlowAuth = (function() {
 
   function setSession(session) {
     currentSession = session;
-    currentUser = session ? session.user : (customSyncToken ? { id: customSyncToken, email: (typeof localStorage !== 'undefined' ? localStorage.getItem('flow_sync_email') : '') || 'Geräte-Kopplung' } : null);
+    currentUser = session ? session.user : (customSyncToken ? { id: customSyncToken, email: (typeof localStorage !== 'undefined' ? localStorage.getItem('flow_sync_email') : '') || 'Angemeldet' } : null);
     
     if (session && session.user && typeof localStorage !== 'undefined') {
       localStorage.setItem('flow_sync_token', session.user.id);
@@ -33073,14 +33067,26 @@ const IDB_VAULT = {
         try {
           const req = indexedDB.open('noodle_resilience_vault', 1);
           req.onupgradeneeded = (e) => {
-            const db = e.target.result;
-            if (!db.objectStoreNames.contains('keyval')) {
-              db.createObjectStore('keyval');
+            try {
+              const db = e.target.result;
+              if (db && !db.objectStoreNames.contains('keyval')) {
+                db.createObjectStore('keyval');
+              }
+            } catch (err) {
+              // Graceful upgrade catch
             }
           };
           req.onsuccess = (e) => resolve(e.target.result);
-          req.onerror = () => resolve(null);
+          req.onerror = () => {
+            this.dbPromise = null;
+            resolve(null);
+          };
+          req.onblocked = () => {
+            this.dbPromise = null;
+            resolve(null);
+          };
         } catch (e) {
+          this.dbPromise = null;
           resolve(null);
         }
       });
@@ -33093,6 +33099,8 @@ const IDB_VAULT = {
       const db = await this.getDB();
       if (!db) return;
       const tx = db.transaction('keyval', 'readwrite');
+      tx.onerror = () => {};
+      tx.onabort = () => {};
       tx.objectStore('keyval').put(value, key);
     } catch (e) {
       // Stiller Fehler im Hintergrund
@@ -33104,10 +33112,16 @@ const IDB_VAULT = {
       const db = await this.getDB();
       if (!db) return null;
       return new Promise((resolve) => {
-        const tx = db.transaction('keyval', 'readonly');
-        const req = tx.objectStore('keyval').get(key);
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = () => resolve(null);
+        try {
+          const tx = db.transaction('keyval', 'readonly');
+          tx.onerror = () => resolve(null);
+          tx.onabort = () => resolve(null);
+          const req = tx.objectStore('keyval').get(key);
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => resolve(null);
+        } catch (err) {
+          resolve(null);
+        }
       });
     } catch (e) {
       return null;
@@ -33119,10 +33133,16 @@ const IDB_VAULT = {
       const db = await this.getDB();
       if (!db) return [];
       return new Promise((resolve) => {
-        const tx = db.transaction('keyval', 'readonly');
-        const req = tx.objectStore('keyval').getAllKeys();
-        req.onsuccess = () => resolve(req.result || []);
-        req.onerror = () => resolve([]);
+        try {
+          const tx = db.transaction('keyval', 'readonly');
+          tx.onerror = () => resolve([]);
+          tx.onabort = () => resolve([]);
+          const req = tx.objectStore('keyval').getAllKeys();
+          req.onsuccess = () => resolve(req.result || []);
+          req.onerror = () => resolve([]);
+        } catch (err) {
+          resolve([]);
+        }
       });
     } catch (e) {
       return [];
@@ -33134,6 +33154,8 @@ const IDB_VAULT = {
       const db = await this.getDB();
       if (!db) return;
       const tx = db.transaction('keyval', 'readwrite');
+      tx.onerror = () => {};
+      tx.onabort = () => {};
       tx.objectStore('keyval').delete(key);
     } catch (e) {}
   }
@@ -33142,6 +33164,7 @@ const IDB_VAULT = {
 const AppStorage = {
   get(key, defaultValue = null) {
     try {
+      if (typeof localStorage === 'undefined') return defaultValue;
       const val = localStorage.getItem(key);
       if (val === null || val === undefined) return defaultValue;
       return JSON.parse(val);
@@ -33153,6 +33176,7 @@ const AppStorage = {
 
   set(key, value) {
     try {
+      if (typeof localStorage === 'undefined') return false;
       const serialized = JSON.stringify(value);
       localStorage.setItem(key, serialized);
       // Asynchrone Spiegelung in IndexedDB
@@ -33160,7 +33184,18 @@ const AppStorage = {
       return true;
     } catch (e) {
       console.error(`[AppStorage] Fehler beim Schreiben von '${key}':`, e);
-      // Notfall: Trotzdem in IndexedDB versuchen
+      // Notfall-Trim bei QuotaExceededError
+      if (e && (e.name === 'QuotaExceededError' || e.code === 22 || String(e).includes('QuotaExceeded'))) {
+        try {
+          const hist = localStorage.getItem('flow_history');
+          if (hist) localStorage.removeItem('flow_history');
+          const backup = localStorage.getItem('flow_backup_before_sync');
+          if (backup) localStorage.removeItem('flow_backup_before_sync');
+          localStorage.setItem(key, JSON.stringify(value));
+          IDB_VAULT.set(key, value);
+          return true;
+        } catch (retryErr) {}
+      }
       IDB_VAULT.set(key, value);
       return false;
     }
@@ -34020,8 +34055,10 @@ const cloudSyncEngine = {
 
   scheduleRetry() {
     if (this.retryTimer) clearTimeout(this.retryTimer);
-    // Exponential Backoff: 3s, 6s, 12s, max 30s
-    const delay = Math.min(3000 * Math.pow(2, this.retryCount), 30000);
+    // Exponential Backoff with jitter: 3s, 6s, 12s, max 30s + 0-500ms
+    const baseDelay = Math.min(3000 * Math.pow(2, this.retryCount), 30000);
+    const jitter = Math.floor(Math.random() * 500);
+    const delay = baseDelay + jitter;
     this.retryCount++;
 
     this.retryTimer = setTimeout(() => {
@@ -37354,9 +37391,7 @@ const TIERED_PRAISES = {
 DATEI: utils.js 
 ============================================================================== 
  
-// utils.js Teil 1/2: State, Toast/Konfetti/Praise-Anzeige, Sound-Effekte
-
-// XSS-Schutz: Sichere HTML-Maskierung für Benutzereingaben
+// XSS-Schutz: Sichere HTML-Maskierung & URL-Sanitization für Benutzereingaben
 function escapeHtml(str) {
   if (str === null || str === undefined) return '';
   if (typeof str !== 'string') str = String(str);
@@ -37365,9 +37400,27 @@ function escapeHtml(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+    .replace(/'/g, '&#039;')
+    .replace(/`/g, '&#96;');
 }
-window.escapeHtml = escapeHtml;
+
+function sanitizeUrl(url, fallback = '#') {
+  if (!url || typeof url !== 'string') return fallback;
+  const trimmed = url.trim();
+  if (/^(https?:\/\/|mailto:|tel:|\/|\.\/|#|data:image\/)/i.test(trimmed)) {
+    return trimmed;
+  }
+  return fallback;
+}
+
+if (typeof window !== 'undefined') {
+  window.escapeHtml = escapeHtml;
+  window.sanitizeUrl = sanitizeUrl;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.escapeHtml = escapeHtml;
+  globalThis.sanitizeUrl = sanitizeUrl;
+}
 
 // Zentraler Panel-Manager (für Dropdowns & Werkzeug-Panels)
 const PanelManager = {
@@ -39823,6 +39876,93 @@ describe('QR Code Generation & P2P Codec (Production Code)', () => {
     expect(decoded.items.daily).toEqual(['Task 1', 'Task 2']);
     expect(decoded.workItems.work_focus).toEqual(['Job 1']);
     expect(decoded.done[0].task).toBe('Done 1');
+  });
+});
+ 
+ 
+============================================================================== 
+DATEI: tests\resilience-and-security.test.js 
+============================================================================== 
+ 
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import '../utils.js';
+import '../storage.js';
+
+describe('Advanced Security & Sanitization', () => {
+  it('escapeHtml safely handles backticks and template string injection attempts', () => {
+    const payload = 'Hello `${alert(1)}` World';
+    const escaped = window.escapeHtml(payload);
+    expect(escaped).toBe('Hello &#96;${alert(1)}&#96; World');
+  });
+
+  it('escapeHtml safely converts booleans and numbers to safe string representations', () => {
+    expect(window.escapeHtml(true)).toBe('true');
+    expect(window.escapeHtml(false)).toBe('false');
+    expect(window.escapeHtml(42)).toBe('42');
+  });
+
+  it('sanitizeUrl correctly allows safe http, https, mailto and tel protocols', () => {
+    expect(window.sanitizeUrl('https://example.com/path?q=1')).toBe('https://example.com/path?q=1');
+    expect(window.sanitizeUrl('http://localhost:3000')).toBe('http://localhost:3000');
+    expect(window.sanitizeUrl('mailto:test@example.com')).toBe('mailto:test@example.com');
+    expect(window.sanitizeUrl('tel:+49123456789')).toBe('tel:+49123456789');
+    expect(window.sanitizeUrl('/local/path/file.html')).toBe('/local/path/file.html');
+    expect(window.sanitizeUrl('#anchor')).toBe('#anchor');
+  });
+
+  it('sanitizeUrl blocks javascript: and dangerous execution schemes', () => {
+    expect(window.sanitizeUrl('javascript:alert(1)')).toBe('#');
+    expect(window.sanitizeUrl('JAVASCRIPT:alert(document.cookie)', '')).toBe('');
+    expect(window.sanitizeUrl('  javascript:alert(1)  ', '#fallback')).toBe('#fallback');
+    expect(window.sanitizeUrl('data:text/html,<script>alert(1)</script>', '')).toBe('');
+    expect(window.sanitizeUrl('vbscript:msgbox(1)', '#default')).toBe('#default');
+  });
+
+  it('sanitizeUrl handles invalid URLs and non-string inputs safely', () => {
+    expect(window.sanitizeUrl(null)).toBe('#');
+    expect(window.sanitizeUrl(undefined, 'fallback')).toBe('fallback');
+    expect(window.sanitizeUrl('', 'fallback')).toBe('fallback');
+  });
+});
+
+describe('Storage Quota & Resilience', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it('AppStorage safely handles corrupt data and missing keys', () => {
+    expect(window.AppStorage.get('missing_key', { def: true })).toEqual({ def: true });
+    localStorage.setItem('bad_json', '{not valid');
+    expect(window.AppStorage.get('bad_json', 'safe')).toBe('safe');
+  });
+
+  it('AppStorage attempts emergency cleanup on QuotaExceededError', () => {
+    let callCount = 0;
+    localStorage.setItem('flow_history', 'heavy history');
+    localStorage.setItem('flow_backup_before_sync', 'old backup');
+
+    const spy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation((key, val) => {
+      callCount++;
+      if (callCount === 1) {
+        const err = new Error('QuotaExceededError');
+        err.name = 'QuotaExceededError';
+        throw err;
+      }
+    });
+
+    const success = window.AppStorage.set('flow_critical_data', { ready: true });
+    expect(success).toBe(true);
+    expect(callCount).toBe(2);
+    expect(localStorage.getItem('flow_history')).toBe(null);
+
+    spy.mockRestore();
+  });
+
+  it('IDB_VAULT functions safely when indexedDB is undefined or inaccessible', async () => {
+    if (typeof window.IDB_VAULT !== 'undefined') {
+      const getRes = await window.IDB_VAULT.get('any_key');
+      expect(getRes).toBe(null);
+    }
   });
 });
  
