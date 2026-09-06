@@ -1,0 +1,49 @@
+/* ==========================================================================
+   NOODLE SUITE · HEADER TOOLS HUB & POPOVERS
+   ========================================================================== */
+
+#panel-header-tools .dock-popover-panel {
+  position: absolute !important;
+  left: calc(100% + 12px) !important;
+  top: -10px !important;
+  z-index: 160 !important;
+  pointer-events: auto !important;
+}
+
+/* Unzerbrechliche Hover-Brücken, damit die Maus nicht im Abstand zwischen Trigger und Popover verloren geht */
+#panel-header-tools::before {
+  content: '';
+  position: absolute;
+  top: -24px;
+  left: -20px;
+  right: -20px;
+  height: 30px;
+  background: transparent;
+  pointer-events: auto;
+}
+
+#panel-header-tools .dock-popover-panel::before {
+  content: '';
+  position: absolute;
+  top: -15px;
+  bottom: -15px;
+  left: -30px;
+  width: 40px;
+  background: transparent;
+  pointer-events: auto;
+}
+
+@media (max-width: 640px) {
+  #panel-header-tools .dock-popover-panel {
+    left: 0 !important;
+    top: calc(100% + 8px) !important;
+  }
+  #panel-header-tools .dock-popover-panel::before {
+    top: -20px;
+    bottom: auto;
+    left: 0;
+    right: 0;
+    height: 24px;
+    width: 100%;
+  }
+}

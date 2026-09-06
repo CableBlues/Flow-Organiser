@@ -1,0 +1,1006 @@
+// sync-engine.js - Zuverlässige & automatische Synchronisations-Engine für Flow Organiser
+// ============================================================================
+
+const MinimalQR = (function() {
+  function generateQRCodeSVG(text, size = 220) {
+    if (!text) return '';
+    try {
+      const qrLib = (typeof QRCode !== 'undefined' ? QRCode : (typeof window !== 'undefined' ? window.QRCode : (typeof globalThis !== 'undefined' ? globalThis.QRCode : null)));
+      if (qrLib && typeof qrLib.toString === 'function') {
+        let svgOut = '';
+        qrLib.toString(text, { type: 'svg', margin: 2, width: size, errorCorrectionLevel: 'M' }, (err, svg) => {
+          if (!err && svg) svgOut = svg;
+        });
+        if (svgOut) {
+          return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgOut)}`;
+        }
+      }
+    } catch (e) {
+      console.warn('[QR Engine] Error generating QR with QRCode vendor:', e);
+    }
+    return '';
+  }
+
+  return {
+    generateQRCodeSVG
+  };
+})();
+
+const P2PDataCodec = {
+  encodeState(stateObj) {
+    try {
+      if (!stateObj) return '';
+      const minimalState = {
+        w: stateObj.activeWorkspace === 'work' ? 1 : 0,
+        i: stateObj.items || {},
+        d: (stateObj.done || []).slice(0, 15),
+        wi: stateObj.workItems || {},
+        wd: (stateObj.workDone || []).slice(0, 15)
+      };
+      const json = JSON.stringify(minimalState);
+      return btoa(unescape(encodeURIComponent(json)))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+    } catch (e) {
+      return '';
+    }
+  },
+
+  decodeState(encodedStr) {
+    try {
+      if (!encodedStr) return null;
+      let base64 = String(encodedStr).replace(/-/g, '+').replace(/_/g, '/');
+      while (base64.length % 4 !== 0) base64 += '=';
+      const json = decodeURIComponent(escape(atob(base64)));
+      const parsed = JSON.parse(json);
+      if (parsed.w !== undefined || parsed.i !== undefined) {
+        return {
+          items: parsed.i || {},
+          done: parsed.d || [],
+          workItems: parsed.wi || {},
+          workDone: parsed.wd || [],
+          ws: parsed.w === 1 ? 'work' : 'private'
+        };
+      }
+      return parsed;
+    } catch (e) {
+      return null;
+    }
+  }
+};
+
+if (typeof window !== 'undefined') {
+  window.MinimalQR = MinimalQR;
+  window.P2PDataCodec = P2PDataCodec;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.MinimalQR = MinimalQR;
+  globalThis.P2PDataCodec = P2PDataCodec;
+}
+
+// ============================================================================
+// 1. CLOUD SYNC & MERGE ENGINE (api-sync.php)
+// ============================================================================
+const cloudSyncEngine = {
+  lastSyncTime: null,
+  isSyncing: false,
+  syncStatus: 'idle', // 'idle' | 'syncing' | 'synced' | 'error' | 'offline'
+  syncError: null,
+  retryCount: 0,
+  retryTimer: null,
+  autoSyncTimer: null,
+  syncDebounceTimer: null,
+
+  init() {
+    // 1. Event-Listener für Online-/Offline-Wechsel
+    if (typeof window !== 'undefined') {
+      window.addEventListener('online', () => {
+        if (typeof FlowAuth !== 'undefined' && FlowAuth.isLoggedIn()) {
+          this.retryCount = 0;
+          this.pullState();
+          if (this.isPendingSync()) {
+            this.pushState();
+          }
+        }
+      });
+
+      window.addEventListener('offline', () => {
+        this.updateSyncUI('offline');
+      });
+
+      // 2. Automatischer Sync beim Wiederöffnen / Fokussieren des Tabs
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && typeof FlowAuth !== 'undefined' && FlowAuth.isLoggedIn()) {
+          this.pullState();
+          if (this.isPendingSync()) {
+            this.pushState();
+          }
+        }
+      });
+    }
+
+    // 3. Auf Login-/Logout-Events reagieren
+    if (typeof FlowAuth !== 'undefined') {
+      FlowAuth.subscribe(({ user, token }) => {
+        if (token) {
+          this.pullState();
+          this.startAutoSync();
+        } else {
+          this.stopAutoSync();
+          this.updateSyncUI();
+        }
+      });
+    }
+
+    // 4. Starten wenn bereits angemeldet
+    if (typeof FlowAuth !== 'undefined' && FlowAuth.isLoggedIn()) {
+      this.pullState();
+      this.startAutoSync();
+    }
+  },
+
+  isPendingSync() {
+    try {
+      return typeof localStorage !== 'undefined' && localStorage.getItem('flow_pending_sync') === '1';
+    } catch (e) {
+      return false;
+    }
+  },
+
+  markPendingSync() {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('flow_pending_sync', '1');
+      }
+    } catch (e) {}
+  },
+
+  clearPendingSync() {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.removeItem('flow_pending_sync');
+      }
+    } catch (e) {}
+  },
+
+  // Vollständige State-Serialisierung (alle Datenbereiche inkl. Tombstones)
+  serializeFullState(stateObj) {
+    const s = stateObj || {};
+    return {
+      _tombstones: s._tombstones || {},
+      items: s.items || {},
+      done: s.done || [],
+      workItems: s.workItems || {},
+      workDone: s.workDone || [],
+      notes: s.notes || [],
+      termine: s.termine || [],
+      shoppingList: s.shoppingList || [],
+      shoppingHistory: s.shoppingHistory || [],
+      shoppingCategories: s.shoppingCategories || [],
+      pantry: s.pantry || [],
+      recipes: s.recipes || [],
+      cookingList: s.cookingList || [],
+      alarms: s.alarms || [],
+      archive: s.archive || [],
+      brainstormIdeas: s.brainstormIdeas || [],
+      clarityLog: s.clarityLog || [],
+      customCategories: s.customCategories || [],
+      categoriesOrder: s.categoriesOrder || [],
+      activeWorkspace: s.activeWorkspace || 'private',
+      clientTimestamp: new Date().toISOString()
+    };
+  },
+
+  // Deterministischer, verlustfreier 3-Wege / Item-Level LWW-Merge mit Tombstones
+  mergeState(localState, remoteData) {
+    if (!localState || !remoteData) return false;
+    let modified = false;
+
+    // Helper: Stabile Identität & Zeitstempel sicherstellen
+    function computeStringHash(str) {
+      let hash = 0;
+      const s = String(str || '');
+      for (let i = 0; i < s.length; i++) {
+        hash = ((hash << 5) - hash) + s.charCodeAt(i);
+        hash |= 0;
+      }
+      return Math.abs(hash).toString(36);
+    }
+
+    function normalizeItem(item, fallbackPrefix = 'item') {
+      if (!item) return null;
+      const nowISO = new Date().toISOString();
+      if (typeof item === 'string') {
+        return {
+          id: `${fallbackPrefix}_h${computeStringHash(item)}`,
+          task: item,
+          _wasString: true,
+          createdAt: nowISO,
+          updatedAt: nowISO
+        };
+      }
+      if (typeof item === 'object') {
+        const copy = { ...item };
+        if (!copy.id) {
+          const itemText = copy.task || copy.name || copy.text || copy.title || JSON.stringify(copy);
+          copy.id = `${fallbackPrefix}_h${computeStringHash(itemText)}`;
+        }
+        if (!copy.createdAt) copy.createdAt = nowISO;
+        if (!copy.updatedAt) copy.updatedAt = copy.createdAt || nowISO;
+        return copy;
+      }
+      return item;
+    }
+
+    // 1. Tombstones (Lösch-Protokolle) beider Seiten zusammenführen
+    const localTombstones = (localState._tombstones && typeof localState._tombstones === 'object') ? { ...localState._tombstones } : {};
+    const remoteTombstones = (remoteData._tombstones && typeof remoteData._tombstones === 'object') ? remoteData._tombstones : {};
+    const mergedTombstones = { ...localTombstones };
+
+    for (const [tId, rTime] of Object.entries(remoteTombstones)) {
+      if (!mergedTombstones[tId]) {
+        mergedTombstones[tId] = rTime;
+        modified = true;
+      } else {
+        const lTs = new Date(mergedTombstones[tId]).getTime();
+        const rTs = new Date(rTime).getTime();
+        if (rTs > lTs) {
+          mergedTombstones[tId] = rTime;
+          modified = true;
+        }
+      }
+    }
+    localState._tombstones = mergedTombstones;
+
+    // Helper: Item-Level LWW Merge für eine Liste
+    function mergeList(localList, remoteList, prefix) {
+      const lArr = Array.isArray(localList) ? localList.map(item => normalizeItem(item, prefix)).filter(Boolean) : [];
+      const rArr = Array.isArray(remoteList) ? remoteList.map(item => normalizeItem(item, prefix)).filter(Boolean) : [];
+
+      const lMap = new Map();
+      lArr.forEach(item => { if (item && item.id) lMap.set(item.id, item); });
+
+      const rMap = new Map();
+      rArr.forEach(item => { if (item && item.id) rMap.set(item.id, item); });
+
+      const allIds = new Set([...lMap.keys(), ...rMap.keys()]);
+      const mergedMap = new Map();
+
+      for (const id of allIds) {
+        const lItem = lMap.get(id);
+        const rItem = rMap.get(id);
+
+        // Prüfen, ob Item gelöscht wurde
+        if (mergedTombstones[id]) {
+          const delTs = new Date(mergedTombstones[id]).getTime();
+          const lUp = lItem ? new Date(lItem.updatedAt || lItem.createdAt || 0).getTime() : 0;
+          const rUp = rItem ? new Date(rItem.updatedAt || rItem.createdAt || 0).getTime() : 0;
+          const maxUp = Math.max(lUp, rUp);
+
+          if (delTs >= maxUp) {
+            // Item ist gelöscht -> nicht in aktiver Liste behalten!
+            if (lMap.has(id)) modified = true;
+            continue;
+          }
+        }
+
+        if (lItem && rItem) {
+          // Konfliktauflösung via Last-Write-Wins (LWW)
+          const lTime = new Date(lItem.updatedAt || lItem.createdAt || 0).getTime();
+          const rTime = new Date(rItem.updatedAt || rItem.createdAt || 0).getTime();
+
+          if (rTime > lTime) {
+            // Remote-Version ist neuer
+            mergedMap.set(id, rItem);
+            modified = true;
+          } else {
+            // Lokale Version ist neuer oder gleich
+            mergedMap.set(id, lItem);
+          }
+        } else if (rItem) {
+          // Neues Item von Remote
+          mergedMap.set(id, rItem);
+          modified = true;
+        } else if (lItem) {
+          // Lokales Item beibehalten
+          mergedMap.set(id, lItem);
+        }
+      }
+
+      // Reihenfolge: Zuerst lokale Reihenfolge (gefiltert), dann neue Remote-Items anhängen
+      const result = [];
+      const seenIds = new Set();
+
+      function formatOutput(item) {
+        if (!item) return item;
+        if (item._wasString) {
+          const extraKeys = Object.keys(item).filter(k => !['_wasString', 'id', 'createdAt', 'updatedAt', 'task'].includes(k));
+          if (extraKeys.length === 0 && typeof item.task === 'string') {
+            return item.task;
+          }
+        }
+        return item;
+      }
+
+      lArr.forEach(item => {
+        if (item && mergedMap.has(item.id) && !seenIds.has(item.id)) {
+          result.push(formatOutput(mergedMap.get(item.id)));
+          seenIds.add(item.id);
+        }
+      });
+
+      rArr.forEach(item => {
+        if (item && mergedMap.has(item.id) && !seenIds.has(item.id)) {
+          result.push(formatOutput(mergedMap.get(item.id)));
+          seenIds.add(item.id);
+        }
+      });
+
+      return result;
+    }
+
+
+    // Helper: Kategorien-Map (z.B. items, workItems) zusammenführen
+    function mergeCategoryMap(localMap, remoteMap, prefix) {
+      const merged = {};
+      const lObj = (localMap && typeof localMap === 'object') ? localMap : {};
+      const rObj = (remoteMap && typeof remoteMap === 'object') ? remoteMap : {};
+
+      const allCats = new Set([...Object.keys(lObj), ...Object.keys(rObj)]);
+      for (const cat of allCats) {
+        merged[cat] = mergeList(lObj[cat] || [], rObj[cat] || [], `${prefix}_${cat}`);
+      }
+      return merged;
+    }
+
+    // 1. Items & WorkItems (Aufgaben-Kategorien)
+    if (remoteData.items || localState.items) {
+      localState.items = mergeCategoryMap(localState.items, remoteData.items, 'task');
+    }
+    if (remoteData.workItems || localState.workItems) {
+      localState.workItems = mergeCategoryMap(localState.workItems, remoteData.workItems, 'wtask');
+    }
+
+    // 2. Erledigte Aufgaben
+    if (remoteData.done || localState.done) {
+      localState.done = mergeList(localState.done, remoteData.done, 'done');
+    }
+    if (remoteData.workDone || localState.workDone) {
+      localState.workDone = mergeList(localState.workDone, remoteData.workDone, 'wdone');
+    }
+
+    // 3. Notizen & Termine
+    if (remoteData.notes || localState.notes) {
+      localState.notes = mergeList(localState.notes, remoteData.notes, 'note');
+    }
+    if (remoteData.termine || localState.termine) {
+      localState.termine = mergeList(localState.termine, remoteData.termine, 'termin');
+    }
+
+    // 4. Einkaufsliste & Historie
+    if (remoteData.shoppingList || localState.shoppingList) {
+      localState.shoppingList = mergeList(localState.shoppingList, remoteData.shoppingList, 'shop');
+    }
+    if (remoteData.shoppingHistory || localState.shoppingHistory) {
+      localState.shoppingHistory = mergeList(localState.shoppingHistory, remoteData.shoppingHistory, 'shophist');
+    }
+
+    // 5. Vorrat, Rezepte, Kochen
+    if (remoteData.pantry || localState.pantry) {
+      localState.pantry = mergeList(localState.pantry, remoteData.pantry, 'pantry');
+    }
+    if (remoteData.recipes || localState.recipes) {
+      localState.recipes = mergeList(localState.recipes, remoteData.recipes, 'recipe');
+    }
+    if (remoteData.cookingList || localState.cookingList) {
+      localState.cookingList = mergeList(localState.cookingList, remoteData.cookingList, 'cook');
+    }
+
+    // 6. Alarme, Brainstorming, Klarheit, Archiv
+    if (remoteData.alarms || localState.alarms) {
+      localState.alarms = mergeList(localState.alarms, remoteData.alarms, 'alarm');
+    }
+    if (remoteData.brainstormIdeas || localState.brainstormIdeas) {
+      localState.brainstormIdeas = mergeList(localState.brainstormIdeas, remoteData.brainstormIdeas, 'idea');
+    }
+    if (remoteData.clarityLog || localState.clarityLog) {
+      localState.clarityLog = mergeList(localState.clarityLog, remoteData.clarityLog, 'clarity');
+    }
+    if (remoteData.archive || localState.archive) {
+      localState.archive = mergeList(localState.archive, remoteData.archive, 'archive');
+    }
+
+    return modified;
+  },
+
+
+  async pushState(isRetry = false) {
+    if (typeof FlowAuth === 'undefined' || !FlowAuth.isLoggedIn()) return { skipped: true };
+
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      this.markPendingSync();
+      this.scheduleRetry();
+      this.updateSyncUI('offline');
+      return { offline: true };
+    }
+
+    const token = FlowAuth.getSyncToken();
+    if (!token) return { skipped: true };
+
+    this.isSyncing = true;
+    this.updateSyncUI('syncing');
+
+    try {
+      const currentState = (typeof window !== 'undefined' && window.state) ? window.state : (typeof state !== 'undefined' ? state : {});
+      const serializedData = this.serializeFullState(currentState);
+
+      // 1. Supabase Cloud Sync (wenn Supabase authentifiziert ist)
+      if (typeof FlowAuth !== 'undefined' && FlowAuth.getSupabaseClient) {
+        const supa = FlowAuth.getSupabaseClient();
+        const user = FlowAuth.getUser();
+        if (supa && user && user.id && !user.isTokenOnly) {
+          const { error } = await supa.from('flow_sync').upsert({
+            user_id: user.id,
+            data: serializedData,
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'user_id' });
+
+          if (error) throw error;
+
+          this.clearPendingSync();
+          this.retryCount = 0;
+          if (this.retryTimer) {
+            clearTimeout(this.retryTimer);
+            this.retryTimer = null;
+          }
+          this.lastSyncTime = new Date();
+          this.syncError = null;
+          this.updateSyncUI('synced');
+          return { success: true, time: this.lastSyncTime };
+        }
+      }
+
+      // Kein voll authentifizierter Supabase-User vorhanden
+      throw new Error('Kein aktives Supabase-Konto. Bitte neu anmelden.');
+    } catch (e) {
+      console.warn('[CloudSync] Push notice:', e.message);
+      this.markPendingSync();
+      this.scheduleRetry();
+      this.updateSyncUI('error');
+      return { success: false, error: e.message };
+    } finally {
+      this.isSyncing = false;
+    }
+  },
+
+  async pullState() {
+    if (typeof FlowAuth === 'undefined' || !FlowAuth.isLoggedIn()) return { skipped: true };
+
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      this.updateSyncUI('offline');
+      return { offline: true };
+    }
+
+    const token = FlowAuth.getSyncToken();
+    if (!token) return { skipped: true };
+
+    this.isSyncing = true;
+    this.updateSyncUI('syncing');
+
+    try {
+      // 1. Supabase Cloud Sync (wenn Supabase authentifiziert ist)
+      if (typeof FlowAuth !== 'undefined' && FlowAuth.getSupabaseClient) {
+        const supa = FlowAuth.getSupabaseClient();
+        const user = FlowAuth.getUser();
+        if (supa && user && user.id && !user.isTokenOnly) {
+          const { data, error } = await supa.from('flow_sync').select('data, updated_at').eq('user_id', user.id).maybeSingle();
+          if (error) throw error;
+
+          if (!data || !data.data) {
+            // Noch kein State auf Server -> aktuellen Zustand hochladen
+            this.isSyncing = false;
+            return await this.pushState();
+          }
+
+          const remoteData = data.data;
+          const targetState = (typeof window !== 'undefined' && window.state) ? window.state : (typeof state !== 'undefined' ? state : null);
+
+          if (targetState) {
+            // Sicherheits-Backup vor Merge anlegen
+            try {
+              if (typeof localStorage !== 'undefined') {
+                localStorage.setItem('flow_backup_before_sync', JSON.stringify(targetState));
+              }
+            } catch (err) {}
+
+            // Intelligenter Merge
+            const hasChanges = this.mergeState(targetState, remoteData);
+
+            if (typeof saveState === 'function') saveState(true);
+            if (typeof renderApp === 'function') renderApp();
+
+            // Falls lokaler Zustand neue Elemente hatte, Server aktualisieren
+            if (hasChanges || this.isPendingSync()) {
+              this.pushState();
+            }
+          }
+
+          this.retryCount = 0;
+          if (this.retryTimer) {
+            clearTimeout(this.retryTimer);
+            this.retryTimer = null;
+          }
+          this.lastSyncTime = new Date();
+          this.syncError = null;
+          this.updateSyncUI('synced');
+          return { success: true, data: remoteData };
+        }
+      }
+
+      // Kein voll authentifizierter Supabase-User vorhanden
+    } catch (e) {
+      console.warn('[CloudSync] Pull notice:', e.message);
+      this.scheduleRetry();
+      this.updateSyncUI('error');
+      return { success: false, error: e.message };
+    } finally {
+      this.isSyncing = false;
+    }
+  },
+
+  scheduleRetry() {
+    if (this.retryTimer) clearTimeout(this.retryTimer);
+    // Exponential Backoff: 3s, 6s, 12s, max 30s
+    const delay = Math.min(3000 * Math.pow(2, this.retryCount), 30000);
+    this.retryCount++;
+
+    this.retryTimer = setTimeout(() => {
+      if (typeof FlowAuth !== 'undefined' && FlowAuth.isLoggedIn()) {
+        if (this.isPendingSync()) {
+          this.pushState(true);
+        } else {
+          this.pullState();
+        }
+      }
+    }, delay);
+  },
+
+  triggerAutoPush() {
+    if (typeof FlowAuth === 'undefined' || !FlowAuth.isLoggedIn()) return;
+    this.markPendingSync();
+    if (this.syncDebounceTimer) clearTimeout(this.syncDebounceTimer);
+    this.syncDebounceTimer = setTimeout(() => {
+      this.pushState();
+    }, 1200);
+  },
+
+  startAutoSync() {
+    this.stopAutoSync();
+    const interval = (typeof FLOW_CONFIG !== 'undefined' && FLOW_CONFIG.AUTO_SYNC_INTERVAL_MS) || 20000;
+    this.autoSyncTimer = setInterval(() => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+        if (this.isPendingSync()) {
+          this.pushState();
+        } else {
+          this.pullState();
+        }
+      }
+    }, interval);
+  },
+
+  stopAutoSync() {
+    if (this.autoSyncTimer) {
+      clearInterval(this.autoSyncTimer);
+      this.autoSyncTimer = null;
+    }
+    if (this.retryTimer) {
+      clearTimeout(this.retryTimer);
+      this.retryTimer = null;
+    }
+  },
+
+  updateSyncUI(overrideStatus = null) {
+    if (typeof document === 'undefined') return;
+    const statusLabel = document.getElementById('cloud-sync-status-text');
+    const syncDot = document.getElementById('cloud-sync-status-dot');
+    const modalStatusBadge = document.getElementById('p2p-status-badge');
+
+    const isLoggedIn = (typeof FlowAuth !== 'undefined' && FlowAuth.isLoggedIn());
+
+    let statusText = 'Bereit zur Synchronisation';
+    let dotClass = 'w-2 h-2 rounded-full bg-emerald-400';
+    let badgeHtml = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span><span>✓ Synchronisiert</span>';
+    let badgeClass = 'px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center justify-center gap-2';
+
+    if (!isLoggedIn) {
+      statusText = 'Nicht angemeldet (nur lokaler Modus)';
+      dotClass = 'w-2 h-2 rounded-full bg-gray-500';
+      badgeHtml = '<span class="w-2 h-2 rounded-full bg-gray-500"></span><span>Lokaler Modus</span>';
+      badgeClass = 'px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-gray-400 text-xs font-medium flex items-center justify-center gap-2';
+    } else if (overrideStatus === 'error' || overrideStatus === 'offline') {
+      statusText = '⚠ Verbindung unterbrochen – erneuter Versuch';
+      dotClass = 'w-2 h-2 rounded-full bg-amber-400 animate-pulse';
+      badgeHtml = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span><span>⚠ Verbindung unterbrochen – erneuter Versuch</span>';
+      badgeClass = 'px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-medium flex items-center justify-center gap-2';
+    } else if (this.isSyncing || overrideStatus === 'syncing') {
+      statusText = '↻ Synchronisiere…';
+      dotClass = 'w-2 h-2 rounded-full bg-amber-400 animate-spin';
+      badgeHtml = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-spin"></span><span>↻ Synchronisiere…</span>';
+      badgeClass = 'px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-medium flex items-center justify-center gap-2';
+    } else if (this.lastSyncTime) {
+      const timeStr = this.lastSyncTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      statusText = `✓ Synchronisiert (${timeStr} Uhr)`;
+      dotClass = 'w-2 h-2 rounded-full bg-emerald-400';
+      badgeHtml = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span><span>✓ Synchronisiert (${timeStr} Uhr)</span>`;
+      badgeClass = 'px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center justify-center gap-2';
+    } else {
+      statusText = '✓ Synchronisiert';
+      dotClass = 'w-2 h-2 rounded-full bg-emerald-400';
+      badgeHtml = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span><span>✓ Synchronisiert</span>';
+      badgeClass = 'px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center justify-center gap-2';
+    }
+
+
+    if (statusLabel) statusLabel.innerText = statusText;
+    if (syncDot) syncDot.className = dotClass;
+    if (modalStatusBadge) {
+      modalStatusBadge.className = badgeClass;
+      modalStatusBadge.innerHTML = badgeHtml;
+    }
+  }
+};
+
+window.cloudSyncEngine = cloudSyncEngine;
+
+// ============================================================================
+// 2. MODAL & UI HANDLER FÜR AUTH & KOPPLUNG
+// ============================================================================
+let currentAuthMode = 'login';
+
+function openP2PSyncModal(preferredMode = 'login') {
+  const modal = document.getElementById('modal-p2p-sync');
+  if (modal) {
+    modal.classList.remove('hidden');
+
+    if (typeof FlowAuth !== 'undefined') {
+      FlowAuth.updateAuthUI();
+    }
+    if (typeof cloudSyncEngine !== 'undefined') {
+      cloudSyncEngine.updateSyncUI();
+    }
+
+    switchAuthMode(preferredMode || 'login');
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+}
+window.openP2PSyncModal = openP2PSyncModal;
+
+function closeP2PSyncModal() {
+  const modal = document.getElementById('modal-p2p-sync');
+  if (modal) modal.classList.add('hidden');
+}
+window.closeP2PSyncModal = closeP2PSyncModal;
+
+function switchAuthMode(mode = 'login') {
+  currentAuthMode = mode;
+  const isLogin = (mode === 'login');
+
+  const btnLogin = document.getElementById('sync-tab-btn-login');
+  const btnRegister = document.getElementById('sync-tab-btn-register');
+  const repeatWrapper = document.getElementById('sync-password-repeat-wrapper');
+  const submitBtn = document.getElementById('sync-auth-submit-btn');
+  const modeHint = document.getElementById('sync-auth-mode-hint');
+  const switchPrompt = document.getElementById('sync-auth-switch-prompt');
+  const errorMsg = document.getElementById('sync-auth-error-msg');
+  const successMsg = document.getElementById('sync-auth-success-msg');
+
+  if (errorMsg) errorMsg.classList.add('hidden');
+  if (successMsg) successMsg.classList.add('hidden');
+
+  const activeClasses = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs';
+  const inactiveClasses = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition flex items-center justify-center gap-1.5 cursor-pointer';
+
+  if (btnLogin) btnLogin.className = isLogin ? activeClasses : inactiveClasses;
+  if (btnRegister) btnRegister.className = !isLogin ? activeClasses : inactiveClasses;
+
+  if (repeatWrapper) {
+    repeatWrapper.classList.toggle('hidden', isLogin);
+  }
+
+  if (submitBtn) {
+    submitBtn.innerHTML = isLogin
+      ? '<i data-lucide="log-in" class="w-4 h-4"></i><span>Anmelden</span>'
+      : '<i data-lucide="user-plus" class="w-4 h-4"></i><span>Konto erstellen</span>';
+  }
+
+  if (modeHint) {
+    modeHint.innerHTML = isLogin
+      ? (typeof tr === 'function' ? tr({ de: 'Melde dich an, um Aufgaben und Notizen <strong>automatisch im Hintergrund</strong> abzugleichen.', en: 'Sign in to <strong>automatically sync</strong> tasks and notes in the background.' }) : 'Melde dich an, um Aufgaben und Notizen <strong>automatisch im Hintergrund</strong> abzugleichen.')
+      : (typeof tr === 'function' ? tr({ de: 'Erstelle ein kostenloses Konto für <strong>automatischen Multi-Device Sync</strong>.', en: 'Create a free account for <strong>automatic multi-device sync</strong>.' }) : 'Erstelle ein kostenloses Konto für <strong>automatischen Multi-Device Sync</strong>.');
+  }
+
+  if (switchPrompt) {
+    switchPrompt.innerHTML = isLogin
+      ? '<span>Noch kein Konto?</span> <button type="button" onclick="switchAuthMode(\'register\')" class="text-emerald-400 font-bold hover:underline ml-1 cursor-pointer">Jetzt registrieren</button>'
+      : '<span>Bereits registriert?</span> <button type="button" onclick="switchAuthMode(\'login\')" class="text-emerald-400 font-bold hover:underline ml-1 cursor-pointer">Jetzt anmelden</button>';
+  }
+
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+window.switchAuthMode = switchAuthMode;
+window.switchSyncModalTab = (tab) => {
+  if (tab === 'register') switchAuthMode('register');
+  else switchAuthMode('login');
+};
+window.switchP2PTab = (tab) => window.switchSyncModalTab(tab);
+
+// E-Mail & Passwort Authentifizierung (Anmelden / Registrieren)
+async function handleEmailAuth(forcedMode = null) {
+  const mode = forcedMode || currentAuthMode || 'login';
+  const emailInput = document.getElementById('sync-email-input');
+  const passwordInput = document.getElementById('sync-password-input');
+  const repeatInput = document.getElementById('sync-password-repeat-input');
+  const btn = document.getElementById('sync-auth-submit-btn');
+  const errorMsg = document.getElementById('sync-auth-error-msg');
+  const successMsg = document.getElementById('sync-auth-success-msg');
+
+  if (!emailInput || !passwordInput) return;
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+  const repeatPassword = repeatInput ? repeatInput.value.trim() : '';
+
+  if (errorMsg) errorMsg.classList.add('hidden');
+  if (successMsg) successMsg.classList.add('hidden');
+
+  if (!email || !email.includes('@')) {
+    if (errorMsg) {
+      errorMsg.innerText = typeof tr === 'function' ? tr({
+        de: 'Bitte gib eine gültige E-Mail-Adresse ein.',
+        en: 'Please enter a valid email address.',
+        es: 'Introduce una dirección de correo electrónico válida.',
+        el: 'Παρακαλώ εισάγετε μια έγκυρη διεύθυνση email.',
+        fr: 'Veuillez saisir une adresse e-mail valide.',
+        it: 'Inserisci un indirizzo email valido.'
+      }) : 'Bitte gib eine gültige E-Mail-Adresse ein.';
+      errorMsg.classList.remove('hidden');
+    }
+    return;
+  }
+
+  if (!password || password.length < 4) {
+    if (errorMsg) {
+      errorMsg.innerText = typeof tr === 'function' ? tr({
+        de: 'Das Passwort muss mindestens 4 Zeichen lang sein.',
+        en: 'Password must be at least 4 characters long.',
+        es: 'La contraseña debe tener al menos 4 caracteres.',
+        el: 'Ο κωδικός πρόσβασης πρέπει να έχει τουλάχιστον 4 χαρακτήρες.',
+        fr: 'Le mot de passe doit comporter au moins 4 caractères.',
+        it: 'La password deve contenere almeno 4 caratteri.'
+      }) : 'Das Passwort muss mindestens 4 Zeichen lang sein.';
+      errorMsg.classList.remove('hidden');
+    }
+    return;
+  }
+
+  if (mode === 'register' && repeatInput && repeatPassword && password !== repeatPassword) {
+    if (errorMsg) {
+      errorMsg.innerText = typeof tr === 'function' ? tr({
+        de: 'Die Passwörter stimmen nicht überein.',
+        en: 'Passwords do not match.',
+        es: 'Las contraseñas no coinciden.',
+        el: 'Οι κωδικοί πρόσβασης δεν ταιριάζουν.',
+        fr: 'Les mots de passe ne correspondent pas.',
+        it: 'Le password non coincidono.'
+      }) : 'Die Passwörter stimmen nicht überein.';
+      errorMsg.classList.remove('hidden');
+    }
+    return;
+  }
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<span class="animate-spin inline-block mr-1">⏳</span> ${mode === 'register' ? 'Erstelle Konto...' : 'Anmelden...'}`;
+  }
+
+  try {
+    const authMethod = (mode === 'register' && typeof FlowAuth.signUpWithCredentials === 'function')
+      ? FlowAuth.signUpWithCredentials
+      : FlowAuth.signInWithCredentials;
+
+    const res = await authMethod(email, password);
+
+    if (res.success) {
+      if (res.needEmailConfirm) {
+        if (successMsg) {
+          successMsg.innerText = res.message || 'Konto erstellt! Bitte prüfe deine E-Mails zur Bestätigung.';
+          successMsg.classList.remove('hidden');
+        }
+      } else {
+        if (typeof showToast === 'function') {
+          showToast(typeof tr === 'function' ? tr({
+            de: mode === 'register' ? '✓ Konto erfolgreich erstellt & angemeldet!' : '✓ Erfolgreich angemeldet! Synchronisation läuft...',
+            en: mode === 'register' ? '✓ Account created and signed in!' : '✓ Successfully signed in! Syncing...',
+            es: '✓ ¡Inicio de sesión correcto!',
+            el: '✓ Επιτυχής σύνδεση!',
+            fr: '✓ Connexion réussie !',
+            it: '✓ Accesso riuscito!'
+          }) : '✓ Erfolgreich angemeldet!');
+        }
+        await cloudSyncEngine.pullState();
+      }
+    } else {
+      if (errorMsg) {
+        errorMsg.innerText = res.error || (mode === 'register' ? 'Registrierung fehlgeschlagen.' : 'Anmeldung fehlgeschlagen.');
+        errorMsg.classList.remove('hidden');
+      }
+    }
+  } catch (e) {
+    if (errorMsg) {
+      errorMsg.innerText = 'Verbindungsfehler beim Authentifizieren.';
+      errorMsg.classList.remove('hidden');
+    }
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = mode === 'register'
+        ? '<i data-lucide="user-plus" class="w-4 h-4"></i><span>Konto erstellen</span>'
+        : '<i data-lucide="log-in" class="w-4 h-4"></i><span>Anmelden</span>';
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+  }
+}
+window.handleEmailAuth = handleEmailAuth;
+window.handleSendMagicLink = handleEmailAuth;
+
+async function handlePasswordReset() {
+  const emailInput = document.getElementById('sync-email-input');
+  const errorMsg = document.getElementById('sync-auth-error-msg');
+  const successMsg = document.getElementById('sync-auth-success-msg');
+
+  if (!emailInput) return;
+  const email = emailInput.value.trim();
+
+  if (errorMsg) errorMsg.classList.add('hidden');
+  if (successMsg) successMsg.classList.add('hidden');
+
+  if (!email || !email.includes('@')) {
+    if (errorMsg) {
+      errorMsg.innerText = typeof tr === 'function' ? tr({
+        de: 'Bitte gib deine E-Mail-Adresse ein, um das Passwort zurückzusetzen.',
+        en: 'Please enter your email address to reset your password.',
+        es: 'Introduce tu correo electrónico para restablecer la contraseña.',
+        el: 'Εισάγετε το email σας για να επαναφέρετε τον κωδικό πρόσβασης.',
+        fr: 'Veuillez saisir votre adresse e-mail pour réinitialiser le mot de passe.',
+        it: 'Inserisci il tuo indirizzo email per reimpostare la password.'
+      }) : 'Bitte gib deine E-Mail-Adresse ein, um das Passwort zurückzusetzen.';
+      errorMsg.classList.remove('hidden');
+    }
+    return;
+  }
+
+  if (typeof FlowAuth !== 'undefined' && FlowAuth.requestPasswordReset) {
+    const res = await FlowAuth.requestPasswordReset(email);
+    if (res && res.success) {
+      if (successMsg) {
+        successMsg.innerText = res.message || (typeof tr === 'function' ? tr({
+          de: 'E-Mail zum Zurücksetzen wurde gesendet! Bitte prüfe dein Postfach.',
+          en: 'Reset email sent! Please check your inbox.',
+          es: '¡Correo de restablecimiento enviado! Por favor revisa tu bandeja de entrada.',
+          el: 'Το email επαναφοράς στάλθηκε! Ελέγξτε τα εισερχόμενά σας.',
+          fr: 'E-mail de réinitialisation envoyé ! Veuillez vérifier votre boîte de réception.',
+          it: 'Email di reimpostazione inviata! Controlla la tua casella di posta.'
+        }) : 'E-Mail zum Zurücksetzen wurde gesendet! Bitte prüfe dein Postfach.');
+        successMsg.classList.remove('hidden');
+      }
+      if (typeof showToast === 'function') {
+        showToast(tr({
+          de: '✉️ Reset-Link per E-Mail gesendet!',
+          en: '✉️ Reset link sent via email!',
+          es: '✉️ ¡Enlace de restablecimiento enviado por correo!',
+          el: '✉️ Ο σύνδεσμος επαναφοράς στάλθηκε με email!',
+          fr: '✉️ Lien de réinitialisation envoyé par e-mail !',
+          it: '✉️ Link di ripristino inviato via email!'
+        }));
+      }
+    } else {
+      if (errorMsg) {
+        errorMsg.innerText = res.error || 'Fehler beim Zurücksetzen des Passworts.';
+        errorMsg.classList.remove('hidden');
+      }
+    }
+  }
+}
+window.handlePasswordReset = handlePasswordReset;
+
+
+async function handleManualCloudSync() {
+  if (typeof cloudSyncEngine !== 'undefined') {
+    const res = await cloudSyncEngine.pullState();
+    if (res && res.success) {
+      if (typeof showToast === 'function') {
+        showToast(tr({
+          de: '✓ Synchronisiert',
+          en: '✓ Synchronized',
+          es: '✓ Sincronizado',
+          el: '✓ Συγχρονίστηκε',
+          fr: '✓ Synchronisé',
+          it: '✓ Sincronizzato'
+        }));
+      }
+    } else {
+      if (typeof showToast === 'function') {
+        showToast(tr({
+          de: '⚠ Synchronisation konnte nicht abgeschlossen werden – wir versuchen es erneut.',
+          en: '⚠ Sync could not be completed – retrying.',
+          es: '⚠ Error de sincronización – reintentando.',
+          el: '⚠ Σφάλμα συγχρονισμού – προσπάθεια ξανά.',
+          fr: '⚠ Échec de la synchronisation – nouvel essai.',
+          it: '⚠ Sincronizzazione fallita – nuovo tentativo.'
+        }));
+      }
+    }
+  }
+}
+window.handleManualCloudSync = handleManualCloudSync;
+
+async function handleLogout() {
+  const msg = tr({
+    de: 'Möchtest du dich wirklich abmelden? Deine lokalen Daten bleiben erhalten.',
+    en: 'Do you really want to log out? Your local data will be preserved.',
+    es: '¿Seguro que quieres cerrar sesión? Tus datos locales se conservarán.',
+    el: 'Θέλετε σίγουρα να αποσυνδεθείτε; Τα τοπικά δεδομένα διατηρούνται.',
+    fr: 'Voulez-vous vraiment vous déconnecter ? Vos données locales seront conservées.',
+    it: 'Vuoi davvero disconnetterti? I tuoi dati locali saranno conservati.'
+  });
+
+  const confirmed = typeof showConfirmDialog === 'function' ? await showConfirmDialog({
+    title: typeof tr === 'function' ? tr({ de: 'Abmelden?', en: 'Log out?' }) : 'Abmelden?',
+    message: msg,
+    confirmText: typeof tr === 'function' ? tr({ de: 'Abmelden', en: 'Log out' }) : 'Abmelden',
+    isDanger: false,
+    icon: 'log-out'
+  }) : confirm(msg);
+
+  if (confirmed) {
+    if (typeof FlowAuth !== 'undefined') {
+      await FlowAuth.signOut();
+      if (typeof showToast === 'function') {
+        showToast(tr({
+          de: 'Erfolgreich abgemeldet.',
+          en: 'Successfully logged out.',
+          es: 'Sesión cerrada.',
+          el: 'Αποσυνδεθήκατε.',
+          fr: 'Déconnexion réussie.',
+          it: 'Disconnessione riuscita.'
+        }));
+      }
+    }
+  }
+}
+window.handleLogout = handleLogout;
+
+// Initialisierung bei DOMContentLoaded
+if (typeof window !== 'undefined') {
+  window.MinimalQR = MinimalQR;
+  window.cloudSyncEngine = cloudSyncEngine;
+  window.openP2PSyncModal = openP2PSyncModal;
+  window.closeP2PSyncModal = closeP2PSyncModal;
+  window.switchP2PTab = switchP2PTab;
+  window.switchSyncModalTab = switchSyncModalTab;
+  window.handlePasswordReset = handlePasswordReset;
+
+  window.addEventListener('DOMContentLoaded', () => {
+    cloudSyncEngine.init();
+  });
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.MinimalQR = MinimalQR;
+  globalThis.cloudSyncEngine = cloudSyncEngine;
+  globalThis.openP2PSyncModal = openP2PSyncModal;
+  globalThis.closeP2PSyncModal = closeP2PSyncModal;
+  globalThis.switchP2PTab = switchP2PTab;
+  globalThis.switchSyncModalTab = switchSyncModalTab;
+  globalThis.handlePasswordReset = handlePasswordReset;
+}

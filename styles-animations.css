@@ -1,0 +1,814 @@
+@keyframes button-icon-move {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.2) rotate(15deg); }
+}
+
+/* 2. AMBIENT BREATHING BACKGROUND (GPU-beschleunigter Atem-Hintergrund) */
+@keyframes ambientFlowWave {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(12px, -8px, 0) scale(1.03);
+  }
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: -40px;
+  z-index: -1;
+  pointer-events: none;
+  background: 
+    radial-gradient(circle at 25% 25%, rgba(139, 92, 246, 0.05) 0%, transparent 55%),
+    radial-gradient(circle at 75% 75%, rgba(6, 182, 212, 0.045) 0%, transparent 55%);
+  background-size: 130% 130%;
+  animation: ambientFlowWave 24s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* 1. TASK COMPLETE SWEEP (Sanftes Gleiten beim Abhaken) */
+@keyframes taskCompleteSweep {
+  0% { transform: scale(1) translateX(0); opacity: 1; }
+  35% { transform: scale(1.03) translateX(-4px); opacity: 1; filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.5)); }
+  100% { transform: scale(0.92) translateX(36px); opacity: 0; }
+}
+
+.task-completing-anim {
+  animation: taskCompleteSweep 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  pointer-events: none !important;
+}
+
+/* 4. ACTIVE TIMER GLOW (Fließender Lichtring am aktiven Fokus-Timer) */
+@keyframes timerGlowPulse {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.25), inset 0 0 6px rgba(6, 182, 212, 0.15);
+    border-color: rgba(6, 182, 212, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.55), inset 0 0 12px rgba(20, 184, 166, 0.3);
+    border-color: rgba(20, 184, 166, 0.85);
+  }
+}
+
+.timer-active-glow {
+  animation: timerGlowPulse 2.4s ease-in-out infinite !important;
+}
+
+/* 5. STAGGERED SPRING MODAL ENTRY */
+@keyframes springModalOpen {
+  0% { opacity: 0; transform: scale(0.93) translateY(14px); }
+  70% { opacity: 1; transform: scale(1.01) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.animate-spring-modal {
+  animation: springModalOpen 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+/* 6. DOCK ICON WIGGLE (Taktile Mini-Bewegung) */
+.mac-dock-btn:hover i {
+  animation: dockIconWiggle 0.36s ease-in-out;
+}
+
+@keyframes dockIconWiggle {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  30% { transform: rotate(-10deg) scale(1.15); }
+  70% { transform: rotate(10deg) scale(1.15); }
+}
+
+@keyframes softCardPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4); }
+  50% { transform: scale(1.005); box-shadow: 0 4px 35px rgba(139, 92, 246, 0.08); }
+}
+
+.helper-suggestion-card-active {
+  animation: softCardPulse 4s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.modal-close-btn {
+  position: absolute !important;
+  top: 1.25rem !important;
+  right: 1.25rem !important;
+  background: transparent !important;
+  z-index: 100005 !important;
+  cursor: pointer !important;
+  transition: color 0.15s ease, transform 0.15s ease !important;
+}
+
+.modal-close-btn:hover {
+  transform: scale(1.2) !important;
+  color: #ffffff !important;
+}
+
+/* --- MODERNER, SAMTIGER GLAS-HEADER (AIRY & HARMONIOUS) --- */
+html body #app header {
+  background: rgba(18, 18, 26, 0.82) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  color: var(--text-header) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 18px !important;
+  box-shadow: 
+    0 12px 36px -4px rgba(0, 0, 0, 0.45), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.08) !important;
+}
+
+html body #app header button:not(.mac-dock-btn):not(.mac-tools-trigger):not(.rounded-full):not([id^="panel-"] button) {
+  background: rgba(255, 255, 255, 0.035) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+  text-shadow: none;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+              background-color 0.22s ease, 
+              border-color 0.22s ease, 
+              box-shadow 0.22s ease !important;
+}
+
+html body #app header button:not(.mac-dock-btn):not(.mac-tools-trigger):not(.rounded-full):not([id^="panel-"] button):hover {
+  transform: translateY(-1.5px) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 
+    0 6px 16px rgba(0, 0, 0, 0.35),
+    0 0 12px var(--accent-border, rgba(139, 92, 246, 0.25)) !important;
+}
+
+html body #app header button:not(.mac-dock-btn):not(.mac-tools-trigger):not(.rounded-full):not([id^="panel-"] button):active {
+  transform: scale(0.97) translateY(0) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+html body #app header #date-container {
+  background: rgba(255, 255, 255, 0.035) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+html body #app header #date-container:hover {
+  transform: translateY(-1.5px) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+#panel-theme button[onclick^="setTheme"] {
+  background: none !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.35) !important;
+  box-shadow: 
+    0 3px 6px rgba(0, 0, 0, 0.5), 
+    inset 0 1px 2px rgba(255, 255, 255, 0.25) !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+#panel-theme button[onclick="setTheme('aurora')"] { background-color: #a855f7 !important; }
+#panel-theme button[onclick="setTheme('sage')"] { background-color: #86efac !important; }
+#panel-theme button[onclick="setTheme('cozy')"] { background-color: #f59e0b !important; }
+#panel-theme button[onclick="setTheme('forest')"] { background-color: #22c55e !important; }
+#panel-theme button[onclick="setTheme('architect')"] { background-color: #64748b !important; }
+#panel-theme button[onclick="setTheme('neon-cyber')"] { background-color: #ff2fd0 !important; }
+#panel-theme button[onclick="setTheme('glacier')"] { background-color: #a5f3fc !important; }
+#panel-theme button[onclick="setTheme('synthwave')"] { background-color: #ff5f9e !important; }
+#panel-theme button[onclick="setTheme('charcoal')"] { background-color: #475569 !important; }
+#panel-theme button[onclick="setTheme('executive')"] { background-color: #b5a642 !important; }
+#panel-theme button[onclick="setTheme('holo-chrome')"] { background-color: #22e5d4 !important; }
+#panel-theme button[onclick="setTheme('carbon')"] { background-color: #1e293b !important; }
+#panel-theme button[onclick="setTheme('citrus')"] { background-color: #facc15 !important; }
+#panel-theme button[onclick="setTheme('sakura')"] { background-color: #f472b6 !important; }
+#panel-theme button[onclick="setTheme('lagoon')"] { background-color: #06b6d4 !important; }
+#panel-theme button[onclick="setTheme('matcha')"] { background-color: #84cc16 !important; }
+
+/* --- HARMONISCHE SPALTEN-KARTEN --- */
+html body #app main article {
+  background-color: var(--bg-card) !important;
+  border: 1px solid rgba(255, 255, 255, 0.07) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.35) !important;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.35s ease, 
+              border-color 0.35s ease, 
+              background-color 0.35s ease !important;
+}
+
+html body #app main article:hover {
+  background-color: var(--bg-card-hover) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 
+    0 18px 40px -6px rgba(0, 0, 0, 0.45),
+    0 0 20px var(--accent-border, rgba(139, 92, 246, 0.15)) !important;
+}
+
+/* --- SEIDIGE AUFGABEN-KARTEN (SILKY TASK ITEMS) --- */
+html body #app main article div[draggable="true"] {
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.25) !important;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.22s ease, 
+              border-color 0.22s ease,
+              background-color 0.22s ease !important;
+}
+
+html body #app main article div[draggable="true"]:hover {
+  transform: translateY(-2px) scale-[1.01] !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 8px 20px -3px rgba(0, 0, 0, 0.4) !important;
+}
+
+html body #app main article div[draggable="true"]:active {
+  transform: scale(0.98) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+html body #app main article div[class*="border-amber-400"] {
+  border-color: rgba(251, 191, 36, 0.3) !important;
+  background: rgba(251, 191, 36, 0.08) !important;
+  box-shadow: 0 4px 14px rgba(251, 191, 36, 0.15) !important;
+}
+
+[id^="panel-"], #panel-calendar-dropdown {
+  background-color: var(--bg-panel) !important;
+  border-color: var(--border-main) !important;
+  color: var(--text-main) !important;
+}
+[id^="panel-"] *, #panel-calendar-dropdown * {
+  color: var(--text-main) !important;
+}
+
+[id^="panel-"] input, [id^="panel-"] textarea, [id^="panel-"] select,
+html body #app select, html body #app input[type="text"], html body #app textarea {
+  background-color: rgba(0, 0, 0, 0.35) !important;
+  border-top: 1.5px solid rgba(0, 0, 0, 0.45) !important;
+  border-bottom: 1.2px solid rgba(255, 255, 255, 0.08) !important;
+  border-left: 1px solid rgba(0, 0, 0, 0.2) !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.2) !important;
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.55),
+    0 1px 0 rgba(255, 255, 255, 0.03) !important;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+html body #app select:focus, html body #app input[type="text"]:focus, html body #app textarea:focus {
+  border-top-color: var(--accent) !important;
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.35),
+    0 0 8px var(--accent-border, rgba(139, 92, 246, 0.3)) !important;
+}
+
+#helper-pick-card, 
+#helper-sport-card, 
+#helper-safespace-card, 
+#helper-compass-card, 
+#helper-scripting-card, 
+#helper-steps-modal > div {
+  background: rgba(18, 18, 26, 0.92) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-top: 1.8px solid rgba(255, 255, 255, 0.22) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-bottom: 5px solid rgba(0, 0, 0, 0.6) !important;
+  border-radius: 24px !important;
+  color: var(--text-main) !important;
+  box-shadow: 
+    0 15px 30px rgba(0, 0, 0, 0.4),
+    0 30px 65px -10px rgba(0, 0, 0, 0.7),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1) !important;
+}
+
+html body .animate-party-wobble {
+  animation: partyWobble 2.5s cubic-bezier(0.25, 1, 0.5, 1) infinite !important;
+}
+html body .animate-party-bounce {
+  animation: partyBounce 2.5s cubic-bezier(0.25, 1, 0.5, 1) infinite !important;
+}
+html body .animate-party-glow {
+  animation: partyGlow 2.5s ease-in-out infinite !important;
+}
+html body .animate-party-pulse {
+  animation: partyPulse 2.5s cubic-bezier(0.25, 1, 0.5, 1) infinite !important;
+}
+html body .animate-party-swing {
+  animation: partySwing 3s ease-in-out infinite !important;
+}
+
+@keyframes partyWobble {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(5deg); }
+}
+@keyframes partyBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes partyGlow {
+  0%, 100% { box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35); }
+  50% { box-shadow: 0 8px 24px rgba(139, 92, 246, 0.45); }
+}
+@keyframes partyPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+@keyframes partySwing {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(3deg); }
+  75% { transform: rotate(-3deg); }
+}
+
+
+/* ========================================== */
+/* REFINED FLOW LOGO & SURPRISING ANIMATIONS */
+/* ========================================== */
+
+@keyframes logoIdleFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-3px) rotate(1deg); }
+}
+.logo-idle-float {
+  animation: logoIdleFloat 3.8s ease-in-out infinite;
+}
+
+@keyframes logoGradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-logo-gradient-flow {
+  background-size: 200% auto;
+  animation: logoGradientFlow 6s ease infinite;
+}
+
+@keyframes waveParticlesFlow {
+  from { stroke-dashoffset: 50; }
+  to { stroke-dashoffset: 0; }
+}
+.animate-wave-flow-particles {
+  animation: waveParticlesFlow 1.2s linear infinite;
+}
+
+@keyframes waveMainShift {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.08) translateY(-1px); }
+}
+.animate-wave-flow-main {
+  transform-origin: center;
+  animation: waveMainShift 3s ease-in-out infinite;
+}
+
+@keyframes waveReverseShift {
+  0%, 100% { transform: scaleY(1) rotate(0deg); }
+  50% { transform: scaleY(0.9) translateY(2px) rotate(1deg); }
+}
+.animate-wave-flow-reverse {
+  transform-origin: center;
+  animation: waveReverseShift 4s ease-in-out infinite;
+}
+
+@keyframes bubbleRise {
+  0% { transform: translateY(12px) scale(0); opacity: 0; }
+  30% { opacity: 0.7; }
+  80% { opacity: 0.4; }
+  100% { transform: translateY(-18px) scale(1.3); opacity: 0; }
+}
+.logo-bubble {
+  position: absolute;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.7) 0%, rgba(16, 185, 129, 0.2) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  bottom: 4px;
+}
+.group:hover .logo-bubble-1 { width: 5px; height: 5px; left: 22%; animation: bubble-rise 1.5s ease-in infinite; }
+.group:hover .logo-bubble-2 { width: 7px; height: 7px; left: 52%; animation: bubble-rise 2.1s ease-in infinite 0.3s; }
+.group:hover .logo-bubble-3 { width: 4px; height: 4px; left: 78%; animation: bubble-rise 1.7s ease-in infinite 0.7s; }
+
+@keyframes logoClickedPop {
+  0% { transform: scale(1.05); filter: brightness(1); }
+  30% { transform: scale(1.28) rotate(6deg); filter: brightness(1.6) drop-shadow(0 0 25px rgba(6, 182, 212, 0.9)); }
+  100% { transform: scale(0.9) rotate(-3deg); filter: brightness(0.8); }
+}
+.logo-clicked-flow {
+  animation: logoClickedPop 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
+  pointer-events: none !important;
+}
+
+
+/* ========================================== */
+/* NEW MOVEMENT & ZEN ZEN-ANIMATIONS          */
+/* ========================================== */
+
+@keyframes zenBreathe {
+  0%, 100% {
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.12), inset 0 0 20px rgba(139, 92, 246, 0.05);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 60px rgba(139, 92, 246, 0.28), inset 0 0 35px rgba(139, 92, 246, 0.12);
+    transform: scale(1.015);
+  }
+}
+#zen-chill-view > div {
+  animation: zenBreathe 6s ease-in-out infinite !important;
+}
+
+@keyframes bubbleRiseUp {
+  0% {
+    transform: translateY(0) scale(0.6) rotate(0deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-120px) scale(1.4) rotate(45deg);
+    opacity: 0;
+  }
+}
+.floating-success-bubble {
+  position: fixed;
+  z-index: 999999;
+  pointer-events: none;
+  width: 14px;
+  height: 14px;
+  background: radial-gradient(circle at 30% 30%, #38bdf8 0%, #10b981 60%, #8b5cf6 100%);
+  border: 1.5px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+  animation: bubbleRiseUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes waveWaterDrift {
+  0% { transform: translateX(0) translateZ(0) scaleY(1); }
+  50% { transform: translateX(-15px) translateZ(0) scaleY(1.05); }
+  100% { transform: translateX(0) translateZ(0) scaleY(1); }
+}
+.water-wave-element {
+  animation: waveWaterDrift 7s ease-in-out infinite;
+}
+
+@keyframes modalSpringIn {
+  0% { transform: scale(0.85) translateY(25px); opacity: 0; }
+  60% { transform: scale(1.03) translateY(-5px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+.animate-spring-modal {
+  animation: modalSpringIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* --- LAYERED GLASS SPALTEN (AIRY, MODERN & HARMONIOUS) --- */
+main article {
+  background: rgba(18, 18, 26, 0.65) !important;
+  backdrop-filter: blur(24px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(140%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 22px !important;
+  box-shadow: 
+    0 12px 32px -8px rgba(0, 0, 0, 0.45),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08) !important;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.28s ease, 
+              box-shadow 0.28s ease !important;
+}
+
+main article:hover {
+  border-color: var(--accent-border, rgba(139, 92, 246, 0.28)) !important;
+  box-shadow: 
+    0 18px 42px -6px rgba(0, 0, 0, 0.55),
+    0 0 24px var(--accent-border, rgba(139, 92, 246, 0.12)),
+    inset 0 1px 1px rgba(255, 255, 255, 0.12) !important;
+}
+
+/* --- 3D FLUID TASK CARDS --- */
+main article .group {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+              background-color 0.2s ease, 
+              border-color 0.2s ease !important;
+}
+
+main article .group:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 
+    0 10px 24px -4px rgba(0, 0, 0, 0.45), 
+    0 0 0 1px rgba(255, 255, 255, 0.12) !important;
+}
+
+/* --- EDLES DRAG & DROP MIT KIPP-EFFEKT (1.5 DEG NEIGUNG) --- */
+.dragging-task, [draggable="true"]:active {
+  cursor: grabbing !important;
+}
+
+[data-dragging="true"], .card-drag-active {
+  transform: rotate(2deg) scale(1.03) !important;
+  box-shadow: 
+    0 22px 45px -5px rgba(0, 0, 0, 0.65), 
+    0 0 25px var(--accent-border, rgba(139, 92, 246, 0.35)) !important;
+  opacity: 0.92 !important;
+  z-index: 999 !important;
+}
+
+/* --- 3D SCHICKSALS-WÜRFEL & ROULETTE STYLES --- */
+@keyframes diceSpinFast {
+  0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1); }
+  25% { transform: rotateX(180deg) rotateY(90deg) rotateZ(45deg) scale(1.1); }
+  50% { transform: rotateX(360deg) rotateY(180deg) rotateZ(90deg) scale(1); }
+  75% { transform: rotateX(540deg) rotateY(270deg) rotateZ(135deg) scale(1.1); }
+  100% { transform: rotateX(720deg) rotateY(360deg) rotateZ(180deg) scale(1); }
+}
+
+@keyframes diceWinnerPulse {
+  0% { transform: scale(0.9) rotate(0deg); box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.6); }
+  50% { transform: scale(1.15) rotate(12deg); box-shadow: 0 0 25px 6px rgba(251, 191, 36, 0.8); }
+  100% { transform: scale(1) rotate(0deg); box-shadow: 0 0 15px 2px rgba(251, 191, 36, 0.4); }
+}
+
+.dice-spinning-fast {
+  animation: diceSpinFast 0.6s linear infinite !important;
+}
+
+.dice-winner-pulse {
+  animation: diceWinnerPulse 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+.dice-reel-item {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dice-reel-item.target-winner {
+  background: rgba(251, 191, 36, 0.18) !important;
+  border-color: rgba(251, 191, 36, 0.6) !important;
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.25) !important;
+}
+
+/* ===== ULTRA-MODERN KINETIC FLOW LOGO & INFINITY RIBBON ===== */
+@keyframes flowRibbonPulse {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 6px rgba(6, 182, 212, 0.6)) drop-shadow(0 0 14px rgba(168, 85, 247, 0.4));
+  }
+  50% {
+    transform: scale(1.08) rotate(3deg);
+    filter: drop-shadow(0 0 12px rgba(6, 182, 212, 0.9)) drop-shadow(0 0 22px rgba(236, 72, 153, 0.6));
+  }
+}
+
+@keyframes flowOrbOrbit {
+  0% { transform: rotate(0deg) translateX(11px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(11px) rotate(-360deg); }
+}
+
+@keyframes flowTextShimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes flowBadgeAura {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(6, 182, 212, 0.25), inset 0 0 8px rgba(168, 85, 247, 0.2), 0 0 0 1px rgba(6, 182, 212, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.45), inset 0 0 14px rgba(6, 182, 212, 0.35), 0 0 0 1px rgba(236, 72, 153, 0.55);
+  }
+}
+
+.flow-logo-container {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  perspective: 600px;
+}
+
+.flow-logo-container:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.2), 0 0 0 1px rgba(168, 85, 247, 0.35);
+}
+
+.flow-logo-container:hover #header-noodle-logo {
+  transform: translateY(-2px) scale(1.05);
+  filter: drop-shadow(0 6px 20px rgba(168, 85, 247, 0.55)) brightness(1.08);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ===== NOODLE MODERN CALM & IMPRESSIVE ANIMATION SUITE ===== */
+
+/* 1. Luminous Float & Aura Glow (Sanftes, elegantes Schweben) */
+@keyframes noodleFloatGlow {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    filter: drop-shadow(0 0 0 rgba(168, 85, 247, 0));
+  }
+  50% {
+    transform: translateY(-4px) scale(1.04);
+    filter: drop-shadow(0 6px 22px rgba(168, 85, 247, 0.6)) drop-shadow(0 0 8px rgba(6, 182, 212, 0.45)) brightness(1.06);
+  }
+}
+
+/* 2. Deep Organic Breathe (Ruhiger, majestätischer Atemzug) */
+@keyframes noodleBreathe {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(168, 85, 247, 0));
+  }
+  45% {
+    transform: scale(1.055) translateY(-2px);
+    filter: drop-shadow(0 4px 18px rgba(192, 132, 252, 0.5)) brightness(1.05);
+  }
+}
+
+/* 3. Prismatic Shimmer Sweep (Holografischer Lichtstrahl) */
+@keyframes noodleShimmer {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(168, 85, 247, 0)) brightness(1);
+  }
+  30% {
+    transform: scale(1.03) translateY(-2px);
+    filter: drop-shadow(0 4px 16px rgba(56, 189, 248, 0.55)) brightness(1.12);
+  }
+  60% {
+    transform: scale(1.04) translateY(-3px);
+    filter: drop-shadow(0 6px 20px rgba(217, 70, 239, 0.55)) brightness(1.15);
+  }
+}
+
+/* 4. Aurora Wave (Sanfte Farbwellen-Levitation) */
+@keyframes noodleAuroraWave {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    filter: drop-shadow(0 0 0 rgba(168, 85, 247, 0));
+  }
+  35% {
+    transform: translateY(-3px) scale(1.03);
+    filter: drop-shadow(0 4px 16px rgba(16, 185, 129, 0.45)) drop-shadow(0 0 10px rgba(6, 182, 212, 0.4));
+  }
+  70% {
+    transform: translateY(-2px) scale(1.04);
+    filter: drop-shadow(0 6px 20px rgba(168, 85, 247, 0.55));
+  }
+}
+
+/* 5. Grand Celebration Bloom (Feierliche, prachtvolle Ausstrahlung) */
+@keyframes noodleCelebrate {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    filter: drop-shadow(0 0 0 rgba(168, 85, 247, 0));
+  }
+  25% {
+    transform: translateY(-5px) scale(1.06);
+    filter: drop-shadow(0 8px 24px rgba(245, 158, 11, 0.65)) drop-shadow(0 0 12px rgba(249, 115, 22, 0.5)) brightness(1.12);
+  }
+  50% {
+    transform: translateY(-6px) scale(1.08);
+    filter: drop-shadow(0 10px 30px rgba(168, 85, 247, 0.75)) drop-shadow(0 0 16px rgba(56, 189, 248, 0.6)) brightness(1.18);
+  }
+  75% {
+    transform: translateY(-3px) scale(1.04);
+    filter: drop-shadow(0 4px 16px rgba(16, 185, 129, 0.5)) brightness(1.08);
+  }
+}
+
+.noodle-anim-float {
+  animation: noodleFloatGlow 2.8s cubic-bezier(0.25, 1, 0.5, 1) both;
+  will-change: transform, filter;
+}
+
+.noodle-anim-breathe {
+  animation: noodleBreathe 3.0s cubic-bezier(0.25, 1, 0.5, 1) both;
+  will-change: transform, filter;
+}
+
+.noodle-anim-shimmer {
+  animation: noodleShimmer 2.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: transform, filter;
+}
+
+.noodle-anim-aurora {
+  animation: noodleAuroraWave 3.2s cubic-bezier(0.25, 1, 0.5, 1) both;
+  will-change: transform, filter;
+}
+
+.noodle-anim-celebrate {
+  animation: noodleCelebrate 3.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  will-change: transform, filter;
+}
+
+/* Fallback mappings for smooth compatibility */
+.noodle-anim-wobble,
+.noodle-anim-dance,
+.noodle-anim-sway {
+  animation: noodleBreathe 3.0s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+.noodle-anim-spin,
+.noodle-anim-flip3d {
+  animation: noodleShimmer 2.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.noodle-anim-bounce,
+.noodle-anim-wave {
+  animation: noodleFloatGlow 2.8s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+/* ===== IDLE AMBIENT AURORA & STANDARD VIEW MOTION ===== */
+@keyframes ambientOrbDrift1 {
+  0% { transform: translate(0px, 0px) scale(1); opacity: 0.18; }
+  33% { transform: translate(60px, 40px) scale(1.15); opacity: 0.28; }
+  66% { transform: translate(-40px, 70px) scale(0.95); opacity: 0.22; }
+  100% { transform: translate(30px, -30px) scale(1.08); opacity: 0.25; }
+}
+
+@keyframes ambientOrbDrift2 {
+  0% { transform: translate(0px, 0px) scale(1); opacity: 0.15; }
+  33% { transform: translate(-70px, -50px) scale(1.12); opacity: 0.26; }
+  66% { transform: translate(50px, -30px) scale(0.92); opacity: 0.20; }
+  100% { transform: translate(-30px, 40px) scale(1.05); opacity: 0.24; }
+}
+
+@keyframes ambientOrbDrift3 {
+  0% { transform: translate(0px, 0px) scale(1); opacity: 0.12; }
+  50% { transform: translate(50px, -40px) scale(1.2); opacity: 0.22; }
+  100% { transform: translate(-50px, 30px) scale(0.9); opacity: 0.14; }
+}
+
+.ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.ambient-orb-1 {
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.4) 0%, rgba(56, 189, 248, 0.2) 45%, transparent 70%);
+  top: -120px;
+  left: -80px;
+  animation: ambientOrbDrift1 24s ease-in-out infinite alternate;
+}
+
+.ambient-orb-2 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.35) 0%, rgba(192, 132, 252, 0.2) 45%, transparent 70%);
+  bottom: -140px;
+  right: -100px;
+  animation: ambientOrbDrift2 28s ease-in-out infinite alternate;
+}
+
+.ambient-orb-3 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.28) 0%, rgba(244, 63, 94, 0.15) 45%, transparent 70%);
+  top: 35%;
+  left: 30%;
+  animation: ambientOrbDrift3 32s ease-in-out infinite alternate;
+}
+
+/* Subtle Idle Breathing on Board Columns & Headers */
+@keyframes columnGlowBreathing {
+  0%, 100% {
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  }
+  50% {
+    border-color: rgba(139, 92, 246, 0.25);
+    box-shadow: 0 4px 35px rgba(6, 182, 212, 0.08);
+  }
+}
+
+.column-card-breathing {
+  animation: columnGlowBreathing 8s ease-in-out infinite;
+}
+
+/* Subtle Floating Animation for Badges & Icons */
+@keyframes idleGentleFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
+}
+
+.idle-float {
+  animation: idleGentleFloat 4s ease-in-out infinite;
+}
+
+/* Live Wave Motion in Header */
+@keyframes waterWaveFlow {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(-25%); }
+  100% { transform: translateX(-50%); }
+}
+
+.water-wave-element {
+  animation: waterWaveFlow 16s linear infinite;
+  will-change: transform;
+}
+
+
