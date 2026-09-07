@@ -214,7 +214,7 @@ function renderWeatherData(data) {
   const unitSymbol = weatherUnit === 'f' ? '°F' : '°C';
   const info = getWeatherInfo(current.weather_code);
 
-  // Smarter Flow-Tipp basierend auf Wetter
+  // Smarter Fokus-Tipp basierend auf Wetter
   let flowTip = {
     de: 'Angenehmes Wetter für fokussiertes Arbeiten. Vergiss nicht, regelmäßig zu lüften! 🌿',
     en: 'Great conditions for deep work. Remember to open the window for fresh air! 🌿',
@@ -338,7 +338,7 @@ function renderWeatherData(data) {
       </div>
     </div>
 
-    <!-- Smarter Flow-Tipp -->
+    <!-- Smarter Fokus-Tipp -->
     <div class="p-2.5 bg-sky-500/10 border border-sky-500/25 rounded-xl flex items-center gap-2 text-sky-200 text-xs leading-normal">
       <i data-lucide="sparkles" class="w-4 h-4 text-sky-400 shrink-0"></i>
       <span>${tr(flowTip)}</span>

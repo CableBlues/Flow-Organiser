@@ -18,8 +18,8 @@ if (!fs.existsSync(distDir)) {
   fs.mkdirSync(distDir, { recursive: true });
 }
 
-// 2. Copy static files & vendor/fonts directory
-const staticDirs = ['vendor', 'fonts'];
+// 2. Copy static files & vendor/fonts/.well-known directory
+const staticDirs = ['vendor', 'fonts', '.well-known'];
 staticDirs.forEach(dir => {
   const src = path.join(rootDir, dir);
   const dest = path.join(distDir, dir);

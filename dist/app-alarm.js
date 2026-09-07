@@ -272,7 +272,7 @@ function renderAlarmPanel() {
             <span class="truncate">${safeEscape(curTask)}</span>
           </div>
         ` : `
-          <div class="text-[10px] text-gray-400 mt-1">Wähle eine Dauer & starte deinen Flow</div>
+          <div class="text-[10px] text-gray-400 mt-1">Wähle eine Dauer & starte deinen Fokus</div>
         `}
       </div>
 

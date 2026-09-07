@@ -1,11 +1,11 @@
-// app-radio-news.js: Live Radio Stations & Snackable News Ticker Hub
-// 100% Serverless, Zero-PHP, GitHub Pages compatible, Neurodivergent / ADHD-optimized
+// app-radio-news.js: High-End Live Radio Stations & Minimal Calming News Lounge
+// 100% Serverless, Zero-PHP, GitHub Pages compatible, Anti-Sensory-Overload & Neurodivergent-optimized
 
 (function() {
   'use strict';
 
   // ============================================================================
-  // 1. DATA: RADIO STATIONS & NEWS FEEDS
+  // 1. DATA: RADIO STATIONS & COMPREHENSIVE MULTI-REGION NEWS FEEDS
   // ============================================================================
 
   const RADIO_STATIONS = [
@@ -16,276 +16,289 @@
     { id: 'br24', name: 'BR24 Live', category: 'news', country: 'de', flag: '🇩🇪', desc: 'In 15 Minuten umfassend informiert', stream: 'https://dispatcher.rndfnk.com/br/br24/live/mp3/mid', logo: '📢' },
     { id: 'swraktuell', name: 'SWR Aktuell', category: 'news', country: 'de', flag: '🇩🇪', desc: 'Nachrichten, Interviews & Verkehr', stream: 'https://liveradio.swr.de/sw282p3/swraktuell/play.mp3', logo: '📻' },
 
-    // 🌍 Global & International (English / French)
-    { id: 'bbcworld', name: 'BBC World Service', category: 'news', country: 'uk', flag: '🇬🇧', desc: 'Global news, reports & analysis', stream: 'https://stream.live.vc.bbcmedia.co.uk/bbc_world_service', logo: '🌍' },
-    { id: 'npr', name: 'NPR 24/7 News', category: 'news', country: 'us', flag: '🇺🇸', desc: 'National Public Radio Live Stream', stream: 'https://npr-ice.streamguys1.com/live.mp3', logo: '🌐' },
-    { id: 'rfi_en', name: 'RFI International', category: 'news', country: 'global', flag: '🌐', desc: 'World affairs & international dispatch', stream: 'https://rfienanglais64k.ice.infomaniak.ch/rfienanglais-64.mp3', logo: '🗞️' },
-    { id: 'franceinfo', name: 'France Info Live', category: 'news', country: 'global', flag: '🇫🇷', desc: 'Actualités en direct et informations 24/7', stream: 'https://icecast.radiofrance.fr/franceinfo-midfi.mp3', logo: '🌐' },
-
     // 🇦🇹 Österreich & 🇨🇭 Schweiz
     { id: 'oe1', name: 'Ö1 Kultur & Info', category: 'news', country: 'at', flag: '🇦🇹', desc: 'Wissen, Kultur & fundierte Nachrichten', stream: 'https://orf-live.ors-shoutcast.at/oe1-q2a', logo: '🇦🇹' },
-    { id: 'oe3', name: 'Hitradio Ö3', category: 'music', country: 'at', flag: '🇦🇹', desc: 'Österreichs beliebtestes Hitradio & Info', stream: 'https://orf-live.ors-shoutcast.at/oe3-q2a', logo: '🎵' },
+    { id: 'oe3', name: 'Hitradio Ö3', category: 'music', country: 'at', flag: '🇦🇹', desc: 'Österreichs beliebtes Hitradio', stream: 'https://orf-live.ors-shoutcast.at/oe3-q2a', logo: '🎵' },
     { id: 'srf1', name: 'SRF 1 Info & Musik', category: 'news', country: 'ch', flag: '🇨🇭', desc: 'Schweizer Radio & Nachrichten', stream: 'https://stream.srg-ssr.ch/m/drs1/mp3_128', logo: '🇨🇭' },
     { id: 'swisspop', name: 'Radio Swiss Pop', category: 'music', country: 'ch', flag: '🇨🇭', desc: 'Entspannter Pop-Mix ohne Unterbrechung', stream: 'https://stream.srg-ssr.ch/m/rsp/mp3_128', logo: '🎶' },
 
-    // 🧘 Focus & Chill (ADHD / Hyperfokus Soundtracks)
-    { id: 'groovesalad', name: 'SomaFM Groove Salad', category: 'focus', country: 'global', flag: '🧘', desc: 'Downtempo Ambient & Chilled Electronic', stream: 'https://ice1.somafm.com/groovesalad-128-mp3', logo: '🥗' },
-    { id: 'dronezone', name: 'SomaFM Drone Zone', category: 'focus', country: 'global', flag: '🌌', desc: 'Tiefer Ambient Space & Flow-Soundscapes', stream: 'https://ice1.somafm.com/dronezone-128-mp3', logo: '🧘' },
-    { id: 'lush', name: 'SomaFM Lush Chill', category: 'focus', country: 'global', flag: '🎧', desc: 'Sanfter Lofi Chill & Vocal Atmospheres', stream: 'https://ice1.somafm.com/lush-128-mp3', logo: '☕' },
-    { id: 'secretagent', name: 'SomaFM Secret Agent', category: 'focus', country: 'global', flag: '🍸', desc: 'The soundtrack for your stylish spy mission', stream: 'https://ice1.somafm.com/secretagent-128-mp3', logo: '🕵️' },
-    { id: 'spacestation', name: 'SomaFM Space Station', category: 'focus', country: 'global', flag: '🚀', desc: 'Mid-tempo Space Ambient & Future Beats', stream: 'https://ice1.somafm.com/spacestation-128-mp3', logo: '🛰️' },
-    { id: 'defcon', name: 'SomaFM DEF CON Radio', category: 'focus', country: 'global', flag: '⚡', desc: 'Hacking, Synth & Deep Focus Energy', stream: 'https://ice1.somafm.com/defcon-128-mp3', logo: '💻' },
+    // 🇬🇧 UK & 🇺🇸 USA & 🌐 Global
+    { id: 'bbcworld', name: 'BBC World Service', category: 'news', country: 'uk', flag: '🇬🇧', desc: 'Global news, reports & analysis', stream: 'https://stream.live.vc.bbcmedia.co.uk/bbc_world_service', logo: '🌍' },
+    { id: 'npr', name: 'NPR 24/7 News', category: 'news', country: 'us', flag: '🇺🇸', desc: 'National Public Radio Live Stream', stream: 'https://npr-ice.streamguys1.com/live.mp3', logo: '🌐' },
+    { id: 'franceinfo', name: 'France Info Live', category: 'news', country: 'fr', flag: '🇫🇷', desc: 'Actualités en direct et informations 24/7', stream: 'https://icecast.radiofrance.fr/franceinfo-midfi.mp3', logo: '🇫🇷' },
+    { id: 'rne', name: 'Radio Nacional España', category: 'news', country: 'es', flag: '🇪🇸', desc: 'Noticias y actualidad en directo', stream: 'https://rtvelivestream.akamaized.net/rne_r1_main.mp3', logo: '🇪🇸' },
+    { id: 'rai1', name: 'Rai Radio 1', category: 'news', country: 'it', flag: '🇮🇹', desc: 'Informazione e approfondimenti 24h', stream: 'https://icstream.rai.it/1.mp3', logo: '🇮🇹' },
+    { id: 'ertproto', name: 'ΕΡΤ Πρώτο Πρόγραμμα', category: 'news', country: 'gr', flag: '🇬🇷', desc: 'Δημόσια ραδιοφωνία & ενημέρωση', stream: 'https://radiostreaming.ert.gr/ert-proto', logo: '🏛️' },
 
-    // 🇬🇷 Ελλάδα
-    { id: 'realfm', name: 'Real FM 97.8', category: 'news', country: 'gr', flag: '🇬🇷', desc: 'Ειδήσεις, επικαιρότητα και σχόλια', stream: 'https://realfm.live24.gr/realfm', logo: '🇬🇷' },
-    { id: 'ertproto', name: 'ΕΡΤ Πρώτο Πρόγραμμα', category: 'news', country: 'gr', flag: '🇬🇷', desc: 'Δημόσια ραδιοφωνία & ενημέρωση', stream: 'https://radiostreaming.ert.gr/ert-proto', logo: '🏛️' }
+    // 🧘 Focus & Chill Soundscapes
+    { id: 'groovesalad', name: 'SomaFM Groove Salad', category: 'focus', country: 'global', flag: '🧘', desc: 'Downtempo Ambient & Chilled Electronic', stream: 'https://ice1.somafm.com/groovesalad-128-mp3', logo: '🥗' },
+    { id: 'dronezone', name: 'SomaFM Drone Zone', category: 'focus', country: 'global', flag: '🌌', desc: 'Tiefer Ambient Space & Fokus-Soundscapes', stream: 'https://ice1.somafm.com/dronezone-128-mp3', logo: '🧘' },
+    { id: 'lush', name: 'SomaFM Lush Chill', category: 'focus', country: 'global', flag: '🎧', desc: 'Sanfter Lofi Chill & Vocal Atmospheres', stream: 'https://ice1.somafm.com/lush-128-mp3', logo: '☕' }
   ];
 
   const REGIONS = [
     { id: 'de', name: 'Deutschland', flag: '🇩🇪', lang: 'de-DE' },
     { id: 'at', name: 'Österreich', flag: '🇦🇹', lang: 'de-AT' },
     { id: 'ch', name: 'Schweiz', flag: '🇨🇭', lang: 'de-CH' },
-    { id: 'global', name: 'Global / Welt', flag: '🌐', lang: 'en-US' },
     { id: 'uk', name: 'UK / Britain', flag: '🇬🇧', lang: 'en-GB' },
     { id: 'us', name: 'USA', flag: '🇺🇸', lang: 'en-US' },
-    { id: 'gr', name: 'Ελλάδα', flag: '🇬🇷', lang: 'el-GR' }
+    { id: 'fr', name: 'France', flag: '🇫🇷', lang: 'fr-FR' },
+    { id: 'es', name: 'España', flag: '🇪🇸', lang: 'es-ES' },
+    { id: 'it', name: 'Italia', flag: '🇮🇹', lang: 'it-IT' },
+    { id: 'gr', name: 'Ελλάδα', flag: '🇬🇷', lang: 'el-GR' },
+    { id: 'global', name: 'Global', flag: '🌐', lang: 'en-US' }
   ];
+
+  const LOCAL_MEDIA_OUTLETS = {
+    de: [
+      { id: 'all', name: 'Alle Quellen', icon: '✨' },
+      { id: 'tagesschau', name: 'Tagesschau', match: ['tagesschau'], rss: 'https://www.tagesschau.de/xml/rss2/' },
+      { id: 'spiegel', name: 'Spiegel Online', match: ['spiegel'], rss: 'https://www.spiegel.de/schlagzeilen/index.rss' },
+      { id: 'zeit', name: 'Zeit Online', match: ['zeit'], rss: 'https://newsfeed.zeit.de/index' },
+      { id: 'heise', name: 'Heise Tech', match: ['heise'], rss: 'https://www.heise.de/rss/heise-atom.xml' },
+      { id: 'handelsblatt', name: 'Handelsblatt', match: ['handelsblatt'], rss: 'https://www.handelsblatt.com/contentexport/feed/top-themen' },
+      { id: 'goodnews', name: 'Good News DE', match: ['good news', 'positive'], rss: 'https://goodnews.eu/feed/' }
+    ],
+    at: [
+      { id: 'all', name: 'Alle Quellen', icon: '✨' },
+      { id: 'orf', name: 'ORF News', match: ['orf'], rss: 'https://rss.orf.at/news.xml' },
+      { id: 'standard', name: 'Der Standard', match: ['standard'], rss: 'https://www.derstandard.at/rss' },
+      { id: 'kurier', name: 'Kurier', match: ['kurier'], rss: 'https://kurier.at/xml/rss' },
+      { id: 'presse', name: 'Die Presse', match: ['presse'], rss: 'https://www.diepresse.com/rss/Home' },
+      { id: 'goodnews', name: 'Good News AT', match: ['good news'], rss: 'https://goodnews.eu/feed/' }
+    ],
+    ch: [
+      { id: 'all', name: 'Alle Quellen', icon: '✨' },
+      { id: 'srf', name: 'SRF News', match: ['srf'], rss: 'https://www.srf.ch/news/bnf/rss/1646' },
+      { id: 'nzz', name: 'NZZ', match: ['nzz'], rss: 'https://www.nzz.ch/recent.rss' },
+      { id: 'tagesanzeiger', name: 'Tages-Anzeiger', match: ['tages-anzeiger', 'tagesanzeiger'], rss: 'https://www.tagesanzeiger.ch/rss' },
+      { id: 'srf_digital', name: 'SRF Digital', match: ['srf digital'], rss: 'https://www.srf.ch/news/bnf/rss/1648' },
+      { id: 'goodnews', name: 'Good News CH', match: ['good news'], rss: 'https://goodnews.eu/feed/' }
+    ],
+    uk: [
+      { id: 'all', name: 'All Media', icon: '✨' },
+      { id: 'bbc', name: 'BBC News', match: ['bbc'], rss: 'https://feeds.bbci.co.uk/news/rss.xml' },
+      { id: 'guardian', name: 'The Guardian', match: ['guardian'], rss: 'https://www.theguardian.com/uk/rss' },
+      { id: 'reuters', name: 'Reuters UK', match: ['reuters'], rss: 'https://www.reutersagency.com/feed/?best-topics=business-finance&post_type=best' },
+      { id: 'independent', name: 'The Independent', match: ['independent'], rss: 'https://www.independent.co.uk/news/uk/rss' },
+      { id: 'positive_news', name: 'Positive News', match: ['positive'], rss: 'https://www.positive.news/feed/' }
+    ],
+    us: [
+      { id: 'all', name: 'All Media', icon: '✨' },
+      { id: 'npr', name: 'NPR News', match: ['npr'], rss: 'https://feeds.npr.org/1001/rss.xml' },
+      { id: 'techcrunch', name: 'TechCrunch', match: ['techcrunch'], rss: 'https://techcrunch.com/feed/' },
+      { id: 'wired', name: 'Wired', match: ['wired'], rss: 'https://www.wired.com/feed/rss' },
+      { id: 'sciam', name: 'Scientific American', match: ['scientific'], rss: 'http://rss.sciam.com/ScientificAmerican-Global' },
+      { id: 'cnbc', name: 'CNBC', match: ['cnbc'], rss: 'https://www.cnbc.com/id/100003114/device/rss/rss.html' },
+      { id: 'goodnews', name: 'Good News Network', match: ['good news'], rss: 'https://www.goodnewsnetwork.org/feed/' }
+    ],
+    fr: [
+      { id: 'all', name: 'Tous les médias', icon: '✨' },
+      { id: 'franceinfo', name: 'France Info', match: ['france info'], rss: 'https://www.francetvinfo.fr/titres.rss' },
+      { id: 'lemonde', name: 'Le Monde', match: ['lemonde', 'le monde'], rss: 'https://www.lemonde.fr/rss/une.xml' },
+      { id: 'lefigaro', name: 'Le Figaro', match: ['le figaro', 'figaro'], rss: 'https://www.lefigaro.fr/rss/figaro_actualites.xml' },
+      { id: 'rfi', name: 'RFI', match: ['rfi'], rss: 'https://www.rfi.fr/fr/general/rss' }
+    ],
+    es: [
+      { id: 'all', name: 'Todos los medios', icon: '✨' },
+      { id: 'elpais', name: 'El País', match: ['el país', 'el pais'], rss: 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada' },
+      { id: 'rtve', name: 'RTVE', match: ['rtve'], rss: 'https://www.rtve.es/api/noticias.rss' },
+      { id: 'elmundo', name: 'El Mundo', match: ['el mundo'], rss: 'https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml' },
+      { id: 'efe', name: 'Agencia EFE', match: ['efe'], rss: 'https://efe.com/feed/' }
+    ],
+    it: [
+      { id: 'all', name: 'Tutti i media', icon: '✨' },
+      { id: 'ansa', name: 'ANSA', match: ['ansa'], rss: 'https://www.ansa.it/sito/notizie/topnews/topnews_rss.xml' },
+      { id: 'corriere', name: 'Corriere della Sera', match: ['corriere'], rss: 'https://xml2.corriereobjects.it/rss/homepage.xml' },
+      { id: 'repubblica', name: 'La Repubblica', match: ['repubblica'], rss: 'https://www.repubblica.it/rss/homepage/rss2.0.xml' },
+      { id: 'rainews', name: 'Rai News', match: ['rai'], rss: 'https://www.rainews.it/rss/tutti' }
+    ],
+    gr: [
+      { id: 'all', name: 'Όλα τα Μέσα', icon: '✨' },
+      { id: 'ert', name: 'ΕΡΤ News', match: ['ερτ', 'ert'], rss: 'https://www.ertnews.gr/feed/' },
+      { id: 'kathimerini', name: 'Καθημερινή', match: ['καθημερινή', 'kathimerini'], rss: 'https://www.kathimerini.gr/rss' },
+      { id: 'capital', name: 'Capital.gr', match: ['capital'], rss: 'https://www.capital.gr/rss' },
+      { id: 'techblog', name: 'Techblog GR', match: ['techblog'], rss: 'https://techblog.gr/feed/' }
+    ],
+    global: [
+      { id: 'all', name: 'All Global Media', icon: '✨' },
+      { id: 'bbc_world', name: 'BBC World', match: ['bbc'], rss: 'https://feeds.bbci.co.uk/news/world/rss.xml' },
+      { id: 'reuters', name: 'Reuters', match: ['reuters'], rss: 'https://www.reutersagency.com/feed/?best-topics=business-finance&post_type=best' },
+      { id: 'wired', name: 'Wired', match: ['wired'], rss: 'https://www.wired.com/feed/rss' },
+      { id: 'nature', name: 'Nature', match: ['nature'], rss: 'https://www.nature.com/nature.rss' },
+      { id: 'goodnews', name: 'Good News Network', match: ['good news'], rss: 'https://www.goodnewsnetwork.org/feed/' }
+    ]
+  };
 
   const CATEGORIES = [
-    { id: 'top', name: 'Top News', emoji: '🚨', desc: 'Eilmeldungen & Wichtigstes' },
-    { id: 'tech', name: 'Tech & KI', emoji: '🤖', desc: 'Innovationen, Software & Zukunft' },
-    { id: 'science', name: 'Wissen & Natur', emoji: '🔬', desc: 'Entdeckungen & Forschung' },
-    { id: 'goodnews', name: 'Good News', emoji: '🌟', desc: 'Positives, Lösungen & Hoffnung' },
-    { id: 'business', name: 'Wirtschaft', emoji: '💼', desc: 'Märkte, Trends & Finanzen' },
-    { id: 'sport', name: 'Sport', emoji: '⚽', desc: 'Ergebnisse, Events & Action' },
-    { id: 'culture', name: 'Kultur & Chill', emoji: '🎭', desc: 'Kunst, Musik & Lifestyle' }
+    { id: 'all', name: 'Alle Themen', emoji: '✨' },
+    { id: 'top', name: 'Top News', emoji: '🚨' },
+    { id: 'tech', name: 'Tech & KI', emoji: '🤖' },
+    { id: 'science', name: 'Wissen & Natur', emoji: '🔬' },
+    { id: 'goodnews', name: 'Good News', emoji: '🌟' },
+    { id: 'business', name: 'Wirtschaft', emoji: '💼' },
+    { id: 'culture', name: 'Kultur', emoji: '🎭' }
   ];
 
-  // Public live RSS feed URLs per region and category
-  const NEWS_FEEDS = {
-    de: {
-      top: { name: 'Tagesschau', rss: 'https://www.tagesschau.de/xml/rss2/' },
-      tech: { name: 'Heise Online', rss: 'https://www.heise.de/rss/heise-atom.xml' },
-      science: { name: 'Spektrum', rss: 'https://www.spektrum.de/alias/rss/spektrum-de-rss-feed/965546' },
-      goodnews: { name: 'Good News DE', rss: 'https://goodnews.eu/feed/' },
-      business: { name: 'Handelsblatt', rss: 'https://www.handelsblatt.com/contentexport/feed/top-themen' },
-      sport: { name: 'Sportschau', rss: 'https://www.sportschau.de/sportschau-index-100.rss' },
-      culture: { name: 'Spiegel Kultur', rss: 'https://www.spiegel.de/kultur/index.rss' }
-    },
-    at: {
-      top: { name: 'ORF News', rss: 'https://rss.orf.at/news.xml' },
-      tech: { name: 'Der Standard Web', rss: 'https://www.derstandard.at/rss/web' },
-      science: { name: 'ORF Science', rss: 'https://rss.orf.at/science.xml' },
-      goodnews: { name: 'Good News AT', rss: 'https://goodnews.eu/feed/' },
-      business: { name: 'Der Standard Wirtschaft', rss: 'https://www.derstandard.at/rss/wirtschaft' },
-      sport: { name: 'ORF Sport', rss: 'https://rss.orf.at/sport.xml' },
-      culture: { name: 'ORF Kultur', rss: 'https://rss.orf.at/kultur.xml' }
-    },
-    ch: {
-      top: { name: 'SRF News', rss: 'https://www.srf.ch/news/bnf/rss/1646' },
-      tech: { name: 'SRF Digital', rss: 'https://www.srf.ch/news/bnf/rss/1648' },
-      science: { name: 'SRF Wissen', rss: 'https://www.srf.ch/news/bnf/rss/1650' },
-      goodnews: { name: 'Good News CH', rss: 'https://goodnews.eu/feed/' },
-      business: { name: 'SRF Wirtschaft', rss: 'https://www.srf.ch/news/bnf/rss/1647' },
-      sport: { name: 'SRF Sport', rss: 'https://www.srf.ch/news/bnf/rss/1649' },
-      culture: { name: 'SRF Kultur', rss: 'https://www.srf.ch/news/bnf/rss/1651' }
-    },
-    global: {
-      top: { name: 'BBC World', rss: 'https://feeds.bbci.co.uk/news/world/rss.xml' },
-      tech: { name: 'Wired Tech', rss: 'https://www.wired.com/feed/rss' },
-      science: { name: 'ScienceDaily', rss: 'https://www.sciencedaily.com/rss/top/science.xml' },
-      goodnews: { name: 'Good News Network', rss: 'https://www.goodnewsnetwork.org/feed/' },
-      business: { name: 'Reuters Business', rss: 'https://www.reutersagency.com/feed/?best-topics=business-finance&post_type=best' },
-      sport: { name: 'BBC Sport', rss: 'https://feeds.bbci.co.uk/sport/rss.xml' },
-      culture: { name: 'The Verge', rss: 'https://www.theverge.com/rss/index.xml' }
-    },
-    uk: {
-      top: { name: 'BBC UK', rss: 'https://feeds.bbci.co.uk/news/uk/rss.xml' },
-      tech: { name: 'BBC Tech', rss: 'https://feeds.bbci.co.uk/news/technology/rss.xml' },
-      science: { name: 'BBC Science', rss: 'https://feeds.bbci.co.uk/news/science_and_environment/rss.xml' },
-      goodnews: { name: 'Positive News UK', rss: 'https://www.positive.news/feed/' },
-      business: { name: 'BBC Business', rss: 'https://feeds.bbci.co.uk/news/business/rss.xml' },
-      sport: { name: 'BBC Sport UK', rss: 'https://feeds.bbci.co.uk/sport/rss.xml' },
-      culture: { name: 'BBC Arts', rss: 'https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml' }
-    },
-    us: {
-      top: { name: 'NPR News', rss: 'https://feeds.npr.org/1001/rss.xml' },
-      tech: { name: 'TechCrunch', rss: 'https://techcrunch.com/feed/' },
-      science: { name: 'Scientific American', rss: 'http://rss.sciam.com/ScientificAmerican-Global' },
-      goodnews: { name: 'Good News Network US', rss: 'https://www.goodnewsnetwork.org/feed/' },
-      business: { name: 'CNBC Markets', rss: 'https://www.cnbc.com/id/100003114/device/rss/rss.html' },
-      sport: { name: 'ESPN News', rss: 'https://www.espn.com/espn/rss/news' },
-      culture: { name: 'NPR Arts', rss: 'https://feeds.npr.org/1008/rss.xml' }
-    },
-    gr: {
-      top: { name: 'ΕΡΤ News', rss: 'https://www.ertnews.gr/feed/' },
-      tech: { name: 'Techblog GR', rss: 'https://techblog.gr/feed/' },
-      science: { name: 'Kathimerini Science', rss: 'https://www.kathimerini.gr/rss' },
-      goodnews: { name: 'Good News GR', rss: 'https://www.ertnews.gr/feed/' },
-      business: { name: 'Capital.gr', rss: 'https://www.capital.gr/rss' },
-      sport: { name: 'Gazzetta GR', rss: 'https://www.gazzetta.gr/rss' },
-      culture: { name: 'Kathimerini Culture', rss: 'https://www.kathimerini.gr/k/culture/rss' }
-    }
-  };
-
-  // Curated snackable fallback news (TL;DR bullet points) guaranteed to work 100% offline or on GitHub Pages
+  // Curated Calm Fallback Database (Guaranteed instant load offline)
   const FALLBACK_NEWS_DATABASE = {
-    de: {
-      top: [
-        { title: 'EU beschließt neues Digitalpaket für Verbraucherschutz', summary: 'Strengere Transparenzregeln für Algorithmen und vereinfachte Kündigungen von Online-Abos ab sofort wirksam.', source: 'Tagesschau', time: 'vor 12 Min', url: 'https://www.tagesschau.de' },
-        { title: 'Investitionen in erneuerbare Energien erreichen Höchststand', summary: 'Über 58 Prozent des bundesweiten Strombedarfs stammten im letzten Quartal aus Wind- und Solarkraft.', source: 'Spiegel', time: 'vor 25 Min', url: 'https://www.spiegel.de' },
-        { title: 'Bahn erweitert Schnellfahrstrecken & Pünktlichkeitsoffensive', summary: 'Neue ICE-Verbindungen verkürzen Reisezeiten zwischen Berlin, Frankfurt und München spürbar.', source: 'FAZ', time: 'vor 45 Min', url: 'https://www.faz.net' },
-        { title: 'Arbeitsmarkt zeigt robuste Frühjahrsdynamik im Tech-Sektor', summary: 'Besonders in KI-Entwicklung, nachhaltigem Handwerk und Pflegeberufen steigen die Festanstellungen.', source: 'Zeit Online', time: 'vor 1 Std', url: 'https://www.zeit.de' },
-        { title: 'Neuer Raumfahrt-Forschungssatellit erfolgreich im Orbit', summary: 'Europäische Weltraumorganisation ESA empfängt erste hochauflösende Klimadaten zur Erdbeobachtung.', source: 'DLF Info', time: 'vor 2 Std', url: 'https://www.deutschlandfunk.de' }
-      ],
-      tech: [
-        { title: 'Neues Open-Source KI-Modell läuft direkt lokal im Browser', summary: 'WebGPU ermöglicht blitzschnelle Sprachmodelle ohne Datenübertragung an fremde Server.', source: 'Heise', time: 'vor 18 Min', url: 'https://www.heise.de' },
-        { title: 'Durchbruch bei Festkörper-Akkus: 1000 km Reichweite & 10 Min Ladezeit', summary: 'Neue Silizium-Anoden-Technologie verspricht längere Haltbarkeit und doppelte Energiedichte.', source: 'Golem', time: 'vor 35 Min', url: 'https://www.golem.de' },
-        { title: 'W3C verabschiedet neuen Standard für barrierefreie Web-Apps', summary: 'Screenreader und Tastatur-Shortcuts werden nun tiefer in Web-Browser nativ integriert.', source: 't3n', time: 'vor 1 Std', url: 'https://t3n.de' },
-        { title: 'Quantencomputer knackt komplexe Molekül-Simulation für Medizin', summary: 'Forscher entwickeln in Rekordzeit neue Wirkstoffkandidaten gegen virale Infektionen.', source: 'Spektrum Tech', time: 'vor 2 Std', url: 'https://www.spektrum.de' }
-      ],
-      science: [
-        { title: 'James Webb Teleskop entdeckt bisher älteste bekannte Galaxie', summary: 'Die Galaxie entstand nur 290 Millionen Jahre nach dem Urknall und überrascht mit hoher Leuchtkraft.', source: 'Spektrum', time: 'vor 30 Min', url: 'https://www.spektrum.de' },
-        { title: 'Tiefsee-Expedition entdeckt über 100 neue Tierarten vor Chile', summary: 'Korallengärten und fluoreszierende Tiefsee-Organismen in bis zu 4000 Metern Tiefe dokumentiert.', source: 'Geo', time: 'vor 1 Std', url: 'https://www.geo.de' },
-        { title: 'Neuer Schnelltest erkennt neurodegenerative Erkrankungen im Frühstadium', summary: 'Ein einfacher Bluttest ermöglicht präventive Therapien viele Jahre vor den ersten Symptomen.', source: 'Nature DE', time: 'vor 2 Std', url: 'https://www.nature.com' }
-      ],
-      goodnews: [
-        { title: 'Globale Wiederaufforstung verzeichnet 1 Million Hektar neuen Wald', summary: 'Internationale Naturschutzprojekte regenerieren erfolgreich artenreiche Mischwälder.', source: 'Good News', time: 'vor 20 Min', url: 'https://goodnews.eu' },
-        { title: 'Meeresreinigung entfernt Rekordmenge an Plastik aus dem Pazifik', summary: 'Autonome Barrieren sammeln über 250 Tonnen Zivilisationsmüll zur Wiederverwertung.', source: 'Positive News', time: 'vor 40 Min', url: 'https://goodnews.eu' },
-        { title: 'Erneuerbare Energien decken Rekordanteil am weltweiten Stromnetz', summary: 'Solarenergie verzeichnete den stärksten Zubau der Geschichte und senkt Energiekosten global.', source: 'Clean Energy', time: 'vor 1 Std', url: 'https://goodnews.eu' },
-        { title: 'Freiwillige pflanzen 50.000 Stadtbäume für kühleres Mikroklima', summary: 'Urbane Begrünung senkt sommerliche Hitzespitzen in Großstädten um bis zu 4 Grad Celsius.', source: 'Good News', time: 'vor 3 Std', url: 'https://goodnews.eu' }
-      ],
-      business: [
-        { title: 'Europäische Zentralbank signalisiert stabile Zinsentwicklung', summary: 'Inflation sinkt kontinuierlich in Richtung des 2-Prozent-Ziels, Kaufkraft der Verbraucher stabilisiert sich.', source: 'Handelsblatt', time: 'vor 25 Min', url: 'https://www.handelsblatt.com' },
-        { title: 'Gründer-Boom in Europa: Starkes Wachstum bei nachhaltigen Start-ups', summary: 'Investitionen in Cleantech, Bildung und KI-Software steigen im laufenden Quartal um 24 Prozent.', source: 'WirtschaftsWoche', time: 'vor 50 Min', url: 'https://www.wiwo.de' }
-      ],
-      sport: [
-        { title: 'Champions League: Hochklassige Halbfinal-Duelle ausgelost', summary: 'Europas Top-Teams kämpfen im Mai um den Einzug ins große Finale im Wembley-Stadion.', source: 'Sportschau', time: 'vor 15 Min', url: 'https://www.sportschau.de' },
-        { title: 'Marathon-Weltrekordlerin bricht erneut Bestmarke mit Traumzeit', summary: 'Überragende Ausdauerleistung bei optimalen Bedingungen auf der schnellen Strecke in Berlin.', source: 'Kicker', time: 'vor 1 Std', url: 'https://www.kicker.de' }
-      ],
-      culture: [
-        { title: 'Kuratierte Kunstausstellung begeistert 100.000 Besucher in 2 Wochen', summary: 'Verbindung von klassischer Malerei und immersiven Lichtinstallationen setzt neue Maßstäbe.', source: 'Monopol', time: 'vor 40 Min', url: 'https://www.monopol-magazin.de' },
-        { title: 'Neues Lofi-Soundtrack-Album bricht weltweite Streaming-Rekorde', summary: 'Fokus-Musik und entspannte Akkorde erfreuen sich riesiger Beliebtheit bei Entwicklern und Kreativen.', source: 'Rolling Stone', time: 'vor 2 Std', url: 'https://www.rollingstone.de' }
-      ]
-    },
-    global: {
-      top: [
-        { title: 'Global Climate Accord unlocks record funding for green infrastructure', summary: 'Over 80 nations commit to accelerating solar, wind, and battery storage rollouts by 2030.', source: 'BBC World', time: '10m ago', url: 'https://www.bbc.com/news' },
-        { title: 'International Space Station marks 25 years of continuous human presence', summary: 'Astronauts and scientists celebrate a quarter-century of breakthroughs in microgravity research.', source: 'Reuters', time: '28m ago', url: 'https://www.reuters.com' },
-        { title: 'Next-generation high-speed rail network connects major capitals', summary: 'Zero-emission passenger trains slash intercity travel times by over 45 percent.', source: 'The Guardian', time: '55m ago', url: 'https://www.theguardian.com' },
-        { title: 'Global health initiative eliminates endemic transmission in 12 countries', summary: 'Decades of coordinated public health efforts achieve historic eradication milestone.', source: 'WHO Dispatch', time: '2h ago', url: 'https://www.who.int' }
-      ],
-      tech: [
-        { title: 'Lightweight AI models run entirely on-device with zero latency', summary: 'Local neural inference guarantees user privacy without transmitting sensitive data to the cloud.', source: 'Wired', time: '15m ago', url: 'https://www.wired.com' },
-        { title: 'Breakthrough quantum processor achieves error mitigation milestone', summary: 'Fault-tolerant quantum computing moves closer to practical industrial chemistry applications.', source: 'TechCrunch', time: '40m ago', url: 'https://techcrunch.com' },
-        { title: 'Open-source web engines implement ultra-fast graphics rendering', summary: 'Next-gen standards deliver 120 FPS buttery-smooth canvas animations for productivity apps.', source: 'The Verge', time: '1h ago', url: 'https://www.theverge.com' }
-      ],
-      science: [
-        { title: 'Astronomers detect water vapor and organic molecules on distant exoplanet', summary: 'Atmospheric spectroscopy reveals rich prebiotic conditions 120 light-years away.', source: 'ScienceDaily', time: '35m ago', url: 'https://www.sciencedaily.com' },
-        { title: 'Deep sea exploration reveals vast microbial ecosystems in ocean trenches', summary: 'Chemosynthetic organisms offer clues to the origins of early life on Earth and icy moons.', source: 'Nature', time: '1h ago', url: 'https://www.nature.com' }
-      ],
-      goodnews: [
-        { title: 'Global ocean cleanup removes record 500 tons of plastic debris', summary: 'Ocean cleanup barriers successfully deploy recyclable circular material processing.', source: 'Good News Network', time: '20m ago', url: 'https://www.goodnewsnetwork.org' },
-        { title: 'Solar energy surpasses coal in major worldwide power grids', summary: 'Clean energy generation records exponential growth, dropping electricity costs worldwide.', source: 'Positive News', time: '45m ago', url: 'https://www.positive.news' },
-        { title: 'Community conservation restores endangered tiger and snow leopard habitats', summary: 'Wildlife populations rebound by 30% across protected national corridors in Asia.', source: 'Good News Network', time: '2h ago', url: 'https://www.goodnewsnetwork.org' }
-      ],
-      business: [
-        { title: 'Global trade outlook improves as supply chains stabilize', summary: 'Logistics indices show reduced freight costs and accelerated delivery times for manufacturers.', source: 'Bloomberg', time: '30m ago', url: 'https://www.bloomberg.com' },
-        { title: 'Green bond issuance sets new all-time record for sustainable projects', summary: 'Institutional investors channel billions into carbon-neutral cities and clean mobility.', source: 'Financial Times', time: '1h ago', url: 'https://www.ft.com' }
-      ],
-      sport: [
-        { title: 'World Athletics Championships announce innovative spectator experience', summary: 'Real-time biomechanical telemetry gives fans instant insights into athletic speed and stamina.', source: 'BBC Sport', time: '25m ago', url: 'https://www.bbc.com/sport' }
-      ],
-      culture: [
-        { title: 'World Music Festival unites artists from 60 countries in virtual harmony', summary: 'Global collaboration celebrates traditional acoustic instruments fused with ambient synthesis.', source: 'NPR Arts', time: '1h ago', url: 'https://www.npr.org' }
-      ]
-    },
-    at: {
-      top: [
-        { title: 'Österreich investiert 3 Milliarden Euro in den Bahnausbau', summary: 'Koralmbahn und Brenner-Zulaufstrecken verkürzen Reisezeiten im Alpenraum drastisch.', source: 'ORF News', time: 'vor 20 Min', url: 'https://orf.at' },
-        { title: 'Alpen-Wasserkraftwerke melden Rekord-Füllstände für saubere Energie', summary: 'Speicherkraftwerke in Tirol und Salzburg sichern stabile Stromversorgung zu günstigen Preisen.', source: 'Der Standard', time: 'vor 40 Min', url: 'https://www.derstandard.at' }
-      ],
-      tech: [
-        { title: 'Wiener Quantenphysik-Zentrum erzielt Meilenstein bei Teleportation', summary: 'Erfolgreiche photonische Verschränkung über mehrere Kilometer Glasfasernetz in Wien.', source: 'ORF Science', time: 'vor 30 Min', url: 'https://science.orf.at' }
-      ],
-      goodnews: [
-        { title: 'Österreichs Nationalparks verzeichnen Rückkehr seltener Bartgeier', summary: 'Erfolgreiche Wiederansiedlung stärkt das alpine Ökosystem in den Hohen Tauern.', source: 'Good News AT', time: 'vor 1 Std', url: 'https://goodnews.eu' }
-      ]
-    },
-    ch: {
-      top: [
-        { title: 'Schweiz stärkt Innovationsstandort mit neuem Biotech-Campus', summary: 'Spitzenforschung an ETH Zürich und EPFL Lausanne zieht internationale Talente an.', source: 'SRF News', time: 'vor 22 Min', url: 'https://www.srf.ch' },
-        { title: 'SBB baut Taktfahrplan im Fernverkehr und grenzüberschreitend aus', summary: 'Halbstundentakt auf allen Hauptachsen und komfortable Direktzüge nach Mailand und Paris.', source: 'NZZ', time: 'vor 50 Min', url: 'https://www.nzz.ch' }
-      ],
-      tech: [
-        { title: 'ETH-Forscher entwickeln biologisch abbaubare Micro-Chips', summary: 'Sensoren aus nachhaltigen Pflanzenfasern revolutionieren Medizintechnik und Logistik.', source: 'SRF Digital', time: 'vor 35 Min', url: 'https://www.srf.ch/news/digital' }
-      ],
-      goodnews: [
-        { title: 'Schweizer Solarpflicht auf Neubauten übertrifft alle Erwartungen', summary: 'Alpine Solaranlagen liefern besonders im Winter wertvollen Sonnenstrom in großen Mengen.', source: 'Good News CH', time: 'vor 1 Std', url: 'https://goodnews.eu' }
-      ]
-    },
-    gr: {
-      top: [
-        { title: 'Ηλιακή και αιολική ενέργεια καλύπτουν πάνω από το 60% της ζήτησης', summary: 'Ιστορικό ρεκόρ καθαρής ενέργειας στην Ελλάδα με σημαντική μείωση του κόστους.', source: 'ΕΡΤ News', time: 'πριν 15 λεπτά', url: 'https://www.ertnews.gr' },
-        { title: 'Εκσυγχρονισμός ψηφιακών υπηρεσιών για πολίτες και επιχειρήσεις', summary: 'Νέες αυτοματοποιημένες διαδικασίες εξοικονομούν χιλιάδες ώρες γραφειοκρατίας.', source: 'Kathimerini', time: 'πριν 40 λεπτά', url: 'https://www.kathimerini.gr' }
-      ],
-      tech: [
-        { title: 'Ελληνικές νεοφυείς επιχειρήσεις τεχνητής νοημοσύνης προσελκύουν διεθνή κεφάλαια', summary: 'Ανάπτυξη καινοτόμων λύσεων υγείας και ναυτιλίας στην Αθήνα και Θεσσαλονίκη.', source: 'Techblog GR', time: 'πριν 1 ώρα', url: 'https://techblog.gr' }
-      ],
-      goodnews: [
-        { title: 'Πρόγραμμα προστασίας θαλάσσιων χελωνών Caretta-Caretta σημειώνει ρεκόρ φωλιών', summary: 'Σημαντική αύξηση πληθυσμού στη Ζάκυνθο και την Κρήτη χάρη σε εθελοντικές δράσεις.', source: 'Good News GR', time: 'πριν 2 ώρες', url: 'https://www.ertnews.gr' }
-      ]
-    },
-    uk: {
-      top: [
-        { title: 'UK offshore wind farms generate record energy output', summary: 'Clean maritime wind turbines supply over 40% of peak electricity demand across Britain.', source: 'BBC UK', time: '20m ago', url: 'https://www.bbc.co.uk/news' }
-      ],
-      tech: [
-        { title: 'Cambridge researchers unveil ultra-efficient synthetic diamond semiconductors', summary: 'New thermal properties allow computers to operate faster with 70% less power consumption.', source: 'BBC Tech', time: '45m ago', url: 'https://www.bbc.co.uk/news/technology' }
-      ],
-      goodnews: [
-        { title: 'Ancient temperate rainforest restored in Western Scotland', summary: 'Thousands of native oak, hazel and birch trees naturally regenerate in protected glen.', source: 'Positive News UK', time: '1h ago', url: 'https://www.positive.news' }
-      ]
-    },
-    us: {
-      top: [
-        { title: 'Major infrastructure upgrades modernize nationwide electrical grid', summary: 'Smart grid interconnections enhance reliability and accelerate clean energy integration.', source: 'NPR News', time: '15m ago', url: 'https://www.npr.org' }
-      ],
-      tech: [
-        { title: 'Next-gen fusion energy experiment sustains positive net gain for 10 minutes', summary: 'Scientists confirm sustainable confinement plasma parameters at national laboratory.', source: 'TechCrunch', time: '30m ago', url: 'https://techcrunch.com' }
-      ],
-      goodnews: [
-        { title: 'Bald eagle populations reach historic all-time high across North America', summary: 'Decades of habitat preservation and river cleanups restore thriving wild raptor nesting pairs.', source: 'Good News Network US', time: '1h ago', url: 'https://www.goodnewsnetwork.org' }
-      ]
-    }
+    de: [
+      { title: 'EU beschließt neues Digitalpaket für Verbraucherschutz', summary: 'Strengere Transparenzregeln für Algorithmen und vereinfachte Kündigungen von Online-Abos ab sofort wirksam.', source: 'Tagesschau', category: 'top', time: 'vor 12 Min', url: 'https://www.tagesschau.de' },
+      { title: 'Investitionen in erneuerbare Energien erreichen Höchststand', summary: 'Über 58 Prozent des bundesweiten Strombedarfs stammten im letzten Quartal aus Wind- und Solarkraft.', source: 'Spiegel', category: 'top', time: 'vor 25 Min', url: 'https://www.spiegel.de' },
+      { title: 'Bahn erweitert Schnellfahrstrecken & Pünktlichkeitsoffensive', summary: 'Neue ICE-Verbindungen verkürzen Reisezeiten zwischen Berlin, Frankfurt und München spürbar.', source: 'Zeit Online', category: 'top', time: 'vor 45 Min', url: 'https://www.zeit.de' },
+      { title: 'Neues Open-Source KI-Modell läuft direkt lokal im Browser', summary: 'WebGPU ermöglicht blitzschnelle Sprachmodelle ohne Datenübertragung an fremde Server.', source: 'Heise', category: 'tech', time: 'vor 18 Min', url: 'https://www.heise.de' },
+      { title: 'Durchbruch bei Festkörper-Akkus: 1000 km Reichweite & 10 Min Ladezeit', summary: 'Neue Silizium-Anoden-Technologie verspricht längere Haltbarkeit und doppelte Energiedichte.', source: 'Heise', category: 'tech', time: 'vor 35 Min', url: 'https://www.heise.de' },
+      { title: 'James Webb Teleskop entdeckt bisher älteste bekannte Galaxie', summary: 'Die Galaxie entstand nur 290 Millionen Jahre nach dem Urknall und überrascht mit hoher Leuchtkraft.', source: 'Spektrum', category: 'science', time: 'vor 30 Min', url: 'https://www.spektrum.de' },
+      { title: 'Tiefsee-Expedition entdeckt über 100 neue Tierarten vor Chile', summary: 'Korallengärten und fluoreszierende Tiefsee-Organismen in bis zu 4000 Metern Tiefe dokumentiert.', source: 'Spektrum', category: 'science', time: 'vor 1 Std', url: 'https://www.spektrum.de' },
+      { title: 'Globale Wiederaufforstung verzeichnet 1 Million Hektar neuen Wald', summary: 'Internationale Naturschutzprojekte regenerieren erfolgreich artenreiche Mischwälder.', source: 'Good News DE', category: 'goodnews', time: 'vor 20 Min', url: 'https://goodnews.eu' },
+      { title: 'Meeresreinigung entfernt Rekordmenge an Plastik aus dem Pazifik', summary: 'Autonome Barrieren sammeln über 250 Tonnen Zivilisationsmüll zur Wiederverwertung.', source: 'Good News DE', category: 'goodnews', time: 'vor 40 Min', url: 'https://goodnews.eu' },
+      { title: 'Europäische Zentralbank signalisiert stabile Zinsentwicklung', summary: 'Inflation sinkt kontinuierlich in Richtung des 2-Prozent-Ziels, Kaufkraft der Verbraucher stabilisiert sich.', source: 'Handelsblatt', category: 'business', time: 'vor 25 Min', url: 'https://www.handelsblatt.com' },
+      { title: 'Gründer-Boom in Europa: Starkes Wachstum bei nachhaltigen Start-ups', summary: 'Investitionen in Cleantech, Bildung und KI-Software steigen im laufenden Quartal um 24 Prozent.', source: 'Handelsblatt', category: 'business', time: 'vor 50 Min', url: 'https://www.handelsblatt.com' },
+      { title: 'Kuratierte Kunstausstellung begeistert 100.000 Besucher in 2 Wochen', summary: 'Verbindung von klassischer Malerei und immersiven Lichtinstallationen setzt neue Maßstäbe.', source: 'Zeit Online', category: 'culture', time: 'vor 40 Min', url: 'https://www.zeit.de' }
+    ],
+    at: [
+      { title: 'Österreich investiert 3 Milliarden Euro in den Bahnausbau', summary: 'Koralmbahn und Brenner-Zulaufstrecken verkürzen Reisezeiten im Alpenraum drastisch.', source: 'ORF News', category: 'top', time: 'vor 20 Min', url: 'https://orf.at' },
+      { title: 'Alpen-Wasserkraftwerke melden Rekord-Füllstände für saubere Energie', summary: 'Speicherkraftwerke in Tirol und Salzburg sichern stabile Stromversorgung zu günstigen Preisen.', source: 'Der Standard', category: 'top', time: 'vor 40 Min', url: 'https://www.derstandard.at' },
+      { title: 'Wiener Quantenphysik-Zentrum erzielt Meilenstein bei Teleportation', summary: 'Erfolgreiche photonische Verschränkung über mehrere Kilometer Glasfasernetz in Wien.', source: 'ORF News', category: 'tech', time: 'vor 30 Min', url: 'https://science.orf.at' },
+      { title: 'Österreichs Nationalparks verzeichnen Rückkehr seltener Bartgeier', summary: 'Erfolgreiche Wiederansiedlung stärkt das alpine Ökosystem in den Hohen Tauern.', source: 'Good News AT', category: 'goodnews', time: 'vor 1 Std', url: 'https://goodnews.eu' },
+      { title: 'Kurier Wirtschaftsreport: Exportwirtschaft erholt sich kräftig', summary: 'Spezialisierter Maschinenbau und Green-Tech verzeichnen gefüllte Auftragsbücher.', source: 'Kurier', category: 'business', time: 'vor 1 Std', url: 'https://kurier.at' },
+      { title: 'Salzburger Festspiele kündigen wegweisendes Programm an', summary: 'Internationale Spitzenorchester und innovative Inszenierungen begeistern Klassik-Fans.', source: 'Die Presse', category: 'culture', time: 'vor 2 Std', url: 'https://www.diepresse.com' }
+    ],
+    ch: [
+      { title: 'Schweiz stärkt Innovationsstandort mit neuem Biotech-Campus', summary: 'Spitzenforschung an ETH Zürich und EPFL Lausanne zieht internationale Talente an.', source: 'SRF News', category: 'top', time: 'vor 22 Min', url: 'https://www.srf.ch' },
+      { title: 'SBB baut Taktfahrplan im Fernverkehr und grenzüberschreitend aus', summary: 'Halbstundentakt auf allen Hauptachsen und komfortable Direktzüge nach Mailand und Paris.', source: 'NZZ', category: 'top', time: 'vor 50 Min', url: 'https://www.nzz.ch' },
+      { title: 'ETH-Forscher entwickeln biologisch abbaubare Micro-Chips', summary: 'Sensoren aus nachhaltigen Pflanzenfasern revolutionieren Medizintechnik und Logistik.', source: 'SRF Digital', category: 'tech', time: 'vor 35 Min', url: 'https://www.srf.ch' },
+      { title: 'Schweizer Solarpflicht auf Neubauten übertrifft alle Erwartungen', summary: 'Alpine Solaranlagen liefern besonders im Winter wertvollen Sonnenstrom in großen Mengen.', source: 'Good News CH', category: 'goodnews', time: 'vor 1 Std', url: 'https://goodnews.eu' },
+      { title: 'Schweizer Franken stabilisiert sich bei solider Exportnachfrage', summary: 'Präzisionsindustrie und Pharmabranche melden stabiles Wachstum für das Gesamtjahr.', source: 'Tages-Anzeiger', category: 'business', time: 'vor 1 Std', url: 'https://www.tagesanzeiger.ch' },
+      { title: 'Montreux Jazz Festival kündigt legendäre Headliner an', summary: 'Akustische Meisterkonzerte am Genfersee mit weltweiten Musikerlegenden.', source: 'NZZ', category: 'culture', time: 'vor 3 Std', url: 'https://www.nzz.ch' }
+    ],
+    uk: [
+      { title: 'UK offshore wind farms generate record clean energy output', summary: 'Maritime wind turbines supply over 40% of peak electricity demand across Britain.', source: 'BBC News', category: 'top', time: '20m ago', url: 'https://www.bbc.co.uk/news' },
+      { title: 'Cambridge researchers unveil ultra-efficient synthetic diamond chips', summary: 'Thermal properties allow computers to operate faster with 70% less power consumption.', source: 'BBC News', category: 'tech', time: '45m ago', url: 'https://www.bbc.co.uk' },
+      { title: 'Ancient temperate rainforest restored in Western Scotland', summary: 'Thousands of native oak, hazel and birch trees naturally regenerate in protected glen.', source: 'Positive News', category: 'goodnews', time: '1h ago', url: 'https://www.positive.news' },
+      { title: 'Green bond issuance sets new all-time record in London financial markets', summary: 'Institutional investors channel billions into carbon-neutral cities and clean mobility.', source: 'Reuters UK', category: 'business', time: '1h ago', url: 'https://www.reuters.com' },
+      { title: 'Tate Modern unveils groundbreaking interactive contemporary showcase', summary: 'Immersive acoustic and visual installations captivate international art visitors.', source: 'The Guardian', category: 'culture', time: '2h ago', url: 'https://www.theguardian.com' },
+      { title: 'High-speed rail expansion reaches major engineering breakthrough', summary: 'Tunnel boring completed ahead of schedule with zero environmental disruption.', source: 'The Independent', category: 'top', time: '3h ago', url: 'https://www.independent.co.uk' }
+    ],
+    us: [
+      { title: 'Major infrastructure upgrades modernize nationwide electrical grid', summary: 'Smart grid interconnections enhance reliability and accelerate clean energy integration.', source: 'NPR News', category: 'top', time: '15m ago', url: 'https://www.npr.org' },
+      { title: 'Lightweight AI models run entirely on-device with zero cloud latency', summary: 'Local neural inference guarantees user privacy without transmitting sensitive data.', source: 'Wired', category: 'tech', time: '30m ago', url: 'https://techcrunch.com' },
+      { title: 'Breakthrough quantum processor achieves error mitigation milestone', summary: 'Fault-tolerant quantum computing moves closer to practical industrial chemistry.', source: 'TechCrunch', category: 'tech', time: '40m ago', url: 'https://techcrunch.com' },
+      { title: 'Bald eagle populations reach historic all-time high across North America', summary: 'Decades of habitat preservation and river cleanups restore thriving wild raptor pairs.', source: 'Good News Network', category: 'goodnews', time: '1h ago', url: 'https://www.goodnewsnetwork.org' },
+      { title: 'Clean tech investments surge across renewable manufacturing hubs', summary: 'Over 50 new battery and solar fabrication facilities begin commercial production.', source: 'CNBC', category: 'business', time: '1h ago', url: 'https://www.cnbc.com' },
+      { title: 'Smithsonian opens revolutionary digital archives to worldwide researchers', summary: 'Millions of 3D artifact models made freely accessible for global education.', source: 'Scientific American', category: 'science', time: '2h ago', url: 'https://www.sciam.com' }
+    ],
+    fr: [
+      { title: 'La France accélère son plan de transition énergétique et solaire', summary: 'Plus de 30% d électricité verte produite grâce aux nouveaux parcs éoliens maritimes.', source: 'France Info', category: 'top', time: 'il y a 20 min', url: 'https://www.francetvinfo.fr' },
+      { title: 'L écosystème IA français attire des investissements records à Paris', summary: 'Des modèles de langage ouverts et performants se développent rapidement.', source: 'Le Monde', category: 'tech', time: 'il y a 40 min', url: 'https://www.lemonde.fr' },
+      { title: 'Restauration réussie des forêts des Vosges et des Alpes', summary: 'Des millions d arbres adaptés au climat plantés avec succès par les gardes forestiers.', source: 'France Info', category: 'goodnews', time: 'il y a 1h', url: 'https://www.francetvinfo.fr' },
+      { title: 'Le TGV nouvelle génération entre en service sur l axe Atlantique', summary: 'Trains plus spacieux, silencieux et consommant 20% d énergie en moins.', source: 'Le Figaro', category: 'top', time: 'il y a 2h', url: 'https://www.lefigaro.fr' },
+      { title: 'Le secteur aérospatial européen signe des contrats majeurs', summary: 'Nouveaux satellites écologiques pour l observation précise des océans.', source: 'RFI', category: 'business', time: 'il y a 2h', url: 'https://www.rfi.fr' }
+    ],
+    es: [
+      { title: 'España lidera la generación europea con energía solar y eólica', summary: 'El 65% de la electricidad nacional procede de fuentes renovables limpias y competitivas.', source: 'RTVE', category: 'top', time: 'hace 15 min', url: 'https://www.rtve.es' },
+      { title: 'El tren de alta velocidad alcanza récords históricos de pasajeros', summary: 'Precios asequibles y conexiones directas reducen el tráfico por carretera en un 40%.', source: 'El País', category: 'top', time: 'hace 35 min', url: 'https://elpais.com' },
+      { title: 'Startups de biomedicina en Barcelona descubren nuevo tratamiento celular', summary: 'Avance terapéutico pionero contra enfermedades autoinmunes con alta eficacia.', source: 'El Mundo', category: 'tech', time: 'hace 1h', url: 'https://www.elmundo.es' },
+      { title: 'El lince ibérico consolida su recuperación con más de 2.000 ejemplares', summary: 'Éxito histórico de conservación ambiental en los parques naturales de Andalucía.', source: 'Agencia EFE', category: 'goodnews', time: 'hace 2h', url: 'https://efe.com' },
+      { title: 'El turismo cultural sostenible bate marcas de satisfacción en España', summary: 'Monumentos y museos adoptan nuevas tecnologías inmersivas de visita.', source: 'El País', category: 'culture', time: 'hace 3h', url: 'https://elpais.com' }
+    ],
+    it: [
+      { title: 'Italia approva il nuovo piano per l innovazione verde e digitale', summary: 'Investimenti strategici per modernizzare trasporti ferroviari ed energie pulite.', source: 'ANSA', category: 'top', time: '20 min fa', url: 'https://www.ansa.it' },
+      { title: 'Ricercatori di Milano sviluppano batterie al grafene ultra-veloci', summary: 'Ricarica completa in 5 minuti e ciclo di vita triplicato per dispositivi e mobilità.', source: 'Corriere della Sera', category: 'tech', time: '40 min fa', url: 'https://www.corriere.it' },
+      { title: 'I parchi nazionali italiani registrano un aumento della biodiversità', summary: 'Popolazioni di aquile e camosci in crescita stabile nelle Alpi e negli Appennini.', source: 'ANSA', category: 'goodnews', time: '1 ora fa', url: 'https://www.ansa.it' },
+      { title: 'L export del design e della tecnologia italiana cresce del 12%', summary: 'Grande richiesta globale per arredo sostenibile, meccanica di precisione e moda etica.', source: 'La Repubblica', category: 'business', time: '2 ore fa', url: 'https://www.repubblica.it' },
+      { title: 'La Biennale d Arte apre le porte con installazioni eco-sostenibili', summary: 'Centinaia di artisti internazionali celebrano l armonia tra uomo e natura a Venezia.', source: 'Rai News', category: 'culture', time: '3 ore fa', url: 'https://www.rainews.it' }
+    ],
+    gr: [
+      { title: 'Ηλιακή και αιολική ενέργεια καλύπτουν πάνω από το 60% της ζήτησης', summary: 'Ιστορικό ρεκόρ καθαρής ενέργειας στην Ελλάδα με σημαντική μείωση του κόστους.', source: 'ΕΡΤ News', category: 'top', time: 'πριν 15 λεπτά', url: 'https://www.ertnews.gr' },
+      { title: 'Εκσυγχρονισμός ψηφιακών υπηρεσιών για πολίτες και επιχειρήσεις', summary: 'Νέες αυτοματοποιημένες διαδικασίες εξοικονομούν χιλιάδες ώρες γραφειοκρατίας.', source: 'Kathimerini', category: 'top', time: 'πριν 40 λεπτά', url: 'https://www.kathimerini.gr' },
+      { title: 'Ελληνικές νεοφυείς επιχειρήσεις τεχνητής νοημοσύνης προσελκύουν διεθνή κεφάλαια', summary: 'Ανάπτυξη καινοτόμων λύσεων υγείας και ναυτιλίας στην Αθήνα και Θεσσαλονίκη.', source: 'Techblog GR', category: 'tech', time: 'πριν 1 ώρα', url: 'https://techblog.gr' },
+      { title: 'Πρόγραμμα προστασίας θαλάσσιων χελωνών Caretta-Caretta σημειώνει ρεκόρ φωλιών', summary: 'Σημαντική αύξηση πληθυσμού στη Ζάκυνθο και την Κρήτη χάρη σε εθελοντικές δράσεις.', source: 'ΕΡΤ News', category: 'goodnews', time: 'πριν 2 ώρες', url: 'https://www.ertnews.gr' },
+      { title: 'Ανάπτυξη του ελληνικού τουρισμού με έμφαση στη βιωσιμότητα και τον πολιτισμό', summary: 'Επέκταση της τουριστικής περιόδου σε όλη τη διάρκεια του έτους.', source: 'Capital.gr', category: 'business', time: 'πριν 2 ώρες', url: 'https://www.capital.gr' }
+    ],
+    global: [
+      { title: 'Global Climate Accord unlocks record funding for green infrastructure', summary: 'Over 80 nations commit to accelerating solar, wind, and battery storage rollouts.', source: 'BBC World', category: 'top', time: '10m ago', url: 'https://www.bbc.com/news' },
+      { title: 'International Space Station marks 25 years of human presence in orbit', summary: 'Astronauts and scientists celebrate a quarter-century of breakthroughs in microgravity.', source: 'Reuters', category: 'top', time: '28m ago', url: 'https://www.reuters.com' },
+      { title: 'On-device AI breakthrough guarantees zero-cloud neural inference', summary: 'Privacy-first computing architecture delivers instant voice transcription with zero latency.', source: 'Wired', category: 'tech', time: '15m ago', url: 'https://www.wired.com' },
+      { title: 'Deep sea exploration discovers 100+ new marine species in Pacific ridge', summary: 'Glowing coral ecosystems and unique marine flora documented at 4,000m depth.', source: 'Nature', category: 'science', time: '1h ago', url: 'https://www.nature.com' },
+      { title: 'Global ocean cleanup removes record 500 tons of plastic debris', summary: 'Autonomous ocean barriers deploy closed-loop recycling into sustainable materials.', source: 'Good News Network', category: 'goodnews', time: '20m ago', url: 'https://www.goodnewsnetwork.org' },
+      { title: 'Renewable energy surpasses coal in major worldwide power grids', summary: 'Clean energy generation records exponential growth, dropping electricity costs globally.', source: 'Good News Network', category: 'goodnews', time: '45m ago', url: 'https://www.positive.news' }
+    ]
   };
 
   // ============================================================================
-  // 2. STATE MANAGEMENT & AUDIO / TTS ENGINES
+  // 2. STATE & AUTO LOCATION DETECTION
   // ============================================================================
+
+  function detectUserRegion() {
+    const saved = localStorage.getItem('flow_news_region');
+    if (saved && REGIONS.some(r => r.id === saved)) {
+      return saved;
+    }
+    // Check weather location
+    try {
+      const weatherLoc = JSON.parse(localStorage.getItem('flow_weather_loc') || 'null');
+      if (weatherLoc) {
+        const s = ((weatherLoc.country || '') + ' ' + (weatherLoc.name || '')).toLowerCase();
+        if (s.includes('österreich') || s.includes('austria') || s.includes('wien') || s.includes('salzburg') || s.includes('graz')) return 'at';
+        if (s.includes('schweiz') || s.includes('switzerland') || s.includes('suisse') || s.includes('zürich') || s.includes('bern')) return 'ch';
+        if (s.includes('deutschland') || s.includes('germany') || s.includes('berlin') || s.includes('münchen') || s.includes('hamburg')) return 'de';
+        if (s.includes('united kingdom') || s.includes('london') || s.includes('uk')) return 'uk';
+        if (s.includes('united states') || s.includes('usa') || s.includes('new york')) return 'us';
+        if (s.includes('france') || s.includes('paris') || s.includes('lyon')) return 'fr';
+        if (s.includes('españa') || s.includes('spain') || s.includes('madrid')) return 'es';
+        if (s.includes('italia') || s.includes('italy') || s.includes('roma') || s.includes('milano')) return 'it';
+        if (s.includes('greece') || s.includes('ελλάδα') || s.includes('athens')) return 'gr';
+      }
+    } catch (e) {}
+
+    // Check browser language
+    try {
+      const navLang = (navigator.language || '').toLowerCase();
+      if (navLang.includes('de-at')) return 'at';
+      if (navLang.includes('de-ch')) return 'ch';
+      if (navLang.startsWith('de')) return 'de';
+      if (navLang.includes('en-gb') || navLang.includes('en-uk')) return 'uk';
+      if (navLang.startsWith('en')) return 'us';
+      if (navLang.startsWith('fr')) return 'fr';
+      if (navLang.startsWith('es')) return 'es';
+      if (navLang.startsWith('it')) return 'it';
+      if (navLang.startsWith('el')) return 'gr';
+    } catch (e) {}
+
+    const appLang = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'de';
+    if (appLang === 'de') return 'de';
+    if (appLang === 'fr') return 'fr';
+    if (appLang === 'es') return 'es';
+    if (appLang === 'it') return 'it';
+    if (appLang === 'el') return 'gr';
+    return 'de';
+  }
 
   let currentStationId = localStorage.getItem('flow_radio_station') || 'dlf';
   let isRadioPlaying = false;
   let radioVolume = parseFloat(localStorage.getItem('flow_radio_vol') || '0.7');
   let radioAudioEl = null;
 
-  let currentRegion = localStorage.getItem('flow_news_region') || 'de';
-  let currentCategory = localStorage.getItem('flow_news_cat') || 'top';
-  let activeTab = 'radio'; // 'radio' | 'news'
+  let currentRegion = detectUserRegion();
+  let currentMedia = 'all';
+  let currentCategory = 'all';
+  let searchQuery = '';
+  let activeTab = 'news'; // Default to clean news lounge!
 
-  // Text-to-Speech (TTS) State
+  // TTS State
   let isSpeakingQueue = false;
   let isTtsPaused = false;
   let currentSpeakingIndex = -1;
-  let speechRate = parseFloat(localStorage.getItem('flow_news_speech_rate') || '1.2'); // 1.2x speed default for snackable listening!
+  let speechRate = parseFloat(localStorage.getItem('flow_news_speech_rate') || '1.15');
   let currentNewsItems = [];
   let isLiveFetching = false;
-  let cachedNewsByRegionCat = {};
+  let cachedNewsByRegion = {};
 
-  // Audio Equalizer Visualizer simulation
-  let visualizerInterval = null;
+  // ============================================================================
+  // 3. RADIO PLAYER CORE
+  // ============================================================================
 
-  // Initialize Audio Element for Radio
   function getRadioAudio() {
     if (!radioAudioEl) {
       radioAudioEl = new Audio();
@@ -295,44 +308,24 @@
       radioAudioEl.addEventListener('playing', () => {
         isRadioPlaying = true;
         updateRadioUIState(true);
-        updateRadioBufferingUI(false);
       });
-
       radioAudioEl.addEventListener('pause', () => {
         isRadioPlaying = false;
         updateRadioUIState(false);
       });
-
-      radioAudioEl.addEventListener('waiting', () => {
-        updateRadioBufferingUI(true);
-      });
-
-      radioAudioEl.addEventListener('canplay', () => {
-        updateRadioBufferingUI(false);
-      });
-
       radioAudioEl.addEventListener('error', (e) => {
-        console.warn('[Radio Engine] Stream playback error:', e);
+        console.warn('[Radio Engine] Stream error:', e);
         isRadioPlaying = false;
         updateRadioUIState(false);
-        updateRadioBufferingUI(false);
-        if (typeof showToast === 'function') {
-          showToast(tr({ de: 'Radiosender konnte nicht geladen werden. Probiere einen anderen Sender.', en: 'Radio station could not be loaded. Please try another.' }));
-        }
       });
     }
     return radioAudioEl;
   }
 
-  // ============================================================================
-  // 3. RADIO PLAYER CONTROLS
-  // ============================================================================
-
   function playRadioStation(stationId) {
     const station = RADIO_STATIONS.find(s => s.id === stationId);
     if (!station) return;
 
-    // 1. Wenn der aktuelle Sender bereits läuft und erneut geklickt wird -> Pause
     if (currentStationId === stationId && isRadioPlaying && radioAudioEl) {
       toggleRadioPlayback();
       return;
@@ -341,49 +334,27 @@
     currentStationId = stationId;
     localStorage.setItem('flow_radio_station', stationId);
 
-    // 2. TTS stoppen, falls aktiv
-    if (isSpeakingQueue) {
-      stopNewsReader();
-    }
+    if (isSpeakingQueue) stopNewsReader();
 
     const audio = getRadioAudio();
     try {
-      // Alten Stream und Buffer sauber stoppen
       audio.pause();
-      audio.removeAttribute('src');
       audio.src = station.stream;
       audio.load();
       audio.volume = radioVolume;
-
-      updateRadioBufferingUI(true);
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
-          isRadioPlaying = true;
-          updateRadioUIState(true);
-          updateRadioBufferingUI(false);
-          startVisualizerAnimation();
-          if (typeof updateMediaSession === 'function') {
-            updateMediaSession(station.name, 'Flow Live Radio', station.desc);
-          }
-          if (typeof navigator !== 'undefined' && 'mediaSession' in navigator) {
-            try { navigator.mediaSession.playbackState = 'playing'; } catch (e) {}
-          }
-          if (typeof showToast === 'function') {
-            showToast(`📻 ${station.flag} ${station.name}: Live`);
-          }
-        }).catch(err => {
-          console.warn('[Radio Engine] Autoplay restriction or network error:', err);
-          isRadioPlaying = false;
-          updateRadioUIState(false);
-          updateRadioBufferingUI(false);
-        });
-      }
+      audio.play().then(() => {
+        isRadioPlaying = true;
+        updateRadioUIState(true);
+        if (typeof showToast === 'function') {
+          showToast(`📻 ${station.flag} ${station.name}`);
+        }
+      }).catch(() => {
+        isRadioPlaying = false;
+        updateRadioUIState(false);
+      });
     } catch (err) {
-      console.error('[Radio Engine] Play error:', err);
       isRadioPlaying = false;
       updateRadioUIState(false);
-      updateRadioBufferingUI(false);
     }
     renderRadioPanelContent();
   }
@@ -393,7 +364,6 @@
     if (isRadioPlaying) {
       audio.pause();
       isRadioPlaying = false;
-      stopVisualizerAnimation();
       updateRadioUIState(false);
     } else {
       playRadioStation(currentStationId);
@@ -406,230 +376,407 @@
     localStorage.setItem('flow_radio_vol', radioVolume.toString());
     const audio = getRadioAudio();
     audio.volume = radioVolume;
-    const volDisplay = document.getElementById('radio-volume-display');
-    if (volDisplay) volDisplay.textContent = Math.round(radioVolume * 100) + '%';
-    const slider = document.getElementById('radio-volume-slider');
-    if (slider) slider.value = radioVolume;
-  }
-
-  function updateRadioBufferingUI(isBuffering) {
-    const statusBadge = document.getElementById('radio-status-badge');
-    if (statusBadge) {
-      if (isBuffering) {
-        statusBadge.textContent = 'Pufferung...';
-        statusBadge.className = 'px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse';
-      } else if (isRadioPlaying) {
-        statusBadge.textContent = 'LIVE';
-        statusBadge.className = 'px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse';
-      }
-    }
   }
 
   function updateRadioUIState(isPlaying) {
-    // 1. Play/Pause buttons in panel (both master button in header and modal main button)
-    const masterPlayBtn = document.getElementById('radio-master-play-btn');
-    const masterPlayLabel = document.getElementById('radio-master-btn-label');
-    if (masterPlayBtn) {
-      if (masterPlayLabel) masterPlayLabel.textContent = isPlaying ? 'Pause' : 'Play';
-      const icon = masterPlayBtn.querySelector('[data-lucide]');
-      if (icon) icon.setAttribute('data-lucide', isPlaying ? 'pause' : 'play');
-    }
-
     const playBtn = document.getElementById('radio-main-play-btn');
     if (playBtn) {
       playBtn.innerHTML = isPlaying 
-        ? '<i data-lucide="pause" class="w-5 h-5 fill-white"></i>' 
-        : '<i data-lucide="play" class="w-5 h-5 fill-white ml-0.5"></i>';
-    }
-
-    // 2. Header / Dock live pulse badges
-    const dockBadge = document.getElementById('dock-radio-live-badge');
-    if (dockBadge) {
-      if (isPlaying) dockBadge.classList.remove('hidden');
-      else dockBadge.classList.add('hidden');
-    }
-
-    const headerBadge = document.getElementById('header-radio-live-badge');
-    if (headerBadge) {
-      if (isPlaying) headerBadge.classList.remove('hidden');
-      else headerBadge.classList.add('hidden');
-    }
-
-    const liveDot = document.getElementById('radio-live-dot');
-    if (liveDot) {
-      liveDot.className = isPlaying ? 'w-2 h-2 rounded-full bg-rose-500 animate-ping' : 'w-2 h-2 rounded-full bg-rose-500/40';
-    }
-
-    const nowPlayingText = document.getElementById('radio-now-playing-label') || document.getElementById('radio-now-playing-title');
-    if (nowPlayingText) {
-      const station = RADIO_STATIONS.find(s => s.id === currentStationId);
-      nowPlayingText.textContent = station ? (isPlaying ? `${station.flag} ${station.name}` : `Bereit: ${station.name}`) : 'Kein Sender gewählt';
-    }
-
-    const statusBadge = document.getElementById('radio-status-badge');
-    if (statusBadge) {
-      statusBadge.textContent = isPlaying ? 'LIVE' : 'BEREIT';
-      statusBadge.className = isPlaying
-        ? 'px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse'
-        : 'px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-white/10 text-gray-400 border border-white/10';
+        ? '<i data-lucide="pause" class="w-4 h-4 fill-white"></i>' 
+        : '<i data-lucide="play" class="w-4 h-4 fill-white ml-0.5"></i>';
     }
     if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
   }
 
-  function startVisualizerAnimation() {
-    stopVisualizerAnimation();
-    const bars = document.querySelectorAll('.radio-eq-bar');
-    if (bars.length === 0) return;
-    visualizerInterval = setInterval(() => {
-      if (!isRadioPlaying) return;
-      bars.forEach(bar => {
-        const height = Math.floor(Math.random() * 85) + 15;
-        bar.style.height = `${height}%`;
-      });
-    }, 120);
-  }
-
-  function stopVisualizerAnimation() {
-    if (visualizerInterval) {
-      clearInterval(visualizerInterval);
-      visualizerInterval = null;
-    }
-    const bars = document.querySelectorAll('.radio-eq-bar');
-    bars.forEach(bar => {
-      bar.style.height = '15%';
-    });
-  }
-
   // ============================================================================
-  // 4. NEWS AGGREGATOR & LIVE RSS FETCHER
+  // 4. NEWS AGGREGATOR & LIVE PROXY FETCHER
   // ============================================================================
 
-  async function fetchNewsForRegionCat(region, cat, forceRefresh = false) {
-    const cacheKey = `${region}_${cat}`;
-    if (!forceRefresh && cachedNewsByRegionCat[cacheKey] && cachedNewsByRegionCat[cacheKey].length > 0) {
-      currentNewsItems = cachedNewsByRegionCat[cacheKey];
-      renderNewsContent();
+  async function fetchNewsForRegion(region, forceRefresh = false) {
+    if (!forceRefresh && cachedNewsByRegion[region] && cachedNewsByRegion[region].length > 0) {
+      applyFilterAndRender();
       return;
     }
 
-    // Default to curated instant fallback
-    let fallbackList = (FALLBACK_NEWS_DATABASE[region] && FALLBACK_NEWS_DATABASE[region][cat]) ||
-                       (FALLBACK_NEWS_DATABASE[region] && FALLBACK_NEWS_DATABASE[region].top) ||
-                       (FALLBACK_NEWS_DATABASE.de[cat]) ||
-                       FALLBACK_NEWS_DATABASE.de.top;
-    
+    // Default to rich curated fallback
+    const fallbackList = FALLBACK_NEWS_DATABASE[region] || FALLBACK_NEWS_DATABASE.de || [];
     currentNewsItems = [...fallbackList];
-    renderNewsContent();
+    applyFilterAndRender();
 
-    // Try fetching live RSS via CORS proxy if online
-    if (typeof navigator !== 'undefined' && navigator.onLine && NEWS_FEEDS[region] && NEWS_FEEDS[region][cat]) {
-      const feedConfig = NEWS_FEEDS[region][cat];
-      isLiveFetching = true;
-      updateNewsFetchIndicator(true);
+    // Try fetching live RSS for the region's main sources if online
+    if (typeof navigator !== 'undefined' && navigator.onLine && LOCAL_MEDIA_OUTLETS[region]) {
+      const outlets = LOCAL_MEDIA_OUTLETS[region].filter(o => o.rss);
+      if (outlets.length > 0) {
+        isLiveFetching = true;
+        updateNewsFetchIndicator(true);
 
-      try {
-        const rssUrl = feedConfig.rss;
-        const proxyUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}&api_key=`;
-        
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 4500);
+        try {
+          const targetOutlet = outlets[0];
+          const proxyUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(targetOutlet.rss)}&api_key=`;
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 4000);
 
-        const res = await fetch(proxyUrl, { signal: controller.signal });
-        clearTimeout(timeoutId);
+          const res = await fetch(proxyUrl, { signal: controller.signal });
+          clearTimeout(timeoutId);
 
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.items && data.items.length > 0) {
-            const parsed = data.items.slice(0, 8).map((item) => {
-              // Strip HTML tags for clean bullet-point summary
-              const cleanDesc = (item.description || item.content || '')
-                .replace(/<[^>]*>?/gm, '')
-                .replace(/&nbsp;/g, ' ')
-                .replace(/&amp;/g, '&')
-                .trim();
-              const shortSummary = cleanDesc.length > 150 ? cleanDesc.slice(0, 147) + '...' : cleanDesc;
-              
-              // Calculate relative time
-              let timeLabel = 'Heute';
-              if (item.pubDate) {
-                const diffMins = Math.round((Date.now() - new Date(item.pubDate).getTime()) / 60000);
-                if (diffMins > 0 && diffMins < 60) timeLabel = `vor ${diffMins} Min`;
-                else if (diffMins >= 60 && diffMins < 1440) timeLabel = `vor ${Math.round(diffMins/60)} Std`;
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.items && data.items.length > 0) {
+              const parsed = data.items.slice(0, 14).map((item, idx) => {
+                const cleanDesc = (item.description || item.content || '')
+                  .replace(/<[^>]*>?/gm, '')
+                  .replace(/&nbsp;/g, ' ')
+                  .replace(/&amp;/g, '&')
+                  .trim();
+                const shortSummary = cleanDesc.length > 170 ? cleanDesc.slice(0, 167) + '...' : cleanDesc;
+
+                let timeLabel = 'vorhin';
+                if (item.pubDate) {
+                  const diffMins = Math.round((Date.now() - new Date(item.pubDate).getTime()) / 60000);
+                  if (diffMins > 0 && diffMins < 60) timeLabel = `vor ${diffMins}m`;
+                  else if (diffMins >= 60 && diffMins < 1440) timeLabel = `vor ${Math.round(diffMins/60)}h`;
+                }
+
+                return {
+                  title: item.title.trim(),
+                  summary: shortSummary || item.title,
+                  source: data.feed?.title?.split('-')[0]?.trim() || targetOutlet.name,
+                  category: idx % 3 === 0 ? 'top' : (idx % 3 === 1 ? 'tech' : 'science'),
+                  time: timeLabel,
+                  url: item.link || '#'
+                };
+              });
+
+              if (parsed.length > 0) {
+                // Merge with fallback items to guarantee rich multi-category diversity
+                const combined = [...parsed, ...fallbackList];
+                const seenTitles = new Set();
+                const uniqueItems = combined.filter(it => {
+                  if (seenTitles.has(it.title.toLowerCase())) return false;
+                  seenTitles.add(it.title.toLowerCase());
+                  return true;
+                });
+
+                currentNewsItems = uniqueItems;
+                cachedNewsByRegion[region] = uniqueItems;
+                applyFilterAndRender();
               }
-
-              return {
-                title: item.title.trim(),
-                summary: shortSummary || item.title,
-                source: data.feed?.title || feedConfig.name,
-                time: timeLabel,
-                url: item.link || '#'
-              };
-            });
-
-            if (parsed.length > 0) {
-              currentNewsItems = parsed;
-              cachedNewsByRegionCat[cacheKey] = parsed;
-              renderNewsContent();
             }
           }
+        } catch (err) {
+          // Keep rich curated fallback
+        } finally {
+          isLiveFetching = false;
+          updateNewsFetchIndicator(false);
         }
-      } catch (err) {
-        // Silently use rich fallback database
-        console.log('[News Feed] Using high-quality curated preset fallback for', region, cat);
-      } finally {
-        isLiveFetching = false;
-        updateNewsFetchIndicator(false);
       }
     }
   }
 
   function updateNewsFetchIndicator(isFetching) {
-    const badge = document.getElementById('news-refresh-indicator');
-    if (badge) {
+    const indicator = document.getElementById('news-live-indicator');
+    if (indicator) {
       if (isFetching) {
-        badge.classList.remove('hidden');
+        indicator.classList.remove('hidden');
       } else {
-        badge.classList.add('hidden');
+        indicator.classList.add('hidden');
       }
     }
   }
 
   // ============================================================================
-  // 5. TEXT-TO-SPEECH (TTS) AUDIO READER (Hands-Free News Experience)
+  // 5. FILTER & DISPLAY LOGIC
+  // ============================================================================
+
+  function selectRegion(regionId) {
+    currentRegion = regionId;
+    currentMedia = 'all';
+    localStorage.setItem('flow_news_region', regionId);
+    stopNewsReader();
+    renderRegionFlags();
+    renderMediaChips();
+    fetchNewsForRegion(currentRegion);
+  }
+
+  function selectMedia(mediaId) {
+    currentMedia = mediaId;
+    stopNewsReader();
+    renderMediaChips();
+    applyFilterAndRender();
+  }
+
+  function selectCategory(catId) {
+    currentCategory = catId;
+    stopNewsReader();
+    renderCategoryChips();
+    applyFilterAndRender();
+  }
+
+  function handleNewsSearch(val) {
+    searchQuery = (val || '').trim().toLowerCase();
+    applyFilterAndRender();
+  }
+
+  function getFilteredNewsItems() {
+    let items = currentNewsItems.length > 0 ? currentNewsItems : (FALLBACK_NEWS_DATABASE[currentRegion] || FALLBACK_NEWS_DATABASE.de || []);
+    
+    // 1. Filter by category
+    if (currentCategory && currentCategory !== 'all') {
+      items = items.filter(it => it.category === currentCategory);
+    }
+
+    // 2. Filter by local media outlet
+    if (currentMedia && currentMedia !== 'all') {
+      const outlets = LOCAL_MEDIA_OUTLETS[currentRegion] || [];
+      const outletObj = outlets.find(o => o.id === currentMedia);
+      if (outletObj && outletObj.match) {
+        items = items.filter(it => {
+          const srcLower = (it.source || '').toLowerCase();
+          return outletObj.match.some(m => srcLower.includes(m));
+        });
+      }
+    }
+
+    // 3. Filter by search query
+    if (searchQuery) {
+      items = items.filter(it => 
+        (it.title || '').toLowerCase().includes(searchQuery) ||
+        (it.summary || '').toLowerCase().includes(searchQuery) ||
+        (it.source || '').toLowerCase().includes(searchQuery)
+      );
+    }
+
+    return items;
+  }
+
+  function applyFilterAndRender() {
+    const items = getFilteredNewsItems();
+    renderNewsCards(items);
+    renderTickerMarquee(items);
+    updateItemsCount(items.length);
+  }
+
+  function updateItemsCount(count) {
+    const el = document.getElementById('news-count-badge');
+    if (el) {
+      el.textContent = `${count} Meldungen`;
+    }
+  }
+
+  // ============================================================================
+  // 6. UI RENDERING (MINIMAL, CALM, HIGH-END)
+  // ============================================================================
+
+  function renderRegionFlags() {
+    const container = document.getElementById('news-region-selector');
+    if (!container) return;
+
+    container.innerHTML = REGIONS.map(reg => {
+      const isSelected = reg.id === currentRegion;
+      return `
+        <button onclick="RadioNewsEngine.selectRegion('${reg.id}')" class="px-2 py-1 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer select-none shrink-0 ${
+          isSelected 
+            ? 'bg-purple-500/25 text-white border border-purple-400/60 shadow-[0_0_12px_rgba(168,85,247,0.25)] font-bold' 
+            : 'bg-white/[0.03] hover:bg-white/[0.08] text-gray-400 hover:text-gray-200 border border-white/8 font-medium'
+        }">
+          <span class="text-sm leading-none">${reg.flag}</span>
+          <span class="text-[11px] whitespace-nowrap">${reg.name}</span>
+        </button>
+      `;
+    }).join('');
+  }
+
+  function renderMediaChips() {
+    const container = document.getElementById('news-media-selector');
+    if (!container) return;
+
+    const outlets = LOCAL_MEDIA_OUTLETS[currentRegion] || LOCAL_MEDIA_OUTLETS.de || [];
+    container.innerHTML = outlets.map(outlet => {
+      const isSelected = outlet.id === currentMedia;
+      return `
+        <button onclick="RadioNewsEngine.selectMedia('${outlet.id}')" class="px-2.5 py-0.5 rounded-lg text-[10px] transition-all flex items-center gap-1 cursor-pointer select-none shrink-0 ${
+          isSelected 
+            ? 'bg-teal-500/25 text-teal-200 border border-teal-400/50 font-bold shadow-xs' 
+            : 'bg-white/[0.02] hover:bg-white/[0.06] text-gray-400 hover:text-gray-200 border border-white/5 font-normal'
+        }">
+          ${outlet.icon ? `<span>${outlet.icon}</span>` : ''}
+          <span class="whitespace-nowrap">${outlet.name}</span>
+        </button>
+      `;
+    }).join('');
+  }
+
+  function renderCategoryChips() {
+    const container = document.getElementById('news-category-selector');
+    if (!container) return;
+
+    container.innerHTML = CATEGORIES.map(cat => {
+      const isSelected = cat.id === currentCategory;
+      return `
+        <button onclick="RadioNewsEngine.selectCategory('${cat.id}')" class="px-2.5 py-1 rounded-xl text-[11px] transition-all flex items-center gap-1 cursor-pointer select-none shrink-0 ${
+          isSelected 
+            ? 'bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-white border border-purple-400/50 font-bold shadow-xs' 
+            : 'bg-white/[0.03] hover:bg-white/[0.08] text-gray-400 hover:text-gray-200 border border-white/8 font-medium'
+        }">
+          <span>${cat.emoji}</span>
+          <span class="whitespace-nowrap">${cat.name}</span>
+        </button>
+      `;
+    }).join('');
+  }
+
+  function renderTickerMarquee(items) {
+    const tickerContainer = document.getElementById('news-marquee-text');
+    if (!tickerContainer) return;
+
+    if (!items || items.length === 0) {
+      tickerContainer.innerHTML = '<span class="text-xs text-gray-500 italic">Keine aktuellen Meldungen</span>';
+      return;
+    }
+
+    tickerContainer.innerHTML = items.slice(0, 10).map((it, idx) => `
+      <span class="inline-flex items-center gap-1.5 mx-3.5 text-xs text-gray-300 hover:text-white transition cursor-pointer" onclick="RadioNewsEngine.startNewsReader(${idx})">
+        <span class="w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0"></span>
+        <span class="font-medium text-gray-200 hover:underline truncate max-w-[260px]">${it.title}</span>
+        <span class="text-[9px] text-gray-500 font-mono">(${it.source})</span>
+      </span>
+    `).join('');
+  }
+
+  function renderNewsCards(items) {
+    const listContainer = document.getElementById('news-items-container');
+    if (!listContainer) return;
+
+    if (!items || items.length === 0) {
+      listContainer.innerHTML = `
+        <div class="col-span-full py-12 text-center text-gray-400 space-y-2">
+          <div class="text-2xl">🌿</div>
+          <div class="text-xs font-medium">Keine Meldungen für diese Filterauswahl gefunden.</div>
+          <button onclick="RadioNewsEngine.selectCategory('all'); RadioNewsEngine.selectMedia('all');" class="px-3 py-1 bg-white/5 hover:bg-white/10 rounded-xl text-xs text-purple-300 font-semibold transition cursor-pointer">Filter zurücksetzen</button>
+        </div>
+      `;
+      return;
+    }
+
+    listContainer.innerHTML = items.map((item, idx) => `
+      <div id="news-card-${idx}" class="news-item-card p-3 rounded-2xl bg-[#12131e]/90 hover:bg-[#181928] border border-white/[0.08] hover:border-white/20 transition-all flex flex-col justify-between gap-2 text-left relative group">
+        
+        <!-- Card Header: Source Badge + Time + Controls -->
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <span class="px-2 py-0.5 rounded-md bg-white/[0.06] text-purple-200 border border-white/10 text-[9px] font-semibold font-mono tracking-wide truncate">${item.source}</span>
+            <span class="text-[9px] text-gray-500 font-mono shrink-0">${item.time}</span>
+          </div>
+          <div class="flex items-center gap-1 shrink-0">
+            <button onclick="RadioNewsEngine.startNewsReader(${idx})" class="p-1 rounded-lg bg-white/[0.04] hover:bg-purple-500/20 text-gray-400 hover:text-purple-300 transition cursor-pointer" title="Diesen Artikel vorlesen">
+              <i data-lucide="volume-2" class="w-3.5 h-3.5 news-speaker-icon"></i>
+            </button>
+            ${item.url && item.url !== '#' ? `
+              <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="p-1 rounded-lg bg-white/[0.04] hover:bg-white/15 text-gray-400 hover:text-white transition" title="Originalquelle öffnen">
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              </a>
+            ` : ''}
+          </div>
+        </div>
+
+        <!-- Headline & Summary -->
+        <div class="space-y-1">
+          <h4 class="text-xs font-bold text-white group-hover:text-purple-200 transition-colors leading-snug line-clamp-2">${item.title}</h4>
+          <p class="text-[11px] text-gray-400 group-hover:text-gray-300 leading-relaxed font-normal line-clamp-3">${item.summary}</p>
+        </div>
+
+        <!-- Bottom Tag -->
+        <div class="flex items-center justify-between pt-1 border-t border-white/[0.04] text-[9px] text-gray-500">
+          <span class="capitalize">${item.category ? '#' + item.category : '#news'}</span>
+          <button onclick="RadioNewsEngine.startNewsReader(${idx})" class="text-purple-300/80 hover:text-purple-200 hover:underline cursor-pointer flex items-center gap-0.5 text-[9px]">
+            <span>Anhören</span>
+            <i data-lucide="chevron-right" class="w-2.5 h-2.5"></i>
+          </button>
+        </div>
+      </div>
+    `).join('');
+
+    if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
+  }
+
+  function renderRadioPanelContent() {
+    const container = document.getElementById('radio-stations-list');
+    if (!container) return;
+
+    container.innerHTML = RADIO_STATIONS.map(s => {
+      const isCurrent = s.id === currentStationId;
+      const isLive = isCurrent && isRadioPlaying;
+
+      return `
+        <div onclick="RadioNewsEngine.playRadioStation('${s.id}')" class="p-2.5 rounded-2xl border transition cursor-pointer flex items-center justify-between gap-3 group ${
+          isCurrent 
+            ? 'bg-purple-500/15 border-purple-500/40 shadow-sm' 
+            : 'bg-white/[0.02] hover:bg-white/[0.05] border-white/8'
+        }">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-8 h-8 rounded-xl flex items-center justify-center text-base shrink-0 ${
+              isCurrent ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'bg-white/5 text-gray-300 border border-white/10'
+            }">
+              <span>${s.logo}</span>
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs font-bold text-white group-hover:text-purple-200 transition truncate">${s.name}</span>
+                <span class="text-[10px]">${s.flag}</span>
+                ${isLive ? '<span class="px-1.5 py-0.2 rounded text-[8px] font-mono font-bold bg-purple-500 text-white animate-pulse">LIVE</span>' : ''}
+              </div>
+              <p class="text-[10px] text-gray-400 truncate">${s.desc}</p>
+            </div>
+          </div>
+          <button class="w-7 h-7 rounded-xl flex items-center justify-center shrink-0 transition ${
+            isLive 
+              ? 'bg-purple-500 text-white shadow-md' 
+              : isCurrent 
+                ? 'bg-purple-500/20 text-purple-300 group-hover:bg-purple-500 group-hover:text-white' 
+                : 'bg-white/5 text-gray-400 group-hover:bg-white/20 group-hover:text-white'
+          }">
+            <i data-lucide="${isLive ? 'pause' : 'play'}" class="w-3.5 h-3.5 ${isLive ? 'fill-white' : ''}"></i>
+          </button>
+        </div>
+      `;
+    }).join('');
+
+    if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
+  }
+
+  // ============================================================================
+  // 7. TEXT-TO-SPEECH (TTS) AUDIO BRIEFING
   // ============================================================================
 
   function speakNextItemInQueue() {
     if (!('speechSynthesis' in window) || !isSpeakingQueue) return;
 
-    if (currentSpeakingIndex >= currentNewsItems.length) {
+    const items = getFilteredNewsItems();
+    if (currentSpeakingIndex >= items.length) {
       stopNewsReader();
       if (typeof showToast === 'function') {
-        showToast(tr({ de: '✅ Nachrichten-Briefing abgeschlossen!', en: '✅ News bulletin completed!' }));
+        showToast('✅ Audio-Briefing abgeschlossen');
       }
       return;
     }
 
-    const item = currentNewsItems[currentSpeakingIndex];
+    const item = items[currentSpeakingIndex];
     if (!item) {
       stopNewsReader();
       return;
     }
 
-    // Highlight card in UI
     highlightNewsCard(currentSpeakingIndex);
 
-    // Text to read: Title + brief summary
     const textToSpeak = `${item.title}. ${item.summary}`;
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
     utterance.rate = speechRate;
     utterance.pitch = 1.0;
 
-    // Detect language from region
     const regionObj = REGIONS.find(r => r.id === currentRegion) || REGIONS[0];
     const targetLang = regionObj.lang || 'de-DE';
     utterance.lang = targetLang;
 
-    // Pick best voice if available
     const voices = window.speechSynthesis.getVoices();
     if (voices && voices.length > 0) {
       const matchingVoice = voices.find(v => v.lang.startsWith(targetLang.split('-')[0]) && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Siri') || v.name.includes('Microsoft') || v.name.includes('Premium'))) ||
@@ -641,10 +788,9 @@
     utterance.onend = () => {
       if (isSpeakingQueue) {
         currentSpeakingIndex++;
-        // Small 300ms pause between items for natural cadence
         setTimeout(() => {
           if (isSpeakingQueue) speakNextItemInQueue();
-        }, 350);
+        }, 320);
       }
     };
 
@@ -668,7 +814,6 @@
       return;
     }
 
-    // If live radio is currently playing, duck / pause it
     if (isRadioPlaying && radioAudioEl) {
       radioAudioEl.pause();
       isRadioPlaying = false;
@@ -682,6 +827,14 @@
 
     speakNextItemInQueue();
     updateTtsReaderUI();
+  }
+
+  function toggleAllNewsReader() {
+    if (isSpeakingQueue) {
+      stopNewsReader();
+    } else {
+      startNewsReader(0);
+    }
   }
 
   function toggleNewsReaderPause() {
@@ -731,17 +884,14 @@
     speechRate = parseFloat(rate);
     localStorage.setItem('flow_news_speech_rate', speechRate.toString());
     
-    // Update active rate button UI
     document.querySelectorAll('.news-speed-btn').forEach(btn => {
-      if (parseFloat(btn.dataset.speed) === speechRate) {
-        btn.className = 'news-speed-btn px-2 py-0.5 rounded-lg bg-rose-500/30 text-rose-200 border border-rose-500/50 text-[10px] font-mono font-bold cursor-pointer transition';
-      } else {
-        btn.className = 'news-speed-btn px-2 py-0.5 rounded-lg bg-white/5 text-gray-400 hover:text-white border border-white/10 text-[10px] font-mono font-bold cursor-pointer transition';
-      }
+      const isCur = Math.abs(parseFloat(btn.dataset.speed) - speechRate) < 0.05;
+      btn.className = isCur 
+        ? 'news-speed-btn px-2 py-0.5 rounded-lg bg-purple-500/30 text-purple-200 border border-purple-500/50 text-[10px] font-mono font-bold cursor-pointer transition'
+        : 'news-speed-btn px-2 py-0.5 rounded-lg bg-white/5 text-gray-400 hover:text-white border border-white/10 text-[10px] font-mono font-bold cursor-pointer transition';
     });
 
     if (isSpeakingQueue) {
-      // Re-speak current item with new rate
       window.speechSynthesis.cancel();
       speakNextItemInQueue();
     }
@@ -751,59 +901,55 @@
     removeNewsHighlights();
     const card = document.getElementById(`news-card-${index}`);
     if (card) {
-      card.classList.add('ring-2', 'ring-rose-500', 'bg-rose-500/15', 'scale-[1.01]');
+      card.classList.add('news-card-playing');
       card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   }
 
   function removeNewsHighlights() {
     document.querySelectorAll('.news-item-card').forEach(c => {
-      c.classList.remove('ring-2', 'ring-rose-500', 'bg-rose-500/15', 'scale-[1.01]');
+      c.classList.remove('news-card-playing');
     });
   }
 
   function updateTtsReaderUI() {
     const bottomPlayerBar = document.getElementById('news-tts-bottom-bar');
-    const readCategoryBtn = document.getElementById('btn-read-all-news');
+    const headerPlayBtn = document.getElementById('news-reader-play-btn');
+    const items = getFilteredNewsItems();
     
     if (bottomPlayerBar) {
       if (isSpeakingQueue) {
         bottomPlayerBar.classList.remove('hidden');
         const countText = document.getElementById('news-tts-count-display');
         if (countText) {
-          countText.textContent = `${currentSpeakingIndex + 1} / ${currentNewsItems.length}`;
+          countText.textContent = `${currentSpeakingIndex + 1} / ${items.length}`;
         }
         const activeTitle = document.getElementById('news-tts-current-title');
-        if (activeTitle && currentNewsItems[currentSpeakingIndex]) {
-          activeTitle.textContent = currentNewsItems[currentSpeakingIndex].title;
+        if (activeTitle && items[currentSpeakingIndex]) {
+          activeTitle.textContent = items[currentSpeakingIndex].title;
         }
         const pauseBtn = document.getElementById('news-tts-pause-btn');
         if (pauseBtn) {
           pauseBtn.innerHTML = isTtsPaused 
-            ? '<i data-lucide="play" class="w-4 h-4 fill-white"></i>' 
-            : '<i data-lucide="pause" class="w-4 h-4 fill-white"></i>';
-          if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
+            ? '<i data-lucide="play" class="w-3.5 h-3.5 fill-white"></i>' 
+            : '<i data-lucide="pause" class="w-3.5 h-3.5 fill-white"></i>';
         }
       } else {
         bottomPlayerBar.classList.add('hidden');
       }
     }
 
-    if (readCategoryBtn) {
+    if (headerPlayBtn) {
       if (isSpeakingQueue) {
-        readCategoryBtn.innerHTML = '<i data-lucide="square" class="w-3.5 h-3.5 fill-rose-300"></i><span>Vorlesen stoppen</span>';
-        readCategoryBtn.className = 'px-3 py-1.5 rounded-xl bg-rose-500/25 hover:bg-rose-500/35 border border-rose-500/50 text-rose-200 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-sm';
+        headerPlayBtn.innerHTML = '<i data-lucide="square" class="w-3.5 h-3.5 fill-rose-300"></i><span>Stoppen</span>';
+        headerPlayBtn.className = 'px-2.5 py-1 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer';
       } else {
-        readCategoryBtn.innerHTML = '<i data-lucide="volume-2" class="w-3.5 h-3.5 text-rose-300"></i><span>Nachrichten vorlesen</span>';
-        readCategoryBtn.className = 'px-3 py-1.5 rounded-xl bg-gradient-to-r from-rose-500/20 to-pink-500/20 hover:from-rose-500/30 hover:to-pink-500/30 border border-rose-500/40 text-rose-200 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-sm';
+        headerPlayBtn.innerHTML = '<i data-lucide="play" class="w-3.5 h-3.5 text-purple-300"></i><span>Vorlesen</span>';
+        headerPlayBtn.className = 'px-2.5 py-1 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer';
       }
-      if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
     }
+    if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
   }
-
-  // ============================================================================
-  // 6. UI RENDERING: MAIN PANEL & TABS
-  // ============================================================================
 
   function switchMainTab(tab) {
     activeTab = tab;
@@ -816,206 +962,48 @@
       if (radioPane) radioPane.classList.remove('hidden');
       if (newsPane) newsPane.classList.add('hidden');
       if (radioTabBtn) {
-        radioTabBtn.className = 'flex-1 py-1.5 px-2 rounded-xl text-rose-100 bg-gradient-to-r from-rose-600/40 via-pink-600/35 to-rose-600/40 border border-rose-400/80 shadow-[0_0_15px_rgba(244,63,94,0.35)] transition-all flex items-center justify-center gap-1.5 cursor-pointer text-xs font-bold select-none';
+        radioTabBtn.className = 'flex-1 py-1 px-2 rounded-xl text-purple-100 bg-purple-600/30 border border-purple-400/50 shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer text-xs font-bold select-none';
       }
       if (newsTabBtn) {
-        newsTabBtn.className = 'flex-1 py-1.5 px-2 rounded-xl text-gray-400 hover:text-rose-300 hover:bg-rose-500/10 border border-transparent transition-all flex items-center justify-center gap-1.5 cursor-pointer text-xs font-medium select-none';
+        newsTabBtn.className = 'flex-1 py-1 px-2 rounded-xl text-gray-400 hover:text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer text-xs font-medium select-none';
       }
     } else {
       if (radioPane) radioPane.classList.add('hidden');
       if (newsPane) newsPane.classList.remove('hidden');
       if (newsTabBtn) {
-        newsTabBtn.className = 'flex-1 py-1.5 px-2 rounded-xl text-rose-100 bg-gradient-to-r from-rose-600/40 via-pink-600/35 to-rose-600/40 border border-rose-400/80 shadow-[0_0_15px_rgba(244,63,94,0.35)] transition-all flex items-center justify-center gap-1.5 cursor-pointer text-xs font-bold select-none';
+        newsTabBtn.className = 'flex-1 py-1 px-2 rounded-xl text-purple-100 bg-purple-600/30 border border-purple-400/50 shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer text-xs font-bold select-none';
       }
       if (radioTabBtn) {
-        radioTabBtn.className = 'flex-1 py-1.5 px-2 rounded-xl text-gray-400 hover:text-rose-300 hover:bg-rose-500/10 border border-transparent transition-all flex items-center justify-center gap-1.5 cursor-pointer text-xs font-medium select-none';
+        radioTabBtn.className = 'flex-1 py-1 px-2 rounded-xl text-gray-400 hover:text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer text-xs font-medium select-none';
       }
-      // Load news when entering news tab
       if (currentNewsItems.length === 0) {
-        fetchNewsForRegionCat(currentRegion, currentCategory);
+        fetchNewsForRegion(currentRegion);
       }
     }
     if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
   }
 
-  function selectRegion(regionId) {
-    currentRegion = regionId;
-    localStorage.setItem('flow_news_region', regionId);
-    stopNewsReader();
-    fetchNewsForRegionCat(currentRegion, currentCategory, true);
-    renderRegionPills();
-  }
+  // ============================================================================
+  // 8. INITIALIZATION
+  // ============================================================================
 
-  function selectCategory(catId) {
-    currentCategory = catId;
-    localStorage.setItem('flow_news_cat', catId);
-    stopNewsReader();
-    fetchNewsForRegionCat(currentRegion, currentCategory, true);
-    renderCategoryPills();
-  }
-
-  function renderRegionPills() {
-    const container = document.getElementById('news-region-selector');
-    if (!container) return;
-    container.innerHTML = REGIONS.map(reg => {
-      const isSelected = reg.id === currentRegion;
-      return `
-        <button onclick="RadioNewsEngine.selectRegion('${reg.id}')" class="px-2.5 py-1 rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer whitespace-nowrap ${
-          isSelected 
-            ? 'bg-rose-500/25 text-rose-200 border border-rose-500/50 shadow-sm' 
-            : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 border border-white/10'
-        }">
-          <span>${reg.flag}</span>
-          <span class="text-[11px]">${reg.name}</span>
-        </button>
-      `;
-    }).join('');
-  }
-
-  function renderCategoryPills() {
-    const container = document.getElementById('news-category-selector');
-    if (!container) return;
-    container.innerHTML = CATEGORIES.map(cat => {
-      const isSelected = cat.id === currentCategory;
-      return `
-        <button onclick="RadioNewsEngine.selectCategory('${cat.id}')" class="px-2.5 py-1 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
-          isSelected 
-            ? 'bg-gradient-to-r from-rose-500/30 to-pink-500/30 text-rose-200 border border-rose-500/50 shadow-sm' 
-            : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 border border-white/10'
-        }">
-          <span>${cat.emoji}</span>
-          <span class="text-[11px]">${cat.name}</span>
-        </button>
-      `;
-    }).join('');
-  }
-
-  function renderRadioPanelContent() {
-    const container = document.getElementById('radio-stations-list');
-    if (!container) return;
-
-    // Group stations: Info/News, Focus/ADHD Chill, Regional
-    const stationHtml = RADIO_STATIONS.map(s => {
-      const isCurrent = s.id === currentStationId;
-      const isLive = isCurrent && isRadioPlaying;
-
-      return `
-        <div onclick="RadioNewsEngine.playRadioStation('${s.id}')" class="p-2.5 rounded-2xl border transition cursor-pointer flex items-center justify-between gap-3 group ${
-          isCurrent 
-            ? 'bg-rose-500/15 border-rose-500/40 shadow-sm' 
-            : 'bg-white/[0.025] hover:bg-white/[0.06] border-white/10'
-        }">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <div class="w-8 h-8 rounded-xl flex items-center justify-center text-base shrink-0 ${
-              isCurrent ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' : 'bg-white/5 text-gray-300 border border-white/10'
-            }">
-              <span>${s.logo}</span>
-            </div>
-            <div class="min-w-0">
-              <div class="flex items-center gap-1.5">
-                <span class="text-xs font-bold text-white group-hover:text-rose-200 transition truncate">${s.name}</span>
-                <span class="text-[10px]">${s.flag}</span>
-                ${isLive ? '<span class="px-1.5 py-0.2 rounded text-[8px] font-mono font-bold bg-rose-500 text-white animate-pulse">LIVE</span>' : ''}
-              </div>
-              <p class="text-[10px] text-gray-400 truncate">${s.desc}</p>
-            </div>
-          </div>
-          <button class="w-7 h-7 rounded-xl flex items-center justify-center shrink-0 transition ${
-            isLive 
-              ? 'bg-rose-500 text-white shadow-md' 
-              : isCurrent 
-                ? 'bg-rose-500/20 text-rose-300 group-hover:bg-rose-500 group-hover:text-white' 
-                : 'bg-white/5 text-gray-400 group-hover:bg-white/20 group-hover:text-white'
-          }">
-            <i data-lucide="${isLive ? 'pause' : 'play'}" class="w-3.5 h-3.5 ${isLive ? 'fill-white' : ''}"></i>
-          </button>
-        </div>
-      `;
-    }).join('');
-
-    container.innerHTML = stationHtml;
-    if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
-  }
-
-  function renderNewsContent() {
-    const listContainer = document.getElementById('news-items-container');
-    const tickerContainer = document.getElementById('news-marquee-text');
-
-    // 1. Render Marquee Ticker
-    if (tickerContainer && currentNewsItems.length > 0) {
-      tickerContainer.innerHTML = currentNewsItems.map(item => `
-        <span class="inline-flex items-center gap-1.5 mx-4 text-xs font-medium text-gray-300 hover:text-white cursor-pointer" onclick="RadioNewsEngine.startNewsReader(${currentNewsItems.indexOf(item)})">
-          <span class="text-rose-400 font-bold">●</span>
-          <span class="font-bold text-white">${item.title}</span>
-          <span class="text-[10px] text-gray-500 font-mono">(${item.time})</span>
-        </span>
-      `).join('');
-    }
-
-    // 2. Render Cards List
-    if (listContainer) {
-      if (currentNewsItems.length === 0) {
-        listContainer.innerHTML = `
-          <div class="py-8 text-center text-gray-500 italic text-xs">
-            Lade Meldungen...
-          </div>
-        `;
-        return;
-      }
-
-      listContainer.innerHTML = currentNewsItems.map((item, idx) => `
-        <div id="news-card-${idx}" class="news-item-card p-3 rounded-2xl bg-white/[0.025] hover:bg-white/[0.06] border border-white/10 transition-all space-y-1.5 text-left relative group">
-          <div class="flex items-start justify-between gap-2">
-            <div class="flex items-center gap-1.5 flex-wrap">
-              <span class="px-2 py-0.5 rounded-md bg-rose-500/15 border border-rose-500/30 text-rose-300 font-bold text-[9px] uppercase font-mono tracking-wider">${item.source}</span>
-              <span class="text-[10px] text-gray-400 font-mono">${item.time}</span>
-            </div>
-            <div class="flex items-center gap-1 shrink-0">
-              <button onclick="RadioNewsEngine.startNewsReader(${idx})" class="p-1 rounded-lg bg-white/5 hover:bg-rose-500/20 text-gray-400 hover:text-rose-300 transition cursor-pointer" title="Diese Meldung vorlesen">
-                <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
-              </button>
-              ${item.url && item.url !== '#' ? `
-                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="p-1 rounded-lg bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white transition" title="Originalquelle öffnen">
-                  <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                </a>
-              ` : ''}
-            </div>
-          </div>
-          <h4 class="text-xs font-bold text-white leading-snug">${item.title}</h4>
-          <p class="text-[11px] text-gray-300 leading-relaxed font-normal">${item.summary}</p>
-        </div>
-      `).join('');
-
-      if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
-    }
+  function initNewsPanel() {
+    renderRegionFlags();
+    renderMediaChips();
+    renderCategoryChips();
+    setSpeechRate(speechRate);
+    fetchNewsForRegion(currentRegion);
   }
 
   function initRadioPanel() {
     renderRadioPanelContent();
     updateRadioUIState(isRadioPlaying);
-    if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
-  }
-
-  function initNewsPanel() {
-    renderRegionPills();
-    renderCategoryPills();
-    setSpeechRate(speechRate);
-    if (currentNewsItems.length === 0) {
-      fetchNewsForRegionCat(currentRegion, currentCategory);
-    } else {
-      renderNewsContent();
-    }
-    if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
   }
 
   function initPanel() {
-    initRadioPanel();
     initNewsPanel();
+    initRadioPanel();
   }
-
-  // ============================================================================
-  // 7. EXPORT TO GLOBAL SCOPE
-  // ============================================================================
 
   const RadioNewsEngine = {
     initPanel,
@@ -1023,17 +1011,20 @@
     initNewsPanel,
     switchMainTab,
     selectRegion,
+    selectMedia,
     selectCategory,
+    handleNewsSearch,
     playRadioStation,
     toggleRadioPlayback,
     setRadioVolume,
     startNewsReader,
+    toggleAllNewsReader,
     toggleNewsReaderPause,
     stopNewsReader,
     nextNewsItem,
     prevNewsItem,
     setSpeechRate,
-    fetchNewsForRegionCat
+    fetchNewsForRegion
   };
 
   if (typeof window !== 'undefined') {
@@ -1045,14 +1036,13 @@
     globalThis.RadioNewsEngine = RadioNewsEngine;
   }
 
-  // Pre-render radio list automatically when DOM is loaded
   if (typeof document !== 'undefined') {
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => {
-        initRadioPanel();
+        initPanel();
       });
     } else {
-      initRadioPanel();
+      initPanel();
     }
   }
 

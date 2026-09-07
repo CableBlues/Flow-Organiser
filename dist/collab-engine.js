@@ -658,7 +658,9 @@ const CollabEngine = (function() {
     getShareLink,
     copyShareLink,
     toggleChat,
-    openRoomModal
+    openRoomModal,
+    renderChatMessages,
+    renderPresenceUI
   };
 })();
 

@@ -59,6 +59,7 @@ import './app-radio-news.js';
 import './app-dice.js';
 import './app-command-palette.js';
 import './onboarding.js';
+import './monetization.js';
 import './app-feedback.js';
 import './app-core.js';
 

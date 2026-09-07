@@ -240,17 +240,28 @@ function trackTombstone(id) {
 }
 
 
+function getYearAndWeek(date = new Date()) {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+  return `${d.getUTCFullYear()}-W${String(weekNo).padStart(2, '0')}`;
+}
+
 function migrateState(raw, lang) {
   const currentL = lang || (typeof currentLang !== 'undefined' ? currentLang : 'en');
   const localizedDefaults = (typeof DEFAULT_TASKS_BY_LANG !== 'undefined' && DEFAULT_TASKS_BY_LANG[currentL]) 
     ? DEFAULT_TASKS_BY_LANG[currentL] 
     : ((typeof DEFAULT_TASKS_BY_LANG !== 'undefined' && DEFAULT_TASKS_BY_LANG['en']) ? DEFAULT_TASKS_BY_LANG['en'] : { daily: [], weekly: [], occasionally: [] });
   const todayStr = new Date().toISOString().split('T')[0];
+  const currentWeekStr = getYearAndWeek(new Date());
 
   if (!raw || typeof raw !== 'object') {
     return {
       version: 3,
       lastDate: todayStr,
+      lastWeeklyResetWeek: currentWeekStr,
       activeWorkspace: 'private',
       _tombstones: {},
       items: {
@@ -272,13 +283,18 @@ function migrateState(raw, lang) {
       shoppingList: [],
       shoppingHistory: [],
       cooking: typeof createDefaultCookingState === 'function' ? createDefaultCookingState() : {},
-      clarity: { streakDays: 0, lastCheckinDate: null, history: [], savedReasons: [] }
+      clarity: { streakDays: 0, lastCheckinDate: null, history: [], savedReasons: [] },
+      userPlan: 'free' // 'free' | 'pro' — Grundlage für spätere Paywall-Logik
     };
   }
 
   const s = { ...raw };
   s.version = 3;
   if (!s.lastDate) s.lastDate = todayStr;
+  if (!s.lastWeeklyResetWeek) s.lastWeeklyResetWeek = currentWeekStr;
+  if (!s.userPlan || (s.userPlan !== 'free' && s.userPlan !== 'pro')) {
+    s.userPlan = 'free'; // 'free' | 'pro' — Grundlage für spätere Paywall-Logik
+  }
 
   // 0. Tombstones initialisieren & aufräumen (> 30 Tage)
   if (!s._tombstones || typeof s._tombstones !== 'object') {
@@ -739,7 +755,142 @@ function copyNoteText(noteIndex, event) {
   }).catch(() => {});
 }
 
+function reloadDailyTasks(isAuto = false) {
+  const currentState = (typeof window !== 'undefined' && window.state) ? window.state : state;
+  if (!currentState) return;
+  if (!isAuto && typeof saveHistory === 'function') saveHistory();
+
+  const curL = (typeof window !== 'undefined' && window.currentLang)
+    ? window.currentLang
+    : ((typeof globalThis !== 'undefined' && globalThis.currentLang)
+        ? globalThis.currentLang
+        : (typeof currentLang !== 'undefined' ? currentLang : 'de'));
+  const localizedDefaults = (typeof DEFAULT_TASKS_BY_LANG !== 'undefined' && DEFAULT_TASKS_BY_LANG[curL]) 
+    ? DEFAULT_TASKS_BY_LANG[curL] 
+    : ((typeof DEFAULT_TASKS_BY_LANG !== 'undefined' && DEFAULT_TASKS_BY_LANG['de']) ? DEFAULT_TASKS_BY_LANG['de'] : { daily: [] });
+
+  if (!currentState.items) currentState.items = {};
+  currentState.items.daily = [...(localizedDefaults.daily || [])];
+
+  if (currentState.workItems) {
+    const workDefaults = (typeof DEFAULT_WORK_TASKS_BY_LANG !== 'undefined' && DEFAULT_WORK_TASKS_BY_LANG[curL])
+      ? DEFAULT_WORK_TASKS_BY_LANG[curL]
+      : (typeof DEFAULT_WORK_TASKS_BY_LANG !== 'undefined' ? DEFAULT_WORK_TASKS_BY_LANG['de'] : { work_focus: [] });
+    if (workDefaults && workDefaults.work_focus) {
+      currentState.workItems.work_focus = [...workDefaults.work_focus];
+    }
+  }
+
+  currentState.lastDate = new Date().toISOString().split('T')[0];
+  saveState();
+  if (typeof renderApp === 'function') renderApp();
+  if (typeof populateHelperTaskSelect === 'function') populateHelperTaskSelect();
+
+  if (!isAuto && typeof showToast === 'function') {
+    showToast(tr({
+      de: '🌅 Tagesplan für heute neu geladen!',
+      en: '🌅 Today\'s plan reloaded!',
+      fr: '🌅 Plan d\'aujourd\'hui rechargé !',
+      it: '🌅 Piano di oggi ricaricato!',
+      es: '🌅 ¡Plan de hoy recargado!',
+      el: '🌅 Το ημερήσιο πλάνο επαναφορτώθηκε!'
+    }));
+  }
+}
+
+function reloadWeeklyHouseholdTasks(isAuto = false) {
+  const currentState = (typeof window !== 'undefined' && window.state) ? window.state : state;
+  if (!currentState) return;
+  if (!isAuto && typeof saveHistory === 'function') saveHistory();
+
+  const curL = (typeof window !== 'undefined' && window.currentLang)
+    ? window.currentLang
+    : ((typeof globalThis !== 'undefined' && globalThis.currentLang)
+        ? globalThis.currentLang
+        : (typeof currentLang !== 'undefined' ? currentLang : 'de'));
+  const localizedDefaults = (typeof DEFAULT_TASKS_BY_LANG !== 'undefined' && DEFAULT_TASKS_BY_LANG[curL]) 
+    ? DEFAULT_TASKS_BY_LANG[curL] 
+    : ((typeof DEFAULT_TASKS_BY_LANG !== 'undefined' && DEFAULT_TASKS_BY_LANG['de']) ? DEFAULT_TASKS_BY_LANG['de'] : { weekly: [] });
+
+  if (!currentState.items) currentState.items = {};
+  currentState.items.weekly = [...(localizedDefaults.weekly || [])];
+
+  currentState.lastWeeklyResetWeek = getYearAndWeek(new Date());
+  saveState();
+  if (typeof renderApp === 'function') renderApp();
+  if (typeof populateHelperTaskSelect === 'function') populateHelperTaskSelect();
+
+  if (!isAuto && typeof showToast === 'function') {
+    showToast(tr({
+      de: '🧹 Haushalts-Plan für die neue Woche geladen!',
+      en: '🧹 Weekly household plan reloaded!',
+      fr: '🧹 Plan de ménage de la semaine rechargé !',
+      it: '🧹 Piano domestico per la nuova settimana caricato!',
+      es: '🧹 ¡Plan del hogar de la semana recargado!',
+      el: '🧹 Το εβδομαδιαίο πρόγραμμα καθαριότητας επαναφορτώθηκε!'
+    }));
+  }
+}
+
+function checkAutoRollovers() {
+  const currentState = (typeof window !== 'undefined' && window.state) ? window.state : state;
+  if (!currentState) return;
+
+  const now = new Date();
+  const todayISO = now.toISOString().split('T')[0];
+  const currentWeekStr = getYearAndWeek(now);
+
+  let stateModified = false;
+
+  // 1. Täglicher Rollover für Heute (daily / work_focus)
+  if (currentState.lastDate && currentState.lastDate !== todayISO) {
+    const prevDate = currentState.lastDate;
+    if (typeof generateReportContent === 'function' && typeof triggerAutomaticDownload === 'function') {
+      try {
+        const { reportText, filename } = generateReportContent('daily', prevDate);
+        triggerAutomaticDownload(reportText, filename);
+      } catch (e) {
+        console.warn('[Rollover] Auto-report warning:', e);
+      }
+    }
+    reloadDailyTasks(true);
+    stateModified = true;
+  }
+
+  // 2. Wöchentlicher Rollover für Haushalt (weekly)
+  if (currentState.lastWeeklyResetWeek && currentState.lastWeeklyResetWeek !== currentWeekStr) {
+    reloadWeeklyHouseholdTasks(true);
+    stateModified = true;
+  }
+
+  if (stateModified) {
+    saveState();
+    if (typeof renderApp === 'function') renderApp();
+  }
+}
+
+// Init auto rollover check
 if (typeof window !== 'undefined') {
+  window.addEventListener('focus', checkAutoRollovers);
+  if (typeof document !== 'undefined') {
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') checkAutoRollovers();
+    });
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', checkAutoRollovers);
+    } else {
+      checkAutoRollovers();
+    }
+  }
+  setInterval(checkAutoRollovers, 60000);
+}
+
+if (typeof window !== 'undefined') {
+  window.openTaskAddColumns = openTaskAddColumns;
+  window.getYearAndWeek = getYearAndWeek;
+  window.reloadDailyTasks = reloadDailyTasks;
+  window.reloadWeeklyHouseholdTasks = reloadWeeklyHouseholdTasks;
+  window.checkAutoRollovers = checkAutoRollovers;
   window.computeStringHash = computeStringHash;
   window.getStableId = getStableId;
   window.generateStableId = generateStableId;
@@ -755,6 +906,11 @@ if (typeof window !== 'undefined') {
   window.tr = tr;
 }
 if (typeof globalThis !== 'undefined') {
+  globalThis.openTaskAddColumns = openTaskAddColumns;
+  globalThis.getYearAndWeek = getYearAndWeek;
+  globalThis.reloadDailyTasks = reloadDailyTasks;
+  globalThis.reloadWeeklyHouseholdTasks = reloadWeeklyHouseholdTasks;
+  globalThis.checkAutoRollovers = checkAutoRollovers;
   globalThis.computeStringHash = computeStringHash;
   globalThis.getStableId = getStableId;
   globalThis.generateStableId = generateStableId;

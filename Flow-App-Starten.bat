@@ -1,4 +1,4 @@
 @echo off
-title Flow Organiser Launcher
+title Noodle Launcher
 start msedge.exe --app="file:///%CD:\=/%/index.html"
 exit

@@ -264,7 +264,7 @@ if (typeof window !== 'undefined') {
   window.cleanStepText = cleanStepText;
   window.pickRandomTask = pickRandomTask;
   window.generateTaskSteps = generateTaskSteps;
-  window.saveStepsToTasks = saveStepsToTasks;
+  window.saveStepsToTasks = typeof saveStepsToTasks !== 'undefined' ? saveStepsToTasks : undefined;
   window.triggerDopamineKick = triggerDopamineKick;
   window.completeDopamineKick = completeDopamineKick;
   window.resetDopamineBox = resetDopamineBox;
@@ -290,7 +290,7 @@ if (typeof globalThis !== 'undefined') {
   globalThis.cleanStepText = cleanStepText;
   globalThis.pickRandomTask = pickRandomTask;
   globalThis.generateTaskSteps = generateTaskSteps;
-  globalThis.saveStepsToTasks = saveStepsToTasks;
+  globalThis.saveStepsToTasks = typeof saveStepsToTasks !== 'undefined' ? saveStepsToTasks : undefined;
   globalThis.triggerDopamineKick = triggerDopamineKick;
   globalThis.completeDopamineKick = completeDopamineKick;
   globalThis.resetDopamineBox = resetDopamineBox;

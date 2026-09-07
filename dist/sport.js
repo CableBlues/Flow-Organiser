@@ -445,7 +445,7 @@ if (typeof document !== 'undefined') {
 if (typeof window !== 'undefined') {
   window.openSportModal = openSportModal;
   window.closeSportModal = closeSportModal;
-  window.switchSportCategory = switchSportCategory;
+  window.switchSportCategory = typeof switchSportCategory !== 'undefined' ? switchSportCategory : undefined;
   window.generateSportSuggestion = generateSportSuggestion;
   window.startSportTimer = startSportTimer;
   window.pauseSportTimer = pauseSportTimer;
@@ -458,7 +458,7 @@ if (typeof window !== 'undefined') {
 if (typeof globalThis !== 'undefined') {
   globalThis.openSportModal = openSportModal;
   globalThis.closeSportModal = closeSportModal;
-  globalThis.switchSportCategory = switchSportCategory;
+  globalThis.switchSportCategory = typeof switchSportCategory !== 'undefined' ? switchSportCategory : undefined;
   globalThis.generateSportSuggestion = generateSportSuggestion;
   globalThis.startSportTimer = startSportTimer;
   globalThis.pauseSportTimer = pauseSportTimer;

@@ -1,4 +1,4 @@
-// sync-engine.js - Zuverlässige & automatische Synchronisations-Engine für Flow Organiser
+// sync-engine.js - Zuverlässige & automatische Synchronisations-Engine für Noodle
 // ============================================================================
 
 const MinimalQR = (function() {

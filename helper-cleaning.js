@@ -52,7 +52,7 @@ const CLEANING_LEVELS_DATA = {
     id: 'standard',
     title: '45-Minuten Standard-Grundreinigung',
     subtitle: 'Alle Kernzonen frisch, hygienisch & sauber',
-    icon: 'sparkles',
+    icon: 'spray-can',
     color: 'emerald',
     durationMin: 45,
     badge: 'Beliebt',

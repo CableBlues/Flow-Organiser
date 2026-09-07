@@ -1,0 +1,23 @@
+{
+  "name": "noodle-desktop-app",
+  "version": "2.0.0",
+  "description": "Noodle Desktop Application powered by Tauri",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "node scripts/build-desktop.js && tauri build",
+    "build:debug": "node scripts/build-desktop.js && tauri build --debug",
+    "build:sync": "node scripts/build-desktop.js",
+    "icon:generate": "tauri icon ../icon-1024.png",
+    "signer:generate": "tauri signer generate"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.0.0",
+    "@tauri-apps/plugin-process": "^2.0.0",
+    "@tauri-apps/plugin-updater": "^2.0.0"
+  }
+}

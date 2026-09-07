@@ -251,7 +251,7 @@ const ErrorDiagnostics = {
 };
 
 window.addEventListener('error', (event) => {
-  console.error('[Flow Global Error Boundary]:', event.error || event.message);
+  console.error('[Noodle Global Error Boundary]:', event.error || event.message);
   ErrorDiagnostics.record('error', event.error || event.message);
   const appContainer = document.getElementById('app');
   if (appContainer && appContainer.innerHTML.trim() === '') {
@@ -260,23 +260,23 @@ window.addEventListener('error', (event) => {
 });
 
 window.addEventListener('unhandledrejection', (event) => {
-  console.warn('[Flow Unhandled Promise Rejection]:', event.reason);
+  console.warn('[Noodle Unhandled Promise Rejection]:', event.reason);
   ErrorDiagnostics.record('unhandledrejection', event.reason);
 });
 
 function showCrashRecoveryScreen(errorMsg = '') {
-  let overlay = document.getElementById('flow-crash-recovery-overlay');
+  let overlay = document.getElementById('noodle-crash-recovery-overlay') || document.getElementById('flow-crash-recovery-overlay');
   if (overlay) return;
   overlay = document.createElement('div');
-  overlay.id = 'flow-crash-recovery-overlay';
+  overlay.id = 'noodle-crash-recovery-overlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:#0d0d14;color:#fff;z-index:999999;display:flex;align-items:center;justify-content:center;padding:24px;font-family:sans-serif;text-align:center;';
   overlay.innerHTML = `
     <div style="max-width:440px;background:#151522;border:1px solid rgba(168,85,247,0.3);padding:32px;border-radius:24px;box-shadow:0 20px 40px rgba(0,0,0,0.8);">
-      <div style="font-size:3rem;margin-bottom:12px;">🌊</div>
-      <h2 style="font-size:1.3rem;font-weight:bold;margin-bottom:8px;">Flow sicher neu starten</h2>
+      <div style="font-size:3rem;margin-bottom:12px;">🍜</div>
+      <h2 style="font-size:1.3rem;font-weight:bold;margin-bottom:8px;">Noodle sicher neu starten</h2>
       <p style="font-size:0.85rem;color:#a1a1aa;margin-bottom:20px;line-height:1.5;">Ein Browser-Skript hat sich kurz verschluckt. Deine Aufgaben und Daten sind sicher gespeichert.</p>
       <div style="display:flex;flex-direction:column;gap:10px;">
-        <button onclick="window.location.reload()" style="padding:12px 20px;background:linear-gradient(135deg,#06b6d4,#10b981);color:#000;border:none;border-radius:12px;font-weight:bold;cursor:pointer;font-size:0.9rem;">App neu laden 🔄</button>
+        <button onclick="window.location.reload()" style="padding:12px 20px;background:linear-gradient(135deg,#a855f7,#ec4899);color:#fff;border:none;border-radius:12px;font-weight:bold;cursor:pointer;font-size:0.9rem;">App neu laden 🔄</button>
         <button onclick="window.location.reload(true)" style="padding:10px 16px;background:rgba(255,255,255,0.06);color:#ccc;border:1px solid rgba(255,255,255,0.12);border-radius:12px;cursor:pointer;font-size:0.8rem;">Sicherer Neustart 🛡️</button>
       </div>
     </div>

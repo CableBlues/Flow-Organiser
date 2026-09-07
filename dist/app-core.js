@@ -155,8 +155,20 @@ function switchAudioTab(tabName) {
       }
     }
   });
+  const audioPanel = document.getElementById('panel-audio');
+  if (audioPanel) {
+    audioPanel.setAttribute('data-active-tab', tabName);
+    const moodPresetsEl = document.getElementById('audio-studio-mood-presets');
+    if (moodPresetsEl) {
+      moodPresetsEl.classList.toggle('hidden', tabName === 'dj');
+    }
+  }
+
   if (tabName === 'dj' && typeof initDjDecks === 'function') {
     initDjDecks();
+  }
+  if (audioPanel && typeof adjustPanelPosition === 'function') {
+    adjustPanelPosition(audioPanel, 'audio');
   }
   if (typeof renderLucideIcons === 'function') renderLucideIcons();
   if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
@@ -577,7 +589,7 @@ function getAvailableCommands() {
     {
       id: 'pause_breath',
       title: tr({
-        de: '🧘 4-4-4 Atem-Flow (Nervensystem beruhigen)',
+        de: '🧘 4-4-4 Atem-Fokus (Nervensystem beruhigen)',
         en: '🧘 4-4-4 Box Breathing (Calm nervous system)',
         fr: '🧘 Respiration 4-4-4 (Calmer le système nerveux)',
         it: '🧘 Respirazione 4-4-4 (Calma il sistema nervoso)',
@@ -1321,24 +1333,43 @@ function editTermin(index, event) {
     const locEl = document.getElementById('add-termin-location');
     const dateEl = document.getElementById('add-termin-date');
     const timeEl = document.getElementById('add-termin-time');
-    if (titleEl) titleEl.value = termin.task || '';
+    const statusEl = document.getElementById('add-termin-status');
+    if (titleEl) titleEl.value = termin.task || termin.name || '';
     if (locEl) locEl.value = termin.location || '';
     if (dateEl) dateEl.value = termin.date || '';
     if (timeEl) timeEl.value = termin.time || '10:00';
+    if (statusEl) statusEl.value = termin.status || 'open';
     if (titleEl) titleEl.focus();
   }, 50);
 }
 
 function handleAddTermin() {
-  const titleEl = document.getElementById('add-termin-title'); const locEl = document.getElementById('add-termin-location');
-  const dateEl = document.getElementById('add-termin-date'); const timeEl = document.getElementById('add-termin-time');
-  const title = titleEl ? titleEl.value.trim() : ''; const location = locEl ? locEl.value.trim() : '';
-  const date = dateEl ? dateEl.value : ''; const time = timeEl ? timeEl.value : '';
+  const titleEl = document.getElementById('add-termin-title');
+  const locEl = document.getElementById('add-termin-location');
+  const dateEl = document.getElementById('add-termin-date');
+  const timeEl = document.getElementById('add-termin-time');
+  const statusEl = document.getElementById('add-termin-status');
+  const title = titleEl ? titleEl.value.trim() : '';
+  const location = locEl ? locEl.value.trim() : '';
+  const date = dateEl ? dateEl.value : '';
+  const time = timeEl ? timeEl.value : '';
+  const status = statusEl ? statusEl.value : 'open';
+
   if (!title) { showToast(t('toast_appointment_name_error')); return; }
-  saveHistory(); if (!state.items.termine) state.items.termine = [];
+  saveHistory();
+  if (!state.items.termine) state.items.termine = [];
   
   if (editingTerminIndex !== null && editingTerminIndex >= 0 && state.items.termine[editingTerminIndex]) {
-    state.items.termine[editingTerminIndex] = { task: title, date, time, location };
+    const existing = state.items.termine[editingTerminIndex];
+    state.items.termine[editingTerminIndex] = {
+      ...(typeof existing === 'object' ? existing : {}),
+      task: title,
+      date,
+      time,
+      location,
+      status: status || existing.status || 'open',
+      updatedAt: new Date().toISOString()
+    };
     editingTerminIndex = null;
     showToast(tr({
       de: 'Termin aktualisiert 📅',
@@ -1349,10 +1380,22 @@ function handleAddTermin() {
       el: 'Το ραντεβού ενημερώθηκε 📅'
     }));
   } else {
-    state.items.termine.push({ task: title, date, time, location });
+    state.items.termine.push({
+      task: title,
+      date,
+      time,
+      location,
+      status: status || 'open',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    });
     showToast(t('toast_appointment_saved'));
   }
-  isTerminFormOpen = false; selectedCalendarDate = null; saveState(); if (typeof renderApp === 'function') renderApp(); populateHelperTaskSelect();
+  isTerminFormOpen = false;
+  selectedCalendarDate = null;
+  saveState();
+  if (typeof renderApp === 'function') renderApp();
+  populateHelperTaskSelect();
 }
 
 function getTaskIconDetails(taskText, category = '') {
@@ -1511,7 +1554,7 @@ function handleRestoreBackupFile(event) {
     try {
       const data = JSON.parse(e.target.result);
       if (!data || (!data.items && !data.daily && !Array.isArray(data))) {
-        throw new Error('Ungültiges Noodle / Flow Backup-Format');
+        throw new Error('Ungültiges Noodle Backup-Format');
       }
 
       const msg = typeof tr === 'function' ? tr({
@@ -1683,13 +1726,16 @@ if (typeof document !== 'undefined') {
 function initAmbientFlowCanvas() {
   const canvas = document.getElementById('ambient-flow-canvas');
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d', { alpha: true });
   if (!ctx) return;
 
   let width = (canvas.width = window.innerWidth);
   let height = (canvas.height = window.innerHeight);
+  let isMobile = width <= 768;
   let particles = [];
-  const particleCount = Math.min(45, Math.floor((width * height) / 28000));
+  const particleCount = isMobile 
+    ? Math.min(16, Math.floor((width * height) / 48000))
+    : Math.min(38, Math.floor((width * height) / 32000));
 
   class FlowParticle {
     constructor() {
@@ -1698,9 +1744,9 @@ function initAmbientFlowCanvas() {
     reset(initial = false) {
       this.x = Math.random() * width;
       this.y = initial ? Math.random() * height : height + 10;
-      this.radius = 1 + Math.random() * 1.8;
-      this.vx = (Math.random() - 0.5) * 0.25;
-      this.vy = -0.15 - Math.random() * 0.35;
+      this.radius = 1 + Math.random() * 1.6;
+      this.vx = (Math.random() - 0.5) * 0.22;
+      this.vy = -0.15 - Math.random() * 0.32;
       this.baseAlpha = 0.15 + Math.random() * 0.35;
       this.alpha = this.baseAlpha;
       this.color = Math.random() > 0.5 ? 'rgba(56, 189, 248,' : 'rgba(192, 132, 252,';
@@ -1716,16 +1762,12 @@ function initAmbientFlowCanvas() {
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
       ctx.fillStyle = `${this.color} ${this.alpha})`;
-      ctx.shadowColor = this.color.includes('56') ? '#38bdf8' : '#c084fc';
-      ctx.shadowBlur = 6;
       ctx.fill();
-      ctx.shadowBlur = 0;
     }
   }
 
   const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReducedMotion) {
-    // Render static ambient frame once without continuous animation loop
     for (let i = 0; i < particleCount; i++) particles.push(new FlowParticle());
     particles.forEach(p => p.draw());
     return;
@@ -1737,7 +1779,7 @@ function initAmbientFlowCanvas() {
 
   let animId = null;
   let lastFrameTime = 0;
-  const targetFrameInterval = 28; // ~35-36 FPS: visually identical for ambient dust, saves 60-75% CPU/GPU on 120Hz/144Hz displays
+  const targetFrameInterval = isMobile ? 40 : 30; // ~25 FPS mobile, ~33 FPS desktop: smooth ambient feel with minimal CPU load
 
   function renderAmbient(timestamp) {
     animId = requestAnimationFrame(renderAmbient);
@@ -1747,28 +1789,34 @@ function initAmbientFlowCanvas() {
 
     ctx.clearRect(0, 0, width, height);
 
-    // Draw connecting faint energy lines between nearby nodes
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 110) {
-          const lineAlpha = (1 - dist / 110) * 0.08;
-          ctx.strokeStyle = `rgba(129, 140, 248, ${lineAlpha})`;
-          ctx.lineWidth = 0.75;
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.stroke();
+    // Draw connecting faint energy lines between nearby nodes (desktop only to save mobile battery)
+    if (!isMobile && particles.length <= 40) {
+      const len = particles.length;
+      for (let i = 0; i < len; i++) {
+        const p1 = particles[i];
+        for (let j = i + 1; j < len; j++) {
+          const p2 = particles[j];
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
+          const distSq = dx * dx + dy * dy;
+          if (distSq < 10000) { // 100px squared, avoids Math.sqrt overhead
+            const dist = Math.sqrt(distSq);
+            const lineAlpha = (1 - dist / 100) * 0.07;
+            ctx.strokeStyle = `rgba(129, 140, 248, ${lineAlpha})`;
+            ctx.lineWidth = 0.75;
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+          }
         }
       }
     }
 
-    particles.forEach(p => {
-      p.update();
-      p.draw();
-    });
+    for (let i = 0; i < particles.length; i++) {
+      particles[i].update();
+      particles[i].draw();
+    }
   }
 
   let resizeTimeout = null;
@@ -1777,6 +1825,7 @@ function initAmbientFlowCanvas() {
     resizeTimeout = setTimeout(() => {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
+      isMobile = width <= 768;
     }, 150);
   }, { passive: true });
 

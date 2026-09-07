@@ -141,6 +141,17 @@ function getCommandPaletteActions() {
       }
     },
     {
+      id: 'cmd-open-collab-chat',
+      title: tr({ de: 'Team-Chat & Live-Kollaboration', en: 'Team Chat & Live Collaboration' }),
+      category: tr({ de: 'Werkzeuge', en: 'Tools' }),
+      icon: 'message-square',
+      color: 'text-violet-400',
+      action: () => {
+        if (typeof togglePanel === 'function') togglePanel('collab-chat');
+        else if (typeof CollabEngine !== 'undefined') CollabEngine.toggleChat();
+      }
+    },
+    {
       id: 'cmd-open-dice',
       title: tr({ de: 'Schicksals-Würfel werfen', en: 'Roll Task Dice' }),
       category: tr({ de: 'Werkzeuge', en: 'Tools' }),
@@ -148,6 +159,26 @@ function getCommandPaletteActions() {
       color: 'text-amber-400',
       action: () => {
         if (typeof rollTaskDice === 'function') rollTaskDice('daily');
+      }
+    },
+    {
+      id: 'cmd-reload-daily',
+      title: tr({ de: 'Heute-Spalte (Tagesplan) neu laden 🌅', en: 'Reload Today\'s Column 🌅' }),
+      category: tr({ de: 'Aufgaben & Board', en: 'Tasks & Board' }),
+      icon: 'refresh-cw',
+      color: 'text-amber-400',
+      action: () => {
+        if (typeof reloadDailyTasks === 'function') reloadDailyTasks(false);
+      }
+    },
+    {
+      id: 'cmd-reload-weekly',
+      title: tr({ de: 'Haushalt-Spalte für neue Woche laden 🧹', en: 'Reload Weekly Household Column 🧹' }),
+      category: tr({ de: 'Aufgaben & Board', en: 'Tasks & Board' }),
+      icon: 'refresh-cw',
+      color: 'text-emerald-400',
+      action: () => {
+        if (typeof reloadWeeklyHouseholdTasks === 'function') reloadWeeklyHouseholdTasks(false);
       }
     },
     {
@@ -250,6 +281,16 @@ function getCommandPaletteActions() {
       icon: 'palette',
       color: 'text-amber-400',
       action: () => { if (typeof setTheme === 'function') setTheme('honey'); }
+    },
+    {
+      id: 'cmd-open-onboarding',
+      title: tr({ de: 'App-Einführung & Tour starten ✨ [Onboarding]', en: 'Start App Tour & Onboarding ✨' }),
+      category: tr({ de: 'Hilfe & Guide', en: 'Help & Guide' }),
+      icon: 'sparkles',
+      color: 'text-purple-400',
+      action: () => {
+        if (typeof startOnboardingTour === 'function') startOnboardingTour();
+      }
     },
     {
       id: 'cmd-open-settings',

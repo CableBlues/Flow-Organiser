@@ -31,7 +31,7 @@ if (typeof globalThis !== 'undefined') {
 
 // Zentraler Panel-Manager (für Dropdowns & Werkzeug-Panels)
 const PanelManager = {
-  panels: ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'theme', 'calendar-dropdown', 'inspiration', 'shopping', 'cooking', 'alarm', 'weather', 'news', 'pause-dropdown'],
+  panels: ['feedback', 'report', 'settings', 'soundscape', 'language', 'boost', 'music', 'theme', 'calendar-dropdown', 'inspiration', 'shopping', 'cooking', 'alarm', 'weather', 'news', 'pause-dropdown', 'collab-chat'],
   open(name) {
     this.panels.forEach(p => {
       const el = document.getElementById(`panel-${p}`);
@@ -357,6 +357,7 @@ function showToast(msg, options = {}) {
         e.stopPropagation();
         overlay.classList.add('hidden');
         if (typeof undoLastAction === 'function') undoLastAction();
+        else if (typeof handleUndo === 'function') handleUndo();
       };
     }
     overlay.classList.remove('hidden');

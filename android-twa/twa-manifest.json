@@ -1,0 +1,53 @@
+{
+  "packageId": "app.noodlestudio.flow",
+  "host": "cableblues.github.io",
+  "name": "Noodle - Mind Planner & Focus",
+  "launcherName": "Noodle",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "themeColor": "#0E0E16",
+  "navigationColor": "#0E0E16",
+  "navigationColorDark": "#0E0E16",
+  "navigationDividerColor": "#1A1A26",
+  "navigationDividerColorDark": "#1A1A26",
+  "backgroundColor": "#0E0E16",
+  "enableNotifications": true,
+  "startUrl": "/Flow-Organiser/",
+  "iconUrl": "https://cableblues.github.io/Flow-Organiser/icon-512.png",
+  "maskableIconUrl": "https://cableblues.github.io/Flow-Organiser/icon-512.png",
+  "monochromeIconUrl": "https://cableblues.github.io/Flow-Organiser/icon-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./noodle-release-key.keystore",
+    "alias": "noodle"
+  },
+  "appVersionName": "2.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [
+    {
+      "name": "Fokus Timer",
+      "short_name": "Timer",
+      "url": "/Flow-Organiser/?open=timer",
+      "icon": "https://cableblues.github.io/Flow-Organiser/icon-192.png"
+    },
+    {
+      "name": "Einkaufsliste",
+      "short_name": "Einkauf",
+      "url": "/Flow-Organiser/?open=shopping",
+      "icon": "https://cableblues.github.io/Flow-Organiser/icon-192.png"
+    }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "fallbackType": "customtabs",
+  "features": {
+    "playBilling": {
+      "enabled": false
+    }
+  },
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false
+}

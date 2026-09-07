@@ -320,7 +320,7 @@ const MOOD_PRESET_NAMES = {
   cozy_cafe: { name: 'Cozy Café (Jazz Piano & Coffee)', sound: 'jazz_piano' },
   zen_forest: { name: 'Zen Forest (Waldvögel & Natur)', sound: 'birds' },
   energy_boost: { name: 'Energy Boost (Techno 128 BPM)', sound: 'techno' },
-  cosmic_flow: { name: 'Cosmic Flow (432Hz Drone)', sound: 'space' }
+  cosmic_flow: { name: 'Cosmic Focus (432Hz Drone)', sound: 'space' }
 };
 
 function applyAudioMoodPreset(presetKey) {
@@ -398,7 +398,7 @@ function updateHeaderSoundBtnUI() {
 
   const isPlaying = isAnyAudioPlaying();
   if (isPlaying) {
-    btn.className = 'h-9 w-9 p-0 border border-purple-400/80 rounded-xl bg-purple-600/25 active:scale-95 text-white flex items-center justify-center cursor-pointer transition shadow-[0_0_16px_rgba(168,85,247,0.35)] shrink-0 group/sound-btn';
+    btn.className = 'h-9 w-9 md:h-[36.5px] md:w-[36.5px] p-0 border border-purple-400/80 rounded-xl bg-purple-600/25 active:scale-95 text-white flex items-center justify-center cursor-pointer transition shadow-[0_0_16px_rgba(168,85,247,0.35)] shrink-0 group/sound-btn';
     btn.title = (typeof tr === 'function') ? tr({ de: 'Sound ausschalten (Klick)', en: 'Turn sound off (Click)' }) : 'Sound ausschalten';
     if (iconWrapper) {
       iconWrapper.innerHTML = '<i data-lucide="volume-2" class="w-4 h-4 text-purple-200 animate-pulse"></i>';
@@ -409,7 +409,7 @@ function updateHeaderSoundBtnUI() {
     }
     if (label) label.textContent = '';
   } else {
-    btn.className = 'h-9 w-9 p-0 border border-purple-500/30 hover:border-purple-400/60 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 active:scale-95 text-purple-200 hover:text-white flex items-center justify-center cursor-pointer transition shadow-[0_0_12px_rgba(168,85,247,0.12)] shrink-0 group/sound-btn opacity-90 hover:opacity-100';
+    btn.className = 'h-9 w-9 md:h-[36.5px] md:w-[36.5px] p-0 border border-purple-500/30 hover:border-purple-400/60 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 active:scale-95 text-purple-200 hover:text-white flex items-center justify-center cursor-pointer transition shadow-[0_0_12px_rgba(168,85,247,0.12)] shrink-0 group/sound-btn opacity-90 hover:opacity-100';
     btn.title = (typeof tr === 'function') ? tr({ de: 'Sound einschalten (Klick)', en: 'Turn sound on (Click)' }) : 'Sound einschalten';
     if (iconWrapper) {
       iconWrapper.innerHTML = '<i data-lucide="volume-x" class="w-4 h-4 text-purple-300/80 group-hover/sound-btn:text-purple-200"></i>';
@@ -568,12 +568,12 @@ function updateSoundscapeUI() {
   updateHeaderSoundBtnUI();
 }
 
-function updateMediaSession(title, artist = 'Flow Organiser', album = 'Focus Sound Studio') {
+function updateMediaSession(title, artist = 'Noodle Focus', album = 'Focus Sound Studio') {
   if (typeof navigator !== 'undefined' && 'mediaSession' in navigator) {
     try {
       if (typeof MediaMetadata !== 'undefined') {
         navigator.mediaSession.metadata = new MediaMetadata({
-          title: title || 'Flow Focus Sound',
+          title: title || 'Noodle Focus Sound',
           artist: artist,
           album: album,
           artwork: [

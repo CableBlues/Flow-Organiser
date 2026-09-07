@@ -83,28 +83,12 @@
       <!-- 1. LINKE ZONE: BRANDING & SUCHE -->
       <!-- ====================================================================== -->
       <div class="flex items-center gap-2.5 md:gap-3.5 shrink-0">
-        <!-- TOOLS & LOGO HUB (Öffnet sofort beim Hovern über Logo oder Tools-Icon) -->
-        <div class="relative flex items-center gap-2.5 shrink-0" id="header-tools-wrapper" onmouseenter="showPanelHover('header-tools', 0)" onmouseleave="hidePanelHover('header-tools')">
+        <!-- 1. TOOLS BUTTON & DROPDOWN (Hovern & Klicken öffnet Tools) -->
+        <div class="relative flex items-center shrink-0" id="header-tools-wrapper" onmouseenter="showPanelHover('header-tools', 0)" onmouseleave="hidePanelHover('header-tools')">
           <button id="btn-header-tools" onclick="togglePanel('header-tools')" class="relative flex items-center justify-center h-10 w-10 md:h-10.5 md:w-10.5 rounded-2xl bg-gradient-to-br from-purple-500/25 via-white/[0.1] to-purple-600/25 hover:from-purple-500/40 hover:via-white/[0.18] hover:to-purple-500/40 active:scale-95 border border-purple-400/50 hover:border-purple-300 cursor-pointer transition-all duration-300 shadow-[0_2px_14px_rgba(0,0,0,0.4)] hover:shadow-[0_0_24px_rgba(168,85,247,0.5)] shrink-0 group select-none" title="Tools Menü • Klicken oder Hovern" aria-label="Tools Menü">
             <i data-lucide="layout-grid" class="w-5 h-5 md:w-5.5 md:h-5.5 text-purple-300 group-hover:text-white group-hover:scale-110 group-hover:rotate-6 transition-all duration-300"></i>
             <span class="w-2 h-2 rounded-full bg-cyan-400 absolute top-1.5 right-1.5 opacity-80 group-hover:opacity-100 group-hover:animate-ping"></span>
           </button>
-
-          <!-- Logo & STUDIO Wordmark (Strikt im Container beschnitten, keine Licht-Ausbreitung über Buttons) -->
-          <div class="flow-logo-container relative inline-flex items-center justify-center px-2 py-0.5 rounded-2xl bg-transparent hover:bg-white/[0.04] active:scale-95 transition-all duration-300 group/logo select-none shrink-0 border-none outline-none cursor-pointer overflow-hidden" title="Noodle Studio • Menü" onclick="togglePanel('header-tools')">
-            <!-- Subtile Ambient Nebula Aura im Hintergrund (begrenzt) -->
-            <div class="logo-ambient-aura absolute inset-0 -z-10 rounded-2xl blur-sm pointer-events-none opacity-30"></div>
-
-            <!-- Noodle 3D Clay Wordmark + STUDIO Subline -->
-            <div class="relative flex flex-col items-center justify-center overflow-hidden">
-              <div class="relative overflow-hidden rounded-md flex items-center justify-center">
-                <img id="header-noodle-logo" src="logo-noodle.png" alt="Noodle Studio" class="h-[22px] sm:h-[24px] md:h-[26px] w-auto max-w-none object-contain select-none pointer-events-none transition-transform duration-300 group-hover/logo:scale-105" />
-                <!-- Glanz-Lichtstrahl Sweep Animation (100% auf das Logo beschnitten) -->
-                <div class="logo-light-sweep absolute inset-0 pointer-events-none rounded-md"></div>
-              </div>
-              <span class="noodle-studio-badge text-[8px] sm:text-[8.5px] md:text-[9.5px] font-bold font-display tracking-[0.32em] uppercase text-purple-200/90 leading-none mt-1 sm:mt-1.5 select-none">STUDIO</span>
-            </div>
-          </div>
 
           <!-- TOOLS SPHERES POPOVER DROPDOWN -->
           <div id="panel-header-tools" onmouseenter="showPanelHover('header-tools', 0)" onmouseleave="hidePanelHover('header-tools', 900)" onclick="event.stopPropagation()" class="hidden absolute top-[calc(100%+6px)] left-0 z-[150] w-[280px] sm:w-[310px] bg-[#0f0e17]/98 border border-purple-500/40 p-3.5 rounded-3xl shadow-2xl backdrop-blur-2xl flex flex-col gap-2.5 text-left animate-fade-in cursor-default">
@@ -122,204 +106,6 @@
             <!-- 3x3 Spheres Grid (Runde Orbs, kein Overload) -->
             <div class="grid grid-cols-3 gap-2.5 pt-1">
               
-              <!-- 1. Einkauf Sphere -->
-              <div class="relative flex flex-col items-center" onmouseenter="showPanelHover('shopping')" onmouseleave="hidePanelHover('shopping')">
-                <button onclick="togglePanel('shopping')" class="flex flex-col items-center gap-1 group/orb cursor-pointer w-full" title="Einkaufsliste [E]">
-                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/25 to-teal-600/20 border border-emerald-400/40 hover:border-emerald-300 flex items-center justify-center text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.15)] group-hover/orb:shadow-[0_0_22px_rgba(16,185,129,0.4)] group-hover/orb:scale-110 transition-all duration-250 relative">
-                    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-                    <span id="shop-badge-count" class="hidden px-1 py-0.2 rounded-full bg-emerald-500 text-white font-mono text-[8px] font-bold absolute -top-1 -right-1"></span>
-                  </div>
-                  <span class="text-[10px] font-bold text-gray-300 group-hover/orb:text-white transition-colors" data-i18n="nav_shopping">Einkauf</span>
-                </button>
-                <div id="panel-shopping" class="dock-popover-panel hidden absolute left-full top-0 ml-3.5 w-[380px] sm:w-[420px] max-w-[95vw] bg-[#0f1017]/98 border border-emerald-500/40 p-4 rounded-3xl shadow-2xl backdrop-blur-xl flex flex-col gap-3 text-left z-[150] animate-fade-in">
-                <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
-                  <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
-                      <i data-lucide="shopping-cart" class="w-4 h-4"></i>
-                    </div>
-                    <div>
-                      <h3 class="text-sm font-bold text-white font-display leading-none" data-i18n="shop_title">Smarte Einkaufsliste</h3>
-                      <span class="text-[10px] text-gray-400 font-mono" data-i18n="shop_subtitle">Schnell nach Gängen sortiert</span>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-1">
-                    <button onclick="openSupermarketModal()" class="px-2 py-1 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 rounded-lg text-[10px] font-bold text-emerald-300 transition flex items-center gap-1 cursor-pointer" title="Supermarkt-Modus (Vollbild)">
-                      <i data-lucide="maximize-2" class="w-3 h-3"></i>
-                      <span>Markt</span>
-                    </button>
-                    <button onclick="togglePanel('shopping')" class="text-gray-400 hover:text-white text-xs font-bold p-1 cursor-pointer">✕</button>
-                  </div>
-                </div>
-
-                <!-- Quick Essentials Chips -->
-                <div class="flex flex-wrap gap-1 max-h-[58px] overflow-y-auto pr-1">
-                  <button onclick="handleAddShoppingItem('Milch')" class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-[10px] text-gray-300 hover:text-emerald-200 transition cursor-pointer">🥛 Milch</button>
-                  <button onclick="handleAddShoppingItem('Eier')" class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-[10px] text-gray-300 hover:text-emerald-200 transition cursor-pointer">🥚 Eier</button>
-                  <button onclick="handleAddShoppingItem('Brot')" class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-[10px] text-gray-300 hover:text-emerald-200 transition cursor-pointer">🍞 Brot</button>
-                  <button onclick="handleAddShoppingItem('Butter')" class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-[10px] text-gray-300 hover:text-emerald-200 transition cursor-pointer">🧈 Butter</button>
-                  <button onclick="handleAddShoppingItem('Äpfel')" class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-[10px] text-gray-300 hover:text-emerald-200 transition cursor-pointer">🍎 Äpfel</button>
-                  <button onclick="handleAddShoppingItem('Bananen')" class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-[10px] text-gray-300 hover:text-emerald-200 transition cursor-pointer">🍌 Bananen</button>
-                  <button onclick="handleAddShoppingItem('Kaffee')" class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-[10px] text-gray-300 hover:text-emerald-200 transition cursor-pointer">☕ Kaffee</button>
-                  <button onclick="handleAddShoppingItem('Nudeln')" class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-[10px] text-gray-300 hover:text-emerald-200 transition cursor-pointer">🍝 Nudeln</button>
-                  <button onclick="handleAddShoppingItem('Käse')" class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-[10px] text-gray-300 hover:text-emerald-200 transition cursor-pointer">🧀 Käse</button>
-                  <button onclick="handleAddShoppingItem('Zwiebeln')" class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-[10px] text-gray-300 hover:text-emerald-200 transition cursor-pointer">🧅 Zwiebeln</button>
-                </div>
-
-                <!-- Eingabezeile -->
-                <div class="flex gap-1.5">
-                  <input type="text" id="shop-add-name" placeholder="Artikel (z.B. 2x Hafermilch, Tomaten)..." class="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition" onkeydown="if(event.key==='Enter') handleAddShoppingItem()">
-                  <button onclick="handleAddShoppingItem()" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer">
-                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                    <span>Add</span>
-                  </button>
-                </div>
-
-                <!-- Offene Einkaufsliste -->
-                <div class="space-y-1">
-                  <div class="flex items-center justify-between text-[10px] text-gray-400 font-bold uppercase tracking-wider px-1">
-                    <span data-i18n="shop_open_items">Zu besorgen</span>
-                    <div class="flex items-center gap-2">
-                      <button onclick="clearShoppingList()" class="text-rose-400 hover:text-rose-300 text-[10px] cursor-pointer" data-i18n="shop_clear">Alle löschen</button>
-                    </div>
-                  </div>
-                  <div id="shopping-list-rows" class="space-y-1.5 max-h-[170px] overflow-y-auto pr-1"></div>
-                </div>
-
-                <!-- Smart Spar-Tipp & Shortcut -->
-                <div class="p-2 bg-emerald-500/5 border border-emerald-500/20 rounded-xl text-[10px] text-emerald-300/80 flex items-center justify-between">
-                  <span class="flex items-center gap-1.5">💡 <span>Einkäufe abhaken wandert ins Protokoll.</span></span>
-                  <kbd class="px-1.5 py-0.5 rounded bg-black/40 border border-white/10 text-[9px] font-mono text-gray-400">[E]</kbd>
-                </div>
-              </div>
-              </div>
-
-              <!-- 2. Kochen Sphere -->
-              <div class="relative flex flex-col items-center" onmouseenter="showPanelHover('cooking')" onmouseleave="hidePanelHover('cooking')">
-                <button onclick="togglePanel('cooking')" class="flex flex-col items-center gap-1 group/orb cursor-pointer w-full" title="Kochen & Rezepte [K]">
-                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500/25 to-amber-600/20 border border-orange-400/40 hover:border-orange-300 flex items-center justify-center text-orange-300 shadow-[0_0_15px_rgba(249,115,22,0.15)] group-hover/orb:shadow-[0_0_22px_rgba(249,115,22,0.4)] group-hover/orb:scale-110 transition-all duration-250 relative">
-                    <i data-lucide="chef-hat" class="w-5 h-5"></i>
-                    <span id="cooking-active-timer-badge" class="hidden w-2 h-2 rounded-full bg-orange-400 animate-ping absolute -top-0.5 -right-0.5"></span>
-                  </div>
-                  <span class="text-[10px] font-bold text-gray-300 group-hover/orb:text-white transition-colors" data-i18n="nav_cooking">Kochen</span>
-                </button>
-                <div id="panel-cooking" class="dock-popover-panel hidden absolute left-full top-0 ml-3.5 w-[380px] sm:w-[430px] max-w-[95vw] bg-[#120d08]/98 border border-orange-500/40 p-4 rounded-3xl shadow-2xl backdrop-blur-xl flex flex-col gap-3 text-left z-[150] animate-fade-in">
-                <!-- Dynamisch gerendert durch renderCookingPanel(true) -->
-              </div>
-              </div>
-
-              <!-- 3. Sport Sphere -->
-              <div class="relative flex flex-col items-center">
-                <button onclick="if(typeof openFitnessModal==='function') openFitnessModal(); else if(typeof toggleFitnessTracker==='function') toggleFitnessTracker();" class="flex flex-col items-center gap-1 group/orb cursor-pointer w-full" title="Fitness & Sport">
-                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-lime-500/25 to-green-600/20 border border-lime-400/40 hover:border-lime-300 flex items-center justify-center text-lime-300 shadow-[0_0_15px_rgba(132,204,22,0.15)] group-hover/orb:shadow-[0_0_22px_rgba(132,204,22,0.4)] group-hover/orb:scale-110 transition-all duration-250">
-                    <i data-lucide="activity" class="w-5 h-5"></i>
-                  </div>
-                  <span class="text-[10px] font-bold text-gray-300 group-hover/orb:text-white transition-colors">Sport</span>
-                </button>
-              </div>
-
-              <!-- 4. Live-Radio Sphere -->
-              <div class="relative flex flex-col items-center" onmouseenter="showPanelHover('radio')" onmouseleave="hidePanelHover('radio')">
-                <button onclick="togglePanel('radio')" class="flex flex-col items-center gap-1 group/orb cursor-pointer w-full" title="Live-Radio">
-                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500/25 to-red-600/20 border border-rose-400/40 hover:border-rose-300 flex items-center justify-center text-rose-300 shadow-[0_0_15px_rgba(244,63,94,0.15)] group-hover/orb:shadow-[0_0_22px_rgba(244,63,94,0.4)] group-hover/orb:scale-110 transition-all duration-250">
-                    <i data-lucide="radio" class="w-5 h-5"></i>
-                  </div>
-                  <span class="text-[10px] font-bold text-gray-300 group-hover/orb:text-white transition-colors">Radio</span>
-                </button>
-                <div id="panel-radio" class="dock-popover-panel hidden absolute left-full top-0 ml-3.5 w-[380px] sm:w-[430px] max-w-[95vw] bg-[#100b12]/98 border border-rose-500/40 p-4 rounded-3xl shadow-2xl backdrop-blur-xl flex flex-col gap-3 text-left z-[150] animate-fade-in">
-                <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
-                  <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-xl bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400">
-                      <i data-lucide="radio" class="w-4 h-4"></i>
-                    </div>
-                    <div>
-                      <h3 class="text-sm font-bold text-white font-display leading-none">Live-Radio</h3>
-                      <span class="text-[10px] text-gray-400 font-mono">Weltweite & Entspannungs-Sender</span>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-1.5">
-                    <button onclick="RadioNewsEngine.toggleRadioPlayback()" id="radio-master-play-btn" class="px-2.5 py-1 bg-rose-500 hover:bg-rose-400 text-white rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer">
-                      <i data-lucide="play" class="w-3.5 h-3.5"></i>
-                      <span id="radio-master-btn-label">Play</span>
-                    </button>
-                    <button onclick="togglePanel('radio')" class="text-gray-400 hover:text-white text-xs font-bold p-1 cursor-pointer">✕</button>
-                  </div>
-                </div>
-
-                <!-- Player Status & Volume Bar -->
-                <div class="p-2.5 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-between gap-3">
-                  <div class="flex items-center gap-2 min-w-0">
-                    <div class="w-2 h-2 rounded-full bg-rose-500 animate-ping" id="radio-live-dot"></div>
-                    <span class="text-xs font-bold text-white truncate" id="radio-now-playing-label">Kein Sender gewählt</span>
-                  </div>
-                  <div class="flex items-center gap-2 shrink-0">
-                    <i data-lucide="volume-2" class="w-3.5 h-3.5 text-gray-400"></i>
-                    <input type="range" id="radio-volume-slider" min="0" max="1" step="0.02" value="0.7" oninput="RadioNewsEngine.setRadioVolume(this.value)" class="w-16 accent-rose-500 cursor-pointer">
-                  </div>
-                </div>
-
-                <!-- Stations List Container -->
-                <div class="space-y-1">
-                  <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Verfügbare Sender</div>
-                  <div id="radio-stations-list" class="space-y-1.5 max-h-[260px] overflow-y-auto pr-1"></div>
-                </div>
-              </div>
-              </div>
-
-              <!-- 5. Nachrichten Sphere -->
-              <div class="relative flex flex-col items-center" onmouseenter="showPanelHover('news')" onmouseleave="hidePanelHover('news')">
-                <button onclick="togglePanel('news')" class="flex flex-col items-center gap-1 group/orb cursor-pointer w-full" title="Nachrichten & Audio">
-                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500/25 to-rose-600/20 border border-pink-400/40 hover:border-pink-300 flex items-center justify-center text-pink-300 shadow-[0_0_15px_rgba(236,72,153,0.15)] group-hover/orb:shadow-[0_0_22px_rgba(236,72,153,0.4)] group-hover/orb:scale-110 transition-all duration-250">
-                    <i data-lucide="newspaper" class="w-5 h-5"></i>
-                  </div>
-                  <span class="text-[10px] font-bold text-gray-300 group-hover/orb:text-white transition-colors">News</span>
-                </button>
-                <div id="panel-news" class="dock-popover-panel hidden absolute left-full top-0 ml-3.5 w-[420px] sm:w-[480px] max-w-[95vw] bg-[#0c0f17]/98 border border-pink-500/40 p-4 rounded-3xl shadow-2xl backdrop-blur-xl flex flex-col gap-3 text-left z-[150] animate-fade-in">
-                <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
-                  <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-xl bg-pink-500/20 border border-pink-500/40 flex items-center justify-center text-pink-400">
-                      <i data-lucide="newspaper" class="w-4 h-4"></i>
-                    </div>
-                    <div>
-                      <h3 class="text-sm font-bold text-white font-display leading-none">Nachrichten & Audio</h3>
-                      <span class="text-[10px] text-gray-400 font-mono">Snackable Cards & TTS Vorlesen</span>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-1.5">
-                    <button onclick="RadioNewsEngine.toggleNewsReaderPause()" id="news-reader-play-btn" class="px-2.5 py-1 bg-pink-500/20 hover:bg-pink-500/30 text-pink-300 border border-pink-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer" title="Vorlesen steuern">
-                      <i data-lucide="play" class="w-3.5 h-3.5"></i>
-                      <span>Vorlesen</span>
-                    </button>
-                    <button onclick="togglePanel('news')" class="text-gray-400 hover:text-white text-xs font-bold p-1 cursor-pointer">✕</button>
-                  </div>
-                </div>
-
-                <!-- Region & Category Filters -->
-                <div class="space-y-2">
-                  <div id="news-region-selector" class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar"></div>
-                  <div id="news-category-selector" class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar"></div>
-                </div>
-
-                <!-- Ticker Marquee Strip -->
-                <div class="bg-black/30 border border-white/10 rounded-xl p-2 overflow-hidden relative">
-                  <div id="news-marquee-text" class="whitespace-nowrap flex items-center animate-marquee"></div>
-                </div>
-
-                <!-- News Cards List -->
-                <div id="news-items-container" class="space-y-2 max-h-[260px] overflow-y-auto pr-1"></div>
-
-                <!-- TTS Controls Footer -->
-                <div class="flex items-center justify-between pt-2 border-t border-white/10 text-[10px]">
-                  <div class="flex items-center gap-1.5">
-                    <span class="text-gray-400">Speed:</span>
-                    <button onclick="RadioNewsEngine.setSpeechRate(1)" class="px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 text-gray-300 text-[10px]">1x</button>
-                    <button onclick="RadioNewsEngine.setSpeechRate(1.2)" class="px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 text-gray-300 text-[10px]">1.2x</button>
-                    <button onclick="RadioNewsEngine.setSpeechRate(1.5)" class="px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 text-gray-300 text-[10px]">1.5x</button>
-                  </div>
-                  <button onclick="RadioNewsEngine.stopNewsReader()" class="text-rose-400 hover:text-rose-300 cursor-pointer">Vorlesen stoppen</button>
-                </div>
-              </div>
-              </div>
-
               <!-- 6. Soundscapes Sphere -->
               <div class="relative flex flex-col items-center" onmouseenter="showPanelHover('audio')" onmouseleave="hidePanelHover('audio')">
                 <button onclick="togglePanel('audio')" class="flex flex-col items-center gap-1 group/orb cursor-pointer w-full" title="Soundscapes & Audio Studio">
@@ -624,69 +410,334 @@
                   </div>
                 </div>
 
-                <!-- TAB 4: 2-DECK DJ MIXER -->
-                <div id="audio-pane-dj" class="hidden space-y-2 max-h-[220px] overflow-y-auto pr-1 custom-scrollbar">
-                  <div class="grid grid-cols-2 gap-1.5">
-                    <div class="p-2 bg-cyan-500/5 border border-cyan-500/20 rounded-2xl space-y-1.5">
-                      <div class="flex items-center justify-between border-b border-cyan-500/20 pb-1">
-                        <span class="text-[10px] font-bold text-cyan-400 font-mono flex items-center gap-1"><i data-lucide="disc" class="w-3 h-3"></i> DECK A</span>
-                        <label class="px-1.5 py-0.5 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 rounded text-[9px] font-bold cursor-pointer">Load <input type="file" id="dj-file-deck-a" accept="audio/*" class="hidden" onchange="handleDjDeckUpload('a', event)"></label>
-                      </div>
-                      <div class="text-[10px] font-semibold text-white truncate" id="dj-title-deck-a">Kein Track</div>
-                      <div class="flex items-center justify-between text-[9px] font-mono text-cyan-300"><span id="dj-time-deck-a">00:00</span><span id="dj-bpm-deck-a">-- BPM</span></div>
-                      <input type="range" id="dj-seek-deck-a" min="0" max="100" value="0" step="0.1" oninput="seekDjDeck('a', this.value)" class="w-full h-1 bg-black/50 rounded accent-cyan-400 cursor-pointer">
-                      <div class="flex items-center justify-between gap-1 pt-0.5">
-                        <button onclick="toggleDjDeckPlayback('a')" id="dj-play-btn-a" class="flex-1 py-1 bg-cyan-500 hover:bg-cyan-400 text-black rounded-lg text-[10px] font-bold cursor-pointer shadow">Play</button>
-                        <button onclick="cueDjDeck('a')" class="px-1.5 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg text-[9px] font-mono font-bold cursor-pointer">CUE</button>
-                        <button onclick="syncDjDeck('a')" class="px-1.5 py-1 bg-cyan-600/30 text-cyan-200 rounded-lg text-[9px] font-mono font-bold cursor-pointer">SYNC</button>
-                      </div>
-                      <div class="space-y-1 pt-1 border-t border-white/5 text-[9px]">
-                        <div class="flex items-center justify-between"><span class="text-gray-400">Pitch</span><span id="dj-pitch-val-a" class="text-cyan-300 font-mono">0.0%</span></div>
-                        <input type="range" id="dj-pitch-slider-a" min="-8" max="8" step="0.1" value="0" oninput="setDjPitch('a', this.value)" class="w-full h-1 bg-black/50 rounded accent-cyan-400 cursor-pointer">
-                        <div class="flex items-center justify-between pt-0.5"><span class="text-gray-400">Low EQ</span><span class="text-gray-400">High EQ</span></div>
-                        <div class="grid grid-cols-2 gap-1">
-                          <input type="range" min="0" max="2" step="0.05" value="1" oninput="setDjEq('a', 'low', this.value)" class="w-full h-1 bg-black/50 rounded accent-cyan-400 cursor-pointer" title="Bass EQ">
-                          <input type="range" min="0" max="2" step="0.05" value="1" oninput="setDjEq('a', 'high', this.value)" class="w-full h-1 bg-black/50 rounded accent-cyan-400 cursor-pointer" title="Treble EQ">
-                        </div>
-                      </div>
+                <!-- TAB 4: 2-DECK PRO DJ WORKSTATION & AUTOMIX -->
+                <div id="audio-pane-dj" class="hidden space-y-2.5 max-h-[70vh] sm:max-h-[600px] overflow-y-auto pr-1 custom-scrollbar">
+                  
+                  <!-- DJ WORKSTATION TOP UTILITY BAR (AUTOMIX & SHUFFLE) -->
+                  <div class="p-2 rounded-2xl bg-black/60 border border-white/10 flex flex-wrap items-center justify-between gap-2 shadow-inner">
+                    <div class="flex items-center gap-2">
+                      <button onclick="djShuffleTracks()" class="px-2.5 py-1 bg-gradient-to-r from-cyan-600/30 via-purple-600/30 to-pink-600/30 hover:from-cyan-600/50 hover:to-pink-600/50 border border-white/20 rounded-xl text-white font-bold text-[10px] sm:text-xs transition flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95" title="Zufällige Fokus-Beats auf Deck A & B laden">
+                        <span>🎲</span>
+                        <span>Stems Shuffle</span>
+                      </button>
+                      <button onclick="triggerDjAutomixNow()" class="px-2.5 py-1 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-200 rounded-xl font-bold text-[10px] sm:text-xs transition flex items-center gap-1 cursor-pointer active:scale-95" title="Sofortigen weichen Übergang zum anderen Deck starten">
+                        <i data-lucide="zap" class="w-3 h-3 text-amber-400"></i>
+                        <span>X-Fade Übergang</span>
+                      </button>
                     </div>
 
-                    <div class="p-2 bg-purple-500/5 border border-purple-500/20 rounded-2xl space-y-1.5">
-                      <div class="flex items-center justify-between border-b border-purple-500/20 pb-1">
-                        <span class="text-[10px] font-bold text-purple-400 font-mono flex items-center gap-1"><i data-lucide="disc" class="w-3 h-3"></i> DECK B</span>
-                        <label class="px-1.5 py-0.5 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 rounded text-[9px] font-bold cursor-pointer">Load <input type="file" id="dj-file-deck-b" accept="audio/*" class="hidden" onchange="handleDjDeckUpload('b', event)"></label>
+                    <!-- AUTOMIX CONTROLS -->
+                    <div class="flex items-center gap-2 bg-white/[0.03] px-2 py-0.5 rounded-xl border border-white/10">
+                      <div class="flex items-center gap-1.5">
+                        <span class="text-[9px] font-mono font-bold text-gray-400 uppercase tracking-wider">Automix:</span>
+                        <button id="dj-automix-toggle-btn" onclick="toggleDjAutomix()" class="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-white/10 text-gray-400 hover:text-white border border-white/10 transition cursor-pointer flex items-center gap-1">
+                          <span id="dj-automix-led" class="w-1.5 h-1.5 rounded-full bg-gray-500"></span>
+                          <span id="dj-automix-status-text">OFF</span>
+                        </button>
                       </div>
-                      <div class="text-[10px] font-semibold text-white truncate" id="dj-title-deck-b">Kein Track</div>
-                      <div class="flex items-center justify-between text-[9px] font-mono text-purple-300"><span id="dj-time-deck-b">00:00</span><span id="dj-bpm-deck-b">-- BPM</span></div>
-                      <input type="range" id="dj-seek-deck-b" min="0" max="100" value="0" step="0.1" oninput="seekDjDeck('b', this.value)" class="w-full h-1 bg-black/50 rounded accent-purple-400 cursor-pointer">
-                      <div class="flex items-center justify-between gap-1 pt-0.5">
-                        <button onclick="toggleDjDeckPlayback('b')" id="dj-play-btn-b" class="flex-1 py-1 bg-purple-500 hover:bg-purple-400 text-white rounded-lg text-[10px] font-bold cursor-pointer shadow">Play</button>
-                        <button onclick="cueDjDeck('b')" class="px-1.5 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg text-[9px] font-mono font-bold cursor-pointer">CUE</button>
-                        <button onclick="syncDjDeck('b')" class="px-1.5 py-1 bg-purple-600/30 text-purple-200 rounded-lg text-[9px] font-mono font-bold cursor-pointer">SYNC</button>
-                      </div>
-                      <div class="space-y-1 pt-1 border-t border-white/5 text-[9px]">
-                        <div class="flex items-center justify-between"><span class="text-gray-400">Pitch</span><span id="dj-pitch-val-b" class="text-purple-300 font-mono">0.0%</span></div>
-                        <input type="range" id="dj-pitch-slider-b" min="-8" max="8" step="0.1" value="0" oninput="setDjPitch('b', this.value)" class="w-full h-1 bg-black/50 rounded accent-purple-400 cursor-pointer">
-                        <div class="flex items-center justify-between pt-0.5"><span class="text-gray-400">Low EQ</span><span class="text-gray-400">High EQ</span></div>
-                        <div class="grid grid-cols-2 gap-1">
-                          <input type="range" min="0" max="2" step="0.05" value="1" oninput="setDjEq('b', 'low', this.value)" class="w-full h-1 bg-black/50 rounded accent-purple-400 cursor-pointer" title="Bass EQ">
-                          <input type="range" min="0" max="2" step="0.05" value="1" oninput="setDjEq('b', 'high', this.value)" class="w-full h-1 bg-black/50 rounded accent-purple-400 cursor-pointer" title="Treble EQ">
-                        </div>
-                      </div>
+                      <select id="dj-automix-duration-select" onchange="setDjAutomixDuration(this.value)" class="bg-black/70 border border-white/10 text-[9px] font-mono text-amber-300 rounded px-1 py-0.5 outline-none cursor-pointer">
+                        <option value="4">4 Sek.</option>
+                        <option value="8" selected>8 Sek.</option>
+                        <option value="16">16 Sek.</option>
+                        <option value="32">32 Sek.</option>
+                      </select>
                     </div>
                   </div>
 
-                  <div class="p-2 bg-black/60 border border-white/10 rounded-2xl space-y-1">
-                    <div class="flex items-center justify-between text-[10px] font-mono font-bold">
-                      <span class="text-cyan-400">◄ DECK A</span>
-                      <span class="text-gray-400 uppercase tracking-widest text-[9px]">EQUAL POWER CROSSFADER</span>
-                      <span class="text-purple-400">DECK B ►</span>
+                  <!-- 3-COLUMN MAIN DJ CONSOLE -->
+                  <div class="grid grid-cols-1 md:grid-cols-[1fr_210px_1fr] gap-2.5 items-stretch">
+                    
+                    <!-- ================= LEFT: DECK A (CYAN THEME) ================= -->
+                    <div class="p-2.5 bg-[#0a1218]/90 border border-cyan-500/30 rounded-2xl flex flex-col justify-between gap-2 shadow-lg relative">
+                      
+                      <!-- Header & Track Loader -->
+                      <div class="space-y-1">
+                        <div class="flex items-center justify-between border-b border-cyan-500/20 pb-1.5">
+                          <div class="flex items-center gap-1.5">
+                            <span class="px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-[9px] font-mono font-black tracking-wider">DECK A</span>
+                            <span id="dj-bpm-deck-a" class="text-[9px] font-mono font-bold bg-black/60 px-1.5 py-0.2 rounded border border-cyan-500/30 text-cyan-300">126 BPM</span>
+                          </div>
+                          <label class="px-2 py-0.5 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-200 rounded-lg text-[9px] font-bold cursor-pointer transition border border-cyan-500/30 flex items-center gap-1">
+                            <i data-lucide="upload" class="w-2.5 h-2.5"></i>
+                            <span>MP3</span>
+                            <input type="file" id="dj-file-deck-a" accept="audio/*" class="hidden" onchange="handleDjDeckUpload('a', event)">
+                          </label>
+                        </div>
+
+                        <!-- Track Preset Selector -->
+                        <div class="flex gap-1 items-center">
+                          <select id="dj-preset-select-a" onchange="loadDjBuiltinTrack('a', this.value)" class="flex-1 bg-black/70 border border-cyan-500/30 rounded-lg p-1 text-[10px] font-medium text-cyan-100 outline-none cursor-pointer">
+                            <option value="deep_house" selected>Deep House Groove (126 BPM)</option>
+                            <option value="lofi_chill">Lofi Chill Lounge (85 BPM)</option>
+                            <option value="cyber_wave">Cyber Wave Focus (128 BPM)</option>
+                            <option value="tech_groove">Tech Focus Driving (130 BPM)</option>
+                            <option value="ambient_flow">Ambient Chill Beat (118 BPM)</option>
+                          </select>
+                        </div>
+
+                        <div class="flex items-center justify-between text-[9px] font-mono text-cyan-300/90 pt-0.5">
+                          <span id="dj-title-deck-a" class="font-bold text-white text-[10px] truncate max-w-[130px]">Deep House Groove</span>
+                          <span id="dj-time-deck-a">00:00 / 00:00</span>
+                        </div>
+                      </div>
+
+                      <!-- Vinyl Platter & Scratch Area -->
+                      <div class="flex flex-col items-center justify-center my-0.5 relative">
+                        <div id="dj-jog-a" ontouchmove="handleDjJogTouch('a', event.touches[0].clientX)" onmousemove="if(event.buttons===1) handleDjJogTouch('a', event.movementX)" class="w-24 h-24 sm:w-26 sm:h-26 rounded-full dj-vinyl-grooves dj-vinyl-spinning dj-vinyl-paused border border-cyan-500/40 shadow-[0_0_20px_rgba(6,182,212,0.15)] flex items-center justify-center cursor-grab active:cursor-grabbing select-none relative transition-transform">
+                          <!-- Revolving Needle / Strobe Marker -->
+                          <div class="absolute top-1 left-1/2 -translate-x-1/2 w-1 h-3 bg-cyan-300 rounded-full shadow-[0_0_6px_#06b6d4]"></div>
+                          <!-- Vinyl Center Label -->
+                          <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-cyan-950 via-cyan-800 to-cyan-500 flex items-center justify-center border border-white/30 text-[8px] font-black text-cyan-100 font-mono shadow-inner">
+                            <span>A</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Live Waveform & Track Scrubber -->
+                      <div class="space-y-1">
+                        <div id="dj-waveform-deck-a" class="dj-wave-active flex items-end justify-between h-4 bg-black/60 rounded-lg p-0.5 px-1 border border-cyan-500/20 gap-[2px] overflow-hidden">
+                          <span class="dj-bar flex-1 bg-cyan-400 rounded-full h-2"></span>
+                          <span class="dj-bar flex-1 bg-cyan-400 rounded-full h-3.5"></span>
+                          <span class="dj-bar flex-1 bg-cyan-400 rounded-full h-1.5"></span>
+                          <span class="dj-bar flex-1 bg-cyan-400 rounded-full h-4"></span>
+                          <span class="dj-bar flex-1 bg-cyan-300 rounded-full h-2.5"></span>
+                          <span class="dj-bar flex-1 bg-cyan-300 rounded-full h-3"></span>
+                          <span class="dj-bar flex-1 bg-cyan-400 rounded-full h-1"></span>
+                          <span class="dj-bar flex-1 bg-cyan-400 rounded-full h-3.5"></span>
+                          <span class="dj-bar flex-1 bg-cyan-300 rounded-full h-2"></span>
+                          <span class="dj-bar flex-1 bg-cyan-400 rounded-full h-4"></span>
+                          <span class="dj-bar flex-1 bg-cyan-300 rounded-full h-3"></span>
+                          <span class="dj-bar flex-1 bg-cyan-400 rounded-full h-1.5"></span>
+                          <span class="dj-bar flex-1 bg-cyan-300 rounded-full h-3.5"></span>
+                          <span class="dj-bar flex-1 bg-cyan-400 rounded-full h-2"></span>
+                        </div>
+                        <input type="range" id="dj-seek-deck-a" min="0" max="100" value="0" step="0.1" oninput="seekDjDeck('a', this.value)" class="w-full h-1 bg-black/60 rounded accent-cyan-400 cursor-pointer">
+                      </div>
+
+                      <!-- Transport Controls (CUE, PLAY, SYNC) -->
+                      <div class="flex items-center gap-1.5 pt-0.5">
+                        <button onclick="cueDjDeck('a')" class="px-2.5 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-xl text-[10px] font-mono font-bold cursor-pointer transition shadow-xs active:scale-95" title="CUE: Springt zum Startpunkt">CUE</button>
+                        <button onclick="toggleDjDeckPlayback('a')" id="dj-play-btn-a" class="flex-1 py-1.5 bg-cyan-500 hover:bg-cyan-400 text-black font-black rounded-xl text-xs cursor-pointer shadow-[0_0_15px_rgba(6,182,212,0.4)] transition flex items-center justify-center gap-1 active:scale-95">
+                          <i data-lucide="play" class="w-3.5 h-3.5 fill-black"></i>
+                          <span>PLAY</span>
+                        </button>
+                        <button onclick="syncDjDeck('a')" class="px-2.5 py-1.5 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-200 border border-cyan-500/40 rounded-xl text-[10px] font-mono font-bold cursor-pointer transition active:scale-95" title="Sync Tempo & Phase">SYNC</button>
+                      </div>
+
+                      <!-- Pitch & Tempo Slider -->
+                      <div class="space-y-0.5 pt-1 border-t border-cyan-500/20">
+                        <div class="flex items-center justify-between text-[9px] font-mono text-gray-400">
+                          <span>TEMPO PITCH</span>
+                          <button onclick="resetDjPitch('a')" class="text-cyan-300 hover:underline font-bold" id="dj-pitch-val-a">±0.0% (RESET)</button>
+                        </div>
+                        <input type="range" id="dj-pitch-slider-a" min="-8" max="8" step="0.1" value="0" oninput="setDjPitch('a', this.value)" class="w-full h-1 bg-black/60 rounded accent-cyan-400 cursor-pointer">
+                      </div>
+
+                      <!-- Hot Cues & Loops -->
+                      <div class="grid grid-cols-4 gap-1 pt-0.5">
+                        <button onclick="jumpDjHotCue('a', 0)" class="py-1 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/30 border border-cyan-500/30 text-cyan-200 text-[9px] font-mono font-bold cursor-pointer transition" title="Hot Cue 1">H1</button>
+                        <button onclick="jumpDjHotCue('a', 1)" class="py-1 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/30 border border-cyan-500/30 text-cyan-200 text-[9px] font-mono font-bold cursor-pointer transition" title="Hot Cue 2">H2</button>
+                        <button onclick="toggleDjLoop('a', 4)" class="py-1 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 text-gray-300 text-[9px] font-mono font-bold cursor-pointer transition" title="4 Beat Loop">4L</button>
+                        <button onclick="toggleDjLoop('a', 8)" class="py-1 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 text-gray-300 text-[9px] font-mono font-bold cursor-pointer transition" title="8 Beat Loop">8L</button>
+                      </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                      <span class="text-[9px] font-mono text-cyan-300 font-bold">A</span>
-                      <input type="range" id="dj-crossfader-slider" min="0" max="1" step="0.01" value="0.5" oninput="setDjCrossfader(this.value)" class="w-full h-2 bg-gradient-to-r from-cyan-500/40 via-purple-500/30 to-purple-500/40 rounded-xl accent-white cursor-pointer" />
-                      <span class="text-[9px] font-mono text-purple-300 font-bold">B</span>
+
+
+                    <!-- ================= CENTER: PRO MIXER, EQ & FX PADS ================= -->
+                    <div class="p-2.5 bg-[#0d0d14]/95 border border-white/15 rounded-2xl flex flex-col justify-between gap-2 shadow-2xl">
+                      
+                      <!-- 6 FX Performance Launchpad -->
+                      <div class="space-y-1">
+                        <div class="flex items-center justify-between text-[9px] font-mono font-bold text-purple-300 px-0.5">
+                          <span>PERFORMANCE FX</span>
+                          <span class="text-[8px] text-gray-500">1-SHOT</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-1">
+                          <button onclick="triggerDjFx('riser')" class="dj-fx-pad py-1 px-1 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/30 border border-cyan-500/30 text-cyan-200 text-[9px] font-bold cursor-pointer flex flex-col items-center">
+                            <span>🌪️</span>
+                            <span class="scale-90">Riser</span>
+                          </button>
+                          <button onclick="triggerDjFx('horn')" class="dj-fx-pad py-1 px-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 border border-amber-500/30 text-amber-200 text-[9px] font-bold cursor-pointer flex flex-col items-center">
+                            <span>🎺</span>
+                            <span class="scale-90">Horn</span>
+                          </button>
+                          <button onclick="triggerDjFx('laser')" class="dj-fx-pad py-1 px-1 rounded-lg bg-rose-500/15 hover:bg-rose-500/30 border border-rose-500/30 text-rose-200 text-[9px] font-bold cursor-pointer flex flex-col items-center">
+                            <span>⚡</span>
+                            <span class="scale-90">Laser</span>
+                          </button>
+                          <button onclick="triggerDjFx('brake')" class="dj-fx-pad py-1 px-1 rounded-lg bg-purple-500/15 hover:bg-purple-500/30 border border-purple-500/30 text-purple-200 text-[9px] font-bold cursor-pointer flex flex-col items-center">
+                            <span>🛑</span>
+                            <span class="scale-90">Brake</span>
+                          </button>
+                          <button onclick="triggerDjFx('echo')" class="dj-fx-pad py-1 px-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/30 border border-emerald-500/30 text-emerald-200 text-[9px] font-bold cursor-pointer flex flex-col items-center">
+                            <span>🌊</span>
+                            <span class="scale-90">Echo</span>
+                          </button>
+                          <button onclick="triggerDjFx('drop')" class="dj-fx-pad py-1 px-1 rounded-lg bg-pink-500/15 hover:bg-pink-500/30 border border-pink-500/30 text-pink-200 text-[9px] font-bold cursor-pointer flex flex-col items-center">
+                            <span>💥</span>
+                            <span class="scale-90">Drop</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- 3-Band Dual Equalizer & Level Meters -->
+                      <div class="space-y-1.5 p-1.5 bg-black/40 rounded-xl border border-white/5">
+                        <div class="grid grid-cols-[1fr_20px_1fr] gap-1.5 items-center text-[9px] font-mono">
+                          
+                          <!-- Deck A EQ -->
+                          <div class="space-y-1">
+                            <div class="flex items-center justify-between text-[8px] text-cyan-300"><span>HI</span><span>MID</span><span>LOW</span></div>
+                            <div class="grid grid-cols-3 gap-1">
+                              <input type="range" min="0" max="2" step="0.05" value="1" oninput="setDjEq('a', 'high', this.value)" class="w-full h-1 bg-black/60 rounded accent-cyan-400 cursor-pointer" title="High EQ">
+                              <input type="range" min="0" max="2" step="0.05" value="1" oninput="setDjEq('a', 'mid', this.value)" class="w-full h-1 bg-black/60 rounded accent-cyan-400 cursor-pointer" title="Mid EQ">
+                              <input type="range" min="0" max="2" step="0.05" value="1" oninput="setDjEq('a', 'low', this.value)" class="w-full h-1 bg-black/60 rounded accent-cyan-400 cursor-pointer" title="Low EQ">
+                            </div>
+                            <!-- Deck A Filter -->
+                            <div class="flex items-center justify-between text-[8px] text-gray-400 pt-0.5">
+                              <span>FILTER</span>
+                              <input type="range" min="-1" max="1" step="0.05" value="0" oninput="setDjFilter('a', this.value)" class="w-16 h-1 bg-black/60 rounded accent-cyan-400 cursor-pointer" title="Deck A Color Filter">
+                            </div>
+                          </div>
+
+                          <!-- Center VU Meters -->
+                          <div class="flex items-end justify-center gap-1 h-14 bg-black/80 p-0.5 rounded border border-white/10">
+                            <div class="w-1.5 h-full bg-black rounded flex flex-col justify-end overflow-hidden">
+                              <div id="dj-vu-meter-a" class="w-full h-1/3 bg-gradient-to-t from-emerald-500 via-amber-400 to-rose-500 rounded-t transition-all duration-75"></div>
+                            </div>
+                            <div class="w-1.5 h-full bg-black rounded flex flex-col justify-end overflow-hidden">
+                              <div id="dj-vu-meter-b" class="w-full h-1/3 bg-gradient-to-t from-emerald-500 via-amber-400 to-rose-500 rounded-t transition-all duration-75"></div>
+                            </div>
+                          </div>
+
+                          <!-- Deck B EQ -->
+                          <div class="space-y-1">
+                            <div class="flex items-center justify-between text-[8px] text-purple-300"><span>HI</span><span>MID</span><span>LOW</span></div>
+                            <div class="grid grid-cols-3 gap-1">
+                              <input type="range" min="0" max="2" step="0.05" value="1" oninput="setDjEq('b', 'high', this.value)" class="w-full h-1 bg-black/60 rounded accent-purple-400 cursor-pointer" title="High EQ">
+                              <input type="range" min="0" max="2" step="0.05" value="1" oninput="setDjEq('b', 'mid', this.value)" class="w-full h-1 bg-black/60 rounded accent-purple-400 cursor-pointer" title="Mid EQ">
+                              <input type="range" min="0" max="2" step="0.05" value="1" oninput="setDjEq('b', 'low', this.value)" class="w-full h-1 bg-black/60 rounded accent-purple-400 cursor-pointer" title="Low EQ">
+                            </div>
+                            <!-- Deck B Filter -->
+                            <div class="flex items-center justify-between text-[8px] text-gray-400 pt-0.5">
+                              <span>FILTER</span>
+                              <input type="range" min="-1" max="1" step="0.05" value="0" oninput="setDjFilter('b', this.value)" class="w-16 h-1 bg-black/60 rounded accent-purple-400 cursor-pointer" title="Deck B Color Filter">
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+
+                      <!-- Equal-Power Crossfader Strip -->
+                      <div class="p-2 bg-black/60 border border-white/10 rounded-xl space-y-1">
+                        <div class="flex items-center justify-between text-[9px] font-mono font-bold">
+                          <span class="text-cyan-400">◄ DECK A</span>
+                          <span class="text-gray-400 text-[8px] tracking-wider uppercase">CROSSFADER</span>
+                          <span class="text-purple-400">DECK B ►</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                          <span class="text-[9px] font-mono text-cyan-300 font-bold">A</span>
+                          <input type="range" id="dj-crossfader-slider" min="0" max="1" step="0.01" value="0.5" oninput="setDjCrossfader(this.value)" class="w-full h-2 bg-gradient-to-r from-cyan-500/40 via-purple-500/30 to-purple-500/40 rounded-xl accent-white cursor-pointer shadow-inner">
+                          <span class="text-[9px] font-mono text-purple-300 font-bold">B</span>
+                        </div>
+                      </div>
                     </div>
+
+
+                    <!-- ================= RIGHT: DECK B (PURPLE THEME) ================= -->
+                    <div class="p-2.5 bg-[#140b1a]/90 border border-purple-500/30 rounded-2xl flex flex-col justify-between gap-2 shadow-lg relative">
+                      
+                      <!-- Header & Track Loader -->
+                      <div class="space-y-1">
+                        <div class="flex items-center justify-between border-b border-purple-500/20 pb-1.5">
+                          <div class="flex items-center gap-1.5">
+                            <span class="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[9px] font-mono font-black tracking-wider">DECK B</span>
+                            <span id="dj-bpm-deck-b" class="text-[9px] font-mono font-bold bg-black/60 px-1.5 py-0.2 rounded border border-purple-500/30 text-purple-300">85 BPM</span>
+                          </div>
+                          <label class="px-2 py-0.5 bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 rounded-lg text-[9px] font-bold cursor-pointer transition border border-purple-500/30 flex items-center gap-1">
+                            <i data-lucide="upload" class="w-2.5 h-2.5"></i>
+                            <span>MP3</span>
+                            <input type="file" id="dj-file-deck-b" accept="audio/*" class="hidden" onchange="handleDjDeckUpload('b', event)">
+                          </label>
+                        </div>
+
+                        <!-- Track Preset Selector -->
+                        <div class="flex gap-1 items-center">
+                          <select id="dj-preset-select-b" onchange="loadDjBuiltinTrack('b', this.value)" class="flex-1 bg-black/70 border border-purple-500/30 rounded-lg p-1 text-[10px] font-medium text-purple-100 outline-none cursor-pointer">
+                            <option value="deep_house">Deep House Groove (126 BPM)</option>
+                            <option value="lofi_chill" selected>Lofi Chill Lounge (85 BPM)</option>
+                            <option value="cyber_wave">Cyber Wave Focus (128 BPM)</option>
+                            <option value="tech_groove">Tech Focus Driving (130 BPM)</option>
+                            <option value="ambient_flow">Ambient Chill Beat (118 BPM)</option>
+                          </select>
+                        </div>
+
+                        <div class="flex items-center justify-between text-[9px] font-mono text-purple-300/90 pt-0.5">
+                          <span id="dj-title-deck-b" class="font-bold text-white text-[10px] truncate max-w-[130px]">Lofi Chill Lounge</span>
+                          <span id="dj-time-deck-b">00:00 / 00:00</span>
+                        </div>
+                      </div>
+
+                      <!-- Vinyl Platter & Scratch Area -->
+                      <div class="flex flex-col items-center justify-center my-0.5 relative">
+                        <div id="dj-jog-b" ontouchmove="handleDjJogTouch('b', event.touches[0].clientX)" onmousemove="if(event.buttons===1) handleDjJogTouch('b', event.movementX)" class="w-24 h-24 sm:w-26 sm:h-26 rounded-full dj-vinyl-grooves dj-vinyl-spinning dj-vinyl-paused border border-purple-500/40 shadow-[0_0_20px_rgba(168,85,247,0.15)] flex items-center justify-center cursor-grab active:cursor-grabbing select-none relative transition-transform">
+                          <!-- Revolving Needle / Strobe Marker -->
+                          <div class="absolute top-1 left-1/2 -translate-x-1/2 w-1 h-3 bg-purple-300 rounded-full shadow-[0_0_6px_#a855f7]"></div>
+                          <!-- Vinyl Center Label -->
+                          <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-950 via-purple-850 to-purple-500 flex items-center justify-center border border-white/30 text-[8px] font-black text-purple-100 font-mono shadow-inner">
+                            <span>B</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Live Waveform & Track Scrubber -->
+                      <div class="space-y-1">
+                        <div id="dj-waveform-deck-b" class="dj-wave-active flex items-end justify-between h-4 bg-black/60 rounded-lg p-0.5 px-1 border border-purple-500/20 gap-[2px] overflow-hidden">
+                          <span class="dj-bar flex-1 bg-purple-400 rounded-full h-2"></span>
+                          <span class="dj-bar flex-1 bg-purple-400 rounded-full h-3.5"></span>
+                          <span class="dj-bar flex-1 bg-purple-400 rounded-full h-1.5"></span>
+                          <span class="dj-bar flex-1 bg-purple-400 rounded-full h-4"></span>
+                          <span class="dj-bar flex-1 bg-purple-300 rounded-full h-2.5"></span>
+                          <span class="dj-bar flex-1 bg-purple-300 rounded-full h-3"></span>
+                          <span class="dj-bar flex-1 bg-purple-400 rounded-full h-1"></span>
+                          <span class="dj-bar flex-1 bg-purple-400 rounded-full h-3.5"></span>
+                          <span class="dj-bar flex-1 bg-purple-300 rounded-full h-2"></span>
+                          <span class="dj-bar flex-1 bg-purple-400 rounded-full h-4"></span>
+                          <span class="dj-bar flex-1 bg-purple-300 rounded-full h-3"></span>
+                          <span class="dj-bar flex-1 bg-purple-400 rounded-full h-1.5"></span>
+                          <span class="dj-bar flex-1 bg-purple-300 rounded-full h-3.5"></span>
+                          <span class="dj-bar flex-1 bg-purple-400 rounded-full h-2"></span>
+                        </div>
+                        <input type="range" id="dj-seek-deck-b" min="0" max="100" value="0" step="0.1" oninput="seekDjDeck('b', this.value)" class="w-full h-1 bg-black/60 rounded accent-purple-400 cursor-pointer">
+                      </div>
+
+                      <!-- Transport Controls (CUE, PLAY, SYNC) -->
+                      <div class="flex items-center gap-1.5 pt-0.5">
+                        <button onclick="cueDjDeck('b')" class="px-2.5 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-xl text-[10px] font-mono font-bold cursor-pointer transition shadow-xs active:scale-95" title="CUE: Springt zum Startpunkt">CUE</button>
+                        <button onclick="toggleDjDeckPlayback('b')" id="dj-play-btn-b" class="flex-1 py-1.5 bg-purple-500 hover:bg-purple-400 text-white font-black rounded-xl text-xs cursor-pointer shadow-[0_0_15px_rgba(168,85,247,0.4)] transition flex items-center justify-center gap-1 active:scale-95">
+                          <i data-lucide="play" class="w-3.5 h-3.5 fill-white"></i>
+                          <span>PLAY</span>
+                        </button>
+                        <button onclick="syncDjDeck('b')" class="px-2.5 py-1.5 bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 border border-purple-500/40 rounded-xl text-[10px] font-mono font-bold cursor-pointer transition active:scale-95" title="Sync Tempo & Phase">SYNC</button>
+                      </div>
+
+                      <!-- Pitch & Tempo Slider -->
+                      <div class="space-y-0.5 pt-1 border-t border-purple-500/20">
+                        <div class="flex items-center justify-between text-[9px] font-mono text-gray-400">
+                          <span>TEMPO PITCH</span>
+                          <button onclick="resetDjPitch('b')" class="text-purple-300 hover:underline font-bold" id="dj-pitch-val-b">±0.0% (RESET)</button>
+                        </div>
+                        <input type="range" id="dj-pitch-slider-b" min="-8" max="8" step="0.1" value="0" oninput="setDjPitch('b', this.value)" class="w-full h-1 bg-black/60 rounded accent-purple-400 cursor-pointer">
+                      </div>
+
+                      <!-- Hot Cues & Loops -->
+                      <div class="grid grid-cols-4 gap-1 pt-0.5">
+                        <button onclick="jumpDjHotCue('b', 0)" class="py-1 rounded-lg bg-purple-500/15 hover:bg-purple-500/30 border border-purple-500/30 text-purple-200 text-[9px] font-mono font-bold cursor-pointer transition" title="Hot Cue 1">H1</button>
+                        <button onclick="jumpDjHotCue('b', 1)" class="py-1 rounded-lg bg-purple-500/15 hover:bg-purple-500/30 border border-purple-500/30 text-purple-200 text-[9px] font-mono font-bold cursor-pointer transition" title="Hot Cue 2">H2</button>
+                        <button onclick="toggleDjLoop('b', 4)" class="py-1 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 text-gray-300 text-[9px] font-mono font-bold cursor-pointer transition" title="4 Beat Loop">4L</button>
+                        <button onclick="toggleDjLoop('b', 8)" class="py-1 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 text-gray-300 text-[9px] font-mono font-bold cursor-pointer transition" title="8 Beat Loop">8L</button>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
               </div>
@@ -726,6 +777,236 @@
             </div>
               </div>
 
+              <!-- 4. Live-Radio Sphere -->
+              <div class="relative flex flex-col items-center" onmouseenter="showPanelHover('radio')" onmouseleave="hidePanelHover('radio')">
+                <button onclick="togglePanel('radio')" class="flex flex-col items-center gap-1 group/orb cursor-pointer w-full" title="Live-Radio">
+                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500/25 to-red-600/20 border border-rose-400/40 hover:border-rose-300 flex items-center justify-center text-rose-300 shadow-[0_0_15px_rgba(244,63,94,0.15)] group-hover/orb:shadow-[0_0_22px_rgba(244,63,94,0.4)] group-hover/orb:scale-110 transition-all duration-250">
+                    <i data-lucide="radio" class="w-5 h-5"></i>
+                  </div>
+                  <span class="text-[10px] font-bold text-gray-300 group-hover/orb:text-white transition-colors">Radio</span>
+                </button>
+                <div id="panel-radio" class="dock-popover-panel hidden absolute left-full top-0 ml-3.5 w-[380px] sm:w-[430px] max-w-[95vw] bg-[#100b12]/98 border border-rose-500/40 p-4 rounded-3xl shadow-2xl backdrop-blur-xl flex flex-col gap-3 text-left z-[150] animate-fade-in">
+                <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+                  <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-xl bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400">
+                      <i data-lucide="radio" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                      <h3 class="text-sm font-bold text-white font-display leading-none">Live-Radio</h3>
+                      <span class="text-[10px] text-gray-400 font-mono">Weltweite & Entspannungs-Sender</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <button onclick="RadioNewsEngine.toggleRadioPlayback()" id="radio-master-play-btn" class="px-2.5 py-1 bg-rose-500 hover:bg-rose-400 text-white rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer">
+                      <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                      <span id="radio-master-btn-label">Play</span>
+                    </button>
+                    <button onclick="togglePanel('radio')" class="text-gray-400 hover:text-white text-xs font-bold p-1 cursor-pointer">✕</button>
+                  </div>
+                </div>
+
+                <!-- Player Status & Volume Bar -->
+                <div class="p-2.5 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <div class="w-2 h-2 rounded-full bg-rose-500 animate-ping" id="radio-live-dot"></div>
+                    <span class="text-xs font-bold text-white truncate" id="radio-now-playing-label">Kein Sender gewählt</span>
+                  </div>
+                  <div class="flex items-center gap-2 shrink-0">
+                    <i data-lucide="volume-2" class="w-3.5 h-3.5 text-gray-400"></i>
+                    <input type="range" id="radio-volume-slider" min="0" max="1" step="0.02" value="0.7" oninput="RadioNewsEngine.setRadioVolume(this.value)" class="w-16 accent-rose-500 cursor-pointer">
+                  </div>
+                </div>
+
+                <!-- Stations List Container -->
+                <div class="space-y-1">
+                  <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Verfügbare Sender</div>
+                  <div id="radio-stations-list" class="space-y-1.5 max-h-[260px] overflow-y-auto pr-1"></div>
+                </div>
+              </div>
+              </div>
+
+              <!-- 5. Nachrichten Sphere -->
+              <div class="relative flex flex-col items-center" onmouseenter="showPanelHover('news')" onmouseleave="hidePanelHover('news')">
+                <button onclick="togglePanel('news')" class="flex flex-col items-center gap-1 group/orb cursor-pointer w-full" title="Nachrichten & Audio">
+                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500/25 to-rose-600/20 border border-pink-400/40 hover:border-pink-300 flex items-center justify-center text-pink-300 shadow-[0_0_15px_rgba(236,72,153,0.15)] group-hover/orb:shadow-[0_0_22px_rgba(236,72,153,0.4)] group-hover/orb:scale-110 transition-all duration-250">
+                    <i data-lucide="newspaper" class="w-5 h-5"></i>
+                  </div>
+                  <span class="text-[10px] font-bold text-gray-300 group-hover/orb:text-white transition-colors">News</span>
+                </button>
+                <div id="panel-news" class="dock-popover-panel hidden absolute left-full top-0 ml-3.5 w-[94vw] sm:w-[680px] md:w-[780px] lg:w-[840px] max-w-[96vw] bg-[#0c0f17]/98 border border-purple-500/30 p-4 sm:p-5 rounded-3xl shadow-2xl backdrop-blur-2xl flex flex-col gap-3 text-left z-[150] animate-fade-in max-h-[88vh]">
+                  <!-- Header -->
+                  <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                    <div class="flex items-center gap-3">
+                      <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-400/40 flex items-center justify-center text-purple-300 shadow-[0_0_12px_rgba(168,85,247,0.2)]">
+                        <i data-lucide="newspaper" class="w-4.5 h-4.5"></i>
+                      </div>
+                      <div>
+                        <div class="flex items-center gap-2">
+                          <h3 class="text-sm font-bold text-white font-display leading-tight">Nachrichten Lounge</h3>
+                          <span id="news-count-badge" class="px-2 py-0.5 rounded-full bg-white/10 text-[10px] text-purple-200 font-mono font-semibold">Aktuell</span>
+                        </div>
+                        <span class="text-[10px] text-gray-400">Ruhig • Minimalistisch • Multi-Region</span>
+                      </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                      <!-- Instant Search -->
+                      <div class="relative hidden sm:block w-44">
+                        <input type="text" oninput="RadioNewsEngine.handleNewsSearch(this.value)" placeholder="Suche..." class="w-full bg-white/[0.04] border border-white/10 focus:border-purple-400/60 rounded-xl px-2.5 py-1 text-xs text-gray-200 placeholder-gray-500 focus:outline-none transition-all">
+                      </div>
+                      <!-- Play Audio Briefing -->
+                      <button onclick="RadioNewsEngine.toggleAllNewsReader()" id="news-reader-play-btn" class="px-3 py-1 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs" title="Audio-Briefing vorlesen">
+                        <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                        <span>Vorlesen</span>
+                      </button>
+                      <!-- Reload / Refresh -->
+                      <button onclick="RadioNewsEngine.fetchNewsForRegion()" class="p-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white border border-white/10 transition cursor-pointer" title="Nachrichten aktualisieren">
+                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                      </button>
+                      <!-- Close Button -->
+                      <button onclick="togglePanel('news')" class="w-7 h-7 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white transition cursor-pointer font-bold text-xs">✕</button>
+                    </div>
+                  </div>
+
+                  <!-- Multi-Region Flag Selector -->
+                  <div class="space-y-1.5">
+                    <div class="flex items-center justify-between text-[10px] text-gray-400 font-semibold px-0.5">
+                      <span>Region / Land:</span>
+                      <span class="text-[9px] text-gray-500">Auto-Erkennung aktiv</span>
+                    </div>
+                    <div id="news-region-selector" class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar"></div>
+                  </div>
+
+                  <!-- Local Media Outlet Selector -->
+                  <div class="space-y-1">
+                    <div class="text-[10px] text-gray-400 font-semibold px-0.5">Lokale Medien & Quellen:</div>
+                    <div id="news-media-selector" class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar"></div>
+                  </div>
+
+                  <!-- Topic Categories -->
+                  <div id="news-category-selector" class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar"></div>
+
+                  <!-- Ticker Marquee Strip -->
+                  <div class="bg-black/40 border border-white/8 rounded-xl px-3 py-1.5 overflow-hidden relative">
+                    <div id="news-marquee-text" class="whitespace-nowrap flex items-center animate-marquee"></div>
+                  </div>
+
+                  <!-- News Cards Grid (2-Column Magazine) -->
+                  <div id="news-items-container" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[46vh] sm:max-h-[380px] overflow-y-auto pr-1"></div>
+
+                  <!-- Active TTS Floating Bar -->
+                  <div id="news-tts-bottom-bar" class="hidden flex items-center justify-between p-2 rounded-2xl bg-purple-950/70 border border-purple-500/40 text-xs shadow-lg backdrop-blur-md">
+                    <div class="flex items-center gap-2 min-w-0 flex-1 mr-2">
+                      <span class="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
+                      <span class="text-[10px] text-purple-300 font-mono font-bold" id="news-tts-count-display">1 / 10</span>
+                      <span class="text-xs text-white truncate font-medium" id="news-tts-current-title">Wird vorgelesen...</span>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0">
+                      <button onclick="RadioNewsEngine.prevNewsItem()" class="p-1 rounded-lg bg-white/10 hover:bg-white/20 text-white cursor-pointer"><i data-lucide="skip-back" class="w-3.5 h-3.5"></i></button>
+                      <button id="news-tts-pause-btn" onclick="RadioNewsEngine.toggleNewsReaderPause()" class="p-1 rounded-lg bg-purple-500 hover:bg-purple-400 text-white cursor-pointer"><i data-lucide="pause" class="w-3.5 h-3.5 fill-white"></i></button>
+                      <button onclick="RadioNewsEngine.nextNewsItem()" class="p-1 rounded-lg bg-white/10 hover:bg-white/20 text-white cursor-pointer"><i data-lucide="skip-forward" class="w-3.5 h-3.5"></i></button>
+                      <button onclick="RadioNewsEngine.stopNewsReader()" class="p-1 rounded-lg bg-rose-500/30 hover:bg-rose-500/50 text-rose-200 cursor-pointer ml-1"><i data-lucide="square" class="w-3.5 h-3.5"></i></button>
+                    </div>
+                  </div>
+
+                  <!-- Footer with Speech Rate & Status -->
+                  <div class="flex items-center justify-between pt-2 border-t border-white/8 text-[10px]">
+                    <div class="flex items-center gap-1.5">
+                      <span class="text-gray-400">Sprach-Tempo:</span>
+                      <button data-speed="1" onclick="RadioNewsEngine.setSpeechRate(1)" class="news-speed-btn px-2 py-0.5 rounded-lg bg-purple-500/30 text-purple-200 border border-purple-500/50 font-mono font-bold cursor-pointer">1.0x</button>
+                      <button data-speed="1.2" onclick="RadioNewsEngine.setSpeechRate(1.2)" class="news-speed-btn px-2 py-0.5 rounded-lg bg-white/5 text-gray-400 hover:text-white border border-white/10 font-mono font-bold cursor-pointer">1.2x</button>
+                      <button data-speed="1.5" onclick="RadioNewsEngine.setSpeechRate(1.5)" class="news-speed-btn px-2 py-0.5 rounded-lg bg-white/5 text-gray-400 hover:text-white border border-white/10 font-mono font-bold cursor-pointer">1.5x</button>
+                    </div>
+                    <span class="text-gray-500 text-[9px] font-mono">100% Client-Side • Zero-Tracking</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 1. Einkauf Sphere -->
+              <div class="relative flex flex-col items-center" onmouseenter="showPanelHover('shopping')" onmouseleave="hidePanelHover('shopping')">
+                <button onclick="togglePanel('shopping')" class="flex flex-col items-center gap-1 group/orb cursor-pointer w-full" title="Einkaufsliste [E]">
+                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/25 to-teal-600/20 border border-emerald-400/40 hover:border-emerald-300 flex items-center justify-center text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.15)] group-hover/orb:shadow-[0_0_22px_rgba(16,185,129,0.4)] group-hover/orb:scale-110 transition-all duration-250 relative">
+                    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                    <span id="shop-badge-count" class="hidden px-1 py-0.2 rounded-full bg-emerald-500 text-white font-mono text-[8px] font-bold absolute -top-1 -right-1"></span>
+                  </div>
+                  <span class="text-[10px] font-bold text-gray-300 group-hover/orb:text-white transition-colors" data-i18n="nav_shopping">Einkauf</span>
+                </button>
+                <div id="panel-shopping" class="dock-popover-panel hidden absolute left-full top-0 ml-3.5 w-[380px] sm:w-[420px] max-w-[95vw] bg-[#0f1017]/98 border border-emerald-500/40 p-4 rounded-3xl shadow-2xl backdrop-blur-xl flex flex-col gap-3 text-left z-[150] animate-fade-in">
+                <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+                  <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+                      <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                      <h3 class="text-sm font-bold text-white font-display leading-none" data-i18n="shop_title">Smarte Einkaufsliste</h3>
+                      <span class="text-[10px] text-gray-400 font-mono" data-i18n="shop_subtitle">Schnell nach Gängen sortiert</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <button onclick="openSupermarketModal()" class="px-2 py-1 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 rounded-lg text-[10px] font-bold text-emerald-300 transition flex items-center gap-1 cursor-pointer" title="Supermarkt-Modus (Vollbild)">
+                      <i data-lucide="maximize-2" class="w-3 h-3"></i>
+                      <span>Markt</span>
+                    </button>
+                    <button onclick="togglePanel('shopping')" class="text-gray-400 hover:text-white text-xs font-bold p-1 cursor-pointer">✕</button>
+                  </div>
+                </div>
+
+                <!-- Quick Essentials Chips -->
+                <div class="flex flex-wrap gap-1 max-h-[58px] overflow-y-auto pr-1">
+                  <button onclick="handleAddShoppingItem('Milch')" class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-[10px] text-gray-300 hover:text-emerald-200 transition cursor-pointer">🥛 Milch</button>
+                  <button onclick="handleAddShoppingItem('Eier')" class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-[10px] text-gray-300 hover:text-emerald-200 transition cursor-pointer">🥚 Eier</button>
+                  <button onclick="handleAddShoppingItem('Brot')" class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-[10px] text-gray-300 hover:text-emerald-200 transition cursor-pointer">🍞 Brot</button>
+                  <button onclick="handleAddShoppingItem('Butter')" class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-[10px] text-gray-300 hover:text-emerald-200 transition cursor-pointer">🧈 Butter</button>
+                  <button onclick="handleAddShoppingItem('Äpfel')" class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-[10px] text-gray-300 hover:text-emerald-200 transition cursor-pointer">🍎 Äpfel</button>
+                  <button onclick="handleAddShoppingItem('Bananen')" class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-[10px] text-gray-300 hover:text-emerald-200 transition cursor-pointer">🍌 Bananen</button>
+                  <button onclick="handleAddShoppingItem('Kaffee')" class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-[10px] text-gray-300 hover:text-emerald-200 transition cursor-pointer">☕ Kaffee</button>
+                  <button onclick="handleAddShoppingItem('Nudeln')" class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-[10px] text-gray-300 hover:text-emerald-200 transition cursor-pointer">🍝 Nudeln</button>
+                  <button onclick="handleAddShoppingItem('Käse')" class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-[10px] text-gray-300 hover:text-emerald-200 transition cursor-pointer">🧀 Käse</button>
+                  <button onclick="handleAddShoppingItem('Zwiebeln')" class="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-[10px] text-gray-300 hover:text-emerald-200 transition cursor-pointer">🧅 Zwiebeln</button>
+                </div>
+
+                <!-- Eingabezeile -->
+                <div class="flex gap-1.5">
+                  <input type="text" id="shop-add-name" placeholder="Artikel (z.B. 2x Hafermilch, Tomaten)..." class="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition" onkeydown="if(event.key==='Enter') handleAddShoppingItem()">
+                  <button onclick="handleAddShoppingItem()" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                    <span>Add</span>
+                  </button>
+                </div>
+
+                <!-- Offene Einkaufsliste -->
+                <div class="space-y-1">
+                  <div class="flex items-center justify-between text-[10px] text-gray-400 font-bold uppercase tracking-wider px-1">
+                    <span data-i18n="shop_open_items">Zu besorgen</span>
+                    <div class="flex items-center gap-2">
+                      <button onclick="clearShoppingList()" class="text-rose-400 hover:text-rose-300 text-[10px] cursor-pointer" data-i18n="shop_clear">Alle löschen</button>
+                    </div>
+                  </div>
+                  <div id="shopping-list-rows" class="space-y-1.5 max-h-[170px] overflow-y-auto pr-1"></div>
+                </div>
+
+                <!-- Smart Spar-Tipp & Shortcut -->
+                <div class="p-2 bg-emerald-500/5 border border-emerald-500/20 rounded-xl text-[10px] text-emerald-300/80 flex items-center justify-between">
+                  <span class="flex items-center gap-1.5">💡 <span>Einkäufe abhaken wandert ins Protokoll.</span></span>
+                  <kbd class="px-1.5 py-0.5 rounded bg-black/40 border border-white/10 text-[9px] font-mono text-gray-400">[E]</kbd>
+                </div>
+              </div>
+              </div>
+
+              <!-- 2. Kochen Sphere -->
+              <div class="relative flex flex-col items-center" onmouseenter="showPanelHover('cooking')" onmouseleave="hidePanelHover('cooking')">
+                <button onclick="togglePanel('cooking')" class="flex flex-col items-center gap-1 group/orb cursor-pointer w-full" title="Kochen & Rezepte [K]">
+                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500/25 to-amber-600/20 border border-orange-400/40 hover:border-orange-300 flex items-center justify-center text-orange-300 shadow-[0_0_15px_rgba(249,115,22,0.15)] group-hover/orb:shadow-[0_0_22px_rgba(249,115,22,0.4)] group-hover/orb:scale-110 transition-all duration-250 relative">
+                    <i data-lucide="chef-hat" class="w-5 h-5"></i>
+                    <span id="cooking-active-timer-badge" class="hidden w-2 h-2 rounded-full bg-orange-400 animate-ping absolute -top-0.5 -right-0.5"></span>
+                  </div>
+                  <span class="text-[10px] font-bold text-gray-300 group-hover/orb:text-white transition-colors" data-i18n="nav_cooking">Kochen</span>
+                </button>
+                <div id="panel-cooking" class="dock-popover-panel hidden absolute left-full top-0 ml-3.5 w-[380px] sm:w-[430px] max-w-[95vw] bg-[#120d08]/98 border border-orange-500/40 p-4 rounded-3xl shadow-2xl backdrop-blur-xl flex flex-col gap-3 text-left z-[150] animate-fade-in">
+                <!-- Dynamisch gerendert durch renderCookingPanel(true) -->
+              </div>
+              </div>
+
               <!-- 7. Wecker Sphere -->
               <div class="relative flex flex-col items-center" onmouseenter="showPanelHover('alarm')" onmouseleave="hidePanelHover('alarm')">
                 <button onclick="togglePanel('alarm')" class="flex flex-col items-center gap-1 group/orb cursor-pointer w-full" title="Wecker & Alarme">
@@ -740,6 +1021,26 @@
               </div>
               </div>
 
+              <!-- 3. Sport Sphere -->
+              <div class="relative flex flex-col items-center">
+                <button onclick="if(typeof openFitnessModal==='function') openFitnessModal(); else if(typeof toggleFitnessTracker==='function') toggleFitnessTracker();" class="flex flex-col items-center gap-1 group/orb cursor-pointer w-full" title="Fitness & Sport">
+                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-lime-500/25 to-green-600/20 border border-lime-400/40 hover:border-lime-300 flex items-center justify-center text-lime-300 shadow-[0_0_15px_rgba(132,204,22,0.15)] group-hover/orb:shadow-[0_0_22px_rgba(132,204,22,0.4)] group-hover/orb:scale-110 transition-all duration-250">
+                    <i data-lucide="activity" class="w-5 h-5"></i>
+                  </div>
+                  <span class="text-[10px] font-bold text-gray-300 group-hover/orb:text-white transition-colors">Sport</span>
+                </button>
+              </div>
+
+              <!-- 9. Lernen & Quiz-Labor Sphere -->
+              <div class="relative flex flex-col items-center">
+                <button onclick="openLearningHubModal()" class="flex flex-col items-center gap-1 group/orb cursor-pointer w-full" title="Wissens- & Quiz-Labor">
+                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/25 to-yellow-600/20 border border-amber-400/40 hover:border-amber-300 flex items-center justify-center text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.15)] group-hover/orb:shadow-[0_0_22px_rgba(245,158,11,0.4)] group-hover/orb:scale-110 transition-all duration-250">
+                    <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                  </div>
+                  <span class="text-[10px] font-bold text-gray-300 group-hover/orb:text-white transition-colors">Lernen</span>
+                </button>
+              </div>
+
               <!-- 8. Klarheit & Impulskontrolle Sphere -->
               <div class="relative flex flex-col items-center">
                 <button onclick="openClarityModal()" class="flex flex-col items-center gap-1 group/orb cursor-pointer w-full" title="Klarheit & Innehalten">
@@ -750,23 +1051,164 @@
                 </button>
               </div>
 
-              <!-- 9. Lernen & Quiz-Labor Sphere -->
-              <div class="relative flex flex-col items-center">
-                <button onclick="openLearningHubModal()" class="flex flex-col items-center gap-1 group/orb cursor-pointer w-full" title="Wissens- & Quiz-Labor">
-                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/25 to-yellow-600/20 border border-amber-400/40 hover:border-amber-300 flex items-center justify-center text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.15)] group-hover/orb:shadow-[0_0_22px_rgba(245,158,11,0.4)] group-hover/orb:scale-110 transition-all duration-250">
-                    <i data-lucide="brain" class="w-5 h-5"></i>
+              <!-- 10. Team Chat Sphere -->
+              <div class="relative flex flex-col items-center" onmouseenter="showPanelHover('collab-chat')" onmouseleave="hidePanelHover('collab-chat')">
+                <button onclick="togglePanel('collab-chat')" class="flex flex-col items-center gap-1 group/orb cursor-pointer w-full" title="Team Chat & Live-Kollaboration">
+                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500/25 to-fuchsia-600/20 border border-violet-400/40 hover:border-violet-300 flex items-center justify-center text-violet-300 shadow-[0_0_15px_rgba(168,85,247,0.15)] group-hover/orb:shadow-[0_0_22px_rgba(168,85,247,0.4)] group-hover/orb:scale-110 transition-all duration-250 relative">
+                    <i data-lucide="message-square" class="w-5 h-5"></i>
+                    <span id="collab-unread-badge" class="hidden px-1.5 py-0.2 rounded-full bg-pink-500 text-white font-mono text-[8px] font-bold absolute -top-1 -right-1 animate-pulse"></span>
                   </div>
-                  <span class="text-[10px] font-bold text-gray-300 group-hover/orb:text-white transition-colors">Lernen</span>
+                  <span class="text-[10px] font-bold text-gray-300 group-hover/orb:text-white transition-colors">Team Chat</span>
                 </button>
+                <div id="panel-collab-chat" class="dock-popover-panel hidden absolute left-full top-0 ml-3.5 w-[360px] sm:w-[400px] max-w-[95vw] bg-[#0e0e17]/98 border border-violet-500/40 p-3.5 rounded-3xl shadow-2xl backdrop-blur-xl flex flex-col gap-2.5 text-left z-[150] animate-fade-in">
+                  <!-- Header -->
+                  <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-xl bg-violet-500/20 border border-violet-500/40 flex items-center justify-center text-violet-300">
+                        <i data-lucide="message-square" class="w-4 h-4"></i>
+                      </div>
+                      <div>
+                        <div class="flex items-center gap-1.5">
+                          <h3 id="collab-current-room-name" class="text-xs font-bold text-white font-display leading-none">#team-space</h3>
+                          <button onclick="CollabEngine.openRoomModal()" class="text-[10px] text-violet-400 hover:text-violet-200 underline cursor-pointer" title="Raum wechseln">wechseln</button>
+                        </div>
+                        <span id="collab-member-count" class="text-[9px] text-emerald-400 font-mono">1 online</span>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <button onclick="CollabEngine.copyShareLink()" class="px-2 py-1 bg-violet-500/15 hover:bg-violet-500/25 border border-violet-500/30 rounded-lg text-[10px] font-bold text-violet-300 transition flex items-center gap-1 cursor-pointer" title="Team-Einladungslink kopieren">
+                        <i data-lucide="share-2" class="w-3 h-3"></i>
+                        <span>Teilen</span>
+                      </button>
+                      <button onclick="togglePanel('collab-chat')" class="text-gray-400 hover:text-white text-xs font-bold p-1 cursor-pointer">✕</button>
+                    </div>
+                  </div>
+
+                  <!-- Presence Avatars Container -->
+                  <div id="header-collab-avatars" class="flex items-center py-0.5 min-h-[26px]"></div>
+
+                  <!-- Scrollable Message List -->
+                  <div id="collab-chat-messages-container" class="flex-1 min-h-[220px] max-h-[300px] overflow-y-auto pr-1 space-y-1 scrollbar-thin scrollbar-thumb-white/10">
+                    <!-- Dynamic chat messages -->
+                  </div>
+
+                  <!-- Typing Indicator -->
+                  <div id="collab-typing-indicator" class="hidden text-[10px] text-violet-300/80 font-mono px-1 py-0.5 italic"></div>
+
+                  <!-- Input & Send Area -->
+                  <div class="flex items-center gap-1.5 pt-1.5 border-t border-white/10">
+                    <input type="text" id="collab-chat-input" placeholder="Nachricht an Team schreiben..." oninput="CollabEngine.sendTyping()" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();const v=this.value.trim();if(v){CollabEngine.sendMessage(v);this.value='';}}" class="flex-1 bg-black/50 border border-white/10 focus:border-violet-500/60 rounded-xl px-3 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none transition">
+                    <button onclick="const inp=document.getElementById('collab-chat-input');if(inp&&inp.value.trim()){CollabEngine.sendMessage(inp.value.trim());inp.value='';}" class="p-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white rounded-xl transition cursor-pointer shadow-sm active:scale-95 flex items-center justify-center shrink-0" title="Senden">
+                      <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
           </div>
         </div>
 
+        <!-- 2. NOODLE LOGO & FEEDBACK HUB (Hovern & Klicken öffnet Feedback!) -->
+        <div class="relative flex items-center shrink-0" id="header-logo-wrapper" onmouseenter="showPanelHover('feedback', 0)" onmouseleave="hidePanelHover('feedback')">
+          <div class="flow-logo-container relative inline-flex items-center justify-center px-2 py-0.5 rounded-2xl bg-transparent hover:bg-white/[0.04] active:scale-95 transition-all duration-300 group/logo select-none shrink-0 border-none outline-none cursor-pointer overflow-hidden" title="Feedback, Bewertung & Wünsche an Noodle ❤️" onclick="openFeedbackModal()">
+            <!-- Subtile Ambient Nebula Aura im Hintergrund (begrenzt) -->
+            <div class="logo-ambient-aura absolute inset-0 -z-10 rounded-2xl blur-sm pointer-events-none opacity-30"></div>
+
+            <!-- Noodle 3D Clay Wordmark + STUDIO Subline -->
+            <div class="relative flex flex-col items-center justify-center overflow-hidden">
+              <div class="relative overflow-hidden rounded-md flex items-center justify-center">
+                <img id="header-noodle-logo" src="logo-noodle.png" alt="Noodle Studio" class="h-[22px] sm:h-[24px] md:h-[26px] w-auto max-w-none object-contain select-none pointer-events-none transition-transform duration-300 group-hover/logo:scale-105" />
+                <!-- Glanz-Lichtstrahl Sweep Animation (100% auf das Logo beschnitten) -->
+                <div class="logo-light-sweep absolute inset-0 pointer-events-none rounded-md"></div>
+              </div>
+              <span class="noodle-studio-badge text-[8px] sm:text-[8.5px] md:text-[9.5px] font-bold font-display tracking-[0.32em] uppercase text-purple-200/90 leading-none mt-1 sm:mt-1.5 select-none">STUDIO</span>
+            </div>
+          </div>
+
+          <!-- FEEDBACK POPOVER DROPDOWN (Öffnet direkt beim Hover auf das Logo) -->
+          <div id="panel-feedback" onmouseenter="showPanelHover('feedback', 0)" onmouseleave="hidePanelHover('feedback', 900)" onclick="event.stopPropagation()" class="hidden absolute top-[calc(100%+6px)] left-0 z-[150] w-[300px] sm:w-[340px] bg-[#0f0e17]/98 border border-pink-500/40 p-4 rounded-3xl shadow-2xl backdrop-blur-2xl flex flex-col gap-3 text-left animate-fade-in cursor-default">
+            
+            <!-- Header -->
+            <div class="flex items-center justify-between pb-2 border-b border-white/10">
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-xl bg-pink-500/20 border border-pink-500/40 flex items-center justify-center text-pink-300">
+                  <i data-lucide="message-square-heart" class="w-4 h-4 text-pink-400"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-xs font-display text-white">Feedback & Wünsche</h4>
+                  <p class="text-[9px] text-pink-300/80 font-mono">Deine Meinung formt Noodle ❤️</p>
+                </div>
+              </div>
+              <button onclick="togglePanel('feedback')" class="text-gray-400 hover:text-white text-xs font-bold p-1 cursor-pointer">✕</button>
+            </div>
+
+            <!-- Onboarding Tour Banner (Direkt beim Logo-Hover erreichbar) -->
+            <button onclick="startOnboardingTour(); togglePanel('feedback');" class="w-full p-2.5 bg-gradient-to-r from-purple-600/30 via-pink-600/20 to-purple-600/30 hover:from-purple-600/45 hover:to-pink-600/35 border border-purple-400/40 hover:border-purple-300/80 rounded-2xl text-left transition-all duration-200 flex items-center justify-between cursor-pointer group shadow-sm">
+              <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5 text-white"></i>
+                </div>
+                <div>
+                  <div class="font-bold text-xs text-white flex items-center gap-1.5">
+                    <span>App-Einführung & Tour</span>
+                    <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-purple-500/30 text-purple-300 border border-purple-400/30 font-mono">Guide</span>
+                  </div>
+                  <p class="text-[9.5px] text-purple-200/80">3-Schritte Onboarding starten ✨</p>
+                </div>
+              </div>
+              <div class="w-6 h-6 rounded-lg bg-white/5 group-hover:bg-white/10 flex items-center justify-center transition">
+                <i data-lucide="play" class="w-3 h-3 text-purple-300 group-hover:text-white transition"></i>
+              </div>
+            </button>
+
+            <!-- Quick Star Rating -->
+            <div class="p-2 bg-white/[0.03] border border-white/10 rounded-2xl flex flex-col items-center gap-1.5">
+              <span class="text-[10px] font-bold text-gray-300">Wie gefällt dir Noodle bisher?</span>
+              <div class="flex items-center gap-1.5 text-lg" id="logo-feedback-stars">
+                <button onclick="setFeedbackRating(1); openFeedbackModal('rating');" class="hover:scale-125 transition-transform cursor-pointer" title="1 Stern">⭐</button>
+                <button onclick="setFeedbackRating(2); openFeedbackModal('rating');" class="hover:scale-125 transition-transform cursor-pointer" title="2 Sterne">⭐</button>
+                <button onclick="setFeedbackRating(3); openFeedbackModal('rating');" class="hover:scale-125 transition-transform cursor-pointer" title="3 Sterne">⭐</button>
+                <button onclick="setFeedbackRating(4); openFeedbackModal('rating');" class="hover:scale-125 transition-transform cursor-pointer" title="4 Sterne">⭐</button>
+                <button onclick="setFeedbackRating(5); openFeedbackModal('rating');" class="hover:scale-125 transition-transform cursor-pointer" title="5 Sterne (Fantastisch!)">⭐</button>
+              </div>
+            </div>
+
+            <!-- Quick Category Buttons -->
+            <div class="grid grid-cols-2 gap-1.5">
+              <button onclick="openFeedbackModal('idea'); togglePanel('feedback');" class="p-2 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 text-purple-200 text-left text-[11px] font-bold transition flex items-center gap-1.5 cursor-pointer">
+                <span>💡</span>
+                <span>Feature-Idee</span>
+              </button>
+              <button onclick="openFeedbackModal('bug'); togglePanel('feedback');" class="p-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-200 text-left text-[11px] font-bold transition flex items-center gap-1.5 cursor-pointer">
+                <span>🐛</span>
+                <span>Bug melden</span>
+              </button>
+              <button onclick="openFeedbackModal('hello'); togglePanel('feedback');" class="p-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-200 text-left text-[11px] font-bold transition flex items-center gap-1.5 cursor-pointer">
+                <span>💬</span>
+                <span>Hallo sagen</span>
+              </button>
+              <button onclick="openFeedbackModal(); togglePanel('feedback');" class="p-2 rounded-xl bg-pink-500/15 hover:bg-pink-500/25 border border-pink-500/30 text-pink-200 text-left text-[11px] font-bold transition flex items-center gap-1.5 cursor-pointer">
+                <span>✨</span>
+                <span>Studio ↗</span>
+              </button>
+            </div>
+
+            <!-- Direct Quick-Input -->
+            <div class="space-y-1.5">
+              <textarea id="feedback-text" rows="2" placeholder="Kurze Nachricht oder Wunsch schreiben..." class="w-full p-2.5 bg-black/50 border border-white/10 rounded-xl text-xs text-white placeholder-gray-500 focus:outline-none focus:border-pink-500 transition resize-none"></textarea>
+              <button onclick="submitAppFeedbackDirect()" class="w-full py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-md">
+                <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                <span>Feedback absenden 🚀</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
         <!-- Suche / Command-Palette (direkt nach dem Logo, Icon-Only) -->
-        <button onclick="openCommandPalette()" class="hidden md:flex items-center justify-center h-8 w-8 rounded-xl text-purple-300 hover:text-white bg-purple-500/15 hover:bg-purple-500/25 active:scale-95 border border-purple-500/35 hover:border-purple-400 cursor-pointer transition shadow-[0_0_12px_rgba(168,85,247,0.15)] shrink-0 group" title="Suche & Schnellbefehle [Strg+K]" data-i18n-title="cmd_search" aria-label="Suche">
-          <i data-lucide="search" class="w-3.5 h-3.5 text-purple-300 group-hover:scale-110 transition-transform shrink-0"></i>
+        <button onclick="openCommandPalette()" class="hidden md:flex items-center justify-center h-9 w-9 md:h-[36.5px] md:w-[36.5px] rounded-xl text-purple-300 hover:text-white bg-purple-500/15 hover:bg-purple-500/25 active:scale-95 border border-purple-500/35 hover:border-purple-400 cursor-pointer transition shadow-[0_0_12px_rgba(168,85,247,0.15)] shrink-0 group" title="Suche & Schnellbefehle [Strg+K]" data-i18n-title="cmd_search" aria-label="Suche">
+          <i data-lucide="search" class="w-4 h-4 text-purple-300 group-hover:scale-110 transition-transform shrink-0"></i>
         </button>
 
       </div>
@@ -774,22 +1216,22 @@
       <!-- MOBILE-ONLY HEADER ACTIONS -->
       <div class="flex md:hidden items-center gap-1.5 sm:gap-2 shrink-0">
         <!-- Mobile Focus-Timer Pill -->
-        <button onclick="toggleTimer()" id="mobile-timer-pill" class="h-8 px-2 bg-black/40 hover:bg-black/60 border border-white/10 rounded-xl flex items-center gap-1.5 transition cursor-pointer shadow-sm" title="Focus Timer" data-i18n-title="guide_timer_title">
+        <button onclick="toggleTimer()" id="mobile-timer-pill" class="h-9 md:h-[36.5px] px-2.5 bg-black/40 hover:bg-black/60 border border-white/10 rounded-xl flex items-center gap-1.5 transition cursor-pointer shadow-sm" title="Focus Timer" data-i18n-title="guide_timer_title">
           <i data-lucide="timer" class="w-3.5 h-3.5 text-amber-400"></i>
           <span id="mobile-timer-display" class="text-xs font-mono font-bold text-[var(--accent-light)]">02:00</span>
         </button>
-        <button onclick="toggleWorkspace()" class="h-8 px-2.5 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 text-purple-200 rounded-xl flex items-center gap-1 text-xs font-bold transition cursor-pointer shadow-sm">
+        <button onclick="toggleWorkspace()" class="h-9 md:h-[36.5px] px-3 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 text-purple-200 rounded-xl flex items-center gap-1 text-xs font-bold transition cursor-pointer shadow-sm">
           <span class="text-sm">🏠</span>
           <span class="text-xs font-bold text-purple-300 hidden sm:inline" data-i18n="workspace_private">Personal</span>
         </button>
-        <button onclick="openCommandPalette()" class="h-8 w-8 bg-white/10 hover:bg-white/15 border border-white/15 text-purple-300 rounded-xl flex items-center justify-center transition cursor-pointer shadow-sm" title="Search" aria-label="Search">
+        <button onclick="openCommandPalette()" class="h-9 w-9 md:h-[36.5px] md:w-[36.5px] bg-white/10 hover:bg-white/15 border border-white/15 text-purple-300 rounded-xl flex items-center justify-center transition cursor-pointer shadow-sm" title="Search" aria-label="Search">
           <i data-lucide="search" class="w-3.5 h-3.5"></i>
         </button>
-        <button onclick="openP2PSyncModal()" class="h-8 w-8 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 rounded-xl flex items-center justify-center transition cursor-pointer shadow-sm relative" title="Sync" aria-label="Sync">
+        <button onclick="openP2PSyncModal()" class="h-9 w-9 md:h-[36.5px] md:w-[36.5px] bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 rounded-xl flex items-center justify-center transition cursor-pointer shadow-sm relative" title="Sync" aria-label="Sync">
           <i data-lucide="smartphone" class="w-3.5 h-3.5 text-emerald-400"></i>
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping absolute top-1.5 right-1.5 opacity-75"></span>
         </button>
-        <button onclick="openMobileQuickMenu()" class="h-8 w-8 bg-white/10 hover:bg-white/15 border border-white/15 text-gray-200 rounded-xl flex items-center justify-center transition cursor-pointer shadow-sm" title="Menu" aria-label="Menu">
+        <button onclick="openMobileQuickMenu()" class="h-9 w-9 md:h-[36.5px] md:w-[36.5px] bg-white/10 hover:bg-white/15 border border-white/15 text-gray-200 rounded-xl flex items-center justify-center transition cursor-pointer shadow-sm" title="Menu" aria-label="Menu">
           <i data-lucide="more-vertical" class="w-3.5 h-3.5 text-gray-300"></i>
         </button>
       </div>
@@ -801,7 +1243,7 @@
 
         <!-- Fokus-Timer (Links im Zentrum platziert mit stabilem Hover) -->
         <div class="relative flex items-center bg-transparent shrink-0" id="timer-wrapper" onmouseenter="showPanelHover('timer-presets')" onmouseleave="hidePanelHover('timer-presets')">
-          <div id="timer-trigger-container" class="flex items-center gap-1.5 h-8 px-2 bg-black/30 border border-white/10 rounded-xl shadow-sm transition-all duration-300">
+          <div id="timer-trigger-container" class="flex items-center gap-1.5 h-9 md:h-[36.5px] px-2.5 bg-black/30 border border-white/10 rounded-xl shadow-sm transition-all duration-300">
             <!-- Zeit-Anzeige mit dezentem Pfeil oben rechts -->
             <div class="relative flex items-center pr-2">
               <!-- Zeit-Anzeige (Klick = Start/Pause) -->
@@ -861,13 +1303,13 @@
         </div>
 
         <!-- Was nun? (Mit lebendiger Ideen-Funken Animation & leuchtender Aura) -->
-        <button id="btn-whatnow-dance" onclick="openHelperModal('pick')" class="whatnow-animated-btn flex items-center justify-center gap-1.5 h-8 px-2.5 rounded-xl text-amber-300 hover:text-amber-200 bg-amber-500/15 hover:bg-amber-500/25 active:scale-95 border border-amber-500/35 hover:border-amber-400 cursor-pointer transition-all duration-300 shrink-0 shadow-sm group" title="Was soll ich als Nächstes tun? (Entscheidungshilfe) [W]" data-i18n-title="whatnow_tooltip" aria-label="Was nun?">
+        <button id="btn-whatnow-dance" onclick="openHelperModal('pick')" class="whatnow-animated-btn flex items-center justify-center gap-1.5 h-9 md:h-[36.5px] px-3 rounded-xl text-amber-300 hover:text-amber-200 bg-amber-500/15 hover:bg-amber-500/25 active:scale-95 border border-amber-500/35 hover:border-amber-400 cursor-pointer transition-all duration-300 shrink-0 shadow-sm group" title="Was soll ich als Nächstes tun? (Entscheidungshilfe) [W]" data-i18n-title="whatnow_tooltip" aria-label="Was nun?">
           <i data-lucide="lightbulb" class="whatnow-animated-bulb w-3.5 h-3.5 text-amber-300 group-hover:scale-110 transition-transform shrink-0"></i>
           <span class="text-xs font-bold text-amber-200 whitespace-nowrap" data-i18n="whatnow">Was nun?</span>
         </button>
 
         <!-- Zentrales Datum & Monatskalender Dropdown (HERZSTÜCK DES HEADERS) -->
-        <div id="date-container" class="flex items-center justify-center h-8 px-2.5 lg:px-3 bg-gradient-to-r from-purple-500/15 via-white/[0.08] to-purple-500/15 hover:from-purple-500/25 hover:via-white/[0.14] hover:to-purple-500/25 border border-purple-400/40 hover:border-purple-400/80 rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.35)] hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] shrink-0 transition-all duration-300 relative group select-none">
+        <div id="date-container" class="flex items-center justify-center h-9 md:h-[36.5px] px-3 lg:px-3.5 bg-gradient-to-r from-purple-500/15 via-white/[0.08] to-purple-500/15 hover:from-purple-500/25 hover:via-white/[0.14] hover:to-purple-500/25 border border-purple-400/40 hover:border-purple-400/80 rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.35)] hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] shrink-0 transition-all duration-300 relative group select-none">
           <div class="flex items-center gap-1.5 lg:gap-2 px-0.5">
             <!-- Wetter & Temperatur Pill -->
             <div id="date-weather-badge" onclick="toggleWeatherDropdown(event)" onmouseenter="showPanelHover('weather')" onmouseleave="hidePanelHover('weather')" class="flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-sky-500/15 border border-sky-500/30 hover:bg-sky-500/25 hover:border-sky-400/60 text-[10px] font-bold text-sky-300 transition cursor-pointer relative select-none shadow-sm group/weather" title="Local Weather" data-i18n-title="weather_title">
@@ -949,7 +1391,7 @@
         </div>
 
         <!-- Brainstorming Studio Schnellzugriff [B] (Rechts vom Datum, Icon-Only mit Tooltip) -->
-        <button id="btn-header-brainstorm" onclick="openBrainstormModal()" class="flex items-center justify-center h-8 w-8 rounded-xl text-teal-300 hover:text-white bg-teal-500/15 hover:bg-teal-500/25 active:scale-95 border border-teal-500/35 hover:border-teal-400 cursor-pointer transition-all duration-300 shrink-0 shadow-sm group" title="Brainstorming Studio: Ideen erfassen & Mikrofon [B]" aria-label="Brainstorming Studio">
+        <button id="btn-header-brainstorm" onclick="openBrainstormModal()" class="flex items-center justify-center h-9 w-9 md:h-[36.5px] md:w-[36.5px] rounded-xl text-teal-300 hover:text-white bg-teal-500/15 hover:bg-teal-500/25 active:scale-95 border border-teal-500/35 hover:border-teal-400 cursor-pointer transition-all duration-300 shrink-0 shadow-sm group" title="Brainstorming Studio: Ideen erfassen & Mikrofon [B]" aria-label="Brainstorming Studio">
           <i data-lucide="brain" class="w-3.5 h-3.5 text-teal-300 group-hover:scale-110 group-hover:text-teal-200 transition-transform shrink-0"></i>
         </button>
 
@@ -961,7 +1403,7 @@
 
         <!-- 1. Pause & Erholung mit animiertem Dampf-Tassenicon (Zentriert mit stabilem Hover) -->
         <div id="header-btn-pause-container" class="relative group cursor-pointer shrink-0" onmouseenter="showPanelHover('pause-dropdown')" onmouseleave="hidePanelHover('pause-dropdown')">
-          <button onclick="togglePanel('pause-dropdown')" class="h-8 px-2.5 2xl:px-3 border border-teal-500/40 hover:border-teal-400/70 rounded-xl bg-teal-500/15 hover:bg-teal-500/25 active:scale-95 text-teal-200 hover:text-white flex items-center gap-1.5 text-xs md:text-sm font-semibold cursor-pointer transition whitespace-nowrap shadow-[0_0_12px_rgba(20,184,166,0.18)] group/pause-btn" data-i18n-title="pause_panel_title">
+          <button onclick="togglePanel('pause-dropdown')" class="h-9 md:h-[36.5px] px-3 2xl:px-3.5 border border-teal-500/40 hover:border-teal-400/70 rounded-xl bg-teal-500/15 hover:bg-teal-500/25 active:scale-95 text-teal-200 hover:text-white flex items-center gap-1.5 text-xs md:text-sm font-semibold cursor-pointer transition whitespace-nowrap shadow-[0_0_12px_rgba(20,184,166,0.18)] group/pause-btn" data-i18n-title="pause_panel_title">
             <!-- Animiertes Dampf-Tassen SVG Icon -->
             <svg class="w-3.5 h-3.5 text-teal-300 steam-cup-icon shrink-0 overflow-visible" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
@@ -1171,7 +1613,7 @@
           
           <!-- 1. Statistik (Indigo / Blau mit stabilem Hover) -->
           <div id="header-btn-report-container" class="relative group cursor-pointer" onmouseenter="showPanelHover('report')" onmouseleave="hidePanelHover('report')">
-            <button onclick="togglePanel('report')" class="h-8 px-2.5 2xl:px-3 border border-indigo-500/40 hover:border-indigo-400/70 rounded-xl bg-indigo-500/15 hover:bg-indigo-500/25 active:scale-95 text-indigo-200 hover:text-white flex items-center gap-1.5 text-xs md:text-sm font-semibold cursor-pointer transition whitespace-nowrap shadow-[0_0_12px_rgba(99,102,241,0.18)]" data-i18n-title="report_title">
+            <button onclick="togglePanel('report')" class="h-9 md:h-[36.5px] px-3 2xl:px-3.5 border border-indigo-500/40 hover:border-indigo-400/70 rounded-xl bg-indigo-500/15 hover:bg-indigo-500/25 active:scale-95 text-indigo-200 hover:text-white flex items-center gap-1.5 text-xs md:text-sm font-semibold cursor-pointer transition whitespace-nowrap shadow-[0_0_12px_rgba(99,102,241,0.18)]" data-i18n-title="report_title">
               <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 text-indigo-300"></i>
               <span class="hidden 2xl:inline" id="btn-label-report" data-i18n="report">Stats</span>
             </button>
@@ -1209,7 +1651,7 @@
 
           <!-- 2. Optionen / Einstellungen (Fuchsia / Purple mit stabilem Hover) -->
           <div id="header-btn-options-container" class="relative group cursor-pointer" onmouseenter="showPanelHover('settings-dropdown')" onmouseleave="hidePanelHover('settings-dropdown')">
-            <button onclick="togglePanel('settings-dropdown')" class="h-8 px-2.5 2xl:px-3 flex items-center gap-1.5 border border-fuchsia-500/40 hover:border-fuchsia-400/70 active:scale-95 rounded-xl bg-fuchsia-500/15 hover:bg-fuchsia-500/25 text-fuchsia-200 hover:text-white cursor-pointer transition shadow-[0_0_12px_rgba(217,70,239,0.18)] shrink-0" data-i18n-title="options_title">
+            <button onclick="togglePanel('settings-dropdown')" class="h-9 md:h-[36.5px] px-3 2xl:px-3.5 flex items-center gap-1.5 border border-fuchsia-500/40 hover:border-fuchsia-400/70 active:scale-95 rounded-xl bg-fuchsia-500/15 hover:bg-fuchsia-500/25 text-fuchsia-200 hover:text-white cursor-pointer transition shadow-[0_0_12px_rgba(217,70,239,0.18)] shrink-0" data-i18n-title="options_title">
               <i data-lucide="settings" class="w-3.5 h-3.5 text-fuchsia-300"></i>
               <span class="text-xs md:text-sm font-bold text-fuchsia-200 group-hover:text-white hidden 2xl:inline" data-i18n="settings">Options</span>
             </button>
@@ -1346,7 +1788,7 @@
 
           <!-- 3. Sound Master Toggle & Hover Volume Slider (rechts von Optionen) -->
           <div id="header-btn-sound-container" class="relative group/sound-wrapper cursor-pointer" onmouseenter="showSoundHoverSlider()" onmouseleave="hideSoundHoverSlider()" onclick="toggleSoundVolumePopover(event)">
-            <button id="header-btn-sound-toggle" onclick="toggleMasterSound()" class="h-8 w-8 p-0 border border-purple-500/30 hover:border-purple-400/60 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 active:scale-95 text-purple-200 hover:text-white flex items-center justify-center cursor-pointer transition shadow-[0_0_12px_rgba(168,85,247,0.12)] shrink-0 group/sound-btn opacity-90 hover:opacity-100">
+            <button id="header-btn-sound-toggle" onclick="toggleMasterSound()" class="h-9 w-9 md:h-[36.5px] md:w-[36.5px] p-0 border border-purple-500/30 hover:border-purple-400/60 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 active:scale-95 text-purple-200 hover:text-white flex items-center justify-center cursor-pointer transition shadow-[0_0_12px_rgba(168,85,247,0.12)] shrink-0 group/sound-btn opacity-90 hover:opacity-100">
               <span id="header-sound-icon-wrapper" class="flex items-center justify-center">
                 <i data-lucide="volume-x" class="w-3.5 h-3.5 text-purple-300/80 group-hover/sound-btn:text-purple-200"></i>
               </span>
@@ -1375,8 +1817,56 @@
 
 
 
-    <!-- MOBILE: Horizontale Wisch-Leiste für Kategorie-Pills (nur auf Touch/Mobile sichtbar) -->
-    <nav id="mobile-category-tabs" class="mobile-category-tabs mb-2" aria-label="Kategorien"></nav>
+    <!-- BOARD SUB-HEADER / DISCREET TOP BAR (DESKTOP & MOBILE) -->
+    <div id="board-top-bar" class="relative z-20 flex items-center justify-between gap-2 mb-2 px-1 text-xs select-none">
+      <!-- MOBILE: Horizontale Wisch-Leiste für Kategorie-Pills (nur auf Touch/Mobile sichtbar) -->
+      <nav id="mobile-category-tabs" class="mobile-category-tabs flex-1 min-w-0" aria-label="Kategorien"></nav>
+
+      <!-- DISCREET TOP BUTTON: + Liste hinzufügen & Compact Popover -->
+      <div class="relative shrink-0 flex items-center gap-1.5 ml-auto">
+        <button id="btn-add-list-top" onclick="toggleAddListPopover(event)" class="px-2.5 py-1 rounded-xl bg-white/[0.04] hover:bg-purple-500/20 border border-white/10 hover:border-purple-400/40 text-gray-300 hover:text-white transition flex items-center gap-1.5 text-xs font-semibold cursor-pointer shadow-xs active:scale-95 group/addlist" title="Neue Liste erstellen">
+          <i data-lucide="plus" class="w-3.5 h-3.5 text-purple-400 group-hover/addlist:scale-110 transition-transform"></i>
+          <span class="text-[11px] sm:text-xs">Liste hinzufügen</span>
+        </button>
+
+        <!-- Compact Add List Popover -->
+        <div id="popover-add-list" class="hidden absolute right-0 top-[calc(100%+6px)] z-[200] w-[260px] p-3 bg-[#12121e]/98 border border-purple-500/40 rounded-2xl shadow-2xl backdrop-blur-xl flex flex-col gap-2 animate-spring-modal" onclick="event.stopPropagation()">
+          <div class="flex items-center justify-between border-b border-white/10 pb-1.5 px-0.5">
+            <span class="font-bold text-xs text-white flex items-center gap-1.5">
+              <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-purple-400"></i>
+              <span>Neue Liste anlegen</span>
+            </span>
+            <button onclick="toggleAddListPopover(event, false)" class="text-gray-400 hover:text-white text-xs p-0.5 rounded hover:bg-white/10 cursor-pointer">✕</button>
+          </div>
+          <input id="input-new-list-title" type="text" placeholder="Titel der Liste..." class="w-full px-2.5 py-1.5 bg-black/50 border border-white/15 focus:border-purple-400 text-white text-xs rounded-xl focus:outline-none placeholder:text-gray-500 shadow-inner font-medium" />
+          <div class="flex items-center justify-between gap-1 text-[11px] text-gray-300">
+            <span class="text-gray-400 text-[10px]">Symbol:</span>
+            <select id="select-new-list-icon" class="px-2 py-1 bg-black/40 border border-white/15 text-xs text-gray-200 rounded-lg focus:outline-none focus:border-purple-400">
+              <option value="layers">🗂️ Standard</option>
+              <option value="list-todo">📝 Todo</option>
+              <option value="sparkles">✨ Highlights</option>
+              <option value="target">🎯 Fokus</option>
+              <option value="zap">⚡ Sprint</option>
+              <option value="bookmark">🔖 Gemerkt</option>
+              <option value="folder">📁 Projekt</option>
+              <option value="heart">❤️ Wünsche</option>
+              <option value="shopping-bag">🛍️ Shopping</option>
+              <option value="code">💻 Code</option>
+              <option value="book-open">📚 Lernen</option>
+            </select>
+          </div>
+          <div class="flex items-center gap-2 pt-1">
+            <button onclick="submitNewListTop()" class="flex-1 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 active:scale-95 text-white font-bold text-xs rounded-xl shadow-md transition cursor-pointer flex items-center justify-center gap-1">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Erstellen</span>
+            </button>
+            <button onclick="toggleAddListPopover(event, false)" class="px-2.5 py-1.5 text-gray-400 hover:text-white rounded-xl hover:bg-white/10 transition cursor-pointer text-xs">
+              Abbrechen
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- DASHBOARD 7-COLUMN GRID -->
     <!-- DASHBOARD 7-COLUMN GRID -->
@@ -1386,6 +1876,13 @@
     <main id="main-content" class="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-3.5 flex-1 w-full min-h-0 items-start">
       <!-- Generated columns via JS -->
     </main>
+
+    <!--
+      Werbefläche (aktuell inaktiv). Wird erst befüllt, wenn ADS_ENABLED=true
+      UND ein Cookie-Consent-Banner implementiert ist. Kein Werbe-SDK laden,
+      bevor beides erfüllt ist.
+    -->
+    <div id="ad-slot-main" class="hidden" aria-hidden="true"></div>
 
     <!-- ZEN CHILL VIEW / DEEP WORK CANVAS -->
     <div id="zen-chill-view" class="hidden flex-col items-center justify-center flex-1 max-w-3xl mx-auto w-full p-4 md:p-8 my-auto animate-fade-in select-none">
@@ -1614,7 +2111,7 @@
           <div class="grid grid-cols-2 gap-2 text-xs">
             <button onclick="playAmbientSound('binaural_alpha')" class="p-2.5 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 rounded-2xl text-left active:scale-95 transition">
               <div class="font-bold text-white flex items-center gap-1.5"><span>⚡</span> <span>Alpha 10 Hz</span></div>
-              <div class="text-[10px] text-purple-300 mt-0.5">Leichtes Lernen & Flow</div>
+              <div class="text-[10px] text-purple-300 mt-0.5">Leichtes Lernen & Fokus</div>
             </button>
             <button onclick="playAmbientSound('binaural_theta')" class="p-2.5 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 rounded-2xl text-left active:scale-95 transition">
               <div class="font-bold text-white flex items-center gap-1.5"><span>🌊</span> <span>Theta 6 Hz</span></div>
@@ -1864,10 +2361,10 @@
             </div>
           </div>
 
-          <!-- Deep Learning & Quiz 🧠 -->
+          <!-- Deep Learning & Quiz 🎓 -->
           <div onclick="openLearningHubModal()" class="p-4 rounded-2xl bg-gradient-to-br from-amber-950/50 to-[#12121a] border border-amber-500/40 shadow-lg cursor-pointer active:scale-95 transition flex flex-col justify-between h-28">
             <div class="flex items-center justify-between">
-              <span class="text-2xl">🧠</span>
+              <span class="text-2xl">🎓</span>
               <span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold">Quiz & XP</span>
             </div>
             <div>
@@ -2030,7 +2527,16 @@
           </div>
         </button>
 
-        <!-- 9. Plan speichern (Backup) -->
+        <!-- 9. Team Chat & Kollaboration -->
+        <button onclick="closeMobileQuickMenu(); togglePanel('collab-chat');" class="p-3 rounded-2xl bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/30 text-violet-300 flex items-center gap-2.5 transition active:scale-95 text-left cursor-pointer">
+          <span class="text-xl">💬</span>
+          <div>
+            <div class="font-bold text-white leading-tight">Team Chat</div>
+            <div class="text-[9px] text-violet-300">Live & Rooms</div>
+          </div>
+        </button>
+
+        <!-- 10. Plan speichern (Backup) -->
         <button onclick="closeMobileQuickMenu(); handleSaveJson();" class="p-3 rounded-2xl bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-300 flex items-center gap-2.5 transition active:scale-95 text-left cursor-pointer">
           <span class="text-xl">💾</span>
           <div>
@@ -2039,7 +2545,7 @@
           </div>
         </button>
 
-        <!-- 10. Einstellungen & Optionen -->
+        <!-- 11. Einstellungen & Optionen -->
         <button onclick="closeMobileQuickMenu(); openSettingsModal();" class="p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/15 text-gray-200 flex items-center gap-2.5 transition active:scale-95 text-left cursor-pointer">
           <span class="text-xl">⚙️</span>
           <div>
@@ -2105,7 +2611,7 @@
             <span class="text-[8px] font-mono opacity-60">2-5 Min</span>
           </button>
           <button onclick="setWhatNowEnergyLevel('med')" id="whatnow-energy-med" class="py-1.5 px-1.5 rounded-xl text-[10px] font-bold text-amber-200 bg-amber-500/20 border border-amber-500/40 transition cursor-pointer flex flex-col items-center gap-0.5 shadow-sm">
-            <span>⚡ Flow</span>
+            <span>⚡ Fokus</span>
             <span class="text-[8px] font-mono opacity-80">15-25 Min</span>
           </button>
           <button onclick="setWhatNowEnergyLevel('high')" id="whatnow-energy-high" class="py-1.5 px-1.5 rounded-xl text-[10px] font-bold text-gray-400 hover:text-white transition cursor-pointer flex flex-col items-center gap-0.5 border border-transparent">
@@ -2393,7 +2899,7 @@
       <div class="flex items-center justify-between border-b border-white/10 pb-4">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-300 flex items-center justify-center border border-amber-500/40">
-            <i data-lucide="brain" class="w-5 h-5"></i>
+            <i data-lucide="graduation-cap" class="w-5 h-5"></i>
           </div>
           <div>
             <h3 class="font-bold text-base sm:text-lg font-display text-white">Deep Learning & Quiz-Labor</h3>
@@ -2433,7 +2939,7 @@
             <span>Statistiken</span>
           </button>
           <button id="dash-main-tab-learning" onclick="switchDashboardMainTab('learning')" class="px-3 py-1.5 rounded-xl text-gray-400 hover:text-white transition cursor-pointer flex items-center gap-1.5">
-            <i data-lucide="brain" class="w-3.5 h-3.5 text-amber-400"></i>
+            <i data-lucide="graduation-cap" class="w-3.5 h-3.5 text-amber-400"></i>
             <span>Wissens-Labor</span>
           </button>
         </div>
@@ -2532,7 +3038,27 @@
         <div id="dash-history-list" class="space-y-1.5 max-h-56 overflow-y-auto pr-1 text-xs"></div>
       </div>
 
-</div>
+      <!-- Pro-Vorschau: Erweiterte Langzeit-Trends & KI-Analysen (Inerte UI) -->
+      <div class="p-4 rounded-2xl bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10 border border-purple-500/30 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-300 flex items-center justify-center border border-purple-500/30 shrink-0">
+            <i data-lucide="sparkles" class="w-4 h-4 text-purple-400"></i>
+          </div>
+          <div>
+            <div class="font-bold text-xs text-white flex items-center gap-1.5">
+              <span>Erweiterte Langzeit-Trends & PDF-Jahresbericht</span>
+              <span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-purple-500/30 text-purple-300 border border-purple-400/30 font-mono">Pro</span>
+            </div>
+            <p class="text-[11px] text-gray-400">Tiefenanalysen, Exportfunktionen und Monatsvergleiche.</p>
+          </div>
+        </div>
+        <button onclick="handleUpgradeClick('dashboard_analytics')" class="py-2 px-3.5 bg-gradient-to-r from-purple-600/30 to-pink-600/30 hover:from-purple-600/50 hover:to-pink-600/50 border border-purple-400/40 text-purple-200 hover:text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0 active:scale-95 shadow-xs">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-purple-300"></i>
+          <span>Pro (bald verfügbar)</span>
+        </button>
+      </div>
+
+    </div>
 
       <!-- Learning Section inside Dashboard -->
       <div id="dash-section-learning" class="hidden">
@@ -2607,7 +3133,42 @@
       <!-- TAB 1: ALLGEMEINE EINSTELLUNGEN -->
       <div id="settings-pane-general" class="space-y-4 text-xs">
         
-        <!-- Sprache (Language Selection - An erster Stelle) -->
+        <!-- Onboarding & Interaktive Tour (Direkt in den Optionen) -->
+        <div class="p-4 rounded-2xl bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10 border border-purple-500/30 space-y-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div class="space-y-1">
+            <span class="font-bold text-gray-200 text-xs flex items-center gap-1.5">
+              <i data-lucide="sparkles" class="w-4 h-4 text-purple-400"></i>
+              <span data-i18n="settings_onboarding_title">App-Einführung & Onboarding-Tour</span>
+            </span>
+            <p class="text-[11px] text-gray-400 leading-relaxed" data-i18n="settings_onboarding_desc">Starte die interaktive 3-Schritte-Einführung, um alle Kernfunktionen, Routinen und Tastaturkürzel kennenzulernen.</p>
+          </div>
+          <button onclick="closeSettingsModal(); startOnboardingTour();" class="py-2.5 px-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-xl font-bold transition cursor-pointer flex items-center justify-center gap-2 text-xs shadow-md shrink-0 active:scale-95">
+            <i data-lucide="play" class="w-3.5 h-3.5"></i>
+            <span data-i18n="settings_start_tour_btn">Tour jetzt starten 🚀</span>
+          </button>
+        </div>
+
+        <!-- Pro-Plan Status & Upgrade-Vorschau (Inerte UI) -->
+        <div class="p-4 rounded-2xl bg-white/[0.025] border border-white/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-2xl bg-purple-500/20 text-purple-300 flex items-center justify-center border border-purple-500/30 shrink-0">
+              <i data-lucide="crown" class="w-4 h-4 text-purple-400"></i>
+            </div>
+            <div>
+              <div class="font-bold text-xs text-white flex items-center gap-2">
+                <span>Aktueller Status: Noodle Free</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/10 text-gray-300 font-mono">Kostenlos</span>
+              </div>
+              <p class="text-[11px] text-gray-400 mt-0.5">Alle Kernfunktionen sind 100% lokal & dauerhaft kostenlos nutzbar.</p>
+            </div>
+          </div>
+          <button onclick="handleUpgradeClick('settings_plan_badge')" class="py-2 px-3.5 bg-gradient-to-r from-purple-600/30 to-pink-600/30 hover:from-purple-600/50 hover:to-pink-600/50 border border-purple-400/40 text-purple-200 hover:text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0 active:scale-95 shadow-xs">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-purple-300"></i>
+            <span>Pro (bald verfügbar)</span>
+          </button>
+        </div>
+
+        <!-- Sprache (Language Selection - An dritter Stelle) -->
         <div class="p-4 rounded-2xl bg-white/[0.025] border border-white/10 space-y-2.5">
           <div class="flex items-center justify-between">
             <div>
@@ -2755,7 +3316,7 @@
             <p>Noodle Entwicklerteam</p>
             <p>Musterstraße 12, 10115 Berlin, Deutschland</p>
             <p class="pt-2 text-gray-400"><strong>Kontakt:</strong></p>
-            <p>E-Mail: <a href="mailto:support@flow-planner.app" class="text-purple-300 hover:underline">support@flow-planner.app</a></p>
+            <p>E-Mail: <a href="mailto:support@noodlestudio.app" class="text-purple-300 hover:underline">support@noodlestudio.app</a></p>
           </div>
         </div>
 
@@ -3041,7 +3602,7 @@
           <div>
             <h3 class="text-white font-bold text-sm sm:text-base font-display flex items-center gap-2">
               <span>Wohnungs-Reset & Putz-Guide</span>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono font-bold">Profi-Flow</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono font-bold">Profi-Modus</span>
             </h3>
             <div class="text-[10px] text-gray-400 font-mono">Schritt-für-Schritt Begleitung für echte Wohlfühl-Klarheit</div>
           </div>
@@ -3058,7 +3619,7 @@
             <span class="font-bold">⚡ 15m Blitz</span>
           </button>
           <button id="cleaning-tab-btn-standard" onclick="switchCleaningLevel('standard')" class="py-2 px-2 rounded-xl text-white bg-emerald-500/30 border border-emerald-500/60 font-bold transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[11px] cursor-pointer shadow-sm">
-            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <i data-lucide="spray-can" class="w-3.5 h-3.5 text-emerald-400"></i>
             <span class="font-bold">🧹 45m Standard</span>
           </button>
           <button id="cleaning-tab-btn-deep" onclick="switchCleaningLevel('deep')" class="py-2 px-2 rounded-xl text-gray-400 hover:text-white bg-white/5 border border-white/5 font-medium transition flex flex-col sm:flex-row items-center justify-center gap-1 text-[11px] cursor-pointer">
@@ -3255,6 +3816,63 @@
     </div>
   </div>
 
+  <!-- TERMIN VERSCHIEBEN MODAL -->
+  <div id="modal-postpone-termin" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in" onclick="if(event.target === this) closePostponeTerminModal()">
+    <div class="mobile-modal-card animate-spring-modal w-full max-w-md bg-[#111118]/95 border border-sky-500/40 p-5 sm:p-6 rounded-3xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300 space-y-4" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-2xl bg-sky-500/20 text-sky-300 flex items-center justify-center border border-sky-500/40">
+            <i data-lucide="calendar-sync" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-white font-bold text-sm sm:text-base font-display">Termin verschieben</h3>
+            <p id="postpone-termin-current-info" class="text-[11px] text-sky-300 font-mono">Aktuell: Unbekannt</p>
+          </div>
+        </div>
+        <button onclick="closePostponeTerminModal()" class="text-gray-400 hover:text-white p-1 rounded-lg transition cursor-pointer">✕</button>
+      </div>
+
+      <div class="space-y-3">
+        <!-- Schnell-Auswahl Buttons -->
+        <div>
+          <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1.5">Schnellauswahl:</label>
+          <div class="grid grid-cols-3 gap-1.5">
+            <button type="button" onclick="quickPostponeTerminDays(1)" class="py-1.5 px-2 rounded-xl bg-white/5 hover:bg-sky-500/20 border border-white/10 hover:border-sky-500/40 text-[11px] font-semibold text-gray-200 hover:text-sky-200 transition cursor-pointer text-center">+1 Tag (Morgen)</button>
+            <button type="button" onclick="quickPostponeTerminDays(2)" class="py-1.5 px-2 rounded-xl bg-white/5 hover:bg-sky-500/20 border border-white/10 hover:border-sky-500/40 text-[11px] font-semibold text-gray-200 hover:text-sky-200 transition cursor-pointer text-center">+2 Tage</button>
+            <button type="button" onclick="quickPostponeTerminDays(7)" class="py-1.5 px-2 rounded-xl bg-white/5 hover:bg-sky-500/20 border border-white/10 hover:border-sky-500/40 text-[11px] font-semibold text-gray-200 hover:text-sky-200 transition cursor-pointer text-center">+1 Woche</button>
+          </div>
+        </div>
+
+        <!-- Datum & Uhrzeit Felder -->
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Neues Datum:</label>
+            <input type="date" id="postpone-termin-date" class="w-full p-2 bg-black/60 border border-white/15 focus:border-sky-400 rounded-xl text-xs text-white outline-none transition font-semibold cursor-pointer" />
+          </div>
+          <div>
+            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Neue Uhrzeit:</label>
+            <input type="time" id="postpone-termin-time" class="w-full p-2 bg-black/60 border border-white/15 focus:border-sky-400 rounded-xl text-xs text-white outline-none transition font-semibold cursor-pointer" />
+          </div>
+        </div>
+
+        <!-- Grund / Notiz (optional) -->
+        <div>
+          <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Notiz / Grund (optional):</label>
+          <input type="text" id="postpone-termin-reason" placeholder="z. B. Kunde krank, neuer Raum..." class="w-full p-2 bg-black/60 border border-white/15 focus:border-sky-400 rounded-xl text-xs text-white placeholder-gray-500 outline-none transition" />
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-white/10">
+          <button type="button" onclick="closePostponeTerminModal()" class="px-4 py-2 bg-white/5 hover:bg-white/10 text-gray-300 font-semibold text-xs rounded-xl transition cursor-pointer">Abbrechen</button>
+          <button type="button" onclick="submitPostponeTermin()" class="px-4 py-2 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold text-xs rounded-xl shadow-lg transition cursor-pointer flex items-center gap-1.5 active:scale-95">
+            <i data-lucide="calendar-sync" class="w-4 h-4"></i>
+            <span>Verschieben & als verschoben markieren</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- BERICHT-EXPORT MODAL (WOCHE & MONAT) -->
   <div id="report-export-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
     <div class="mobile-modal-card animate-spring-modal w-full max-w-2xl bg-[#111116]/95 border border-purple-500/30 p-6 rounded-2xl shadow-2xl backdrop-blur-xl text-white relative transition-all duration-300">
@@ -3369,14 +3987,21 @@
       </div>
 
       <div class="pt-2 border-t border-white/10 flex flex-col gap-2">
+        <button onclick="closeMobileMenuDrawer(); startOnboardingTour();" class="w-full py-2.5 px-3 bg-gradient-to-r from-purple-600/25 via-pink-600/20 to-purple-600/25 hover:from-purple-600/35 hover:to-pink-600/30 border border-purple-500/40 text-purple-200 rounded-xl text-xs font-bold transition flex items-center justify-between cursor-pointer">
+          <div class="flex items-center gap-2">
+            <i data-lucide="sparkles" class="w-4 h-4 text-purple-400"></i>
+            <span>App-Tour & Onboarding starten ✨</span>
+          </div>
+          <i data-lucide="play" class="w-3.5 h-3.5 text-purple-400"></i>
+        </button>
         <div class="flex gap-2">
           <button onclick="closeMobileMenuDrawer(); togglePanel('feedback');" class="flex-1 py-2.5 bg-pink-500/15 hover:bg-pink-500/25 border border-pink-500/30 text-pink-300 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
             <i data-lucide="message-square-heart" class="w-3.5 h-3.5"></i>
             <span>Feedback</span>
           </button>
-          <button onclick="closeMobileMenuDrawer(); togglePanel('logo-guide');" class="py-2.5 px-4 bg-white/5 hover:bg-white/10 text-gray-300 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
-            <i data-lucide="help-circle" class="w-3.5 h-3.5"></i>
-            <span>Guide</span>
+          <button onclick="closeMobileMenuDrawer(); openSettingsModal('general');" class="py-2.5 px-4 bg-white/5 hover:bg-white/10 text-gray-300 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
+            <i data-lucide="settings" class="w-3.5 h-3.5"></i>
+            <span>Optionen</span>
           </button>
         </div>
         <button onclick="closeMobileMenuDrawer(); openPrivacyModal();" class="w-full py-2 bg-white/[0.02] hover:bg-white/[0.06] border border-white/5 text-emerald-400 hover:text-emerald-300 rounded-xl text-[11px] font-semibold transition flex items-center justify-center gap-1.5 cursor-pointer">
@@ -3455,12 +4080,22 @@
         </button>
 
         <button onclick="closeMobileToolsSheet(); openBrainstormModal();" class="p-3 bg-white/[0.03] border border-white/10 rounded-2xl text-left hover:bg-white/[0.08] active:scale-95 transition flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-300 shrink-0">
+          <div class="w-9 h-9 rounded-xl bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-300 shrink-0">
             <i data-lucide="brain" class="w-4 h-4"></i>
           </div>
           <div>
             <div class="text-xs font-bold text-white leading-tight">Brainstorming Studio</div>
             <div class="text-[10px] text-gray-400">Ideen erfassen & Board-Transfer</div>
+          </div>
+        </button>
+
+        <button onclick="closeMobileToolsSheet(); openLearningHubModal();" class="p-3 bg-white/[0.03] border border-white/10 rounded-2xl text-left hover:bg-white/[0.08] active:scale-95 transition flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-300 shrink-0">
+            <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-white leading-tight">Wissens-Labor</div>
+            <div class="text-[10px] text-gray-400">Quiz & Deep Learning</div>
           </div>
         </button>
 

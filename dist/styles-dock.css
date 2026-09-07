@@ -2,12 +2,49 @@
    NOODLE SUITE · HEADER TOOLS HUB & POPOVERS
    ========================================================================== */
 
+#panel-header-tools {
+  max-height: calc(100vh - 65px);
+  max-height: calc(100dvh - 65px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
 #panel-header-tools .dock-popover-panel {
   position: absolute !important;
   left: calc(100% + 12px) !important;
-  top: -10px !important;
+  top: 0 !important;
+  max-height: calc(100vh - 65px) !important;
+  max-height: calc(100dvh - 65px) !important;
+  max-width: calc(100vw - 330px) !important;
+  overflow-y: auto !important;
   z-index: 160 !important;
   pointer-events: auto !important;
+  scrollbar-width: thin;
+}
+
+/* Align popover panels from each row of the 3x3 grid cleanly with the top of the hub on desktop */
+#panel-header-tools .grid > div:nth-child(1) .dock-popover-panel,
+#panel-header-tools .grid > div:nth-child(2) .dock-popover-panel,
+#panel-header-tools .grid > div:nth-child(3) .dock-popover-panel {
+  top: -10px !important;
+}
+
+#panel-header-tools .grid > div:nth-child(4) .dock-popover-panel,
+#panel-header-tools .grid > div:nth-child(5) .dock-popover-panel,
+#panel-header-tools .grid > div:nth-child(6) .dock-popover-panel {
+  top: -85px !important;
+}
+
+#panel-header-tools .grid > div:nth-child(7) .dock-popover-panel,
+#panel-header-tools .grid > div:nth-child(8) .dock-popover-panel,
+#panel-header-tools .grid > div:nth-child(9) .dock-popover-panel {
+  top: -155px !important;
+}
+
+#panel-header-tools .grid > div:nth-child(10) .dock-popover-panel,
+#panel-header-tools .grid > div:nth-child(11) .dock-popover-panel,
+#panel-header-tools .grid > div:nth-child(12) .dock-popover-panel {
+  top: -225px !important;
 }
 
 /* Unzerbrechliche Hover-Brücken, damit die Maus nicht im Abstand zwischen Trigger und Popover verloren geht */
@@ -33,17 +70,44 @@
   pointer-events: auto;
 }
 
-@media (max-width: 640px) {
-  #panel-header-tools .dock-popover-panel {
-    left: 0 !important;
-    top: calc(100% + 8px) !important;
+@media (max-width: 768px) {
+  #panel-header-tools {
+    position: fixed !important;
+    top: calc(44px + env(safe-area-inset-top, 0px)) !important;
+    left: 8px !important;
+    right: 8px !important;
+    bottom: auto !important;
+    width: calc(100vw - 16px) !important;
+    max-width: 360px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-height: calc(100dvh - 110px - env(safe-area-inset-bottom, 0px)) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    z-index: 99995 !important;
+    border-radius: 24px !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(255, 255, 255, 0.12) !important;
   }
+
+  #panel-header-tools .dock-popover-panel {
+    position: fixed !important;
+    top: calc(44px + env(safe-area-inset-top, 0px)) !important;
+    left: 8px !important;
+    right: 8px !important;
+    bottom: auto !important;
+    width: calc(100vw - 16px) !important;
+    max-width: 440px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-height: calc(100dvh - 110px - env(safe-area-inset-bottom, 0px)) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    z-index: 100000 !important;
+    border-radius: 24px !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(255, 255, 255, 0.12) !important;
+  }
+
   #panel-header-tools .dock-popover-panel::before {
-    top: -20px;
-    bottom: auto;
-    left: 0;
-    right: 0;
-    height: 24px;
-    width: 100%;
+    display: none !important;
   }
 }

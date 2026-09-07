@@ -1,4 +1,4 @@
-const CACHE_NAME = 'noodle-cache-v157';
+const CACHE_NAME = 'noodle-cache-v158';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -79,6 +79,7 @@ const ASSETS_TO_CACHE = [
   './utils-data.js',
   './app-command-palette.js',
   './onboarding.js',
+  './monetization.js',
   './app-feedback.js'
 ];
 

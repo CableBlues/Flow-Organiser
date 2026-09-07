@@ -3,7 +3,7 @@ chcp 65001 > nul
 set OUTPUT_FILE=projekt_code.txt
 
 echo ===================================================
-echo 🌊 Flow Organiser - Code-Bundler
+echo 🍜 Noodle Studio - Code-Bundler
 echo ===================================================
 echo.
 echo Erstelle Bundle aller vollständigen Quellcodes...
@@ -15,7 +15,7 @@ if exist %OUTPUT_FILE% del %OUTPUT_FILE%
 
 :: Header schreiben
 echo # ============================================================================== >> %OUTPUT_FILE%
-echo # FLOW ORGANISER — GESAMTER QUELLCODE DER ANWENDUNG >> %OUTPUT_FILE%
+echo # NOODLE STUDIO — GESAMTER QUELLCODE DER ANWENDUNG >> %OUTPUT_FILE%
 echo # Stand: %DATE% %TIME% >> %OUTPUT_FILE%
 echo # ============================================================================== >> %OUTPUT_FILE%
 echo. >> %OUTPUT_FILE%

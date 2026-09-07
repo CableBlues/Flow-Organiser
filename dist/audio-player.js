@@ -2,8 +2,46 @@
 // ============================================================================
 
 var djDecks = {
-  a: { audio: null, track: null, isPlaying: false, pitch: 1.0, bpm: 128, lowGain: null, highGain: null },
-  b: { audio: null, track: null, isPlaying: false, pitch: 1.0, bpm: 128, lowGain: null, highGain: null }
+  a: {
+    audio: null,
+    track: null,
+    isPlaying: false,
+    pitch: 1.0,
+    bpm: 126,
+    volume: 1.0,
+    low: 1.0,
+    mid: 1.0,
+    high: 1.0,
+    filter: 0.5,
+    cueTime: 0,
+    hotCues: [null, null, null, null],
+    loopActive: false,
+    loopLength: 4,
+    loopStart: 0,
+    loopEnd: 0,
+    jogRotation: 0,
+    keylock: true
+  },
+  b: {
+    audio: null,
+    track: null,
+    isPlaying: false,
+    pitch: 1.0,
+    bpm: 85,
+    volume: 1.0,
+    low: 1.0,
+    mid: 1.0,
+    high: 1.0,
+    filter: 0.5,
+    cueTime: 0,
+    hotCues: [null, null, null, null],
+    loopActive: false,
+    loopLength: 4,
+    loopStart: 0,
+    loopEnd: 0,
+    jogRotation: 0,
+    keylock: true
+  }
 };
 
 // ============================================================================
@@ -402,8 +440,183 @@ window.loadYoutubeEmbed = loadYoutubeEmbed;
 window.loadYouTubeEmbed = loadYoutubeEmbed;
 
 // ============================================================================
-// 4. TAB 4: 2-DECK DJ MIXER
+// 4. TAB 4: 2-DECK PRO DJ MIXER & AUTOMIX WORKSTATION
 // ============================================================================
+
+// Demo Synthesized Focus Stems
+const BUILTIN_DJ_STEMS = [
+  { id: 'deep_house', name: 'Deep House 126 BPM', bpm: 126, color: 'cyan', emoji: '⚡' },
+  { id: 'lofi_chill', name: 'Lofi Chill 85 BPM', bpm: 85, color: 'purple', emoji: '☕' },
+  { id: 'cyber_wave', name: 'Cyber Wave 128 BPM', bpm: 128, color: 'cyan', emoji: '🌌' },
+  { id: 'tech_groove', name: 'Tech Groove 130 BPM', bpm: 130, color: 'purple', emoji: '🥁' },
+  { id: 'ambient_flow', name: 'Ambient Chill 118 BPM', bpm: 118, color: 'cyan', emoji: '🍃' }
+];
+
+var djAutomix = {
+  enabled: false,
+  durationSec: 8,
+  isTransitioning: false,
+  activeDeck: 'a',
+  timer: null
+};
+
+function initDjDecks() {
+  if (!djDecks.a.track) {
+    loadDjBuiltinTrack('a', 'deep_house', false);
+  }
+  if (!djDecks.b.track) {
+    loadDjBuiltinTrack('b', 'lofi_chill', false);
+  }
+  setDjCrossfader(0.5);
+  updateDjDeckUI('a');
+  updateDjDeckUI('b');
+}
+window.initDjDecks = initDjDecks;
+
+function createSyntheticBeatAudio(bpm = 124, type = 'techno') {
+  initAudioContext();
+  if (!audioCtx) return null;
+
+  const sampleRate = audioCtx.sampleRate || 44100;
+  const barSec = (60 / bpm) * 4;
+  const loopSec = barSec * 4; // 16 beats loop
+  const buffer = audioCtx.createBuffer(2, Math.floor(sampleRate * loopSec), sampleRate);
+  const left = buffer.getChannelData(0);
+  const right = buffer.getChannelData(1);
+
+  const beatSec = 60 / bpm;
+  const totalBeats = 16;
+
+  for (let b = 0; b < totalBeats; b++) {
+    const startSample = Math.floor(b * beatSec * sampleRate);
+    
+    // Kick on every beat
+    const kickSamples = Math.floor(0.18 * sampleRate);
+    for (let i = 0; i < kickSamples; i++) {
+      if (startSample + i < left.length) {
+        const t = i / sampleRate;
+        const freq = 130 * Math.exp(-t * 26) + 45;
+        const env = Math.exp(-t * 18);
+        const val = Math.sin(2 * Math.PI * freq * t) * env * 0.75;
+        left[startSample + i] += val;
+        right[startSample + i] += val;
+      }
+    }
+
+    // Hi-Hat on off-beats
+    const hatSample = Math.floor((b + 0.5) * beatSec * sampleRate);
+    const hatLen = Math.floor(0.06 * sampleRate);
+    for (let i = 0; i < hatLen; i++) {
+      if (hatSample + i < left.length) {
+        const env = Math.exp(-(i / sampleRate) * 55);
+        const noise = (Math.random() * 2 - 1) * env * 0.35;
+        left[hatSample + i] += noise;
+        right[hatSample + i] += noise;
+      }
+    }
+
+    // Snare / Clap on beats 2 and 4
+    if (b % 2 === 1) {
+      const snareSamples = Math.floor(0.14 * sampleRate);
+      for (let i = 0; i < snareSamples; i++) {
+        if (startSample + i < left.length) {
+          const t = i / sampleRate;
+          const noise = (Math.random() * 2 - 1) * Math.exp(-t * 28) * 0.45;
+          const tone = Math.sin(2 * Math.PI * 180 * t) * Math.exp(-t * 32) * 0.35;
+          left[startSample + i] += noise + tone;
+          right[startSample + i] += noise + tone;
+        }
+      }
+    }
+  }
+
+  const wavBlob = audioBufferToWavBlob(buffer);
+  return URL.createObjectURL(wavBlob);
+}
+
+function audioBufferToWavBlob(buffer) {
+  const numChannels = buffer.numberOfChannels;
+  const sampleRate = buffer.sampleRate;
+  const format = 1;
+  const bitDepth = 16;
+  const bytesPerSample = bitDepth / 8;
+  const blockAlign = numChannels * bytesPerSample;
+
+  const dataLen = buffer.length * blockAlign;
+  const bufferLen = 44 + dataLen;
+  const arrayBuffer = new ArrayBuffer(bufferLen);
+  const view = new DataView(arrayBuffer);
+
+  function writeString(view, offset, string) {
+    for (let i = 0; i < string.length; i++) {
+      view.setUint8(offset + i, string.charCodeAt(i));
+    }
+  }
+
+  writeString(view, 0, 'RIFF');
+  view.setUint32(4, 36 + dataLen, true);
+  writeString(view, 8, 'WAVE');
+  writeString(view, 12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, format, true);
+  view.setUint16(22, numChannels, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * blockAlign, true);
+  view.setUint16(32, blockAlign, true);
+  view.setUint16(34, bitDepth, true);
+  writeString(view, 36, 'data');
+  view.setUint32(40, dataLen, true);
+
+  const channels = [];
+  for (let i = 0; i < numChannels; i++) {
+    channels.push(buffer.getChannelData(i));
+  }
+
+  let offset = 44;
+  for (let i = 0; i < buffer.length; i++) {
+    for (let ch = 0; ch < numChannels; ch++) {
+      let sample = Math.max(-1, Math.min(1, channels[ch][i]));
+      sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0;
+      view.setInt16(offset, sample, true);
+      offset += 2;
+    }
+  }
+
+  return new Blob([arrayBuffer], { type: 'audio/wav' });
+}
+
+function loadDjBuiltinTrack(deckId, presetKey = 'deep_house', notify = true) {
+  const deck = djDecks[deckId];
+  if (!deck) return;
+
+  const stem = BUILTIN_DJ_STEMS.find(s => s.id === presetKey) || BUILTIN_DJ_STEMS[0];
+  const url = createSyntheticBeatAudio(stem.bpm, stem.id);
+
+  if (deck.audio) {
+    try { deck.audio.pause(); } catch(e) {}
+  }
+
+  const track = {
+    url: url,
+    name: stem.name,
+    fullName: stem.name,
+    isBuiltin: true
+  };
+
+  deck.track = track;
+  deck.bpm = stem.bpm;
+  deck.audio = new Audio(track.url);
+  deck.audio.loop = true;
+  deck.audio.playbackRate = deck.pitch;
+
+  bindDjAudioEvents(deckId);
+  updateDjDeckUI(deckId);
+
+  if (notify) {
+    showToast(`Deck ${deckId.toUpperCase()}: "${stem.name}" geladen! 🎛️`);
+  }
+}
+window.loadDjBuiltinTrack = loadDjBuiltinTrack;
 
 function handleDjDeckUpload(deckId, event) {
   const file = event.target.files?.[0];
@@ -419,53 +632,105 @@ function handleDjDeckUpload(deckId, event) {
   const track = {
     url: URL.createObjectURL(file),
     name: file.name.replace(/\.[^/.]+$/, ''),
-    fullName: file.name
+    fullName: file.name,
+    isBuiltin: false
   };
 
   deck.track = track;
   deck.audio = new Audio(track.url);
   deck.audio.playbackRate = deck.pitch;
 
-  const titleEl = document.getElementById(`dj-title-deck-${deckId}`);
-  if (titleEl) titleEl.innerText = track.name;
-
-  deck.audio.addEventListener('timeupdate', () => {
-    if (!deck.audio || !deck.audio.duration) return;
-    const timeEl = document.getElementById(`dj-time-deck-${deckId}`);
-    if (timeEl) timeEl.innerText = formatAudioTime(deck.audio.currentTime);
-    const seekSlider = document.getElementById(`dj-seek-deck-${deckId}`);
-    if (seekSlider) seekSlider.value = (deck.audio.currentTime / deck.audio.duration) * 100 || 0;
-  });
-
-  deck.audio.addEventListener('ended', () => {
-    deck.isPlaying = false;
-    const btn = document.getElementById(`dj-play-btn-${deckId}`);
-    if (btn) btn.innerText = 'Play';
-  });
+  bindDjAudioEvents(deckId);
+  updateDjDeckUI(deckId);
 
   showToast(`Deck ${deckId.toUpperCase()}: "${track.name}" geladen! 🎛️`);
   event.target.value = '';
 }
 window.handleDjDeckUpload = handleDjDeckUpload;
 
+function bindDjAudioEvents(deckId) {
+  const deck = djDecks[deckId];
+  if (!deck || !deck.audio) return;
+
+  deck.audio.addEventListener('timeupdate', () => {
+    if (!deck.audio || !deck.audio.duration) return;
+
+    if (deck.loopActive && deck.loopEnd > deck.loopStart && deck.audio.currentTime >= deck.loopEnd) {
+      deck.audio.currentTime = deck.loopStart;
+    }
+
+    deck.jogRotation = (deck.jogRotation + 3) % 360;
+    const jog = document.getElementById(`dj-vinyl-disc-${deckId}`);
+    if (jog && deck.isPlaying) {
+      jog.style.transform = `rotate(${deck.jogRotation}deg)`;
+    }
+
+    const timeEl = document.getElementById(`dj-time-deck-${deckId}`);
+    if (timeEl) timeEl.innerText = formatAudioTime(deck.audio.currentTime);
+    const seekSlider = document.getElementById(`dj-seek-deck-${deckId}`);
+    if (seekSlider) seekSlider.value = (deck.audio.currentTime / deck.audio.duration) * 100 || 0;
+
+    if (djAutomix.enabled && !djAutomix.isTransitioning && deck.isPlaying) {
+      const remain = deck.audio.duration - deck.audio.currentTime;
+      if (remain <= (djAutomix.durationSec || 8) && remain > 0.5) {
+        triggerDjAutomixNow();
+      }
+    }
+  });
+
+  deck.audio.addEventListener('ended', () => {
+    deck.isPlaying = false;
+    updateDjPlayBtnUI(deckId, false);
+    if (djAutomix.enabled) {
+      triggerDjAutomixNow();
+    }
+  });
+}
+
+function updateDjDeckUI(deckId) {
+  const deck = djDecks[deckId];
+  if (!deck) return;
+
+  const titleEl = document.getElementById(`dj-title-deck-${deckId}`);
+  if (titleEl) titleEl.innerText = deck.track ? deck.track.name : 'Kein Track geladen';
+
+  const bpmEl = document.getElementById(`dj-bpm-deck-${deckId}`);
+  if (bpmEl) bpmEl.innerText = `${Math.round(deck.bpm * deck.pitch)} BPM`;
+
+  const pitchEl = document.getElementById(`dj-pitch-val-${deckId}`);
+  if (pitchEl) {
+    const pct = (deck.pitch - 1.0) * 100;
+    pitchEl.innerText = `${pct > 0 ? '+' : ''}${pct.toFixed(1)}%`;
+  }
+}
+
+function updateDjPlayBtnUI(deckId, isPlaying) {
+  const btn = document.getElementById(`dj-play-btn-${deckId}`);
+  if (btn) {
+    btn.innerHTML = isPlaying ? `<i data-lucide="pause" class="w-3.5 h-3.5"></i>` : `<i data-lucide="play" class="w-3.5 h-3.5"></i>`;
+    btn.classList.toggle('ring-2', isPlaying);
+    btn.classList.toggle('ring-white/50', isPlaying);
+    if (typeof renderLucideIcons === 'function') renderLucideIcons();
+  }
+}
+
 function toggleDjDeckPlayback(deckId) {
   const deck = djDecks[deckId];
   if (!deck || !deck.audio) {
-    showToast(`Bitte lade zuerst einen Track in Deck ${deckId.toUpperCase()}!`);
+    loadDjBuiltinTrack(deckId, deckId === 'a' ? 'deep_house' : 'lofi_chill');
     return;
   }
 
-  const btn = document.getElementById(`dj-play-btn-${deckId}`);
   if (deck.audio.paused) {
     if (typeof initAudioContext === 'function') initAudioContext();
     deck.audio.play().then(() => {
       deck.isPlaying = true;
-      if (btn) btn.innerText = 'Pause';
+      updateDjPlayBtnUI(deckId, true);
     }).catch(e => console.warn(e));
   } else {
     deck.audio.pause();
     deck.isPlaying = false;
-    if (btn) btn.innerText = 'Play';
+    updateDjPlayBtnUI(deckId, false);
   }
 }
 window.toggleDjDeckPlayback = toggleDjDeckPlayback;
@@ -473,10 +738,11 @@ window.toggleDjDeckPlayback = toggleDjDeckPlayback;
 function cueDjDeck(deckId) {
   const deck = djDecks[deckId];
   if (!deck || !deck.audio) return;
-  deck.audio.currentTime = 0;
+  deck.audio.currentTime = deck.cueTime || 0;
   if (deck.audio.paused) {
     toggleDjDeckPlayback(deckId);
   }
+  playDjSfx('cue_click');
 }
 window.cueDjDeck = cueDjDeck;
 
@@ -486,14 +752,16 @@ function syncDjDeck(deckId) {
   const otherDeck = djDecks[otherId];
   if (!thisDeck || !thisDeck.audio) return;
 
-  if (otherDeck && otherDeck.pitch) {
+  if (otherDeck && otherDeck.bpm) {
+    thisDeck.bpm = otherDeck.bpm;
     thisDeck.pitch = otherDeck.pitch;
     thisDeck.audio.playbackRate = thisDeck.pitch;
+
     const slider = document.getElementById(`dj-pitch-slider-${deckId}`);
-    if (slider) slider.value = Math.round((thisDeck.pitch - 1.0) * 100);
-    const valDisplay = document.getElementById(`dj-pitch-val-${deckId}`);
-    if (valDisplay) valDisplay.innerText = `${((thisDeck.pitch - 1.0) * 100).toFixed(1)}%`;
-    showToast(`Deck ${deckId.toUpperCase()} synchronisiert! ⚡`);
+    if (slider) slider.value = ((thisDeck.pitch - 1.0) * 100).toFixed(1);
+    
+    updateDjDeckUI(deckId);
+    showToast(`Deck ${deckId.toUpperCase()} auf ${Math.round(thisDeck.bpm * thisDeck.pitch)} BPM synchronisiert! ⚡`);
   }
 }
 window.syncDjDeck = syncDjDeck;
@@ -514,17 +782,42 @@ function setDjPitch(deckId, val) {
   if (deck.audio) {
     deck.audio.playbackRate = deck.pitch;
   }
-  const valDisplay = document.getElementById(`dj-pitch-val-${deckId}`);
-  if (valDisplay) valDisplay.innerText = `${pct > 0 ? '+' : ''}${pct.toFixed(1)}%`;
+  updateDjDeckUI(deckId);
 }
 window.setDjPitch = setDjPitch;
 
+function nudgeDjPitch(deckId, delta) {
+  const slider = document.getElementById(`dj-pitch-slider-${deckId}`);
+  if (!slider) return;
+  let cur = parseFloat(slider.value) || 0;
+  cur = Math.max(-8, Math.min(8, cur + delta));
+  slider.value = cur.toFixed(1);
+  setDjPitch(deckId, cur);
+}
+window.nudgeDjPitch = nudgeDjPitch;
+
 function setDjEq(deckId, type, val) {
   const deck = djDecks[deckId];
-  if (!deck || !deck.audio) return;
-  // Standard Web Audio gain scaling if needed
+  if (!deck) return;
+  const gain = parseFloat(val);
+  if (type === 'low') deck.low = gain;
+  if (type === 'mid') deck.mid = gain;
+  if (type === 'high') deck.high = gain;
 }
 window.setDjEq = setDjEq;
+
+function setDjFilter(deckId, val) {
+  const deck = djDecks[deckId];
+  if (!deck) return;
+  deck.filter = parseFloat(val);
+  const label = document.getElementById(`dj-filter-val-${deckId}`);
+  if (label) {
+    if (deck.filter < 0.45) label.innerText = 'LPF';
+    else if (deck.filter > 0.55) label.innerText = 'HPF';
+    else label.innerText = 'OFF';
+  }
+}
+window.setDjFilter = setDjFilter;
 
 function setDjCrossfader(val) {
   const x = parseFloat(val);
@@ -538,11 +831,156 @@ function setDjCrossfader(val) {
   if (djDecks.b && djDecks.b.audio) {
     djDecks.b.audio.volume = Math.max(0, Math.min(1, gainB * master));
   }
+
+  const slider = document.getElementById('dj-crossfader-slider');
+  if (slider && parseFloat(slider.value) !== x) {
+    slider.value = x;
+  }
 }
 window.setDjCrossfader = setDjCrossfader;
 
 // ============================================================================
-// 5. REAL-TIME DJ SOUND FX
+// 5. AUTOMIX & SMART SHUFFLE ENGINE
+// ============================================================================
+
+function toggleDjAutomix() {
+  djAutomix.enabled = !djAutomix.enabled;
+  const btn = document.getElementById('dj-automix-toggle-btn');
+  if (btn) {
+    btn.className = djAutomix.enabled
+      ? 'px-2.5 py-1 bg-emerald-500/25 border border-emerald-400/80 text-emerald-200 rounded-xl text-[10px] font-bold transition flex items-center gap-1.5 shadow-[0_0_12px_rgba(16,185,129,0.35)] cursor-pointer'
+      : 'px-2.5 py-1 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 rounded-xl text-[10px] font-medium transition flex items-center gap-1.5 cursor-pointer';
+  }
+  showToast(djAutomix.enabled ? 'Automix Aktiviert! 🎛️⚡ Nahtloser Übergang' : 'Automix Deaktiviert');
+}
+window.toggleDjAutomix = toggleDjAutomix;
+
+function setDjAutomixDuration(sec) {
+  djAutomix.durationSec = parseInt(sec, 10) || 8;
+  [4, 8, 16].forEach(s => {
+    const b = document.getElementById(`dj-automix-dur-${s}`);
+    if (b) {
+      b.className = (s === djAutomix.durationSec)
+        ? 'px-2 py-0.5 rounded-lg bg-emerald-500/30 text-emerald-200 border border-emerald-400/50 text-[9px] font-bold'
+        : 'px-2 py-0.5 rounded-lg bg-white/5 text-gray-400 hover:text-white border border-white/5 text-[9px] font-medium';
+    }
+  });
+}
+window.setDjAutomixDuration = setDjAutomixDuration;
+
+function triggerDjAutomixNow() {
+  if (djAutomix.isTransitioning) return;
+  djAutomix.isTransitioning = true;
+
+  const slider = document.getElementById('dj-crossfader-slider');
+  const currentPos = slider ? parseFloat(slider.value) : 0.5;
+  const targetDeck = currentPos < 0.5 ? 'b' : 'a';
+  const targetPos = targetDeck === 'b' ? 1.0 : 0.0;
+  const startPos = currentPos;
+
+  if (!djDecks[targetDeck].isPlaying) {
+    toggleDjDeckPlayback(targetDeck);
+  }
+
+  const durationMs = (djAutomix.durationSec || 8) * 1000;
+  const startTime = performance.now();
+
+  function animateFader(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(1.0, elapsed / durationMs);
+    const ease = 0.5 - 0.5 * Math.cos(progress * Math.PI);
+    const newPos = startPos + (targetPos - startPos) * ease;
+    
+    setDjCrossfader(newPos);
+
+    if (progress < 1.0) {
+      requestAnimationFrame(animateFader);
+    } else {
+      djAutomix.isTransitioning = false;
+      const outgoingDeck = targetDeck === 'b' ? 'a' : 'b';
+      if (djDecks[outgoingDeck].isPlaying) {
+        toggleDjDeckPlayback(outgoingDeck);
+      }
+      showToast(`Automix abgeschlossen: Jetzt auf Deck ${targetDeck.toUpperCase()}! 🎧`);
+    }
+  }
+
+  requestAnimationFrame(animateFader);
+  showToast(`Automix Übergang zu Deck ${targetDeck.toUpperCase()} (${djAutomix.durationSec}s) gestartet! 🎛️`);
+}
+window.triggerDjAutomixNow = triggerDjAutomixNow;
+
+function djShuffleTracks() {
+  const stems = [...BUILTIN_DJ_STEMS].sort(() => Math.random() - 0.5);
+  loadDjBuiltinTrack('a', stems[0].id, false);
+  loadDjBuiltinTrack('b', stems[1].id, false);
+  showToast('DJ Shuffle: Frische Stems & Rhythmen geladen! 🔀');
+}
+window.djShuffleTracks = djShuffleTracks;
+
+// ============================================================================
+// 6. HOT CUES, LOOPS & JOGWHEEL INTERACTION
+// ============================================================================
+
+function setDjHotCue(deckId, index) {
+  const deck = djDecks[deckId];
+  if (!deck || !deck.audio) return;
+  deck.hotCues[index] = deck.audio.currentTime;
+  const pad = document.getElementById(`dj-hotcue-btn-${deckId}-${index}`);
+  if (pad) {
+    pad.classList.add('bg-amber-400/30', 'border-amber-400', 'text-amber-200');
+  }
+  showToast(`Deck ${deckId.toUpperCase()}: Hot Cue ${index + 1} bei ${formatAudioTime(deck.audio.currentTime)} gesetzt! 📍`);
+}
+window.setDjHotCue = setDjHotCue;
+
+function jumpDjHotCue(deckId, index) {
+  const deck = djDecks[deckId];
+  if (!deck || !deck.audio) return;
+  if (deck.hotCues[index] === null) {
+    setDjHotCue(deckId, index);
+    return;
+  }
+  deck.audio.currentTime = deck.hotCues[index];
+  if (deck.audio.paused) {
+    toggleDjDeckPlayback(deckId);
+  }
+  playDjSfx('cue_click');
+}
+window.jumpDjHotCue = jumpDjHotCue;
+
+function toggleDjLoop(deckId, beats = 4) {
+  const deck = djDecks[deckId];
+  if (!deck || !deck.audio) return;
+
+  deck.loopActive = !deck.loopActive;
+  deck.loopLength = beats;
+
+  if (deck.loopActive) {
+    deck.loopStart = deck.audio.currentTime;
+    const beatDuration = 60 / (deck.bpm * deck.pitch);
+    deck.loopEnd = deck.loopStart + (beatDuration * beats);
+  }
+
+  const loopBtn = document.getElementById(`dj-loop-btn-${deckId}-${beats}`);
+  if (loopBtn) {
+    loopBtn.classList.toggle('bg-emerald-500/30', deck.loopActive);
+    loopBtn.classList.toggle('border-emerald-400', deck.loopActive);
+  }
+  showToast(`Deck ${deckId.toUpperCase()}: ${beats}-Beat Loop ${deck.loopActive ? 'Aktiv 🔁' : 'Aus'}`);
+}
+window.toggleDjLoop = toggleDjLoop;
+
+function handleDjJogTouch(deckId, delta) {
+  const deck = djDecks[deckId];
+  if (!deck || !deck.audio) return;
+  deck.audio.currentTime = Math.max(0, deck.audio.currentTime + delta);
+  playDjSfx('scratch_mini');
+}
+window.handleDjJogTouch = handleDjJogTouch;
+
+// ============================================================================
+// 7. REAL-TIME DJ SOUND FX
 // ============================================================================
 
 function playDjSfx(type) {
@@ -573,31 +1011,30 @@ function playDjSfx(type) {
       osc.stop(now + 0.6);
     });
     showToast('📢 AIRHORN BLAST!');
-  } else if (type === 'scratch') {
+  } else if (type === 'scratch' || type === 'scratch_mini') {
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     const filter = audioCtx.createBiquadFilter();
 
     osc.type = 'triangle';
-    osc.frequency.setValueAtTime(800, now);
-    osc.frequency.exponentialRampToValueAtTime(140, now + 0.08);
-    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.16);
-    osc.frequency.exponentialRampToValueAtTime(90, now + 0.28);
+    osc.frequency.setValueAtTime(type === 'scratch_mini' ? 400 : 800, now);
+    osc.frequency.exponentialRampToValueAtTime(140, now + 0.06);
+    osc.frequency.exponentialRampToValueAtTime(1100, now + 0.12);
 
     filter.type = 'bandpass';
     filter.frequency.setValueAtTime(1000, now);
     filter.Q.setValueAtTime(3, now);
 
-    const vol = 0.4 * (soundMasterVolume || 0.5);
+    const vol = (type === 'scratch_mini' ? 0.15 : 0.35) * (soundMasterVolume || 0.5);
     gain.gain.setValueAtTime(vol, now);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.32);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
 
     osc.connect(filter);
     filter.connect(gain);
     gain.connect(audioCtx.destination);
     osc.start(now);
-    osc.stop(now + 0.35);
-    showToast('⚡ VINYL SCRATCH!');
+    osc.stop(now + 0.2);
+    if (type !== 'scratch_mini') showToast('⚡ VINYL SCRATCH!');
   } else if (type === 'laser') {
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
@@ -630,6 +1067,35 @@ function playDjSfx(type) {
     osc.start(now);
     osc.stop(now + 0.9);
     showToast('💥 808 SUB DROP!');
+  } else if (type === 'riser') {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(100, now);
+    osc.frequency.exponentialRampToValueAtTime(1800, now + 1.2);
+
+    const vol = 0.3 * (soundMasterVolume || 0.5);
+    gain.gain.setValueAtTime(0.01, now);
+    gain.gain.linearRampToValueAtTime(vol, now + 1.0);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.25);
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 1.3);
+    showToast('🌪️ NOISE RISER!');
+  } else if (type === 'cue_click') {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, now);
+    gain.gain.setValueAtTime(0.2 * (soundMasterVolume || 0.5), now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.05);
   }
 }
 window.playDjSfx = playDjSfx;
+

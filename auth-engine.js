@@ -449,11 +449,13 @@ const FlowAuth = (function() {
 })();
 
 if (typeof window !== 'undefined') {
+  window.NoodleAuth = FlowAuth;
   window.FlowAuth = FlowAuth;
   window.addEventListener('DOMContentLoaded', () => {
     FlowAuth.init();
   });
 }
 if (typeof globalThis !== 'undefined') {
+  globalThis.NoodleAuth = FlowAuth;
   globalThis.FlowAuth = FlowAuth;
 }

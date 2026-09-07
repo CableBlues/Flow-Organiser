@@ -446,7 +446,7 @@ function pickRandomTask() {
       estimatedMin = (chosen.cat === 'daily' || isHouseworkTask(chosen.task)) ? 10 : 25;
     }
   } else {
-    // Standard 'med' (Flow)
+    // Standard 'med' (Fokus)
     estimatedMin = 20;
     if (poolDailies.length > 0 && Math.random() < 0.5) {
       chosen = poolDailies[0];
