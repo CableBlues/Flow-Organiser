@@ -1112,6 +1112,8 @@ function playDjSfx(type) {
     osc.start(now);
     osc.stop(now + 0.05);
   }
+}
+
 window.playDjSfx = playDjSfx;
 if (typeof window !== 'undefined') window.djDecks = djDecks;
 if (typeof globalThis !== 'undefined') globalThis.djDecks = djDecks;

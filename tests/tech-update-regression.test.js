@@ -7,6 +7,7 @@ import '../storage.js';
 import '../data-tasks.js';
 import '../state.js';
 import '../collab-engine.js';
+import '../audio-core.js';
 import '../audio-player.js';
 
 describe('Noodle Technical Update Regression Suite', () => {
@@ -57,8 +58,9 @@ describe('Noodle Technical Update Regression Suite', () => {
       window.state.shoppingHistory = hugeShoppingHist;
 
       let calls = 0;
-      const originalSetItem = localStorage.setItem;
-      localStorage.setItem = vi.fn().mockImplementation((key, val) => {
+      const proto = window.Storage ? window.Storage.prototype : Object.getPrototypeOf(localStorage);
+      const originalSetItem = proto.setItem;
+      proto.setItem = function(key, val) {
         calls++;
         if (calls === 1) {
           const quotaErr = new Error('QuotaExceededError');
@@ -66,14 +68,16 @@ describe('Noodle Technical Update Regression Suite', () => {
           quotaErr.code = 22;
           throw quotaErr;
         }
-        return originalSetItem.call(localStorage, key, val);
-      });
+        return originalSetItem.call(this, key, val);
+      };
 
-      expect(() => window.saveState(true)).not.toThrow();
-      expect(window.state.archive.length).toBeLessThan(80);
-      expect(window.state.shoppingHistory.length).toBeLessThan(80);
-
-      localStorage.setItem = originalSetItem;
+      try {
+        expect(() => window.saveState(true)).not.toThrow();
+        expect(window.state.archive.length).toBeLessThan(80);
+        expect(window.state.shoppingHistory.length).toBeLessThan(80);
+      } finally {
+        proto.setItem = originalSetItem;
+      }
     });
 
     it('saveHistory() begrenzt den History-Stack auf maximal 15 Snapshots', () => {
