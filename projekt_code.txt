@@ -1,6 +1,6 @@
 # ============================================================================== 
 # NOODLE STUDIO — GESAMTER QUELLCODE DER ANWENDUNG 
-# Stand: 08.09.2026  0:07:26,47 
+# Stand: 08.09.2026  3:36:34,54 
 # ============================================================================== 
  
  
@@ -101,7 +101,7 @@ DATEI: index.html
           </button>
 
           <!-- TOOLS SPHERES POPOVER DROPDOWN -->
-          <div id="panel-header-tools" onmouseenter="showPanelHover('header-tools', 0)" onmouseleave="hidePanelHover('header-tools', 900)" onclick="event.stopPropagation()" class="hidden absolute top-[calc(100%+6px)] left-0 z-[150] w-[280px] sm:w-[310px] bg-[#0f0e17]/98 border border-purple-500/40 p-3.5 rounded-3xl shadow-2xl backdrop-blur-2xl flex flex-col gap-2.5 text-left animate-fade-in cursor-default">
+          <div id="panel-header-tools" onmouseenter="showPanelHover('header-tools', 0)" onclick="event.stopPropagation()" class="hidden absolute top-[calc(100%+6px)] left-0 z-[150] w-[280px] sm:w-[310px] bg-[#0f0e17]/98 border border-purple-500/40 p-3.5 rounded-3xl shadow-2xl backdrop-blur-2xl flex flex-col gap-2.5 text-left animate-fade-in cursor-default">
             
             <!-- Header -->
             <div class="flex items-center justify-between pb-2 border-b border-white/10 px-1">
@@ -111,6 +111,7 @@ DATEI: index.html
                 </div>
                 <h4 class="font-bold text-xs font-display text-white tracking-wide">Noodle Tools</h4>
               </div>
+              <button onclick="togglePanel('header-tools')" aria-label="Tools Menü schließen" class="text-gray-400 hover:text-white text-xs font-bold p-1 px-1.5 rounded-lg hover:bg-white/10 transition cursor-pointer">✕</button>
             </div>
 
             <!-- 3x3 Spheres Grid (Runde Orbs, kein Overload) -->
@@ -207,7 +208,7 @@ DATEI: index.html
                     </div>
 
                     <!-- TAB 1: NATUR & AMBIENT -->
-                    <div id="audio-pane-ambient" class="space-y-2 max-h-[175px] sm:max-h-[200px] overflow-y-auto pr-1 custom-scrollbar">
+                    <div id="audio-pane-ambient" class="space-y-2 max-h-[380px] overflow-y-auto pr-1 custom-scrollbar">
                   <!-- Harmonie & Instrumente -->
                   <div class="space-y-1">
                     <div class="text-[10px] font-bold text-amber-300/90 flex items-center gap-1 px-0.5">
@@ -830,7 +831,7 @@ DATEI: index.html
                 <!-- Stations List Container -->
                 <div class="space-y-1">
                   <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Verfügbare Sender</div>
-                  <div id="radio-stations-list" class="space-y-1.5 max-h-[260px] overflow-y-auto pr-1"></div>
+                  <div id="radio-stations-list" class="space-y-1.5 max-h-[360px] overflow-y-auto pr-1"></div>
                 </div>
               </div>
               </div>
@@ -992,7 +993,7 @@ DATEI: index.html
                       <button onclick="clearShoppingList()" class="text-rose-400 hover:text-rose-300 text-[10px] cursor-pointer" data-i18n="shop_clear">Alle löschen</button>
                     </div>
                   </div>
-                  <div id="shopping-list-rows" class="space-y-1.5 max-h-[170px] overflow-y-auto pr-1"></div>
+                  <div id="shopping-list-rows" class="space-y-1.5 max-h-[340px] overflow-y-auto pr-1"></div>
                 </div>
 
                 <!-- Smart Spar-Tipp & Shortcut -->
@@ -1293,10 +1294,13 @@ DATEI: index.html
           </div>
 
           <!-- Timer Presets Popover Dropdown -->
-          <div id="panel-timer-presets" onmouseenter="showPanelHover('timer-presets')" onmouseleave="hidePanelHover('timer-presets')" onclick="event.stopPropagation()" class="hidden absolute top-full mt-2 left-0 z-50 bg-[#121118]/95 backdrop-blur-xl border border-purple-500/30 rounded-2xl shadow-2xl p-2.5 w-48 animate-in fade-in zoom-in-95 duration-150">
-            <div class="text-[10px] font-bold uppercase tracking-wider text-purple-300 font-mono mb-2 flex items-center justify-between px-1">
+          <div id="panel-timer-presets" onmouseenter="showPanelHover('timer-presets')" onclick="event.stopPropagation()" class="hidden absolute top-full mt-2 left-0 z-50 bg-[#121118]/95 backdrop-blur-xl border border-purple-500/30 rounded-2xl shadow-2xl p-2.5 w-52 animate-in fade-in zoom-in-95 duration-150">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-purple-300 font-mono mb-2 flex items-center justify-between px-1 border-b border-white/10 pb-1.5">
               <span>⏱️ Fokus-Dauer</span>
-              <span class="text-[9px] text-gray-400">Presets</span>
+              <div class="flex items-center gap-1.5">
+                <span class="text-[9px] text-gray-400">Presets</span>
+                <button onclick="document.getElementById('panel-timer-presets').classList.add('hidden')" aria-label="Timer-Presets schließen" class="text-gray-400 hover:text-white text-xs font-bold p-0.5 rounded hover:bg-white/10 transition cursor-pointer">✕</button>
+              </div>
             </div>
             <div class="grid grid-cols-3 gap-1.5">
               <button onclick="selectTimerPreset(1)" data-mins="1" class="timer-preset-btn py-1.5 px-2 rounded-xl bg-white/5 hover:bg-purple-600/30 hover:border-purple-400 border border-white/10 text-xs font-bold text-gray-200 hover:text-white transition text-center cursor-pointer">1m</button>
@@ -1387,9 +1391,10 @@ DATEI: index.html
               <span id="date-display" class="whitespace-nowrap flex items-center gap-1.5 tracking-wide text-xs md:text-sm"></span>
 
               <!-- MINIMAL MONTH CALENDAR PANEL (Exakt am Anfang des Datums ausgerichtet) -->
-              <div id="panel-calendar-dropdown" onmouseenter="showPanelHover('calendar-dropdown')" onmouseleave="hidePanelHover('calendar-dropdown')" onclick="event.stopPropagation()" class="hidden absolute top-[calc(100%+10px)] left-0 z-[110] w-[240px] bg-[var(--bg-modal)] border border-[var(--border-main)] p-3.5 rounded-2xl shadow-2xl flex flex-col gap-2 animate-fade-in text-left">
+              <div id="panel-calendar-dropdown" onmouseenter="showPanelHover('calendar-dropdown')" onclick="event.stopPropagation()" class="hidden absolute top-[calc(100%+10px)] left-0 z-[110] w-[240px] bg-[var(--bg-modal)] border border-[var(--border-main)] p-3.5 rounded-2xl shadow-2xl flex flex-col gap-2 animate-fade-in text-left">
                 <div class="flex items-center justify-between text-xs font-bold text-gray-200 border-b border-white/10 pb-1.5">
                   <span id="cal-month-title" class="font-display">August 2026</span>
+                  <button onclick="document.getElementById('panel-calendar-dropdown').classList.add('hidden')" aria-label="Kalender schließen" class="text-gray-400 hover:text-white text-xs font-bold p-0.5 px-1 rounded hover:bg-white/10 transition cursor-pointer">✕</button>
                 </div>
                 <div class="grid grid-cols-7 gap-1 text-[9px] font-bold text-gray-500 text-center uppercase tracking-wider">
                   <span data-i18n="cal_mo">Mo</span><span data-i18n="cal_di">Tu</span><span data-i18n="cal_mi">We</span><span data-i18n="cal_do">Th</span><span data-i18n="cal_fr">Fr</span><span data-i18n="cal_sa">Sa</span><span data-i18n="cal_so">Su</span>
@@ -1666,7 +1671,7 @@ DATEI: index.html
               <span class="text-xs md:text-sm font-bold text-fuchsia-200 group-hover:text-white hidden 2xl:inline" data-i18n="settings">Options</span>
             </button>
 
-            <div id="panel-settings-dropdown" onmouseenter="showPanelHover('settings-dropdown')" onmouseleave="hidePanelHover('settings-dropdown')" class="hidden absolute right-0 top-[calc(100%+8px)] z-[120] w-[275px] bg-[#111116]/98 border border-fuchsia-500/40 p-3.5 rounded-3xl shadow-2xl backdrop-blur-xl flex flex-col gap-3 text-left animate-fade-in" onclick="event.stopPropagation()">
+            <div id="panel-settings-dropdown" onmouseenter="showPanelHover('settings-dropdown')" class="hidden absolute right-0 top-[calc(100%+8px)] z-[120] w-[275px] bg-[#111116]/98 border border-fuchsia-500/40 p-3.5 rounded-3xl shadow-2xl backdrop-blur-xl flex flex-col gap-3 text-left animate-fade-in" onclick="event.stopPropagation()">
               <!-- Title & Modal Trigger -->
               <div class="flex items-center justify-between border-b border-white/10 pb-2">
                 <div class="flex items-center gap-2">
@@ -1675,7 +1680,10 @@ DATEI: index.html
                   </div>
                   <h4 class="font-bold text-xs font-display text-white" data-i18n="settings_dropdown_title">Settings</h4>
                 </div>
-                <button onclick="openSettingsModal(); document.getElementById('panel-settings-dropdown').classList.add('hidden');" class="px-2 py-0.5 rounded-lg bg-fuchsia-600/30 hover:bg-fuchsia-600 text-fuchsia-200 hover:text-white text-[9px] font-bold transition cursor-pointer" data-i18n="settings_btn_fullscreen">Full view ↗</button>
+                <div class="flex items-center gap-1.5">
+                  <button onclick="openSettingsModal(); document.getElementById('panel-settings-dropdown').classList.add('hidden');" class="px-2 py-0.5 rounded-lg bg-fuchsia-600/30 hover:bg-fuchsia-600 text-fuchsia-200 hover:text-white text-[9px] font-bold transition cursor-pointer" data-i18n="settings_btn_fullscreen">Full view ↗</button>
+                  <button onclick="togglePanel('settings-dropdown')" aria-label="Settings schließen" class="text-gray-400 hover:text-white text-xs font-bold p-1 px-1.5 rounded-lg hover:bg-white/10 transition cursor-pointer">✕</button>
+                </div>
               </div>
 
               <!-- SECTION 1: SPRACHE (Große, ausdrucksstarke Flaggen-Icons) -->
@@ -7539,46 +7547,30 @@ DATEI: styles-dock.css
 #panel-header-tools {
   max-height: calc(100vh - 65px);
   max-height: calc(100dvh - 65px);
-  overflow-y: auto;
-  scrollbar-width: thin;
+  overflow: visible !important;
+}
+
+#panel-header-tools .grid > div {
+  position: static !important;
 }
 
 #panel-header-tools .dock-popover-panel {
   position: absolute !important;
-  left: calc(100% + 12px) !important;
+  left: calc(100% + 14px) !important;
   top: 0 !important;
-  max-height: calc(100vh - 65px) !important;
-  max-height: calc(100dvh - 65px) !important;
-  max-width: calc(100vw - 330px) !important;
+  margin-left: 0 !important;
+  max-height: calc(100vh - 24px) !important;
+  max-height: calc(100dvh - 24px) !important;
+  max-width: calc(100vw - 340px) !important;
   overflow-y: auto !important;
   z-index: 160 !important;
   pointer-events: auto !important;
   scrollbar-width: thin;
 }
 
-/* Align popover panels from each row of the 3x3 grid cleanly with the top of the hub on desktop */
-#panel-header-tools .grid > div:nth-child(1) .dock-popover-panel,
-#panel-header-tools .grid > div:nth-child(2) .dock-popover-panel,
-#panel-header-tools .grid > div:nth-child(3) .dock-popover-panel {
-  top: -10px !important;
-}
-
-#panel-header-tools .grid > div:nth-child(4) .dock-popover-panel,
-#panel-header-tools .grid > div:nth-child(5) .dock-popover-panel,
-#panel-header-tools .grid > div:nth-child(6) .dock-popover-panel {
-  top: -85px !important;
-}
-
-#panel-header-tools .grid > div:nth-child(7) .dock-popover-panel,
-#panel-header-tools .grid > div:nth-child(8) .dock-popover-panel,
-#panel-header-tools .grid > div:nth-child(9) .dock-popover-panel {
-  top: -155px !important;
-}
-
-#panel-header-tools .grid > div:nth-child(10) .dock-popover-panel,
-#panel-header-tools .grid > div:nth-child(11) .dock-popover-panel,
-#panel-header-tools .grid > div:nth-child(12) .dock-popover-panel {
-  top: -225px !important;
+/* Ensure all tool panels inside the grid start aligned with the top of the hub */
+#panel-header-tools .grid > div .dock-popover-panel {
+  top: 0 !important;
 }
 
 /* Unzerbrechliche Hover-Brücken, damit die Maus nicht im Abstand zwischen Trigger und Popover verloren geht */
@@ -10253,10 +10245,14 @@ function closeAllPanelsAndModals() {
   const allPanels = document.querySelectorAll('.dock-popover-panel, [id^="panel-"], [id$="-dropdown"], [id*="-popover"], #task-context-dropdown, #header-sound-volume-popover, .context-menu');
   allPanels.forEach(p => p.classList.add('hidden'));
 
-  // 5. Reset active state on mac dock
+  // 5. Reset active state on mac dock and clear pinned panel state
   if (typeof currentlyOpenPanel !== 'undefined') currentlyOpenPanel = null;
-  if (typeof window !== 'undefined') window.currentlyOpenPanel = null;
-  const dockContainer = document.querySelector('.mac-dock-container');
+  if (typeof window !== 'undefined') {
+    window.currentlyOpenPanel = null;
+    window.pinnedPanel = null;
+  }
+  if (typeof pinnedPanel !== 'undefined') pinnedPanel = null;
+  const dockContainer = document.querySelector('.desktop-tools-sidebar, .mac-dock-container');
   if (dockContainer) dockContainer.classList.remove('is-active');
 
   // 6. Close all open inline add inputs
@@ -13848,40 +13844,46 @@ function adjustPanelPosition(el, panelName) {
   const isToolsSubpanel = el.classList.contains('dock-popover-panel') && el.closest('#panel-header-tools');
 
   if (isToolsSubpanel && toolsPanel) {
-    const parentOrb = el.parentElement;
-    const orbOffsetTop = parentOrb ? parentOrb.offsetTop : 0;
-    
-    // Position panel starting aligned to top level of header-tools container
-    el.style.top = `${-orbOffsetTop}px`;
-    el.style.maxHeight = `calc(100vh - 65px)`;
+    // Initial placement at top of tools panel, with full screen headroom
+    el.style.top = '0px';
+    el.style.maxHeight = `calc(100vh - 32px)`;
     el.style.overflowY = 'auto';
 
     if (typeof requestAnimationFrame === 'function') {
       requestAnimationFrame(() => {
         if (!el || el.classList.contains('hidden')) return;
         const rect = el.getBoundingClientRect();
+
+        // Check vertical bounds: shift upwards if extending below bottom margin
         if (rect.bottom > vh - 16) {
           const overflow = rect.bottom - (vh - 16);
-          const currentTop = -orbOffsetTop;
-          const adjustedTop = currentTop - overflow;
           const toolsRect = toolsPanel.getBoundingClientRect();
-          const minTop = -(toolsRect.top - 12);
-          el.style.top = `${Math.max(minTop, adjustedTop)}px`;
-          
-          const finalRect = el.getBoundingClientRect();
-          const availableHeight = Math.max(260, vh - Math.max(12, finalRect.top) - 16);
-          el.style.maxHeight = `${availableHeight}px`;
+          const maxShiftUp = Math.max(0, toolsRect.top - 12);
+          const actualShift = Math.min(overflow, maxShiftUp);
+          el.style.top = `-${actualShift}px`;
+        } else {
+          el.style.top = '0px';
         }
-        if (rect.right > vw - 12) {
-          const rightOverflow = rect.right - (vw - 12);
+
+        // Re-measure after vertical shift to ensure height doesn't overflow viewport
+        const postRect = el.getBoundingClientRect();
+        const availableHeight = Math.max(260, vh - Math.max(12, postRect.top) - 16);
+        el.style.maxHeight = `${availableHeight}px`;
+
+        // Check horizontal bounds: ensure panel does not overflow right edge or clip left edge
+        if (postRect.right > vw - 12) {
+          const rightOverflow = postRect.right - (vw - 12);
           el.style.transform = `translateX(-${rightOverflow}px)`;
+        } else if (postRect.left < 12) {
+          const leftDeficit = 12 - postRect.left;
+          el.style.transform = `translateX(${leftDeficit}px)`;
         } else {
           el.style.transform = '';
         }
       });
     }
   } else {
-    // Header dropdowns (weather, calendar, pause, report, settings, timer-presets)
+    // Header dropdowns (weather, calendar, pause, report, settings, timer-presets, feedback, etc.)
     el.style.maxHeight = `calc(100vh - 65px)`;
     el.style.overflowY = 'auto';
     
@@ -13890,12 +13892,15 @@ function adjustPanelPosition(el, panelName) {
         if (!el || el.classList.contains('hidden')) return;
         const rect = el.getBoundingClientRect();
         if (rect.bottom > vh - 16) {
-          const availableHeight = Math.max(240, vh - rect.top - 16);
+          const availableHeight = Math.max(220, vh - Math.max(12, rect.top) - 16);
           el.style.maxHeight = `${availableHeight}px`;
         }
         if (rect.right > vw - 12) {
           const rightOverflow = rect.right - (vw - 12);
           el.style.transform = `translateX(-${rightOverflow}px)`;
+        } else if (rect.left < 12) {
+          const leftDeficit = 12 - rect.left;
+          el.style.transform = `translateX(${leftDeficit}px)`;
         } else {
           el.style.transform = '';
         }
@@ -17001,83 +17006,18 @@ function showPanelHover(panelName, delay = 160) {
 window.showPanelHover = showPanelHover;
 
 function hidePanelHover(panelName, gracePeriod = 900) {
+  // Clear pending open triggers when moving away from a trigger
   if (hoverPanelShowTimeout) {
     clearTimeout(hoverPanelShowTimeout);
     hoverPanelShowTimeout = null;
   }
-  if (hoverPanelHideTimeout) {
-    clearTimeout(hoverPanelHideTimeout);
-  }
-
-  // Wenn Panel per Klick fixiert (pinned) ist, niemals durch Mausbewegung schließen!
-  if (panelName && (pinnedPanel === panelName || (typeof window !== 'undefined' && window.pinnedPanel === panelName))) {
-    return;
-  }
-  if (!panelName && pinnedPanel) {
-    return;
-  }
-
-  hoverPanelHideTimeout = setTimeout(() => {
-    // Nach Ablauf der Karenzzeit nochmals prüfen
-    if (panelName && (pinnedPanel === panelName || (typeof window !== 'undefined' && window.pinnedPanel === panelName))) {
-      return;
-    }
-    if (!panelName && pinnedPanel) {
-      return;
-    }
-
-    if (panelName === 'header-tools') {
-      const toolsPanel = document.getElementById('panel-header-tools');
-      if (toolsPanel) {
-        const isHovered = toolsPanel.matches(':hover');
-        const isWrapperHovered = document.getElementById('header-tools-wrapper')?.matches(':hover');
-        const openSubpanelHovered = document.querySelector('#panel-header-tools .dock-popover-panel:not(.hidden):hover');
-        if (isHovered || isWrapperHovered || openSubpanelHovered) {
-          return;
-        }
-        toolsPanel.classList.add('hidden');
-        document.querySelectorAll('#panel-header-tools .dock-popover-panel').forEach(p => p.classList.add('hidden'));
-        if (currentlyOpenPanel === 'header-tools' || ['shopping', 'cooking', 'radio', 'news', 'audio', 'alarm', 'collab-chat'].includes(currentlyOpenPanel)) {
-          currentlyOpenPanel = null;
-          if (typeof window !== 'undefined') window.currentlyOpenPanel = null;
-        }
-      }
-      return;
-    }
-
-    if (panelName) {
-      const el = document.getElementById(`panel-${panelName}`);
-      if (el) {
-        if (el.matches(':hover')) return;
-        const toolsPanel = document.getElementById('panel-header-tools');
-        if (['shopping', 'cooking', 'radio', 'news', 'audio', 'alarm', 'collab-chat'].includes(panelName)) {
-          if (el.matches(':hover') || (toolsPanel && toolsPanel.matches(':hover'))) {
-            return;
-          }
-        }
-        el.classList.add('hidden');
-        if (currentlyOpenPanel === panelName) {
-          currentlyOpenPanel = null;
-          if (typeof window !== 'undefined') window.currentlyOpenPanel = null;
-        }
-      }
-    } else if (currentlyOpenPanel && currentlyOpenPanel !== pinnedPanel) {
-      const el = document.getElementById(`panel-${currentlyOpenPanel}`);
-      if (el) {
-        if (el.matches(':hover')) return;
-        el.classList.add('hidden');
-      }
-      currentlyOpenPanel = null;
-      if (typeof window !== 'undefined') window.currentlyOpenPanel = null;
-    }
-    
-    // Check if any dock panel remains open
-    const openDockPanel = document.querySelector('.dock-popover-panel:not(.hidden)');
-    if (!openDockPanel) {
-      const dockContainer = document.querySelector('.desktop-tools-sidebar, .mac-dock-container');
-      if (dockContainer) dockContainer.classList.remove('is-active');
-    }
-  }, gracePeriod);
+  // UX Optimization: Popups, menus, and tool windows do NOT close accidentally
+  // merely because the mouse moves into blank page space.
+  // They stay comfortably open and close reliably via:
+  // - Top-right "✕" close button
+  // - Escape key (Esc)
+  // - Clicking outside / on something else (pointerdown listener)
+  // - Hovering or clicking on a different feature/menu trigger
 }
 window.hidePanelHover = hidePanelHover;
 
@@ -18231,36 +18171,6 @@ function renderWeatherData(data) {
   const unitSymbol = weatherUnit === 'f' ? '°F' : '°C';
   const info = getWeatherInfo(current.weather_code);
 
-  // Smarter Fokus-Tipp basierend auf Wetter
-  let flowTip = {
-    de: 'Angenehmes Wetter für fokussiertes Arbeiten. Vergiss nicht, regelmäßig zu lüften! 🌿',
-    en: 'Great conditions for deep work. Remember to open the window for fresh air! 🌿',
-    fr: 'Conditions agréables pour travailler. Aère ta pièce de temps en temps ! 🌿',
-    it: 'Ottimo clima per concentrarsi. Ricordati di arieggiare la stanza! 🌿',
-    es: 'Buen clima para concentrarse. ¡Acuérdate de ventilar la habitación! 🌿',
-    el: 'Ιδανικές συνθήκες για εστίαση. Θυμήσου να αερίσεις τον χώρο! 🌿'
-  };
-
-  if (current.precipitation > 0 || [51,53,55,61,63,65,80,81,82,95].includes(current.weather_code)) {
-    flowTip = {
-      de: 'Draußen regnet es 🌧️ Perfektes Gemütlichkeitswetter, um eine Aufgabe von der Liste zu streichen!',
-      en: 'Rainy outside 🌧️ Perfect cozy vibe to check off high-focus tasks from your board!',
-      fr: 'Il pleut dehors 🌧️ Ambiance idéale pour rayer des tâches de ta liste !',
-      it: 'Piove fuori 🌧️ Atmosfera perfetta per completare le tue attività con calma!',
-      es: 'Llueve afuera 🌧️ ¡Ambiente acogedor para tachar tareas pendientes!',
-      el: 'Βρέχει έξω 🌧️ Ιδανική στιγμή για συγκέντρωση και ολοκλήρωση εργασιών!'
-    };
-  } else if (temp > 27) {
-    flowTip = {
-      de: 'Es ist warm! ☀️ Trinke genug Wasser und halte deine Konzentrationsphasen kurz & knackig.',
-      en: 'Warm day! ☀️ Stay hydrated and keep your focus sprints short & energetic.',
-      fr: 'Il fait chaud ! ☀️ Bois de l\'eau et garde tes sessions de travail courtes et dynamiques.',
-      it: 'Fa caldo! ☀️ Bevi molta acqua e mantieni le tue sessioni di lavoro brevi e fresche.',
-      es: '¡Hace calor! ☀️ Mantente hidratado y haz sesiones de trabajo breves y enfocadas.',
-      el: 'Κάνει ζέστη! ☀️ Πιες άφθονο νερό και κάνε σύντομα διαλείμματα.'
-    };
-  }
-
   // 24h Verlauf (nächste 6 Stunden)
   let hourlyPills = '';
   if (hourly.time && hourly.temperature_2m) {
@@ -18353,12 +18263,6 @@ function renderWeatherData(data) {
           <div class="text-xs font-bold text-white font-mono mt-0.5">${current.relative_humidity_2m}%</div>
         </div>
       </div>
-    </div>
-
-    <!-- Smarter Fokus-Tipp -->
-    <div class="p-2.5 bg-sky-500/10 border border-sky-500/25 rounded-xl flex items-center gap-2 text-sky-200 text-xs leading-normal">
-      <i data-lucide="sparkles" class="w-4 h-4 text-sky-400 shrink-0"></i>
-      <span>${tr(flowTip)}</span>
     </div>
 
     <!-- Stündlicher Verlauf -->
@@ -19179,6 +19083,13 @@ if (typeof document !== 'undefined') {
 }
 
 if (typeof window !== 'undefined') {
+  window.audioCtx = audioCtx;
+  window.playlistTracks = playlistTracks;
+  window.currentTrackIndex = currentTrackIndex;
+  window.activeUserAudio = activeUserAudio;
+  window.isPlayerShuffleEnabled = isPlayerShuffleEnabled;
+  window.playerRepeatMode = playerRepeatMode;
+  window.soundMasterVolume = soundMasterVolume;
   window.getMasterAudioDestination = getMasterAudioDestination;
   window.initAudioContext = initAudioContext;
   window.playCheerfulSuccessJingle = playCheerfulSuccessJingle;
@@ -19195,6 +19106,13 @@ if (typeof window !== 'undefined') {
   window.updateHeaderSoundBtnUI = updateHeaderSoundBtnUI;
 }
 if (typeof globalThis !== 'undefined') {
+  globalThis.audioCtx = audioCtx;
+  globalThis.playlistTracks = playlistTracks;
+  globalThis.currentTrackIndex = currentTrackIndex;
+  globalThis.activeUserAudio = activeUserAudio;
+  globalThis.isPlayerShuffleEnabled = isPlayerShuffleEnabled;
+  globalThis.playerRepeatMode = playerRepeatMode;
+  globalThis.soundMasterVolume = soundMasterVolume;
   globalThis.getMasterAudioDestination = getMasterAudioDestination;
   globalThis.initAudioContext = initAudioContext;
   globalThis.playCheerfulSuccessJingle = playCheerfulSuccessJingle;
@@ -19483,7 +19401,6 @@ window.playRhodesChime = playRhodesChime;
 DATEI: audio-player.js 
 ============================================================================== 
  
-// audio-player.js: Noodle Studio Audio Player & DJ Tool Engine
 // ============================================================================
 
 var djDecks = {
@@ -19766,38 +19683,51 @@ window.cyclePlayerRepeatMode = toggleMusicRepeat;
 
 function removeMusicTrack(idx, event) {
   if (event) event.stopPropagation();
-  if (idx < 0 || idx >= playlistTracks.length) return;
+  const tracks = (typeof window !== 'undefined' && Array.isArray(window.playlistTracks))
+    ? window.playlistTracks
+    : ((typeof playlistTracks !== 'undefined' && Array.isArray(playlistTracks)) ? playlistTracks : []);
+  if (idx < 0 || idx >= tracks.length) return;
 
-  const wasPlaying = idx === currentTrackIndex && activeUserAudio && !activeUserAudio.paused;
-  const [removedTrack] = playlistTracks.splice(idx, 1);
+  const curIdx = (typeof currentTrackIndex !== 'undefined') ? currentTrackIndex : ((typeof window !== 'undefined' && window.currentTrackIndex) || 0);
+  const audioObj = (typeof activeUserAudio !== 'undefined') ? activeUserAudio : ((typeof window !== 'undefined' && window.activeUserAudio) || null);
+
+  const wasPlaying = idx === curIdx && audioObj && !audioObj.paused;
+  const [removedTrack] = tracks.splice(idx, 1);
   if (removedTrack && removedTrack.url && String(removedTrack.url).startsWith('blob:')) {
     try { URL.revokeObjectURL(removedTrack.url); } catch(e) {}
   }
 
-  if (playlistTracks.length === 0) {
-    if (activeUserAudio) {
-      activeUserAudio.pause();
-      activeUserAudio = null;
+  if (tracks.length === 0) {
+    if (audioObj) {
+      try { audioObj.pause(); } catch(e) {}
+      if (typeof activeUserAudio !== 'undefined') activeUserAudio = null;
+      if (typeof window !== 'undefined') window.activeUserAudio = null;
     }
-    currentTrackIndex = 0;
-    updateMusicPlayBtnUI(false);
-    updateMusicNowPlayingDisplay();
-    renderMusicPlaylist();
+    if (typeof currentTrackIndex !== 'undefined') currentTrackIndex = 0;
+    if (typeof window !== 'undefined') window.currentTrackIndex = 0;
+    if (typeof updateMusicPlayBtnUI === 'function') updateMusicPlayBtnUI(false);
+    if (typeof updateMusicNowPlayingDisplay === 'function') updateMusicNowPlayingDisplay();
+    if (typeof renderMusicPlaylist === 'function') renderMusicPlaylist();
     return;
   }
 
-  if (idx < currentTrackIndex) {
-    currentTrackIndex--;
-  } else if (idx === currentTrackIndex) {
-    currentTrackIndex = Math.min(currentTrackIndex, playlistTracks.length - 1);
-    if (wasPlaying) {
-      playMusicTrack(currentTrackIndex);
+  let nextIdx = curIdx;
+  if (idx < curIdx) {
+    nextIdx = curIdx - 1;
+  } else if (idx === curIdx) {
+    nextIdx = Math.min(curIdx, tracks.length - 1);
+    if (wasPlaying && typeof playMusicTrack === 'function') {
+      if (typeof currentTrackIndex !== 'undefined') currentTrackIndex = nextIdx;
+      if (typeof window !== 'undefined') window.currentTrackIndex = nextIdx;
+      playMusicTrack(nextIdx);
       return;
     }
   }
 
-  updateMusicNowPlayingDisplay();
-  renderMusicPlaylist();
+  if (typeof currentTrackIndex !== 'undefined') currentTrackIndex = nextIdx;
+  if (typeof window !== 'undefined') window.currentTrackIndex = nextIdx;
+  if (typeof updateMusicNowPlayingDisplay === 'function') updateMusicNowPlayingDisplay();
+  if (typeof renderMusicPlaylist === 'function') renderMusicPlaylist();
 }
 window.removeMusicTrack = removeMusicTrack;
 window.removeTrackFromPlaylist = removeMusicTrack;
@@ -19962,13 +19892,14 @@ function initDjDecks() {
 window.initDjDecks = initDjDecks;
 
 function createSyntheticBeatAudio(bpm = 124, type = 'techno') {
-  initAudioContext();
-  if (!audioCtx) return null;
+  if (typeof initAudioContext === 'function') initAudioContext();
+  const ctx = (typeof audioCtx !== 'undefined' && audioCtx) ? audioCtx : (typeof window !== 'undefined' ? window.audioCtx : null);
+  if (!ctx) return null;
 
-  const sampleRate = audioCtx.sampleRate || 44100;
+  const sampleRate = ctx.sampleRate || 44100;
   const barSec = (60 / bpm) * 4;
   const loopSec = barSec * 4; // 16 beats loop
-  const buffer = audioCtx.createBuffer(2, Math.floor(sampleRate * loopSec), sampleRate);
+  const buffer = ctx.createBuffer(2, Math.floor(sampleRate * loopSec), sampleRate);
   const left = buffer.getChannelData(0);
   const right = buffer.getChannelData(1);
 
@@ -20021,6 +19952,8 @@ function createSyntheticBeatAudio(bpm = 124, type = 'techno') {
   const wavBlob = audioBufferToWavBlob(buffer);
   return URL.createObjectURL(wavBlob);
 }
+if (typeof window !== 'undefined') window.createSyntheticBeatAudio = createSyntheticBeatAudio;
+if (typeof globalThis !== 'undefined') globalThis.createSyntheticBeatAudio = createSyntheticBeatAudio;
 
 function audioBufferToWavBlob(buffer) {
   const numChannels = buffer.numberOfChannels;
@@ -20600,8 +20533,13 @@ function playDjSfx(type) {
 }
 
 window.playDjSfx = playDjSfx;
+window.removeMusicTrack = removeMusicTrack;
+window.removeTrackFromPlaylist = removeMusicTrack;
 if (typeof window !== 'undefined') window.djDecks = djDecks;
-if (typeof globalThis !== 'undefined') globalThis.djDecks = djDecks;
+if (typeof globalThis !== 'undefined') {
+  globalThis.djDecks = djDecks;
+  globalThis.removeMusicTrack = removeMusicTrack;
+}
 
  
  
@@ -23385,6 +23323,7 @@ const CollabEngine = (function() {
     copyShareLink,
     toggleChat,
     openRoomModal,
+    loadChatHistory,
     renderChatMessages,
     renderPresenceUI
   };
@@ -42628,7 +42567,8 @@ describe('Noodle Technical Update Regression Suite', () => {
         window.state.streak = i;
         window.saveHistory();
       }
-      const historyRaw = localStorage.getItem('flow_history');
+      const histKey = window.HISTORY_KEY || 'flowPlannerV3History';
+      const historyRaw = localStorage.getItem(histKey);
       expect(historyRaw).not.toBeNull();
       const parsed = JSON.parse(historyRaw);
       expect(parsed.length).toBeLessThanOrEqual(15);
@@ -42691,14 +42631,17 @@ describe('Noodle Technical Update Regression Suite', () => {
       }
 
       window.showToast('<img src=x onerror=alert(1)>', { undo: true });
-      expect(toastCard.innerHTML).not.toContain('<img src=x onerror=alert(1)>');
-      expect(toastCard.innerHTML).toContain('&lt;img src=x onerror=alert(1)&gt;');
+      expect(toastCard.querySelector('img')).toBeNull();
+      expect(toastCard.textContent).toContain('<img src=x onerror=alert(1)>');
     });
 
     it('collab-engine.js maskiert Benutzernamen und Systemmeldungen im Chat', () => {
-      const container = document.createElement('div');
-      container.id = 'collab-chat-messages-container';
-      document.body.appendChild(container);
+      let container = document.getElementById('collab-chat-messages-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'collab-chat-messages-container';
+        document.body.appendChild(container);
+      }
 
       const maliciousSender = {
         id: 'attacker_1',
@@ -42721,17 +42664,22 @@ describe('Noodle Technical Update Regression Suite', () => {
         }
       ]));
 
-      if (typeof CollabEngine !== 'undefined' && typeof CollabEngine.init === 'function') {
-        CollabEngine.init();
-      }
-      if (typeof CollabEngine !== 'undefined' && typeof CollabEngine.renderChatMessages === 'function') {
-        CollabEngine.renderChatMessages();
+      if (typeof CollabEngine !== 'undefined') {
+        if (typeof CollabEngine.loadChatHistory === 'function') {
+          CollabEngine.loadChatHistory();
+        } else if (typeof CollabEngine.init === 'function') {
+          CollabEngine.init();
+        }
+        if (typeof CollabEngine.renderChatMessages === 'function') {
+          CollabEngine.renderChatMessages();
+        }
       }
 
-      expect(container.innerHTML).not.toContain('<script>alert(1)</script>');
-      expect(container.innerHTML).not.toContain('<svg onload=alert(3)>');
-      expect(container.innerHTML).toContain('&lt;script&gt;alert(1)&lt;/script&gt;');
-      expect(container.innerHTML).toContain('&lt;svg onload=alert(3)&gt;System&lt;/svg&gt;');
+      expect(container.querySelector('script')).toBeNull();
+      expect(container.querySelector('svg')).toBeNull();
+      expect(container.querySelector('b')).toBeNull();
+      expect(container.textContent).toContain('<script>alert(1)</script>');
+      expect(container.textContent).toContain('<svg onload=alert(3)>System</svg>');
     });
   });
 
@@ -43289,14 +43237,19 @@ describe('Testplan Verification Suite (All 6 Test Areas)', () => {
     });
 
     it('8.3 handleUpgradeClick zeigt sicheren Info-Toast und löst keinen Checkout aus', () => {
+      const originalShowToast = window.showToast;
       let toastMessage = null;
       window.showToast = (msg) => { toastMessage = msg; };
 
-      expect(typeof window.handleUpgradeClick).toBe('function');
-      window.handleUpgradeClick('test_feature');
+      try {
+        expect(typeof window.handleUpgradeClick).toBe('function');
+        window.handleUpgradeClick('test_feature');
 
-      expect(toastMessage).toMatch(/Pro(-Funktionen sind bald verfügbar| features coming soon)/i);
-      expect(consoleErrors).toHaveLength(0);
+        expect(toastMessage).toMatch(/Pro(-Funktionen sind bald verfügbar| features coming soon)/i);
+        expect(consoleErrors).toHaveLength(0);
+      } finally {
+        window.showToast = originalShowToast;
+      }
     });
 
     it('8.4 Werbeflächen-Platzhalter ad-slot-main existiert im DOM und ist hidden/aria-hidden', () => {
