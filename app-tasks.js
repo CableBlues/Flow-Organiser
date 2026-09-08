@@ -1493,12 +1493,27 @@ document.addEventListener('pointerdown', (e) => {
   if (openPanelEl.contains(e.target)) return;
 
   // Wenn der Trigger-Button geklickt wurde: togglePanel übernimmt die Umschaltung
-  const clickedTrigger = e.target.closest(`[onclick*="togglePanel('${activeName}')"]`) ||
-                         e.target.closest(`[onclick*="togglePanel(\"${activeName}\")"]`) ||
-                         e.target.closest(`[onclick*="showPanelHover('${activeName}')"]`) ||
-                         e.target.closest(`[onclick*="showPanelHover(\"${activeName}\")"]`) ||
-                         e.target.closest(`[onclick*="handleSoundsMainClick"]`) ||
-                         e.target.closest(`[onclick*="handleMusicMainClick"]`);
+  // (BUGFIX: reine JS-String-Prüfung statt CSS-Attribut-Selektoren mit verschachtelten
+  // Anführungszeichen – die alte Version erzeugte bei Namen wie "audio" einen ungültigen
+  // CSS-Selektor `[onclick*="togglePanel("audio")"]` und crashte mit DOMException.)
+  const triggerPatterns = [
+    `togglePanel('${activeName}')`,
+    `togglePanel("${activeName}")`,
+    `showPanelHover('${activeName}')`,
+    `showPanelHover("${activeName}")`,
+    'handleSoundsMainClick',
+    'handleMusicMainClick'
+  ];
+  let clickedTrigger = null;
+  let triggerEl = e.target;
+  while (triggerEl && triggerEl !== document.body) {
+    const onclickAttr = triggerEl.getAttribute && triggerEl.getAttribute('onclick');
+    if (onclickAttr && triggerPatterns.some((p) => onclickAttr.includes(p))) {
+      clickedTrigger = triggerEl;
+      break;
+    }
+    triggerEl = triggerEl.parentElement;
+  }
   if (clickedTrigger) return;
 
   // Andernfalls: Panel stabil schließen & Pin aufheben
@@ -2403,3 +2418,4 @@ if (typeof globalThis !== 'undefined') {
   globalThis.renameColumn = renameColumn;
   globalThis.deleteColumn = deleteColumn;
 }
+ 

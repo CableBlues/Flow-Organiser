@@ -1,6 +1,6 @@
 # ============================================================================== 
 # NOODLE STUDIO — GESAMTER QUELLCODE DER ANWENDUNG 
-# Stand: 08.09.2026  3:36:34,54 
+# Stand: 08.09.2026 13:35:23,65 
 # ============================================================================== 
  
  
@@ -35,6 +35,9 @@ DATEI: index.html
 
   <!-- 100% Lokale Schriftarten (DSGVO-konform, offline, ohne CDN-Abhängigkeit) -->
   <link rel="stylesheet" href="fonts.css" />
+
+  <!-- Umami: cookie-freie, DSGVO-konforme Besucherstatistik (keine personenbezogenen Daten, kein Consent-Banner nötig) -->
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="382cc11c-8a1b-4310-a272-96bc300842ee"></script>
 
   <!--
     PERFORMANCE-FIX:
@@ -3356,7 +3359,7 @@ DATEI: index.html
             <span>Local-First Prinzip & Datenschutz by Design (Art. 25 DSGVO)</span>
           </h4>
           <p class="text-gray-300 text-[11px]">
-            Deine Privatsphäre hat höchste Priorität. Noodle speichert deine Aufgaben, Notizen, Einkaufslisten, Timer und Einstellungen <strong>ausschließlich lokal im Speicher deines Browsers (localStorage & IndexedDB)</strong>. Wir betreiben kein Nutzer-Tracking und binden keine Werbenetzwerke oder Analyse-Cookies ein.
+            Deine Privatsphäre hat höchste Priorität. Noodle speichert deine Aufgaben, Notizen, Einkaufslisten, Timer und Einstellungen <strong>ausschließlich lokal im Speicher deines Browsers (localStorage & IndexedDB)</strong>. Wir nutzen ausschließlich Umami, ein cookie-freies, datenschutzfreundliches Analyse-Tool zur Erfassung anonymer Besucherstatistiken. Es findet kein Nutzer-Tracking über Cookies statt und wir binden keine Werbenetzwerke ein.
           </p>
         </div>
 
@@ -4874,7 +4877,7 @@ DATEI: index.html
       <div class="space-y-3.5 text-xs text-gray-300 leading-relaxed">
         <div class="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-200">
           <b class="text-white block mb-1">🛡️ Privacy by Design (Datenschutzversprechen):</b>
-          Noodle Studio speichert alle deine Aufgaben, Einkaufslisten und Notizen <b>ausschließlich lokal in deinem Webbrowser (Local Storage)</b>. Es findet kein Tracking, keine Weitergabe an Werbenetzwerke und keine serverseitige Profilbildung statt.
+          Noodle Studio speichert alle deine Aufgaben, Einkaufslisten und Notizen <b>ausschließlich lokal in deinem Webbrowser (Local Storage)</b>. Es findet keine Weitergabe an Werbenetzwerke und keine personenbezogene Profilbildung statt. Lediglich anonyme, cookie-freie Seitenaufruf-Statistiken werden über Umami erfasst.
         </div>
 
         <div>
@@ -4951,6 +4954,33 @@ DATEI: index.html
   <script src="app-feedback.js"></script>
   <script src="app-core.js"></script>
 
+  <!-- Umami: generisches Feature-Tracking – wrapt automatisch ALLE window.open...Modal-Funktionen,
+       damit im Umami-Dashboard unter "Events" sichtbar wird, welche Features tatsächlich genutzt
+       werden. Keine persönlichen Daten, nur der Funktionsname wird übertragen. Läuft einmalig
+       nach dem Laden aller Scripts und deckt automatisch auch künftig neu hinzugefügte
+       open...Modal-Funktionen ab, ohne dass an anderer Stelle im Code etwas geändert werden muss. -->
+  <script>
+    (function() {
+      if (typeof umami === 'undefined') return;
+      Object.keys(window).forEach((key) => {
+        if (/^open.*Modal$/.test(key) && typeof window[key] === 'function' && !window[key]._umamiWrapped) {
+          const original = window[key];
+          const eventName = key
+            .replace(/^open/, '')
+            .replace(/Modal$/, '')
+            .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+            .toLowerCase();
+          const wrapped = function(...args) {
+            try { umami.track(`open-${eventName}`); } catch (e) {}
+            return original.apply(this, args);
+          };
+          wrapped._umamiWrapped = true;
+          window[key] = wrapped;
+        }
+      });
+    })();
+  </script>
+
   <!-- Service Worker Registrierung für 100% Offline-Fähigkeit & Blitzstart (nur über HTTP/HTTPS) -->
   <script>
     if ('serviceWorker' in navigator && (window.location.protocol === 'http:' || window.location.protocol === 'https:')) {
@@ -4966,7 +4996,7 @@ DATEI: index.html
   </script>
 </body>
 </html>
- 
+  
  
 ============================================================================== 
 DATEI: manifest.json 
@@ -17039,12 +17069,27 @@ document.addEventListener('pointerdown', (e) => {
   if (openPanelEl.contains(e.target)) return;
 
   // Wenn der Trigger-Button geklickt wurde: togglePanel übernimmt die Umschaltung
-  const clickedTrigger = e.target.closest(`[onclick*="togglePanel('${activeName}')"]`) ||
-                         e.target.closest(`[onclick*="togglePanel(\"${activeName}\")"]`) ||
-                         e.target.closest(`[onclick*="showPanelHover('${activeName}')"]`) ||
-                         e.target.closest(`[onclick*="showPanelHover(\"${activeName}\")"]`) ||
-                         e.target.closest(`[onclick*="handleSoundsMainClick"]`) ||
-                         e.target.closest(`[onclick*="handleMusicMainClick"]`);
+  // (BUGFIX: reine JS-String-Prüfung statt CSS-Attribut-Selektoren mit verschachtelten
+  // Anführungszeichen – die alte Version erzeugte bei Namen wie "audio" einen ungültigen
+  // CSS-Selektor `[onclick*="togglePanel("audio")"]` und crashte mit DOMException.)
+  const triggerPatterns = [
+    `togglePanel('${activeName}')`,
+    `togglePanel("${activeName}")`,
+    `showPanelHover('${activeName}')`,
+    `showPanelHover("${activeName}")`,
+    'handleSoundsMainClick',
+    'handleMusicMainClick'
+  ];
+  let clickedTrigger = null;
+  let triggerEl = e.target;
+  while (triggerEl && triggerEl !== document.body) {
+    const onclickAttr = triggerEl.getAttribute && triggerEl.getAttribute('onclick');
+    if (onclickAttr && triggerPatterns.some((p) => onclickAttr.includes(p))) {
+      clickedTrigger = triggerEl;
+      break;
+    }
+    triggerEl = triggerEl.parentElement;
+  }
   if (clickedTrigger) return;
 
   // Andernfalls: Panel stabil schließen & Pin aufheben
@@ -17949,7 +17994,7 @@ if (typeof globalThis !== 'undefined') {
   globalThis.renameColumn = renameColumn;
   globalThis.deleteColumn = deleteColumn;
 }
- 
+  
  
 ============================================================================== 
 DATEI: app-weather-news.js 
