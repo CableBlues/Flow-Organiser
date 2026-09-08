@@ -1,6 +1,6 @@
 # ============================================================================== 
 # NOODLE STUDIO — GESAMTER QUELLCODE DER ANWENDUNG 
-# Stand: 08.09.2026 13:35:23,65 
+# Stand: 08.09.2026 14:35:19,11 
 # ============================================================================== 
  
  
@@ -2853,7 +2853,7 @@ DATEI: index.html
                 <label for="sync-password-input" class="text-[10px] uppercase font-mono text-gray-400 font-bold block">Passwort / PIN:</label>
                 <button type="button" onclick="handlePasswordReset()" class="text-[10px] text-emerald-400 hover:underline cursor-pointer">Passwort vergessen?</button>
               </div>
-              <input id="sync-password-input" type="password" placeholder="Mindestens 4 Zeichen" onkeydown="if(event.key==='Enter') handleEmailAuth()" class="w-full px-3 py-2 bg-black/60 border border-white/15 focus:border-emerald-400 rounded-xl text-xs text-white placeholder-gray-500 outline-none transition" />
+              <input id="sync-password-input" type="password" placeholder="Mindestens 8 Zeichen" onkeydown="if(event.key==='Enter') handleEmailAuth()" class="w-full px-3 py-2 bg-black/60 border border-white/15 focus:border-emerald-400 rounded-xl text-xs text-white placeholder-gray-500 outline-none transition" />
             </div>
             <button id="sync-auth-submit-btn" onclick="handleEmailAuth()" class="w-full py-2.5 px-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer">
               <i data-lucide="log-in" class="w-4 h-4"></i>
@@ -22101,10 +22101,13 @@ const FlowAuth = (function() {
     if (typeof window !== 'undefined' && window.FLOW_CONFIG) {
       return window.FLOW_CONFIG;
     }
-    return {
-      SUPABASE_URL: 'https://flow-organiser.supabase.co',
-      SUPABASE_ANON_KEY: 'dummy_anon_key'
-    };
+    // BUGFIX: Vorher wurde hier stillschweigend eine tote Fallback-URL mit
+    // Dummy-Schlüssel zurückgegeben (Rest aus der "Flow Organiser"-Zeit).
+    // Da init() ohnehin niemals einen Client mit fehlender/ungültiger Config
+    // erstellt, ist eine klare Diagnosemeldung hier sinnvoller als ein
+    // stiller, nie erreichbarer Platzhalter-Wert.
+    console.error('[FlowAuth] FLOW_CONFIG wurde nicht gefunden. Bitte prüfen, ob config.js korrekt VOR auth-engine.js geladen wird – ohne gültige Konfiguration sind Login und Cloud-Sync nicht möglich.');
+    return { SUPABASE_URL: null, SUPABASE_ANON_KEY: null };
   }
 
   function getSupabaseLib() {
@@ -22204,8 +22207,8 @@ const FlowAuth = (function() {
     if (!email || !email.trim() || !email.includes('@')) {
       return { success: false, error: 'Bitte gib eine gültige E-Mail-Adresse ein.' };
     }
-    if (!password || password.length < 4) {
-      return { success: false, error: 'Bitte gib dein Passwort (mind. 4 Zeichen) ein.' };
+    if (!password) {
+      return { success: false, error: 'Bitte gib dein Passwort ein.' };
     }
 
     const trimmedEmail = email.trim().toLowerCase();
@@ -22260,8 +22263,8 @@ const FlowAuth = (function() {
     if (!email || !email.trim() || !email.includes('@')) {
       return { success: false, error: 'Bitte gib eine gültige E-Mail-Adresse ein.' };
     }
-    if (!password || password.length < 4) {
-      return { success: false, error: 'Bitte wähle ein Passwort mit mindestens 4 Zeichen.' };
+    if (!password || password.length < 8) {
+      return { success: false, error: 'Bitte wähle ein Passwort mit mindestens 8 Zeichen.' };
     }
 
     const trimmedEmail = email.trim().toLowerCase();
@@ -22536,7 +22539,7 @@ if (typeof globalThis !== 'undefined') {
   globalThis.NoodleAuth = FlowAuth;
   globalThis.FlowAuth = FlowAuth;
 }
- 
+  
  
 ============================================================================== 
 DATEI: build.js 
