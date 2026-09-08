@@ -4944,6 +4944,33 @@
   <script src="app-feedback.js"></script>
   <script src="app-core.js"></script>
 
+  <!-- Umami: generisches Feature-Tracking – wrapt automatisch ALLE window.open...Modal-Funktionen,
+       damit im Umami-Dashboard unter "Events" sichtbar wird, welche Features tatsächlich genutzt
+       werden. Keine persönlichen Daten, nur der Funktionsname wird übertragen. Läuft einmalig
+       nach dem Laden aller Scripts und deckt automatisch auch künftig neu hinzugefügte
+       open...Modal-Funktionen ab, ohne dass an anderer Stelle im Code etwas geändert werden muss. -->
+  <script>
+    (function() {
+      if (typeof umami === 'undefined') return;
+      Object.keys(window).forEach((key) => {
+        if (/^open.*Modal$/.test(key) && typeof window[key] === 'function' && !window[key]._umamiWrapped) {
+          const original = window[key];
+          const eventName = key
+            .replace(/^open/, '')
+            .replace(/Modal$/, '')
+            .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+            .toLowerCase();
+          const wrapped = function(...args) {
+            try { umami.track(`open-${eventName}`); } catch (e) {}
+            return original.apply(this, args);
+          };
+          wrapped._umamiWrapped = true;
+          window[key] = wrapped;
+        }
+      });
+    })();
+  </script>
+
   <!-- Service Worker Registrierung für 100% Offline-Fähigkeit & Blitzstart (nur über HTTP/HTTPS) -->
   <script>
     if ('serviceWorker' in navigator && (window.location.protocol === 'http:' || window.location.protocol === 'https:')) {
