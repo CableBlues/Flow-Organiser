@@ -1,3 +1,98 @@
+function adjustPanelPosition(el, panelName) {
+  if (!el || typeof window === 'undefined' || typeof document === 'undefined') return;
+
+  const isMobile = (window.innerWidth || document.documentElement.clientWidth || 0) <= 768;
+  const vh = window.innerHeight || document.documentElement.clientHeight || 800;
+  const vw = window.innerWidth || document.documentElement.clientWidth || 1200;
+
+  if (isMobile) {
+    el.style.maxHeight = 'calc(100dvh - 110px - env(safe-area-inset-bottom, 0px))';
+    el.style.overflowY = 'auto';
+    return;
+  }
+
+  // Desktop (> 768px):
+  const toolsPanel = document.getElementById('panel-header-tools');
+  const isToolsSubpanel = el.classList.contains('dock-popover-panel') && el.closest('#panel-header-tools');
+
+  if (isToolsSubpanel && toolsPanel) {
+    // Initial placement at top of tools panel, with full screen headroom
+    el.style.top = '0px';
+    el.style.maxHeight = `calc(100vh - 32px)`;
+    el.style.overflowY = 'auto';
+
+    if (typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(() => {
+        if (!el || el.classList.contains('hidden')) return;
+        const rect = el.getBoundingClientRect();
+
+        // Check vertical bounds: shift upwards if extending below bottom margin
+        if (rect.bottom > vh - 16) {
+          const overflow = rect.bottom - (vh - 16);
+          const toolsRect = toolsPanel.getBoundingClientRect();
+          const maxShiftUp = Math.max(0, toolsRect.top - 12);
+          const actualShift = Math.min(overflow, maxShiftUp);
+          el.style.top = `-${actualShift}px`;
+        } else {
+          el.style.top = '0px';
+        }
+
+        // Re-measure after vertical shift to ensure height doesn't overflow viewport
+        const postRect = el.getBoundingClientRect();
+        const availableHeight = Math.max(260, vh - Math.max(12, postRect.top) - 16);
+        el.style.maxHeight = `${availableHeight}px`;
+
+        // Check horizontal bounds: ensure panel does not overflow right edge or clip left edge
+        if (postRect.right > vw - 12) {
+          const rightOverflow = postRect.right - (vw - 12);
+          el.style.transform = `translateX(-${rightOverflow}px)`;
+        } else if (postRect.left < 12) {
+          const leftDeficit = 12 - postRect.left;
+          el.style.transform = `translateX(${leftDeficit}px)`;
+        } else {
+          el.style.transform = '';
+        }
+      });
+    }
+  } else {
+    // Header dropdowns (weather, calendar, pause, report, settings, timer-presets, feedback, etc.)
+    el.style.maxHeight = `calc(100vh - 65px)`;
+    el.style.overflowY = 'auto';
+    
+    if (typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(() => {
+        if (!el || el.classList.contains('hidden')) return;
+        const rect = el.getBoundingClientRect();
+        if (rect.bottom > vh - 16) {
+          const availableHeight = Math.max(220, vh - Math.max(12, rect.top) - 16);
+          el.style.maxHeight = `${availableHeight}px`;
+        }
+        if (rect.right > vw - 12) {
+          const rightOverflow = rect.right - (vw - 12);
+          el.style.transform = `translateX(-${rightOverflow}px)`;
+        } else if (rect.left < 12) {
+          const leftDeficit = 12 - rect.left;
+          el.style.transform = `translateX(${leftDeficit}px)`;
+        } else {
+          el.style.transform = '';
+        }
+      });
+    }
+  }
+}
+if (typeof window !== 'undefined') {
+  window.adjustPanelPosition = adjustPanelPosition;
+  window.addEventListener('resize', () => {
+    const openPanelName = window.currentlyOpenPanel || (typeof currentlyOpenPanel !== 'undefined' ? currentlyOpenPanel : null);
+    if (openPanelName) {
+      const openEl = document.getElementById(`panel-${openPanelName}`);
+      if (openEl && !openEl.classList.contains('hidden')) {
+        adjustPanelPosition(openEl, openPanelName);
+      }
+    }
+  }, { passive: true });
+}
+
 function togglePanel(panelName) {
   if (typeof window !== 'undefined' && window.hoverPanelTimeout) {
     clearTimeout(window.hoverPanelTimeout);
@@ -19,6 +114,7 @@ function togglePanel(panelName) {
 
   if (isCurrentlyHidden) { 
     el.classList.remove('hidden'); 
+    adjustPanelPosition(el, panelName);
     if (typeof window !== 'undefined') {
       window.currentlyOpenPanel = panelName;
       window.pinnedPanel = panelName;
@@ -61,7 +157,11 @@ function togglePanel(panelName) {
       const savedTab = (typeof window !== 'undefined' && window._lastActiveAudioTab) ? window._lastActiveAudioTab : 'ambient';
       if (typeof switchAudioTab === 'function') switchAudioTab(savedTab);
     }
-    if (typeof renderLucideIcons === 'function') renderLucideIcons();
+    if (panelName === 'collab-chat' && typeof CollabEngine !== 'undefined') {
+      if (typeof CollabEngine.renderChatMessages === 'function') CollabEngine.renderChatMessages();
+      if (typeof CollabEngine.renderPresenceUI === 'function') CollabEngine.renderPresenceUI();
+    }
+    if (typeof renderLucideIcons === 'function') renderLucideIcons(false, el);
   } else {
     el.classList.add('hidden');
     if (typeof window !== 'undefined') {

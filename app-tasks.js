@@ -15,6 +15,13 @@ let inlineEditingTaskInfo = null;
 let openTaskMenuMeta = null;
 let taskMenuCloseTimer = null;
 
+if (typeof window !== 'undefined' && !window.openTaskAddColumns) {
+  window.openTaskAddColumns = {};
+}
+if (typeof globalThis !== 'undefined' && !globalThis.openTaskAddColumns) {
+  globalThis.openTaskAddColumns = {};
+}
+
 /**
  * Plant das automatische Schließen des Aufgaben-Kontextmenüs nach einer kurzen Verzögerung.
  */
@@ -136,6 +143,12 @@ if (typeof document !== 'undefined') {
         closeTaskOptionsMenu();
       }
     }
+    const popover = document.getElementById('popover-add-list');
+    if (popover && !popover.classList.contains('hidden')) {
+      if (!popover.contains(e.target) && !e.target.closest('#btn-add-list-top') && !e.target.closest('button[onclick*="toggleAddListPopover"]') && !e.target.closest('button[onclick*="openAddListInline"]')) {
+        popover.classList.add('hidden');
+      }
+    }
   });
 }
 
@@ -213,6 +226,97 @@ function setTaskColor(columnId, index, color, e) {
   renderApp();
 }
 
+function saveCategoriesOrder() {
+  try {
+    const isWork = state && state.activeWorkspace === 'work';
+    if (isWork) {
+      if (typeof workCategoriesOrder !== 'undefined' && Array.isArray(workCategoriesOrder)) {
+        localStorage.setItem('flow_work_categories_order', JSON.stringify(workCategoriesOrder));
+      }
+    } else {
+      if (typeof categoriesOrder !== 'undefined' && Array.isArray(categoriesOrder)) {
+        localStorage.setItem('flow_categories_order', JSON.stringify(categoriesOrder));
+      }
+    }
+  } catch (err) {
+    console.warn('[Categories] Error saving categories order:', err);
+  }
+}
+
+function toggleAddListPopover(e, forceState = null) {
+  if (e) e.stopPropagation();
+  const popover = document.getElementById('popover-add-list');
+  if (!popover) return;
+  const isHidden = popover.classList.contains('hidden');
+  const shouldOpen = forceState !== null ? forceState : isHidden;
+
+  if (shouldOpen) {
+    popover.classList.remove('hidden');
+    const input = document.getElementById('input-new-list-title');
+    if (input) {
+      input.value = '';
+      input.onkeydown = (ev) => {
+        if (ev.key === 'Enter') submitNewListTop();
+        if (ev.key === 'Escape') toggleAddListPopover(null, false);
+      };
+      setTimeout(() => input.focus(), 40);
+    }
+    if (typeof renderLucideIcons === 'function') renderLucideIcons(false, popover);
+  } else {
+    popover.classList.add('hidden');
+  }
+}
+
+function submitNewListTop() {
+  const input = document.getElementById('input-new-list-title');
+  const iconSelect = document.getElementById('select-new-list-icon');
+  if (!input) return;
+  const title = input.value.trim();
+  if (!title) {
+    input.focus();
+    return;
+  }
+  const icon = iconSelect ? iconSelect.value : 'layers';
+  const isWork = state && state.activeWorkspace === 'work';
+  const targetList = isWork ? (workCategoriesOrder || WORK_CATEGORIES_ORDER) : categoriesOrder;
+  const colId = `custom_${Date.now()}`;
+
+  saveHistory();
+  targetList.push([colId, icon, title, true]);
+  const curItems = getCurrentWorkspaceItems();
+  if (!curItems[colId]) curItems[colId] = [];
+
+  toggleAddListPopover(null, false);
+  saveCategoriesOrder();
+  saveState();
+  renderApp();
+  if (typeof populateHelperTaskSelect === 'function') populateHelperTaskSelect();
+
+  if (typeof setMobileCategory === 'function') {
+    setMobileCategory(colId);
+  }
+
+  showToast(tr({
+    de: `Neue Liste "${title}" erstellt! 📋`,
+    en: `New list "${title}" created! 📋`,
+    es: `¡Nueva lista "${title}" creada! 📋`,
+    fr: `Nouvelle liste "${title}" créée ! 📋`,
+    it: `Nuova lista "${title}" creata! 📋`,
+    el: `Νέα λίστα "${title}" δημιουργήθηκε! 📋`
+  }), { undo: true });
+}
+
+// Aliases for compatibility
+function openAddListInline(focusInput = true) {
+  toggleAddListPopover(null, true);
+}
+function cancelAddListInline() {
+  toggleAddListPopover(null, false);
+}
+function submitAddListInline() {
+  submitNewListTop();
+}
+
 function renameColumn(colId, e) {
   if (e) e.stopPropagation();
   const isWork = state && state.activeWorkspace === 'work';
@@ -220,14 +324,15 @@ function renameColumn(colId, e) {
   const entry = activeOrder.find(([id]) => id === colId);
   if (!entry) return;
   const currentTitle = entry[2] || t(colId);
-  const newTitle = prompt(t('rename_column') || 'Spalte umbenennen:', currentTitle);
+  const newTitle = prompt(t('rename_column') || 'Liste umbenennen:', currentTitle);
   if (newTitle && newTitle.trim()) {
     saveHistory();
     entry[2] = newTitle.trim();
     entry[3] = true;
     saveCategoriesOrder();
+    saveState();
     renderApp();
-    showToast(tr({ de: 'Spalte umbenannt ✏️', en: 'Column renamed ✏️', es: 'Columna renombrada ✏️', el: 'Η στήλη μετονομάστηκε ✏️', fr: 'Colonne renommée ✏️', it: 'Colonna rinominata ✏️' }));
+    showToast(tr({ de: 'Liste umbenannt ✏️', en: 'List renamed ✏️', es: 'Lista renombrada ✏️', el: 'Η λίστα μετονομάστηκε ✏️', fr: 'Liste renommée ✏️', it: 'Lista rinominata ✏️' }));
   }
 }
 
@@ -237,14 +342,24 @@ async function deleteColumn(colId, e) {
   const activeOrder = isWork ? (workCategoriesOrder || WORK_CATEGORIES_ORDER) : categoriesOrder;
   const idx = activeOrder.findIndex(([id]) => id === colId);
   if (idx === -1) return;
+  const entry = activeOrder[idx];
+  const listTitle = entry[2] || t(colId);
   const curItems = getCurrentWorkspaceItems();
   const taskCount = (curItems[colId] || []).length;
   
-  const confirmMsg = (t('confirm_delete_column') || 'Möchtest du diese Spalte wirklich löschen?') + (taskCount > 0 ? ` (${taskCount} Aufgaben)` : '');
+  const confirmMsg = tr({
+    de: `Möchtest du die Liste "${listTitle}" wirklich entfernen?${taskCount > 0 ? ` (${taskCount} Aufgaben gehen verloren)` : ''}`,
+    en: `Do you really want to delete list "${listTitle}"?${taskCount > 0 ? ` (${taskCount} tasks will be deleted)` : ''}`,
+    es: `¿Seguro que deseas eliminar la lista "${listTitle}"?`,
+    fr: `Voulez-vous vraiment supprimer la liste "${listTitle}" ?`,
+    it: `Vuoi davvero eliminare la lista "${listTitle}"?`,
+    el: `Θέλετε σίγουρα να διαγράψετε τη λίστα "${listTitle}";`
+  });
+
   const confirmed = typeof showConfirmDialog === 'function' ? await showConfirmDialog({
-    title: typeof tr === 'function' ? tr({ de: 'Spalte löschen?', en: 'Delete column?' }) : 'Spalte löschen?',
+    title: typeof tr === 'function' ? tr({ de: 'Liste löschen?', en: 'Delete list?' }) : 'Liste löschen?',
     message: confirmMsg,
-    confirmText: typeof tr === 'function' ? tr({ de: 'Löschen', en: 'Delete' }) : 'Löschen',
+    confirmText: typeof tr === 'function' ? tr({ de: 'Liste löschen', en: 'Delete list' }) : 'Löschen',
     isDanger: true,
     icon: 'trash-2'
   }) : confirm(confirmMsg);
@@ -256,7 +371,15 @@ async function deleteColumn(colId, e) {
     saveCategoriesOrder();
     saveState();
     renderApp();
-    showToast(tr({ de: 'Spalte gelöscht 🗑️', en: 'Column deleted 🗑️', es: 'Columna eliminada 🗑️', el: 'Η στήλη διαγράφηκε 🗑️', fr: 'Colonne supprimée 🗑️', it: 'Colonna eliminata 🗑️' }));
+    if (typeof populateHelperTaskSelect === 'function') populateHelperTaskSelect();
+    showToast(tr({
+      de: `Liste "${listTitle}" gelöscht 🗑️`,
+      en: `List "${listTitle}" deleted 🗑️`,
+      es: `Lista "${listTitle}" eliminada 🗑️`,
+      el: `Η λίστα "${listTitle}" διαγράφηκε 🗑️`,
+      fr: `Liste "${listTitle}" supprimée 🗑️`,
+      it: `Lista "${listTitle}" eliminata 🗑️`
+    }), { undo: true });
   }
 }
 
@@ -442,8 +565,8 @@ function renderApp() {
         </div>
       ` : ''}
       
-      <!-- Floating Action Mini-Capsule on Hover -->
-      <div class="absolute right-2 top-2 hidden sm:group-hover/col:flex items-center gap-1 bg-[#13131e]/95 border border-white/15 px-1.5 py-1 rounded-xl shadow-xl z-20 backdrop-blur-md">
+      <!-- Floating Action Mini-Capsule -->
+      <div class="absolute right-2 top-2 flex items-center gap-1 bg-[#13131e]/90 sm:bg-[#13131e]/95 border border-white/15 px-1.5 py-0.5 sm:py-1 rounded-xl shadow-xl z-20 backdrop-blur-md opacity-90 sm:opacity-0 sm:group-hover/col:opacity-100 transition-all duration-150">
         ${hasDice ? `
           <button onclick="rollTaskDice('${id}', event)" aria-label="${tr({ de: 'Aufgabe auswürfeln 🎲', en: 'Roll a task 🎲', es: 'Tirar dado 🎲', el: 'Ρίξε το ζάρι 🎲', fr: 'Tirer au sort 🎲', it: 'Lancia il dado 🎲' })}" class="p-1 px-1.5 bg-gradient-to-r from-purple-500/20 to-pink-500/15 hover:from-purple-500/35 hover:to-pink-500/30 border border-purple-400/30 hover:border-purple-300 text-purple-200 hover:text-white rounded-lg shadow-sm hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer flex items-center justify-center gap-1 group/dice" title="${tr({ de: 'Aufgabe auswürfeln 🎲', en: 'Roll a task 🎲', es: 'Tirar dado 🎲', el: 'Ρίξε το ζάρι 🎲', fr: 'Tirer au sort 🎲', it: 'Lancia il dado 🎲' })}">
             <svg class="w-3.5 h-3.5 text-purple-300 group-hover/dice:text-white group-hover/dice:scale-110 group-hover/dice:rotate-6 transition-all duration-200 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -457,8 +580,16 @@ function renderApp() {
           </button>
         ` : ''}
         ${(id === 'weekly' || id === 'work_in_progress') ? `
-          <button onclick="if(typeof openCleaningGuideModal === 'function') openCleaningGuideModal(); if(event) event.stopPropagation();" aria-label="${tr({ de: 'Grundreinigung', en: 'Deep Cleaning', es: 'Limpieza a fondo', el: 'Γενική καθαριότητα', fr: 'Nettoyage en profondeur', it: 'Pulizia profonda' })}" class="p-1 px-1.5 bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/30 text-emerald-300 hover:text-white rounded-lg shadow-sm hover:scale-105 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1" title="${tr({ de: 'Grundreinigung', en: 'Deep Cleaning', es: 'Limpieza a fondo', el: 'Γενική καθαριότητα', fr: 'Nettoyage en profondeur', it: 'Pulizia profonda' })}">
-            ${svgFn('sparkles', 'w-3.5 h-3.5 text-emerald-400')}
+          <button onclick="if(typeof openCleaningGuideModal === 'function') openCleaningGuideModal(); if(event) event.stopPropagation();" aria-label="${tr({ de: 'Grundreinigung', en: 'Deep Cleaning', es: 'Limpieza a fondo', el: 'Γενική καθαριότητα', fr: 'Nettoyage en profondeur', it: 'Pulizia profonda' })}" class="clean-guide-btn p-1 px-1.5 bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/30 text-emerald-300 hover:text-white rounded-lg shadow-sm hover:scale-105 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1 group/cleanbtn" title="${tr({ de: 'Grundreinigung (Wohnungs-Reset & Guides) 🧹✨', en: 'Deep Cleaning Guide 🧹✨' })}">
+            <span class="relative inline-flex items-center justify-center w-3.5 h-3.5 text-emerald-400 group-hover/cleanbtn:text-emerald-200">
+              <svg class="w-3.5 h-3.5 clean-spray-svg transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 3h-2.5a1 1 0 0 0-1 1v2.5H8.8a1.2 1.2 0 0 0-.9.4L6.2 9H5a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1.2l.6 8.5a2 2 0 0 0 2 2.5h6.4a2 2 0 0 0 2-2.5L17.8 7.5h-2.3V4a1 1 0 0 0-1-1z" fill="currentColor" fill-opacity="0.16"/>
+                <path d="M7 14.5c2-.8 5-.8 7 0" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.6"/>
+                <circle cx="2.6" cy="4.2" r="1.1" fill="currentColor" class="clean-mist-drop-1"/>
+                <circle cx="5.2" cy="2" r="0.8" fill="currentColor" class="clean-mist-drop-2"/>
+                <circle cx="1.6" cy="7.2" r="0.8" fill="currentColor" class="clean-mist-drop-3"/>
+              </svg>
+            </span>
           </button>
         ` : ''}
         ${!isDone ? `
@@ -467,8 +598,8 @@ function renderApp() {
           </button>
         ` : ''}
         ${isCustomCol ? `
-          <button onclick="renameColumn('${id}', event)" aria-label="${t('rename_column') || 'Umbenennen'}" class="p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition cursor-pointer flex items-center justify-center" title="${t('rename_column') || 'Umbenennen'}">${svgFn('edit-3', 'w-3 h-3')}</button>
-          <button onclick="deleteColumn('${id}', event)" aria-label="${t('delete_column') || 'Löschen'}" class="p-1 text-gray-400 hover:text-red-400 hover:bg-red-500/15 rounded-lg transition cursor-pointer flex items-center justify-center" title="${t('delete_column') || 'Löschen'}">${svgFn('trash-2', 'w-3 h-3')}</button>
+          <button onclick="renameColumn('${id}', event)" aria-label="${t('rename_column') || 'Liste umbenennen'}" class="p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition cursor-pointer flex items-center justify-center" title="${t('rename_column') || 'Liste umbenennen'}">${svgFn('edit-3', 'w-3 h-3')}</button>
+          <button onclick="deleteColumn('${id}', event)" aria-label="${t('delete_column') || 'Liste löschen'}" class="p-1 text-gray-400 hover:text-red-400 hover:bg-red-500/15 rounded-lg transition cursor-pointer flex items-center justify-center" title="${t('delete_column') || 'Liste löschen'}">${svgFn('trash-2', 'w-3 h-3')}</button>
         ` : ''}
       </div>
 
@@ -480,11 +611,6 @@ function renderApp() {
           </h2>
         </div>
         <div class="flex items-center gap-1 shrink-0 ml-1">
-          ${id === 'weekly' ? `
-            <button onclick="if(typeof openCleaningGuideModal === 'function') openCleaningGuideModal(); if(event) event.stopPropagation();" aria-label="${tr({ de: 'Grundreinigung', en: 'Deep Cleaning', es: 'Limpieza a fondo', el: 'Γενική καθαριότητα', fr: 'Nettoyage en profondeur', it: 'Pulizia profonda' })}" class="p-1 px-1.5 bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/30 text-emerald-300 hover:text-white rounded-lg shadow-sm hover:scale-105 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1" title="${tr({ de: 'Grundreinigung', en: 'Deep Cleaning', es: 'Limpieza a fondo', el: 'Γενική καθαριότητα', fr: 'Nettoyage en profondeur', it: 'Pulizia profonda' })}">
-              ${svgFn('sparkles', 'w-3.5 h-3.5 text-emerald-400')}
-            </button>
-          ` : ''}
           ${countBadgeHTML}
         </div>
       </div>
@@ -588,7 +714,9 @@ function renderApp() {
         return `${a.date} ${a.time || '00:00'}`.localeCompare(`${b.date} ${b.time || '00:00'}`);
       });
       itemsWithMeta.forEach((item) => {
-        const originalIndex = item.originalIdx; const isToday = item.date === todayISO;
+        const originalIndex = item.originalIdx;
+        const isToday = item.date === todayISO;
+        const status = item.status || 'open';
         let fullDateString = "No Date";
         if (item.date) {
           try {
@@ -601,22 +729,48 @@ function renderApp() {
             console.warn('[Tasks] Date parsing warning:', e);
           }
         }
-        let locHTML = item.location ? `<span class="text-[9px] text-gray-400 truncate max-w-[90px] inline-flex items-center gap-0.5">${svgFn('map-pin', 'w-3 h-3 shrink-0 text-gray-500')}${escapeHtml(item.location)}</span>` : '';
+        let locHTML = item.location ? `<span class="text-[9px] text-gray-400 truncate max-w-[85px] inline-flex items-center gap-0.5">${svgFn('map-pin', 'w-3 h-3 shrink-0 text-gray-500')}${escapeHtml(item.location)}</span>` : '';
+
+        // Status Styling & Badges
+        let statusBorderBg = isToday ? 'border-amber-400 bg-amber-500/10' : 'border-amber-500/40 bg-white/[0.035]';
+        let statusBadgeHTML = '';
+
+        if (status === 'stattgefunden') {
+          statusBorderBg = 'border-emerald-500 bg-emerald-500/10 text-emerald-100 shadow-[0_0_12px_rgba(16,185,129,0.15)]';
+          statusBadgeHTML = `<span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shrink-0"><i data-lucide="check-check" class="w-3 h-3 text-emerald-400"></i><span>${tr({ de: 'Stattgefunden', en: 'Attended', fr: 'Effectué', it: 'Svolto', es: 'Realizado', el: 'Πραγματοποιήθηκε' })}</span></span>`;
+        } else if (status === 'nicht_stattgefunden') {
+          statusBorderBg = 'border-rose-500 bg-rose-500/10 text-rose-200 opacity-85 shadow-[0_0_12px_rgba(244,63,94,0.15)]';
+          statusBadgeHTML = `<span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[9px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 shrink-0"><i data-lucide="x" class="w-3 h-3 text-rose-400"></i><span>${tr({ de: 'Nicht stattgefunden', en: 'Did not happen', fr: 'Non eu lieu', it: 'Non svolto', es: 'No realizado', el: 'Δεν έγινε' })}</span></span>`;
+        } else if (status === 'verschoben') {
+          statusBorderBg = 'border-sky-400 bg-sky-500/10 text-sky-100 shadow-[0_0_12px_rgba(56,189,248,0.15)]';
+          const origNote = item.originalDate ? ` (von ${escapeHtml(item.originalDate)})` : '';
+          statusBadgeHTML = `<span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[9px] font-bold bg-sky-500/20 text-sky-300 border border-sky-500/40 shrink-0" title="${item.originalDate ? 'Ursprünglich: ' + escapeHtml(item.originalDate) : ''}"><i data-lucide="calendar-sync" class="w-3 h-3 text-sky-400"></i><span>${tr({ de: 'Verschoben', en: 'Postponed', fr: 'Reporté', it: 'Rinviato', es: 'Pospuesto', el: 'Αναβλήθηκε' })}${origNote}</span></span>`;
+        }
+
         const itemDiv = document.createElement('div');
-        itemDiv.className = `group relative w-full h-auto min-h-[34px] flex items-center justify-between py-1.5 px-2.5 border-0 border-l-[3.5px] ${isToday ? 'border-amber-400 bg-amber-500/10' : 'border-amber-500/40 bg-white/[0.035]'} hover:bg-white/[0.07] text-gray-200 font-medium transition-all duration-150 ease-out rounded-xl shadow-xs cursor-pointer`;
+        itemDiv.className = `group relative w-full h-auto min-h-[34px] flex items-center justify-between py-1.5 px-2.5 border-0 border-l-[3.5px] ${statusBorderBg} hover:bg-white/[0.07] text-gray-200 font-medium transition-all duration-150 ease-out rounded-xl shadow-xs cursor-pointer`;
         itemDiv.onclick = () => editTermin(originalIndex);
         itemDiv.innerHTML = `
-          <div class="flex items-center gap-2 flex-1 min-w-0 pr-10 select-none">
-            <button onclick="handleCompleteTask('termine', ${originalIndex}, event)" aria-label="${tr({ de: 'Termin als erledigt markieren', en: 'Mark appointment as completed', fr: 'Marquer le rendez-vous comme terminé', it: 'Segna appuntamento come completato', es: 'Marcar cita como completada', el: 'Σήμανση ραντεβού ως ολοκληρωμένο' })}" class="task-check-btn p-0 bg-transparent border-0 cursor-pointer shrink-0" title="${tr({ de: 'Termin als erledigt markieren', en: 'Mark appointment as completed', fr: 'Marquer le rendez-vous comme terminé', it: 'Segna appuntamento come completato', es: 'Marcar cita como completada', el: 'Σήμανση ραντεβού ως ολοκληρωμένο' })}">
-              <span class="task-check-circle relative flex items-center justify-center w-5.5 h-5.5 rounded-full border border-orange-400/30 bg-orange-500/10 hover:border-emerald-400 hover:bg-emerald-500/20 hover:scale-110 active:scale-90 transition-all duration-200 shrink-0 shadow-xs group/check">
-                ${svgFn('clock', 'task-default-icon w-3.5 h-3.5 text-orange-400 transition-all duration-200 group-hover/check:opacity-0 group-hover/check:scale-50')}
-                ${svgFn('check', 'task-hover-check w-3.5 h-3.5 text-emerald-400 opacity-0 scale-50 group-hover/check:opacity-100 group-hover/check:scale-100 transition-all duration-200 absolute')}
+          <div class="flex items-center gap-2 flex-1 min-w-0 pr-14 select-none">
+            <button onclick="toggleTerminStatusQuick(${originalIndex}, event)" aria-label="${tr({ de: 'Termin-Status ändern', en: 'Change appointment status' })}" class="task-check-btn p-0 bg-transparent border-0 cursor-pointer shrink-0" title="${tr({ de: 'Status durchschalten: Stattgefunden / Nicht stattgefunden / Offen', en: 'Toggle status: Attended / Did not happen / Open' })}">
+              <span class="task-check-circle relative flex items-center justify-center w-5.5 h-5.5 rounded-full border ${status === 'stattgefunden' ? 'border-emerald-400 bg-emerald-500/20 text-emerald-300' : (status === 'nicht_stattgefunden' ? 'border-rose-400 bg-rose-500/20 text-rose-300' : (status === 'verschoben' ? 'border-sky-400 bg-sky-500/20 text-sky-300' : 'border-orange-400/30 bg-orange-500/10 hover:border-emerald-400 hover:bg-emerald-500/20'))} hover:scale-110 active:scale-90 transition-all duration-200 shrink-0 shadow-xs group/check">
+                ${status === 'stattgefunden' 
+                  ? svgFn('check', 'w-3.5 h-3.5 text-emerald-400')
+                  : (status === 'nicht_stattgefunden' 
+                    ? svgFn('x', 'w-3.5 h-3.5 text-rose-400')
+                    : (status === 'verschoben'
+                      ? svgFn('calendar-sync', 'w-3.5 h-3.5 text-sky-300')
+                      : `${svgFn('clock', 'task-default-icon w-3.5 h-3.5 text-orange-400 transition-all duration-200 group-hover/check:opacity-0 group-hover/check:scale-50')}${svgFn('check', 'task-hover-check w-3.5 h-3.5 text-emerald-400 opacity-0 scale-50 group-hover/check:opacity-100 group-hover/check:scale-100 transition-all duration-200 absolute')}`
+                    )
+                  )
+                }
               </span>
             </button>
             <div class="flex flex-col min-w-0 flex-1 cursor-pointer" onclick="editTermin(${originalIndex}, event)">
-              <div class="flex items-center gap-1.5 min-w-0">
-                <span class="text-xs leading-snug font-semibold text-amber-100 break-normal whitespace-normal">${escapeHtml(item.task || item.name || 'Termin')}</span>
+              <div class="flex items-center gap-1.5 min-w-0 flex-wrap">
+                <span class="text-xs leading-snug font-semibold ${status === 'stattgefunden' ? 'text-emerald-200 line-through opacity-90' : (status === 'nicht_stattgefunden' ? 'text-rose-200 line-through opacity-80' : (status === 'verschoben' ? 'text-sky-200' : 'text-amber-100'))} break-normal whitespace-normal">${escapeHtml(item.task || item.name || 'Termin')}</span>
                 ${item.time ? `<span class="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 shrink-0">${escapeHtml(item.time)}</span>` : ''}
+                ${statusBadgeHTML}
               </div>
               <div class="flex items-center gap-1.5 mt-0.5">
                 <span class="text-[9px] font-mono text-gray-400">${escapeHtml(fullDateString)}</span>
@@ -625,6 +779,9 @@ function renderApp() {
             </div>
           </div>
           <div class="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-0.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-150 shrink-0 bg-[#141420]/95 border border-white/10 p-0.5 rounded-lg shadow-md z-40 backdrop-blur-md">
+            <button onclick="markTerminStattgefunden(${originalIndex}, event)" aria-label="${tr({ de: 'Stattgefunden', en: 'Attended' })}" class="p-1 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/20 rounded-md transition cursor-pointer" title="${tr({ de: 'Stattgefunden ✅', en: 'Attended ✅' })}">${svgFn('check', 'w-3 h-3')}</button>
+            <button onclick="markTerminNichtStattgefunden(${originalIndex}, event)" aria-label="${tr({ de: 'Nicht stattgefunden', en: 'Did not happen' })}" class="p-1 text-rose-400 hover:text-rose-300 hover:bg-rose-500/20 rounded-md transition cursor-pointer" title="${tr({ de: 'Nicht stattgefunden ❌', en: 'Did not happen ❌' })}">${svgFn('x', 'w-3 h-3')}</button>
+            <button onclick="openPostponeTerminModal(${originalIndex}, event)" aria-label="${tr({ de: 'Verschieben', en: 'Postpone' })}" class="p-1 text-sky-400 hover:text-sky-300 hover:bg-sky-500/20 rounded-md transition cursor-pointer" title="${tr({ de: 'Verschieben & als verschoben markieren 🔄', en: 'Postpone & mark 🔄' })}">${svgFn('calendar-sync', 'w-3 h-3')}</button>
             <button onclick="editTermin(${originalIndex}, event)" aria-label="${tr({ de: 'Termin bearbeiten', en: 'Edit appointment', fr: 'Modifier le rendez-vous', it: 'Modifica appuntamento', es: 'Editar cita', el: 'Επεξεργασία ραντεβού' })}" class="p-1 text-amber-400 hover:text-amber-300 hover:bg-white/10 rounded-md transition cursor-pointer" title="${tr({ de: 'Termin bearbeiten', en: 'Edit appointment', fr: 'Modifier le rendez-vous', it: 'Modifica appuntamento', es: 'Editar cita', el: 'Επεξεργασία ραντεβού' })}">${svgFn('edit-3', 'w-3 h-3')}</button>
             <button onclick="deleteTask('termine', ${originalIndex}, event)" aria-label="${tr({ de: 'Termin löschen', en: 'Delete appointment', fr: 'Supprimer le rendez-vous', it: 'Elimina appuntamento', es: 'Eliminar cita', el: 'Διαγραφή ραντεβού' })}" class="p-1 text-gray-500 hover:text-red-400 hover:bg-white/10 rounded-md transition cursor-pointer" title="${tr({ de: 'Termin löschen', en: 'Delete appointment', fr: 'Supprimer le rendez-vous', it: 'Elimina appuntamento', es: 'Eliminar cita', el: 'Διαγραφή ραντεβού' })}">${svgFn('trash-2', 'w-3 h-3')}</button>
           </div>
@@ -662,6 +819,15 @@ function renderApp() {
           <div class="grid grid-cols-2 gap-2 mb-2">
             <div><label class="text-[10px] text-gray-400 mb-0.5 block font-medium">${dateT}</label><input type="date" id="add-termin-date" value="${dateValue}" class="w-full p-1.5 bg-black/60 border border-white/15 rounded-lg text-xs text-gray-200 outline-none focus:border-[var(--accent)] cursor-pointer" /></div>
             <div><label class="text-[10px] text-gray-400 mb-0.5 block font-medium">${timeT}</label><input type="time" id="add-termin-time" value="10:00" class="w-full p-1.5 bg-black/60 border border-white/15 rounded-lg text-xs text-gray-200 outline-none focus:border-[var(--accent)] cursor-pointer" /></div>
+          </div>
+          <div class="mb-2">
+            <label class="text-[10px] text-gray-400 mb-0.5 block font-medium">Status:</label>
+            <select id="add-termin-status" class="w-full p-1.5 bg-black/60 border border-white/15 rounded-lg text-xs text-gray-200 outline-none focus:border-[var(--accent)] cursor-pointer font-semibold">
+              <option value="open">⚪ ${tr({ de: 'Offen', en: 'Open' })}</option>
+              <option value="stattgefunden">🟢 ${tr({ de: 'Stattgefunden', en: 'Attended' })}</option>
+              <option value="nicht_stattgefunden">🔴 ${tr({ de: 'Nicht stattgefunden', en: 'Did not happen' })}</option>
+              <option value="verschoben">🔵 ${tr({ de: 'Verschoben', en: 'Postponed' })}</option>
+            </select>
           </div>
           <div class="flex items-center gap-2 mt-1">
             <button onclick="handleAddTermin()" class="flex-1 py-1.5 bg-[var(--accent)] hover:opacity-90 text-white font-bold text-xs rounded-lg transition cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">${svgFn('check', 'w-3.5 h-3.5')}<span>${saveT}</span></button>
@@ -761,9 +927,10 @@ function renderApp() {
   });
 
   main.appendChild(fragment);
-  updateShoppingListPopup(true); renderCookingPanel(true);
-  renderLucideIcons(false, main);
-  renderMobileCategoryTabs();
+  if (typeof updateShoppingListPopup === 'function') updateShoppingListPopup(true);
+  if (typeof renderCookingPanel === 'function') renderCookingPanel(true);
+  if (typeof renderLucideIcons === 'function') renderLucideIcons(false, main);
+  if (typeof renderMobileCategoryTabs === 'function') renderMobileCategoryTabs();
 }
 
 function renderMobileCategoryTabs() {
@@ -781,7 +948,7 @@ function renderMobileCategoryTabs() {
   }
   document.body.dataset.mobileCat = activeCat;
 
-  bar.innerHTML = activeOrder.map(([id, iconKey, customTitle]) => {
+  const tabsHtml = activeOrder.map(([id, iconKey, customTitle]) => {
     const isActive = id === activeCat;
     const isDone = id === 'done';
     const activeCount = (curItems[id] || []).length;
@@ -797,7 +964,15 @@ function renderMobileCategoryTabs() {
     `;
   }).join('');
 
-  renderLucideIcons();
+  const addListBtnHtml = `
+    <button onclick="openAddListInline(true)" class="mobile-tab-btn opacity-85 hover:opacity-100 border border-dashed border-purple-500/40 bg-purple-500/10 text-purple-300 hover:text-white" title="${tr({ de: 'Neue Liste hinzufügen', en: 'Add new list', es: 'Añadir nueva lista', fr: 'Ajouter une nouvelle liste', it: 'Aggiungi nuova lista', el: 'Προσθήκη νέας λίστας' })}">
+      <i data-lucide="plus" class="w-3.5 h-3.5 text-purple-400"></i>
+      <span>+ ${tr({ de: 'Liste', en: 'List', es: 'Lista', fr: 'Liste', it: 'Lista', el: 'Λίστα' })}</span>
+    </button>
+  `;
+
+  bar.innerHTML = tabsHtml + addListBtnHtml;
+  renderLucideIcons(false, bar);
 }
 
 function setMobileCategory(id) {
@@ -1187,7 +1362,7 @@ function showPanelHover(panelName, delay = 160) {
     delay = 0;
   }
 
-  const TOOL_SUBPANELS = ['shopping', 'cooking', 'radio', 'news', 'audio', 'alarm', 'daily', 'impulse', 'inspiration'];
+  const TOOL_SUBPANELS = ['shopping', 'cooking', 'radio', 'news', 'audio', 'alarm', 'daily', 'impulse', 'inspiration', 'collab-chat'];
   // Wenn ein anderes Panel fest angeklickt (gepinnt) ist, nicht durch reines Drüberfahren schließen
   if (pinnedPanel && pinnedPanel !== panelName) {
     if (!(pinnedPanel === 'header-tools' && TOOL_SUBPANELS.includes(panelName))) {
@@ -1231,6 +1406,11 @@ function showPanelHover(panelName, delay = 160) {
     });
 
     el.classList.remove('hidden');
+    if (typeof adjustPanelPosition === 'function') {
+      adjustPanelPosition(el, panelName);
+    } else if (typeof window !== 'undefined' && typeof window.adjustPanelPosition === 'function') {
+      window.adjustPanelPosition(el, panelName);
+    }
     currentlyOpenPanel = panelName;
     if (typeof window !== 'undefined') window.currentlyOpenPanel = panelName;
 
@@ -1270,89 +1450,28 @@ function showPanelHover(panelName, delay = 160) {
       if (typeof suggestBoostActivity === 'function') suggestBoostActivity();
       if (typeof suggestInspirationQuote === 'function') suggestInspirationQuote();
     }
-    if (typeof renderLucideIcons === 'function') renderLucideIcons();
+    if (panelName === 'collab-chat' && typeof CollabEngine !== 'undefined') {
+      if (typeof CollabEngine.renderChatMessages === 'function') CollabEngine.renderChatMessages();
+      if (typeof CollabEngine.renderPresenceUI === 'function') CollabEngine.renderPresenceUI();
+    }
+    if (typeof renderLucideIcons === 'function') renderLucideIcons(false, el);
   }, delay);
 }
 window.showPanelHover = showPanelHover;
 
 function hidePanelHover(panelName, gracePeriod = 900) {
+  // Clear pending open triggers when moving away from a trigger
   if (hoverPanelShowTimeout) {
     clearTimeout(hoverPanelShowTimeout);
     hoverPanelShowTimeout = null;
   }
-  if (hoverPanelHideTimeout) {
-    clearTimeout(hoverPanelHideTimeout);
-  }
-
-  // Wenn Panel per Klick fixiert (pinned) ist, niemals durch Mausbewegung schließen!
-  if (panelName && (pinnedPanel === panelName || (typeof window !== 'undefined' && window.pinnedPanel === panelName))) {
-    return;
-  }
-  if (!panelName && pinnedPanel) {
-    return;
-  }
-
-  hoverPanelHideTimeout = setTimeout(() => {
-    // Nach Ablauf der Karenzzeit nochmals prüfen
-    if (panelName && (pinnedPanel === panelName || (typeof window !== 'undefined' && window.pinnedPanel === panelName))) {
-      return;
-    }
-    if (!panelName && pinnedPanel) {
-      return;
-    }
-
-    if (panelName === 'header-tools') {
-      const toolsPanel = document.getElementById('panel-header-tools');
-      if (toolsPanel) {
-        const isHovered = toolsPanel.matches(':hover');
-        const isWrapperHovered = document.getElementById('header-tools-wrapper')?.matches(':hover');
-        const openSubpanelHovered = document.querySelector('#panel-header-tools .dock-popover-panel:not(.hidden):hover');
-        if (isHovered || isWrapperHovered || openSubpanelHovered) {
-          return;
-        }
-        toolsPanel.classList.add('hidden');
-        document.querySelectorAll('#panel-header-tools .dock-popover-panel').forEach(p => p.classList.add('hidden'));
-        if (currentlyOpenPanel === 'header-tools' || ['shopping', 'cooking', 'radio', 'news', 'audio', 'alarm'].includes(currentlyOpenPanel)) {
-          currentlyOpenPanel = null;
-          if (typeof window !== 'undefined') window.currentlyOpenPanel = null;
-        }
-      }
-      return;
-    }
-
-    if (panelName) {
-      const el = document.getElementById(`panel-${panelName}`);
-      if (el) {
-        if (el.matches(':hover')) return;
-        const toolsPanel = document.getElementById('panel-header-tools');
-        if (['shopping', 'cooking', 'radio', 'news', 'audio', 'alarm'].includes(panelName)) {
-          if (el.matches(':hover') || (toolsPanel && toolsPanel.matches(':hover'))) {
-            return;
-          }
-        }
-        el.classList.add('hidden');
-        if (currentlyOpenPanel === panelName) {
-          currentlyOpenPanel = null;
-          if (typeof window !== 'undefined') window.currentlyOpenPanel = null;
-        }
-      }
-    } else if (currentlyOpenPanel && currentlyOpenPanel !== pinnedPanel) {
-      const el = document.getElementById(`panel-${currentlyOpenPanel}`);
-      if (el) {
-        if (el.matches(':hover')) return;
-        el.classList.add('hidden');
-      }
-      currentlyOpenPanel = null;
-      if (typeof window !== 'undefined') window.currentlyOpenPanel = null;
-    }
-    
-    // Check if any dock panel remains open
-    const openDockPanel = document.querySelector('.dock-popover-panel:not(.hidden)');
-    if (!openDockPanel) {
-      const dockContainer = document.querySelector('.desktop-tools-sidebar, .mac-dock-container');
-      if (dockContainer) dockContainer.classList.remove('is-active');
-    }
-  }, gracePeriod);
+  // UX Optimization: Popups, menus, and tool windows do NOT close accidentally
+  // merely because the mouse moves into blank page space.
+  // They stay comfortably open and close reliably via:
+  // - Top-right "✕" close button
+  // - Escape key (Esc)
+  // - Clicking outside / on something else (pointerdown listener)
+  // - Hovering or clicking on a different feature/menu trigger
 }
 window.hidePanelHover = hidePanelHover;
 
@@ -1929,6 +2048,238 @@ function applySampleManagerSelection() {
   }));
 }
 
+let activePostponeTerminIndex = null;
+
+function formatTerminDate(dateStr, timeStr) {
+  if (!dateStr) return timeStr || '';
+  try {
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+      const curL = (typeof currentLang !== 'undefined' ? currentLang : 'de');
+      const dateFormatted = d.toLocaleDateString(curL, { weekday: 'short', day: 'numeric', month: 'short' });
+      return timeStr ? `${dateFormatted}, ${timeStr}` : dateFormatted;
+    }
+  } catch (e) {}
+  return timeStr ? `${dateStr} ${timeStr}` : dateStr;
+}
+
+function markTerminStattgefunden(index, event) {
+  if (event) event.stopPropagation();
+  const curItems = getCurrentWorkspaceItems();
+  const termin = curItems.termine?.[index];
+  if (!termin) return;
+  saveHistory();
+  if (typeof termin === 'object') {
+    termin.status = 'stattgefunden';
+    termin.updatedAt = new Date().toISOString();
+  } else {
+    curItems.termine[index] = { task: termin, status: 'stattgefunden', updatedAt: new Date().toISOString() };
+  }
+  if (typeof playCheerfulSuccessJingle === 'function') playCheerfulSuccessJingle();
+  if (typeof triggerHapticFeedback === 'function') triggerHapticFeedback();
+  saveState();
+  renderApp();
+  if (typeof populateHelperTaskSelect === 'function') populateHelperTaskSelect();
+  if (typeof showToast === 'function') {
+    showToast(tr({
+      de: 'Termin als "Stattgefunden" markiert ✅',
+      en: 'Appointment marked as attended ✅',
+      fr: 'Rendez-vous marqué comme effectué ✅',
+      it: 'Appuntamento contrassegnato come svolto ✅',
+      es: 'Cita marcada como realizada ✅',
+      el: 'Το ραντεβού σημειώθηκε ως πραγματοποιημένο ✅'
+    }));
+  }
+}
+
+function markTerminNichtStattgefunden(index, event) {
+  if (event) event.stopPropagation();
+  const curItems = getCurrentWorkspaceItems();
+  const termin = curItems.termine?.[index];
+  if (!termin) return;
+  saveHistory();
+  if (typeof termin === 'object') {
+    termin.status = 'nicht_stattgefunden';
+    termin.updatedAt = new Date().toISOString();
+  } else {
+    curItems.termine[index] = { task: termin, status: 'nicht_stattgefunden', updatedAt: new Date().toISOString() };
+  }
+  saveState();
+  renderApp();
+  if (typeof populateHelperTaskSelect === 'function') populateHelperTaskSelect();
+  if (typeof showToast === 'function') {
+    showToast(tr({
+      de: 'Termin als "Nicht stattgefunden" markiert ❌',
+      en: 'Appointment marked as not attended ❌',
+      fr: 'Rendez-vous marqué comme non eu lieu ❌',
+      it: 'Appuntamento contrassegnato come non svolto ❌',
+      es: 'Cita marcada como no realizada ❌',
+      el: 'Το ραντεβού σημειώθηκε ως μη πραγματοποιημένο ❌'
+    }));
+  }
+}
+
+function resetTerminStatus(index, event) {
+  if (event) event.stopPropagation();
+  const curItems = getCurrentWorkspaceItems();
+  const termin = curItems.termine?.[index];
+  if (!termin) return;
+  saveHistory();
+  if (typeof termin === 'object') {
+    termin.status = 'open';
+    termin.updatedAt = new Date().toISOString();
+  } else {
+    curItems.termine[index] = { task: termin, status: 'open', updatedAt: new Date().toISOString() };
+  }
+  saveState();
+  renderApp();
+  if (typeof populateHelperTaskSelect === 'function') populateHelperTaskSelect();
+  if (typeof showToast === 'function') {
+    showToast(tr({
+      de: 'Termin-Status auf "Offen" zurückgesetzt ⚪',
+      en: 'Appointment status reset to Open ⚪',
+      fr: 'Statut du rendez-vous réinitialisé ⚪',
+      it: 'Stato appuntamento reimpostato ⚪',
+      es: 'Estado de la cita restablecido ⚪',
+      el: 'Η κατάσταση του ραντεβού επανήλθε ⚪'
+    }));
+  }
+}
+
+function toggleTerminStatusQuick(index, event) {
+  if (event) event.stopPropagation();
+  const curItems = getCurrentWorkspaceItems();
+  const termin = curItems.termine?.[index];
+  if (!termin) return;
+  const curStatus = (typeof termin === 'object' && termin.status) ? termin.status : 'open';
+  if (curStatus === 'open') {
+    markTerminStattgefunden(index, event);
+  } else if (curStatus === 'stattgefunden') {
+    markTerminNichtStattgefunden(index, event);
+  } else {
+    resetTerminStatus(index, event);
+  }
+}
+
+function openPostponeTerminModal(index, event) {
+  if (event) event.stopPropagation();
+  const curItems = getCurrentWorkspaceItems();
+  const termin = curItems.termine?.[index];
+  if (!termin) return;
+  activePostponeTerminIndex = index;
+  
+  const modal = document.getElementById('modal-postpone-termin');
+  if (!modal) return;
+  
+  const title = typeof termin === 'object' ? (termin.task || termin.name || 'Termin') : termin;
+  const curDate = (typeof termin === 'object' && termin.date) ? termin.date : new Date().toISOString().split('T')[0];
+  const curTime = (typeof termin === 'object' && termin.time) ? termin.time : '10:00';
+  
+  const infoEl = document.getElementById('postpone-termin-current-info');
+  if (infoEl) {
+    infoEl.textContent = `${title} · ${curDate} ${curTime}`;
+  }
+  
+  const d = new Date(curDate);
+  if (isNaN(d.getTime())) {
+    d.setTime(Date.now());
+  }
+  d.setDate(d.getDate() + 1);
+  const nextDayISO = d.toISOString().split('T')[0];
+
+  const dateInput = document.getElementById('postpone-termin-date');
+  const timeInput = document.getElementById('postpone-termin-time');
+  const reasonInput = document.getElementById('postpone-termin-reason');
+  
+  if (dateInput) dateInput.value = nextDayISO;
+  if (timeInput) timeInput.value = curTime;
+  if (reasonInput) reasonInput.value = (typeof termin === 'object' && termin.postponeReason) ? termin.postponeReason : '';
+  
+  modal.classList.remove('hidden');
+  renderLucideIcons(false, modal);
+}
+
+function closePostponeTerminModal() {
+  const modal = document.getElementById('modal-postpone-termin');
+  if (modal) modal.classList.add('hidden');
+  activePostponeTerminIndex = null;
+}
+
+function quickPostponeTerminDays(days) {
+  const curItems = getCurrentWorkspaceItems();
+  const termin = (activePostponeTerminIndex !== null) ? curItems.termine?.[activePostponeTerminIndex] : null;
+  const baseDateStr = (termin && typeof termin === 'object' && termin.date) ? termin.date : new Date().toISOString().split('T')[0];
+  
+  const d = new Date(baseDateStr);
+  if (isNaN(d.getTime())) d.setTime(Date.now());
+  d.setDate(d.getDate() + days);
+  
+  const targetISO = d.toISOString().split('T')[0];
+  const dateInput = document.getElementById('postpone-termin-date');
+  if (dateInput) dateInput.value = targetISO;
+}
+
+function submitPostponeTermin() {
+  if (activePostponeTerminIndex === null) return;
+  const curItems = getCurrentWorkspaceItems();
+  const termin = curItems.termine?.[activePostponeTerminIndex];
+  if (!termin) return;
+  
+  const dateInput = document.getElementById('postpone-termin-date');
+  const timeInput = document.getElementById('postpone-termin-time');
+  const reasonInput = document.getElementById('postpone-termin-reason');
+  
+  const newDate = dateInput ? dateInput.value : '';
+  const newTime = timeInput ? timeInput.value : '';
+  const reason = reasonInput ? reasonInput.value.trim() : '';
+  
+  if (!newDate) {
+    if (typeof showToast === 'function') {
+      showToast(tr({ de: 'Bitte ein gültiges Datum wählen!', en: 'Please select a valid date!' }));
+    }
+    return;
+  }
+  
+  saveHistory();
+  const oldDate = (typeof termin === 'object' && termin.date) ? termin.date : '';
+  
+  if (typeof termin === 'object') {
+    termin.originalDate = termin.originalDate || oldDate;
+    termin.date = newDate;
+    if (newTime) termin.time = newTime;
+    termin.status = 'verschoben';
+    if (reason) termin.postponeReason = reason;
+    termin.updatedAt = new Date().toISOString();
+  } else {
+    curItems.termine[activePostponeTerminIndex] = {
+      task: termin,
+      originalDate: oldDate,
+      date: newDate,
+      time: newTime || '10:00',
+      status: 'verschoben',
+      postponeReason: reason,
+      updatedAt: new Date().toISOString()
+    };
+  }
+  
+  closePostponeTerminModal();
+  saveState();
+  renderApp();
+  if (typeof populateHelperTaskSelect === 'function') populateHelperTaskSelect();
+  
+  if (typeof showToast === 'function') {
+    showToast(tr({
+      de: `Termin auf ${formatTerminDate(newDate, newTime)} verschoben & markiert 🔄`,
+      en: `Appointment postponed to ${newDate} ${newTime} 🔄`,
+      fr: `Rendez-vous reporté au ${newDate} 🔄`,
+      it: `Appuntamento rinviato al ${newDate} 🔄`,
+      es: `Cita pospuesta al ${newDate} 🔄`,
+      el: `Το ραντεβού αναβλήθηκε για ${newDate} 🔄`
+    }));
+  }
+}
+
 let dragDemoTimer = null;
 function triggerDragDemonstration() {
   try {
@@ -1998,6 +2349,23 @@ if (typeof window !== 'undefined') {
   window.deleteTask = deleteTask;
   window.handleRestoreDoneTask = handleRestoreDoneTask;
   window.triggerDragDemonstration = triggerDragDemonstration;
+  window.formatTerminDate = formatTerminDate;
+  window.markTerminStattgefunden = markTerminStattgefunden;
+  window.markTerminNichtStattgefunden = markTerminNichtStattgefunden;
+  window.resetTerminStatus = resetTerminStatus;
+  window.toggleTerminStatusQuick = toggleTerminStatusQuick;
+  window.openPostponeTerminModal = openPostponeTerminModal;
+  window.closePostponeTerminModal = closePostponeTerminModal;
+  window.quickPostponeTerminDays = quickPostponeTerminDays;
+  window.submitPostponeTermin = submitPostponeTermin;
+  window.openAddListInline = openAddListInline;
+  window.cancelAddListInline = cancelAddListInline;
+  window.submitAddListInline = submitAddListInline;
+  window.toggleAddListPopover = toggleAddListPopover;
+  window.submitNewListTop = submitNewListTop;
+  window.saveCategoriesOrder = saveCategoriesOrder;
+  window.renameColumn = renameColumn;
+  window.deleteColumn = deleteColumn;
 }
 if (typeof globalThis !== 'undefined') {
   globalThis.renderApp = renderApp;
@@ -2017,4 +2385,21 @@ if (typeof globalThis !== 'undefined') {
   globalThis.deleteTask = deleteTask;
   globalThis.handleRestoreDoneTask = handleRestoreDoneTask;
   globalThis.triggerDragDemonstration = triggerDragDemonstration;
+  globalThis.formatTerminDate = formatTerminDate;
+  globalThis.markTerminStattgefunden = markTerminStattgefunden;
+  globalThis.markTerminNichtStattgefunden = markTerminNichtStattgefunden;
+  globalThis.resetTerminStatus = resetTerminStatus;
+  globalThis.toggleTerminStatusQuick = toggleTerminStatusQuick;
+  globalThis.openPostponeTerminModal = openPostponeTerminModal;
+  globalThis.closePostponeTerminModal = closePostponeTerminModal;
+  globalThis.quickPostponeTerminDays = quickPostponeTerminDays;
+  globalThis.submitPostponeTermin = submitPostponeTermin;
+  globalThis.openAddListInline = openAddListInline;
+  globalThis.cancelAddListInline = cancelAddListInline;
+  globalThis.submitAddListInline = submitAddListInline;
+  globalThis.toggleAddListPopover = toggleAddListPopover;
+  globalThis.submitNewListTop = submitNewListTop;
+  globalThis.saveCategoriesOrder = saveCategoriesOrder;
+  globalThis.renameColumn = renameColumn;
+  globalThis.deleteColumn = deleteColumn;
 }

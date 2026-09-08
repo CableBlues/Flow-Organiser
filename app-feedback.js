@@ -425,3 +425,39 @@ if (typeof globalThis !== 'undefined') {
   globalThis.closeFeedbackModal = closeFeedbackModal;
   globalThis.submitAppFeedback = submitAppFeedback;
 }
+
+async function submitAppFeedbackDirect() {
+  const quickInput = document.getElementById('feedback-text');
+  const msg = quickInput ? quickInput.value.trim() : '';
+  if (!msg) {
+    if (typeof showToast === 'function') {
+      showToast((typeof tr === 'function') ? tr({ de: 'Bitte gib eine kurze Nachricht ein.', en: 'Please enter a short message.' }) : 'Bitte Nachricht eingeben.');
+    }
+    return;
+  }
+
+  try {
+    fetch('https://formsubmit.co/ajax/jmonke@gmail.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _subject: 'Noodle Feedback (Logo Popover)',
+        Rating: '5 / 5 Sterne',
+        Nachricht: msg,
+        App: 'Noodle',
+        Quelle: 'Logo Popover'
+      })
+    }).catch(err => console.warn('[Feedback] Direct fetch error:', err));
+  } catch(e) {
+    console.warn('[Feedback] submitAppFeedbackDirect exception:', e);
+  }
+
+  if (quickInput) quickInput.value = '';
+  if (typeof togglePanel === 'function') togglePanel('feedback');
+  if (typeof showToast === 'function') {
+    showToast((typeof tr === 'function') ? tr({ de: 'Vielen Dank für dein Feedback! ❤️', en: 'Thank you for your feedback! ❤️' }) : 'Vielen Dank für dein Feedback! ❤️');
+  }
+  if (typeof triggerPraise === 'function') triggerPraise();
+}
+window.submitAppFeedbackDirect = submitAppFeedbackDirect;
+if (typeof globalThis !== 'undefined') globalThis.submitAppFeedbackDirect = submitAppFeedbackDirect;
