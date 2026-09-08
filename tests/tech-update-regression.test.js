@@ -85,7 +85,8 @@ describe('Noodle Technical Update Regression Suite', () => {
         window.state.streak = i;
         window.saveHistory();
       }
-      const historyRaw = localStorage.getItem('flow_history');
+      const histKey = window.HISTORY_KEY || 'flowPlannerV3History';
+      const historyRaw = localStorage.getItem(histKey);
       expect(historyRaw).not.toBeNull();
       const parsed = JSON.parse(historyRaw);
       expect(parsed.length).toBeLessThanOrEqual(15);
@@ -148,14 +149,17 @@ describe('Noodle Technical Update Regression Suite', () => {
       }
 
       window.showToast('<img src=x onerror=alert(1)>', { undo: true });
-      expect(toastCard.innerHTML).not.toContain('<img src=x onerror=alert(1)>');
-      expect(toastCard.innerHTML).toContain('&lt;img src=x onerror=alert(1)&gt;');
+      expect(toastCard.querySelector('img')).toBeNull();
+      expect(toastCard.textContent).toContain('<img src=x onerror=alert(1)>');
     });
 
     it('collab-engine.js maskiert Benutzernamen und Systemmeldungen im Chat', () => {
-      const container = document.createElement('div');
-      container.id = 'collab-chat-messages-container';
-      document.body.appendChild(container);
+      let container = document.getElementById('collab-chat-messages-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'collab-chat-messages-container';
+        document.body.appendChild(container);
+      }
 
       const maliciousSender = {
         id: 'attacker_1',
@@ -178,17 +182,22 @@ describe('Noodle Technical Update Regression Suite', () => {
         }
       ]));
 
-      if (typeof CollabEngine !== 'undefined' && typeof CollabEngine.init === 'function') {
-        CollabEngine.init();
-      }
-      if (typeof CollabEngine !== 'undefined' && typeof CollabEngine.renderChatMessages === 'function') {
-        CollabEngine.renderChatMessages();
+      if (typeof CollabEngine !== 'undefined') {
+        if (typeof CollabEngine.loadChatHistory === 'function') {
+          CollabEngine.loadChatHistory();
+        } else if (typeof CollabEngine.init === 'function') {
+          CollabEngine.init();
+        }
+        if (typeof CollabEngine.renderChatMessages === 'function') {
+          CollabEngine.renderChatMessages();
+        }
       }
 
-      expect(container.innerHTML).not.toContain('<script>alert(1)</script>');
-      expect(container.innerHTML).not.toContain('<svg onload=alert(3)>');
-      expect(container.innerHTML).toContain('&lt;script&gt;alert(1)&lt;/script&gt;');
-      expect(container.innerHTML).toContain('&lt;svg onload=alert(3)&gt;System&lt;/svg&gt;');
+      expect(container.querySelector('script')).toBeNull();
+      expect(container.querySelector('svg')).toBeNull();
+      expect(container.querySelector('b')).toBeNull();
+      expect(container.textContent).toContain('<script>alert(1)</script>');
+      expect(container.textContent).toContain('<svg onload=alert(3)>System</svg>');
     });
   });
 

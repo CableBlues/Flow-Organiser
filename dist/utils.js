@@ -14,7 +14,11 @@ function escapeHtml(str) {
 function sanitizeUrl(url, fallback = '#') {
   if (!url || typeof url !== 'string') return fallback;
   const trimmed = url.trim();
-  if (/^(https?:\/\/|mailto:|tel:|\/|\.\/|#|data:image\/)/i.test(trimmed)) {
+  if (/[\x00-\x1f\x7f]/.test(trimmed)) return fallback;
+  if (/^(javascript|vbscript|data(?!:image\/(?:png|jpeg|jpg|gif|svg\+xml|webp);base64,)):/i.test(trimmed)) {
+    return fallback;
+  }
+  if (/^(https?:\/\/|mailto:|tel:|\/|\.\/|#|data:image\/(?:png|jpeg|jpg|gif|svg\+xml|webp);base64,)/i.test(trimmed)) {
     return trimmed;
   }
   return fallback;
@@ -343,11 +347,13 @@ function showToast(msg, options = {}) {
     const undoText = (typeof tr === 'function') 
       ? tr({ de: 'Rückgängig ↩️', en: 'Undo ↩️', fr: 'Annuler ↩️', it: 'Annulla ↩️', es: 'Deshacer ↩️', el: 'Αναίρεση ↩️' })
       : 'Rückgängig ↩️';
+    const safeMsg = escapeHtml(msg);
+    const safeUndo = escapeHtml(undoText);
     card.innerHTML = `
       <div class="flex items-center justify-between gap-3">
-        <span>${msg}</span>
+        <span>${safeMsg}</span>
         <button id="toast-undo-btn" class="px-2.5 py-1 bg-white/20 hover:bg-white/30 text-white font-bold text-xs rounded-xl transition cursor-pointer flex items-center gap-1 border border-white/25 shadow-sm shrink-0">
-          <span>${undoText}</span>
+          <span>${safeUndo}</span>
         </button>
       </div>
     `;
@@ -368,6 +374,8 @@ function showToast(msg, options = {}) {
     _toastHideTimer = setTimeout(() => overlay.classList.add('hidden'), options.duration || 2200);
   }
 }
+if (typeof window !== 'undefined') window.showToast = showToast;
+if (typeof globalThis !== 'undefined') globalThis.showToast = showToast;
 
 // Integrierte performante Canvas-Celebration-Engine mit 5 wechselnden Partikel-Effekten
 let celebrationParticleIndex = 0;

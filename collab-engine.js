@@ -668,6 +668,7 @@ const CollabEngine = (function() {
     copyShareLink,
     toggleChat,
     openRoomModal,
+    loadChatHistory,
     renderChatMessages,
     renderPresenceUI
   };

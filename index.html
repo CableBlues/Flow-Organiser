@@ -91,7 +91,7 @@
           </button>
 
           <!-- TOOLS SPHERES POPOVER DROPDOWN -->
-          <div id="panel-header-tools" onmouseenter="showPanelHover('header-tools', 0)" onmouseleave="hidePanelHover('header-tools', 900)" onclick="event.stopPropagation()" class="hidden absolute top-[calc(100%+6px)] left-0 z-[150] w-[280px] sm:w-[310px] bg-[#0f0e17]/98 border border-purple-500/40 p-3.5 rounded-3xl shadow-2xl backdrop-blur-2xl flex flex-col gap-2.5 text-left animate-fade-in cursor-default">
+          <div id="panel-header-tools" onmouseenter="showPanelHover('header-tools', 0)" onclick="event.stopPropagation()" class="hidden absolute top-[calc(100%+6px)] left-0 z-[150] w-[280px] sm:w-[310px] bg-[#0f0e17]/98 border border-purple-500/40 p-3.5 rounded-3xl shadow-2xl backdrop-blur-2xl flex flex-col gap-2.5 text-left animate-fade-in cursor-default">
             
             <!-- Header -->
             <div class="flex items-center justify-between pb-2 border-b border-white/10 px-1">
@@ -101,6 +101,7 @@
                 </div>
                 <h4 class="font-bold text-xs font-display text-white tracking-wide">Noodle Tools</h4>
               </div>
+              <button onclick="togglePanel('header-tools')" aria-label="Tools Menü schließen" class="text-gray-400 hover:text-white text-xs font-bold p-1 px-1.5 rounded-lg hover:bg-white/10 transition cursor-pointer">✕</button>
             </div>
 
             <!-- 3x3 Spheres Grid (Runde Orbs, kein Overload) -->
@@ -197,7 +198,7 @@
                     </div>
 
                     <!-- TAB 1: NATUR & AMBIENT -->
-                    <div id="audio-pane-ambient" class="space-y-2 max-h-[175px] sm:max-h-[200px] overflow-y-auto pr-1 custom-scrollbar">
+                    <div id="audio-pane-ambient" class="space-y-2 max-h-[380px] overflow-y-auto pr-1 custom-scrollbar">
                   <!-- Harmonie & Instrumente -->
                   <div class="space-y-1">
                     <div class="text-[10px] font-bold text-amber-300/90 flex items-center gap-1 px-0.5">
@@ -820,7 +821,7 @@
                 <!-- Stations List Container -->
                 <div class="space-y-1">
                   <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Verfügbare Sender</div>
-                  <div id="radio-stations-list" class="space-y-1.5 max-h-[260px] overflow-y-auto pr-1"></div>
+                  <div id="radio-stations-list" class="space-y-1.5 max-h-[360px] overflow-y-auto pr-1"></div>
                 </div>
               </div>
               </div>
@@ -982,7 +983,7 @@
                       <button onclick="clearShoppingList()" class="text-rose-400 hover:text-rose-300 text-[10px] cursor-pointer" data-i18n="shop_clear">Alle löschen</button>
                     </div>
                   </div>
-                  <div id="shopping-list-rows" class="space-y-1.5 max-h-[170px] overflow-y-auto pr-1"></div>
+                  <div id="shopping-list-rows" class="space-y-1.5 max-h-[340px] overflow-y-auto pr-1"></div>
                 </div>
 
                 <!-- Smart Spar-Tipp & Shortcut -->
@@ -1283,10 +1284,13 @@
           </div>
 
           <!-- Timer Presets Popover Dropdown -->
-          <div id="panel-timer-presets" onmouseenter="showPanelHover('timer-presets')" onmouseleave="hidePanelHover('timer-presets')" onclick="event.stopPropagation()" class="hidden absolute top-full mt-2 left-0 z-50 bg-[#121118]/95 backdrop-blur-xl border border-purple-500/30 rounded-2xl shadow-2xl p-2.5 w-48 animate-in fade-in zoom-in-95 duration-150">
-            <div class="text-[10px] font-bold uppercase tracking-wider text-purple-300 font-mono mb-2 flex items-center justify-between px-1">
+          <div id="panel-timer-presets" onmouseenter="showPanelHover('timer-presets')" onclick="event.stopPropagation()" class="hidden absolute top-full mt-2 left-0 z-50 bg-[#121118]/95 backdrop-blur-xl border border-purple-500/30 rounded-2xl shadow-2xl p-2.5 w-52 animate-in fade-in zoom-in-95 duration-150">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-purple-300 font-mono mb-2 flex items-center justify-between px-1 border-b border-white/10 pb-1.5">
               <span>⏱️ Fokus-Dauer</span>
-              <span class="text-[9px] text-gray-400">Presets</span>
+              <div class="flex items-center gap-1.5">
+                <span class="text-[9px] text-gray-400">Presets</span>
+                <button onclick="document.getElementById('panel-timer-presets').classList.add('hidden')" aria-label="Timer-Presets schließen" class="text-gray-400 hover:text-white text-xs font-bold p-0.5 rounded hover:bg-white/10 transition cursor-pointer">✕</button>
+              </div>
             </div>
             <div class="grid grid-cols-3 gap-1.5">
               <button onclick="selectTimerPreset(1)" data-mins="1" class="timer-preset-btn py-1.5 px-2 rounded-xl bg-white/5 hover:bg-purple-600/30 hover:border-purple-400 border border-white/10 text-xs font-bold text-gray-200 hover:text-white transition text-center cursor-pointer">1m</button>
@@ -1377,9 +1381,10 @@
               <span id="date-display" class="whitespace-nowrap flex items-center gap-1.5 tracking-wide text-xs md:text-sm"></span>
 
               <!-- MINIMAL MONTH CALENDAR PANEL (Exakt am Anfang des Datums ausgerichtet) -->
-              <div id="panel-calendar-dropdown" onmouseenter="showPanelHover('calendar-dropdown')" onmouseleave="hidePanelHover('calendar-dropdown')" onclick="event.stopPropagation()" class="hidden absolute top-[calc(100%+10px)] left-0 z-[110] w-[240px] bg-[var(--bg-modal)] border border-[var(--border-main)] p-3.5 rounded-2xl shadow-2xl flex flex-col gap-2 animate-fade-in text-left">
+              <div id="panel-calendar-dropdown" onmouseenter="showPanelHover('calendar-dropdown')" onclick="event.stopPropagation()" class="hidden absolute top-[calc(100%+10px)] left-0 z-[110] w-[240px] bg-[var(--bg-modal)] border border-[var(--border-main)] p-3.5 rounded-2xl shadow-2xl flex flex-col gap-2 animate-fade-in text-left">
                 <div class="flex items-center justify-between text-xs font-bold text-gray-200 border-b border-white/10 pb-1.5">
                   <span id="cal-month-title" class="font-display">August 2026</span>
+                  <button onclick="document.getElementById('panel-calendar-dropdown').classList.add('hidden')" aria-label="Kalender schließen" class="text-gray-400 hover:text-white text-xs font-bold p-0.5 px-1 rounded hover:bg-white/10 transition cursor-pointer">✕</button>
                 </div>
                 <div class="grid grid-cols-7 gap-1 text-[9px] font-bold text-gray-500 text-center uppercase tracking-wider">
                   <span data-i18n="cal_mo">Mo</span><span data-i18n="cal_di">Tu</span><span data-i18n="cal_mi">We</span><span data-i18n="cal_do">Th</span><span data-i18n="cal_fr">Fr</span><span data-i18n="cal_sa">Sa</span><span data-i18n="cal_so">Su</span>
@@ -1656,7 +1661,7 @@
               <span class="text-xs md:text-sm font-bold text-fuchsia-200 group-hover:text-white hidden 2xl:inline" data-i18n="settings">Options</span>
             </button>
 
-            <div id="panel-settings-dropdown" onmouseenter="showPanelHover('settings-dropdown')" onmouseleave="hidePanelHover('settings-dropdown')" class="hidden absolute right-0 top-[calc(100%+8px)] z-[120] w-[275px] bg-[#111116]/98 border border-fuchsia-500/40 p-3.5 rounded-3xl shadow-2xl backdrop-blur-xl flex flex-col gap-3 text-left animate-fade-in" onclick="event.stopPropagation()">
+            <div id="panel-settings-dropdown" onmouseenter="showPanelHover('settings-dropdown')" class="hidden absolute right-0 top-[calc(100%+8px)] z-[120] w-[275px] bg-[#111116]/98 border border-fuchsia-500/40 p-3.5 rounded-3xl shadow-2xl backdrop-blur-xl flex flex-col gap-3 text-left animate-fade-in" onclick="event.stopPropagation()">
               <!-- Title & Modal Trigger -->
               <div class="flex items-center justify-between border-b border-white/10 pb-2">
                 <div class="flex items-center gap-2">
@@ -1665,7 +1670,10 @@
                   </div>
                   <h4 class="font-bold text-xs font-display text-white" data-i18n="settings_dropdown_title">Settings</h4>
                 </div>
-                <button onclick="openSettingsModal(); document.getElementById('panel-settings-dropdown').classList.add('hidden');" class="px-2 py-0.5 rounded-lg bg-fuchsia-600/30 hover:bg-fuchsia-600 text-fuchsia-200 hover:text-white text-[9px] font-bold transition cursor-pointer" data-i18n="settings_btn_fullscreen">Full view ↗</button>
+                <div class="flex items-center gap-1.5">
+                  <button onclick="openSettingsModal(); document.getElementById('panel-settings-dropdown').classList.add('hidden');" class="px-2 py-0.5 rounded-lg bg-fuchsia-600/30 hover:bg-fuchsia-600 text-fuchsia-200 hover:text-white text-[9px] font-bold transition cursor-pointer" data-i18n="settings_btn_fullscreen">Full view ↗</button>
+                  <button onclick="togglePanel('settings-dropdown')" aria-label="Settings schließen" class="text-gray-400 hover:text-white text-xs font-bold p-1 px-1.5 rounded-lg hover:bg-white/10 transition cursor-pointer">✕</button>
+                </div>
               </div>
 
               <!-- SECTION 1: SPRACHE (Große, ausdrucksstarke Flaggen-Icons) -->

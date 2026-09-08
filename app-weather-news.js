@@ -214,36 +214,6 @@ function renderWeatherData(data) {
   const unitSymbol = weatherUnit === 'f' ? '°F' : '°C';
   const info = getWeatherInfo(current.weather_code);
 
-  // Smarter Fokus-Tipp basierend auf Wetter
-  let flowTip = {
-    de: 'Angenehmes Wetter für fokussiertes Arbeiten. Vergiss nicht, regelmäßig zu lüften! 🌿',
-    en: 'Great conditions for deep work. Remember to open the window for fresh air! 🌿',
-    fr: 'Conditions agréables pour travailler. Aère ta pièce de temps en temps ! 🌿',
-    it: 'Ottimo clima per concentrarsi. Ricordati di arieggiare la stanza! 🌿',
-    es: 'Buen clima para concentrarse. ¡Acuérdate de ventilar la habitación! 🌿',
-    el: 'Ιδανικές συνθήκες για εστίαση. Θυμήσου να αερίσεις τον χώρο! 🌿'
-  };
-
-  if (current.precipitation > 0 || [51,53,55,61,63,65,80,81,82,95].includes(current.weather_code)) {
-    flowTip = {
-      de: 'Draußen regnet es 🌧️ Perfektes Gemütlichkeitswetter, um eine Aufgabe von der Liste zu streichen!',
-      en: 'Rainy outside 🌧️ Perfect cozy vibe to check off high-focus tasks from your board!',
-      fr: 'Il pleut dehors 🌧️ Ambiance idéale pour rayer des tâches de ta liste !',
-      it: 'Piove fuori 🌧️ Atmosfera perfetta per completare le tue attività con calma!',
-      es: 'Llueve afuera 🌧️ ¡Ambiente acogedor para tachar tareas pendientes!',
-      el: 'Βρέχει έξω 🌧️ Ιδανική στιγμή για συγκέντρωση και ολοκλήρωση εργασιών!'
-    };
-  } else if (temp > 27) {
-    flowTip = {
-      de: 'Es ist warm! ☀️ Trinke genug Wasser und halte deine Konzentrationsphasen kurz & knackig.',
-      en: 'Warm day! ☀️ Stay hydrated and keep your focus sprints short & energetic.',
-      fr: 'Il fait chaud ! ☀️ Bois de l\'eau et garde tes sessions de travail courtes et dynamiques.',
-      it: 'Fa caldo! ☀️ Bevi molta acqua e mantieni le tue sessioni di lavoro brevi e fresche.',
-      es: '¡Hace calor! ☀️ Mantente hidratado y haz sesiones de trabajo breves y enfocadas.',
-      el: 'Κάνει ζέστη! ☀️ Πιες άφθονο νερό και κάνε σύντομα διαλείμματα.'
-    };
-  }
-
   // 24h Verlauf (nächste 6 Stunden)
   let hourlyPills = '';
   if (hourly.time && hourly.temperature_2m) {
@@ -336,12 +306,6 @@ function renderWeatherData(data) {
           <div class="text-xs font-bold text-white font-mono mt-0.5">${current.relative_humidity_2m}%</div>
         </div>
       </div>
-    </div>
-
-    <!-- Smarter Fokus-Tipp -->
-    <div class="p-2.5 bg-sky-500/10 border border-sky-500/25 rounded-xl flex items-center gap-2 text-sky-200 text-xs leading-normal">
-      <i data-lucide="sparkles" class="w-4 h-4 text-sky-400 shrink-0"></i>
-      <span>${tr(flowTip)}</span>
     </div>
 
     <!-- Stündlicher Verlauf -->

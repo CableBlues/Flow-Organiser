@@ -510,23 +510,28 @@ const CollabEngine = (function() {
         html += `
           <div class="flex justify-center my-1.5">
             <div class="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] text-purple-200 font-mono flex items-center gap-1.5 max-w-[90%] text-center">
-              <span>${msg.text}</span>
-              <span class="text-[8px] text-gray-400 font-mono">${msg.time || ''}</span>
+              <span>${escapeHtml(msg.text)}</span>
+              <span class="text-[8px] text-gray-400 font-mono">${escapeHtml(msg.time || '')}</span>
             </div>
           </div>
         `;
       } else {
         const isSelf = (msg.sender && msg.sender.id === myUser.id);
         const col = (msg.sender && msg.sender.color) || AVATAR_COLORS[0];
+        const safeMsgId = escapeHtml(msg.id || '');
+        const senderName = isSelf ? 'Du' : escapeHtml((msg.sender && msg.sender.name) || 'Teammate');
+        const safeAvatar = escapeHtml((msg.sender && msg.sender.avatar) || 'U');
+        const safeTime = escapeHtml(msg.time || '');
 
         let reactionsHtml = '';
         if (msg.reactions && Object.keys(msg.reactions).length > 0) {
           reactionsHtml = '<div class="flex flex-wrap gap-1 mt-1">';
           for (const [em, count] of Object.entries(msg.reactions)) {
+            const safeEm = escapeHtml(em);
             reactionsHtml += `
-              <button onclick="CollabEngine.addReaction('${msg.id}', '${em}')" class="px-1.5 py-0.5 rounded-lg bg-black/40 border border-white/10 text-[10px] flex items-center gap-1 hover:border-purple-400 transition cursor-pointer">
-                <span>${em}</span>
-                <span class="text-[9px] font-bold text-gray-300">${count}</span>
+              <button onclick="CollabEngine.addReaction('${safeMsgId}', '${safeEm}')" class="px-1.5 py-0.5 rounded-lg bg-black/40 border border-white/10 text-[10px] flex items-center gap-1 hover:border-purple-400 transition cursor-pointer">
+                <span>${safeEm}</span>
+                <span class="text-[9px] font-bold text-gray-300">${Number(count) || 0}</span>
               </button>
             `;
           }
@@ -536,13 +541,13 @@ const CollabEngine = (function() {
         html += `
           <div class="flex gap-2 my-2 ${isSelf ? 'flex-row-reverse' : 'flex-row'} group">
             <div class="w-7 h-7 rounded-full bg-gradient-to-tr ${col.bg} flex items-center justify-center text-[10px] font-black text-white shrink-0 shadow-sm self-end mb-1">
-              ${(msg.sender && msg.sender.avatar) || 'U'}
+              ${safeAvatar}
             </div>
 
             <div class="flex flex-col max-w-[78%] ${isSelf ? 'items-end' : 'items-start'}">
               <div class="flex items-center gap-1.5 px-1 mb-0.5 text-[9px] text-gray-400 font-mono">
-                <span class="font-bold ${isSelf ? 'text-purple-300' : 'text-gray-300'}">${isSelf ? 'Du' : (msg.sender && msg.sender.name)}</span>
-                <span>${msg.time || ''}</span>
+                <span class="font-bold ${isSelf ? 'text-purple-300' : 'text-gray-300'}">${senderName}</span>
+                <span>${safeTime}</span>
               </div>
 
               <div class="relative p-2.5 rounded-2xl text-xs leading-relaxed ${isSelf ? 'bg-gradient-to-br from-purple-600 to-indigo-600 text-white rounded-br-xs shadow-md' : 'bg-[#181824] border border-white/10 text-gray-100 rounded-bl-xs shadow-sm'}">
@@ -550,10 +555,10 @@ const CollabEngine = (function() {
 
                 <!-- Quick Reaction Hover Toolbar -->
                 <div class="hidden group-hover:flex items-center gap-1 absolute ${isSelf ? 'left-0 -top-6' : 'right-0 -top-6'} bg-[#101018] border border-white/15 px-1.5 py-0.5 rounded-full shadow-lg z-10 animate-fade-in">
-                  <button onclick="CollabEngine.addReaction('${msg.id}', '👍')" class="hover:scale-125 transition-transform text-xs cursor-pointer">👍</button>
-                  <button onclick="CollabEngine.addReaction('${msg.id}', '❤️')" class="hover:scale-125 transition-transform text-xs cursor-pointer">❤️</button>
-                  <button onclick="CollabEngine.addReaction('${msg.id}', '🚀')" class="hover:scale-125 transition-transform text-xs cursor-pointer">🚀</button>
-                  <button onclick="CollabEngine.addReaction('${msg.id}', '🎯')" class="hover:scale-125 transition-transform text-xs cursor-pointer">🎯</button>
+                  <button onclick="CollabEngine.addReaction('${safeMsgId}', '👍')" class="hover:scale-125 transition-transform text-xs cursor-pointer">👍</button>
+                  <button onclick="CollabEngine.addReaction('${safeMsgId}', '❤️')" class="hover:scale-125 transition-transform text-xs cursor-pointer">❤️</button>
+                  <button onclick="CollabEngine.addReaction('${safeMsgId}', '🚀')" class="hover:scale-125 transition-transform text-xs cursor-pointer">🚀</button>
+                  <button onclick="CollabEngine.addReaction('${safeMsgId}', '🎯')" class="hover:scale-125 transition-transform text-xs cursor-pointer">🎯</button>
                 </div>
               </div>
 
@@ -569,13 +574,17 @@ const CollabEngine = (function() {
   }
 
   function escapeHtml(str) {
+    if (typeof window !== 'undefined' && typeof window.escapeHtml === 'function') {
+      return window.escapeHtml(str);
+    }
     if (!str) return '';
     return String(str)
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
+      .replace(/'/g, '&#039;')
+      .replace(/`/g, '&#96;');
   }
 
   function showTypingIndicator(name) {
@@ -659,6 +668,7 @@ const CollabEngine = (function() {
     copyShareLink,
     toggleChat,
     openRoomModal,
+    loadChatHistory,
     renderChatMessages,
     renderPresenceUI
   };

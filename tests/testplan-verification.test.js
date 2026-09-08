@@ -477,14 +477,19 @@ describe('Testplan Verification Suite (All 6 Test Areas)', () => {
     });
 
     it('8.3 handleUpgradeClick zeigt sicheren Info-Toast und löst keinen Checkout aus', () => {
+      const originalShowToast = window.showToast;
       let toastMessage = null;
       window.showToast = (msg) => { toastMessage = msg; };
 
-      expect(typeof window.handleUpgradeClick).toBe('function');
-      window.handleUpgradeClick('test_feature');
+      try {
+        expect(typeof window.handleUpgradeClick).toBe('function');
+        window.handleUpgradeClick('test_feature');
 
-      expect(toastMessage).toMatch(/Pro(-Funktionen sind bald verfügbar| features coming soon)/i);
-      expect(consoleErrors).toHaveLength(0);
+        expect(toastMessage).toMatch(/Pro(-Funktionen sind bald verfügbar| features coming soon)/i);
+        expect(consoleErrors).toHaveLength(0);
+      } finally {
+        window.showToast = originalShowToast;
+      }
     });
 
     it('8.4 Werbeflächen-Platzhalter ad-slot-main existiert im DOM und ist hidden/aria-hidden', () => {

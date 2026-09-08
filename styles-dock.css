@@ -5,46 +5,30 @@
 #panel-header-tools {
   max-height: calc(100vh - 65px);
   max-height: calc(100dvh - 65px);
-  overflow-y: auto;
-  scrollbar-width: thin;
+  overflow: visible !important;
+}
+
+#panel-header-tools .grid > div {
+  position: static !important;
 }
 
 #panel-header-tools .dock-popover-panel {
   position: absolute !important;
-  left: calc(100% + 12px) !important;
+  left: calc(100% + 14px) !important;
   top: 0 !important;
-  max-height: calc(100vh - 65px) !important;
-  max-height: calc(100dvh - 65px) !important;
-  max-width: calc(100vw - 330px) !important;
+  margin-left: 0 !important;
+  max-height: calc(100vh - 24px) !important;
+  max-height: calc(100dvh - 24px) !important;
+  max-width: calc(100vw - 340px) !important;
   overflow-y: auto !important;
   z-index: 160 !important;
   pointer-events: auto !important;
   scrollbar-width: thin;
 }
 
-/* Align popover panels from each row of the 3x3 grid cleanly with the top of the hub on desktop */
-#panel-header-tools .grid > div:nth-child(1) .dock-popover-panel,
-#panel-header-tools .grid > div:nth-child(2) .dock-popover-panel,
-#panel-header-tools .grid > div:nth-child(3) .dock-popover-panel {
-  top: -10px !important;
-}
-
-#panel-header-tools .grid > div:nth-child(4) .dock-popover-panel,
-#panel-header-tools .grid > div:nth-child(5) .dock-popover-panel,
-#panel-header-tools .grid > div:nth-child(6) .dock-popover-panel {
-  top: -85px !important;
-}
-
-#panel-header-tools .grid > div:nth-child(7) .dock-popover-panel,
-#panel-header-tools .grid > div:nth-child(8) .dock-popover-panel,
-#panel-header-tools .grid > div:nth-child(9) .dock-popover-panel {
-  top: -155px !important;
-}
-
-#panel-header-tools .grid > div:nth-child(10) .dock-popover-panel,
-#panel-header-tools .grid > div:nth-child(11) .dock-popover-panel,
-#panel-header-tools .grid > div:nth-child(12) .dock-popover-panel {
-  top: -225px !important;
+/* Ensure all tool panels inside the grid start aligned with the top of the hub */
+#panel-header-tools .grid > div .dock-popover-panel {
+  top: 0 !important;
 }
 
 /* Unzerbrechliche Hover-Brücken, damit die Maus nicht im Abstand zwischen Trigger und Popover verloren geht */

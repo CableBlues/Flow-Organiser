@@ -16,40 +16,46 @@ function adjustPanelPosition(el, panelName) {
   const isToolsSubpanel = el.classList.contains('dock-popover-panel') && el.closest('#panel-header-tools');
 
   if (isToolsSubpanel && toolsPanel) {
-    const parentOrb = el.parentElement;
-    const orbOffsetTop = parentOrb ? parentOrb.offsetTop : 0;
-    
-    // Position panel starting aligned to top level of header-tools container
-    el.style.top = `${-orbOffsetTop}px`;
-    el.style.maxHeight = `calc(100vh - 65px)`;
+    // Initial placement at top of tools panel, with full screen headroom
+    el.style.top = '0px';
+    el.style.maxHeight = `calc(100vh - 32px)`;
     el.style.overflowY = 'auto';
 
     if (typeof requestAnimationFrame === 'function') {
       requestAnimationFrame(() => {
         if (!el || el.classList.contains('hidden')) return;
         const rect = el.getBoundingClientRect();
+
+        // Check vertical bounds: shift upwards if extending below bottom margin
         if (rect.bottom > vh - 16) {
           const overflow = rect.bottom - (vh - 16);
-          const currentTop = -orbOffsetTop;
-          const adjustedTop = currentTop - overflow;
           const toolsRect = toolsPanel.getBoundingClientRect();
-          const minTop = -(toolsRect.top - 12);
-          el.style.top = `${Math.max(minTop, adjustedTop)}px`;
-          
-          const finalRect = el.getBoundingClientRect();
-          const availableHeight = Math.max(260, vh - Math.max(12, finalRect.top) - 16);
-          el.style.maxHeight = `${availableHeight}px`;
+          const maxShiftUp = Math.max(0, toolsRect.top - 12);
+          const actualShift = Math.min(overflow, maxShiftUp);
+          el.style.top = `-${actualShift}px`;
+        } else {
+          el.style.top = '0px';
         }
-        if (rect.right > vw - 12) {
-          const rightOverflow = rect.right - (vw - 12);
+
+        // Re-measure after vertical shift to ensure height doesn't overflow viewport
+        const postRect = el.getBoundingClientRect();
+        const availableHeight = Math.max(260, vh - Math.max(12, postRect.top) - 16);
+        el.style.maxHeight = `${availableHeight}px`;
+
+        // Check horizontal bounds: ensure panel does not overflow right edge or clip left edge
+        if (postRect.right > vw - 12) {
+          const rightOverflow = postRect.right - (vw - 12);
           el.style.transform = `translateX(-${rightOverflow}px)`;
+        } else if (postRect.left < 12) {
+          const leftDeficit = 12 - postRect.left;
+          el.style.transform = `translateX(${leftDeficit}px)`;
         } else {
           el.style.transform = '';
         }
       });
     }
   } else {
-    // Header dropdowns (weather, calendar, pause, report, settings, timer-presets)
+    // Header dropdowns (weather, calendar, pause, report, settings, timer-presets, feedback, etc.)
     el.style.maxHeight = `calc(100vh - 65px)`;
     el.style.overflowY = 'auto';
     
@@ -58,12 +64,15 @@ function adjustPanelPosition(el, panelName) {
         if (!el || el.classList.contains('hidden')) return;
         const rect = el.getBoundingClientRect();
         if (rect.bottom > vh - 16) {
-          const availableHeight = Math.max(240, vh - rect.top - 16);
+          const availableHeight = Math.max(220, vh - Math.max(12, rect.top) - 16);
           el.style.maxHeight = `${availableHeight}px`;
         }
         if (rect.right > vw - 12) {
           const rightOverflow = rect.right - (vw - 12);
           el.style.transform = `translateX(-${rightOverflow}px)`;
+        } else if (rect.left < 12) {
+          const leftDeficit = 12 - rect.left;
+          el.style.transform = `translateX(${leftDeficit}px)`;
         } else {
           el.style.transform = '';
         }

@@ -1460,83 +1460,18 @@ function showPanelHover(panelName, delay = 160) {
 window.showPanelHover = showPanelHover;
 
 function hidePanelHover(panelName, gracePeriod = 900) {
+  // Clear pending open triggers when moving away from a trigger
   if (hoverPanelShowTimeout) {
     clearTimeout(hoverPanelShowTimeout);
     hoverPanelShowTimeout = null;
   }
-  if (hoverPanelHideTimeout) {
-    clearTimeout(hoverPanelHideTimeout);
-  }
-
-  // Wenn Panel per Klick fixiert (pinned) ist, niemals durch Mausbewegung schließen!
-  if (panelName && (pinnedPanel === panelName || (typeof window !== 'undefined' && window.pinnedPanel === panelName))) {
-    return;
-  }
-  if (!panelName && pinnedPanel) {
-    return;
-  }
-
-  hoverPanelHideTimeout = setTimeout(() => {
-    // Nach Ablauf der Karenzzeit nochmals prüfen
-    if (panelName && (pinnedPanel === panelName || (typeof window !== 'undefined' && window.pinnedPanel === panelName))) {
-      return;
-    }
-    if (!panelName && pinnedPanel) {
-      return;
-    }
-
-    if (panelName === 'header-tools') {
-      const toolsPanel = document.getElementById('panel-header-tools');
-      if (toolsPanel) {
-        const isHovered = toolsPanel.matches(':hover');
-        const isWrapperHovered = document.getElementById('header-tools-wrapper')?.matches(':hover');
-        const openSubpanelHovered = document.querySelector('#panel-header-tools .dock-popover-panel:not(.hidden):hover');
-        if (isHovered || isWrapperHovered || openSubpanelHovered) {
-          return;
-        }
-        toolsPanel.classList.add('hidden');
-        document.querySelectorAll('#panel-header-tools .dock-popover-panel').forEach(p => p.classList.add('hidden'));
-        if (currentlyOpenPanel === 'header-tools' || ['shopping', 'cooking', 'radio', 'news', 'audio', 'alarm', 'collab-chat'].includes(currentlyOpenPanel)) {
-          currentlyOpenPanel = null;
-          if (typeof window !== 'undefined') window.currentlyOpenPanel = null;
-        }
-      }
-      return;
-    }
-
-    if (panelName) {
-      const el = document.getElementById(`panel-${panelName}`);
-      if (el) {
-        if (el.matches(':hover')) return;
-        const toolsPanel = document.getElementById('panel-header-tools');
-        if (['shopping', 'cooking', 'radio', 'news', 'audio', 'alarm', 'collab-chat'].includes(panelName)) {
-          if (el.matches(':hover') || (toolsPanel && toolsPanel.matches(':hover'))) {
-            return;
-          }
-        }
-        el.classList.add('hidden');
-        if (currentlyOpenPanel === panelName) {
-          currentlyOpenPanel = null;
-          if (typeof window !== 'undefined') window.currentlyOpenPanel = null;
-        }
-      }
-    } else if (currentlyOpenPanel && currentlyOpenPanel !== pinnedPanel) {
-      const el = document.getElementById(`panel-${currentlyOpenPanel}`);
-      if (el) {
-        if (el.matches(':hover')) return;
-        el.classList.add('hidden');
-      }
-      currentlyOpenPanel = null;
-      if (typeof window !== 'undefined') window.currentlyOpenPanel = null;
-    }
-    
-    // Check if any dock panel remains open
-    const openDockPanel = document.querySelector('.dock-popover-panel:not(.hidden)');
-    if (!openDockPanel) {
-      const dockContainer = document.querySelector('.desktop-tools-sidebar, .mac-dock-container');
-      if (dockContainer) dockContainer.classList.remove('is-active');
-    }
-  }, gracePeriod);
+  // UX Optimization: Popups, menus, and tool windows do NOT close accidentally
+  // merely because the mouse moves into blank page space.
+  // They stay comfortably open and close reliably via:
+  // - Top-right "✕" close button
+  // - Escape key (Esc)
+  // - Clicking outside / on something else (pointerdown listener)
+  // - Hovering or clicking on a different feature/menu trigger
 }
 window.hidePanelHover = hidePanelHover;
 

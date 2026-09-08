@@ -634,6 +634,13 @@ if (typeof document !== 'undefined') {
 }
 
 if (typeof window !== 'undefined') {
+  window.audioCtx = audioCtx;
+  window.playlistTracks = playlistTracks;
+  window.currentTrackIndex = currentTrackIndex;
+  window.activeUserAudio = activeUserAudio;
+  window.isPlayerShuffleEnabled = isPlayerShuffleEnabled;
+  window.playerRepeatMode = playerRepeatMode;
+  window.soundMasterVolume = soundMasterVolume;
   window.getMasterAudioDestination = getMasterAudioDestination;
   window.initAudioContext = initAudioContext;
   window.playCheerfulSuccessJingle = playCheerfulSuccessJingle;
@@ -650,6 +657,13 @@ if (typeof window !== 'undefined') {
   window.updateHeaderSoundBtnUI = updateHeaderSoundBtnUI;
 }
 if (typeof globalThis !== 'undefined') {
+  globalThis.audioCtx = audioCtx;
+  globalThis.playlistTracks = playlistTracks;
+  globalThis.currentTrackIndex = currentTrackIndex;
+  globalThis.activeUserAudio = activeUserAudio;
+  globalThis.isPlayerShuffleEnabled = isPlayerShuffleEnabled;
+  globalThis.playerRepeatMode = playerRepeatMode;
+  globalThis.soundMasterVolume = soundMasterVolume;
   globalThis.getMasterAudioDestination = getMasterAudioDestination;
   globalThis.initAudioContext = initAudioContext;
   globalThis.playCheerfulSuccessJingle = playCheerfulSuccessJingle;

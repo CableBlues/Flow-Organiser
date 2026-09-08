@@ -17,6 +17,15 @@ const IDB_VAULT = {
     if (typeof indexedDB === 'undefined') return Promise.resolve(null);
     if (!this.dbPromise) {
       this.dbPromise = new Promise((resolve) => {
+        let finished = false;
+        const timer = setTimeout(() => {
+          if (!finished) {
+            finished = true;
+            this.dbPromise = null;
+            resolve(null);
+          }
+        }, 1500);
+
         try {
           const req = indexedDB.open('noodle_resilience_vault', 1);
           req.onupgradeneeded = (e) => {
@@ -29,18 +38,36 @@ const IDB_VAULT = {
               // Graceful upgrade catch
             }
           };
-          req.onsuccess = (e) => resolve(e.target.result);
+          req.onsuccess = (e) => {
+            if (!finished) {
+              finished = true;
+              clearTimeout(timer);
+              resolve(e.target.result);
+            }
+          };
           req.onerror = () => {
-            this.dbPromise = null;
-            resolve(null);
+            if (!finished) {
+              finished = true;
+              clearTimeout(timer);
+              this.dbPromise = null;
+              resolve(null);
+            }
           };
           req.onblocked = () => {
-            this.dbPromise = null;
-            resolve(null);
+            if (!finished) {
+              finished = true;
+              clearTimeout(timer);
+              this.dbPromise = null;
+              resolve(null);
+            }
           };
         } catch (e) {
-          this.dbPromise = null;
-          resolve(null);
+          if (!finished) {
+            finished = true;
+            clearTimeout(timer);
+            this.dbPromise = null;
+            resolve(null);
+          }
         }
       });
     }
@@ -187,15 +214,36 @@ const AppStorage = {
     }
   },
 
-  // Resilienz-Prüfung bei App-Start: Stellt Daten wieder her, falls Safari/Android localStorage geleert hat
+  // Resilienz-Prüfung bei App-Start: Stellt Daten wieder her, falls Safari/Android localStorage geleert hat oder Daten beschädigt sind
   async initResilience() {
     try {
       if (typeof localStorage === 'undefined') return false;
-      const hasLocalStorageData = localStorage.getItem('flow_state_v3') || localStorage.getItem('flow_items_v2');
-      if (!hasLocalStorageData) {
+      let hasValidData = false;
+      const rawV3 = localStorage.getItem('flow_state_v3');
+      const rawV2 = localStorage.getItem('flow_items_v2');
+
+      if (rawV3) {
+        try {
+          const parsed = JSON.parse(rawV3);
+          if (parsed && typeof parsed === 'object' && (parsed.items || parsed.done || parsed.workItems)) {
+            hasValidData = true;
+          }
+        } catch (parseErr) {
+          hasValidData = false;
+        }
+      } else if (rawV2) {
+        try {
+          const parsed = JSON.parse(rawV2);
+          if (parsed && typeof parsed === 'object') hasValidData = true;
+        } catch (parseErr) {
+          hasValidData = false;
+        }
+      }
+
+      if (!hasValidData) {
         const idbKeys = await IDB_VAULT.getAllKeys();
-        if (idbKeys.length > 0) {
-          console.log('[AppStorage] LocalStorage war leer – stelle aus IndexedDB Vault wieder her...');
+        if (idbKeys && idbKeys.length > 0) {
+          console.log('[AppStorage] LocalStorage war leer oder beschädigt – stelle aus IndexedDB Vault wieder her...');
           for (const key of idbKeys) {
             const val = await IDB_VAULT.get(key);
             if (val !== null && val !== undefined) {
@@ -285,11 +333,13 @@ function showCrashRecoveryScreen(errorMsg = '') {
 }
 
 if (typeof window !== 'undefined') {
+  window.IDB_VAULT = IDB_VAULT;
   window.AppStorage = AppStorage;
   window.ErrorDiagnostics = ErrorDiagnostics;
   window.showCrashRecoveryScreen = showCrashRecoveryScreen;
 }
 if (typeof globalThis !== 'undefined') {
+  globalThis.IDB_VAULT = IDB_VAULT;
   globalThis.AppStorage = AppStorage;
   globalThis.ErrorDiagnostics = ErrorDiagnostics;
   globalThis.showCrashRecoveryScreen = showCrashRecoveryScreen;

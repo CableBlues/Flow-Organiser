@@ -400,10 +400,14 @@ function closeAllPanelsAndModals() {
   const allPanels = document.querySelectorAll('.dock-popover-panel, [id^="panel-"], [id$="-dropdown"], [id*="-popover"], #task-context-dropdown, #header-sound-volume-popover, .context-menu');
   allPanels.forEach(p => p.classList.add('hidden'));
 
-  // 5. Reset active state on mac dock
+  // 5. Reset active state on mac dock and clear pinned panel state
   if (typeof currentlyOpenPanel !== 'undefined') currentlyOpenPanel = null;
-  if (typeof window !== 'undefined') window.currentlyOpenPanel = null;
-  const dockContainer = document.querySelector('.mac-dock-container');
+  if (typeof window !== 'undefined') {
+    window.currentlyOpenPanel = null;
+    window.pinnedPanel = null;
+  }
+  if (typeof pinnedPanel !== 'undefined') pinnedPanel = null;
+  const dockContainer = document.querySelector('.desktop-tools-sidebar, .mac-dock-container');
   if (dockContainer) dockContainer.classList.remove('is-active');
 
   // 6. Close all open inline add inputs

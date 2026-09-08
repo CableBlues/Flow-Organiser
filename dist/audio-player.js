@@ -1,4 +1,3 @@
-// audio-player.js: Noodle Studio Audio Player & DJ Tool Engine
 // ============================================================================
 
 var djDecks = {
@@ -281,35 +280,51 @@ window.cyclePlayerRepeatMode = toggleMusicRepeat;
 
 function removeMusicTrack(idx, event) {
   if (event) event.stopPropagation();
-  if (idx < 0 || idx >= playlistTracks.length) return;
+  const tracks = (typeof window !== 'undefined' && Array.isArray(window.playlistTracks))
+    ? window.playlistTracks
+    : ((typeof playlistTracks !== 'undefined' && Array.isArray(playlistTracks)) ? playlistTracks : []);
+  if (idx < 0 || idx >= tracks.length) return;
 
-  const wasPlaying = idx === currentTrackIndex && activeUserAudio && !activeUserAudio.paused;
-  playlistTracks.splice(idx, 1);
+  const curIdx = (typeof currentTrackIndex !== 'undefined') ? currentTrackIndex : ((typeof window !== 'undefined' && window.currentTrackIndex) || 0);
+  const audioObj = (typeof activeUserAudio !== 'undefined') ? activeUserAudio : ((typeof window !== 'undefined' && window.activeUserAudio) || null);
 
-  if (playlistTracks.length === 0) {
-    if (activeUserAudio) {
-      activeUserAudio.pause();
-      activeUserAudio = null;
+  const wasPlaying = idx === curIdx && audioObj && !audioObj.paused;
+  const [removedTrack] = tracks.splice(idx, 1);
+  if (removedTrack && removedTrack.url && String(removedTrack.url).startsWith('blob:')) {
+    try { URL.revokeObjectURL(removedTrack.url); } catch(e) {}
+  }
+
+  if (tracks.length === 0) {
+    if (audioObj) {
+      try { audioObj.pause(); } catch(e) {}
+      if (typeof activeUserAudio !== 'undefined') activeUserAudio = null;
+      if (typeof window !== 'undefined') window.activeUserAudio = null;
     }
-    currentTrackIndex = 0;
-    updateMusicPlayBtnUI(false);
-    updateMusicNowPlayingDisplay();
-    renderMusicPlaylist();
+    if (typeof currentTrackIndex !== 'undefined') currentTrackIndex = 0;
+    if (typeof window !== 'undefined') window.currentTrackIndex = 0;
+    if (typeof updateMusicPlayBtnUI === 'function') updateMusicPlayBtnUI(false);
+    if (typeof updateMusicNowPlayingDisplay === 'function') updateMusicNowPlayingDisplay();
+    if (typeof renderMusicPlaylist === 'function') renderMusicPlaylist();
     return;
   }
 
-  if (idx < currentTrackIndex) {
-    currentTrackIndex--;
-  } else if (idx === currentTrackIndex) {
-    currentTrackIndex = Math.min(currentTrackIndex, playlistTracks.length - 1);
-    if (wasPlaying) {
-      playMusicTrack(currentTrackIndex);
+  let nextIdx = curIdx;
+  if (idx < curIdx) {
+    nextIdx = curIdx - 1;
+  } else if (idx === curIdx) {
+    nextIdx = Math.min(curIdx, tracks.length - 1);
+    if (wasPlaying && typeof playMusicTrack === 'function') {
+      if (typeof currentTrackIndex !== 'undefined') currentTrackIndex = nextIdx;
+      if (typeof window !== 'undefined') window.currentTrackIndex = nextIdx;
+      playMusicTrack(nextIdx);
       return;
     }
   }
 
-  updateMusicNowPlayingDisplay();
-  renderMusicPlaylist();
+  if (typeof currentTrackIndex !== 'undefined') currentTrackIndex = nextIdx;
+  if (typeof window !== 'undefined') window.currentTrackIndex = nextIdx;
+  if (typeof updateMusicNowPlayingDisplay === 'function') updateMusicNowPlayingDisplay();
+  if (typeof renderMusicPlaylist === 'function') renderMusicPlaylist();
 }
 window.removeMusicTrack = removeMusicTrack;
 window.removeTrackFromPlaylist = removeMusicTrack;
@@ -474,13 +489,14 @@ function initDjDecks() {
 window.initDjDecks = initDjDecks;
 
 function createSyntheticBeatAudio(bpm = 124, type = 'techno') {
-  initAudioContext();
-  if (!audioCtx) return null;
+  if (typeof initAudioContext === 'function') initAudioContext();
+  const ctx = (typeof audioCtx !== 'undefined' && audioCtx) ? audioCtx : (typeof window !== 'undefined' ? window.audioCtx : null);
+  if (!ctx) return null;
 
-  const sampleRate = audioCtx.sampleRate || 44100;
+  const sampleRate = ctx.sampleRate || 44100;
   const barSec = (60 / bpm) * 4;
   const loopSec = barSec * 4; // 16 beats loop
-  const buffer = audioCtx.createBuffer(2, Math.floor(sampleRate * loopSec), sampleRate);
+  const buffer = ctx.createBuffer(2, Math.floor(sampleRate * loopSec), sampleRate);
   const left = buffer.getChannelData(0);
   const right = buffer.getChannelData(1);
 
@@ -533,6 +549,8 @@ function createSyntheticBeatAudio(bpm = 124, type = 'techno') {
   const wavBlob = audioBufferToWavBlob(buffer);
   return URL.createObjectURL(wavBlob);
 }
+if (typeof window !== 'undefined') window.createSyntheticBeatAudio = createSyntheticBeatAudio;
+if (typeof globalThis !== 'undefined') globalThis.createSyntheticBeatAudio = createSyntheticBeatAudio;
 
 function audioBufferToWavBlob(buffer) {
   const numChannels = buffer.numberOfChannels;
@@ -595,6 +613,9 @@ function loadDjBuiltinTrack(deckId, presetKey = 'deep_house', notify = true) {
   if (deck.audio) {
     try { deck.audio.pause(); } catch(e) {}
   }
+  if (deck.track && deck.track.url && String(deck.track.url).startsWith('blob:')) {
+    try { URL.revokeObjectURL(deck.track.url); } catch(e) {}
+  }
 
   const track = {
     url: url,
@@ -627,6 +648,9 @@ function handleDjDeckUpload(deckId, event) {
 
   if (deck.audio) {
     try { deck.audio.pause(); } catch(e) {}
+  }
+  if (deck.track && deck.track.url && String(deck.track.url).startsWith('blob:')) {
+    try { URL.revokeObjectURL(deck.track.url); } catch(e) {}
   }
 
   const track = {
@@ -988,6 +1012,7 @@ function playDjSfx(type) {
   if (typeof audioCtx === 'undefined' || !audioCtx) return;
 
   const now = audioCtx.currentTime;
+  const dest = (typeof getMasterAudioDestination === 'function') ? (getMasterAudioDestination() || audioCtx.destination) : audioCtx.destination;
 
   if (type === 'airhorn') {
     const hornPitches = [466.16, 622.25, 932.33];
@@ -1006,7 +1031,8 @@ function playDjSfx(type) {
       gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
 
       osc.connect(gain);
-      gain.connect(audioCtx.destination);
+      gain.connect(dest);
+      osc.onended = () => { try { osc.disconnect(); gain.disconnect(); } catch(e) {} };
       osc.start(now);
       osc.stop(now + 0.6);
     });
@@ -1031,7 +1057,8 @@ function playDjSfx(type) {
 
     osc.connect(filter);
     filter.connect(gain);
-    gain.connect(audioCtx.destination);
+    gain.connect(dest);
+    osc.onended = () => { try { osc.disconnect(); filter.disconnect(); gain.disconnect(); } catch(e) {} };
     osc.start(now);
     osc.stop(now + 0.2);
     if (type !== 'scratch_mini') showToast('⚡ VINYL SCRATCH!');
@@ -1047,7 +1074,8 @@ function playDjSfx(type) {
     gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.32);
 
     osc.connect(gain);
-    gain.connect(audioCtx.destination);
+    gain.connect(dest);
+    osc.onended = () => { try { osc.disconnect(); gain.disconnect(); } catch(e) {} };
     osc.start(now);
     osc.stop(now + 0.35);
     showToast('🚨 LASER SWEEP!');
@@ -1063,7 +1091,8 @@ function playDjSfx(type) {
     gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.85);
 
     osc.connect(gain);
-    gain.connect(audioCtx.destination);
+    gain.connect(dest);
+    osc.onended = () => { try { osc.disconnect(); gain.disconnect(); } catch(e) {} };
     osc.start(now);
     osc.stop(now + 0.9);
     showToast('💥 808 SUB DROP!');
@@ -1080,7 +1109,8 @@ function playDjSfx(type) {
     gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.25);
 
     osc.connect(gain);
-    gain.connect(audioCtx.destination);
+    gain.connect(dest);
+    osc.onended = () => { try { osc.disconnect(); gain.disconnect(); } catch(e) {} };
     osc.start(now);
     osc.stop(now + 1.3);
     showToast('🌪️ NOISE RISER!');
@@ -1092,10 +1122,19 @@ function playDjSfx(type) {
     gain.gain.setValueAtTime(0.2 * (soundMasterVolume || 0.5), now);
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
     osc.connect(gain);
-    gain.connect(audioCtx.destination);
+    gain.connect(dest);
+    osc.onended = () => { try { osc.disconnect(); gain.disconnect(); } catch(e) {} };
     osc.start(now);
     osc.stop(now + 0.05);
   }
 }
+
 window.playDjSfx = playDjSfx;
+window.removeMusicTrack = removeMusicTrack;
+window.removeTrackFromPlaylist = removeMusicTrack;
+if (typeof window !== 'undefined') window.djDecks = djDecks;
+if (typeof globalThis !== 'undefined') {
+  globalThis.djDecks = djDecks;
+  globalThis.removeMusicTrack = removeMusicTrack;
+}
 

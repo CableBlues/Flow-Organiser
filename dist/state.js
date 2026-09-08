@@ -224,6 +224,7 @@ function ensureItemIdentity(item, fallbackPrefix = 'item') {
     if (!copy.updatedAt) {
       copy.updatedAt = copy.createdAt || nowISO;
     }
+    clearTombstone(copy.id);
     return copy;
   }
   return item;
@@ -237,6 +238,14 @@ function trackTombstone(id) {
     currentState._tombstones = {};
   }
   currentState._tombstones[id] = new Date().toISOString();
+}
+
+function clearTombstone(id) {
+  if (!id) return;
+  const currentState = (typeof window !== 'undefined' && window.state) ? window.state : (typeof state !== 'undefined' ? state : null);
+  if (currentState && currentState._tombstones && currentState._tombstones[id]) {
+    delete currentState._tombstones[id];
+  }
 }
 
 
@@ -562,18 +571,32 @@ function saveState(skipP2PSync = false) {
   const currentState = (typeof window !== 'undefined' && window.state) ? window.state : state;
   try {
     localStorage.setItem(STORE_KEY, JSON.stringify(currentState));
+    if (typeof IDB_VAULT !== 'undefined' && IDB_VAULT && typeof IDB_VAULT.set === 'function') {
+      IDB_VAULT.set(STORE_KEY, currentState);
+    }
   } catch (e) {
     console.warn('[State] Storage quota exceeded or write failed, attempting emergency trim:', e);
     try {
-      if (currentState && Array.isArray(currentState.archive) && currentState.archive.length > 50) {
-        currentState.archive.splice(0, currentState.archive.length - 30);
+      if (currentState && Array.isArray(currentState.archive) && currentState.archive.length > 30) {
+        currentState.archive.splice(0, currentState.archive.length - 20);
       }
-      if (currentState && Array.isArray(currentState.shoppingHistory) && currentState.shoppingHistory.length > 50) {
-        currentState.shoppingHistory.splice(0, currentState.shoppingHistory.length - 30);
+      if (currentState && Array.isArray(currentState.shoppingHistory) && currentState.shoppingHistory.length > 30) {
+        currentState.shoppingHistory.splice(0, currentState.shoppingHistory.length - 20);
       }
+      if (currentState && Array.isArray(currentState.done) && currentState.done.length > 50) {
+        currentState.done.splice(0, currentState.done.length - 30);
+      }
+      try { localStorage.removeItem(HISTORY_KEY); } catch (eh) {}
+      try { localStorage.removeItem('flow_backup_before_sync'); } catch (eb) {}
       localStorage.setItem(STORE_KEY, JSON.stringify(currentState));
+      if (typeof IDB_VAULT !== 'undefined' && IDB_VAULT && typeof IDB_VAULT.set === 'function') {
+        IDB_VAULT.set(STORE_KEY, currentState);
+      }
     } catch (err) {
       console.error('[State] Critical failure writing state to localStorage:', err);
+      if (typeof IDB_VAULT !== 'undefined' && IDB_VAULT && typeof IDB_VAULT.set === 'function') {
+        IDB_VAULT.set(STORE_KEY, currentState);
+      }
     }
   }
   if (!skipP2PSync && typeof p2pSyncEngine !== 'undefined' && p2pSyncEngine.isConnected()) {
@@ -585,13 +608,27 @@ function saveState(skipP2PSync = false) {
 }
 
 function persistHistory() {
-  localStorage.setItem(HISTORY_KEY, JSON.stringify(historyStack));
+  try {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(historyStack));
+  } catch (e) {
+    if (Array.isArray(historyStack) && historyStack.length > 5) {
+      historyStack = historyStack.slice(-5);
+      try {
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(historyStack));
+      } catch (e2) {
+        try { localStorage.removeItem(HISTORY_KEY); } catch (e3) {}
+      }
+    }
+  }
 }
 
 function saveHistory() {
-  historyStack.push(JSON.parse(JSON.stringify(state)));
-  if (historyStack.length > 20) historyStack.shift();
-  persistHistory();
+  const currentState = (typeof window !== 'undefined' && window.state) ? window.state : state;
+  if (currentState) {
+    historyStack.push(JSON.parse(JSON.stringify(currentState)));
+    if (historyStack.length > 15) historyStack.shift();
+    persistHistory();
+  }
 }
 
 function t(key) {
@@ -896,6 +933,7 @@ if (typeof window !== 'undefined') {
   window.generateStableId = generateStableId;
   window.ensureItemIdentity = ensureItemIdentity;
   window.trackTombstone = trackTombstone;
+  window.clearTombstone = clearTombstone;
   window.saveState = saveState;
   window.loadState = loadState;
   window.saveHistory = saveHistory;
@@ -916,6 +954,7 @@ if (typeof globalThis !== 'undefined') {
   globalThis.generateStableId = generateStableId;
   globalThis.ensureItemIdentity = ensureItemIdentity;
   globalThis.trackTombstone = trackTombstone;
+  globalThis.clearTombstone = clearTombstone;
   globalThis.saveState = saveState;
   globalThis.loadState = loadState;
   globalThis.saveHistory = saveHistory;
