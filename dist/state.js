@@ -622,12 +622,23 @@ function persistHistory() {
   }
 }
 
+function updateUndoUI() {
+  if (typeof document === 'undefined') return;
+  const undoBtn = document.getElementById('btn-board-undo');
+  if (undoBtn) {
+    const hasHistory = Array.isArray(historyStack) && historyStack.length > 0;
+    undoBtn.classList.toggle('hidden', !hasHistory);
+    undoBtn.disabled = !hasHistory;
+  }
+}
+
 function saveHistory() {
   const currentState = (typeof window !== 'undefined' && window.state) ? window.state : state;
   if (currentState) {
     historyStack.push(JSON.parse(JSON.stringify(currentState)));
     if (historyStack.length > 15) historyStack.shift();
     persistHistory();
+    updateUndoUI();
   }
 }
 
@@ -659,10 +670,12 @@ function getGermanStandardKey(taskName) {
 function handleUndo() {
   if (historyStack.length === 0) {
     showToast(t('toast_no_undo'));
+    updateUndoUI();
     return;
   }
   state = historyStack.pop();
   persistHistory();
+  updateUndoUI();
   saveState();
   showToast(t('toast_undo_applied'));
   renderApp();
@@ -940,6 +953,7 @@ if (typeof window !== 'undefined') {
   window.loadHistory = loadHistory;
   window.migrateState = migrateState;
   window.handleUndo = handleUndo;
+  window.updateUndoUI = updateUndoUI;
   window.t = t;
   window.tr = tr;
 }
@@ -961,6 +975,7 @@ if (typeof globalThis !== 'undefined') {
   globalThis.loadHistory = loadHistory;
   globalThis.migrateState = migrateState;
   globalThis.handleUndo = handleUndo;
+  globalThis.updateUndoUI = updateUndoUI;
   globalThis.t = t;
   globalThis.tr = tr;
 }

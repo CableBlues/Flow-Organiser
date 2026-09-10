@@ -446,7 +446,7 @@ function renderApp() {
     ? (workCategoriesOrder || (typeof WORK_CATEGORIES_ORDER !== 'undefined' ? WORK_CATEGORIES_ORDER : [])) 
     : (categoriesOrder || (typeof CATEGORIES_ORDER !== 'undefined' ? CATEGORIES_ORDER : []));
 
-  (activeOrder || []).forEach(([id, iconKey]) => {
+  (activeOrder || []).forEach(([id, iconKey], colIndex) => {
     const isDone = id === 'done'; const isNotes = id === 'notes'; const isTermine = id === 'termine';
     const isDaily = (id === 'daily' || id === 'work_focus');
     const isWeekly = (id === 'weekly' || id === 'work_in_progress');
@@ -500,10 +500,11 @@ function renderApp() {
       `;
     }
 
+    const isLastCol = colIndex === (activeOrder.length - 1);
     const article = document.createElement('article');
     article.dataset.category = id;
     article.dataset.columnType = isCustomCol ? 'custom' : 'system';
-    article.className = `group/col relative min-h-[380px] h-full flex flex-col p-3 pt-3.5 rounded-2xl transition-all duration-300 cursor-default column-card-breathing overflow-hidden ${isCustomCol ? 'border border-dashed border-purple-500/25' : ''}`;
+    article.className = `group/col relative min-h-[380px] h-full flex flex-col p-3 pt-3.5 rounded-2xl transition-all duration-300 cursor-default column-card-breathing overflow-hidden ${isCustomCol ? 'border border-dashed border-purple-500/25' : ''} ${isLastCol ? 'pb-16' : ''}`;
 
     article.draggable = true;
     article.ondragstart = (e) => {
@@ -552,11 +553,16 @@ function renderApp() {
     const finalIcon = COLUMN_ICONS_DEFAULT[id] || iconKey || 'layers';
     const theme = COLUMN_THEMES[id] || { color: 'text-[var(--accent-light)]', bg: 'bg-white/5 border-white/10 shadow-xs' };
 
-    const columnIconHTML = `
-      <span class="w-5 h-5 rounded-md border ${theme.bg} flex items-center justify-center ${theme.color} shrink-0 pointer-events-none transition-transform group-hover/col:scale-105">
-        ${svgFn(finalIcon, 'w-3 h-3')}
-      </span>
-    `;
+    let columnIconHTML = '';
+    if (hasDice && typeof renderColumnFortuneIconHTML === 'function') {
+      columnIconHTML = renderColumnFortuneIconHTML(id);
+    } else {
+      columnIconHTML = `
+        <span class="w-5 h-5 rounded-md border ${theme.bg} flex items-center justify-center ${theme.color} shrink-0 pointer-events-none transition-transform group-hover/col:scale-105">
+          ${svgFn(finalIcon, 'w-3 h-3')}
+        </span>
+      `;
+    }
 
     article.innerHTML = `
       ${(!isDone && !isNotes) ? `
@@ -567,18 +573,6 @@ function renderApp() {
       
       <!-- Floating Action Mini-Capsule -->
       <div class="absolute right-2 top-2 flex items-center gap-1 bg-[#13131e]/90 sm:bg-[#13131e]/95 border border-white/15 px-1.5 py-0.5 sm:py-1 rounded-xl shadow-xl z-20 backdrop-blur-md opacity-90 sm:opacity-0 sm:group-hover/col:opacity-100 transition-all duration-150">
-        ${hasDice ? `
-          <button onclick="rollTaskDice('${id}', event)" aria-label="${tr({ de: 'Aufgabe auswürfeln 🎲', en: 'Roll a task 🎲', es: 'Tirar dado 🎲', el: 'Ρίξε το ζάρι 🎲', fr: 'Tirer au sort 🎲', it: 'Lancia il dado 🎲' })}" class="p-1 px-1.5 bg-gradient-to-r from-purple-500/20 to-pink-500/15 hover:from-purple-500/35 hover:to-pink-500/30 border border-purple-400/30 hover:border-purple-300 text-purple-200 hover:text-white rounded-lg shadow-sm hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer flex items-center justify-center gap-1 group/dice" title="${tr({ de: 'Aufgabe auswürfeln 🎲', en: 'Roll a task 🎲', es: 'Tirar dado 🎲', el: 'Ρίξε το ζάρι 🎲', fr: 'Tirer au sort 🎲', it: 'Lancia il dado 🎲' })}">
-            <svg class="w-3.5 h-3.5 text-purple-300 group-hover/dice:text-white group-hover/dice:scale-110 group-hover/dice:rotate-6 transition-all duration-200 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="4" fill="currentColor" fill-opacity="0.15" stroke="currentColor" />
-              <circle cx="8" cy="8" r="1.5" fill="currentColor" stroke="none" />
-              <circle cx="16" cy="8" r="1.5" fill="currentColor" stroke="none" />
-              <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
-              <circle cx="8" cy="16" r="1.5" fill="currentColor" stroke="none" />
-              <circle cx="16" cy="16" r="1.5" fill="currentColor" stroke="none" />
-            </svg>
-          </button>
-        ` : ''}
         ${(id === 'weekly' || id === 'work_in_progress') ? `
           <button onclick="if(typeof openCleaningGuideModal === 'function') openCleaningGuideModal(); if(event) event.stopPropagation();" aria-label="${tr({ de: 'Grundreinigung', en: 'Deep Cleaning', es: 'Limpieza a fondo', el: 'Γενική καθαριότητα', fr: 'Nettoyage en profondeur', it: 'Pulizia profonda' })}" class="clean-guide-btn p-1 px-1.5 bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/30 text-emerald-300 hover:text-white rounded-lg shadow-sm hover:scale-105 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1 group/cleanbtn" title="${tr({ de: 'Grundreinigung (Wohnungs-Reset & Guides) 🧹✨', en: 'Deep Cleaning Guide 🧹✨' })}">
             <span class="relative inline-flex items-center justify-center w-3.5 h-3.5 text-emerald-400 group-hover/cleanbtn:text-emerald-200">
@@ -931,6 +925,7 @@ function renderApp() {
   if (typeof renderCookingPanel === 'function') renderCookingPanel(true);
   if (typeof renderLucideIcons === 'function') renderLucideIcons(false, main);
   if (typeof renderMobileCategoryTabs === 'function') renderMobileCategoryTabs();
+  if (typeof updateUndoUI === 'function') updateUndoUI();
 }
 
 function renderMobileCategoryTabs() {

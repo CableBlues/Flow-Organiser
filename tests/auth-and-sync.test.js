@@ -145,7 +145,7 @@ describe('Vollständige & Zuverlässige Synchronisation (Supabase-only & Offline
   describe('2. Bidirektionale Synchronisation mit Supabase flow_sync', () => {
     it('Test A: Gerät A → Supabase → Gerät B (Neue Aufgabe auf A erstellen, danach Push, auf B Pull -> exakt vorhanden)', async () => {
       // 1. Gerät A registriert sich / meldet sich an und legt Aufgaben an
-      await FlowAuth.signUpWithCredentials('team@flow.de', 'pass123');
+      await FlowAuth.signUpWithCredentials('team@flow.de', 'password123');
       window.state = {
         _tombstones: {},
         items: {
@@ -180,7 +180,7 @@ describe('Vollständige & Zuverlässige Synchronisation (Supabase-only & Offline
     });
 
     it('Test B: Gerät B → Supabase → Gerät A (Auf B Aufgabe abhaken/ändern -> auf A sofort sichtbar)', async () => {
-      await FlowAuth.signUpWithCredentials('team@flow.de', 'pass123');
+      await FlowAuth.signUpWithCredentials('team@flow.de', 'password123');
 
       // Gerät B hakt eine Aufgabe ab und fügt einen neuen Termin hinzu
       window.state = {

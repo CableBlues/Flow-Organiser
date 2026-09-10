@@ -4,8 +4,57 @@ let isDiceRolling = false;
 let currentDiceColumn = null;
 let currentDiceWinner = null;
 let diceTickInterval = null;
+let currentFortuneMode = 'dice'; // 'dice' | 'roulette'
+
+function getColumnFortuneMode(columnId) {
+  const timeBlock = Math.floor(Date.now() / 180000); // Tauscht alle 3 Minuten
+  let charSum = 0;
+  for (let i = 0; i < (columnId || '').length; i++) {
+    charSum += columnId.charCodeAt(i);
+  }
+  return ((timeBlock + charSum) % 2 === 0) ? 'dice' : 'roulette';
+}
+
+function renderColumnFortuneIconHTML(columnId) {
+  const mode = getColumnFortuneMode(columnId);
+  if (mode === 'dice') {
+    return `
+      <button onclick="rollTaskDice('${columnId}', event)" aria-label="${typeof tr === 'function' ? tr({ de: 'Aufgabe auswürfeln 🎲', en: 'Roll task 🎲' }) : 'Aufgabe auswürfeln 🎲'}" class="w-6 h-6 rounded-lg bg-gradient-to-tr from-amber-500 via-orange-500 to-rose-400 hover:from-amber-400 hover:to-rose-300 border border-amber-300/60 shadow-[0_0_12px_rgba(245,158,11,0.45)] flex items-center justify-center text-slate-950 cursor-pointer transition-all duration-300 hover:scale-115 active:scale-90 group/fortune shrink-0" title="${typeof tr === 'function' ? tr({ de: 'Aufgabe auswürfeln 🎲 (Klicken zum Starten)', en: 'Roll a task 🎲' }) : 'Aufgabe auswürfeln 🎲'}">
+        <svg class="w-3.5 h-3.5 text-slate-950 group-hover/fortune:rotate-12 transition-transform shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="4" fill="currentColor" fill-opacity="0.2" stroke="currentColor" />
+          <circle cx="8" cy="8" r="1.5" fill="currentColor" stroke="none" />
+          <circle cx="16" cy="8" r="1.5" fill="currentColor" stroke="none" />
+          <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
+          <circle cx="8" cy="16" r="1.5" fill="currentColor" stroke="none" />
+          <circle cx="16" cy="16" r="1.5" fill="currentColor" stroke="none" />
+        </svg>
+      </button>
+    `;
+  } else {
+    return `
+      <button onclick="rollTaskRoulette('${columnId}', event)" aria-label="${typeof tr === 'function' ? tr({ de: 'Aufgaben-Roulette drehen 🎡', en: 'Spin task roulette 🎡' }) : 'Aufgaben-Roulette drehen 🎡'}" class="w-6 h-6 rounded-lg bg-gradient-to-tr from-emerald-500 via-cyan-500 to-purple-500 hover:from-emerald-400 hover:to-purple-400 border border-cyan-300/60 shadow-[0_0_12px_rgba(6,182,212,0.45)] flex items-center justify-center text-slate-950 cursor-pointer transition-all duration-300 hover:scale-115 active:scale-90 group/fortune shrink-0" title="${typeof tr === 'function' ? tr({ de: 'Aufgaben-Roulette drehen 🎡 (Klicken zum Starten)', en: 'Spin task roulette 🎡' }) : 'Aufgaben-Roulette drehen 🎡'}">
+        <svg class="w-3.5 h-3.5 text-slate-950 group-hover/fortune:rotate-45 transition-transform shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" fill="currentColor" fill-opacity="0.15" />
+          <path d="M12 3v18" stroke="currentColor" />
+          <path d="M3 12h18" stroke="currentColor" />
+          <path d="M5.6 5.6l12.8 12.8" stroke="currentColor" />
+          <path d="M18.4 5.6L5.6 18.4" stroke="currentColor" />
+          <circle cx="12" cy="12" r="3" fill="currentColor" />
+        </svg>
+      </button>
+    `;
+  }
+}
 
 function rollTaskDice(columnId, event) {
+  startFortuneRoll(columnId, event, 'dice');
+}
+
+function rollTaskRoulette(columnId, event) {
+  startFortuneRoll(columnId, event, 'roulette');
+}
+
+function startFortuneRoll(columnId, event, mode = 'dice') {
   if (event) {
     event.stopPropagation();
     event.preventDefault();
@@ -13,7 +62,8 @@ function rollTaskDice(columnId, event) {
   if (isDiceRolling) return;
 
   currentDiceColumn = columnId;
-  const rawItems = state?.items?.[columnId] || [];
+  currentFortuneMode = mode;
+  const rawItems = (typeof getCurrentWorkspaceItems === 'function' ? getCurrentWorkspaceItems() : state?.items)?.[columnId] || [];
   const tasks = rawItems
     .map((item, idx) => {
       const text = typeof item === 'object' ? item.task : item;
@@ -23,13 +73,13 @@ function rollTaskDice(columnId, event) {
 
   if (tasks.length === 0) {
     const emptyMsg = {
-      de: 'Keine Aufgaben in dieser Liste zum Auswürfeln 🎲',
-      en: 'No tasks in this list to roll 🎲',
-      es: 'No hay tareas en esta lista para tirar 🎲',
-      fr: 'Aucune tâche dans cette liste à tirer au sort 🎲',
-      it: 'Nessuna attività in questa lista da sorteggiare 🎲',
-      el: 'Δεν υπάρχουν εργασίες σε αυτήν τη λίστα για ζάρι 🎲'
-    }[currentLang] || 'No tasks in this list to roll 🎲';
+      de: 'Keine Aufgaben in dieser Liste zum Auslosen 🎯',
+      en: 'No tasks in this list to choose from 🎯',
+      es: 'No hay tareas en esta lista 🎯',
+      fr: 'Aucune tâche dans cette liste 🎯',
+      it: 'Nessuna attività in questa lista 🎯',
+      el: 'Δεν υπάρχουν εργασίες σε αυτήν τη λίστα 🎯'
+    }[currentLang] || 'No tasks in this list 🎯';
     showToast(emptyMsg);
     return;
   }
@@ -41,15 +91,47 @@ function rollTaskDice(columnId, event) {
   modal.classList.remove('hidden');
   isDiceRolling = true;
 
-  // Header-Titel anpassen
+  // Header-Titel anpassen je nach Modus
   const catName = typeof t === 'function' ? t(columnId) : columnId.toUpperCase();
   const catBadge = document.getElementById('dice-modal-category-badge');
   if (catBadge) catBadge.innerText = catName;
 
-  const diceCube = document.getElementById('dice-3d-visual');
-  if (diceCube) {
-    diceCube.classList.remove('dice-winner-pulse');
-    diceCube.classList.add('dice-spinning-fast');
+  const modeTitle = document.getElementById('dice-modal-title-text');
+  const modeSubtitle = document.getElementById('dice-modal-subtitle-text');
+  const visualIcon = document.getElementById('dice-3d-visual');
+
+  if (mode === 'roulette') {
+    if (modeTitle) modeTitle.innerText = typeof tr === 'function' ? tr({ de: 'Aufgaben-Roulette', en: 'Task Roulette' }) : 'Aufgaben-Roulette';
+    if (modeSubtitle) modeSubtitle.innerText = typeof tr === 'function' ? tr({ de: 'Das Glücksrad ermittelt deine nächste Aufgabe', en: 'The wheel picks your next focus task' }) : 'Das Glücksrad ermittelt deine nächste Aufgabe';
+    if (visualIcon) {
+      visualIcon.className = 'w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-500 via-teal-400 to-emerald-400 border-2 border-cyan-200/60 flex items-center justify-center text-slate-950 font-black shadow-[0_0_25px_rgba(6,182,212,0.45)] transition-all duration-300 shrink-0';
+      visualIcon.innerHTML = `
+        <svg class="w-7 h-7 text-slate-950 animate-spin [animation-duration:1.5s]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" fill="currentColor" fill-opacity="0.15" />
+          <path d="M12 3v18" stroke="currentColor" />
+          <path d="M3 12h18" stroke="currentColor" />
+          <path d="M5.6 5.6l12.8 12.8" stroke="currentColor" />
+          <path d="M18.4 5.6L5.6 18.4" stroke="currentColor" />
+          <circle cx="12" cy="12" r="3" fill="currentColor" />
+        </svg>
+      `;
+    }
+  } else {
+    if (modeTitle) modeTitle.innerText = typeof tr === 'function' ? tr({ de: 'Schicksals-Würfel', en: 'Fortune Dice' }) : 'Schicksals-Würfel';
+    if (modeSubtitle) modeSubtitle.innerText = typeof tr === 'function' ? tr({ de: 'Der 3D-Zufall entscheidet deinen nächsten Schritt', en: 'Pure randomness picks your next step' }) : 'Der 3D-Zufall entscheidet deinen nächsten Schritt';
+    if (visualIcon) {
+      visualIcon.className = 'w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-400 to-amber-300 border-2 border-amber-200/60 flex items-center justify-center text-slate-950 font-black shadow-[0_0_25px_rgba(245,158,11,0.45)] transition-all duration-300 shrink-0';
+      visualIcon.innerHTML = `
+        <svg class="w-7 h-7 text-slate-950" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="4" fill="currentColor" fill-opacity="0.1" stroke="currentColor" />
+          <circle cx="8" cy="8" r="1.5" fill="currentColor" stroke="none" />
+          <circle cx="16" cy="8" r="1.5" fill="currentColor" stroke="none" />
+          <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
+          <circle cx="8" cy="16" r="1.5" fill="currentColor" stroke="none" />
+          <circle cx="16" cy="16" r="1.5" fill="currentColor" stroke="none" />
+        </svg>
+      `;
+    }
   }
 
   const resultArea = document.getElementById('dice-result-container');
@@ -80,10 +162,17 @@ function rollTaskDice(columnId, event) {
 
   totalItems.forEach((item, idx) => {
     const isTarget = idx === targetReelIndex;
+    const itemColorClass = mode === 'roulette' 
+      ? (idx % 2 === 0 ? 'bg-cyan-500/10 border-cyan-500/20' : 'bg-purple-500/10 border-purple-500/20')
+      : 'bg-white/[0.04] border-white/10';
+    const dotColorClass = mode === 'roulette'
+      ? (idx % 2 === 0 ? 'bg-cyan-400' : 'bg-fuchsia-400')
+      : 'bg-amber-400/80';
+
     reelItemsHTML += `
-      <div class="dice-reel-item h-[68px] flex items-center justify-center px-4 py-2 my-1.5 rounded-2xl bg-white/[0.04] border border-white/10 transition-all duration-300 select-none ${isTarget ? 'target-winner' : ''}">
+      <div class="dice-reel-item h-[68px] flex items-center justify-center px-4 py-2 my-1.5 rounded-2xl ${itemColorClass} border transition-all duration-300 select-none ${isTarget ? 'target-winner' : ''}">
         <div class="flex items-center gap-2.5 max-w-full truncate">
-          <span class="w-2.5 h-2.5 rounded-full bg-amber-400/80 shrink-0 shadow-xs"></span>
+          <span class="w-2.5 h-2.5 rounded-full ${dotColorClass} shrink-0 shadow-xs"></span>
           <span class="text-sm font-semibold text-gray-100 truncate font-display">${escapeHtml(item.text)}</span>
         </div>
       </div>
@@ -127,7 +216,6 @@ function playDiceSpinAudio() {
       try { playTactileClickSound(); } catch (e) { console.warn('[Dice] playTactileClickSound warning:', e); }
     }
     tickCount++;
-    // Exponentiell verlangsamender Takt (von 70ms auf 320ms)
     const nextDelay = 70 + Math.pow(tickCount / maxTicks, 2) * 260;
     diceTickInterval = setTimeout(nextTick, nextDelay);
   }
@@ -138,10 +226,10 @@ function finishDiceRoll(winnerTask) {
   isDiceRolling = false;
   if (diceTickInterval) clearTimeout(diceTickInterval);
 
-  const diceCube = document.getElementById('dice-3d-visual');
-  if (diceCube) {
-    diceCube.classList.remove('dice-spinning-fast');
-    diceCube.classList.add('dice-winner-pulse');
+  const visualIcon = document.getElementById('dice-3d-visual');
+  if (visualIcon) {
+    visualIcon.classList.remove('dice-spinning-fast');
+    visualIcon.classList.add('dice-winner-pulse');
   }
 
   // Erfolgs-Sound & visuelle Partikel
@@ -232,9 +320,9 @@ function ensureDiceModalExists() {
         <div class="absolute -bottom-24 -right-24 w-48 h-48 rounded-full bg-purple-500/15 blur-3xl pointer-events-none"></div>
 
         <!-- Schließen Button -->
-        <button onclick="closeDiceModal()" aria-label="Würfel-Fenster schließen" class="absolute top-4 right-4 text-gray-400 hover:text-white p-1 rounded-lg transition cursor-pointer text-lg font-bold">✕</button>
+        <button onclick="closeDiceModal()" aria-label="Fenster schließen" class="absolute top-4 right-4 text-gray-400 hover:text-white p-1 rounded-lg transition cursor-pointer text-lg font-bold">✕</button>
 
-        <!-- Top Header & 3D Würfel Badge -->
+        <!-- Top Header & Visual Badge -->
         <div class="flex flex-col items-center gap-2 pt-1">
           <div class="flex items-center gap-3">
             <div id="dice-3d-visual" class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-400 to-amber-300 border-2 border-amber-200/60 flex items-center justify-center text-slate-950 font-black shadow-[0_0_25px_rgba(245,158,11,0.45)] transition-all duration-300 shrink-0">
@@ -249,10 +337,10 @@ function ensureDiceModalExists() {
             </div>
             <div class="text-left">
               <h3 class="text-base font-bold font-display text-white flex items-center gap-1.5">
-                <span data-i18n="dice_title">Schicksals-Würfel</span>
+                <span id="dice-modal-title-text" data-i18n="dice_title">Schicksals-Würfel</span>
                 <span id="dice-modal-category-badge" class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[9px] font-mono font-bold tracking-wider uppercase">HEUTE</span>
               </h3>
-              <p class="text-[11px] text-gray-400" data-i18n="dice_subtitle">Der Zufall entscheidet deinen nächsten Fokus-Schritt</p>
+              <p id="dice-modal-subtitle-text" class="text-[11px] text-gray-400" data-i18n="dice_subtitle">Der Zufall entscheidet deinen nächsten Fokus-Schritt</p>
             </div>
           </div>
         </div>
@@ -284,9 +372,9 @@ function ensureDiceModalExists() {
           </button>
 
           <div class="grid grid-cols-2 gap-2">
-            <button onclick="rollTaskDice(currentDiceColumn)" class="py-2.5 px-3 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-200 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+            <button onclick="startFortuneRoll(currentDiceColumn, event, currentFortuneMode)" class="py-2.5 px-3 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-200 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
               <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
-              <span data-i18n="dice_reroll">Nochmal würfeln 🎲</span>
+              <span data-i18n="dice_reroll">Nochmal drehen 🎲</span>
             </button>
             <button onclick="completeDiceWinnerTask()" class="py-2.5 px-3 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-200 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
               <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
@@ -303,15 +391,32 @@ function ensureDiceModalExists() {
   if (typeof renderLucideIcons === 'function') renderLucideIcons();
 }
 
+// Periodischer Tausch-Check (alle 3 Minuten) für frischen Würfel/Roulette Wechsel
 if (typeof window !== 'undefined') {
+  setInterval(() => {
+    if (typeof renderApp === 'function' && !isDiceRolling) {
+      renderApp();
+    }
+  }, 180000);
+}
+
+if (typeof window !== 'undefined') {
+  window.getColumnFortuneMode = getColumnFortuneMode;
+  window.renderColumnFortuneIconHTML = renderColumnFortuneIconHTML;
   window.rollTaskDice = rollTaskDice;
+  window.rollTaskRoulette = rollTaskRoulette;
+  window.startFortuneRoll = startFortuneRoll;
   window.closeDiceModal = closeDiceModal;
   window.startDiceWinnerTimer = startDiceWinnerTimer;
   window.completeDiceWinnerTask = completeDiceWinnerTask;
 }
 
 if (typeof globalThis !== 'undefined') {
+  globalThis.getColumnFortuneMode = getColumnFortuneMode;
+  globalThis.renderColumnFortuneIconHTML = renderColumnFortuneIconHTML;
   globalThis.rollTaskDice = rollTaskDice;
+  globalThis.rollTaskRoulette = rollTaskRoulette;
+  globalThis.startFortuneRoll = startFortuneRoll;
   globalThis.closeDiceModal = closeDiceModal;
   globalThis.startDiceWinnerTimer = startDiceWinnerTimer;
   globalThis.completeDiceWinnerTask = completeDiceWinnerTask;

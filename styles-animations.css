@@ -838,6 +838,201 @@ main article .group:hover {
   }
   50% {
     opacity: 1;
+@keyframes noodleShimmer {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(168, 85, 247, 0)) brightness(1);
+  }
+  30% {
+    transform: scale(1.03) translateY(-2px);
+    filter: drop-shadow(0 4px 16px rgba(56, 189, 248, 0.55)) brightness(1.12);
+  }
+  60% {
+    transform: scale(1.04) translateY(-3px);
+    filter: drop-shadow(0 6px 20px rgba(217, 70, 239, 0.55)) brightness(1.15);
+  }
+}
+
+/* 4. Aurora Wave (Sanfte Farbwellen-Levitation) */
+@keyframes noodleAuroraWave {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    filter: drop-shadow(0 0 0 rgba(168, 85, 247, 0));
+  }
+  35% {
+    transform: translateY(-3px) scale(1.03);
+    filter: drop-shadow(0 4px 16px rgba(16, 185, 129, 0.45)) drop-shadow(0 0 10px rgba(6, 182, 212, 0.4));
+  }
+  70% {
+    transform: translateY(-2px) scale(1.04);
+    filter: drop-shadow(0 6px 20px rgba(168, 85, 247, 0.55));
+  }
+}
+
+/* 5. Grand Celebration Bloom (Feierliche, prachtvolle Ausstrahlung) */
+@keyframes noodleCelebrate {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    filter: drop-shadow(0 0 0 rgba(168, 85, 247, 0));
+  }
+  25% {
+    transform: translateY(-5px) scale(1.06);
+    filter: drop-shadow(0 8px 24px rgba(245, 158, 11, 0.65)) drop-shadow(0 0 12px rgba(249, 115, 22, 0.5)) brightness(1.12);
+  }
+  50% {
+    transform: translateY(-6px) scale(1.08);
+    filter: drop-shadow(0 10px 30px rgba(168, 85, 247, 0.75)) drop-shadow(0 0 16px rgba(56, 189, 248, 0.6)) brightness(1.18);
+  }
+  75% {
+    transform: translateY(-3px) scale(1.04);
+    filter: drop-shadow(0 4px 16px rgba(16, 185, 129, 0.5)) brightness(1.08);
+  }
+}
+
+.noodle-anim-float {
+  animation: noodleFloatGlow 2.8s cubic-bezier(0.25, 1, 0.5, 1) both;
+  will-change: transform, filter;
+}
+
+.noodle-anim-breathe {
+  animation: noodleBreathe 3.0s cubic-bezier(0.25, 1, 0.5, 1) both;
+  will-change: transform, filter;
+}
+
+.noodle-anim-shimmer {
+  animation: noodleShimmer 2.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: transform, filter;
+}
+
+.noodle-anim-aurora {
+  animation: noodleAuroraWave 3.2s cubic-bezier(0.25, 1, 0.5, 1) both;
+  will-change: transform, filter;
+}
+
+.noodle-anim-celebrate {
+  animation: noodleCelebrate 3.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  will-change: transform, filter;
+}
+
+/* Fallback mappings for smooth compatibility */
+.noodle-anim-wobble,
+.noodle-anim-dance,
+.noodle-anim-sway {
+  animation: noodleBreathe 3.0s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+.noodle-anim-spin,
+.noodle-anim-flip3d {
+  animation: noodleShimmer 2.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.noodle-anim-bounce,
+.noodle-anim-wave {
+  animation: noodleFloatGlow 2.8s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+/* ===== IDLE AMBIENT AURORA & STANDARD VIEW MOTION ===== */
+@keyframes ambientOrbDrift1 {
+  0% { transform: translate(0px, 0px) scale(1); opacity: 0.18; }
+  33% { transform: translate(60px, 40px) scale(1.15); opacity: 0.28; }
+  66% { transform: translate(-40px, 70px) scale(0.95); opacity: 0.22; }
+  100% { transform: translate(30px, -30px) scale(1.08); opacity: 0.25; }
+}
+
+@keyframes ambientOrbDrift2 {
+  0% { transform: translate(0px, 0px) scale(1); opacity: 0.15; }
+  33% { transform: translate(-70px, -50px) scale(1.12); opacity: 0.26; }
+  66% { transform: translate(50px, -30px) scale(0.92); opacity: 0.20; }
+  100% { transform: translate(-30px, 40px) scale(1.05); opacity: 0.24; }
+}
+
+@keyframes ambientOrbDrift3 {
+  0% { transform: translate(0px, 0px) scale(1); opacity: 0.12; }
+  50% { transform: translate(50px, -40px) scale(1.2); opacity: 0.22; }
+  100% { transform: translate(-50px, 30px) scale(0.9); opacity: 0.14; }
+}
+
+.ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.ambient-orb-1 {
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.4) 0%, rgba(56, 189, 248, 0.2) 45%, transparent 70%);
+  top: -120px;
+  left: -80px;
+  animation: ambientOrbDrift1 24s ease-in-out infinite alternate;
+}
+
+.ambient-orb-2 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.35) 0%, rgba(192, 132, 252, 0.2) 45%, transparent 70%);
+  bottom: -140px;
+  right: -100px;
+  animation: ambientOrbDrift2 28s ease-in-out infinite alternate;
+}
+
+.ambient-orb-3 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.28) 0%, rgba(244, 63, 94, 0.15) 45%, transparent 70%);
+  top: 35%;
+  left: 30%;
+  animation: ambientOrbDrift3 32s ease-in-out infinite alternate;
+}
+
+/* Subtle Idle Breathing on Board Columns & Headers */
+@keyframes columnGlowBreathing {
+  0%, 100% {
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  }
+  50% {
+    border-color: rgba(139, 92, 246, 0.25);
+    box-shadow: 0 4px 35px rgba(6, 182, 212, 0.08);
+  }
+}
+
+.column-card-breathing {
+  animation: columnGlowBreathing 8s ease-in-out infinite;
+}
+
+/* Subtle Floating Animation for Badges & Icons */
+@keyframes idleGentleFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
+}
+
+.idle-float {
+  animation: idleGentleFloat 4s ease-in-out infinite;
+}
+
+/* Live Wave Motion in Header */
+@keyframes waterWaveFlow {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(-25%); }
+  100% { transform: translateX(-50%); }
+}
+
+.water-wave-element {
+  animation: waterWaveFlow 16s linear infinite;
+  will-change: transform;
+}
+
+/* 7. GRUNDREINIGUNG ANIMIERTES ICON & SPRÜHNEBEL */
+@keyframes cleanMistPulse {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
     transform: scale(1.3);
     filter: drop-shadow(0 0 4px rgba(52, 211, 153, 0.9));
   }
@@ -853,19 +1048,6 @@ main article .group:hover {
   75% {
     transform: rotate(4deg) scale(1.06);
   }
-}
-
-.clean-mist-drop-1 {
-  animation: cleanMistPulse 2s ease-in-out infinite;
-  transform-origin: 2.6px 4.2px;
-}
-.clean-mist-drop-2 {
-  animation: cleanMistPulse 2s ease-in-out infinite 0.45s;
-  transform-origin: 5.2px 2px;
-}
-.clean-mist-drop-3 {
-  animation: cleanMistPulse 2s ease-in-out infinite 0.9s;
-  transform-origin: 1.6px 7.2px;
 }
 
 .clean-guide-btn:hover .clean-spray-svg {
@@ -886,7 +1068,7 @@ main article .group:hover {
 }
 
 .dj-vinyl-spinning {
-  animation: vinylSpin 2.4s linear infinite;
+  animation: vinylSpin 7.5s linear infinite;
   transform-origin: center center;
 }
 
@@ -896,53 +1078,51 @@ main article .group:hover {
 
 .dj-vinyl-grooves {
   background: radial-gradient(circle at center,
-    #181824 0%, #181824 16%,
-    #252536 17%, #12121c 26%,
-    #1e1e2d 28%, #0e0e16 42%,
-    #28283a 44%, #0c0c14 62%,
-    #1f1f2e 64%, #08080d 82%,
-    #050508 100%
+    #15161e 0%, #15161e 16%,
+    #20212d 17%, #101117 26%,
+    #1a1b24 28%, #0d0e13 42%,
+    #222330 44%, #0b0c10 62%,
+    #181922 64%, #08080b 82%,
+    #050507 100%
   );
-  box-shadow: inset 0 0 16px rgba(0,0,0,0.95), 0 6px 18px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.06);
+  box-shadow: inset 0 0 16px rgba(0,0,0,0.95), 0 4px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
 }
 
 @keyframes djWaveBar {
-  0%, 100% { transform: scaleY(0.2); }
-  50% { transform: scaleY(0.95); }
+  0%, 100% { transform: scaleY(0.3); opacity: 0.6; }
+  50% { transform: scaleY(0.85); opacity: 1; }
 }
 
 .dj-wave-active .dj-bar:nth-child(2n) {
-  animation: djWaveBar 0.45s ease-in-out infinite alternate;
+  animation: djWaveBar 1.2s ease-in-out infinite alternate;
 }
 .dj-wave-active .dj-bar:nth-child(2n+1) {
-  animation: djWaveBar 0.65s ease-in-out infinite alternate;
+  animation: djWaveBar 1.6s ease-in-out infinite alternate;
 }
 .dj-wave-active .dj-bar:nth-child(3n) {
-  animation: djWaveBar 0.35s ease-in-out infinite alternate;
+  animation: djWaveBar 1.0s ease-in-out infinite alternate;
 }
 .dj-wave-active .dj-bar:nth-child(5n) {
-  animation: djWaveBar 0.55s ease-in-out infinite alternate;
+  animation: djWaveBar 1.4s ease-in-out infinite alternate;
 }
 
 @keyframes vuMeterDance {
-  0%, 100% { height: 25%; }
-  25% { height: 90%; }
-  60% { height: 45%; }
-  85% { height: 75%; }
+  0%, 100% { height: 30%; }
+  50% { height: 75%; }
 }
 
 .vu-meter-active {
-  animation: vuMeterDance 0.28s ease-in-out infinite alternate;
+  animation: vuMeterDance 0.85s ease-in-out infinite alternate;
 }
 
 .dj-fx-pad {
-  transition: all 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
 }
 .dj-fx-pad:active, .dj-fx-pad.active {
-  transform: scale(0.92);
-  filter: brightness(1.35);
-  box-shadow: 0 0 14px currentColor;
+  transform: scale(0.95);
+  filter: brightness(1.2);
+  box-shadow: 0 0 10px currentColor;
 }
 
 /* ==========================================

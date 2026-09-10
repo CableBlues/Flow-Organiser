@@ -24,10 +24,13 @@ const FlowAuth = (function() {
     if (typeof window !== 'undefined' && window.FLOW_CONFIG) {
       return window.FLOW_CONFIG;
     }
-    return {
-      SUPABASE_URL: 'https://flow-organiser.supabase.co',
-      SUPABASE_ANON_KEY: 'dummy_anon_key'
-    };
+    // BUGFIX: Vorher wurde hier stillschweigend eine tote Fallback-URL mit
+    // Dummy-Schlüssel zurückgegeben (Rest aus der "Flow Organiser"-Zeit).
+    // Da init() ohnehin niemals einen Client mit fehlender/ungültiger Config
+    // erstellt, ist eine klare Diagnosemeldung hier sinnvoller als ein
+    // stiller, nie erreichbarer Platzhalter-Wert.
+    console.error('[FlowAuth] FLOW_CONFIG wurde nicht gefunden. Bitte prüfen, ob config.js korrekt VOR auth-engine.js geladen wird – ohne gültige Konfiguration sind Login und Cloud-Sync nicht möglich.');
+    return { SUPABASE_URL: null, SUPABASE_ANON_KEY: null };
   }
 
   function getSupabaseLib() {
@@ -127,8 +130,8 @@ const FlowAuth = (function() {
     if (!email || !email.trim() || !email.includes('@')) {
       return { success: false, error: 'Bitte gib eine gültige E-Mail-Adresse ein.' };
     }
-    if (!password || password.length < 4) {
-      return { success: false, error: 'Bitte gib dein Passwort (mind. 4 Zeichen) ein.' };
+    if (!password) {
+      return { success: false, error: 'Bitte gib dein Passwort ein.' };
     }
 
     const trimmedEmail = email.trim().toLowerCase();
@@ -183,8 +186,8 @@ const FlowAuth = (function() {
     if (!email || !email.trim() || !email.includes('@')) {
       return { success: false, error: 'Bitte gib eine gültige E-Mail-Adresse ein.' };
     }
-    if (!password || password.length < 4) {
-      return { success: false, error: 'Bitte wähle ein Passwort mit mindestens 4 Zeichen.' };
+    if (!password || password.length < 8) {
+      return { success: false, error: 'Bitte wähle ein Passwort mit mindestens 8 Zeichen.' };
     }
 
     const trimmedEmail = email.trim().toLowerCase();
@@ -459,3 +462,4 @@ if (typeof globalThis !== 'undefined') {
   globalThis.NoodleAuth = FlowAuth;
   globalThis.FlowAuth = FlowAuth;
 }
+ 
