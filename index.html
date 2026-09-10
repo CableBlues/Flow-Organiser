@@ -116,7 +116,7 @@
                   <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500/25 to-indigo-600/20 border border-purple-400/40 hover:border-purple-300 flex items-center justify-center text-purple-300 shadow-[0_0_15px_rgba(168,85,247,0.15)] group-hover/orb:shadow-[0_0_22px_rgba(168,85,247,0.4)] group-hover/orb:scale-110 transition-all duration-250">
                     <i data-lucide="headphones" class="w-5 h-5"></i>
                   </div>
-                  <span class="text-[10px] font-bold text-gray-300 group-hover/orb:text-white transition-colors">Sounds</span>
+                  <span class="text-[10px] font-bold text-gray-300 group-hover/orb:text-white transition-colors">Sound</span>
                 </button>
                 <div id="panel-audio" class="dock-popover-panel hidden absolute left-full top-0 ml-3.5 w-[calc(100vw-24px)] sm:w-[520px] md:w-[560px] max-w-[95vw] bg-[#0e0e16]/98 border border-purple-500/40 p-3.5 sm:p-4 rounded-3xl shadow-2xl backdrop-blur-xl flex flex-col gap-2.5 text-left z-[150] animate-fade-in">
                 <!-- 1. STUDIO HEADER WITH MASTER CONTROLS -->
@@ -1679,125 +1679,81 @@
                 </div>
               </div>
 
-              <!-- SECTION 1: SPRACHE (Große, ausdrucksstarke Flaggen-Icons) -->
-              <div class="space-y-1.5">
+              <!-- SECTION 1: SPRACHE (Dezente Flaggen) -->
+              <div class="space-y-1">
                 <div class="text-[9px] font-bold uppercase tracking-wider text-gray-400 font-mono flex items-center justify-between" data-i18n="settings_section_lang">
                   <span>🌐 Sprache wählen</span>
-                  <span class="text-[8px] text-purple-300 font-mono">6 Sprachen</span>
                 </div>
-                <div class="grid grid-cols-6 gap-1.5 p-1.5 bg-black/40 border border-white/10 rounded-2xl shadow-inner">
-                  <button onclick="setLanguage('de')" class="h-8 rounded-xl bg-white/[0.03] hover:bg-white/[0.12] active:scale-90 text-lg md:text-xl flex items-center justify-center transition-all hover:scale-110 cursor-pointer border border-transparent hover:border-purple-400/40" title="Deutsch">🇩🇪</button>
-                  <button onclick="setLanguage('en')" class="h-8 rounded-xl bg-white/[0.03] hover:bg-white/[0.12] active:scale-90 text-lg md:text-xl flex items-center justify-center transition-all hover:scale-110 cursor-pointer border border-transparent hover:border-purple-400/40" title="English">🇬🇧</button>
-                  <button onclick="setLanguage('fr')" class="h-8 rounded-xl bg-white/[0.03] hover:bg-white/[0.12] active:scale-90 text-lg md:text-xl flex items-center justify-center transition-all hover:scale-110 cursor-pointer border border-transparent hover:border-purple-400/40" title="Français">🇫🇷</button>
-                  <button onclick="setLanguage('it')" class="h-8 rounded-xl bg-white/[0.03] hover:bg-white/[0.12] active:scale-90 text-lg md:text-xl flex items-center justify-center transition-all hover:scale-110 cursor-pointer border border-transparent hover:border-purple-400/40" title="Italiano">🇮🇹</button>
-                  <button onclick="setLanguage('es')" class="h-8 rounded-xl bg-white/[0.03] hover:bg-white/[0.12] active:scale-90 text-lg md:text-xl flex items-center justify-center transition-all hover:scale-110 cursor-pointer border border-transparent hover:border-purple-400/40" title="Español">🇪🇸</button>
-                  <button onclick="setLanguage('el')" class="h-8 rounded-xl bg-white/[0.03] hover:bg-white/[0.12] active:scale-90 text-lg md:text-xl flex items-center justify-center transition-all hover:scale-110 cursor-pointer border border-transparent hover:border-purple-400/40" title="Ελληνικά">🇬🇷</button>
+                <div class="grid grid-cols-6 gap-1 p-1 bg-black/40 border border-white/10 rounded-xl shadow-inner">
+                  <button onclick="setLanguage('de')" class="h-6.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.12] active:scale-90 text-sm md:text-base flex items-center justify-center transition-all hover:scale-110 cursor-pointer border border-transparent hover:border-purple-400/40" title="Deutsch">🇩🇪</button>
+                  <button onclick="setLanguage('en')" class="h-6.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.12] active:scale-90 text-sm md:text-base flex items-center justify-center transition-all hover:scale-110 cursor-pointer border border-transparent hover:border-purple-400/40" title="English">🇬🇧</button>
+                  <button onclick="setLanguage('fr')" class="h-6.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.12] active:scale-90 text-sm md:text-base flex items-center justify-center transition-all hover:scale-110 cursor-pointer border border-transparent hover:border-purple-400/40" title="Français">🇫🇷</button>
+                  <button onclick="setLanguage('it')" class="h-6.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.12] active:scale-90 text-sm md:text-base flex items-center justify-center transition-all hover:scale-110 cursor-pointer border border-transparent hover:border-purple-400/40" title="Italiano">🇮🇹</button>
+                  <button onclick="setLanguage('es')" class="h-6.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.12] active:scale-90 text-sm md:text-base flex items-center justify-center transition-all hover:scale-110 cursor-pointer border border-transparent hover:border-purple-400/40" title="Español">🇪🇸</button>
+                  <button onclick="setLanguage('el')" class="h-6.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.12] active:scale-90 text-sm md:text-base flex items-center justify-center transition-all hover:scale-110 cursor-pointer border border-transparent hover:border-purple-400/40" title="Ελληνικά">🇬🇷</button>
                 </div>
               </div>
 
-              <!-- SECTION 2: FARBSCHEMATA (Kompakt & Mit Pfeil für Extra-Themes) -->
+              <!-- SECTION 2: FARBSCHEMATA (Differenzierte Themes ohne Mengenangabe) -->
               <div class="space-y-1.5 pt-1 border-t border-white/5">
                 <div class="text-[9px] font-bold uppercase tracking-wider text-gray-400 font-mono flex items-center justify-between">
                   <span data-i18n="settings_section_theme">🎨 Farbschema</span>
-                  <span class="text-[8px] text-emerald-300/90 font-mono">14 Themes</span>
                 </div>
 
-                <!-- PRIMARY THEMES SWATCH GRID (6 Haupt-Themes mit Botanical als #1) -->
-                <div class="grid grid-cols-6 gap-1 p-1 bg-black/40 border border-white/10 rounded-xl shadow-inner items-center justify-items-center">
-                  <!-- 1. 🌿 Botanical Journal (Menschlich, zärtlich, ökologisch & Handschrift) -->
-                  <button onclick="setTheme('botanical')" data-theme-swatch="botanical" class="h-4.5 w-4.5 md:h-5 md:w-5 rounded-full bg-gradient-to-tr from-emerald-800 via-green-600 to-emerald-300 border border-emerald-400/60 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="🌿 Botanik & Handschrift (Menschlich, zärtlich & ökologisch)"></button>
+                <!-- DIVERSE THEMES GRID (Dezent, klein & klar unterscheidbar) -->
+                <div class="grid grid-cols-8 gap-1 p-1 bg-black/40 border border-white/10 rounded-xl shadow-inner items-center justify-items-center">
+                  <!-- 1. 🌿 Botanical (Natur-Grün & Handschrift) -->
+                  <button onclick="setTheme('botanical')" data-theme-swatch="botanical" class="h-3.5 w-3.5 rounded-full bg-gradient-to-tr from-emerald-700 via-green-500 to-lime-300 border border-emerald-400/60 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="🌿 Botanical Journal"></button>
                   
-                  <!-- 2. Aurora (Signature Violett) -->
-                  <button onclick="setTheme('aurora')" data-theme-swatch="aurora" class="h-4.5 w-4.5 md:h-5 md:w-5 rounded-full bg-gradient-to-tr from-purple-700 via-purple-500 to-pink-400 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Aurora (Noodle Signature Violett)"></button>
+                  <!-- 2. 🌌 Aurora (Signature Violett) -->
+                  <button onclick="setTheme('aurora')" data-theme-swatch="aurora" class="h-3.5 w-3.5 rounded-full bg-gradient-to-tr from-purple-800 via-purple-500 to-pink-400 border border-purple-400/60 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="🌌 Aurora Borealis"></button>
                   
-                  <!-- 3. Obsidian (OLED Tiefschwarz & Titanium) -->
-                  <button onclick="setTheme('obsidian')" data-theme-swatch="obsidian" class="h-4.5 w-4.5 md:h-5 md:w-5 rounded-full bg-gradient-to-tr from-slate-950 via-zinc-700 to-slate-200 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Obsidian (OLED Tiefschwarz & Titanium)"></button>
+                  <!-- 3. 🖤 Obsidian (OLED Tiefschwarz & Titanium) -->
+                  <button onclick="setTheme('obsidian')" data-theme-swatch="obsidian" class="h-3.5 w-3.5 rounded-full bg-gradient-to-tr from-slate-950 via-zinc-700 to-slate-200 border border-zinc-500/60 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="🖤 Obsidian Stealth"></button>
                   
-                  <!-- 4. Ocean (Meeres-Cyan & Ice) -->
-                  <button onclick="setTheme('ocean')" data-theme-swatch="ocean" class="h-4.5 w-4.5 md:h-5 md:w-5 rounded-full bg-gradient-to-tr from-cyan-700 via-cyan-500 to-sky-300 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Ocean (Meeres-Cyan & Ice)"></button>
+                  <!-- 4. 🌊 Ocean (Meeres-Cyan & Ice) -->
+                  <button onclick="setTheme('ocean')" data-theme-swatch="ocean" class="h-3.5 w-3.5 rounded-full bg-gradient-to-tr from-cyan-800 via-cyan-500 to-sky-300 border border-cyan-400/60 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="🌊 Oceanic Abyss"></button>
                   
-                  <!-- 5. Sage & Matcha (Milder Natur-Salbei) -->
-                  <button onclick="setTheme('sage')" data-theme-swatch="sage" class="h-4.5 w-4.5 md:h-5 md:w-5 rounded-full bg-gradient-to-tr from-emerald-800 via-teal-500 to-emerald-300 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Sage & Matcha (Milder Natur-Salbei)"></button>
-                  
-                  <!-- 6. Oat & Latte (Cozy Milchkaffee & Hafer) -->
-                  <button onclick="setTheme('latte')" data-theme-swatch="latte" class="h-4.5 w-4.5 md:h-5 md:w-5 rounded-full bg-gradient-to-tr from-amber-900 via-amber-600 to-amber-200 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Oat & Latte (Cozy Milchkaffee & Hafer)"></button>
-                </div>
+                  <!-- 5. ☕ Latte (Cozy Milchkaffee & Hafer) -->
+                  <button onclick="setTheme('latte')" data-theme-swatch="latte" class="h-3.5 w-3.5 rounded-full bg-gradient-to-tr from-amber-950 via-amber-700 to-amber-200 border border-amber-500/60 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="☕ Oat & Latte"></button>
 
-                <!-- EXTRA THEMES ACCORDION TOGGLE ROW (Mit Pfeil zum Ausklappen) -->
-                <button type="button" onclick="toggleExtraThemesAccordion(event)" id="btn-toggle-extra-themes" class="w-full py-1 px-1.5 flex items-center justify-between text-[9px] font-bold text-gray-400 hover:text-emerald-300 transition-colors cursor-pointer group/arrow rounded-lg hover:bg-white/[0.04]">
-                  <span class="flex items-center gap-1">
-                    <span>✨ Weitere 8 Farbschemata</span>
-                  </span>
-                  <i data-lucide="chevron-down" id="icon-extra-themes-arrow" class="w-3.5 h-3.5 transition-transform duration-300 group-hover/arrow:translate-y-0.5 text-gray-400"></i>
-                </button>
-
-                <!-- EXPANDABLE EXTRA THEMES CONTAINER -->
-                <div id="container-extra-themes" class="hidden grid-cols-8 gap-1 p-1 bg-black/50 border border-emerald-500/20 rounded-xl shadow-inner items-center justify-items-center animate-in fade-in zoom-in-95 duration-200">
-                  <!-- 7. Warm Sunset (Goldene Abendsonne & Pfirsich) -->
-                  <button onclick="setTheme('sunset')" data-theme-swatch="sunset" class="h-4 w-4 md:h-4.5 md:w-4.5 rounded-full bg-gradient-to-tr from-orange-700 via-rose-500 to-amber-200 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Warm Sunset (Goldene Abendsonne & Pfirsich)"></button>
+                  <!-- 6. 🌅 Sunset (Goldene Abendsonne) -->
+                  <button onclick="setTheme('sunset')" data-theme-swatch="sunset" class="h-3.5 w-3.5 rounded-full bg-gradient-to-tr from-orange-800 via-rose-500 to-amber-200 border border-orange-400/60 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="🌅 Warm Sunset"></button>
                   
-                  <!-- 8. Sakura Blossom (Japanisches Blüten-Rosé) -->
-                  <button onclick="setTheme('peach')" data-theme-swatch="peach" class="h-4 w-4 md:h-4.5 md:w-4.5 rounded-full bg-gradient-to-tr from-pink-700 via-rose-400 to-pink-200 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Sakura Blossom (Japanisches Blüten-Rosé)"></button>
+                  <!-- 7. 🌸 Sakura (Japanisches Blüten-Rosé) -->
+                  <button onclick="setTheme('peach')" data-theme-swatch="peach" class="h-3.5 w-3.5 rounded-full bg-gradient-to-tr from-pink-800 via-rose-400 to-pink-200 border border-pink-400/60 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="🌸 Tokyo Sakura"></button>
                   
-                  <!-- 9. Crimson Ruby (Dunkelroter Deep-Focus) -->
-                  <button onclick="setTheme('crimson')" data-theme-swatch="crimson" class="h-4 w-4 md:h-4.5 md:w-4.5 rounded-full bg-gradient-to-tr from-red-800 via-red-500 to-rose-400 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Crimson Ruby (Dunkelroter Deep-Focus)"></button>
-                  
-                  <!-- 10. Honey & Amber (Honig & Kamille) -->
-                  <button onclick="setTheme('honey')" data-theme-swatch="honey" class="h-4 w-4 md:h-4.5 md:w-4.5 rounded-full bg-gradient-to-tr from-amber-700 via-yellow-500 to-amber-200 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Honey & Chamomile (Warmer Bernstein)"></button>
-
-                  <!-- 11. Cyberpunk (Neon Synthwave) -->
-                  <button onclick="setTheme('cyberpunk')" data-theme-swatch="cyberpunk" class="h-4 w-4 md:h-4.5 md:w-4.5 rounded-full bg-gradient-to-tr from-fuchsia-600 via-pink-500 to-cyan-400 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Cyberpunk (Neon Synthwave)"></button>
-
-                  <!-- 12. Matrix & Forest (Deep Emerald) -->
-                  <button onclick="setTheme('matrix')" data-theme-swatch="matrix" class="h-4 w-4 md:h-4.5 md:w-4.5 rounded-full bg-gradient-to-tr from-emerald-950 via-emerald-600 to-lime-400 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Matrix & Forest (Deep Emerald)"></button>
-
-                  <!-- 13. Terracotta Sun (Warme Erde & Ton) -->
-                  <button onclick="setTheme('terracotta')" data-theme-swatch="terracotta" class="h-4 w-4 md:h-4.5 md:w-4.5 rounded-full bg-gradient-to-tr from-orange-900 via-orange-600 to-rose-300 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Terracotta Sun (Warme Erde & Ton)"></button>
-
-                  <!-- 14. Royal Velvet (Königliches Indigo) -->
-                  <button onclick="setTheme('royal')" data-theme-swatch="royal" class="h-4 w-4 md:h-4.5 md:w-4.5 rounded-full bg-gradient-to-tr from-indigo-950 via-indigo-600 to-violet-400 border border-white/30 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="Royal Velvet (Königliches Indigo)"></button>
+                  <!-- 8. ⚡ Cyberpunk (Neon Synthwave) -->
+                  <button onclick="setTheme('cyberpunk')" data-theme-swatch="cyberpunk" class="h-3.5 w-3.5 rounded-full bg-gradient-to-tr from-fuchsia-600 via-pink-500 to-cyan-400 border border-fuchsia-400/60 hover:scale-125 active:scale-90 transition-all cursor-pointer shadow-xs relative" title="⚡ Cyberpunk Neon"></button>
                 </div>
               </div>
 
-              <!-- SECTION 3: HEADER LAYOUT / STIL -->
-              <div class="space-y-1.5 pt-1 border-t border-white/5">
-                <div class="text-[9px] font-bold uppercase tracking-wider text-gray-400 font-mono flex items-center justify-between">
-                  <span data-i18n="settings_header_layout">🧭 Header-Layout</span>
-                </div>
-                <div class="grid grid-cols-3 gap-1 p-1 bg-black/40 border border-white/10 rounded-2xl text-[10px] font-bold">
-                  <button onclick="setHeaderLayout('classic')" id="btn-layout-classic" class="py-1 px-1 rounded-xl transition text-center bg-purple-500/20 text-purple-200 border border-purple-500/40 cursor-pointer" data-i18n="layout_classic">Klassisch</button>
-                  <button onclick="setHeaderLayout('smart_hubs')" id="btn-layout-smart_hubs" class="py-1 px-1 rounded-xl transition text-center text-gray-400 hover:text-white cursor-pointer" data-i18n="layout_smart_hubs">Smart Hubs</button>
-                  <button onclick="setHeaderLayout('minimal')" id="btn-layout-minimal" class="py-1 px-1 rounded-xl transition text-center text-gray-400 hover:text-white cursor-pointer" data-i18n="layout_minimal">Kompakt</button>
-                </div>
-              </div>
-
-              <!-- SECTION 4: WORKSPACE & PHONE LIVE-SYNC -->
-              <div class="grid grid-cols-2 gap-2 pt-1 border-t border-white/10">
-                <button id="btn-workspace-toggle" onclick="toggleWorkspace();" class="p-2.5 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 rounded-xl text-purple-200 text-left text-xs font-bold flex items-center gap-2 transition cursor-pointer" data-i18n-title="workspace_private">
-                  <span id="ws-toggle-icon" class="text-sm">🏠</span>
-                  <span id="ws-toggle-text" class="truncate" data-i18n="workspace_private">Personal</span>
+              <!-- SECTION 3: WORKSPACE & PHONE LIVE-SYNC (Volle Breite & gut lesbarer Text) -->
+              <div class="space-y-1.5 pt-1 border-t border-white/10">
+                <button id="btn-workspace-toggle" onclick="toggleWorkspace();" class="w-full p-2.5 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 rounded-xl text-purple-200 text-left text-xs font-bold flex items-center justify-between transition cursor-pointer" data-i18n-title="workspace_private">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span id="ws-toggle-icon" class="text-sm shrink-0">🏠</span>
+                    <span id="ws-toggle-text" class="whitespace-nowrap font-bold" data-i18n="workspace_private">Arbeitsbereich umschalten</span>
+                  </div>
+                  <i data-lucide="repeat" class="w-3.5 h-3.5 text-purple-400 shrink-0"></i>
                 </button>
-                <button onclick="openP2PSyncModal(); document.getElementById('panel-settings-dropdown').classList.add('hidden');" class="p-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 rounded-xl text-emerald-300 text-left text-xs font-bold flex items-center gap-2 transition cursor-pointer">
-                  <i data-lucide="smartphone" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                  <span class="truncate" data-i18n="settings_p2p_sync">Phone Sync</span>
-                </button>
-              </div>
-
-              <!-- SECTION 5: ACTIONS (UNDO & RESET BOARD) -->
-              <div class="grid grid-cols-2 gap-1.5 pt-1 border-t border-white/10">
-                <button onclick="handleUndo(); document.getElementById('panel-settings-dropdown').classList.add('hidden');" class="p-2 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 rounded-xl text-cyan-300 hover:text-cyan-100 text-left text-[10px] font-semibold flex items-center gap-1.5 transition cursor-pointer" data-i18n-title="title_undo">
-                  <i data-lucide="undo-2" class="w-3.5 h-3.5 text-cyan-300 shrink-0"></i>
-                  <span data-i18n="undo">Undo (Ctrl+Z)</span>
-                </button>
-                <button onclick="handleReset(); document.getElementById('panel-settings-dropdown').classList.add('hidden');" class="p-2 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 rounded-xl text-rose-300 hover:text-rose-100 text-left text-[10px] font-semibold flex items-center gap-1.5 transition cursor-pointer" data-i18n-title="title_reset">
-                  <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-rose-300 shrink-0"></i>
-                  <span data-i18n="reset">Reset Board</span>
+                <button onclick="openP2PSyncModal(); document.getElementById('panel-settings-dropdown').classList.add('hidden');" class="w-full p-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 rounded-xl text-emerald-300 text-left text-xs font-bold flex items-center justify-between transition cursor-pointer">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <i data-lucide="smartphone" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                    <span class="whitespace-nowrap font-bold" data-i18n="settings_p2p_sync">Geräte synchronisieren</span>
+                  </div>
+                  <i data-lucide="qr-code" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i>
                 </button>
               </div>
             </div>
           </div>
 
-          <!-- 3. Sound Master Toggle & Hover Volume Slider (rechts von Optionen) -->
+          <!-- 3. Reset Board (Dezent im Header) -->
+          <button onclick="handleReset()" class="h-9 w-9 md:h-[36.5px] md:w-[36.5px] p-0 border border-white/10 hover:border-rose-500/40 rounded-xl bg-white/[0.03] hover:bg-rose-500/15 active:scale-95 text-gray-400 hover:text-rose-300 flex items-center justify-center cursor-pointer transition shrink-0" title="Board zurücksetzen (Reset)" aria-label="Board zurücksetzen">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+          </button>
+
+          <!-- 4. Sound Master Toggle & Hover Volume Slider (rechts von Optionen) -->
           <div id="header-btn-sound-container" class="relative group/sound-wrapper cursor-pointer" onmouseenter="showSoundHoverSlider()" onmouseleave="hideSoundHoverSlider()" onclick="toggleSoundVolumePopover(event)">
             <button id="header-btn-sound-toggle" onclick="toggleMasterSound()" class="h-9 w-9 md:h-[36.5px] md:w-[36.5px] p-0 border border-purple-500/30 hover:border-purple-400/60 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 active:scale-95 text-purple-200 hover:text-white flex items-center justify-center cursor-pointer transition shadow-[0_0_12px_rgba(168,85,247,0.12)] shrink-0 group/sound-btn opacity-90 hover:opacity-100">
               <span id="header-sound-icon-wrapper" class="flex items-center justify-center">
@@ -1830,18 +1786,33 @@
 
     <!-- BOARD SUB-HEADER / DISCREET TOP BAR (DESKTOP & MOBILE) -->
     <div id="board-top-bar" class="relative z-20 flex items-center justify-between gap-2 mb-2 px-1 text-xs select-none">
+      <!-- DYNAMIC UNDO BUTTON (Links oberhalb der Listen) -->
+      <div id="board-undo-wrapper" class="flex items-center gap-1.5 shrink-0">
+        <button id="btn-board-undo" onclick="handleUndo()" class="hidden px-2.5 py-1 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/35 hover:border-amber-400 text-amber-200 hover:text-white transition flex items-center gap-1.5 text-xs font-bold cursor-pointer shadow-sm active:scale-95 animate-fade-in group/undo" title="Letzte Aktion rückgängig machen (Ctrl+Z)">
+          <i data-lucide="undo-2" class="w-3.5 h-3.5 text-amber-300 group-hover/undo:-rotate-45 transition-transform"></i>
+          <span class="text-[11px] sm:text-xs">Rückgängig</span>
+        </button>
+      </div>
+
       <!-- MOBILE: Horizontale Wisch-Leiste für Kategorie-Pills (nur auf Touch/Mobile sichtbar) -->
       <nav id="mobile-category-tabs" class="mobile-category-tabs flex-1 min-w-0" aria-label="Kategorien"></nav>
+    </div>
 
-      <!-- DISCREET TOP BUTTON: + Liste hinzufügen & Compact Popover -->
-      <div class="relative shrink-0 flex items-center gap-1.5 ml-auto">
-        <button id="btn-add-list-top" onclick="toggleAddListPopover(event)" class="px-2.5 py-1 rounded-xl bg-white/[0.04] hover:bg-purple-500/20 border border-white/10 hover:border-purple-400/40 text-gray-300 hover:text-white transition flex items-center gap-1.5 text-xs font-semibold cursor-pointer shadow-xs active:scale-95 group/addlist" title="Neue Liste erstellen">
-          <i data-lucide="plus" class="w-3.5 h-3.5 text-purple-400 group-hover/addlist:scale-110 transition-transform"></i>
-          <span class="text-[11px] sm:text-xs">Liste hinzufügen</span>
+    <!-- DASHBOARD 7-COLUMN GRID (100% Breite) -->
+    <main id="main-content" class="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-3.5 flex-1 w-full min-h-0 items-start">
+      <!-- Generated columns via JS -->
+    </main>
+
+    <!-- FLOATING BOTTOM-RIGHT: + LISTE HINZUFÜGEN -->
+    <div id="floating-add-list-container" class="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-40 select-none">
+      <div class="relative flex items-center">
+        <button id="btn-add-list-bottom" onclick="toggleAddListPopover(event)" class="px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-2xl bg-[#141422]/95 hover:bg-purple-600/30 border border-purple-500/40 hover:border-purple-400 text-gray-200 hover:text-white transition flex items-center gap-2 text-xs font-bold cursor-pointer shadow-[0_8px_30px_rgba(0,0,0,0.6),0_0_20px_rgba(168,85,247,0.25)] backdrop-blur-xl active:scale-95 group/addlist" title="Neue Liste erstellen">
+          <i data-lucide="plus" class="w-4 h-4 text-purple-400 group-hover/addlist:scale-110 transition-transform"></i>
+          <span class="font-bold">Liste hinzufügen</span>
         </button>
 
-        <!-- Compact Add List Popover -->
-        <div id="popover-add-list" class="hidden absolute right-0 top-[calc(100%+6px)] z-[200] w-[260px] p-3 bg-[#12121e]/98 border border-purple-500/40 rounded-2xl shadow-2xl backdrop-blur-xl flex flex-col gap-2 animate-spring-modal" onclick="event.stopPropagation()">
+        <!-- Compact Add List Popover (nach oben öffnend) -->
+        <div id="popover-add-list" class="hidden absolute right-0 bottom-[calc(100%+8px)] z-[200] w-[270px] p-3.5 bg-[#12121e]/98 border border-purple-500/40 rounded-2xl shadow-2xl backdrop-blur-2xl flex flex-col gap-2.5 animate-spring-modal" onclick="event.stopPropagation()">
           <div class="flex items-center justify-between border-b border-white/10 pb-1.5 px-0.5">
             <span class="font-bold text-xs text-white flex items-center gap-1.5">
               <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-purple-400"></i>
@@ -1878,15 +1849,6 @@
         </div>
       </div>
     </div>
-
-    <!-- DASHBOARD 7-COLUMN GRID -->
-    <!-- DASHBOARD 7-COLUMN GRID -->
-    <!-- ELEGANTE TOOLS-FLYOUT LEISTE (LINKS AM BILDSCHIRMRAND MIT HOVER-PFEIL) -->
-    
-<!-- DASHBOARD 7-COLUMN GRID (100% Breite, unberührt) -->
-    <main id="main-content" class="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-3.5 flex-1 w-full min-h-0 items-start">
-      <!-- Generated columns via JS -->
-    </main>
 
     <!--
       Werbefläche (aktuell inaktiv). Wird erst befüllt, wenn ADS_ENABLED=true
@@ -2843,7 +2805,7 @@
                 <label for="sync-password-input" class="text-[10px] uppercase font-mono text-gray-400 font-bold block">Passwort / PIN:</label>
                 <button type="button" onclick="handlePasswordReset()" class="text-[10px] text-emerald-400 hover:underline cursor-pointer">Passwort vergessen?</button>
               </div>
-              <input id="sync-password-input" type="password" placeholder="Mindestens 4 Zeichen" onkeydown="if(event.key==='Enter') handleEmailAuth()" class="w-full px-3 py-2 bg-black/60 border border-white/15 focus:border-emerald-400 rounded-xl text-xs text-white placeholder-gray-500 outline-none transition" />
+              <input id="sync-password-input" type="password" placeholder="Mindestens 8 Zeichen" onkeydown="if(event.key==='Enter') handleEmailAuth()" class="w-full px-3 py-2 bg-black/60 border border-white/15 focus:border-emerald-400 rounded-xl text-xs text-white placeholder-gray-500 outline-none transition" />
             </div>
             <button id="sync-auth-submit-btn" onclick="handleEmailAuth()" class="w-full py-2.5 px-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer">
               <i data-lucide="log-in" class="w-4 h-4"></i>
